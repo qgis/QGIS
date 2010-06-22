@@ -7048,7 +7048,7 @@ Diese QGIS-Kopie unterstützt PostgreSQL (%1).</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2452"/>
         <source>Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well</source>
-        <translation>Wahl zwischen mm und Karteneinheiten in der neuen Darstellung. Kann nun auch in der Druckzusammenstellung verwendet werden.</translation>
+        <translation>Wahl zwischen mm und Karteneinheiten in der neuen Darstellung. Kann nun auch in der Druckzusammenstellung verwendet werden</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2453"/>
@@ -7188,7 +7188,7 @@ Diese QGIS-Kopie unterstützt PostgreSQL (%1).</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2481"/>
         <source>Allow postgres layers without saved username &amp;amp; password by asking for credentials</source>
-        <translation>Möglichkeit PostgreSQL-Layer ohne Benutzername und -passwort zu speichern indem Zugangsdaten abgefragt werden</translation>
+        <translation>Möglichkeit PostgreSQL-Layer ohne Benutzername &amp;amp; -passwort zu speichern indem Zugangsdaten abgefragt werden</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2482"/>
@@ -7203,7 +7203,7 @@ Diese QGIS-Kopie unterstützt PostgreSQL (%1).</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2485"/>
         <source>Identify tool attribute form now non-modal in view mode (since r12796)</source>
-        <translation>Objektformulare, die aus dem Abfragewerkzeug geöffnet werden sind nun im Anzeigemodus non-modal (seit r12796).</translation>
+        <translation>Objektformulare, die aus dem Abfragewerkzeug geöffnet werden, sind nun im Anzeigemodus non-modal (seit r12796)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2486"/>
