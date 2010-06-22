@@ -1,6 +1,6 @@
 image/tif; qgis '%s'; description="TIFF Image"; test=test -n "$DISPLAY"; nametemplate=%s.tif; priority=2
 image/jpg; qgis '%s'; description="JPEG Image"; test=test -n "$DISPLAY"; nametemplate=%s.jpg; priority=2
-image/jp2; qgis '%s'; description="JPEG 2000 Image"; test=test -n "$DISPLAY"; nametempalte=%s.jp2; priority=2
+image/jp2; qgis '%s'; description="JPEG 2000 Image"; test=test -n "$DISPLAY"; nametemplate=%s.jp2; priority=2
 application/x-raster-aig; qgis '%s'; description="AIG raster data"; test=test -n "$DISPLAY"; nametemplate=%s.aig; priority=2
 application/x-raster-ecw; qgis '%s'; description="ECW raster data"; test=test -n "$DISPLAY"; nametemplate=%s.ecw; priority=2
 application/x-raster-mrsid; qgis '%s'; description="MrSID raster data"; test=test -n "$DISPLAY"; nametemplate=%s.sid; priority=2
