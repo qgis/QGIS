@@ -21246,7 +21246,29 @@ Bạn cần phải khởi động lại Quantum GIS để nạp lại nó.</tran
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="437"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="436"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="439"/>
+        <source>Add the contributed repository to the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="442"/>
+        <source>Add the contributed repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="461"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="464"/>
+        <source>Remove depreciated repositories from the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="467"/>
+        <source>Delete depreciated repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="493"/>
         <source>Check for updates on startup</source>
         <translation>Kiểm tra các cập nhật lúc khởi động</translation>
     </message>
@@ -21316,47 +21338,47 @@ Bạn cần phải khởi động lại Quantum GIS để nạp lại nó.</tran
         <translation>Đóng</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="419"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
         <source>Options</source>
         <translation>Tùy chọn</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="422"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="478"/>
         <source>Configuration of the plugin installer</source>
         <translation>Cấu hình của trình cài đặt phần mở rộng</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="450"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="506"/>
         <source>every time QGIS starts</source>
         <translation>mỗi khi QGIS khởi động</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="455"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="511"/>
         <source>once a day</source>
         <translation>một lần/ngày</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="460"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="516"/>
         <source>every 3 days</source>
         <translation>3 ngày/lần</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="465"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="521"/>
         <source>every week</source>
         <translation>mỗi tuần</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="470"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="526"/>
         <source>every 2 weeks</source>
         <translation>2 tuần/lần</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="531"/>
         <source>every month</source>
         <translation>mỗi tháng</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="505"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="561"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -21369,27 +21391,27 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ghi chú:&lt;/span&gt; Nếu chức năng này được kích hoạt, Quantum GIS sẽ thông báo cho bạn mỗi khi có một phần mở rộng mới hoặc cập nhật phần mở rộng. Nếu không, việc lấy các kho chứa sẽ được thực hiện khi mở cửa sổ trình cài đặt phần mở rộng.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="528"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="584"/>
         <source>Allowed plugins</source>
         <translation>Các phần mở rộng được cho phép</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="537"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="593"/>
         <source>Only show plugins from the official repository</source>
         <translation>Chỉ hiển thị các phần mở rộng từ kho chứa chính thức</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="550"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="606"/>
         <source>Show all plugins except those marked as experimental</source>
         <translation>Hiển thị tất cả các phần mở rộng ngoại trừ những cái nào được đánh dấu là bản thử nghiệm</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="563"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="619"/>
         <source>Show all plugins, even those marked as experimental</source>
         <translation>Hiển thị tất cả các phần mở rộng, kể cả những cái được đánh dấu là thử nghiệm</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="582"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="638"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -21524,6 +21546,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
         <translation>Đang kết nối...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerOldReposBase</name>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="21"/>
+        <source>Plugin Installer</source>
+        <translation type="unfinished">Trình cài đặt phần mở rộng</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
+        <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
+        <source>Remove</source>
+        <translation type="unfinished">Loại bỏ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="59"/>
+        <source>Disable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="66"/>
+        <source>Keep</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="73"/>
+        <source>Ask me later</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

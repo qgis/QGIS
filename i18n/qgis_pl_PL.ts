@@ -21418,7 +21418,29 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="437"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="436"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="439"/>
+        <source>Add the contributed repository to the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="442"/>
+        <source>Add the contributed repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="461"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="464"/>
+        <source>Remove depreciated repositories from the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="467"/>
+        <source>Delete depreciated repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="493"/>
         <source>Check for updates on startup</source>
         <translation>Poszukuj aktualizacji przy starcie</translation>
     </message>
@@ -21488,47 +21510,47 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="419"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
         <source>Options</source>
         <translation>Opcje</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="422"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="478"/>
         <source>Configuration of the plugin installer</source>
         <translation>Konfiguracja instalatora wtyczek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="450"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="506"/>
         <source>every time QGIS starts</source>
         <translation>przy każdym starcie programu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="455"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="511"/>
         <source>once a day</source>
         <translation>raz dziennie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="460"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="516"/>
         <source>every 3 days</source>
         <translation>co 3 dni</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="465"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="521"/>
         <source>every week</source>
         <translation>co tydzień</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="470"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="526"/>
         <source>every 2 weeks</source>
         <translation>co 2 tygodnie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="531"/>
         <source>every month</source>
         <translation>co miesiąc</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="505"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="561"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -21537,27 +21559,27 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Uwaga:&lt;/span&gt; Jeśli ta funkcja jest włączona, Quantum GIS będzie informował Cię gdy tylko pojawi się nowa wtyczka lub uaktualnienie jednej z zainstalowanych. W przeciwnym wypadku, sprawdzanie repozytoriów będzie następować dopiero przy otwieraniu Instalatora.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="528"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="584"/>
         <source>Allowed plugins</source>
         <translation>Dopuszczone wtyczki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="537"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="593"/>
         <source>Only show plugins from the official repository</source>
         <translation>Pokazuj wyłącznie wtyczki z oficjalnego repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="550"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="606"/>
         <source>Show all plugins except those marked as experimental</source>
         <translation>Pokazuj wszystkie wtyczki za wyjątkiem oznaczonych jako eksperymentalne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="563"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="619"/>
         <source>Show all plugins, even those marked as experimental</source>
         <translation>Pokazuj wszystkie wtyczki, nawet eksperymentalne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="582"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="638"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -21688,6 +21710,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
         <translation>Łączenie...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerOldReposBase</name>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="21"/>
+        <source>Plugin Installer</source>
+        <translation type="unfinished">Instalator Wtyczek</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
+        <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="59"/>
+        <source>Disable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="66"/>
+        <source>Keep</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="73"/>
+        <source>Ask me later</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

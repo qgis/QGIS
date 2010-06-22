@@ -21528,52 +21528,74 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <translation>Briši</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="419"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="436"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="439"/>
+        <source>Add the contributed repository to the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="442"/>
+        <source>Add the contributed repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="461"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="464"/>
+        <source>Remove depreciated repositories from the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="467"/>
+        <source>Delete depreciated repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
         <source>Options</source>
         <translation>Opcije</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="422"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="478"/>
         <source>Configuration of the plugin installer</source>
         <translation>Konfiguracija instalacije dodatka</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="437"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="493"/>
         <source>Check for updates on startup</source>
         <translation>Pri pokretanju provjeri za novije verzije</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="450"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="506"/>
         <source>every time QGIS starts</source>
         <translation>svaki put kad se QGIS pokreće</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="455"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="511"/>
         <source>once a day</source>
         <translation>jednom dnevno</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="460"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="516"/>
         <source>every 3 days</source>
         <translation>svakih 3 dana</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="465"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="521"/>
         <source>every week</source>
         <translation>svaki tjedan</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="470"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="526"/>
         <source>every 2 weeks</source>
         <translation>svaka 2 tjedna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="531"/>
         <source>every month</source>
         <translation>svaki mjesec</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="505"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="561"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -21586,27 +21608,27 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt;Ako je ova funkcija omogućena QGIS će vas informirati kad god je dostupna novija verzija dodatka ili novi dodatak. U drugom slučaju do dohvaćanaj repozitorija dolazi tijekom otvaranja Instalacije dodatka&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="528"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="584"/>
         <source>Allowed plugins</source>
         <translation>Dopušteni dodaci</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="537"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="593"/>
         <source>Only show plugins from the official repository</source>
         <translation>Prikazuj samo dodatke iz službenog repozitorija</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="550"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="606"/>
         <source>Show all plugins except those marked as experimental</source>
         <translation>Prikaži sve dodatke osim onih obilježenih kao eksperimentalni</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="563"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="619"/>
         <source>Show all plugins, even those marked as experimental</source>
         <translation>Prikaži sve dodatke, čak i one koji su prikazani kao eksperimentalni</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="582"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="638"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -21741,6 +21763,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
         <translation>Povezivanje...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerOldReposBase</name>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="21"/>
+        <source>Plugin Installer</source>
+        <translation type="unfinished">Instaleer dodataka</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
+        <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
+        <source>Remove</source>
+        <translation type="unfinished">Ukloni</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="59"/>
+        <source>Disable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="66"/>
+        <source>Keep</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="73"/>
+        <source>Ask me later</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
