@@ -1097,7 +1097,44 @@ QGis developer and user communities
 Folks on #qgis at freenode.net
 All those who have reported bugs/fixes/suggestions/comments/etc.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+L&apos;obiettivo di fTools è facilitare l&apos;utilizzo delle più comuni operazioni GIS su dati vettoriali, senza la necessità di software e librerie addizionali o complesse soluzioni alternative.
+
+fTools estende le funzionalità di Quantum GIS utilizzando solo le librerie core di QGIS e python. Fornisce una suite di funzioni di analisi e gestione di dati geografici allo stesso tempo facili da utilizzare e funzionali. Sono inoltre state integrate le funzioni di geoprocessing di Horst Duester e Stefan Ziegler, al fine di facilitare e razionalizzare ulteriormente le analisi e la ricerca GIS-based.
+
+Se intendi riportare un bug, fornire suggerimenti per migliorare fTools, o se hai domande specifiche sui vari tool puoi inviare una email a: carson.farmer@gmail.com
+
+LICENSING INFORMATION:
+fTools is copyright (C) 2009  Carson J.Q. Farmer
+Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
+(C) 2008 by Dr. Horst Duester, Stefan Ziegler
+
+licensed under the terms of GNU GPL 2
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+SVILUPPATORI di fTools :
+Carson J. Q. Farmer
+Alexander Bruy
+**Se hai fornito del codice a fTools e non sei stato menzionato in questo elenco, contattami ed aggiungerò il tuo nome.
+
+RICONOSCIMENTI:
+Le seguenti persone (che ne siano coscenti o meno) hanno fornito idee, aiuto, test, codice e una guida per questo progetto. Li ringrazio tutti.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jurgen E. Fischer
+Gli sviluppatori di QGis e le varie comunità utenti
+Gente su #qgis at freenode.net
+Tutti quelli che hanno fornito bugs/correzioni/suggerimenti/commenti/etc.
+</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -2457,7 +2494,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
         <source>WARNING: current projection definition will be cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>ATTENZIONE: la definizione della proiezione corrente verrà cancellata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="80"/>
@@ -4017,7 +4054,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="375"/>
         <source>Unexpected state when evaluating operator!</source>
-        <translation type="unfinished"></translation>
+        <translation>Stato inatteso nella valutazione dell&apos;operatore!</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="415"/>
@@ -5137,17 +5174,17 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="26"/>
         <source>Displacement plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin spostamento</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="27"/>
         <source>Adds a new renderer that automatically handles point displacement in case they have the same position</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunge un nuovo renderer che gestisce automaticamente lo spostamento di punti che hanno la stessa posizione</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
         <source>Point Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Spostamento punto</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
@@ -5219,27 +5256,28 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;avvio di QGIS in modalità non-interattiva non è supportato.
+Stai vedendo questo messaggio perché probabilmente non hai settato la variabile di ambiente DISPLAY.</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="13"/>
         <source>Simple line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea semplice</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="15"/>
         <source>Marker line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea di evidenziazione</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="17"/>
         <source>Line decoration</source>
-        <translation type="unfinished"></translation>
+        <translation>Decorazione linea</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="20"/>
         <source>Simple marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicatore semplice</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="22"/>
@@ -5249,7 +5287,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="24"/>
         <source>Font marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicatore carattere</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="27"/>
@@ -5297,12 +5335,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="230"/>
         <source>The port detected a break condition</source>
-        <translation type="unfinished"></translation>
+        <translation>La porta ha rilevato una condizione di interruzione</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="231"/>
         <source>The port detected a framing error (usually caused by incorrect baud rate settings)</source>
-        <translation type="unfinished"></translation>
+        <translation>La porta ha rilevato un errore di framing (di solito causato da errate impostazioni di velocità di trasmissione)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="232"/>
@@ -6689,7 +6727,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2432"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tieni presente che questa è una versione fa parte della serie di rilasci innovativi di QGIS. Come tale essa contiene nuove funzionalità ed estende l&apos;interfaccia di programmazione di QGIS 1.0.x e QGIS 1.4.0. Se un&apos;interfaccia utente stabile, API programmatiche e supporto a lungo termine è per te più importante di caratteristiche nuove e non testate, si consiglia di utilizzare una copia di QGIS dalla serie di rilasci 1.0.x Long Term Support (LTS). In tutti gli altri casi si consiglia di utilizzare questa versione.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2440"/>
@@ -6749,7 +6787,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2457"/>
         <source>Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunto plugin renderer spostamento punto - permette di spostare punti per evitare sovrapposizioni con altri punti </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2458"/>
@@ -6759,12 +6797,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2459"/>
         <source>Raster provider: reduce debugging noise</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestore raster: riduce il rumore di debugging</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2460"/>
         <source>Allow adding parts to multi points and lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Permette di aggiungere parti a linee e multi-punto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2461"/>
@@ -6774,12 +6812,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2462"/>
         <source>Added possibility to place a set of default composer templates in pkgDataPath/composer_templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunta la possibilità di inserire un set di modelli di stampa predefiniti in pkgDataPath/composer_templates</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2463"/>
         <source>Gradient color ramps now support multiple stops - for adding intermediate colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Le rampe di colore graduale supportano ora interruzioni multiple - per aggiungere colori intermedi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2464"/>
@@ -6789,7 +6827,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2465"/>
         <source>New plugin for carrying out spatial selections</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuovo plugin per effettuare selezioni spaziali</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2466"/>
@@ -6809,72 +6847,73 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2469"/>
         <source>Show selected feature count in status bar </source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra il numero di elementi selezionati nella barra di stato
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2470"/>
         <source>Query option added to layer menu to subset vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzione di interrogazione aggiunta al menù layer per creare sottoinsiemi di vettori</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2471"/>
         <source>Option to label only selected features (on the &apos;old&apos; labelling tool)</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzione per etichettare solo elementi selezionati (sul vecchio tool di etichettatura)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2472"/>
         <source>Load/save queries created in the query builder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Carica/salva le interrogazioni create nel costruttore di interrogazioni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2473"/>
         <source>Manual adding of categories in symbology-ng.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunta manuale di categorie nella nuova simbologiaymbology-ng.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2474"/>
         <source>Georeferencer: possibility to configure if residuals should be showed in pixels or map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Georeferenziatore: possibilità di configurare i residui in pixel o in unità di mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2475"/>
         <source>Delimited text provider: allow empty values in numeric columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestore testo delimitato: permette di avere valori vuoti nelle colonne numeriche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2476"/>
         <source>Added rule-based renderer for symbology-ng</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunto renderer basato su regole per la nuova simbologia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2477"/>
         <source>Ability to create spatial lite databases from within QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Possibilità di creare database SpatiaLite direttamente da QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2478"/>
         <source>Inclusion of GDAL Raster tools plugin into QGIS core</source>
-        <translation type="unfinished"></translation>
+        <translation>Inclusione del plugin GDAL Raster Tools in QGIS core</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2479"/>
         <source>New python console (with history)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuova console python (con storico dei comandi)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2480"/>
         <source>Add validation to capture tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi validazione allo strumento di cattura</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2481"/>
         <source>Allow postgres layers without saved username &amp;amp; password by asking for credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Permetti layer postgres senza username &amp;amp; password salvati, chiedendo le credenziali</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2482"/>
         <source>Support NULL values in search strings</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporta valori NULL nelle stringhe di ricerca</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2483"/>
@@ -6884,7 +6923,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2484"/>
         <source>Map composer can add attribute tables in layouts. It is possibile to show only visible features in composer table or all features</source>
-        <translation type="unfinished"></translation>
+        <translation>Il compositore di mappe può gestire tabelle attributi nei layout. E&apos; possibile mostrare solo entità visibili nella tabella del compositore o tutte le entità</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2485"/>
@@ -6894,27 +6933,27 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2486"/>
         <source>Identified features&apos; highlight disappear when window is deactivate or closed and reappears when reactivated.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;evidenziazione degli elementi identificati scompare quando la finestra è disattivata o chiusa e riappare quando viene riattivata.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2489"/>
         <source>WMS and WMS-C Support</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto WMS e WMS-C</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2491"/>
         <source>WMS-C support, new spatial authorities, wms selection improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto WMS-C, nuove autorità spaziali, miglioramenti alla selezione wms</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2492"/>
         <source>Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Risolta la dipendenza EPSG nei sistemi di riferimento spaziali e inclusa la definizione francese IGNF in srs.db</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2493"/>
         <source>WMS provider makes requests asynchronously through QNetworkAccessManager now</source>
-        <translation type="unfinished"></translation>
+        <translation>Il gestore WMS effettua ora richieste asincrone tramite QNetworkAccessManager</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2494"/>
@@ -6924,12 +6963,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2495"/>
         <source>WMS has support for more MIME types</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS supporta più tipi MIME</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2496"/>
         <source>Added load/save to WMS dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunto carica/salva alla finestra WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2497"/>
@@ -6939,7 +6978,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2499"/>
         <source>API Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornamenti alle API</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2501"/>
@@ -6954,7 +6993,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2503"/>
         <source>Allow opening layer properties from plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Permette di aprire le proprietà del layer dai plugin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2504"/>
@@ -6979,7 +7018,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2508"/>
         <source>Support more GEOS operators</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto a più operatori GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3316"/>
@@ -6994,18 +7033,18 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3774"/>
         <source>Please select a vector layer first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prima seleziona un vettore.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4204"/>
         <location filename="../src/app/qgisapp.cpp" line="4243"/>
         <source>Not enough features selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Entità selezionate non sufficienti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4226"/>
         <source>Union operation canceled</source>
-        <translation type="unfinished"></translation>
+        <translation>Operazione di unione annullata</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4616"/>
@@ -7952,7 +7991,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="29"/>
         <source>Map marker</source>
-        <translation>Marcatore della mappa</translation>
+        <translation>Indicatore della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="50"/>
@@ -8833,17 +8872,17 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="19"/>
         <source>BDiagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagonale B</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="20"/>
         <source>FDiagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagonale F</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="21"/>
         <source>Diagonal X</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagonale X</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="22"/>
@@ -9181,27 +9220,27 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="59"/>
         <source>Arrow markers</source>
-        <translation>Marcatori freccia</translation>
+        <translation>Indicatori freccia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="65"/>
         <source>Default marker</source>
-        <translation>Marcatore preimpostato</translation>
+        <translation>Indicatore preimpostato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>No marker</source>
-        <translation>Nessun marcatore</translation>
+        <translation>Nessun indicatore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="79"/>
         <source>SVG markers</source>
-        <translation>Marcatore SVG</translation>
+        <translation>Indicatori SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="86"/>
         <source>Start marker</source>
-        <translation>Marcatore di inizio</translation>
+        <translation>Indicatore di inizio</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="96"/>
@@ -9212,7 +9251,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="103"/>
         <source>End marker</source>
-        <translation>Marcatore di fine</translation>
+        <translation>Indicatore di fine</translation>
     </message>
 </context>
 <context>
@@ -20222,22 +20261,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1098"/>
         <source>Vertex markers</source>
-        <translation>Marcatori di vertice</translation>
+        <translation>Indicatori di vertice</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1104"/>
         <source>Show markers only for selected features</source>
-        <translation>Utilizza marcatori solo per le geometrie selezionate</translation>
+        <translation>Utilizza indicatori solo per le geometrie selezionate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1111"/>
         <source>Marker style</source>
-        <translation>Stile marcatore</translation>
+        <translation>Stile indicatore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1154"/>
         <source>Marker size</source>
-        <translation>Dimensioni marcatore</translation>
+        <translation>Dimensioni indicatore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1222"/>
@@ -20545,7 +20584,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="21"/>
         <source>No Pen</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuna linea</translation>
     </message>
 </context>
 <context>
@@ -20742,7 +20781,15 @@ Ulteriori informazioni sull&apos;errore:
 &lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Quando si imposta un layer, la tabella di PostGIS richiede vari metadati. Questi riguardano informazioni tipo il numero di righe della tabella, il tipo di geometrai e l&apos;estensione spaziale dei dati nella colonna di geometria. Se la tabella è composta di molte righe, la determinazione di questi metadati richiede molto tempo.&lt;/p&gt;
+&lt;p&gt;Attivando l&apos;opzione vengono effettuate le seguenti operazioni veloci:&lt;/p&gt;
+&lt;p&gt;1) Il numero di righe viene determinato dalle statistiche della tabella lanciando una funzione di analisi tabella di PostgreSQL.&lt;/p&gt;
+&lt;p&gt;2) Le estensioni della tabella sono sempre calcolate con la funzione estimated_extent di PostGIS, anche se il layer è filtrato.&lt;/p&gt;
+&lt;p&gt;3) Se il tipo geometria della tabella è sconosciuto e non è acquisito dalla tabella geometry_columns, lo stesso viene determinato sulla base delle prime 100 righe di geometria non nulle della tabella.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="248"/>
@@ -21941,7 +21988,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="59"/>
         <source>Displacement circles</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerchi di spostamento</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="67"/>
@@ -22139,20 +22186,22 @@ con un numero 16bit block.
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1254"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;indice univoco sulla colonna &apos;%1&apos; non è adatto perché Quantum GIS attualmente non supporta colonne di tipo non-int4 come chiave in una tabella.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1285"/>
         <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;indice univoco basato sulle colonne %1 non è adatto perché Quantum GIS attualmente non supporta colonne multiple come chiave in una tabella.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1573"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
+        <translation>La vista &apos;%1.%2&apos; non ha colonne adatte da utilizzare come chiave univoca.
+Quantum GIS richiede la presenza nella vista di una colonna da utilizzare come chiave univoca. Tale colonna dovrebbe essere derivata da una colonna di tabella di tipo int4 ed essere una chiave primaria, avere un unico vincolo oppure dovrebbe essere una colonna oid di PostgreSQL. Per questioni di performance la colonna va anche indicizzata.
+La vista selezionata ha le seguenti colonne. Nessuna di esse soddisfa le suddette condizioni:</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2419"/>
@@ -22189,7 +22238,9 @@ The view you selected has the following columns, none of which satisfy the above
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 degli stati del cursore perso.
+SQL: %2
+Result: %3 (%4)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.h" line="517"/>
@@ -24121,7 +24172,14 @@ p, li { white-space: pre-wrap; }
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1927"/>
@@ -24511,7 +24569,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="51"/>
         <source>Refine</source>
-        <translation type="unfinished"></translation>
+        <translation>Affina</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="58"/>
@@ -24531,57 +24589,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="80"/>
         <source>No grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun raggruppamento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="90"/>
         <source>Group by filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Raggruppa per filtro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="97"/>
         <source>Group by scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Raggruppa per scala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="62"/>
         <source>Add scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi scale</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="63"/>
         <source>Add categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi categorie</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="64"/>
         <source>Add ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi intervalli</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="129"/>
         <source>Edit rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica regola</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="129"/>
         <source>Groups of rules cannot be edited.</source>
-        <translation type="unfinished"></translation>
+        <translation>I gruppi di regole non possono essere modificati.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="234"/>
         <source>Refine a rule to categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Affina una regola in categorie</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="256"/>
         <source>Refine a rule to ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Affina una regola in intervalli</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="277"/>
         <source>Scale refinement</source>
-        <translation type="unfinished"></translation>
+        <translation>Affinamento scala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="278"/>
@@ -24596,7 +24654,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
         <source>&quot;%1&quot; is not valid scale denominator, ignoring it.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; non è un denominatore di scala valido. Verrà ignorato.</translation>
     </message>
 </context>
 <context>
@@ -25086,7 +25144,7 @@ L´errore era:
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="63"/>
         <source>Refresh markers</source>
-        <translation>Aggiorna marcatori</translation>
+        <translation>Aggiorna indicatori</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="164"/>
@@ -25628,7 +25686,11 @@ L´errore era:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will only consider selected geometries of the target layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Se selezionato, l&apos;operazione considererà solo le entità selezionate del layer di output/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="82"/>
@@ -25658,7 +25720,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will be only consider selected geometries of the reference layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Se selezionato, l&apos;operazione considererà solo le entità selezionate del layer di riferimento&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="160"/>
@@ -25688,7 +25754,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="253"/>
         <source>Select item to identify geometry of feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona l&apos;oggetto per identificare la geometria dell&apos;entità</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="260"/>
@@ -26262,7 +26328,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
         <source>Marker symbol (%1)</source>
-        <translation>Simbolo di marcatore (%1)</translation>
+        <translation>Simbolo di indicatore (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
@@ -26938,7 +27004,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="184"/>
         <source>Add Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi attributi</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="190"/>
@@ -26953,7 +27019,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="203"/>
         <source>Fast Access to Features at ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Accesso veloce agli elementi all&apos;ID</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="209"/>
@@ -26969,7 +27035,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="163"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="167"/>
         <source>Offset of the stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset dell&apos;interruzione</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="131"/>
@@ -26977,7 +27043,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="164"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="168"/>
         <source>Please enter offset in percents (%) of the new stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserire l&apos;offset della nuova interruzione in percentuale (%)</translation>
     </message>
 </context>
 <context>
@@ -27014,17 +27080,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="74"/>
         <source>Multiple stops</source>
-        <translation type="unfinished"></translation>
+        <translation>Interruzioni multiple</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="86"/>
         <source>Add stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi interruzione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="93"/>
         <source>Remove stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi interruzione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="107"/>
@@ -27077,12 +27143,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2847"/>
         <source>renderer failed to save</source>
-        <translation type="unfinished"></translation>
+        <translation>il renderer non è riuscito a salvare</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2854"/>
         <source>no renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>nessun renderer</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3204"/>
@@ -27397,7 +27463,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="453"/>
         <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;interrogazione per filtrare le entità del layer è mostrata qui. Per modificare l&apos;interrogazione clicca sul bottone Costruttore Interrogazioni</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="526"/>
@@ -28081,7 +28147,15 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;URL del GetMap pubblicato
+
+  %2
+
+è diverso dall&apos;URL del GetCapabilities
+
+  %1
+
+Questo potrebbe essere un errore di configurazione del server. Utilizzare comunque l&apos;URL?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="444"/>
@@ -28094,7 +28168,15 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;ULR del GetFeatureInfo pubblicato
+
+  %2
+
+è diverso dall&apos;URL del GetCapabilities
+
+  %1
+
+Questo potrebbe essere un errore di configurazione del server. Utilizzare comunque l&apos;URL?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="527"/>
@@ -28183,7 +28265,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1166"/>
         <source>parse error at row %1, column %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>errore di analisi alla riga %1, colonna %2: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1171"/>
@@ -28263,7 +28345,7 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="205"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="215"/>
         <source>Use base url instead of advertised GetFeatureInfo URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa l&apos;URL di base invece dell&apos;URL del GetFeatureInfo pubblicato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="208"/>
@@ -28640,7 +28722,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2553"/>
         <source>Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Perimetro di delimitazione</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2560"/>
@@ -28687,12 +28769,12 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="521"/>
         <source>Getting map via WMS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Acquisizione mappa tramite WMS.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="651"/>
         <source>Getting tiles via WMS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Acquisizione tile tramite WMS.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="668"/>
@@ -28766,12 +28848,12 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="939"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 di %2 bytes di capabilities scaricato.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="944"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 di %2 bytes di mappa scaricati.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="969"/>
@@ -29227,12 +29309,12 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="22"/>
         <source>Marker</source>
-        <translation>Marcatore</translation>
+        <translation>Indicatore</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
         <source>Marker interval</source>
-        <translation>Intervallo marcatore</translation>
+        <translation>Intervallo indicatore</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
@@ -29255,7 +29337,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
         <source>Rotate marker</source>
-        <translation>Martatore di rotazione</translation>
+        <translation>Indicatore di rotazione</translation>
     </message>
     <message>
         <source>Line offset:</source>
