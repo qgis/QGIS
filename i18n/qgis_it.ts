@@ -1520,7 +1520,7 @@ Il plugin non sarà installato.</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligonizzazione</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
@@ -1552,15 +1552,15 @@ Il plugin non sarà installato.</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="unfinished"></translation>
+        <translation>Quasi nero</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="unfinished"></translation>
+        <translation>Converte bordi quasi neri/bianchi a valore esatto</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>Trasformazione</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
@@ -1802,7 +1802,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="30"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Carica sulla mappa quando finito</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
@@ -1858,11 +1858,11 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il file di input per Trasformazione</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare la cartella di input con i files per la Trasformazione</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
@@ -1874,47 +1874,47 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare i files per Unione</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare dove salvare l&apos;output dell&apos;Unione</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il file di input per Conversione</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il file di input per Poligonizzazione</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare dove salvare l&apos;output della Poligonizzazione</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il file di input per Profilo</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare dove salvare l&apos;output di Profilo</translation>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non ci sono strati raster attivi. Si deve aggiungere almeno uno strato raster per continuare.</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il file di input per Trasformare</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare la cartella di input con i file da Trasformare</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Converti un&apos;immagine con tavolozza a RGB</translation>
     </message>
     <message>
         <source>Band to convert:</source>
@@ -1922,7 +1922,7 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il file di input per Rasterizzazione</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -2185,7 +2185,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
         <source>Convert RGB image to paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Converti un&apos;immagine RGB ad una con tavolozza</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="26"/>
@@ -2194,7 +2194,7 @@ Vuoi comunque terminarlo?</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="26"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="26"/>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità batch (per elaborare l&apos;intera directory)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
@@ -4012,7 +4012,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="312"/>
         <source>Expected operator, got scalar value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Atteso un operatore, individuato un valore scalare!</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="375"/>
@@ -4023,7 +4023,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/core/qgssearchtreenode.cpp" line="415"/>
         <location filename="../src/core/qgssearchtreenode.cpp" line="436"/>
         <source>Unknown operator: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore sconosciuto: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="431"/>
@@ -4033,12 +4033,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="439"/>
         <source>Unknown token: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbolo sconosciuto: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="442"/>
         <source>Unknown error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore sconosciuto!</translation>
     </message>
     <message>
         <location filename="../src/core/qgslabelattributes.cpp" line="63"/>
@@ -4982,7 +4982,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="25"/>
         <source>Rule-based</source>
-        <translation type="unfinished"></translation>
+        <translation>Tramite regole</translation>
     </message>
     <message>
         <source>Labeling</source>
@@ -5127,12 +5127,12 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="22"/>
         <source>QGIS rocks!</source>
-        <translation type="unfinished"></translation>
+        <translation>Viva QGIS!</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="96"/>
         <source>&lt;html&gt;QGIS rocks!&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Viva QGIS!&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="26"/>
@@ -5152,12 +5152,12 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
         <source>Processing 1/2 - %p%</source>
-        <translation type="unfinished"></translation>
+        <translation>Elaborazione 1/2 - %p%</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="66"/>
         <source>Processing 2/2 - %p%</source>
-        <translation type="unfinished"></translation>
+        <translation>Elaborazione 2/2 - %p%</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="101"/>
@@ -5186,7 +5186,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="112"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="132"/>
         <source>Within</source>
-        <translation type="unfinished"></translation>
+        <translation>Contenuto</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="116"/>
@@ -5202,7 +5202,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
         <source>Overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Sovrappone</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
@@ -5244,7 +5244,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="22"/>
         <source>SVG marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicatore SVG</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="24"/>
@@ -5254,12 +5254,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="27"/>
         <source>Simple fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Riempimento semplice</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="29"/>
         <source>SVG fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Riempimento SVG</translation>
     </message>
 </context>
 <context>
@@ -6550,7 +6550,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1025"/>
         <source>Save edits to current layer, but continue editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva i cambiamenti allo strato corrente, ma continua con la modifica</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1061"/>
@@ -6586,7 +6586,7 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="1109"/>
         <source>Ctrl+F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1124"/>
@@ -6679,12 +6679,12 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="2397"/>
         <source>
 This copy of QGIS has been built with GDAL/OGR %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Questa copia di QGIS è stata compilata con GDAL/OGR %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2429"/>
         <source>Whats new in Version 1.5.0 &apos;Tethys&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Cosa c&apos;è di nuovo nella Versione 1.5.0 &apos;Tethys&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2432"/>
@@ -6694,32 +6694,32 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2440"/>
         <source>This release includes over 350 bug fixes, over 40 new features. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Questa versione contiene oltre 350 correzioni di bug, oltre 40 nuove caratteristiche. Ancora una volta è impossibile documentare tutto ciò che è cambiato e per questo forniamo una lista delle principali nuove caratteristiche.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2445"/>
         <source>Main GUI</source>
-        <translation type="unfinished"></translation>
+        <translation>Interfaccia principale</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2448"/>
         <source>There is a new angle measuring tool that allows you to interactively measure angles against the map backdrop.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un nuovo strumento per la misura degli angoli permette di misurare angoli in maniera interattiva rispetto allo sfondo della mappa.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2449"/>
         <source>Live GPS Tracking tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumento per la registrazione GPS diretta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2450"/>
         <source>User configurable WMS search server</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricerca server WMS configurabile dall&apos;utente</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2451"/>
         <source>Allow editing of invalid geometry in node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Possibilità di modificare geoemtrie non valide nello strumento nodi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2452"/>
@@ -6744,7 +6744,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2456"/>
         <source>Allow hiding of deprecated CRSes</source>
-        <translation type="unfinished"></translation>
+        <translation>Possibilità di nascondere CRS sconsigliati</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2457"/>
@@ -6754,7 +6754,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2458"/>
         <source>Allow saving vector layers as ogr vector files</source>
-        <translation type="unfinished"></translation>
+        <translation>Possibilità di salvare strati vettoriali come files vettoriali OGR</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2459"/>
@@ -6784,7 +6784,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2464"/>
         <source>Center map if user clicks into the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Centrare la mappa se l&apos;utente clicca sulla mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2465"/>
@@ -7977,7 +7977,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="94"/>
         <source>unknown exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Eccezione sconosciuta</translation>
     </message>
 </context>
 <context>
@@ -8813,22 +8813,22 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="15"/>
         <source>Solid</source>
-        <translation type="unfinished">Solido</translation>
+        <translation>Solido</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="16"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Orizzontale</translation>
+        <translation>Orizzontale</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="17"/>
         <source>Vertical</source>
-        <translation type="unfinished">Verticale</translation>
+        <translation>Verticale</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="18"/>
         <source>Cross</source>
-        <translation type="unfinished">Croce</translation>
+        <translation>Croce</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="19"/>
@@ -8848,42 +8848,42 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="22"/>
         <source>Dense 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 1</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="23"/>
         <source>Dense 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 2</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="24"/>
         <source>Dense 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 3</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="25"/>
         <source>Dense 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 4</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="26"/>
         <source>Dense 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 5</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="27"/>
         <source>Dense 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 6</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="28"/>
         <source>Dense 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatto 7</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="29"/>
         <source>No Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun pennello</translation>
     </message>
 </context>
 <context>
@@ -8892,13 +8892,13 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Value</source>
-        <translation type="unfinished">Valore</translation>
+        <translation>Valore</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Label</source>
-        <translation type="unfinished">Etichetta</translation>
+        <translation>Etichetta</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="273"/>
@@ -8919,13 +8919,13 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="288"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Conferma eliminazione</translation>
+        <translation>Conferma eliminazione</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="289"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation type="unfinished">Il campo di classificazione è cambiato da &apos;%1&apos; a &apos;%2&apos;.￼Devono essere cancellate le classi esistenti prima della classificazione?</translation>
+        <translation>Il campo di classificazione è cambiato da &apos;%1&apos; a &apos;%2&apos;.￼Devono essere cancellate le classi esistenti prima della classificazione?</translation>
     </message>
     <message>
         <source>Column:</source>
@@ -8947,19 +8947,19 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
         <source>Column</source>
-        <translation type="unfinished">Colonna</translation>
+        <translation>Colonna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Symbol</source>
-        <translation type="unfinished">Simbolo</translation>
+        <translation>Simbolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa di colore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -8969,7 +8969,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="120"/>
         <source>Add</source>
-        <translation type="unfinished">Aggiungi</translation>
+        <translation>Aggiungi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
@@ -12563,7 +12563,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="438"/>
         <source>when leaving extents</source>
-        <translation type="unfinished"></translation>
+        <translation>quando si cambia l&apos;estensione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="445"/>
@@ -13051,7 +13051,7 @@ Scegli un file valido.</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="114"/>
         <source>Show Georeferencer window docked</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra la finestra del georeferenziatore agganciata</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="43"/>
@@ -19141,12 +19141,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="238"/>
         <source>Add an integer id field as the primary key for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi un campo id intero come chiave primaria per il nuovo layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="241"/>
         <source>Create an autoincrementing primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea una chiave primaria autoincrementale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="248"/>
@@ -20520,27 +20520,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="16"/>
         <source>Solid Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea solida</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="17"/>
         <source>Dash Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea tratteggiata</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="18"/>
         <source>Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea punteggiata</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="19"/>
         <source>Dash Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea a tratteggio e punto</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="20"/>
         <source>Dash Dot Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea a tratteggio e doppi punti</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="21"/>
@@ -21926,7 +21926,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="22"/>
         <source>Center symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbolo centrale:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="40"/>
@@ -21936,7 +21936,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="52"/>
         <source>Renderer settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni renderer...</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="59"/>
@@ -21956,7 +21956,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="105"/>
         <source>Circle radius modification:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica del raggio del cerchio:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="123"/>
@@ -21971,7 +21971,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="153"/>
         <source>Label attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributo etichetta:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="167"/>
@@ -21991,7 +21991,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="222"/>
         <source>max scale denominator:</source>
-        <translation type="unfinished"></translation>
+        <translation>valore massimo del denominatore della scala:</translation>
     </message>
 </context>
 <context>
@@ -24350,7 +24350,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="14"/>
         <source>Rule properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà delle regole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="22"/>
@@ -24399,7 +24399,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
         <source>Filter expression parsing error:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Errore nell&apos;interpretazione dell&apos;espressione del filtro:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="333"/>
@@ -24410,8 +24410,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="354"/>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Il filtro ha trovato %n elemento</numerusform>
+            <numerusform>Il filtro ha trovato %n elementi</numerusform>
         </translation>
     </message>
 </context>
@@ -26261,17 +26262,17 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
         <source>Marker symbol (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbolo di marcatore (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
         <source>Line symbol (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbolo di linea (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="83"/>
         <source>Fill symbol (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbolo di riempimento (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="85"/>
@@ -26309,7 +26310,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="258"/>
         <source>ColorBrewer</source>
-        <translation type="unfinished"></translation>
+        <translation>ColorBrewer</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="230"/>
