@@ -2270,7 +2270,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="114"/>
         <source>Inverse distance to a power</source>
-        <translation type="unfinished"></translation>
+        <translation>Distanza inversa ponderata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="119"/>
@@ -2280,22 +2280,22 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
         <source>Nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation>Punti più vicini</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
         <source>Data metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Misure dei dati</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="157"/>
         <source>Power:</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenza:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="171"/>
         <source>Smoothing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisciatura:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="188"/>
@@ -2374,12 +2374,12 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="83"/>
         <source>Suppress GCP printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Non stampare i GCP</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="90"/>
         <source>Suppress metadata printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Non stampare i metadati</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
@@ -2389,12 +2389,12 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="106"/>
         <source>Layer stack</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="116"/>
         <source>Use intersected extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa estensioni di intersezione</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="130"/>
@@ -2405,17 +2405,17 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
         <source>Near Black</source>
-        <translation type="unfinished"></translation>
+        <translation>Sposta al nero</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="96"/>
         <source>How &amp;far from black (or white):</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quanto distante dal nero (o bianco):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="112"/>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cerca pixel quasi bianchi (255) invece che neri</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
@@ -2470,7 +2470,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
         <source>Polygonize</source>
-        <translation type="unfinished">Poligonizzazione</translation>
+        <translation>Poligonizzazione</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
@@ -2514,7 +2514,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
         <source>Recurse subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlla sottodirectory</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
@@ -2529,7 +2529,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
         <source>&amp;Dist units:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unità di &amp;Distanza:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
@@ -2554,7 +2554,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
         <source>&amp;Fixed buf val:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valore di buf &amp;Fisso:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
@@ -2569,7 +2569,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="85"/>
         <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
-        <translation type="unfinished"></translation>
+        <translation>FIle di &amp;Output per vettori rasterizzati (il raster deve esistere):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="65"/>
@@ -2594,12 +2594,12 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="96"/>
         <source>&amp;Threshold:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Soglia:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="110"/>
         <source>&amp;Pixel connections:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Connessioni fra pixel:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
@@ -2625,22 +2625,22 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
         <source>Warp</source>
-        <translation type="unfinished">Trasformazione</translation>
+        <translation>Trasformazione</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS &amp;Sorgente:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
         <source>&amp;Resampling method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Metodo di &amp;Ricampionamento:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="167"/>
         <source>Near</source>
-        <translation type="unfinished"></translation>
+        <translation>Vicino</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="172"/>
@@ -2655,7 +2655,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="182"/>
         <source>Cubic spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Spline cubica</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="187"/>
@@ -2665,7 +2665,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="205"/>
         <source>&amp;Memory used for caching:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Memoria usata per il caching:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="212"/>
@@ -2695,7 +2695,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="276"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa l&apos;implementazione m&amp;ultithread per la trasformazione</translation>
     </message>
 </context>
 <context>
@@ -6763,12 +6763,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2452"/>
         <source>Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli l&apos;unità di misura tra mm e unità di mappa per visualizzare la nuova simbologia. Usato anche per la scalatura dei simboli nel sistema di stampa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2453"/>
         <source>SVG fill symbol layer for polygon textures</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbolo SVG per la texture di riempimento di poligoni</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2454"/>
@@ -6919,7 +6919,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2483"/>
         <source>Optionally add new layers to the selected group</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzione: aggiungi nuovi layer al gruppo selezionato</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2484"/>
@@ -6959,7 +6959,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2494"/>
         <source>WMS selection allows inserting of all layers of a branch</source>
-        <translation type="unfinished"></translation>
+        <translation>La selezione WMS consente l&apos;inserimento di tutti i layer di un ramo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2495"/>
@@ -21519,23 +21519,23 @@ Si deve riavviare Quantum GIS per poterlo utilizzare.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="436"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="439"/>
         <source>Add the contributed repository to the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi repository extra alla lista</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="442"/>
         <source>Add the contributed repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi repository extra</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="461"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="464"/>
         <source>Remove depreciated repositories from the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi dalla lista repository sconsigliati</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="467"/>
         <source>Delete depreciated repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina repository sconsigliati</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="493"/>
@@ -21823,7 +21823,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="21"/>
         <source>Plugin Installer</source>
-        <translation type="unfinished">Plugin Installer</translation>
+        <translation>Plugin installer</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
@@ -21833,22 +21833,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
         <source>Remove</source>
-        <translation type="unfinished">Rimuovi</translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="59"/>
         <source>Disable</source>
-        <translation type="unfinished"></translation>
+        <translation>Disabilita</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="66"/>
         <source>Keep</source>
-        <translation type="unfinished"></translation>
+        <translation>Mantieni</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="73"/>
         <source>Ask me later</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiedi successivamente</translation>
     </message>
 </context>
 <context>
@@ -24640,7 +24640,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="74"/>
         <source>Rule grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Raggruppamento per regole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="80"/>
@@ -24700,7 +24700,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="278"/>
         <source>Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserisci i denominatori di scala ai quali effettuare la spezzatura, separati da virgloe (ad es. 1000,5000):</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
@@ -25815,7 +25815,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="260"/>
         <source>Check to show log processing of query</source>
-        <translation type="unfinished"></translation>
+        <translation>Spunta per mostrare l&apos;andamento della richiesta</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="263"/>
@@ -27883,7 +27883,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="106"/>
         <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il sistema di coordinate per il file vettoriale. I punti saranno trasformati dal sistema di riferimento delle coordinate del layer.</translation>
     </message>
 </context>
 <context>
@@ -28783,12 +28783,12 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2560"/>
         <source>Available in Resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Disponibile nelle risoluzioni</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2592"/>
         <source>Hits</source>
-        <translation type="unfinished"></translation>
+        <translation>Trovati</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2598"/>
@@ -28837,9 +28837,9 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="784"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n tile richiesta in background</numerusform>
+            <numerusform>%n tile richieste in background</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28847,9 +28847,9 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="785"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>, %n trovato in cache</numerusform>
+            <numerusform>, %n trovati in cache</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28857,9 +28857,10 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="786"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translatorcomment>mattonelle mancanti</translatorcomment>
+        <translation>
+            <numerusform>, % non trovato in cache.</numerusform>
+            <numerusform>, %n non trovati in cache.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28867,9 +28868,9 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="787"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>, %n errore.</numerusform>
+            <numerusform>, %n errori.</numerusform>
         </translation>
     </message>
     <message>
@@ -28943,9 +28944,9 @@ URL provata: %1</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2249"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>(e %n in più)</numerusform>
+            <numerusform>(e %n in più)</numerusform>
         </translation>
     </message>
     <message>
@@ -28994,7 +28995,7 @@ URL provata: %1</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2463"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2470"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(annunciato ma ignorato)&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2467"/>
@@ -29778,7 +29779,16 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Descrizione dei campi:
+*.File DXF in input: percorso al file DXF da convertire
+*.File SHP in output: nome dello shape file da creare
+*.Tipo di file SHP in output: specifica il tipo di shape file in output
+*.Checkbox per esportazione etichette di testo: se attivato viene creato un layer shp di punti,   e la tabella dbf associata conterra&apos; informazioni relative ai campi &quot;TESTO&quot; trovati nel file DXF, e le stringhe di testo.
+
+---
+Sviluppato da Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Unita&apos; di Milano (Information Technology), Construction Technologies Institute.
+Per supporto inviare una mail a scala@itc.cnr.it</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="163"/>
@@ -32018,17 +32028,17 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Inverse distance squared weighting raster interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolazione raster con l&apos;inverso della distanza quadratica</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolazione raster con l&apos;inverso della distanza quadratica utilizzando un vettoriale di punti</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Trasformazione inversa fast Fourier per il processamento dell&apos;immagine</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
@@ -32088,7 +32098,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Manage training dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestisci i dati di prova</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
@@ -32587,12 +32597,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Show database connection for vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra la connessione al database per il vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
         <source>Shrink current region until it meets non-NULL data from raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Riduci la regione corrente fino a che coincide con le celle non nulle del raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
