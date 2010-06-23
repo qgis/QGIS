@@ -2500,7 +2500,7 @@ void QgisApp::about()
     whatsNew += "<h3>" + tr( "API Updates" ) + "</h3>";
     whatsNew += "<ul>";
     whatsNew += "  <li>" + tr( "QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed" ) + "</li>";
-    whatsNew += "  <li>" + tr( "Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentification to website and proxies)" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)" ) + "</li>";
     whatsNew += "  <li>" + tr( "Allow opening layer properties from plugins" ) + "</li>";
     whatsNew += "  <li>" + tr( "Support for custom plugin layers." ) + "</li>";
     whatsNew += "  <li>" + tr( "Allow refreshing of plugins programmatically" ) + "</li>";

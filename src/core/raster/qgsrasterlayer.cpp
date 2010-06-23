@@ -224,10 +224,12 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
   // TODO: Connect signals from the dataprovider to the qgisapp
 
   // Do a passthrough for the status bar text
+#if 0
   connect(
     mDataProvider, SIGNAL( statusChanged( QString ) ),
     this,           SLOT( showStatusMessage( QString ) )
   );
+#endif
   QgsDebugMsg( "(8 arguments) exiting." );
 
   emit statusChanged( tr( "QgsRasterLayer created" ) );

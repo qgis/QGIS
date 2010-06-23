@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qtermwidget/qtermwidget.h"
 #include "qgsgrass.h"
+#include "qgsconfig.h"
 
 #include "qgsgrassshell.h"
 
@@ -94,7 +95,7 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
   // TODO: we should check if these environment variable were set by user before QGIS was started
-  env << "GRASS_HTML_BROWSER=" + QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser";
+  env << "GRASS_HTML_BROWSER=" + QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/bin/qgis.g.browser";
   env << "GRASS_WISH=wish";
   env << "GRASS_TCLSH=tclsh";
   env << "GRASS_PYTHON=python";
