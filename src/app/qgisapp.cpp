@@ -363,6 +363,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mSplash( splash )
     , mPythonUtils( NULL )
     , mpTileScaleWidget( NULL )
+    , mSettingsMenu( NULL )
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
 #endif
