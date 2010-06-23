@@ -5,10 +5,9 @@ Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev, 
  libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj (<< 4.7.0) | libproj-dev (>= 4.7.0), libexpat1-dev, 
  flex, bison, python-dev, cmake (>= 2.6), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
- sharutils, sip4 (>= 4.5), libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0),
+ sip4 (>= 4.5), libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0),
  libqt4-sql (>=4.4.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), libfontconfig1-dev, libxi-dev, libxrandr-dev, libxrender-dev, libice-dev,
- libsm-dev, pyqt4-dev-tools, libqwt5-qt4-dev
+ python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current
@@ -69,7 +68,7 @@ Description: Quantum GIS - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass640-5+41380
+Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, grass640-5+41380
 Description: GRASS plugin for Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
