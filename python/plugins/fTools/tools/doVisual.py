@@ -502,7 +502,7 @@ class visualThread( QThread ):
         self.emit( SIGNAL( "runPartStatus(PyQt_PyObject)" ), nPart )
 
         count = 0
-        for j in range( i+1, len(h)-1 ):
+        for j in range( i, len(h)-1 ):
           if QgsGeometry().fromPolyline( [ h[ i ], h[ i + 1 ] ] ).intersects( QgsGeometry().fromPolyline( [ h[ j ], h[ j + 1 ] ] ) ):
             count += 1
         if count > 2:
