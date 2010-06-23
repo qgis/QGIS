@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsgrass.h"
 #include "qgsgrassrasterprovider.h"
+#include "qgsconfig.h"
 
 #include <math.h>
 
@@ -98,7 +99,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
                      .arg( viewExtent.xMaximum() ).arg( viewExtent.yMaximum() )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   QProcess process( this );
-  QString cmd = QgsApplication::pkgDataPath() + "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {

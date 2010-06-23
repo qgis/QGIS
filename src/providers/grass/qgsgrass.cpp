@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
+#include "qgsconfig.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -1099,7 +1100,7 @@ QString GRASS_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QString 
 
   QStringList arguments;
 
-  QString cmd = QgsApplication::pkgDataPath() + "/grass/modules/qgis.g.info";
+  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.g.info";
 
   arguments.append( "info=" + info );
   if ( !map.isNull() )

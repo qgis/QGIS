@@ -19,6 +19,7 @@
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
 #include "qgsgrass.h"
+#include "qgsconfig.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -140,7 +141,7 @@ void QgsGrassTools::runModule( QString name )
   if ( name == "shell" )
   {
 #ifdef WIN32
-    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser" );
+    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/bin/qgis.g.browser" );
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
