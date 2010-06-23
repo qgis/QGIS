@@ -29,6 +29,7 @@
 // this is to enable Qt libs in /usr/lib (QtUiTools, QtCLucene) to work in SDKs
 // -> create symlinks to these libs in /usr/local/lib
 //QT_DIR_SDK = /usr/local
+//QT_PREFIX_FW = /Library/Frameworks
 
 //QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 //QTBIN = /Developer/Tools/Qt // bin dir
@@ -140,6 +141,8 @@
 //QWT_PREFIX_shared = /usr/local/qwt-$(QWT_VERSION)
 //QWT_PREFIX_static = $(QWT_PREFIX_shared)
 
+//PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM)) // User-installed executables
+
 //////////////////////////////////////////////////////////////////////
 // do not change these unless you have a very odd layout for them
 // or they just aren't coming out right in Xcode
@@ -177,7 +180,6 @@
 
 //PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
 //PYTHON_BIN = $(PYTHON_BIN_$(PYTHON_FORM)) // Python executables
-//PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM)) // User-installed executables
 //PYTHON_INC = $(PYTHON_PREFIX)/Headers
 //PYTHON_LIB = -framework Python // must always be framework, full path will work
 //PYSITE = $(PYSITE_$(PYTHON_FORM)) // site-packages

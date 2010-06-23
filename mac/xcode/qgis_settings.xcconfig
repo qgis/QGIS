@@ -36,6 +36,7 @@ QT_DIR = /usr
 // this is to enable Qt libs in /usr/lib (QtUiTools, QtCLucene) to work in SDKs
 // -> create symlinks to these libs in /usr/local/lib
 QT_DIR_SDK = /usr/local
+QT_PREFIX_FW = /Library/Frameworks
 
 QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 QTBIN = /Developer/Tools/Qt
@@ -185,6 +186,7 @@ QGIS_HEADER_SEARCH_BASE = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/
 HEADER_SEARCH_PATHS = $(QGIS_HEADER_SEARCH_BASE)
 ALWAYS_SEARCH_USER_PATHS = NO
 USE_HEADERMAP = NO // else headers with same name cause confusion
+FRAMEWORK_SEARCH_PATHS = $(QT_PREFIX_FW)
 
 DYLIB_CURRENT_VERSION = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR)
 DYLIB_COMPATIBILITY_VERSION = $(QGIS_VERSION_MAJOR).0
@@ -222,7 +224,7 @@ DEFS_EXPORT = CORE_EXPORT= GUI_EXPORT= PYTHON_EXPORT= ANALYSIS_EXPORT=
 
 // use full flags instead of Xcode includes and defs,
 // since these are needed in scripts also
-QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtSql.framework/Headers -I/Library/Frameworks/QtSvg.framework/Headers -I/Library/Frameworks/QtXml.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers
+QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -F$(QT_PREFIX_FW) -I$(QT_PREFIX_FW)/QtCore.framework/Headers -I$(QT_PREFIX_FW)/QtGui.framework/Headers -I$(QT_PREFIX_FW)/QtNetwork.framework/Headers -I$(QT_PREFIX_FW)/QtSql.framework/Headers -I$(QT_PREFIX_FW)/QtSvg.framework/Headers -I$(QT_PREFIX_FW)/QtXml.framework/Headers -I$(QT_PREFIX_FW)/QtWebKit.framework/Headers
 QT_INC_UITOOLS = $(QT_DIR)/include/QtUiTools
 QTDEFS_Debug = -DQT_DEBUG
 QTDEFS_Release = -DQT_NO_DEBUG
