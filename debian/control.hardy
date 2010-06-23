@@ -5,10 +5,9 @@ Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev, 
  libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, 
  flex, bison, python-dev, cmake (>=2.4.3), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
- sharutils, sip4 (>= 4.5), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
+ sip4 (>= 4.5), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
  libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), libfontconfig1-dev, libxi-dev, libxrandr-dev, libxrender-dev, libice-dev,
- libsm-dev, pyqt4-dev-tools
+ python-sip4-dev (>= 4.5.0), pyqt4-dev-tools
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.0
 XS-Python-Version: current

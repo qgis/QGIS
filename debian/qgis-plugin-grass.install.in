@@ -1,7 +1,7 @@
-usr/share/qgis/grass/modules/qgis.d.rast
-usr/share/qgis/grass/modules/qgis.g.info
-usr/share/qgis/grass/bin/qgis.g.browser
-usr/lib/qgis/libgrassplugin.so
-usr/lib/qgis/libgrassprovider.so
-usr/lib/qgis/libgrassrasterprovider.so
+usr/lib/qgis/grass/modules/qgis.d.rast
+usr/lib/qgis/grass/modules/qgis.g.info
+usr/lib/qgis/grass/bin/qgis.g.browser
+usr/lib/qgis/plugins/libgrassplugin.so
+usr/lib/qgis/plugins/libgrassprovider.so
+usr/lib/qgis/plugins/libgrassrasterprovider.so
 usr/lib/libqgisgrass.so.{QGIS_ABI}
