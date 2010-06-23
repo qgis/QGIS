@@ -7252,7 +7252,7 @@ Diese QGIS-Kopie unterstützt PostgreSQL (%1).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2502"/>
-        <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentification to website and proxies)</source>
+        <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</source>
         <translation>QNetworkAccessManager statt QgsHttpTransaction benutzen (inklusive Caching und dynamische Authentifizierung bei Webservern und Proxys)</translation>
     </message>
     <message>
