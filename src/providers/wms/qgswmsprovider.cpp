@@ -1716,6 +1716,11 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
 
+  if ( !parentProperty )
+  {
+    layerProperty.layer.clear();
+  }
+
 //  QgsDebugMsg("exiting.");
 }
 
