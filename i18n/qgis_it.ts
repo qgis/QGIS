@@ -6773,12 +6773,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2454"/>
         <source>Font marker symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer di simboli carattere</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2455"/>
         <source>Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS to crash during startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunta l&apos;opzione --noplugins alla linea di comando per evitare di ripristinare i plugin. Utile quando un plugin è difettoso e causa il crash di QGIS all&apos;avvio</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2456"/>
@@ -6808,7 +6808,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2461"/>
         <source>Text and form annotation tools are now in gui and app</source>
-        <translation type="unfinished"></translation>
+        <translation>Gli strumenti per l&apos;annotazione Testo e Forma sono ora in gui e app</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2462"/>
@@ -6833,17 +6833,17 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2466"/>
         <source>Data-defined size and rotation for single symbol renderer in symbology-ng</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuova simbologia: il renderer simbolo singolo supporta dimensione e rotazione definiti negli attributi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2467"/>
         <source>IdentifyAsHtml to raster layer and use it in identify</source>
-        <translation type="unfinished"></translation>
+        <translation>IdentifyAsHtml per strati raster e uso nell&apos;Identify</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2468"/>
         <source>Export legend groups and layers with legendinterface and use this information to display groups in the composer legend.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta i gruppi della legenda e gli strati con legendinterface e usa tale informazione per visualizzare i gruppi nella legenda del compositore.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2469"/>
@@ -6929,7 +6929,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2485"/>
         <source>Identify tool attribute form now non-modal in view mode (since r12796)</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumento di informazione non più modale quando in modalità vista (dalla revisione 12796)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2486"/>
@@ -6974,7 +6974,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2497"/>
         <source>WMS-C scale slider gui added and more selection improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunta interfaccia a cursore per la scala del WMS-C e ulteriori miglioramenti alla selezione</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2499"/>
@@ -6984,12 +6984,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2501"/>
         <source>QgsDataProvider &amp;amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</source>
-        <translation type="unfinished"></translation>
+        <translation>QgsDataProvider &amp;amp; QgsMapLayer: aggiunto il segnale dataChanged() così che il provider può segnalare che la sorgente dati è stata modificata</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2502"/>
         <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentification to website and proxies)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uso di QNetworkAccessManager invece di QgsHttpTransaction (include caching e autenticazione dinamica al sito e ai proxies)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2503"/>
@@ -6999,22 +6999,22 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2504"/>
         <source>Support for custom plugin layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto per layer di plugin personalizzati.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2505"/>
         <source>Allow refreshing of plugins programmatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Possibilità di aggiornare programmaticamente i plugin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2506"/>
         <source>Support for custom plugin directories using the QGIS_PLUGINPATH environment variable. More paths can be passed, separated by semicolon.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto per l&apos;utilizzo di percorsi personalizzati alle cartelle dei plugin, usando la variabile d&apos;ambiente QGIS_PLUGINPATH. È possibile inserire più percorsi separati da punto e virgola.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2507"/>
         <source>Legend interface added to retrieve layers in legend order</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda: aggiunta interfaccia per ottenere i layer secondo il loro ordine in legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2508"/>
@@ -7444,12 +7444,13 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>Tile scale slider</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>i francesi hanno tradotto &quot;barra della scala delle tiles&quot; ma secondo me non si capisce che è un controllo e non una decorazione.</translatorcomment>
+        <translation>Slider per scala delle tiles</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1049"/>
         <source>Show tile scale slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra lo slider per la scala delle tiles</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1067"/>
@@ -7459,7 +7460,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1069"/>
         <source>Set subset query of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi la query relativa allo strato corrente</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1460"/>
@@ -7648,7 +7649,7 @@ Errori: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4850"/>
         <source>Tile scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Scala delle tiles</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5027"/>
@@ -8568,7 +8569,8 @@ L&apos;errore è: %2</translation>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="305"/>
         <source>Dial</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>possiamo anche lasciare Dial...</translatorcomment>
+        <translation>Controllo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="319"/>
@@ -8759,7 +8761,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="474"/>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation>Un attributo nascosto è invisibile - l´utente non è in grado di vedere il contenuto.</translation>
+        <translation>Un attributo nascosto è invisibile - l&apos;utente non è in grado di vedere il contenuto.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="512"/>
@@ -21828,7 +21830,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
         <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>The Plugin Installer ha rilevato che la copia di QGIS è configurata per usare un dato numero di plugin repository esterni. In precedenza, tale situazione era la norma, ma dalla versione 1.5 i plugins esterni sono disponibili in un unico Repository Centrale, per cui tutti i repository utilizzati in precedenza non sono più necessari. Desideri rimuovere i repository esterni? In caso di dubbio, scegli Rimuovi, poiché probabilmente non ne avrai più bisogno. Se decidi di non rimuoverli ora, potrai comunque eliminarli manualmente in un secondo momento.</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
@@ -22016,7 +22018,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="351"/>
         <source>The point displacement renderer only applies to (single) point layers. 
 &apos;%1&apos; is not a point layer and cannot be displayed by the point displacement renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Il renderer per lo spostamento del punto si applica solo a layer puntuali (singoli). 
+&apos;%1&apos; non è un layer puntuale e non può essere visualizzato dal renderer per lo spostamento del punto</translation>
     </message>
 </context>
 <context>
@@ -22049,7 +22052,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="67"/>
         <source>Circle pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza del bordo del cerchio:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="81"/>
@@ -22059,12 +22062,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="105"/>
         <source>Circle radius modification:</source>
-        <translation>Modifica del raggio del cerchio:</translation>
+        <translation>Raggio del cerchio di spostamento:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="123"/>
         <source>Point distance tolerance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolleranza della distanza tra punti:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="145"/>
@@ -27559,7 +27562,8 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Dial range</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>possiamo anche lasciare Dial</translatorcomment>
+        <translation>Intervallo del controllo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="534"/>
@@ -28899,7 +28903,8 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="922"/>
         <source>empty of capabilities: %1</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>&quot;empty&quot; starebbe per &quot;vuoto&quot;, &quot;assenza&quot; mi sembra più esplicito.</translatorcomment>
+        <translation>assenza di capabilities: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="927"/>
@@ -32073,7 +32078,8 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>contorto. in inglese riesce a essere compatto. Miglioramenti sono benvenuti.</translatorcomment>
+        <translation>Assegna a ogni cella di output la funzione dei valori delle corrispondenti celle dei raster in input</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
@@ -32193,7 +32199,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
         <source>Output raster values along user-defined transect line(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Valori del raster in output lungo uno o più transetti lineari definiti dall&apos;utente</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
@@ -32263,7 +32269,8 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
         <source>Randomly partition points into test/train sets</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>train == allenamento, ma non convince.</translatorcomment>
+        <translation>Suddivide casualmente i punti in sottogruppi per verifica/training</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
@@ -32533,7 +32540,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
         <source>Set color rules based on stddev from a map&apos;s mean value</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta le regole di colore basate su deviazione standard in base al valore medio di una mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
@@ -32662,32 +32669,32 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabula le coincidenze delle categorie di due raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Prende dati vettoriali di flusso, li converte a raster e sottrae la profondità dal DEM in output</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 4</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 5</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 7</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
         <source>Tassled cap vegetation index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice di vegetazione tasseled cap</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
@@ -32722,7 +32729,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Trace a flow through an elevation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Traccia un flusso su un modello altitudinale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
@@ -32847,7 +32854,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Funzione zero-crossing di rilevamento dei bordi nel raster per l&apos;analisi di immagine</translation>
     </message>
 </context>
 <context>
