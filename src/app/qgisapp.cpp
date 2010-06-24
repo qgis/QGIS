@@ -360,15 +360,15 @@ QgisApp *QgisApp::smInstance = 0;
 // constructor starts here
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
+    , mSettingsMenu( NULL )
     , mSplash( splash )
     , mPythonUtils( NULL )
     , mpTileScaleWidget( NULL )
-    , mSettingsMenu( NULL )
-#ifdef HAVE_QWT
-    , mpGpsWidget( NULL )
-#endif
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
+#endif
+#ifdef HAVE_QWT
+    , mpGpsWidget( NULL )
 #endif
 {
   if ( smInstance )
