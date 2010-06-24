@@ -161,7 +161,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
 
   if ( layItem == 0 )
   {
-    layItem = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
+    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
     lstResults->addTopLevelItem( layItem );
 
