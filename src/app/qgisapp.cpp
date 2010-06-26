@@ -4490,14 +4490,34 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     if ( pasteVectorLayer != 0 )
     {
       pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
+      QgsFeatureList features;
       if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
       {
-        pasteVectorLayer->addFeatures( clipboard()->transformedCopyOf( pasteVectorLayer->srs() ) );
+        features = clipboard()->transformedCopyOf( pasteVectorLayer->srs() );
       }
       else
       {
-        pasteVectorLayer->addFeatures( clipboard()->copyOf() );
+        features = clipboard()->copyOf();
       }
+
+      QgsAttributeList dstAttr = pasteVectorLayer->pendingAllAttributesList();
+
+      for ( int i = 0; i < features.size(); i++ )
+      {
+        QgsFeature &f = features[i];
+        QgsAttributeMap srcMap = f.attributeMap();
+        QgsAttributeMap dstMap;
+
+        int j = 0;
+        foreach( int id, srcMap.keys() )
+        {
+          dstMap[ dstAttr[j++] ] = srcMap[id];
+        }
+
+        f.setAttributeMap( dstMap );
+      }
+
+      pasteVectorLayer->addFeatures( features );
       pasteVectorLayer->endEditCommand();
       mMapCanvas->refresh();
     }
