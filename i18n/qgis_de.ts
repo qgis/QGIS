@@ -6055,7 +6055,8 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="2421"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation>Es wurde mit Qt %1 kompiliert und läuft gerade mit Qt %2</translation>
+        <translation>
+Es wurde mit Qt %1 kompiliert und läuft gerade mit Qt %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1706"/>
@@ -6634,13 +6635,15 @@ Diese QGIS-Kopie enthält SpatiaLite-Unterstützung (%1).</translation>
         <location filename="../src/app/qgisapp.cpp" line="2412"/>
         <source>
 This copy of QGIS has been built with QWT support (%1).</source>
-        <translation>Diese QGIS-Kopie wurde mit QWT-Unterstützung (%1) erzeugt.</translation>
+        <translation>
+Diese QGIS-Kopie wurde mit QWT-Unterstützung (%1) erzeugt.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2414"/>
         <source>
 This copy of QGIS has been built without QWT support.</source>
-        <translation>Diese QGIS-Kopie wurde ohne QWT-Unterstützung erzeugt.</translation>
+        <translation>
+Diese QGIS-Kopie wurde ohne QWT-Unterstützung erzeugt.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2418"/>
@@ -16151,11 +16154,6 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <location filename="../src/app/qgsidentifyresults.cpp" line="119"/>
         <source>Value</source>
         <translation>Wert</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsidentifyresults.cpp" line="164"/>
-        <source>Layer</source>
-        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="224"/>
