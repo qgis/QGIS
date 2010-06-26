@@ -1719,6 +1719,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
   if ( !parentProperty )
   {
     layerProperty.layer.clear();
+    layerProperty.crs.clear();
   }
 
 //  QgsDebugMsg("exiting.");
