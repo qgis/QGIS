@@ -1,0 +1,35 @@
+<h3>Extension de texte délimité</h3>
+Elle permet de charger et d'afficher des fichiers texte délimités contenant des coordonnées X/Y.
+<p>
+<p>
+<a href="#re">Pré-requis</a><br/>
+<a href="#example">Exemple d'un fichier valide</a><br/>
+<a href="#notes">Notes</a><br/>
+
+<a name="re">
+<h4>Pré-requis</h4>
+</a>
+Pour visionner un fichier de texte délimité en tant que couche, ce fichier doit contenir :
+<ol>
+<li>Une ligne d'en-têtes délimités contenant les noms des champs. Elle doit être la première ligne du fichier.</li>
+<li>Des champs X et Y, ils peuvent avoir n'importe quels noms.</li>
+<li>Les coordonnées <B>x</B> et <B>y</B> doivent être des nombres, le système de coordonnées n'a pas d'importance.</li>
+</ol>
+<a name="exemple">
+<h4>Exemple de fichier valide</h4> 
+</a>
+X;Y;ALTI<br/>
+-300120;7689960;13<br/>
+-654360;7562040;52<br/>
+1640;7512840;3<br/>
+[...]<br/>
+<a name="notes">
+<h4>Notes</h4>
+</a>
+<ol>
+<li>L'exemple utilise le caractère <b>;</b> comme délimiteur. N'importe quel caractère peut être utilisé pour séparer les champs, veuillez suelement à ce qu'il ne soit pas déjà présent dans vos champs au risque de provoquer des spérations excessives (p. ex. le délimiteur <b>,</b> risque de séparer la valeur 768,56 en 768 et 56).</li>
+<li>La première ligne est la ligne d'en-tête, elle contient les champs X, Y et ALTI.</li>
+<li>Aucun guillement (") n'est utilisé pour délimité les champs de texte.</li>
+<li>Les coordonnées x sont présentes dans la colonne X.</li>
+<li>Les coordonnées y sont présentes dans la colonne Y.</li>
+</ol>
