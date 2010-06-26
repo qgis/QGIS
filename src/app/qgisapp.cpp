@@ -4511,6 +4511,9 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         int j = 0;
         foreach( int id, srcMap.keys() )
         {
+          if ( j >= dstAttr.size() )
+            break;
+
           dstMap[ dstAttr[j++] ] = srcMap[id];
         }
 
