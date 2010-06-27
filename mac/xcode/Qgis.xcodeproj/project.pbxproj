@@ -95,6 +95,7 @@
 				7256F1B70F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1BB0F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1B50F411C4B0022BE1F /* PBXTargetDependency */,
+				72F3DAB711D70A6F00FFA738 /* PBXTargetDependency */,
 				7256F1BD0F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1B90F411C4B0022BE1F /* PBXTargetDependency */,
 			);
@@ -2921,6 +2922,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72A07D880F3BDF9C004FC2A4;
 			remoteInfo = postgresprovider;
+		};
+		72F3DAB611D70A6F00FFA738 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72463E3E1122FEF200BE5F17 /* qgis.g.browser */;
+			remoteInfo = qgis.g.browser;
 		};
 		72FB0B6C0FFD6B8F0052360B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -14841,6 +14849,7 @@
 				8D0C4E8C0486CD37000505A6 /* Resources */,
 				8D0C4E8F0486CD37000505A6 /* Sources */,
 				8D0C4E910486CD37000505A6 /* Frameworks */,
+				72F3DABA11D70D4900FFA738 /* Script - svnver plist */,
 				72EBCB3F0F49E8430016BA3C /* Copy - doc */,
 				7256F2D60F4146A70022BE1F /* Copy - doc-images */,
 				7256F3180F4149300022BE1F /* Copy - images-icons */,
@@ -15008,7 +15017,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$CONFIGURATION_BUILD_DIR/include\"\n\n# check if the files are generated, clean if need to regenerate\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] || [ ../../cmake_templates/qgsconfig.h.in -nt \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] ; then\necho \"Generating qgsconfig.h...\"\nsed -e \"s,\\${CPACK_PACKAGE_VERSION_MAJOR},$QGIS_VERSION_MAJOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_MINOR},$QGIS_VERSION_MINOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_PATCH},$QGIS_VERSION_PATCH,g\" \\\n\t-e \"s,\\${RELEASE_NAME},$QGIS_RELEASE_NAME,g\" \\\n\t-e \"s,\\${QGIS_VERSION_INT},$QGIS_VERSION_INT,g\" \\\n\t-e \"s,\\${QGIS_PLUGIN_SUBDIR},$QGIS_PLUGIN_SUBDIR,g\" \\\n\t-e \"s,\\${QGIS_DATA_SUBDIR},$QGIS_DATA_SUBDIR,g\" \\\n\t-e \"s,#cmakedefine,#define,g\" \\\n\t../../cmake_templates/qgsconfig.h.in > \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\"\nfi\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] ; then\necho \"Generating qgssvnversion.h...\"\nsvnv=`which svnversion`\nif [ \"$svnv\" ] ; then\n\tsvnver=`svnversion $SRCROOT`\nelse\n\tsvnver=\"unknown\"\nfi\necho \"#define QGSSVNVERSION \\\"$svnver\\\"\" > \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\"\nfi\n\nexit 0";
+			shellScript = "mkdir -p \"$CONFIGURATION_BUILD_DIR/include\"\n\n# check if the files are generated, clean if need to regenerate\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] || [ ../../cmake_templates/qgsconfig.h.in -nt \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] ; then\necho \"Generating qgsconfig.h...\"\nsed -e \"s,\\${CPACK_PACKAGE_VERSION_MAJOR},$QGIS_VERSION_MAJOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_MINOR},$QGIS_VERSION_MINOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_PATCH},$QGIS_VERSION_PATCH,g\" \\\n\t-e \"s,\\${RELEASE_NAME},$QGIS_RELEASE_NAME,g\" \\\n\t-e \"s,\\${QGIS_VERSION_INT},$QGIS_VERSION_INT,g\" \\\n\t-e \"s,\\${QGIS_PLUGIN_SUBDIR},$QGIS_PLUGIN_SUBDIR,g\" \\\n\t-e \"s,\\${QGIS_DATA_SUBDIR},$QGIS_DATA_SUBDIR,g\" \\\n\t-e \"s,\\${QGIS_LIBEXEC_SUBDIR},$QGIS_LIBEXEC_SUBDIR,g\" \\\n\t-e \"s,#cmakedefine,#define,g\" \\\n\t../../cmake_templates/qgsconfig.h.in > \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\"\nfi\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] ; then\necho \"Generating qgssvnversion.h...\"\nsvnv=`which svnversion`\nif [ \"$svnv\" ] ; then\n\tsvnver=`svnversion $SRCROOT`\nelse\n\tsvnver=\"unknown\"\nfi\necho \"#define QGSSVNVERSION \\\"$svnver\\\"\" > \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\"\nfi\n\nexit 0";
 			showEnvVarsInLog = 0;
 		};
 		7223B7830F96A96500D905B4 /* Script - ui */ = {
@@ -15504,6 +15513,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# copy Qt frameworks\necho \"Copying Qt frameworks...\"\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] && [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto -X $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\nmkdir -p \"$APPDIRC/PlugIns/codecs\"\nfor c in cn jp kr tw\ndo\n\tif [ ! -f \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$QT_PLUGINS_DIR/codecs/libq$c\"\"codecs.dylib\" \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\tfi\ndone\n\n# Qwt\n\necho \"Copying Qwt and updating library paths...\"\nQWTROOT=\"$QWT_PREFIX/lib\"\nif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\tditto -X $QARCHS \"$QWTROOT/libqwt.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\tqlib=`otool -L \"$QWTROOT/libqwt.dylib\" | grep -E -m 1 \"libqwt.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tQWT_CHG=\"-change $qlib @executable_path/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\techo \"install_name_tool $QWT_CHG \\\"$APPDIR/Qgis\\\"\"\n\tinstall_name_tool $QWT_CHG \"$APPDIR/Qgis\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\techo \"Copying PyQt library paths...\"\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto -X $QARCHS \"$PYSITE/sip.so\" \"$QGISPYDIR/\"\n\t\tcp -fp \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t# PyQwt\n\tif [ -d \"$PYSITE/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\techo \"Copying PyQwt and updating library paths...\"\n\t\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/_iqt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/Qwt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/Qwt5/\"*.py  \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -Rfp \"$PYSITE/PyQt$QT_FWVER/uic\" \"$QGISPYDIR/PyQt$QT_FWVER\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqt.so\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\"\n\tfi\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls libqgis*.dylib`\nif [ \"$PYSITE\" ] ; then\n\tcd \"$QGISPYDIR/qgis\"\n\tqgpylist=`ls *.so`\nfi\n\n# main Qt framework loop\n\necho \"Updating Qt library paths...\"\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tif [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\tqq=`otool -L \"$QT_PREFIX_FW/$q.framework/$q\" | grep -E -m 1 \"$q.framework.*\\(\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tq_chg=\"-change $qq @executable_path/$QGIS_FW_SUBDIR/$q.framework/$q\"\n\t\t# app\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/Qgis\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/Qgis\"\n\t\t# qgis_help qt linking done with symlinks\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t\t# libs\n\t\tfor ql in $qgliblist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIB_SUBDIR/$ql\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\t\tdone\n\t\t# plugins\n\t\tfor qp in $pluglist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\t\tdone\n\t\t# qt fw\n\t\tfor qf in $QTLISTQG\n\t\tdo\n\t\t\tif [ -d \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework\" ] ; then\n\t\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\t\t\tfi\n\t\tdone\n\t\t# qt plugs\n\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t\tfor c in cn jp kr tw\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/codecs/libq$c\\\"\\\"codecs.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\t\tdone\n\t\t# Qwt\n\t\tif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\t\tfi\n\t\t# PyQt\n\t\tif [ \"$PYSITE\" ] ; then\n\t\t\tfor pq in $PYQTLIST\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\t\tdone\n\t\t\tfor pg in $qgpylist\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/qgis/$pg\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/qgis/$pg\"\n\t\t\tdone\n\t\t\tif [ -d \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\t\t\tfor pw in _iqt Qwt\n\t\t\t\tdo\n\t\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\\\"\"\n\t\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\"\n\t\t\t\tdone\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		72F3DABA11D70D4900FFA738 /* Script - svnver plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - svnver plist";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# manually set SVN version in info.plist so it matches config headers\n\nsvnv=`which svnversion`\nif [ \"$svnv\" ] ; then\n\tsvnver=`svnversion $SRCROOT`\nelse\n\tsvnver=\"unknown\"\nfi\n\nsed -i '' -e \"s,\\@QGIS_VERSION_BUILD@,$svnver,g\" \\\n\t\"$CONFIGURATION_BUILD_DIR/Qgis.app/Contents/Info.plist\"\n";
 			showEnvVarsInLog = 0;
 		};
 		72FB0B4B0FFD680F0052360B /* Script - ui */ = {
@@ -16957,6 +16981,11 @@
 			target = 72A07D880F3BDF9C004FC2A4 /* postgresprovider */;
 			targetProxy = 72F07FE90F5112D8008D3148 /* PBXContainerItemProxy */;
 		};
+		72F3DAB711D70A6F00FFA738 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72463E3E1122FEF200BE5F17 /* qgis.g.browser */;
+			targetProxy = 72F3DAB611D70A6F00FFA738 /* PBXContainerItemProxy */;
+		};
 		72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 72FB0B4A0FFD680F0052360B /* evisplugin */;
@@ -17379,7 +17408,7 @@
 		72463E431122FEF200BE5F17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/bin";
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/bin";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -17402,7 +17431,7 @@
 		72463E441122FEF200BE5F17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/bin";
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/bin";
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -20272,7 +20301,7 @@
 		72FEE3AF111D353300D28C1A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/modules";
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -20301,7 +20330,7 @@
 		72FEE3B0111D353300D28C1A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/modules";
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -20329,7 +20358,7 @@
 		72FEE3C6111D378800D28C1A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/modules";
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -20359,7 +20388,7 @@
 		72FEE3C7111D378800D28C1A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/modules";
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -20519,7 +20548,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13812;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -20530,7 +20558,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13812;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
