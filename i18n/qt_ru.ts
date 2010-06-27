@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru">
 <context>
     <name>PPDOptionsModel</name>
     <message>
@@ -1030,7 +1030,7 @@ to
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="554"/>
         <source>Discard</source>
-        <translation>Отклонить</translation>
+        <translation>Не сохранять</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="557"/>
