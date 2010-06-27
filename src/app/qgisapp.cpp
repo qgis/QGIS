@@ -2627,7 +2627,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
         delete layer;
 
       }
-      else  // there is 1 layer of data available
+      else if ( sublayers.count() > 0 ) // there is 1 layer of data available
       {
         //set friendly name for datasources with only one layer
         QStringList sublayers = layer->dataProvider()->subLayers();
@@ -2636,6 +2636,12 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
         layer->setLayerName( elements.at( 1 ) );
         // Register this layer with the layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
+      }
+      else
+      {
+        QString msg = tr( "%1 doesn't have any layers" ).arg( src );
+        QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
+        delete layer;
       }
     }
     else
