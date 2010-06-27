@@ -1003,6 +1003,8 @@
 		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
 		7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */; };
 		7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */; };
+		7263051911D7059F00574433 /* QgsDelimitedTextPluginGui-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7263051711D7058E00574433 /* QgsDelimitedTextPluginGui-fr_FR */; };
+		7263051A11D7059F00574433 /* QgsIdentifyResults-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7263051811D7058E00574433 /* QgsIdentifyResults-fr_FR */; };
 		7264FE991024D117004D4CDD /* qgsmaptooladdvertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6220F39E57A003DC336 /* qgsmaptooladdvertex.h */; };
 		7264FE9A1024D117004D4CDD /* qgsmaptooldeletepart.h in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDC0FACCE520011C963 /* qgsmaptooldeletepart.h */; };
 		7264FE9B1024D117004D4CDD /* qgsmaptooldeletering.h in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDB0FACCE520011C963 /* qgsmaptooldeletering.h */; };
@@ -3164,6 +3166,8 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/resources/context_help";
 			dstSubfolderSpec = 6;
 			files = (
+				7263051911D7059F00574433 /* QgsDelimitedTextPluginGui-fr_FR in Copy - context_help */,
+				7263051A11D7059F00574433 /* QgsIdentifyResults-fr_FR in Copy - context_help */,
 				72EF7B1E11CFAF9100263425 /* QgsProjectProperties-ja_JP in Copy - context_help */,
 				72EF7B1C11CFAF6700263425 /* QgsNewConnection-ja_JP in Copy - context_help */,
 				72EF7B1A11CFAF4900263425 /* MapServerExport-es_ES in Copy - context_help */,
@@ -6096,6 +6100,8 @@
 		7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialiteprovider.h; path = ../../src/providers/spatialite/qgsspatialiteprovider.h; sourceTree = SOURCE_ROOT; };
 		7262ED9C0F7A770300498385 /* libspatialiteprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libspatialiteprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		7262EDB90F7A99CE00498385 /* FindSPATIALITE.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindSPATIALITE.cmake; path = ../../cmake/FindSPATIALITE.cmake; sourceTree = SOURCE_ROOT; };
+		7263051711D7058E00574433 /* QgsDelimitedTextPluginGui-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-fr_FR"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-fr_FR"; sourceTree = SOURCE_ROOT; };
+		7263051811D7058E00574433 /* QgsIdentifyResults-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-fr_FR"; path = "../../resources/context_help/QgsIdentifyResults-fr_FR"; sourceTree = SOURCE_ROOT; };
 		72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMergeFeatures.png; path = ../../images/themes/default/mActionMergeFeatures.png; sourceTree = SOURCE_ROOT; };
 		72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionFromSelectedFeature.png; path = ../../images/themes/default/mActionFromSelectedFeature.png; sourceTree = SOURCE_ROOT; };
 		72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRemoveSelectedFeature.png; path = ../../images/themes/default/mActionRemoveSelectedFeature.png; sourceTree = SOURCE_ROOT; };
@@ -12214,6 +12220,8 @@
 				721D944C11CE90DF00714113 /* QgsWMSSourceSelect-ru_RU */,
 				721D944D11CE90DF00714113 /* QgsWMSSourceSelect-sk_SK */,
 				721D944E11CE90DF00714113 /* QgsWMSSourceSelect-sv_SE */,
+				7263051711D7058E00574433 /* QgsDelimitedTextPluginGui-fr_FR */,
+				7263051811D7058E00574433 /* QgsIdentifyResults-fr_FR */,
 			);
 			name = context_help;
 			path = ../../resources/context_help;
@@ -20511,7 +20519,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13789;
+				QGIS_VERSION_BUILD = 13812;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -20522,7 +20530,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13789;
+				QGIS_VERSION_BUILD = 13812;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
