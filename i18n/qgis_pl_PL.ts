@@ -1285,7 +1285,7 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">pole zliczania punktów</translation>
+        <translation>liczba punktów w poligonie</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -1833,7 +1833,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: deklaracja układu odniesienia dla wszystkich rastrów w podkatalogach będzie nadpisana. Jesteś pewnien?</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
@@ -5236,7 +5236,9 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchomienie QGIS w trybie nieinteraktywnym nie jest przewidziane.
+Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowiskowej DISPLAY.
+</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="13"/>
@@ -5463,7 +5465,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2455"/>
         <source>Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS to crash during startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy parametr linii poleceń --noplugins zabezpiecza przed ładowaniem wtyczek przy starcie. Użyteczne, gdy jedna z wtyczek zawiesza program</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2456"/>
@@ -5483,7 +5485,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2459"/>
         <source>Raster provider: reduce debugging noise</source>
-        <translation type="unfinished">Rastrowe źródło danych: redukcja informacji debugera</translation>
+        <translation>Ograniczenie zbędnych informacji debugera</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2460"/>
@@ -5523,7 +5525,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2467"/>
         <source>IdentifyAsHtml to raster layer and use it in identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Metoda IdentifyAsHtml dla warstw WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2468"/>
@@ -5588,12 +5590,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2480"/>
         <source>Add validation to capture tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodana walidacja dla narzędzia pobierania współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2481"/>
         <source>Allow postgres layers without saved username &amp;amp; password by asking for credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprawione zapytanie o dane uwierzytelniające dla warstw Postgres bez zapisanego loginu &amp;amp; hasła</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2482"/>
@@ -5613,7 +5615,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2485"/>
         <source>Identify tool attribute form now non-modal in view mode (since r12796)</source>
-        <translation type="unfinished"></translation>
+        <translation>Niemodalne okienko informacji o obiekcie</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2486"/>
@@ -5629,12 +5631,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="2491"/>
         <source>WMS-C support, new spatial authorities, wms selection improvements</source>
         <translatorcomment>spatial authorities ?</translatorcomment>
-        <translation type="unfinished">Obsługa WMS-C, nowe źródła certyfikacji, usprawniony wybór WMS</translation>
+        <translation>Obsługa WMS-C, usprawnienia w wyborze warstw WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2492"/>
         <source>Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Usprawniona obsługa kodów EPSG, poprawione definicje polskich układów współrzędnych, dodana obsługa kodów IGNF</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2493"/>
@@ -5669,12 +5671,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2501"/>
         <source>QgsDataProvider &amp;amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasy QgsDataProvider &amp;amp; QgsMapLayer wzbogacone o sygnał dataChanged()</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2502"/>
         <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentification to website and proxies)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasa QNetworkAccessManager zastąpiła QgsHttpTransaction (wprowadzając keszowanie i dynamiczną autoryzację)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2503"/>
@@ -5694,17 +5696,17 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2506"/>
         <source>Support for custom plugin directories using the QGIS_PLUGINPATH environment variable. More paths can be passed, separated by semicolon.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wsparcie dla własnych katalogów wtyczek przez zmienną środowiskową QGIS_PLUGINPATH (katalogi oddzielone średnikiem).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2507"/>
         <source>Legend interface added to retrieve layers in legend order</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostęp do warstw teraz również w kolejności występowania w legendzie</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2508"/>
         <source>Support more GEOS operators</source>
-        <translation type="unfinished"></translation>
+        <translation>Obsługa kolejnych operatorów GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2643"/>
@@ -21454,12 +21456,12 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="436"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="439"/>
         <source>Add the contributed repository to the list</source>
-        <translation>Dodaj niezależne repozytoria do listy</translation>
+        <translation>Dodaj do listy społecznościowe repozytorium wtyczek</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="442"/>
         <source>Add the contributed repository</source>
-        <translation>Dodaj niezależne repozytorium</translation>
+        <translation>Dodaj repozytorium społecznościowe</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="461"/>
@@ -21470,7 +21472,7 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="467"/>
         <source>Delete depreciated repositories</source>
-        <translation>Usuń nieaktualne reopzytoria</translation>
+        <translation>Usuń nieaktualne repozytoria</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="493"/>
@@ -21755,7 +21757,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
         <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalator wtyczek wykrył, że ta kopia Quantum GIS korzysta z wielu autorskich repozytoriów wtyczek. Jest to pozostałość po starszej wersji programu, gdyż od wersji 1.5 wtyczki są sukcesywnie gromadzine w jednym centralnym Repozytorium Społecznościowym, a repozytoria autorskie nie są już potrzebne. Czy chcesz usunąć je z listy przeglądanych repozytoriów? Jeśli nie masz pewności, co odpowiedzieć, prawdopodobnie nie są Ci potrzebne i możesz śmiało je usunąć. Jeśli je zachowasz, Quantum GIS niepotrzebnie będzie do nich zaglądał i zbierał wtyczki, które i tak są już w Repozytorium Społecznościowym, co wydłuży czas odświeżania listy dostępnych wtyczek. Możesz jednak je pozostawić, a póżniej ręcznie usunąć w Instalatorze Wtyczek.</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
@@ -21961,7 +21963,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="40"/>
         <source>Renderer:</source>
-        <translation type="unfinished">Typ legendy:</translation>
+        <translation>Typ legendy:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="52"/>
@@ -22001,12 +22003,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="153"/>
         <source>Label attribute:</source>
-        <translation type="unfinished">Atrybut:</translation>
+        <translation>Atrybut:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="167"/>
         <source>Label font...</source>
-        <translation type="unfinished">Czcionka ...</translation>
+        <translation>Czcionka ...</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="191"/>
@@ -26387,7 +26389,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elementy stylu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="60"/>
@@ -28169,12 +28171,12 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="903"/>
         <source>Select layer(s) or a tileset</source>
-        <translation type="unfinished">Wybierz warstwy lub kafle</translation>
+        <translation type="unfinished">Wybierz warstwy lub tileset </translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="908"/>
         <source>Select either layer(s) or a tileset</source>
-        <translation type="unfinished">Wybierz warstwy albo kafle</translation>
+        <translation type="unfinished">Wybierz warstwy albo tileset</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="920"/>
@@ -28400,7 +28402,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="282"/>
         <source>Tilesets</source>
-        <translation type="unfinished">Kafle</translation>
+        <translation type="unfinished">Tilesets</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="312"/>
@@ -28584,7 +28586,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2444"/>
         <source>Tileset Count</source>
-        <translation type="unfinished">Liczba kafli</translation>
+        <translation type="unfinished">Liczba tilesetów</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2479"/>
@@ -28757,8 +28759,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28767,8 +28767,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -28779,8 +28777,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28789,8 +28785,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
