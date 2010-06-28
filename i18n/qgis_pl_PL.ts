@@ -1357,7 +1357,7 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="65"/>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
-        <translation>Ta warstwa symbolu nie posiada okna dialogowego ustawień.</translation>
+        <translation>Ta warstwa symbolu nie posiada interfejsu ustawień.</translation>
     </message>
     <message>
         <source>Symbol layers:</source>
@@ -1463,11 +1463,11 @@ Na pewno chcesz kontynuować?</translation>
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory:</source>
-        <translation>Katalog źródłowy:</translation>
+        <translation type="unfinished">Katalog źródłowy:</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation>Katalog docelowy:</translation>
+        <translation type="unfinished">Katalog docelowy:</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
@@ -1529,7 +1529,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation>Generuje obiekty poligonowe z rastra</translation>
+        <translation>Generuje wektorowe poligony z rastra</translation>
     </message>
     <message>
         <source>Merge</source>
@@ -1537,7 +1537,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation>Generuje szybką mozaikę z podanych obrazów</translation>
+        <translation>Generuje mozaikę z podanych obrazów</translation>
     </message>
     <message>
         <source>Sieve</source>
@@ -1565,11 +1565,11 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="unfinished">Reprojekcja</translation>
+        <translation>Reprojekcja</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="unfinished">Dokonaje reprojekcji obrazu do nowego układu współrzędnych</translation>
+        <translation>Dokonuje reprojekcji obrazu do nowego układu współrzędnych</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -1581,11 +1581,11 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="unfinished">Konwertuj układ</translation>
+        <translation>Konwersja</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="unfinished">Konwertuje układ współrzędnych map rastrowych</translation>
+        <translation>Konwertuje dane rastrowe między różnymi formatami</translation>
     </message>
     <message>
         <source>Information</source>
@@ -1605,11 +1605,11 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation>Generuj podgląd</translation>
+        <translation>Generuj piramidy</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation>Generuje lub re-generuje podgląd obrazu</translation>
+        <translation>Generuje lub re-generuje piramidę</translation>
     </message>
     <message>
         <source>Clipper</source>
@@ -1622,7 +1622,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation>Konwertuj 24-bitowe obraz RGB do palety 8-bitowej</translation>
+        <translation>Konwertuj 24-bitowe obrazy RGB do palety 8-bitowej</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
@@ -2434,7 +2434,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
         <source>Open in read-only mode</source>
-        <translation>Otwórz w trybie tylko do odczytu</translation>
+        <translation>Otwórz źródło tylko do odczytu (generuj zewnętrzne piramidy)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
@@ -4992,7 +4992,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="25"/>
         <source>Rule-based</source>
-        <translation>Oparty na regułach</translation>
+        <translation>Oparta na regułach</translation>
     </message>
     <message>
         <source>Labeling</source>
@@ -5159,7 +5159,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
         <source>Point Displacement</source>
-        <translation>Przesunięcie punktu</translation>
+        <translation>Rozsunięcie punktów</translation>
     </message>
     <message>
         <source>point Displacement</source>
@@ -5248,12 +5248,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="15"/>
         <source>Marker line</source>
-        <translation>Linia ze znacznikami</translation>
+        <translation>Linia ze znaczników</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="17"/>
         <source>Line decoration</source>
-        <translation>Dekoracja</translation>
+        <translation>Zakończenie linii</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="20"/>
@@ -11367,17 +11367,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="14"/>
         <source>Dash space pattern</source>
-        <translation>Ustawienia szrafu</translation>
+        <translation>Własny styl linii</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="51"/>
         <source>Dash</source>
-        <translation>Kreskowanie</translation>
+        <translation>Długość kreski</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="56"/>
         <source>Space</source>
-        <translation>Odstęp</translation>
+        <translation>Długość odstępu</translation>
     </message>
 </context>
 <context>
@@ -22574,7 +22574,7 @@ Poszukać brakujących warstw?</translation>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="60"/>
         <source>All</source>
-        <translation>Wszystko</translation>
+        <translation>wszystkie</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="627"/>
@@ -22637,7 +22637,7 @@ Z tego powodu wybór odwzorowania nie będzie działał...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="136"/>
         <source>Name</source>
-        <translation>Nazwa</translation>
+        <translation>nazwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="20"/>
@@ -22660,12 +22660,12 @@ Z tego powodu wybór odwzorowania nie będzie działał...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="113"/>
         <source>Authority</source>
-        <translation type="unfinished"></translation>
+        <translation>w bazie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="123"/>
         <source>Search for</source>
-        <translation>Szukaj</translation>
+        <translation>według</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="157"/>
@@ -24501,12 +24501,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ legendy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="48"/>
         <source>Symbol levels</source>
-        <translation>Po&amp;ziomy wyświetlania</translation>
+        <translation>Po&amp;ziomy wyświetlania warstw symboli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="55"/>
@@ -26389,7 +26389,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type</source>
-        <translation type="unfinished">Elementy stylu</translation>
+        <translation>Elementy stylu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="60"/>
@@ -26466,7 +26466,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="63"/>
         <source>Millimeter</source>
-        <translation>Milimetr</translation>
+        <translation>Milimetry</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="68"/>
@@ -26511,7 +26511,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="216"/>
         <source>Properties</source>
-        <translation>Właściwości</translation>
+        <translation>Edytuj symbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="236"/>
@@ -28171,7 +28171,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="903"/>
         <source>Select layer(s) or a tileset</source>
-        <translation type="unfinished">Wybierz warstwy lub tileset </translation>
+        <translation type="unfinished">Wybierz warstwy lub tileset</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="908"/>
@@ -29472,7 +29472,7 @@ Tried URL: %1</source>
         <translation type="obsolete">Szerokość linii:</translation>
     </message>
     <message>
-        <source>Pen style:</source>
+        <source>:</source>
         <translation type="obsolete">Styl linii:</translation>
     </message>
     <message>
@@ -29482,7 +29482,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
         <source>Use custom dash pattern</source>
-        <translation>Użyj szrafu użytkownika</translation>
+        <translation>Własny styl linii</translation>
     </message>
     <message>
         <source>Join style:</source>
