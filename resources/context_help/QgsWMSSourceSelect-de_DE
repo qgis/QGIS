@@ -17,7 +17,7 @@ Sobald eine neue WMS-Serververbindung erstellt wurde, wird sie für zukünftige 
 <a name="load">
 <h5>WMS-Layer laden</h5>
 </a>
-Über den Knopf <label>Verbinden</label> erfragen Sie die angebotenen Möglichkeiten des gewählten Servers. Diese umfaßen Bildkodierung, Layer, Layerstile und Projektionen.<br/>
+Über den Knopf <label>Verbinden</label> erfragen Sie die angebotenen Möglichkeiten des gewählten Servers. Diese umfassen Bildkodierung, Layer, Layerstile und Projektionen.<br/>
 Während Sie Daten vom WMS-Server beziehen, wird der Fortschritt unten links im Dialog angezeigt.<p>
 Die <label>Bildkodierung</label> zeigt nun die Liste die Formate an, die sowohl Server als auch Client unterstützen.<br/>
 Treffen Sie eine Ihren Anforderung entsprechende Auswahl.<p>

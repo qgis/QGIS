@@ -1,5 +1,5 @@
 <h3>Create a new PostGIS connection</h3>
-To create a new PostGIS Connection, you need to know the host, port, and your username/password for the database server.
+To create a new PostGIS Connection, you need to know the host, port, and your user name/password for the database server.
 <h4>Required Parameters</h4>
 <ul>
 <li><label>Name</label> - a descriptive name for this connection

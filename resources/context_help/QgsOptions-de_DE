@@ -43,8 +43,8 @@ der Layer komplett gezeichnet wurde. Um die Anzeige während des Ladens von
 Objekten zu aktualisieren, setzen Sie im Feld <label>Anzahl von Objekt nach 
 deren Zeichnung die Anzeige aktualsiert werden soll</label> einen passenden 
 Wert. Der Wert von 0 ist voreingestellt und schaltet die Funktion ab. Wählen 
-Sie den Wert zu niedrig leidet die Geschwindigkeit, da die Karte anzeige 
-während des Laens laufend aktualisiert werden muss.  Ein guter Startwert ist 
+Sie den Wert zu niedrig leidet die Geschwindigkeit, da die Kartenanzeige 
+während des Ladens laufend aktualisiert werden muss.  Ein guter Startwert ist 
 500.
 </ul>
 
@@ -59,7 +59,7 @@ unten</label> statt <label>Aktueller Layer</label> bewirkt, dass alle
 angezeigten Layer abgefragt werden. 
 
 <h5>Messwerkzeug</h5>
-Hier kännen Sie einen Ellipsoid für Entfernungsberechnungen, Maßeinheiten und
+Hier können Sie einen Ellipsoid für Entfernungsberechnungen, Maßeinheiten und
 die bevorzugte Farbe des Gummibandes einstellen.
 
 <h5>Verschieben und Zoomen</h5>
@@ -99,9 +99,9 @@ den Fangmodus auf Layerbasis zu konfigurieren.
 Sie können den Markerstil auf <label>Teiltransparenter Kreis</label>, <label>Kreuz</label> oder <label>Keine</label>
 und die Größe einstellen.
 
-<h5>Attributewerte eingeben</h5>
+<h5>Attributwerte eingeben</h5>
 Normalerweise wird der Benutzer nach dem Digitalisieren eines neuen Objekts
-aufgefordert Attributwerte dafür einzugeben.  Durch das Anhaken von
+aufgefordert Attributwerte dafür einzugeben.  Durch das Abhaken von
 <label>Eingabe der Attributwerte bei der Erstellung neuere Objekte
 unterdrücken</label> kann man dies unterdrücken und die Attribute nachträglich
 eingeben.

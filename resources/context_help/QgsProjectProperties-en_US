@@ -26,7 +26,7 @@ To avoid digitizing all vertices of the common boundary select <label>Avoid inte
 </a>
 The Coordinate Reference System (CRS) tab allows you to set the projection for the current project and enable on the fly transformation. You do not need to have a saved project to setup and enable 'on the fly' CRS transformation.
 <p>
-To use 'on the fly' CRS transformation, click the <label>Enable 'on the fly' CRS transformation</label> checkbox. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
+To use 'on the fly' CRS transformation, click the <label>Enable 'on the fly' CRS transformation</label> check box. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
 <p>
 You can find a coordinate system by entering its name, EPSG code or the QGIS ID and clicking the <label>Find</label> button.
 <p>

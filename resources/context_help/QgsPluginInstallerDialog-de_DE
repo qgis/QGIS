@@ -65,7 +65,7 @@ Paketmanager verfügbar sein.
 
 Für Windows-Installationsanweisungen besuchen Sie bitte die Homepage des 
 Moduls.  Wenn Sie einen Proxy benutzen, müssen Sie ihn unter 
-<label>Bearbeiten</label> > <label>Optionen</label> (Gnome, OSX) oder 
+<label>Bearbeiten</label> > <label>Optionen</label> (GNOME, OSX) oder 
 <label>Einstellungen</label> > <label>Optionen</label> (KDE, Windows) auf dem 
 Reiter <label>Netzwerk &amp; Proxy</label> angeben.</p>
 
@@ -100,7 +100,7 @@ abschalten.</p>
 <p align='justify'>
 Unter dem Reiter <label>Optionen</label> können Sie die Erweiterungsinstallation 
 einstellen.  Das Kontrollkästchen <label>x Beim Start nach Aktualisierungen 
-suchen</label> veranlaßt QGIS automatisch nach Erweiterungsaktualsierungen und 
+suchen</label> veranlasst QGIS automatisch nach Erweiterungsaktualsierungen und 
 Neuigkeiten zu suchen.  Normalerweise werden alle unter 
 <label>Repositorys</label> aufgeführten und aktivieren Repositorys bei jedem 
 Programmstart nach Aktualisierungen befragt.   Die Frequenz dieser Prüfung kann 
@@ -112,7 +112,7 @@ wenn die Erweiterungsinstallation manuell aus dem Menü gestartet wird.</p>
 
 <p align='justify'>
 Einige Internetverbindung verursachen Problemen, wenn versucht wird automatisch 
-nach Aktualsierungen zu suchen.  In diesen Fällen bleibt die Benachrichtung 
+nach Aktualisierungen zu suchen.  In diesen Fällen bleibt die Benachrichtigung 
 <i>Suche nach neuen Erweiterungen...</i> während der ganzen QGIS-Sitzung in der 
 Statuszeile sichtbar und kann einen Programmabsturz beim Programmende 
 verursachen.  Dann stellen entfernen Sie den Haken bitte aus dem Kontrollkästchen. 
@@ -134,6 +134,6 @@ sollen.</li>
 <tr><td>Hinweis: Experimentelle Erweiterungen sind grundsätzliche ungeeignet 
 für den Produktionsbetrieb. Diese Erweiterung befinden sich in einer frühen 
 Entwicklungsphase und sollten als "unvollständig" oder "Machbarkeitstudie" 
-angesehen werden.  Das QGIS-Entwickerteam empfieht deren Installation außer zu 
+angesehen werden.  Das QGIS-Entwicklerteam empfiehlt deren Installation außer zu 
 Testzwecken nicht. 
 </td></tr></table>

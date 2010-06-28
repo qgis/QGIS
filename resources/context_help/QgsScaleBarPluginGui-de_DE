@@ -2,7 +2,7 @@
 Zeichnet einen Maßstab auf die Karte.
 <p>
 Sie können den Stil und die Platzierung wie auch die Beschriftungen 
-beeinflußen.  QGIS unterstützt die Darstellung von Maßstäben nur in der 
+beeinflussen.  QGIS unterstützt die Darstellung von Maßstäben nur in der 
 gleichen Einheit wie die der Karte.  Wenn die Einheit Ihrer Layer Meter ist, 
 können Sie den Maßstab nicht in Fuß angeben lassen. Genauso können Sie, wenn 
 Sie Grad benutzen, die Abstände auf dem Maßstab nicht in Metern anzeigen.</p>

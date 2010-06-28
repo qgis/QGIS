@@ -19,7 +19,7 @@ beim Laden von Festplatte benötigt werden, gespeichert.</p>
 <tr><td><label>Layereinheiten</label></td><td>Wählen Sie die Einheiten der Layer des Projekts</td></tr>
 <tr><td><label>Genauigkeit</label></td><td>Benutzen Sie die manuelle Einstellungen der Anzeigegenauigkeit in der Statuszeile. Während die Maus über die Karte bewegt wird, werden die Koordinaten ständig mit der gewählten Genauigkeit in der Statuszeile angezeigt. Automatisch (die Voreinstellung) führt zu einer von den Karteneinheiten abhängigen Voreinstellung.</td></tr>
 <tr><td><label>Digitalisierung</label></td><td>Die Option <label>Ermögliche topologisches Editieren</label> gestattet bearbeiten und weiterführen von Polygonmosaiken. Das Verschieben des Stützpunkts einer gemeinsamer Grenze führt zur Änderung beider Grenzen.<p>
-Um die Digitalisierung aller gemeinsamen Punkte einer Grenze zu vermeiden dient die Option <label>Überschneidung von neuen Polygonen vermeiden...</label>. Im Dialogfenster sind die gewünschten Layer zu wählen an die das neue Polygon angepaßt werden soll.  Die Flächen der Polygone, die das neue Polygon überdeckt, 
+Um die Digitalisierung aller gemeinsamen Punkte einer Grenze zu vermeiden dient die Option <label>Überschneidung von neuen Polygonen vermeiden...</label>. Im Dialogfenster sind die gewünschten Layer zu wählen an die das neue Polygon angepasst werden soll.  Die Flächen der Polygone, die das neue Polygon überdeckt, 
 werden automatisch entfernt.<p>
 <label>Fangoptionen</label> erlaubt Ihnen für jeden einzelnen Layer eine Fangtoleranz in Pixeln oder Karteneinheiten und den Fangmodus einzustellen: <label>zum Stützpunkt</label>, <label>zu Segment</label> oder <label>zum Stützpunkt oder Segment</label></td></tr>
 </table>
@@ -27,7 +27,7 @@ werden automatisch entfernt.<p>
 <h4>Reiter Koordinatenbezugssystem (KBS)</h4>
 </a>
 Der Reiter Koordinatenbezugssystem (KBS) erlaubt Ihnen die Einstellung der Projektion des aktuellen Projekts und das aktivieren der Projektion zur Laufzeit. Sie brauchen das Projekt nicht zu speichern, um die 'On-The-Fly'-Transformation einzustellen oder zu aktivieren.<p>
-Um die Transformation zu benutzen, klicken Sie auf <label>'On-The-Fly'-KBS-Transformation aktivieren</label>, dann wählen Sie die Projektion des Projekts (Karte) aus der Liste der geographischen oder projiizierte Koordinatensysteme.
+Um die Transformation zu benutzen, klicken Sie auf <label>'On-The-Fly'-KBS-Transformation aktivieren</label>, dann wählen Sie die Projektion des Projekts (Karte) aus der Liste der geographischen oder projizierte Koordinatensysteme.
 <p>
 Sie können ein Koordinatensystem suchen indem Sie die PostGIS SRID, den EPSG-Code oder den QGIS ID eingeben und auf <label>Suchen</label> klicken.
 

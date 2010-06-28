@@ -1,7 +1,7 @@
-<h3>Create a New Spatialite Layer</h3>
-You can use this dialog to create a new Spatialite database and/or an empty Spatialite layer for editing. See below for an explanation of the dialog inputs.
+<h3>Create a New SpatiaLite Layer</h3>
+You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 <h4>Database</h4>
-Choose the database from the drop-down list. This list is created from your saved Spatialite connections. If you don't have a saved connection or want to create a new database, click on the button (<label>...</label>) to the right of the drop-down.
+Choose the database from the drop-down list. This list is created from your saved SpatiaLite connections. If you don't have a saved connection or want to create a new database, click on the button (<label>...</label>) to the right of the drop-down.
 <h4>Layer name</h4>
 Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
 <h4>Geometry column</h4>
@@ -9,14 +9,14 @@ Enter a name for the geometry column or accept the default.
 <h4>Type</h4>
 Choose the type of layer you want to create. 
 <h4>EPSG SRID</h4>
-Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on <label>Find SRID</label> button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your Spatialite database. You can search for the SRID using partial matches on both name and SRID.
-<h4>Create an Autoincrementing Primary Key</h4>
-Clicking this checkbox will add a primary key to the new layer. This key field will be autoincrementing, meaning you don't have to enter a value for it when adding features to the attribute table of the layer.
+Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on <label>Find SRID</label> button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your SpatiaLite database. You can search for the SRID using partial matches on both name and SRID.
+<h4>Create an auto-incrementing Primary Key</h4>
+Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don't have to enter a value for it when adding features to the attribute table of the layer.
 <h4>New attribute</h4>
 Add the desired attributes by clicking on the <label>Add to attributes list</label> button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.<br/>
-Width and precision are irrelevant in a Spatialite database so you do not have to specify these.
+Width and precision are irrelevant in a SpatiaLite database so you do not have to specify these.
 <h4>Attributes list</h4>
 In this section you can see the list of attributes. To delete one of them, click on it and choose <label>Remove selected attribute</label> button.
 
 <p>
-Click on <label>Ok</label> to create the layer and close the dialog.  Clicking <label>Apply</label> also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. <label>Cancel</label> will close the layer without further changes.
+Click on <label>OK</label> to create the layer and close the dialog.  Clicking <label>Apply</label> also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. <label>Cancel</label> will close the layer without further changes.

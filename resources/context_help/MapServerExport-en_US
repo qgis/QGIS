@@ -3,7 +3,7 @@
 This tool allows you to export a saved QGIS project file to a MapServer map 
 Only the <b>Map file</b> and <b>QGIS project file</b> inputs are required.
 </p>
-Tick the <label>Use current project</label> checkbox or enter the full path to 
+Tick the <label>Use current project</label> check box or enter the full path to 
 the QGIS project file (.qgs) you want to export. You can use the button at the 
 right to browse for the QGIS project file.
 
