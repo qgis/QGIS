@@ -31,6 +31,7 @@ class InstallerPlugin():
       self.mainWindow = self.iface.mainWindow
     else: # old plugin API
       self.mainWindow = self.iface.getMainWindow
+    self.guiDlg = None
 
 
   # ----------------------------------------- #
@@ -128,7 +129,8 @@ class InstallerPlugin():
       self.mainWindow().menuBar().actions()[4].menu().removeAction(self.action)
     if self.statusLabel:
       self.mainWindow().statusBar().removeWidget(self.statusLabel)
-    self.guiDlg.close()
+    if self.guiDlg:
+      self.guiDlg.close()
 
 
   # ----------------------------------------- #
