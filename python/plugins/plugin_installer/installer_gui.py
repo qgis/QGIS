@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008-2009 Borys Jurgiel
+Copyright (C) 2008-2010 Borys Jurgiel
 
 /***************************************************************************
  *                                                                         *
@@ -27,7 +27,7 @@ from installer_data import *
 
 try:
   from qgis.utils import startPlugin, unloadPlugin, loadPlugin # QGIS >= 1.4
-  from qgis.utils import updateAvailablePlugins # QGIS >= 1.5
+  from qgis.utils import reloadPlugin, updateAvailablePlugins # QGIS >= 1.5
 except Exception:
   pass
 
@@ -676,11 +676,24 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       warning += "\n\n"+self.tr("Warning: this plugin isn't available in any accessible repository!")
     if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
       return
+    # unload the plugin if it's not plugin_installer itself (otherwise, do it after removing its directory):
+    if key != "plugin_installer":
+      try:
+        unloadPlugin(key)
+      except:
+        pass
     pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["localdir"]
     result = removeDir(pluginDir)
     if result:
       QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
     else:
+      # if the uninstalled plugin is the installer itself, reload it and quit
+      if key == "plugin_installer":
+        try:
+          reloadPlugin(key)
+          return
+        except:
+          pass
       # safe remove
       try:
         unloadPlugin(plugin["localdir"])

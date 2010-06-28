@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008-2009 Borys Jurgiel
+Copyright (C) 2008-2010 Borys Jurgiel
 
 /***************************************************************************
  *                                                                         *
@@ -128,6 +128,7 @@ class InstallerPlugin():
       self.mainWindow().menuBar().actions()[4].menu().removeAction(self.action)
     if self.statusLabel:
       self.mainWindow().statusBar().removeWidget(self.statusLabel)
+    self.guiDlg.close()
 
 
   # ----------------------------------------- #
