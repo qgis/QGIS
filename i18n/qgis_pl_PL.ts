@@ -968,7 +968,7 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation>Wybiersz wyjściowy układ współrzędnych:</translation>
+        <translation>Wybierz wyjściowy układ współrzędnych:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
@@ -1212,7 +1212,7 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation>Tworzone pliki shapefiles zapisuj w kartotece:
+        <translation>Tworzone pliki Shapefile zapisuj w kartotece:
 %1</translation>
     </message>
     <message>
@@ -1716,7 +1716,7 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation>GDAL Tools (AKA Raster Tools) to wtyczka do Quantum GIS do łatwego wykorzystania narzędzi biblioteki GDAL, udostępniająca prosty interfejs graficzny dla najczęściej używanych programół.
+        <translation>GDAL Tools (AKA Raster Tools) to wtyczka do Quantum GIS do łatwego wykorzystania narzędzi biblioteki GDAL, udostępniająca prosty interfejs graficzny dla najczęściej używanych programów.
 
 Wtyczka została stworzona przez Faunalia (http://faunalia.it) z pomocą GIS-lab (http://gis-lab.info).
 Ikony - Robert Szczepanek.
@@ -1833,7 +1833,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation>Uwaga: deklaracja układu odniesienia dla wszystkich rastrów w podkatalogach będzie nadpisana. Jesteś pewnien?</translation>
+        <translation>Uwaga: deklaracja układu odniesienia dla wszystkich rastrów w podkatalogach będzie nadpisana. Jesteś pewien?</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
@@ -5292,7 +5292,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="225"/>
         <source>Invalid file descriptor (port was not opened correctly)</source>
-        <translation>Błędny deskryptor pliku (port nie został poprawnie owarty)</translation>
+        <translation>Błędny deskryptor pliku (port nie został poprawnie otwarty)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="226"/>
@@ -5460,7 +5460,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2454"/>
         <source>Font marker symbol layer</source>
-        <translation>Uzycie czcionek jako znaczników</translation>
+        <translation>Użycie czcionek jako znaczników</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2455"/>
@@ -5485,7 +5485,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2459"/>
         <source>Raster provider: reduce debugging noise</source>
-        <translation>Ograniczenie zbędnych informacji debugera</translation>
+        <translation>Ograniczenie zbędnych informacji debuggera</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2460"/>
@@ -5495,7 +5495,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2461"/>
         <source>Text and form annotation tools are now in gui and app</source>
-        <translation>Narzędzia do opisów tekstowych i formularzy dostępne w GUI i programie</translation>
+        <translation>Narzędzia do opisów tekstowych i w postaci formularzy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2462"/>
@@ -6976,7 +6976,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1230"/>
         <source>Failed to open Python console:</source>
-        <translation>Otwarcie konspli Pytona nie powiodło się:</translation>
+        <translation>Otwarcie konsoli Pytona nie powiodło się:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1352"/>
@@ -8820,12 +8820,12 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="19"/>
         <source>BDiagonal</source>
-        <translation>PrzekątneB</translation>
+        <translation>Przekątne \\</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="20"/>
         <source>FDiagonal</source>
-        <translation>PrzekątneF</translation>
+        <translation>Przekątne /</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="21"/>
@@ -12399,7 +12399,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="610"/>
         <source>Cannot close a line feature until it has at least two vertices.</source>
-        <translation>Nie można zamknąć lini, która ma mniej niż dwa wierzchołki.</translation>
+        <translation>Nie można zamknąć linii, która ma mniej niż dwa wierzchołki.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="619"/>
@@ -12522,7 +12522,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="352"/>
         <source>GPS cursor size</source>
-        <translation>Rozmar wskaźnika GPS</translation>
+        <translation>Rozmiar wskaźnika GPS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="386"/>
@@ -13369,7 +13369,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1632"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 wymaga conajmniej %2 punkty. Zdefiniuj więcej punktów</translation>
+        <translation>%1 wymaga co najmniej %2 punkty. Zdefiniuj więcej punktów</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1717"/>
@@ -16917,7 +16917,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="30"/>
         <source>Label Properties</source>
-        <translation>Własciwości etykiety</translation>
+        <translation>Właściwości etykiety</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="84"/>
@@ -17583,7 +17583,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="377"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="401"/>
         <source>Loading connections</source>
-        <translation>Ładowanie połaczeń</translation>
+        <translation>Ładowanie połączeń</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="124"/>
@@ -17625,7 +17625,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgsmanageconnectionsdialogbase.ui" line="14"/>
         <source>Manage connections</source>
-        <translation>Zarządzaj połaczeniami</translation>
+        <translation>Zarządzaj połączeniami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmanageconnectionsdialogbase.ui" line="22"/>
@@ -17674,7 +17674,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="23"/>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation>Podaj współrzędne X i Y (DMS (dd mm ss.ss), DD (dd.dd) lub współrzędne odwzorowania (mmmm.mm)) które odpowiadają wybranemu punktowi obrazu. Ewentualnie, kliknij ikonę z ołówkiem i wskaż na mapie odowiadający punkt na mapie QGIS.</translation>
+        <translation>Podaj współrzędne X i Y (DMS (dd mm ss.ss), DD (dd.dd) lub współrzędne odwzorowania (mmmm.mm)), które odpowiadają wybranemu punktowi obrazu. Możesz też kliknąć ikonę z ołówkiem i wskazać odpowiadający punkt na mapie.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="35"/>
@@ -21461,7 +21461,7 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="442"/>
         <source>Add the contributed repository</source>
-        <translation>Dodaj repozytorium społecznościowe</translation>
+        <translation>Dodaj Repozytorium Społecznościowe</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="461"/>
@@ -21757,7 +21757,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
         <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
-        <translation>Instalator wtyczek wykrył, że ta kopia Quantum GIS korzysta z wielu autorskich repozytoriów wtyczek. Jest to pozostałość po starszej wersji programu, gdyż od wersji 1.5 wtyczki są sukcesywnie gromadzine w jednym centralnym Repozytorium Społecznościowym, a repozytoria autorskie nie są już potrzebne. Czy chcesz usunąć je z listy przeglądanych repozytoriów? Jeśli nie masz pewności, co odpowiedzieć, prawdopodobnie nie są Ci potrzebne i możesz śmiało je usunąć. Jeśli je zachowasz, Quantum GIS niepotrzebnie będzie do nich zaglądał i zbierał wtyczki, które i tak są już w Repozytorium Społecznościowym, co wydłuży czas odświeżania listy dostępnych wtyczek. Możesz jednak je pozostawić, a póżniej ręcznie usunąć w Instalatorze Wtyczek.</translation>
+        <translation>Instalator wtyczek wykrył, że ta kopia Quantum GIS korzysta z wielu autorskich repozytoriów wtyczek. Jest to pozostałość po starszej wersji programu, gdyż od wersji 1.5 wtyczki są sukcesywnie gromadzone w jednym centralnym Repozytorium Społecznościowym, a repozytoria autorskie nie są już potrzebne. Czy chcesz usunąć je z listy przeglądanych repozytoriów? Jeśli nie masz pewności, co odpowiedzieć, prawdopodobnie nie są Ci potrzebne i możesz śmiało je usunąć. Jeśli je zachowasz, Quantum GIS niepotrzebnie będzie do nich zaglądał i zbierał wtyczki, które i tak są już w Repozytorium Społecznościowym, co wydłuży czas odświeżania listy dostępnych wtyczek. Możesz jednak je pozostawić, a póżniej ręcznie usunąć w Instalatorze Wtyczek.</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
@@ -25793,7 +25793,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="14"/>
         <source>Select a Spatialite Spatial Reference System</source>
-        <translation>Wybierz układ wspólrzędnych SpatiaLite</translation>
+        <translation>Wybierz układ współrzędnych SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="30"/>
@@ -26357,7 +26357,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="231"/>
         <source>Please select color ramp type:</source>
-        <translation>Wybierz typ palety kolorół:</translation>
+        <translation>Wybierz typ palety kolorów:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="275"/>
@@ -26639,7 +26639,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="20"/>
         <source>Select transformation type:</source>
-        <translation>Wybierz rodzaj transformacj:</translation>
+        <translation>Wybierz rodzaj transformacji:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="28"/>
@@ -26721,7 +26721,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="152"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 wymaga conajmniej %2 punkty. Zdefiniuj więcej punktów</translation>
+        <translation>%1 wymaga co najmniej %2 punktów. Zdefiniuj więcej punktów</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="166"/>
@@ -28109,7 +28109,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="60"/>
         <source>Add selected layers to map</source>
-        <translation>Dodaj wybraeą warstwy do mapy</translation>
+        <translation>Dodaj wybrane warstwy do mapy</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="65"/>
@@ -31069,7 +31069,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
         <source>Convert vector to raster using attribute values</source>
-        <translation>Konwertuj wektor na raster przy użyciu wartości atrybutóW</translation>
+        <translation>Konwertuj wektor na raster przy użyciu wartości atrybutów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
@@ -31099,12 +31099,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
-        <translation>Twórz mapę wolumertyczną 3D na podstawie wysokości 2D oraz wartości rastra</translation>
+        <translation>Twórz mapę wolumetryczną 3D na podstawie wysokości 2D oraz wartości rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Create a MASK for limiting raster operation</source>
-        <translation>Stwórz MASKę dla ogranicznia operacji rastrowych</translation>
+        <translation>Stwórz MASKę dla ograniczenia operacji rastrowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
@@ -31119,7 +31119,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Create and add new table to vector</source>
-        <translation>Stwórz i dodaj nową tebelę do wektora</translation>
+        <translation>Stwórz i dodaj nową tabelę do wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
@@ -31239,7 +31239,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create raster with contiguous areas grown by one cell</source>
-        <translation>Stwórz raster z ciągłymi obszarami powięszonymi o jedną komórkę rastra</translation>
+        <translation>Stwórz raster z ciągłymi obszarami powiększonymi o jedną komórkę rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
@@ -31289,7 +31289,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
         <source>Create watershed subbasins raster</source>
-        <translation>Generuj zlewnie cząstowe</translation>
+        <translation>Generuj zlewnie cząstkowe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
@@ -31519,7 +31519,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation>Eksportuj raster obrazu PPM z rozdzielczością aktualnego regionu</translation>
+        <translation>Eksportuj raster do obrazu PPM z rozdzielczością aktualnego regionu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
@@ -31659,7 +31659,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation>Filtuj i generuj NMT bez obszarów bezodpływowych oraz mapę spływów na podstawie NMT</translation>
+        <translation>Filtruj i generuj NMT bez obszarów bezodpływowych oraz mapę spływów na podstawie NMT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
@@ -31754,7 +31754,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
         <source>Import ASCII raster</source>
-        <translation>Importuj rastre ASCII</translation>
+        <translation>Importuj raster ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
@@ -32504,7 +32504,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
         <source>Simple map algebra</source>
-        <translation>Prosta algebra mopowa</translation>
+        <translation>Prosta algebra mapowa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
