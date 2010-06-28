@@ -6656,7 +6656,7 @@ Dies QGIS-Kopie schreibt Debugausgaben.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2642"/>
         <source>%1 doesn&apos;t have any layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 hat keine Layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3323"/>
@@ -20858,6 +20858,10 @@ Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet au�
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
         <translation>Warnung: diese Erweiterung ist in keinem verfügbaren Repository enthalten!</translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
+        <translation>Aktualisierung der Erweiterungsinstallation deinstalliert.  Die Erweiterungsinstallation wird nun geschlossen und auf ihre primäre Version zurückgesetzt. Sie finden Sie im Erweiterungsmenü und können nun fortfahren.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
