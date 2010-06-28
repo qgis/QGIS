@@ -8820,12 +8820,12 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="19"/>
         <source>BDiagonal</source>
-        <translation>Przekątne \\</translation>
+        <translation>Przekątne B</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="20"/>
         <source>FDiagonal</source>
-        <translation>Przekątne /</translation>
+        <translation>Przekątne F</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="21"/>
