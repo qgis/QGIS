@@ -7426,12 +7426,12 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="827"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation>Wybierz werteks pierścienia do usunięcia</translation>
+        <translation>Wybierz wierzchołek pierścienia do usunięcia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="833"/>
         <source>Click a vertex of the part to delete</source>
-        <translation>Wybierz  werteks części do usunięcia</translation>
+        <translation>Wybierz wierzchołek części do usunięcia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="849"/>
@@ -30705,12 +30705,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>Add a value to the current category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wartość do wartości bieżącej kategorii</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj elementy do warstwy (WSZYSTKIE elementy typu wybranej warstwy!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
@@ -30725,27 +30725,27 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Allocate network</source>
-        <translation type="unfinished"></translation>
+        <translation>Przypisz sieć</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Assign constant value to column</source>
-        <translation type="unfinished"></translation>
+        <translation>Przypisz stałą wartość do kolumny</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
-        <translation type="unfinished"></translation>
+        <translation>Przypisz nową stałą wartość do kolumny tylko jeśli wynik zapytania jest PRAWDĄ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Przypisz nową wartość jako wynik operacji na kolumnach do kolumny w tabeli atrybutów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation type="unfinished"></translation>
+        <translation>Przypisz nową wartość do kolumny jako wynik operacji na kolumnach tylko jeśli wynik zapytania jest PRAWDĄ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
@@ -30755,27 +30755,27 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field (interpolated values)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole atrybutów (wartości interpolowane)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field to join</source>
-        <translation type="unfinished">Pole atrybutu do złączenia</translation>
+        <translation>Pole atrybutu do złączenia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Autokompensacja kolorów obrazu LANDSAT TM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolacja bikubiczna lub bilinearna funkcją sklejaną (Tykhonov)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolacja bilinearna dla map rastrowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
@@ -30795,7 +30795,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
         <source>Break lines at each intersection of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Przerwij linię w każdym punkcie przecięcia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
@@ -30815,37 +30815,37 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
         <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz średnią rastrów w ramach kategorii dla zadanej mapy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
         <source>Calculate covariance/correlation matrix for user-defined rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz macierz kowariancji/korelacji dla zadanej mapy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz macierz błędów oraz parametr kappa przy szacowaniu dokładności oraz klasyfikacji wyników</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
         <source>Calculate geometry statistics for vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz statystyki geometrii dla wektorów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
         <source>Calculate linear regression from two rasters: y = a + b*x</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz regresję liniową dla dwóch rastrów: y = a + b*x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
         <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz medianę rastra w ramach kategorii dla zadanej mapy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
         <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz modę rastra w ramach kategorii dla zadanej mapy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
@@ -30860,37 +30860,37 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
         <source>Calculate shadow maps from exact sun position</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz mapę cieniowania dla określonej pozycji Słońca</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
         <source>Calculate shadow maps from sun position determinated by date/time</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz mapę cieniowania dla określonej daty/czasu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
         <source>Calculate statistics for raster</source>
-        <translation type="unfinished">Oblicza statystyki dla rastra</translation>
+        <translation>Oblicz statystyki dla rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz statystyki dla atrybutów numerycznych w tabeli danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
         <source>Calculate univariate statistics from raster based on vector objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz statystyki z rastra dla obiektów wektorowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz statystyki dla niepustych komórek rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
         <source>Calculate univariate statistics of vector map features</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblicz statystyki obiektów wektorowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
@@ -30900,17 +30900,17 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
         <source>Category or object oriented statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statystyki kategorii lub obiektów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
         <source>Cats</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
         <source>Change category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień wartości kategorii i etykiety</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
@@ -30930,17 +30930,17 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
         <source>Change the type of boundary dangle to line</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamień wiszącą granicę na linię</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
         <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamień łączniki łączące obszar i wyspę lub dwie wyspy, z granic na linie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
         <source>Change the type of geometry elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień typ geometrii obiektu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
@@ -30970,12 +30970,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Computes a coordinate transformation based on the control points</source>
-        <translation type="unfinished">Rektyfikuje (poprawia geometrię) obraz poprzez obliczenie transformacji współrzędnych,dla każdego piksela obrazu, opartej na punktach kontrolnych</translation>
+        <translation>Oblicz transformację współrzędnych na podstawie punktów kontrolnych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
         <source>Concentric circles</source>
-        <translation type="unfinished">Koła koncentryczne</translation>
+        <translation>Koła koncentryczne</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
@@ -30985,12 +30985,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
-        <translation type="unfinished"></translation>
+        <translation>Połącz węzły najkrótszą drogą (problem komiwojażera)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
-        <translation type="unfinished"></translation>
+        <translation>Połącz wybrane węzły najkrótszą drogą (drzewo Steinera)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
@@ -31010,7 +31010,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuj wektor binarny GRASS na wektor ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
@@ -31025,7 +31025,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuj kierunek i odległość na współrzędne i vice-versa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
@@ -31045,7 +31045,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuj współrzędne z jednego odwzorowania na drugie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
@@ -31095,32 +31095,32 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
         <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj również tabelę atrybutów (obsługuje tylko tabelę warstwy 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
         <source>Count of neighbouring points</source>
-        <translation type="unfinished"></translation>
+        <translation>Policz sąsiadujące punkty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz mapę wolumertyczną 3D na podstawie wysokości 2D oraz wartości rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Create a MASK for limiting raster operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz MASKę dla ogranicznia operacji rastrowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
         <source>Create a map containing concentric rings</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz mapę z koncentrycznymi pierścieniami</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
         <source>Create a raster plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz jednolity raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
@@ -31130,22 +31130,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
         <source>Create and/or modify raster support files</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz i/lub zmodyfikuj pliki dokumentacyjne rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
         <source>Create aspect raster from DEM (digital elevation model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz rastrową mapę ekspozycji z NMT (numerycznego modelu terenu)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
         <source>Create cross product of category values from multiple rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz macierz kategorii z wielu rastrów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
         <source>Create fractal surface of given fractal dimension</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz powierzchnię fraktalną dla zadanego wymiaru fraktalnego</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
@@ -31155,7 +31155,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nową warstwę z kategoriami bazującymi na reklasyfikacji istniejącego rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
@@ -31170,17 +31170,17 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create new vector with current region extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nowy wektor z bieżącym zakresem regionu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create nodes on network</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz węzły w sieci</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create parallel line to input lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz linie równoległe do zadanych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
@@ -31190,12 +31190,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create points along input lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz punktu wzdłuż linii</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
         <source>Create points/segments from input vector lines and positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz punkty/segmenty z linii wektorowych and lokalizacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
@@ -31205,22 +31205,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
         <source>Create random 2D/3D vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj losowe punkty wektorowe 2D/3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
         <source>Create random cell values with spatial dependence</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj losowe, przestrzennie zależne wartości komórek rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
         <source>Create random points</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj losowe punkty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
         <source>Create random vector point contained in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj losowe punkty wektorowe w ramach rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
@@ -31230,22 +31230,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
         <source>Create raster of distance to features in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz mapę odległości (raster) do zadanych obiektów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz raster o rozkładzie Gaussa przy zadanej średniej i odchyleniu standardowym</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
         <source>Create raster of uniform random deviates with user-defined range</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz raster o rozkładzie normalnym dla zadanego zakresu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create raster with contiguous areas grown by one cell</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz raster z ciągłymi obszarami powięszonymi o jedną komórkę rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
@@ -31255,57 +31255,57 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz raster dla składowych RGB z wartości HIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
         <source>Create shaded map</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz mapę cieniowania</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
         <source>Create slope raster from DEM (digital elevation model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz mapę spadków z NMT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
         <source>Create standard vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz wektory normalne</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
         <source>Create surface from rasterized contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj topografię z rasteryzowanych warstwic</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
         <source>Create vector contour from raster at specified levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj warstwice wektorowe z rastra dla zadanych cięć</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
         <source>Create vector contour from raster at specified steps</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj warstwice wektorowe z rastra dla określonych kroków</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
         <source>Create watershed basin</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj zlewnie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
         <source>Create watershed subbasins raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj zlewnie cząstowe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
         <source>Cut network by cost isolines</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydziel sieć z pomocą izolinii kosztów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
         <source>DXF vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wektorowa DXF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
@@ -31315,77 +31315,77 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Database connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie z bazą danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Database file</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Database management</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie bazą danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
         <source>Database parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
         <source>Delaunay triangulation (areas)</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangulacja Delone (poligony)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
         <source>Delaunay triangulation (lines)</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangulacja Delone (linie)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
         <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangulacja Delone, diagram Voronoi oraz otoczka wypukła</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
         <source>Delete category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń kategorie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
         <source>Develop images and group</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz obrazy i grupy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
         <source>Develop map</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz mapę</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
         <source>Directory of rasters to be linked</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog rastrów do podpięcia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
         <source>Disconnect vector from database</source>
-        <translation type="unfinished"></translation>
+        <translation>Odłącz wektor z bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
         <source>Display general DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl połączenia z bazą danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
         <source>Display list of category values found in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl listę kategorii znalezionych w rastrze</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
         <source>Display projection information from PROJ.4 projection description file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl informacje opisowe o odwzorowaniu z pliku odwzorowań PROJ.4</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
@@ -31415,232 +31415,232 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
         <source>Display projection information of the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl informacje o odwzorowaniu dla bieżącej lokacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
         <source>Display raster category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl kategorie i etykiety rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
         <source>Display results of SQL selection from database</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl wynik wyboru SQL z bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
         <source>Display the HTML manual pages of GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl podręcznik GRASS w formacie HTML</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
         <source>Display vector attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl atrybuty wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
         <source>Display vector map attributes with SQL</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl atrybuty wektora z SQL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Scal granice sąsiadujących poligonów posiadające tę samą kategorię lub atrybut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
         <source>Download and import data from WMS server</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz i importuj dane z serwera WMS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
         <source>Drop column from attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń kolumnę z tabeli atrybutów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
         <source>E00 vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wektorowa E00</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
         <source>Execute any SQL statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom dowolne zapytanie SQL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster RGB GRASS do obrazu PPM z rozdzielczością aktualnego regionu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
         <source>Export raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
         <source>Export raster as non-georeferenced PNG image format</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster jako obraz PNG bez georeferencji</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
         <source>Export raster series to MPEG movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj serię rastrów do animacji MPEG</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do 8/24 bitowego obrazu TIFF z rozdzielczością aktualnego regionu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
         <source>Export raster to ASCII text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do pliku tekstowego ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
         <source>Export raster to ESRI ARCGRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do ESRI ARCGRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do formatu GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export raster to Geo TIFF</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster jako GeoTIFF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
         <source>Export raster to POVRAY height-field file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do formatu POVRAY (plik wysokości)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster obrazu PPM z rozdzielczością aktualnego regionu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
         <source>Export raster to VTK-ASCII</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do VTK-ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do Virtual Reality Modeling Language (VRML)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
         <source>Export raster to binary MAT-File</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do formatu binarnego MAT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to binary array</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do binarnej macierzy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster to text file as x,y,z values based on cell centers</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do pliku tekstowego jako wartości x, y, z dla środków komórek rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to various formats (GDAL library)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj raster do wielu formatów (biblioteka GDAL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
         <source>Export vector table</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj tabelę wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
         <source>Export vector to DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do DXF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export vector to GML</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do GML</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export vector to Mapinfo</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do Mapinfo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
         <source>Export vector to POV-Ray</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do POV-Ray</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
         <source>Export vector to PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do PostGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do bazy danych PostGIS (PostgreSQL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
         <source>Export vector to SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do SVG</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export vector to Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do Shapefile</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export vector to VTK-ASCII</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do VTK-ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export vector to various formats (OGR library)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj wektor do wielu formatów (biblioteka OGR)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
         <source>Exports attribute tables into various format</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj tabelę atrybutów do wielu formatów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Extract features from vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydobądź obiekty z wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
         <source>Extract selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydobądź wybrane obiekty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
         <source>Extracts terrain parameters from DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydobądź parametry terenu z NMT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
         <source>Fast fourier transform for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Szybka transformacja Fouriera (FFT) obrazu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
@@ -31650,27 +31650,27 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Fill lake from seed at given level</source>
-        <translation type="unfinished"></translation>
+        <translation>Wypełnij depresję z punktu na zadany poziom</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Fill lake from seed point at given level</source>
-        <translation type="unfinished"></translation>
+        <translation>Wypełnij depresję z punktu na zadany poziom</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Wypełnij komórki rastra bez danych przy pomocy funkcji sklejanej (v.surf.rst) </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtuj i generuj NMT bez obszarów bezodpływowych oraz mapę spływów na podstawie NMT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
         <source>Filter image</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtruj obraz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
@@ -31680,32 +31680,32 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
         <source>Find shortest path on vector network</source>
-        <translation type="unfinished"></translation>
+        <translation>Odszukaj najkrótszą drogę w sieci wektorowej</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
         <source>GDAL raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa rastrowa GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>GRASS MODULES</source>
-        <translation type="unfinished"></translation>
+        <translation>Moduły GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>GRASS shell</source>
-        <translation type="unfinished"></translation>
+        <translation>Powłoka GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>Gaussian kernel density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość jądra Gaussa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
         <source>Generalization</source>
-        <translation type="unfinished"></translation>
+        <translation>Generalizacja</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
@@ -31715,22 +31715,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
         <source>Generate surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj NMT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
         <source>Generate vector contour lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj warstwice wektorowe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
         <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
-        <translation type="unfinished"></translation>
+        <translation>Georeferencja, rektyfikacja oraz import obrazu Terra ASTER oraz NMT (gdalwarp)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
         <source>Graphical raster map calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Graficzny kalkulator map rastrowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
@@ -31740,67 +31740,67 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformacja modelu barw HIS na RGB</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
         <source>Hydrologic modelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelowanie hydrologiczne</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
         <source>Imagery</source>
-        <translation type="unfinished"></translation>
+        <translation>Obraz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Import</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
         <source>Import ASCII raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj rastre ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
         <source>Import DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor DXF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj ESRI ARC/INFO ASCII GRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
         <source>Import ESRI E00 vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor ESRI E00</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Import GDAL supported raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj raster obsługiwany przez GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Import GDAL supported raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj raster obsługiwany przez GDAL i twórz odpowiednią lokację</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
         <source>Import MapGen or MatLab vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor MapGen lub MatLab</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
         <source>Import OGR vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
@@ -31810,42 +31810,42 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
         <source>Import OGR/PostGIS vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor OGR/PostGIS i twórz odpowiednią lokację</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
         <source>Import SPOT VGT NDVI</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj SPOT VGT NDVI</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Import SRTM HGT</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj SRTM HGT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj US-NGA GEOnet Names Server (GNS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wszystkie wektory OGR/PostGIS z zadanej lokalizacji i twórz odpowiednią lokację</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
         <source>Import attribute tables in various formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj tabele atrybutów z wielu formatów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
         <source>Import binary MAT-File(v4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj binarny MAT (v4)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Import binary raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj binarny raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
@@ -31855,42 +31855,42 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import loaded raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wczytany raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import loaded raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wczytany raster i twórz odpowiednią lokację</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
         <source>Import loaded vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wczytany wektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
         <source>Import loaded vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wczytany wektor i twórz odpowiednią lokację</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import loaded vector selecting some features</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wczytany wektor wybierając niektóre obiekty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
         <source>Import only some layers of a DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj tylko wybrane warstwy z wektora DXF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
         <source>Import raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
         <source>Import raster from ASCII polygon/line</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj raster z poligonów/linii ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
@@ -31900,82 +31900,82 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
         <source>Import vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import vector from gps using gpsbabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor z GPS przy pomocy gpsbabel</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import vector from gps using gpstrans</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj wektor z GPS przy pomocy gpstrans</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import vector points from database table containing coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuj punkty wektorowe z tabeli bazy danych zawierającej współrzędne</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
         <source>Input nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły wejściowe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
         <source>Input table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela wejściowa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
         <source>Interpolate surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpoluj powierzchnię</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Inverse distance squared weighting raster interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolacja rastra metodą odwrotnych odległości</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolacja rastra metodą odwrotnych odległości z punktów wektorowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Odwrotna szybka transformacja Fouriera dla obrazów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Join table to existing vector table</source>
-        <translation type="unfinished"></translation>
+        <translation>Złącz tabelę z istniejącą tabelą wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
         <source>Layers categories management</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie kategoriami warstw</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Line-of-sight raster analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza rastrowa linii widoczności</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Złącz rastrową warstwę GDAL z binarną warstwą rastrową</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Link GDAL supported raster to binary raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Złącz rastrową warstwę GDAL z binarną warstwą rastrową</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Złącz wszystkie rastrowe warstwy GDAL w katalogu z binarnymi warstwami rastrowymi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
@@ -31985,107 +31985,107 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
         <source>Manage features</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj obiektami</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
         <source>Manage image colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj kolorami obrazów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Manage map colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj kolorami map</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Manage raster cells value</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj wartościami komórek rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Manage training dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj danymi treningowymi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
         <source>Map algebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Algebra mapowa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
         <source>Map type conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwersje typów map</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
         <source>MapGen or MatLab vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wektorowa MapGen lub MatLab</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
         <source>Mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Maska</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
         <source>Metadata support</source>
-        <translation type="unfinished"></translation>
+        <translation>Obsługa metadanych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
         <source>Mosaic up to 4 images</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozaika do 4 obrazów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
         <source>Name for new raster file (specify file extension)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa nowego pliku rastrowego (podaj rozszerzenie pliku)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
         <source>Name for new vector file (specify file extension)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa nowego pliku wektorowego (podaj rozszerzenie pliku)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
         <source>Name of the table to create</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa tworzonej tabeli</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
         <source>Neighborhood analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza sąsiedztwa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
         <source>Network analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza sieciowa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
         <source>Network maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie siecią</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
         <source>OGR file</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>OGR vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wektorowa OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
         <source>Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Inne</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
         <source>Output GML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy plik GML</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
@@ -32095,7 +32095,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
         <source>Output layer name (used in GML file)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa warstwy wynikowej (użyte w pliku GML)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
@@ -32115,37 +32115,37 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
         <source>Path to the OGR data source</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżka do danych OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
         <source>Percentage of first layer (0-99)</source>
-        <translation type="unfinished"></translation>
+        <translation>Procent pierwszej warstwy (0-99)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokonaj transformacji afinicznej (przesunięcie, skalowanie, obrót punktów kontrolnych GCP) wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
         <source>Print projection information from a georeferenced file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl informację o odwzorowaniu dla pliku z georeferencją</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl informację o odwzorowaniu dla pliku z georeferencją i stwórz na tej bazie nową lokację</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
         <source>Print projection information of the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl informacje o odwzorowaniu dla bieżącej lokacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Projection conversion of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuj odwzorowanie wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
@@ -32155,12 +32155,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
         <source>Put geometry variables in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz zmienne geometrii w bazie danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
         <source>Query rasters on their category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie i etykiety rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
@@ -32180,7 +32180,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
         <source>Raster buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor rastrowy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
@@ -32190,12 +32190,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
         <source>Raster neighbours analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastrowa analiza sąsiedztwa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Raster support</source>
-        <translation type="unfinished"></translation>
+        <translation>Obsługa rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
@@ -32205,32 +32205,32 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Przebuduj topologię dla wszystkich wektorów w mapsecie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Recategorize contiguous cells to unique categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Reklasyfikuj sąsiednie komórki rastra do unikalnych kategorii</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
         <source>Reclass category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Reklasyfikuj kategorie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Reclass category values using a column attribute (integer positive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Reklasyfikuj kategorie na bazie kolumny atrybutów (liczby całkowite dodatnie)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
         <source>Reclass category values using a rules file</source>
-        <translation type="unfinished"></translation>
+        <translation>Reklasyfikuj kategorie na podstawie pliku reguł</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
         <source>Reclass raster using reclassification rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Reklasyfikuj raster na podstawie reguł klasyfikacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
@@ -32260,22 +32260,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Reconnect vector to a new database</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponownie podłącz wektor do nowej bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
         <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformacja modelu barw RGB na HIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
         <source>Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Region</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
         <source>Region settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia regionu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
@@ -32290,32 +32290,32 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
         <source>Remove all lines or boundaries of zero length</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń wszystkie linie lub granice o zerowej długości</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Remove bridges connecting area and island or 2 islands</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń łączniki łączące poligony z wyspami lub dwie wyspy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Remove dangles</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń wiszące</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
         <source>Remove duplicate area centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń zdublowane centroidy poligonów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
         <source>Remove duplicate lines (pay attention to categories!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń duplikaty linii (uwaga na kategorie!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
         <source>Remove existing attribute table of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń istniejącą tabelę atrybutów wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
@@ -32325,12 +32325,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
         <source>Remove small angles between lines at nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń małe kąty pomiędzy liniami w węzłach</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń małe poligony - najdłuższa granica przylegających poligonów jest usuwana</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
@@ -32340,22 +32340,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
         <source>Rename column in attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień nazwę kolumny w tabeli atrybutów</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
         <source>Report and statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Raporty i statystyki</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
         <source>Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Raporty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
         <source>Reports and statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Raporty i statystyki</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
@@ -32395,17 +32395,17 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
         <source>Save the current region as a named region</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz bieżący region jako region nazwany</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
         <source>Select features by attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz obiekty poprzez atrybuty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Select features overlapped by features in another map</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz obiekty nachodzące na siebie na innej mapie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
@@ -32500,7 +32500,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Show database connection for vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl połączenia z bazą danych dla wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
@@ -32510,22 +32510,22 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
         <source>Simple map algebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosta algebra mopowa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
         <source>Simplify vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprość wektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Snap lines to vertex in threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Dociągnij linie do wierzchołków w przedziale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
         <source>Solar and irradiation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Model nasłonecznienia i promieniowania</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
@@ -32550,7 +32550,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
         <source>Sum raster cell values</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumuj wartości w komórce rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
@@ -32610,27 +32610,27 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
         <source>Thin no-zero cells that denote line features</source>
-        <translation type="unfinished"></translation>
+        <translation>Linearyzuj niezerowe komórki stanowiące obiekty liniowe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
         <source>Toolset for cleaning topology of vector map</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzie czyszczenia topologii map wektorowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
         <source>Topology management</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie topologią</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Trace a flow through an elevation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Śledź spływ po NMT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
         <source>Transform cells with value in null cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekształć komórki rastra z wartością na NULL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
@@ -32645,12 +32645,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
         <source>Transform null cells in value cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekształć komórki rastra NULL na komórki z wartością</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
         <source>Transform value cells in null cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekształć komórki rastra z wartością na NULL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
@@ -32660,12 +32660,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
         <source>Update raster statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj statystyki rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
         <source>Update vector map metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj metadane mapy wektorowej</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
@@ -32685,12 +32685,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Vector buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor wektorowy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
         <source>Vector geometry analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza geometrii wektora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
@@ -32740,7 +32740,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Work with vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Praca z punktami wektorowymi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
