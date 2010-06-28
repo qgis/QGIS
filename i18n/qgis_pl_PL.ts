@@ -2389,7 +2389,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
         <source>Add overview</source>
-        <translation>Dodaj podgląd</translation>
+        <translation>Dodaj piramidy</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="72"/>
@@ -2429,7 +2429,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="113"/>
         <source>Levels (space delimited)</source>
-        <translation>Poziom (rozdzielone spacjami)</translation>
+        <translation>Poziomy (rozdzielone spacjami)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
@@ -5425,7 +5425,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2445"/>
         <source>Main GUI</source>
-        <translation>Główny interfejs użytkownika</translation>
+        <translation>Interfejs użytkownika</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2448"/>
@@ -5480,7 +5480,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2458"/>
         <source>Allow saving vector layers as ogr vector files</source>
-        <translation>Zapisywanie warstw wektorowych jako plików wektorowych OGR</translation>
+        <translation>Zapis warstw wektorowych do różnych formatów OGR</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2459"/>
@@ -5636,12 +5636,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2492"/>
         <source>Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db</source>
-        <translation>Usprawniona obsługa kodów EPSG, poprawione definicje polskich układów współrzędnych, dodana obsługa kodów IGNF</translation>
+        <translation>Usprawniona obsługa kodów EPSG, dodana obsługa kodów IGNF</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2493"/>
         <source>WMS provider makes requests asynchronously through QNetworkAccessManager now</source>
-        <translation>Asynchroniczne wywyłania WMS poprzez QNetworkAccessManager</translation>
+        <translation>Asynchroniczne żądania WMS poprzez QNetworkAccessManager</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2494"/>
@@ -5675,7 +5675,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2502"/>
-        <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentification to website and proxies)</source>
+        <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</source>
         <translation>Klasa QNetworkAccessManager zastąpiła QgsHttpTransaction (wprowadzając keszowanie i dynamiczną autoryzację)</translation>
     </message>
     <message>
@@ -19615,7 +19615,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="46"/>
         <source>Source type</source>
-        <translation>Typ źródła</translation>
+        <translation>Typ źródła danych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="52"/>
