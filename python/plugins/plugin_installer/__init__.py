@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008-2009 Borys Jurgiel
+Copyright (C) 2008-2010 Borys Jurgiel
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,7 +15,7 @@ def name():
   return "Plugin Installer"
 
 def version():
-  return "Version 1.0.11"
+  return "Version 1.0.12"
 
 def description():
   return "Downloads and installs QGIS python plugins"

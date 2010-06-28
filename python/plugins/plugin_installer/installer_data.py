@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008-2009 Borys Jurgiel
+Copyright (C) 2008-2010 Borys Jurgiel
 
 /***************************************************************************
  *                                                                         *
@@ -83,7 +83,7 @@ oldRepo      = ("QGIS 0.x Plugin Repository",  "http://spatialserver.net/cgi-bin
 officialRepo = ("QGIS Official Repository",    "http://pyqgis.org/repo/official","")
 contribRepo  = ("QGIS Contributed Repository", "http://pyqgis.org/repo/contributed","")
 authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
-                ("Borys Jurgiel's Repository", "http://bwj.aster.net.pl/qgis/plugins.xml", "http://bwj.aster.net.pl/qgis-oldapi/plugins.xml"),
+                # depreciated: ("Borys Jurgiel's Repository", "http://bwj.aster.net.pl/qgis/plugins.xml", "http://bwj.aster.net.pl/qgis-oldapi/plugins.xml"),
                 ("Faunalia Repository",        "http://www.faunalia.it/qgis/plugins.xml",  "http://faunalia.it/qgis/plugins.xml"),
                 ("Martin Dobias' Sandbox",     "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml", ""),
                 ("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
@@ -456,7 +456,8 @@ class Repositories(QObject):
           qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().simplified()
           if not qgisMaximumVersion: qgisMaximumVersion = "2"
           #if compatible, add the plugin to the list
-          if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
+          if not pluginNodes.item(i).firstChildElement("disabled").text().simplified().toUpper() in ["TRUE","YES"]:
+           if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
             if QGIS_VER[0]==qgisMinimumVersion[0] or name=="plugin_installer" or (qgisMinimumVersion!="0" and qgisMaximumVersion!="2"):
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
