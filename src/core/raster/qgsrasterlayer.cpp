@@ -465,7 +465,7 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString,
   {
     GDALClose( myDataset );
     myDataset = NULL;
-    retErrMsg = "This raster file has no bands and is invalid as a raster layer.";
+    retErrMsg = tr( "This raster file has no bands and is invalid as a raster layer." );
     return false;
   }
   else
