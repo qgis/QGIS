@@ -7284,7 +7284,7 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4850"/>
         <source>Tile scale</source>
-        <translation>Skala kafla</translation>
+        <translation>Skala kafli</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4946"/>
@@ -7539,12 +7539,12 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>Tile scale slider</source>
-        <translation>Suwak skali kafla</translation>
+        <translation>Suwak skali kafli</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1049"/>
         <source>Show tile scale slider</source>
-        <translation>Pokaż suwak skali kafla</translation>
+        <translation>Pokaż suwak skali kafli</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1188"/>
@@ -28884,7 +28884,7 @@ Tried URL: %1</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2319"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2507"/>
         <source>Tileset Properties</source>
-        <translation>Właściwości kafli</translation>
+        <translation>Właściwości tilesetu</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2324"/>
