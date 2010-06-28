@@ -40,7 +40,7 @@ und ist sehr nützlich, um mehrere Vektorlayer übereinander zu legen.
 Wenn Sie Ihren Layer gestaltet haben, können Sie Ihre Gestaltung in einer 
 gesonderten Datei (mit Endung <code>*.qml</code>) speichern.  Benutzen Sie dazu 
 den Knopf <label>Stil speichern...</label>.  Dass <label>Stil laden...</label> 
-Ihren gespeicherten Stil wiedr läd, sollte klar sein. 
+Ihren gespeicherten Stil wieder läd, sollte klar sein. 
 <p>Wenn Sie wann immer Sie den Layer laden den gleichen Stil verwenden wollen, 
 können Sie Ihn über den Knopf <label>Als Vorgabe speichern</label> 
 voreinstellen.  Außerdem können Sie mit dem Knopf <label>Stilvorgaben 
@@ -66,7 +66,7 @@ behandeln. Ein echter Zeilenumbruch in ein einzelnes Zeichen <code>\n</code> (AS
 LINEFEED; nicht zwei einzelne Zeichen wie umgekehrter Schrägstrich gefolgt von 
 einem Buchstaben n).
 
-<h5>Platzierunge</h5>
+<h5>Platzierung</h5>
 Ändern Sie die Beschriftungsplatzierung indem Sie eine Optionsfeld der Gruppe 
 <label>Platzierung</label> wählen.
 
@@ -88,7 +88,7 @@ wenn Ihnen das besser paßt.
 
 <h5>Datendefinierte Platzierung, Eigenschaften, Freistellung und Position</h5> 
 Die verbleibenden Einträge im Reiter <label>Beschriftung</label> erlauben es 
-Ihnen die Erscheinung der Beschriftungen mit im Layer gespeichern Attributen zu 
+Ihnen die Erscheinung der Beschriftungen mit im Layer gespeicherten Attributen zu 
 steuern. Die mit <label>Datendefiniert</label> beginnenden Einträge gestatten 
 es Ihnen alle Parameter der Beschriftungen über Felder des Layers zu setzen. 
 

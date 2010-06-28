@@ -12,10 +12,10 @@ Klicken Sie auf den Knopf <label>KBS angeben</label>, um ggf. das Koordinatenbez
 Ein gewünschtes Attribut fügen Sie über den Knopf <label>Der Attributliste 
 hinzufügen</label> hinzu, nachdem Sie einen Name und den Attributtyp festgelegt 
 haben. Derzeit werden Fließkomma- (Real), ganze Zahlen (Integer) und 
-Zeichenketten unterstützt.<br/> Sie können auch die Breite und Genauigket der 
+Zeichenketten unterstützt.<br/> Sie können auch die Breite und Genauigkeit der 
 neuen Attributspalte angeben. 
 
 <h4>Attributliste</h4>
-In diesem Abschnitt werden die vorhandenen Attribute aufgelisten. Um ein 
+In diesem Abschnitt werden die vorhandenen Attribute aufgelistet. Um ein 
 Attribute zu löschen klicken Sie es an und wählen dann <label>Gewähltes 
 Attribute löschen</label>.

@@ -1,6 +1,6 @@
 <h3>Definition eines Benutzerkoordinatensystems</h3>
 Wenn QGIS ein benötigtes Koordinatensystem nicht zur Verfügung stellt, können Sie ein Benutzer-KBS definieren.
-<p>Um ein KBS anzugeben, wählen Sie <label>Benutzerkoordinatensystem...</label> aus dem Menü <label>Bearbeiten</label> (Gnome, OSX) bzw. <label>Einstellungen</label> (KDE, Windows). 
+<p>Um ein KBS anzugeben, wählen Sie <label>Benutzerkoordinatensystem...</label> aus dem Menü <label>Bearbeiten</label> (GNOME, OSX) bzw. <label>Einstellungen</label> (KDE, Windows). 
 Benutzer-KBS werden in Ihrer QGIS-Benutzerdatenbank gespeichert.  Neben Ihren Benutzer-KBS enthält diese auch die räumlichen Lesezeichen und andere Benutzerdaten. 
 
 <h4>Definieren</h4>

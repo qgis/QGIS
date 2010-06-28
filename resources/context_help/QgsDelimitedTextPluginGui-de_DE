@@ -13,7 +13,7 @@ Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten:
 <ol>
 <li>Eine Titelzeile mit den Namen der Fehler. Dies muß die erste Zeile der Textdatei sein.</li>
 <li>Die Titelzeile muss ein X und ein Y-Feld enthalten. Diese Fehler können beliebige Namen haben.</li>
-<li>Die <B>x</B> and <B>y</B> Koordinaten müssen als Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
+<li>Die <B>x-</B> und <B>y-</B>Koordinaten müssen als Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
 </ol>
 <a name="example">
 <h4>Beispiel einer gültigen Textdatei</h4> 

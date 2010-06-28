@@ -13,7 +13,7 @@ This dialog allows you to work with vector layer settings and properties. There 
 <h4>Symbology</h4>
 </a>
 To change the symbology for a layer, simply double click on its legend entry and the vector <label>Layer Properties</label> dialog will be shown.<p>
-Within this dialog you can style your vector layer. Depending on the selected rendering option you have the possibility to also classify your mapfeatures.
+Within this dialog you can style your vector layer. Depending on the selected rendering option you have the possibility to also classify your map features.
 
 <h5>Legend type</h5>
 QGIS supports a number of symbology renderers to control how vector features are displayed. Currently the following renderers are available:
@@ -38,7 +38,7 @@ If you wish to always use a particular style whenever the layer is loaded, use t
 <h4>Labels</h4>
 </a>
 The Labels tab allows you to enable labeling features and control a number of options related to fonts, placement, style, alignment and buffering.<br/>
-Check the <label>Display labels</label> checkbox to enable labeling.
+Check the <label>Display labels</label> check box to enable labeling.
 
 <h5>Basic Label options</h5>
 Choose the field to label with.<p>
@@ -54,7 +54,7 @@ The <label>Font size units</label> allows you to select between <label>Points</l
 <h5>Buffer labels</h5>
 To buffer the labels means putting a backdrop around them to make them stand out better. To buffer the lakes labels:
 <ol>
-<li>Click the <label>Buffer Labels</label> checkbox to enable buffering.
+<li>Click the <label>Buffer Labels</label> check box to enable buffering.
 <li>Choose a size for the buffer using the spin box.
 <li>Choose a color by clicking on <label>Color</label> and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
 <li>Click <label>Apply</label> to see if you like the changes.
@@ -69,20 +69,20 @@ The remaining entries inside the <label>Label</label> tab allow you control the 
 <a name="attributes">
 <h4>Attributes</h4>
 </a>
-Within the <label>Attributes</label> tab the attributes of the selected dataset can be manipulated. The buttons <label>New Column</label> and <label>Delete Column</label> can be used, when the dataset is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version >= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.<p>
+Within the <label>Attributes</label> tab the attributes of the selected data set can be manipulated. The buttons <label>New Column</label> and <label>Delete Column</label> can be used, when the data set is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version >= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.<p>
 The <label>Toggle editing mode</label> button toggles this mode.<p>
 Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the <label>edit widget</label> button, a dialog opens, where you can define different widgets. These widgets are:<br/>
 <ul>
 <li><label>Line edit</label> an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
 <li><label>Classification</label> Displays a combo box with the values used for classification, if you have chosen <label>unique value</label> as legend type in the symbology tab of the properties dialog.
 <li><label>Range</label> Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
-<li><label>Unique value</label> The user can select one of the values already used in the attribute table. If <label>editable</label> is activated, a line edit is shown with autocompletion support, but additional values are possible, otherwise a combo box is used.
+<li><label>Unique value</label> The user can select one of the values already used in the attribute table. If <label>editable</label> is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
 <li><label>File name</label> Simplifies the selection by adding a file chooser dialog.
-<li><label>Value map</label> a combo box with predefined items. The value is stored in the attribute, the description is shown in the comboo box. You can define values manually or load them from a layer or a csv file.
-<li><label>Enumeration</label> Opens a combo box with values that can be used within the columns type. This is currently only supported by the postgres provider.
+<li><label>Value map</label> a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
+<li><label>Enumeration</label> Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
 <li><label>Immutable</label> The immutable attribute column is read-only. The user is not able to modify the content.
 <li><label>Hidden</label> A hidden attribute column is invisible to the user.
-<li><label>Checkbox</label> A checkbox is shown.  The value representing the state of the checkbox in the attribute has to be entered.
+<li><label>Checkbox</label> A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
 <li><label>Text edit</label> A text edit field is shown, that allows entering multiline text.
 </ul>
 
@@ -114,7 +114,7 @@ Actions can be invoked from the <label>Identify Results</label> dialog.
 <h4>Diagram Overlay</h4>
 </a>
 The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the <label>Plugin Manager</label> and select the <label>Diagram Overlay</label> plugin. After this, there is a new tab in the vector <label>Layer Properties</label> dialog where the settings for diagrams may be entered.<p>
-The current implementation of diagrams provides support for pie- and barcharts and for linear scaling
+The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 
 

@@ -14,7 +14,7 @@ This dialog allows you to select some basic options for QGIS. There are eight ta
 <a name="general">
 <h4>General</h4>
 </a>
-On this tab you can set general options for project behaviour on opening/saving, default map appearance, your favourite icon theme and many others.
+On this tab you can set general options for project behavior on opening/saving, default map appearance, your favorite icon theme and many others.
 <a name="ren">
 <h4>Rendering & SVG</h4>
 </a>
@@ -28,16 +28,16 @@ By default, QGIS renders all visible layers whenever the map canvas must be refr
 </ul>
 QGIS allows you to control the rendering process in a number of ways:<p>
 You can set an option to always load new layers without drawing them.<br>
-This means the layer will be added to the map, but its visibility checkbox in the legend will be unchecked by default. To set this option, uncheck the <label>By default new layers added to the map should be displayed</label> checkbox.<p>
+This means the layer will be added to the map, but its visibility check box in the legend will be unchecked by default. To set this option, uncheck the <label>By default new layers added to the map should be displayed</label> check box.<p>
 You can set an option to update the map display as features are drawn. <br>
-By default, QGIS does not display any features for a layer until the entire layer has been rendered. To update the display as features are read from the datastore, set the <label>Number of features to draw before updating the display</label> to an appropriate value. Setting a value of 0 disables update during drawing (this is the default). Setting a value too low will result in poor performance as the map canvas is continually updated during the reading of the features. A suggested value to start with is 500.
+By default, QGIS does not display any features for a layer until the entire layer has been rendered. To update the display as features are read from the data store, set the <label>Number of features to draw before updating the display</label> to an appropriate value. Setting a value of 0 disables update during drawing (this is the default). Setting a value too low will result in poor performance as the map canvas is continually updated during the reading of the features. A suggested value to start with is 500.
 <a name="map">
 <h4>Map tools</h4>
 </a>
 <h5>Identify</h5>
 The <label>Mode</label> setting determines which layers will be shown by the <label>Identify</label> tool. By switching to <label>Top down</label> instead of <label>Current layer</label> attributes for all identifiable layers will be shown with the <label>Identify</label> tool.
 <h5>Measure tool</h5>
-Here you can set an elipsoid for distance calculations, measurement units and preferred color of rubberband.
+Here you can set an ellipsoid for distance calculations, measurement units and preferred color of rubber band.
 <h5>Panning and zooming</h5>
 Allows to define mouse wheel action and zoom factor.
 <a name="over">
@@ -48,7 +48,7 @@ Define placement algorithm for labels. Choose between <label>central point (fast
 <a name="digit">
 <h4>Digitizing</h4>
 </a>
-<h5>Rubberband</h5>
+<h5>Rubber band</h5>
 In the <label>Digitizing</label> tab you can define settings for digitizing line width and color.
 <h5>Snapping</h5>
 Here you can define a general, project wide snapping tolerance. <p>

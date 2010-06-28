@@ -1,7 +1,7 @@
 <h3>Open Vector Layer Dialog</h3>
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).</p>
-QGIS supports vector data in a number of formats, including those supported by the OGR library data provider plugin, such as ESRI shapefiles, MapInfo MIF (interchange format) and MapInfo TAB (native format).</p>
-QGIS supports PostGIS layers in a PostgreSQL database and SpatialLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats incan be found in Appendix A.1 of the User Guide.</p>
+QGIS supports vector data in a number of formats, including those supported by the OGR library data provider plugin, such as ESRI shape files, MapInfo MIF (interchange format) and MapInfo TAB (native format).</p>
+QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.</p>
 Detailed description how to proceed with vector data is described in chapter 5 'Working with Vector Data'.
 

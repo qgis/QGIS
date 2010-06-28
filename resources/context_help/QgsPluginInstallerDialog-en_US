@@ -82,20 +82,20 @@ remove, and edit the entries. Temporarily disabling a particular repository is p
 </a>
 <p align='justify'>
 The <label>Options</label> tab is where you can conﬁgure the settings of the Plugin Installer. 
-The <label>x Check for updates on startup</label> checkbox tells QGIS to automatically look for plugin updates and 
+The <label>x Check for updates on start up</label> check box tells QGIS to automatically look for plugin updates and 
 news. By default, if this feature is enabled all repositories listed and enabled in the <label>Repositories</label> 
 tab are checked for updates each time the program is started. The frequency of update checking 
-can be adjusted using the dropdown menu, and may be adjusted from once a day right up to once a 
+can be adjusted using the drop down menu, and may be adjusted from once a day right up to once a 
 month. If a new plugin or update is available for one of the installed plugins, a notiﬁcation will appear 
-in the Status Bar. If the checkbox is disabled, looking for updates and news is performed only when 
+in the Status Bar. If the check box is disabled, looking for updates and news is performed only when 
 the Plugin Installer is manually launched from the menu.
 </p>
 
 <p align='justify'>
-Some internet connections will cause problems when attempting to automatically check for updates. 
+Some Internet connections will cause problems when attempting to automatically check for updates. 
 In these cases, a <i>Looking for new plugins...</i> indicator will remain visible in the Status Bar during your 
 entire QGIS session, and may cause a program crash when exiting. In this case please disable the 
-checkbox.
+check box.
 </p>
 
 

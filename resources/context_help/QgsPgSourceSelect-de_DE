@@ -1,5 +1,5 @@
 <h3>PostGIS-Tabelle hinzufügen</h3>
-In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespaten) zur 
+In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespalten) zur 
 Karte hinzufügen.
 <p>
 <a href="#connect">Verbindungen</a><br/>
@@ -31,13 +31,13 @@ Um einen Layer hinzuzufügen:
 </a>
 Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen oder
 benutzen den Knopf <label>Abfrage erstellen</label>.  Daraufhin öffnet sich der
-Abfrageneditor, in dem Sie SQL-Anweisungen zum Filtern der Datensätze festlegen
+Abfrageeditor, in dem Sie SQL-Anweisungen zum Filtern der Datensätze festlegen
 können.
 
 <a name="#search">
 <h4>Suchoptionen</h4>
 </a>
-Durch Anhaken von <label>Suchoptionen</label> werden weitere Möglichkeiten zur
-Suche nach verschiedenen Spaltentype mit folgenden Modi zugeschaltet:
+Durch Abhaken von <label>Suchoptionen</label> werden weitere Möglichkeiten zur
+Suche nach verschiedenen Spaltentyp mit folgenden Modi zugeschaltet:
 <label>Platzhalter</label> oder <label>RegAusdr</label>.
 
