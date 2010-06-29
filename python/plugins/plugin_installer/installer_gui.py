@@ -689,12 +689,15 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     else:
       # if the uninstalled plugin is the installer itself, reload it and quit
       if key == "plugin_installer":
-        try:
-          QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation."))
-          reloadPlugin(key)
-          return
-        except:
-          pass
+        if QGIS_15:
+          try:
+            QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation."))
+            reloadPlugin(key)
+            return
+          except:
+            pass
+        else:
+          QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version."))
       # safe remove
       try:
         unloadPlugin(plugin["localdir"])
