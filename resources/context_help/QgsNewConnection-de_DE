@@ -16,6 +16,4 @@ Um eine PostGIS-Verbindung anzulegen, müssen Sie den Host, Port und Ihren Benut
 <li><label>Nur im 'public'-Schema</label> - diese begrenzt die Suche auf Layer im public-Schema
 </ol>
 <h4>Verbindung testen</h4>
-Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch 
-mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter 
-vor dem Speichern gut prüfen.
+Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter vor dem Speichern gut prüfen.
