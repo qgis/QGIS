@@ -1,8 +1,5 @@
 <h3>Projekteigenschaften</h3>
-In diesem Dialog können Sie die Eigenschaften des <label>Projekts</label> 
-einstellen. In einem Projekt werden eine Menge von Layern mit Ihren 
-Einstellungen sowie andere Information, die zur Wiederherstellung des Projekts 
-beim Laden von Festplatte benötigt werden, gespeichert.</p>
+In diesem Dialog können Sie die Eigenschaften des <label>Projekts</label> einstellen. In einem Projekt werden eine Menge von Layern mit Ihren Einstellungen sowie andere Information, die zur Wiederherstellung des Projekts beim Laden von Festplatte benötigt werden, gespeichert.</p>
 
 <a href="#general">Reiter allgemein</a><br/>
 <a href="#crs">Reiter Koordinatenbezugssystem (KBS)</a><br/>

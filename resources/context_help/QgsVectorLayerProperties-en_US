@@ -116,5 +116,3 @@ Actions can be invoked from the <label>Identify Results</label> dialog.
 The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the <label>Plugin Manager</label> and select the <label>Diagram Overlay</label> plugin. After this, there is a new tab in the vector <label>Layer Properties</label> dialog where the settings for diagrams may be entered.<p>
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
-
-

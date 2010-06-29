@@ -52,9 +52,8 @@ Define placement algorithm for labels. Choose between <label>central point (fast
 In the <label>Digitizing</label> tab you can define settings for digitizing line width and color.
 <h5>Snapping</h5>
 Here you can define a general, project wide snapping tolerance. <p>
-You can select between <label>To vertex</label>, <label>To segment</label> or <label>To vertex and segment</label> as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn't have to be changed after zoom operations. <p>
-A layer based snapping tolerance can be defined by choosing <label>Settings</label> (or <label>File</label>)
-> <label>Project Properties...</label>. In the <label>General</label> tab, section <label>Digitize</label> you can click on <label>Snapping options...</label> to enable and adjust snapping mode and tolerance on a layer basis.
+You can select between <label>To vertex</label>, <label>To segment</label> or <label>To vertex and segment</label> as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn't have to be changed after zoom operations.<p>
+A layer based snapping tolerance can be defined by choosing <label>Settings</label> (or <label>File</label>) > <label>Project Properties...</label>. In the <label>General</label> tab, section <label>Digitize</label> you can click on <label>Snapping options...</label> to enable and adjust snapping mode and tolerance on a layer basis.
 <h5>Vertex markers</h5>
 You can define marker style as <label>Semi transparent circle</label>, <label>Cross</label> or <label>None</label> and size; you can also set showing markers only for selected features.
 <h5>Enter attribute values</h5>
@@ -67,10 +66,8 @@ The global default CRS <i>proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</i> co
 <a name="lov">
 <h4>Locale</h4>
 </a>
-Informs you about active system locale.
-To change it tick <label>Override system locale</label> and restart QGIS.
+Informs you about active system locale. To change it tick <label>Override system locale</label> and restart QGIS.
 <a name="net">
 <h4>Network & Proxy</h4>
 </a>
 Tick <label>Use proxy for web access</label> to define host, port, user, and password.
-
