@@ -421,31 +421,40 @@ class Qgis2Map:
   # compared to mapserver
   def writeMapLayers(self):
     resultMsg = ''
-    # get the list of legend nodes so the layers can be written in the proper order
-    legend_nodes = self.qgs.getElementsByTagName("legendlayer")
-    self.z_order = list()
-    for legend_node in legend_nodes:
-        self.z_order.append(legend_node.getAttribute("name").encode('utf-8').replace("\"", "").replace(" ","_"))
-
+    # get the layers from the legend to be able to determine the order later
+    legend_layers = self.qgs.getElementsByTagName("legendlayerfile")
+    self.layer_order = list()
+    for legend_layer in legend_layers:
+        self.layer_order.append(legend_layer.getAttribute("layerid").encode('utf-8'))
     # get the list of maplayer nodes
     maplayers = self.qgs.getElementsByTagName("maplayer")
     print "Processing ", len(maplayers), " layers"
     count = 0
     layer_list = dict()
+    layer_names = []
     for lyr in maplayers:
       count += 1
-      print "Processing layer ", count 
+      print "Processing layer ", count
       # The attributes of the maplayer tag contain the scale dependent settings,
       # visibility, and layer type
       layer_def = "  LAYER\n"
       # store name of the layer - replace space with underscore for wms compliance
       layer_name = lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "").replace(" ","_")
+      # layername is not unique in qgis, store id of layer
+      layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode('utf-8')
       # first check to see if there is a name
       if len(layer_name) > 0:
-        layer_def += "    NAME '%s'\n" % layer_name
+        # WMS layernames should be unique, so
+        # if the layer_name already excists in our layer_list of names:
+        if layer_name in layer_names:
+          # we give it the old name plus number
+          layer_name = layer_name + str(count)
       else:
-        # if no name for the layer, manufacture one  
-        layer_def += "    NAME 'LAYER%s'\n" % count
+        # if no name for the layer, manufacture one
+        layer_name = 'layer' + str(count)
+      # store the name to be able to check for double names
+      layer_names.append(layer_name)
+      layer_def += "    NAME '%s'\n" % layer_name
 
       if lyr.getAttribute("type").encode('utf-8') == 'vector':  
         layer_def += "    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n"
@@ -492,8 +501,6 @@ class Qgis2Map:
         #layer_def += "    DATA '\"" + uri.geometryColumn() + "\" FROM " + uri.quotedTablename() + "'\n"
         #layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + "'\n"
         layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
-        # TODO: check if this project is actually loaded in QGis
-        # only in loaded project files it's possible to determine the primary key of a postgis table
         uniqueId = self.getPrimaryKey(layer_id, uri.table())
         # %tablename% is returned when no uniqueId is found: inform user
         if uniqueId.find("%") >= 0:
@@ -546,7 +553,7 @@ class Qgis2Map:
       
       # WMS settings for all layers
       layer_def += "    METADATA\n"
-      layer_def += "      'ows_title' '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
+      layer_def += "      'ows_title' '" + layer_name + "'\n"
       layer_def += "    END\n"
 
       layer_def += "    STATUS OFF\n"
@@ -554,7 +561,6 @@ class Qgis2Map:
       # turn status in MapServer on or off based on visibility in QGis:
 #      layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
 #      legendLayerNode = self.legendlayerfileNodesById[layer_id]
-
 #      if legendLayerNode.getAttribute("visible").encode("utf-8") == "1":
 #        layer_def += "    STATUS ON\n"
 #      else:
@@ -621,13 +627,13 @@ class Qgis2Map:
       # end of LAYER
       layer_def += "  END\n\n"
 
-      # add the layer to the list
-      layer_list[layer_name] = layer_def
-    # all layers have been processed, reverse the list and write
-    # not necessary since z-order is mapped by the legend list order
-    self.z_order.reverse()
-    for layer in self.z_order:
-      self.outFile.write(layer_list[layer])
+      # add the layer to the list with layer_id as key
+      layer_list[layer_id] = layer_def
+    # all layers have been processed, reverse the layer_order and write
+    # output layer_def's in order as they appear in legend (as seen by user)
+    self.layer_order.reverse()
+    for layerid in self.layer_order:
+      self.outFile.write(layer_list[layerid])
     return resultMsg
 
 
