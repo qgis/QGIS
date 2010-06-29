@@ -68,6 +68,8 @@ class QgsAttributeDialog : public QObject
     QgsVectorLayer *mLayer;
     QgsFeature *mpFeature;
     QgsRubberBand *mRubberBand;
+    int mFormNr;
+    static int smFormCounter;
 };
 
 #endif

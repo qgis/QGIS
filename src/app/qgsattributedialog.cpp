@@ -42,12 +42,15 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 
+int QgsAttributeDialog::smFormCounter = 0;
+
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature )
     : mDialog( 0 )
     , mSettingsPath( "/Windows/AttributeDialog/" )
     , mLayer( vl )
     , mpFeature( thepFeature )
     , mRubberBand( 0 )
+    , mFormNr( -1 )
 {
   if ( mpFeature == NULL || vl->dataProvider() == NULL )
     return;
@@ -227,9 +230,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       QgisApp::instance()->runPythonString( QString( "import %1" ).arg( module.left( pos ) ) );
     }
 
-    QgisApp::instance()->runPythonString( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mLayer->getLayerID() ).arg(( unsigned long ) mDialog ) );
+    mFormNr = smFormCounter++;
+    QgisApp::instance()->runPythonString( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mFormNr ).arg(( unsigned long ) mDialog ) );
 
-    QString expr = QString( "%1(_qgis_featureform_%2,'%2',%3)" ).arg( vl->editFormInit() ).arg( vl->getLayerID() ).arg( mpFeature->id() );
+    QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->getLayerID() ).arg( mpFeature->id() );
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgisApp::instance()->runPythonString( expr );
   }
@@ -331,8 +335,11 @@ void QgsAttributeDialog::dialogDestroyed()
   mLayer->setProperty( "featureForm.dialog", QVariant() );
   mLayer->setProperty( "featureForm.id", QVariant() );
 #endif
-  QString expr = QString( "if locals().has_key('_qgis_featureform_%1'): del _qgis_featureform_%1\n" ).arg( mLayer->getLayerID() );
-  QgisApp::instance()->runPythonString( expr );
+  if ( -1 < mFormNr )
+  {
+    QString expr = QString( "if locals().has_key('_qgis_featureform_%1'): del _qgis_featureform_%1\n" ).arg( mFormNr );
+    QgisApp::instance()->runPythonString( expr );
+  }
 
   mDialog = NULL;
   deleteLater();
