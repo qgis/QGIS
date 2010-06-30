@@ -240,9 +240,11 @@ class Dialog(QDialog, Ui_Dialog):
         sFeat = QgsFeature()
         sGeom = QgsGeometry()
         sPoints = []
-        if design == "field":
+        if design == self.tr("field"):
             for (i, attr) in sProvider.fields().iteritems():
-                if (unicode(numRand) == attr.name()): index = i #get input field index
+                if (unicode(numRand) == attr.name()):
+                    index = i #get input field index
+                    break
         count = 10.00
         add = 60.00 / sProvider.featureCount()
         while sProvider.nextFeature(sFeat):
