@@ -130,7 +130,6 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.testThread.stop()
     QApplication.restoreOverrideCursor()
     self.buttonOk.setEnabled( True )
-    QApplication.restoreOverrideCursor()
     
   def runFinishedFromThread( self, output ):
     self.testThread.stop()
@@ -217,8 +216,9 @@ class visualThread( QThread ):
     lstUnique = []
     nFeat = len( unique )
     nElement = 0
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-    self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+    if nFeat > 0:
+      self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+      self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     for item in unique:
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
@@ -270,8 +270,9 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       else: # there is no selection, process the whole layer
         nFeat = vprovider.featureCount()
-        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+	if nFeat > 0:
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+          self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         vprovider.select( allAttrs )
         while vprovider.nextFeature( feat ):
           atMap = feat.attributeMap()
@@ -335,8 +336,9 @@ class visualThread( QThread ):
       else: # there is no selection, process the whole layer
         nFeat = vprovider.featureCount()
         uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, False )
-        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+	if nFeat > 0:
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+          self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         vprovider.select( allAttrs )
         while vprovider.nextFeature( feat ):
           atMap = feat.attributeMap()
@@ -397,8 +399,9 @@ class visualThread( QThread ):
     vprovider.rewind()
     nFeat = vprovider.featureCount()
     nElement = 0
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-    self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+    if nFeat > 0:
+      self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+      self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     while vprovider.nextFeature( feat ):
       neighbourID = index.nearestNeighbor( feat.geometry().asPoint(), 2 )[ 1 ]
       vprovider.featureAtId( neighbourID, neighbour, True, [] )
@@ -430,8 +433,9 @@ class visualThread( QThread ):
     lstErrors = []
     nFeat = vprovider.featureCount()
     nElement = 0
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-    self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+    if nFeat > 0:
+      self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+      self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
 
     while vprovider.nextFeature( feat ):
       geom = QgsGeometry( feat.geometry() )
