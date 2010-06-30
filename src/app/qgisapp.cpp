@@ -4866,7 +4866,7 @@ void QgisApp::showGpsTool()
   }
   else
   {
-    mpGpsDock->toggleViewAction();
+    mpGpsDock->setVisible( mpGpsDock->isHidden() );
   }
 #endif
 }
@@ -4885,7 +4885,7 @@ void QgisApp::showTileScale()
     mPanelMenu->addAction( mpTileScaleDock->toggleViewAction() );
     // now add our widget to the dock - ownership of the widget is passed to the dock
     mpTileScaleDock->setWidget( mpTileScaleWidget );
-    mpTileScaleWidget->show();
+    mpTileScaleDock->show();
 
     connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
              mpTileScaleWidget, SLOT( layerChanged( QgsMapLayer* ) ) );
@@ -4893,7 +4893,7 @@ void QgisApp::showTileScale()
   }
   else
   {
-    mpTileScaleDock->toggleViewAction();
+    mpTileScaleDock->setVisible( mpTileScaleDock->isHidden() );
   }
 }
 
