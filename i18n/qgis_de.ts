@@ -7886,22 +7886,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="140"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="143"/>
         <source> (int)</source>
         <translation> (Ganzzahl)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="144"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="147"/>
         <source> (dbl)</source>
         <translation> (Fließkommazahl)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="149"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="152"/>
         <source> (txt)</source>
         <translation> (Text)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="190"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="193"/>
         <source>Attributes - %1</source>
         <translation>Attribute - %1</translation>
     </message>
@@ -20862,6 +20862,10 @@ Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet au�
     <message>
         <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
         <translation>Aktualisierung der Erweiterungsinstallation deinstalliert.  Die Erweiterungsinstallation wird nun geschlossen und auf ihre primäre Version zurückgesetzt. Sie finden Sie im Erweiterungsmenü und können nun fortfahren.</translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
+        <translation>Erweiterungsinstallationsaktualisierung deinstalliert. Bitte starten Sie QGIS neu, damit die primäre Version geladen wird.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
