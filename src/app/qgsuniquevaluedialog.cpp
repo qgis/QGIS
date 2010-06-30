@@ -428,11 +428,10 @@ void QgsUniqueValueDialog::applySymbologyChanges()
     }
 
     QgsSymbol *symbol = mValues[ value ];
-    symbol->setLabel( sydialog.label() );
     symbol->setLowerValue( value );
     sydialog.apply( symbol );
 
-    item->setToolTip( sydialog.label() );
+    item->setToolTip( symbol->label() );
     item->setData( Qt::UserRole, value );
     updateEntryIcon( symbol, item );
   }
