@@ -902,8 +902,11 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
         QgsDebugMsg( "Right click in map tool zoom or pan, last tool is " +
                      QString( mLastNonZoomMapTool ? "not null." : "null." ) );
 
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+
         // change to older non-zoom tool
-        if ( mLastNonZoomMapTool )
+        if ( mLastNonZoomMapTool
+             && ( !mLastNonZoomMapTool->isEditTool() || ( vlayer && vlayer->isEditable() ) ) )
         {
           QgsMapTool* t = mLastNonZoomMapTool;
           mLastNonZoomMapTool = NULL;

@@ -421,7 +421,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
 
   //after loosing connection, the first gps info sometimes has uninitialized coords
   QgsPoint myNewCenter;
-  if( doubleNear( info.longitude, 0.0 ) && doubleNear( info.latitude, 0.0) )
+  if ( doubleNear( info.longitude, 0.0 ) && doubleNear( info.latitude, 0.0 ) )
   {
     myNewCenter = mLastGpsPosition;
   }
@@ -597,8 +597,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   if ( !vlayer->isEditable() )
   {
     QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. To make it editable, go to the file item "
-                                  "of the layer, right click and check 'Allow Editing'." ) );
+                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
+                            );
     connectGpsSlot();
     return;
   }
