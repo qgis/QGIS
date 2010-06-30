@@ -1,1 +1,31 @@
-<h3>Plugin Rótulo de Copyright</h3>
+<h3>Complemento Rótulo de Copyright</h3>
+Desnha um rótulo de copyright com informação.<br/>
+Você pode adicionar qualquer texto ao mapa não apenas um rótulo de copyright.
+<p>
+<a href="#howto">Como Fazer</a><br/>
+<a href="#text">Formatar texto</a><br/>
+
+<a name="howto">
+<h4>Como Fazer</h4>
+</a>
+<ol>
+<li>Tenha certeza que o complemento está habilitado.
+<li>Clique em <label>complementos > Decorações > Rótulo de Copyright</label> ou use o botão <label>Rótulo Copyright</label> a partir do botão na barra de ferramentas.
+<li>Entre com o texto que você deseja colocar no mapa. Você pode usar HTML.
+<li>Escolha o local do rótulo a partir da caixa de seleção <label>Colocar no canto inferior direito</label>.
+<li>Tenha certeza que está marcada a caixa <label>Habilitar Rótulo de Copyright</label>.
+<li>Clique <label>OK</label>.
+</ol>
+<a name="text">
+<h4> Formatar texto </h4>
+</a>
+Este complemento suporta HTML básico em sua formatação. Por exemplo:
+
+<ul>
+<li>&lt;B&gt;<b> Negrito </b>&lt;/B&gt;
+</li>
+<li>&lt;I&gt;<i> Itálico </i>&lt;/I&gt;
+</li>
+<li>&lt;U&gt;<u> sublinhado </u>&lt;/U&gt;
+</li>
+</ul>

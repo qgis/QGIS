@@ -1,1 +1,35 @@
-<h3>Plugin Camada por Texto Delimitado</h3>
+<h3>Complemento Camada por Texto Delimitado</h3>
+Carrega e mostra texto delimitado contendo coordenadas x e y.
+<p>
+<p>
+<a href="#re">Requisitos</a><br/>
+<a href="#example">Exemplo de um texto válido</a><br/>
+<a href="#notes">Notas</a><br/>
+
+<a name="re">
+<h4>Requisitos</h4>
+</a>
+Para ver o arquivo de texto delimitado como camada, o texto deve conter:
+<ol>
+<li>Um linha de cabeçalho com os campos delimitados. Deve vir na primeira linha do arquivo.</li>
+<li>Essa linha de cabeçalho deve conter campos com X e Y. Estes campos podem ter qualquer nome.</li>
+<li>As coordenadas <B>x</B> e <B>y</B> devem ser especificadas como números. O sistema de coordenadas não importa.</li>
+</ol>
+<a name="example">
+<h4>Exemplo de um texto válido</h4> 
+</a>
+X;Y;ELEV<br/>
+-300120;7689960;13<br/>
+-654360;7562040;52<br/>
+1640;7512840;3<br/>
+[...]<br/>
+<a name="notes">
+<h4>Notas</h4>
+</a>
+<ol>
+<li>O exemplo de texto usa <b>;</b> como delimitador. Qualquer caractere pode ser usado para delimitar campos.</li>
+<li>a primeira linha é a linha de cabeçalho. Ela contém os campos X, Y e ELEV.</li>
+<li>Sem aspas (") para delimitar campos de texto.</li>
+<li>As coordenadas x estão contidas no campo X.</li>
+<li>As coordenadas y estão contidas no campo Y.</li>
+</ol>

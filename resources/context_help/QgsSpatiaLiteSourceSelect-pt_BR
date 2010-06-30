@@ -1,0 +1,3 @@
+<h3>Adicionar Tabelas SpatiaLite</h3>
+Para definir uma nova conexão clique no botão <label>Novo</label> e use o buscardor de arquivos para localizar seu banco de dados SpatiaLite, cuja extensão de arquivo é <i>.sqlite</i>.<p>
+As conexões que você definir serão lembradas para utilização posterior e estarão disponíveis para escolha no menu de lista de selação.

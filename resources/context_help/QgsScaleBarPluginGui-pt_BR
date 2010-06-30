@@ -1,0 +1,16 @@
+﻿<h3>Complemento Barra de escala</h3>
+Desenha uma barra de escala no mapa.
+<p>
+Você pode controlar o estilo e posição, bem como o rótulo da barra.
+O QGIS suporta apenas mostrar a escala em unidades similares a do mapa na moldura. Então, se as unidades de sua camada estiverem em metros, você não pode criar uma barra de escala em pés. O mesmo serve de graus para metros.</p>
+<p>
+Para adicionar uma barra de escala:
+<ol>
+<li>Escolaha a posição a partir da lista de opções <label>Posicionamento</label>.</li>
+<li>Escolha o estilo a partir da lista <label>Estilo da barra de escala</label>.</li>
+<li>Selecione a cor para a barra <label>Cor da barra</label> ou use o padrão preto.</li>
+<li>Defina o tamanho da barra e seu rótulo <label>Tamanho da barra</label>. </li>
+<li>Tenha certeza que a caixa de opção está marcada <label>Habilitar barra de escala</label>.</li>
+<li>Opcionalmente escolha ajuste automático para números arredondados quando o mapa for redimensionado <label>Ajustar automaticamente para números redondos ao redimensionar</label>.</li>
+<li>Clique <label>OK</label>.</li>
+</ol>

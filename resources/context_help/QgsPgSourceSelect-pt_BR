@@ -1,19 +1,35 @@
-<h3>Adiciona Tabelas PostGIS</h3>
+<h3>Adicionar Tabelas PostGIS</h3>
 Este diálogo permite você adicionar camadas PostGIS (tabelas com uma geometria de coluna) ao mapa da tela do QGIS.
+<p>
+<a href="#connect">Connections</a><br/>
+<a href="#add">Adding Layers</a><br/>
+<a href="#filter">Filtering a Layer</a><br/>
+<a href="#search">Search options</a><br/>
+
+<a href="#connect">
 <h4>Conexões</h4>
+</a>
 <ul>
-<li>Escolha a conexão para usar a partir da caixa de opções e clique <i>Conectar</i> 
-<li>Se não houverem conexões, use o botão <i>Nova</i> para criar uma conexão
-<li>Para modificar uma conexão, clique o botão <i>Editar</i>
+<li>Escolha a conexão para usar a partir da caixa de opções e clique <label>Conectar</label> 
+<li>Se não houverem conexões, use o botão <label>Nova</label> para criar uma conexão
+<li>Para modificar uma conexão, clique o botão <label>Editar</label>
 </ul>
+<a name="add">
 <h4>Adicionar Camadas</h4>
+</a>
 Para adicionar uma camada:
 <ol>
 <li>Escolha a conexão desejada na caixa de opções
-<li>Clique <i>Conectar</i>
+<li>Clique <label>Conectar</label>
 <li>Procure a camada que você quer adicionar na lista e clique nela para selecioná-la
 <li>Você pode selecionar camadas adicionais pressionando Ctrl e clicando
-<li> <i>Adicionar</i> para adicionar a(s) camada(s) ao mapa
+<li> <label>Adicionar</label> para adicionar a(s) camada(s) ao mapa
 </ol>
+<a name="filter">
 <h4>Filtrando uma camada</h4>
+</a>
 Para filtrar uma camada antes de adicionar ao mapa, dê um duplo clique no seu nome. Isto abrirá um construtor de pesquisa, que permitirá você definir uma declaração SQL para usar como filtro dos registros.
+<a name="search">
+<h4>Opções de busca</h4>
+</a>
+Marcando <label>Opções de busca</label> habilita opções adicionais para buscar em diferentes tipos de colunas usando dois modos: <label>Wildcard</label> ou <label>RegExp</label>.
