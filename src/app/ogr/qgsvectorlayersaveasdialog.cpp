@@ -33,6 +33,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
 
   QSettings settings;
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
+  mFormatComboBox->blockSignals( true );
   for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     mFormatComboBox->addItem( it.key(), it.value() );
@@ -40,7 +41,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
 
   QString format = settings.value( "/UI/lastVectorFormat", "ESRI Shapefile" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
-
+  mFormatComboBox->blockSignals( false );
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
@@ -55,6 +56,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
   mEncodingComboBox->setCurrentIndex( idx );
 
   leCRS->setText( tr( "Original CRS" ) );
+  on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 }
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
