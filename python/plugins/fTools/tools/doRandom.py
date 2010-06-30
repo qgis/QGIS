@@ -20,7 +20,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
-        
+
     def changed(self, inputLayer):
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedProvider = changedLayer.dataProvider()
@@ -45,11 +45,11 @@ class Dialog(QDialog, Ui_Dialog):
                 self.progressBar.setValue(50)
                 value = int(round((value / 100.0000), 4) * layer.featureCount())
                 self.progressBar.setValue(60)
-                selran = random.sample(xrange(0, layer.featureCount()), value)
-                self.progressBar.setValue(70)
-                self.progressBar.setValue(80)
-                self.progressBar.setValue(90)
-                self.progressBar.setValue(100)
-                layer.setSelectedFeatures(selran)
+        selran = random.sample(xrange(0, layer.featureCount()), value)
+        self.progressBar.setValue(70)
+        self.progressBar.setValue(80)
+        self.progressBar.setValue(90)
+        self.progressBar.setValue(100)
+        layer.setSelectedFeatures(selran)
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
