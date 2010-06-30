@@ -287,18 +287,13 @@ void QgsLabelDialog::changeFont( void )
 #else
   mFont = QFontDialog::getFont( &resultFlag, mFont, this );
 #endif
-  if ( resultFlag )
+  if ( !resultFlag )
+    return;
+
+  if ( mFont.pointSizeF() != fontSize )
   {
-    if ( mFont.pointSizeF() != fontSize )
-    {
-      // font is set to the font the user selected
-      spinFontSize->setValue( mFont.pointSizeF() );
-    }
-  }
-  else
-  {
-    // the user cancelled the dialog; font is set to the initial
-    // value, in this case Helvetica [Cronyx], 10
+    // font is set to the font the user selected
+    spinFontSize->setValue( mFont.pointSizeF() );
   }
   lblSample->setFont( mFont );
 }
@@ -307,7 +302,11 @@ void QgsLabelDialog::changeFontColor( void )
 {
   QgsDebugMsg( "entering." );
 
-  mFontColor = QColorDialog::getColor( mFontColor );
+  QColor color = QColorDialog::getColor( mFontColor );
+  if ( !color.isValid() )
+    return;
+
+  mFontColor = color;
   QPalette palette = lblSample->palette();
   palette.setColor( lblSample->foregroundRole(), mFontColor );
   lblSample->setPalette( palette );
@@ -317,7 +316,11 @@ void QgsLabelDialog::changeBufferColor( void )
 {
   QgsDebugMsg( "entering." );
 
-  mBufferColor = QColorDialog::getColor( mBufferColor );
+  QColor color = QColorDialog::getColor( mBufferColor );
+  if ( !color.isValid() )
+    return;
+
+  mBufferColor = color;
   QPalette palette = lblSample->palette();
   palette.setColor( lblSample->backgroundRole(), mBufferColor );
   lblSample->setPalette( palette );
@@ -326,13 +329,8 @@ void QgsLabelDialog::changeBufferColor( void )
 
 int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
 {
-  int myItemInt = 0; for ( QStringList::Iterator it = theFieldList.begin(); it != theFieldList.end(); ++it )
-  {
-    if ( theFieldName == *it ) return myItemInt;
-    ++myItemInt;
-  }
   //if no matches assume first item in list is blank and return that
-  return 0;
+  return std::max( 0, theFieldList.indexOf( theFieldName ) );
 }
 
 QgsLabelDialog::~QgsLabelDialog()
