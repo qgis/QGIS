@@ -2649,10 +2649,9 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         // Compose request to WMS server
 
         QString requestUrl = mGetFeatureInfoUrlBase;
-        QString layer = QUrl::toPercentEncoding( *it );
 
         //! \todo Need to tie this into the options provided by GetCapabilities
-        requestUrl += QString( "&QUERY_LAYERS=%1" ).arg( layer );
+        requestUrl += QString( "&QUERY_LAYERS=%1" ).arg( *it );
         requestUrl += QString( "&INFO_FORMAT=%1&X=%2&Y=%3" )
                       .arg( format ).arg( point.x() ).arg( point.y() );
 
