@@ -112,6 +112,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.tblUnique.setRowCount( 0 )
     self.lstCount.clear()
     self.buttonOk.setEnabled( False )
+
     self.testThread = visualThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myField, mySelection )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
@@ -120,15 +121,20 @@ class VisualDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.testThread, SIGNAL( "runPartStatus(PyQt_PyObject)" ), self.runPartStatusFromThread )
     self.cancel_close.setText( self.tr("Cancel") )
     QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
+
+    QApplication.setOverrideCursor( Qt.WaitCursor )
     self.testThread.start()
     return True
 
   def cancelThread( self ):
     self.testThread.stop()
+    QApplication.restoreOverrideCursor()
     self.buttonOk.setEnabled( True )
+    QApplication.restoreOverrideCursor()
     
   def runFinishedFromThread( self, output ):
     self.testThread.stop()
+    QApplication.restoreOverrideCursor()
     self.buttonOk.setEnabled( True )
     result = output[ 0 ]
     numRows = len( result )
@@ -429,8 +435,8 @@ class visualThread( QThread ):
 
     while vprovider.nextFeature( feat ):
       geom = QgsGeometry( feat.geometry() )
-      nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+      nElement += 1
       if geom.isMultipart():
         polygons = geom.asMultiPolygon()
         for polygon in polygons:
@@ -502,10 +508,11 @@ class visualThread( QThread ):
         self.emit( SIGNAL( "runPartStatus(PyQt_PyObject)" ), nPart )
 
         count = 0
-        for j in range( i, len(h)-1 ):
+        for j in range( i+1, len(h)-1 ):
           if QgsGeometry().fromPolyline( [ h[ i ], h[ i + 1 ] ] ).intersects( QgsGeometry().fromPolyline( [ h[ j ], h[ j + 1 ] ] ) ):
             count += 1
-        if count > 2:
+
+        if (i==0 and count>2) or (i>0 and count>1):
           self.emit( SIGNAL( "runPartStatus(PyQt_PyObject)" ), cPart )
           return True
 
