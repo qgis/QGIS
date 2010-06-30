@@ -70,8 +70,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   if ( !vlayer->isEditable() )
   {
     QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. To make it editable, go to the file item "
-                                  "of the layer, right click and check 'Allow Editing'." ) );
+                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
+                            );
     return;
   }
 
