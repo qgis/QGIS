@@ -1,24 +1,36 @@
 <h3>Propriedades do Projeto</h3>
 Este diálogo permite você definir um número de propriedades relacionadas ao <i>Projeto</i>. Um projeto é um conjunto salvo de camadas e configurações, bem como outras informações solicitadas para reconstruir o projeto do disco.<p>
 
+
+<a href="#general">Aba Geral</a><br/>
+<a href="#crs">Aba Sistema de Referência de Coordenadas (SRC)</a><br/>
+<a href="#layers">Aba Camadas Identificáveis</a><br/>
+
+<a name="general">
 <h4>Aba Geral</h4>
+</a>
 <table border=1>
-<tr>
-<td>Título do Projeto</td><td>Um título de descrição do projeto. Este título será mostrado na barra de títulos da janela do QGIS</td>
-</tr>
-<tr>
-<td>Unidades do Mapa</td><td>Escolha a unidade apropriada para cada camada no seu projeto</td>
-</tr>
-<tr>
-<td>Precisão do Cursor</td><td>Usa a configuração manual para definir a precisão que será mostrada pelo cursor na barra de status. No que o mouse é movimentado na tela, as coordenadas são atualizadas e mostradas na barra de status usando a precisão que você escolheu. O resultado automático (o padrão) é baseado na unidades do mapa.</td>
-</tr>
-<tr>
-<td>Configurações de Vetorização</td><td>Este permite você definir a tolerância de aproximação em pixels, a espessura da linha usada quando se está vetorizando e a cor para linhas vetorizadas.</td>
-</tr>
-<tr><td>Seleção de cor</td><td>Feições selecionadas são mostradas no mapa usando esta cor.</td>
-</tr>
+<tr><td>Título do Projeto</td><td>Um título de descrição do projeto. Este título será mostrado na barra de títulos da janela do QGIS</td></tr><tr>
+<tr><td><label>Seleção de cor</label></td><td>Feições selecionadas serão mostradas no mapa usando esta cor.</td></tr>
+<tr><td><label>Cor de fundo</label></td><td>A cor do fundo de tela.</td></tr>
+<tr><td><label>Salvar caminhos</label></td><td>Capacidade de salvar os caminhos como absolutos ou relativos.</td></tr>
+<tr><td><label>Unidades da camada</label></td><td>Escolha as unidades apropriadas paras as camadas no projeto.</td></tr>
+<tr><td><label>Precisão</label></td><td>Use a configuração manual para definir a precisão da exibição na barra de estado. Como o mouse é movido sobre o mapa da tela, as coordenadas são atualizadas e mostradas na barra de estado usando a precisão que você definir. Automática (padrão) resulta de um padrão de precisão baseado nas unidades do mapa.</td></tr>
+<tr><td><label>Vetorizar</label></td><td>A opção <label>Habilitar edição topológica</label> habilita edição e manutenção de limites comuns em mosaicos de polígonos. Editar um vértice em um limite comum resultará na atualização de ambos os limites.<p>
+Para evitar a digitalização de todos os vértices de limites comuns selecione <label>Evitar interseções de novos polígonos</label>. Na janela de diálogo marque as camadas apropriadas para as quais novos polígonos serão ajustados. ao desenhar o novo polígono sobreposto a um já existente, irá cortá-lo automaticamente.<p>
+<label>Opções e ajuste</label> permite que você defina a tolerância de aproximação em pixels ou unidades de mapa e o modo de ajuste: <label>ao vértice</label>, <label>ao segmento</label>, <label>ao vértice e segmento</label> para cada camada separadamente.</td></tr>
+
 </table>
-<a anchor="projections"></a><h4>Aba Projeção</h4>
-A aba Projeções permite você definir a projeção para o projeto atual e habilitar a projeção "on the fly". Você não pode ter salvo o projeto para poder habilitar a projeção "on the fly".<p>
-Para usar a projeção "on the fly" clique na caixa de marcação <i>Habilitar projeção "on the fly"</i>. Então, escolha a projeção para o projeto (mapa da tela) a partir da lista de sistemas de coordenadas Geográficas ou Projetadas.<p>
-Você pode procurar um sistema de coordenadas entrando com seu código PostGIS SRID, EPSG ou o QGIS SRSRID e clicando no botão <i>Procurar</i>.
+<a name="crs">
+<h4>Aba Sistema de Referência de Coordenadas (SRC)</h4>
+</a>
+A aba Sistema de Referência de Coordenadas (SRC) permite você definir a projeção para o projeto atual e habilitar a projeção "on the fly". Você não pode ter salvo o projeto para poder habilitar a projeção "on the fly".<p>
+Para usar a projeção "on the fly" clique na caixa de marcação <label>Habilitar projeção "on the fly"</label>. Então, escolha a projeção para o projeto (mapa da tela) a partir da lista de sistemas de coordenadas Geográficas ou Projetadas.<p>
+Você pode buscar por sistema de coordenadas entrando com o seu nome, código EPSG code ou a QGIS ID e clicar no botão <label>Buscar</label>.
+<p>
+A lista de sistemas de coordenadas recentemente usadas estará disponível na base para acesso rápido.
+
+<a name="layers">
+<h4>Aba Camadas Identificáveis</h4>
+</a>
+Nesta aba você pode escolher em quais camadas a ferramenta de identificação irá trabalhar.
