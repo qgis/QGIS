@@ -146,14 +146,14 @@ class Dialog(QDialog, Ui_Dialog):
         provider.select(allAttrs)
         feat = QgsFeature()
         geom = QgsGeometry()
-        geom2 = QgsGeometry()
-        provider.nextFeature(feat)
-        geom = feat.geometry()
-        count = 10.00
-        add = ( 40.00 - 10.00 ) / provider.featureCount()
-        provider.rewind()
+        #geom2 = QgsGeometry()
         provider.nextFeature(feat)
         geom = QgsGeometry(feat.geometry())
+        count = 10.00
+        add = ( 40.00 - 10.00 ) / provider.featureCount()
+        #provider.rewind()
+        #provider.nextFeature(feat)
+        #geom = QgsGeometry(feat.geometry())
         while provider.nextFeature(feat):
             geom = geom.combine(QgsGeometry( feat.geometry() ))
             count = count + add
@@ -176,13 +176,41 @@ class Dialog(QDialog, Ui_Dialog):
                 self.progressBar.setValue(count)
         return points
 
+    def vectorRandom(self, n, layer, xmin, xmax, ymin, ymax):
+        provider = layer.dataProvider()
+        provider.select([])
+        index = ftools_utils.createIndex(provider)
+        seed()
+        points = []
+        feat = QgsFeature()
+        i = 1
+        count = 40.00
+        add = ( 70.00 - 40.00 ) / n
+        while i <= n:
+            point = QgsPoint(xmin + (xmax-xmin) * random(), ymin + (ymax-ymin) * random())
+            pGeom = QgsGeometry().fromPoint(point)
+            ids = index.intersects(pGeom.buffer(5,5).boundingBox())
+            for id in ids:
+                provider.featureAtId(int(id),feat,True)
+                tGeom = QgsGeometry(feat.geometry())
+                if pGeom.intersects(tGeom):
+                    points.append(pGeom)
+                    i = i + 1
+                    count = count + add
+                    self.progressBar.setValue(count)
+                    break
+        return points
+
     def randomize(self, inLayer, outPath, minimum, design, value):
         outFeat = QgsFeature()
         if design == self.tr("unstratified"):
             ext = inLayer.extent()
-            if inLayer.type() == inLayer.RasterLayer: bound = ext
-            else: bound = self.createSinglePolygon(inLayer)
-            points = self.simpleRandom(int(value), bound, ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+            if inLayer.type() == inLayer.RasterLayer:
+                points = self.simpleRandom(int(value), ext, ext.xMinimum(),
+                ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+            else:
+                points = self.vectorRandom(int(value), inLayer,
+                ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
         else: points = self.loopThruPolygons(inLayer, value, design)
         crs = self.mapCanvas.mapRenderer().destinationSrs()
         if not crs.isValid(): crs = None
