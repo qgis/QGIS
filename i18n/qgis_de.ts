@@ -84,7 +84,7 @@
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="220"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="136"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="211"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="223"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="166"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="77"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
@@ -328,7 +328,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="89"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="204"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="120"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="195"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="207"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
         <translation>Ausgabeshapedatei</translation>
@@ -570,7 +570,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="125"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="140"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="149"/>
         <source>Use this number of points</source>
         <translation>Dies Anzahl von Punkten verwenden</translation>
     </message>
@@ -666,51 +666,63 @@ p, li { white-space: pre-wrap; }
         <translation>Regelmäßige Punkte generieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="39"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
+        <source>buttonGroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="42"/>
         <source>Input Coordinates</source>
         <translation>Eingabekoordinaten</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="48"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="54"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="66"/>
         <source>X Min</source>
         <translation>X-Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="62"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="68"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="93"/>
         <source>Y Min</source>
         <translation>Y-Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="76"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="82"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="120"/>
         <source>X Max</source>
         <translation>X-Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="90"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="96"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="147"/>
         <source>Y Max</source>
         <translation>Y-Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="102"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="108"/>
         <source>Grid Spacing</source>
         <translation>Rasterabstand</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="110"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="116"/>
         <source>Use this point spacing</source>
         <translation>Diesen Punktabstand verwenden</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="159"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="122"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="152"/>
+        <source>buttonGroup_2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
         <translation>Zufälligen Versatz auf Punktabstand anwenden</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="179"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
         <source>Initial inset from corner (LH side)</source>
         <translation>Anfängliche Einsatz von Ecke (linke Seite)</translation>
     </message>
@@ -27397,17 +27409,17 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="57"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
         <source>Original CRS</source>
         <translation>Original KBS</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="94"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="96"/>
         <source>Save layer as...</source>
         <translation>Layer speichern als...</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="106"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="108"/>
         <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
         <translation>Koordinatenbezugssystem für die Vektordatei wählen. Die Datenpunkte werden vom Koordinatenbezugssystem des Layers transformiert.</translation>
     </message>

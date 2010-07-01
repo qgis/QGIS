@@ -147,7 +147,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="220"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="136"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="211"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="223"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="166"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="77"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
@@ -246,7 +246,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="89"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="204"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="120"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="195"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="207"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
         <translation>Izlazna Shape datoteka</translation>
@@ -868,7 +868,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="125"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="140"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="149"/>
         <source>Use this number of points</source>
         <translation>Koristi ovaj broj točaka</translation>
     </message>
@@ -968,51 +968,63 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <translation>Stvori regularne točke</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="39"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
+        <source>buttonGroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="42"/>
         <source>Input Coordinates</source>
         <translation>Unos koordinata</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="48"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="54"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="66"/>
         <source>X Min</source>
         <translation>X Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="62"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="68"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="93"/>
         <source>Y Min</source>
         <translation>Y Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="76"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="82"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="120"/>
         <source>X Max</source>
         <translation>X Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="90"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="96"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="147"/>
         <source>Y Max</source>
         <translation>Y Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="102"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="108"/>
         <source>Grid Spacing</source>
         <translation>Razmak mreže</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="110"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="116"/>
         <source>Use this point spacing</source>
         <translation>Koristi ovaj razmak točaka</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="159"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="122"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="152"/>
+        <source>buttonGroup_2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
         <translation>Primjeni nasumični pomak na razmak točaka</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="179"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
         <source>Initial inset from corner (LH side)</source>
         <translation>Početni pomak unutra od kuta (L strana)</translation>
     </message>
@@ -1375,14 +1387,6 @@ Sigurno želite nastaviti?</translation>
         <translation>Osobine simbola</translation>
     </message>
     <message>
-        <source>Symbol preview:</source>
-        <translation type="obsolete">Prepregled simbola:</translation>
-    </message>
-    <message>
-        <source>Symbol layer type:</source>
-        <translation type="obsolete">Tip sloja simbola:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="49"/>
         <source>Symbol layer properties</source>
         <translation>Osobine sloja simbola</translation>
@@ -1391,10 +1395,6 @@ Sigurno želite nastaviti?</translation>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="65"/>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
         <translation>Ovaj sloj simbola nema GUI za postavke.</translation>
-    </message>
-    <message>
-        <source>Symbol layers:</source>
-        <translation type="obsolete">Slojevi simbola:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
@@ -1435,49 +1435,6 @@ Sigurno želite nastaviti?</translation>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="212"/>
         <source>Move down</source>
         <translation>Pomakni dolje</translation>
-    </message>
-</context>
-<context>
-    <name>EngineConfigDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dijalog</translation>
-    </message>
-    <message>
-        <source>Search method</source>
-        <translation type="obsolete">Metoda pretrage</translation>
-    </message>
-    <message>
-        <source>Chain (fast)</source>
-        <translation type="obsolete">Lanac (brzo)</translation>
-    </message>
-    <message>
-        <source>FALP (fastest)</source>
-        <translation type="obsolete">FALP (najbrže)</translation>
-    </message>
-    <message>
-        <source>Number of candidates</source>
-        <translation type="obsolete">Broj kandidata</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">Točka</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">Linija</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">Poligon</translation>
-    </message>
-    <message>
-        <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="obsolete">Prikaži sve oznake (npr. uključivo i one koje smetaju)</translation>
-    </message>
-    <message>
-        <source>Show label candidates (for debugging)</source>
-        <translation type="obsolete">Pokaži kandidate za oznake (za debugiranje)</translation>
     </message>
 </context>
 <context>
@@ -2975,200 +2932,6 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
 %1</source>
         <translation>Pogreška pri učitavanju izlazne shape datoteke:
 %1</translation>
-    </message>
-</context>
-<context>
-    <name>Labeling</name>
-    <message>
-        <source>Labeling</source>
-        <translation type="obsolete">Označavanje</translation>
-    </message>
-    <message>
-        <source>Replace this with a short description of what the plugin does</source>
-        <translation type="obsolete">Zamijenite ovo sa specifičnim opisom dodatka</translation>
-    </message>
-    <message>
-        <source>&amp;Labeling</source>
-        <translation type="obsolete">&amp;Označavanje</translation>
-    </message>
-</context>
-<context>
-    <name>LabelingGuiBase</name>
-    <message>
-        <source>Layer labeling settings</source>
-        <translation type="obsolete">Postavke označavanja sloja</translation>
-    </message>
-    <message>
-        <source>Label this layer</source>
-        <translation type="obsolete">Označi ovaj sloj</translation>
-    </message>
-    <message>
-        <source>Field with labels</source>
-        <translation type="obsolete">Polje s oznakama</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">Postavljanje</translation>
-    </message>
-    <message>
-        <source>around point</source>
-        <translation type="obsolete">oko točke</translation>
-    </message>
-    <message>
-        <source>over point</source>
-        <translation type="obsolete">iznad točke</translation>
-    </message>
-    <message>
-        <source>parallel</source>
-        <translation type="obsolete">paralelno</translation>
-    </message>
-    <message>
-        <source>curved</source>
-        <translation type="obsolete">zakrivljeno</translation>
-    </message>
-    <message>
-        <source>horizontal</source>
-        <translation type="obsolete">horizontalno</translation>
-    </message>
-    <message>
-        <source>over centroid</source>
-        <translation type="obsolete">preko centroide</translation>
-    </message>
-    <message>
-        <source>around centroid</source>
-        <translation type="obsolete">oko centroide</translation>
-    </message>
-    <message>
-        <source>horizontal (slow)</source>
-        <translation type="obsolete">horizontalno (sporo)</translation>
-    </message>
-    <message>
-        <source>free (slow)</source>
-        <translation type="obsolete">slobodno (sporo)</translation>
-    </message>
-    <message>
-        <source>using perimeter</source>
-        <translation type="obsolete">koristi opseg</translation>
-    </message>
-    <message>
-        <source>Label distance</source>
-        <translation type="obsolete">Udaljenost oznake</translation>
-    </message>
-    <message>
-        <source>pixels</source>
-        <translation type="obsolete">pikseli</translation>
-    </message>
-    <message>
-        <source>Rotation</source>
-        <translation type="obsolete">Rotacija</translation>
-    </message>
-    <message>
-        <source>degrees</source>
-        <translation type="obsolete">stupnjevi</translation>
-    </message>
-    <message>
-        <source>above line</source>
-        <translation type="obsolete">iznad linije</translation>
-    </message>
-    <message>
-        <source>on line</source>
-        <translation type="obsolete">na liniju</translation>
-    </message>
-    <message>
-        <source>below line</source>
-        <translation type="obsolete">ispod linije</translation>
-    </message>
-    <message>
-        <source>Orientation</source>
-        <translation type="obsolete">Orijentacija</translation>
-    </message>
-    <message>
-        <source>map</source>
-        <translation type="obsolete">mapa</translation>
-    </message>
-    <message>
-        <source>line</source>
-        <translation type="obsolete">linija</translation>
-    </message>
-    <message>
-        <source>Text style</source>
-        <translation type="obsolete">Stil teksta</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Font</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">TekstOznaka</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">Boja</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="obsolete">Zaštita (Buff)</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Veličina</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Probni</translation>
-    </message>
-    <message>
-        <source>Lorem Ipsum</source>
-        <translation type="obsolete">Probni tekst</translation>
-    </message>
-    <message>
-        <source>Priority</source>
-        <translation type="obsolete">Prioritet</translation>
-    </message>
-    <message>
-        <source>Low</source>
-        <translation type="obsolete">Nisko</translation>
-    </message>
-    <message>
-        <source>High</source>
-        <translation type="obsolete">Visoko</translation>
-    </message>
-    <message>
-        <source>Scale-based visibility</source>
-        <translation type="obsolete">Vidljivost zasnovana na mjerilu</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Omogućeno</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="obsolete">Minimum</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="obsolete">Maksimum</translation>
-    </message>
-    <message>
-        <source>label every part of multi-part features</source>
-        <translation type="obsolete">označi svaki dio višedjelnih elemenata</translation>
-    </message>
-    <message>
-        <source>merge connected lines to avoid duplicate labels</source>
-        <translation type="obsolete">spoji povezane linije za izbjegavanje dvostrukih oznaka</translation>
-    </message>
-    <message>
-        <source>features don&apos;t act as obstacles for labels</source>
-        <translation type="obsolete">elementi se ne ponašaju kao prepreke za oznake</translation>
-    </message>
-    <message>
-        <source>Engine settings</source>
-        <translation type="obsolete">Postavke motora</translation>
     </message>
 </context>
 <context>
@@ -4749,14 +4512,6 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
         <translation>Verzija 0.001</translation>
     </message>
     <message>
-        <source>Labeling</source>
-        <translation type="obsolete">Označavanje</translation>
-    </message>
-    <message>
-        <source>Smart labeling for vector layers</source>
-        <translation type="obsolete">Pametno označavanje vektorskih slojeva</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="59"/>
         <source>NorthArrow</source>
         <translation>SjeverStrelica</translation>
@@ -5146,10 +4901,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
         <source>Point Displacement</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>point Displacement</source>
-        <translation type="obsolete">Izmještanje točaka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="347"/>
@@ -6159,10 +5910,6 @@ Molimo kontaktirajte razvijatelje.</translation>
         <translation>Spremi uređivanja</translation>
     </message>
     <message>
-        <source>Save edits to current layer , but continue editing</source>
-        <translation type="obsolete">Spremi uređivanja trenutnog sloj, no nastavi s uređivanjem</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Remove Layer</source>
         <translation>Ukloni sloj</translation>
@@ -6300,11 +6047,6 @@ Molimo kontaktirajte razvijatelje.</translation>
         <location filename="../src/app/qgisapp.cpp" line="1109"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Uklj/isklj prikaz preko cijelog ekrana</translation>
-    </message>
-    <message>
-        <source>Ctrl-F</source>
-        <comment>Toggle fullscreen mode</comment>
-        <translation type="obsolete">Ctrl-F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1111"/>
@@ -7174,46 +6916,6 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation>Verzija</translation>
     </message>
     <message>
-        <source>Whats new in Version 1.4.0?</source>
-        <translation type="obsolete">Što je novo u verziji 1.4.0?</translation>
-    </message>
-    <message>
-        <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation type="obsolete">Ova verzija uključuje oko 200 popravaka bugova, gotovo 30 novih osobina i mnogo ljubavi i pažnje posvećene našem omiljenom desktop GIS paketu, kako bi napravi okorak naprijed prema GIS nirvani! Toliko se otga dogodilo u proteklih 3 mjeseca od posljednje verzije da je nemoguće sve ovdje dokumenitrati. Umjesto toga smo naznačili samo neke važne nove osobine.</translation>
-    </message>
-    <message>
-        <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation type="obsolete">Vjerojatno nakvažnija od novih osobina je dodatak nove infrastrukture za simbole vektora. Ovo je dodano uz staru implementaciju - možete se prebaciti uz pomoć gumba u dijalogu za osobine vektorskog sloja. Još uvijek ne zamjenjuje u potpunosti staru implementaciju budući novu treba još dosta testirati, a potrebno je i razriješiti još dosta problema da bi bila u potpunosti spremna.</translation>
-    </message>
-    <message>
-        <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation type="obsolete">QGIS sada ima kalkulator polja, dostupan preko gumba u odjeljku atributa u osobinama vektora, i iz korisničkog sučelja atributne tablice. Možete postaviti dužinu, površinu, spajanje stringova i konverzije tipova u kalkulator, kao i vrijednosti polja.</translation>
-    </message>
-    <message>
-        <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation type="obsolete">Mnogo je pažnje posvećeno kompozitoru mape. Sada se može dodati mreža (Grid). Složene mape se mogu rotirati u pregledu. Nema više ograničenja od jednog pregleda (layput) po projektu. Novi dijalog kompozitora dodan je za upravljanje postojećim instancama. Stranice s osobinama widgeta u potpunosti su izmjenjene kako bi zauzimale manje mjesta na ekranu </translation>
-    </message>
-    <message>
-        <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation type="obsolete">Razni dijelovi korisničkog sučelja izmjenjeni su kako bi se poboljšala konzistentnost i podrška za netbooke i uređaje s manjim ekranima. Učitavanje i spremanje prečica. Pozicija se sada može prikazivati kao Stupnjevi, minute i sekunde u statusnoj traci. Gumbi za dodavanje, pomicanje i brisanje verteksa uklonjeni su, a alat za čvorove (node) premješten je iz napredne trake u standardnu traku za uređivanje. Alat za identifikacju je također prošao brojna poboljšanja.</translation>
-    </message>
-    <message>
-        <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
-        <translation type="obsolete">U QGIS je dodana mogućnost keširanja prikaza. Ovo ubrzava uobičajene operacije poput promjene redoslijeda slojeva, simbologije, WMS/WFS klijenta, skrivanja/prikazivanja slojeva i otvara mogućnost budućim poboljšanjima, kao što su višenitno renderiranje. Primjetite da je isključeno u zadanim potavkama i može se uključiti u dijalogu Opcije.</translation>
-    </message>
-    <message>
-        <source>User defined SVG search paths are now added to the options dialog.</source>
-        <translation type="obsolete">U dijalog Opcije dodani su korisnički definirani putevi za pretragu SVG-a.</translation>
-    </message>
-    <message>
-        <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
-        <translation type="obsolete">Pri kreiranju nove Shape datoteke sada možete odrediti CRS. Opcija za izbjegavanje presjeka za poligone dostupna je i s pozadinskim slojevima.</translation>
-    </message>
-    <message>
-        <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
-        <translation type="obsolete">Napredni korisnici sada mogu kreirati prilagođene obrasce za unos atributa korištenjem Qt Designer korisničkog sučelja za dijaloge.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2649"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ije valjani ili prepoznati izvor podataka</translation>
@@ -7241,14 +6943,6 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <location filename="../src/app/qgisapp.cpp" line="3037"/>
         <source>Save As</source>
         <translation>Spremi kao</translation>
-    </message>
-    <message>
-        <source>New Shapefile</source>
-        <translation type="obsolete">Nova Shape datoteka</translation>
-    </message>
-    <message>
-        <source>Shapefiles must end on .shp</source>
-        <translation type="obsolete">Shape datoteka mora imati nastavak .shp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3131"/>
@@ -8191,22 +7885,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="140"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="143"/>
         <source> (int)</source>
         <translation> (int)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="144"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="147"/>
         <source> (dbl)</source>
         <translation> (dbl)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="149"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="152"/>
         <source> (txt)</source>
         <translation> (txt)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="190"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="193"/>
         <source>Attributes - %1</source>
         <translation>Atributi - %1</translation>
     </message>
@@ -8925,21 +8619,9 @@ Should the existing classes be deleted before classification?</source>
 Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     </message>
     <message>
-        <source>Column:</source>
-        <translation type="obsolete">Kolona:</translation>
-    </message>
-    <message>
-        <source>Symbol:</source>
-        <translation type="obsolete">Simbol:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
         <source>change</source>
         <translation>promjena</translation>
-    </message>
-    <message>
-        <source>Color ramp:</source>
-        <translation type="obsolete">Rampa boja:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
@@ -10422,10 +10104,6 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="101"/>
         <source>Maximum rows</source>
         <translation>Maksimum redaka</translation>
-    </message>
-    <message>
-        <source>Maximum columns</source>
-        <translation type="obsolete">Maksimum kolona</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="118"/>
@@ -12396,8 +12074,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="600"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="609"/>
@@ -13298,10 +12976,6 @@ p, li { white-space: pre-wrap; }
         <translation>Rotacija [stupnjevi]</translation>
     </message>
     <message>
-        <source>Mean error [map units]</source>
-        <translation type="obsolete">Srednja pogreška [jedinice mape]</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1399"/>
         <source>Residuals</source>
         <translation>Reziduali</translation>
@@ -13717,29 +13391,9 @@ p, li { white-space: pre-wrap; }
         <translation>Odabrana rampa boja nije dostupna.</translation>
     </message>
     <message>
-        <source>Column:</source>
-        <translation type="obsolete">Kolona:</translation>
-    </message>
-    <message>
-        <source>Symbol:</source>
-        <translation type="obsolete">Simbol:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="48"/>
         <source>change</source>
         <translation>promjena</translation>
-    </message>
-    <message>
-        <source>Classes:</source>
-        <translation type="obsolete">Klase:</translation>
-    </message>
-    <message>
-        <source>Color ramp:</source>
-        <translation type="obsolete">Rampa boja:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">Mod:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
@@ -16514,10 +16168,6 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
         <translation>Vrijednost</translation>
     </message>
     <message>
-        <source>Layer</source>
-        <translation type="obsolete">Sloj</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="212"/>
         <source>(Derived)</source>
         <translation>(Derivirano)</translation>
@@ -17651,7 +17301,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
 <context>
     <name>QgsMapCanvas</name>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="1378"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1381"/>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
@@ -17659,7 +17309,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="1384"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1387"/>
         <source>Could not draw %1 because:
 %2</source>
         <translation>Ne mogu iscrtati %1 zbog:
@@ -17809,8 +17459,8 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="84"/>
@@ -17897,8 +17547,8 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
@@ -17973,8 +17623,8 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="51"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="66"/>
@@ -18175,8 +17825,8 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="66"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="157"/>
@@ -18231,8 +17881,8 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
@@ -18344,8 +17994,8 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="65"/>
@@ -19654,10 +19304,6 @@ p, li { white-space: pre-wrap; }
         <translation>Protokol</translation>
     </message>
     <message>
-        <source>Encoding :</source>
-        <translation type="obsolete">Enkodiranje:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
         <source>Encoding</source>
         <translation>Enkodiranje</translation>
@@ -20172,10 +19818,6 @@ p, li { white-space: pre-wrap; }
         <translation>Pozicija</translation>
     </message>
     <message>
-        <source>Placement algorithm:</source>
-        <translation type="obsolete">Algoritam postavljanja:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="919"/>
         <source>Rubberband</source>
         <translation>Rubberband</translation>
@@ -20308,10 +19950,6 @@ p, li { white-space: pre-wrap; }
         <translation>Detektiraj aktivne lokalne postavke na vašem sustavu:</translation>
     </message>
     <message>
-        <source>Timeout for network requests (ms):</source>
-        <translation type="obsolete">Vremensko ograničenje za mrežne zahtjeve (ms):</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1348"/>
         <source>Use proxy for web access</source>
         <translation>Koristi Proxy za pristup webu</translation>
@@ -20348,10 +19986,6 @@ p, li { white-space: pre-wrap; }
         <translation>Tip Proxy-a</translation>
     </message>
     <message>
-        <source>Exclude URLs (starting with):</source>
-        <translation type="obsolete">Isključi URL-ove (počevši s):</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="84"/>
         <source>General</source>
         <translation>Općenito</translation>
@@ -20372,10 +20006,6 @@ p, li { white-space: pre-wrap; }
         <translation>Preklop</translation>
     </message>
     <message>
-        <source>Digitising</source>
-        <translation type="obsolete">Digitaliziranje</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="159"/>
         <source>CRS</source>
         <translation>CRS</translation>
@@ -20393,10 +20023,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsOraclePlugin</name>
-    <message>
-        <source>Select GeoRaster</source>
-        <translation type="obsolete">Odaberi GeoRaster</translation>
-    </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Select Oracle GeoRaster</source>
@@ -21031,18 +20657,6 @@ geometriju.</translation>
         <source>Build query</source>
         <translation>Izgradi Upit</translation>
     </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">Traži:</translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="obsolete">Mod traženja:</translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="obsolete">Traži u kolonama:</translation>
-    </message>
 </context>
 <context>
     <name>QgsPluginInstaller</name>
@@ -21343,6 +20957,10 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -23914,10 +23532,6 @@ p, li { white-space: pre-wrap; }
         <translation>Max</translation>
     </message>
     <message>
-        <source>Note:</source>
-        <translation type="obsolete">Napomena:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="903"/>
         <source>Note</source>
         <translation>Napomena</translation>
@@ -24144,33 +23758,9 @@ p, li { white-space: pre-wrap; }
         <translation>No Data</translation>
     </message>
     <message>
-        <source>Columns:</source>
-        <translation type="obsolete">Kolone: </translation>
-    </message>
-    <message>
-        <source>Rows:</source>
-        <translation type="obsolete">Reci:</translation>
-    </message>
-    <message>
-        <source>No Data:</source>
-        <translation type="obsolete">No Data:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1640"/>
         <source>Scale dependent visibility</source>
         <translation>Vidljivost ovisna o mjerilu</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1655"/>
@@ -24550,10 +24140,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="14"/>
         <source>Renderer settings</source>
         <translation>Postavke prikazivanja (renderera)</translation>
-    </message>
-    <message>
-        <source>Renderer:</source>
-        <translation type="obsolete">Renderer:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
@@ -26447,10 +26033,6 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
         <translation>Upravljač stilova</translation>
     </message>
     <message>
-        <source>Style item type:</source>
-        <translation type="obsolete">Tip stavke stila:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type</source>
         <translation>Tip stavke stila</translation>
@@ -26591,10 +26173,6 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="252"/>
         <source>Symbols from style</source>
         <translation>Simboli iz stila</translation>
-    </message>
-    <message>
-        <source>Symbols from style:</source>
-        <translation type="obsolete">Simboli iz stila:</translation>
     </message>
 </context>
 <context>
@@ -27007,14 +26585,6 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <translation>Boje</translation>
     </message>
     <message>
-        <source>Scheme name:</source>
-        <translation type="obsolete">Naziv sheme:</translation>
-    </message>
-    <message>
-        <source>Colors:</source>
-        <translation type="obsolete">Boje:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="82"/>
         <source>Preview</source>
         <translation>Pretpregled</translation>
@@ -27090,18 +26660,10 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <translation>Gradijentna rampa boja</translation>
     </message>
     <message>
-        <source>Color 1:</source>
-        <translation type="obsolete">Boja 1:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="32"/>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="65"/>
         <source>Change</source>
         <translation>Izmjena</translation>
-    </message>
-    <message>
-        <source>Color 2:</source>
-        <translation type="obsolete">Boja 2:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
@@ -27863,17 +27425,17 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="57"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
         <source>Original CRS</source>
         <translation>Originalni CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="94"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="96"/>
         <source>Save layer as...</source>
         <translation>Spremi sloj kao...</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="106"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="108"/>
         <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
         <translation>Odaberi koordinatni referentni sloj za vektorsku datoteku. Podatkovne točke bit će transformirane iz koordinatnog referentnog sustava.</translation>
     </message>
@@ -28562,7 +28124,7 @@ Ovo može biti pogreškakonfiguracije polsužitelja. Dali da koristim URL?</tran
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="811"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2748"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2747"/>
         <source>map request error %1: %2</source>
         <translation>pogreška zahtjeva za mapu %1: %2</translation>
     </message>
@@ -28991,17 +28553,17 @@ Pokušani URL: %1</translation>
         <translation>Pogreške</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2683"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2682"/>
         <source>Layer cannot be queried in plain text.</source>
         <translation>Sloj se ne može ispitivati čistim tekstom.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2689"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2688"/>
         <source>Layer cannot be queried.</source>
         <translation>Sloj se ne može ispitivati.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2733"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2732"/>
         <source>identify request redirected.</source>
         <translation>preusmjeren zahtjev za identifikacijom.</translation>
     </message>
@@ -29350,10 +28912,6 @@ Pokušani URL: %1</translation>
         <translation>Boja</translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Boja:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="35"/>
         <source>Change</source>
         <translation>Izmjena</translation>
@@ -29382,26 +28940,14 @@ Pokušani URL: %1</translation>
         <translation>Odmak linije</translation>
     </message>
     <message>
-        <source>Marker:</source>
-        <translation type="obsolete">Marker:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="29"/>
         <source>Change</source>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <source>Marker interval:</source>
-        <translation type="obsolete">Interval markera:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
         <source>Rotate marker</source>
         <translation>Rotiraj marker</translation>
-    </message>
-    <message>
-        <source>Line offset:</source>
-        <translation type="obsolete">Pomak linije:</translation>
     </message>
 </context>
 <context>
@@ -29410,14 +28956,6 @@ Pokušani URL: %1</translation>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="14"/>
         <source>Form</source>
         <translation>Obrazac</translation>
-    </message>
-    <message>
-        <source>Texture width:</source>
-        <translation type="obsolete">Širina teksture:</translation>
-    </message>
-    <message>
-        <source>Outline:</source>
-        <translation type="obsolete">Obrub:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="22"/>
@@ -29478,34 +29016,10 @@ Pokušani URL: %1</translation>
         <translation>Pomak X,Y</translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Boja:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="69"/>
         <source>Change</source>
         <translation>Izmjena</translation>
-    </message>
-    <message>
-        <source>Border color:</source>
-        <translation type="obsolete">Boja granice:</translation>
-    </message>
-    <message>
-        <source>Offset X,Y:</source>
-        <translation type="obsolete">Pomak X,Y:</translation>
-    </message>
-    <message>
-        <source>Fill style:</source>
-        <translation type="obsolete">Boja ispune:</translation>
-    </message>
-    <message>
-        <source>Border style:</source>
-        <translation type="obsolete">Stil granice:</translation>
-    </message>
-    <message>
-        <source>Border width:</source>
-        <translation type="obsolete">Širina granice:</translation>
     </message>
 </context>
 <context>
@@ -29546,39 +29060,15 @@ Pokušani URL: %1</translation>
         <translation>Cap stil</translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Boja:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="35"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="127"/>
         <source>Change</source>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <source>Pen width:</source>
-        <translation type="obsolete">Širina pera :</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="obsolete">Stil pera:</translation>
-    </message>
-    <message>
-        <source>Offset:</source>
-        <translation type="obsolete">Pomak:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
         <source>Use custom dash pattern</source>
         <translation>Koristi prilagođeni uzorak crtica</translation>
-    </message>
-    <message>
-        <source>Join style:</source>
-        <translation type="obsolete">Spoji stil:</translation>
-    </message>
-    <message>
-        <source>Cap style:</source>
-        <translation type="obsolete">Cap stil:</translation>
     </message>
 </context>
 <context>
@@ -29614,30 +29104,10 @@ Pokušani URL: %1</translation>
         <translation>Pomak X,Y</translation>
     </message>
     <message>
-        <source>Border color:</source>
-        <translation type="obsolete">Boja granice:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="59"/>
         <source>Change</source>
         <translation>Izmjena</translation>
-    </message>
-    <message>
-        <source>Fill color:</source>
-        <translation type="obsolete">Boja ispune:</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">Veličina:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">Kut:</translation>
-    </message>
-    <message>
-        <source>Offset X,Y:</source>
-        <translation type="obsolete">Pomak X,Y:</translation>
     </message>
 </context>
 <context>
@@ -29666,22 +29136,6 @@ Pokušani URL: %1</translation>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="126"/>
         <source>SVG Image</source>
         <translation>SVG slika</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">Veličina:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">Kut:</translation>
-    </message>
-    <message>
-        <source>Offset X,Y:</source>
-        <translation type="obsolete">Pomak X,Y:</translation>
-    </message>
-    <message>
-        <source>SVG Image:</source>
-        <translation type="obsolete">SVG slika:</translation>
     </message>
 </context>
 <context>
@@ -29713,30 +29167,6 @@ Pokušani URL: %1</translation>
 </context>
 <context>
     <name>dxf2shpConverterGui</name>
-    <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="obsolete">Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</translation>
-    </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>
         <source>Fields description:
