@@ -1380,29 +1380,6 @@ Are you sure you want to proceed?</source>
     </message>
 </context>
 <context>
-    <name>EngineConfigDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialog</translation>
-    </message>
-    <message>
-        <source>Chain (fast)</source>
-        <translation type="obsolete">โซ่(เร็ว)</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">จุด</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">เส้น</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">รูปปิด</translation>
-    </message>
-</context>
-<context>
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory:</source>
@@ -2873,49 +2850,6 @@ GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมู
         <source>Error loading output shapefile:
 %1</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LabelingGuiBase</name>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">ตำแหน่ง</translation>
-    </message>
-    <message>
-        <source>pixels</source>
-        <translation type="obsolete">pixels</translation>
-    </message>
-    <message>
-        <source>Orientation</source>
-        <translation type="obsolete">หมุน</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">ตัวอักษร</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">สี</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="obsolete">แนวกันชน</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">ขนาด</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">ตัวอย่าง</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">ใช้งานได้</translation>
     </message>
 </context>
 <context>
@@ -5989,11 +5923,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="6526"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>เตือนฉันเมื่อเปิดโครงการที่ถูกบันทึกด้วยรุ่นเก่ากว่า</translation>
-    </message>
-    <message>
-        <source>Ctrl-F</source>
-        <comment>Toggle fullscreen mode</comment>
-        <translation type="obsolete">Ctrl-F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1111"/>
@@ -12023,10 +11952,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
-    </message>
-    <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="609"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="618"/>
         <source>Not enough vertices</source>
@@ -13343,10 +13268,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="48"/>
         <source>change</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">วิธี:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
@@ -16117,10 +16038,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>ค่า</translation>
     </message>
     <message>
-        <source>Layer</source>
-        <translation type="obsolete">ชั้นข้อมูล</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="224"/>
         <source>(Actions)</source>
         <translation type="unfinished"></translation>
@@ -17408,10 +17325,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>ชั้นข้อมูลแก้ไขไม่ได้</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
@@ -17500,10 +17413,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>ชั้นข้อมูลแก้ไขไม่ได้</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
@@ -17578,10 +17487,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="50"/>
         <source>Layer not editable</source>
         <translation>ชั้นข้อมูลแก้ไขไม่ได้</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="51"/>
@@ -17791,10 +17696,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="157"/>
         <source>Feature moved</source>
         <translation>ย้ายข้อมูล</translation>
@@ -17849,10 +17750,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
@@ -17991,10 +17888,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="49"/>
         <source>Layer not editable</source>
         <translation>ชั้นข้อมูลที่แก้ไขไม่ได้</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">ไม่สามารถแก้ไข ชั้นข้อมูลเชิงเส้นนี้ได้ เพื่อที่จะแก้ไขชั้นข้อมูลนี้ ให้ไปที่เมนูชั้นข้อมูล กดเม้าส์ขวาแล้วเลือก &apos;อนุญาติให้แก้ไข&apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="65"/>
@@ -19272,10 +19165,6 @@ p, li { white-space: pre-wrap; }
         <translation>ระเบียบการ</translation>
     </message>
     <message>
-        <source>Encoding :</source>
-        <translation type="obsolete">เข้ารหัส:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
         <source>Encoding</source>
         <translation type="unfinished"></translation>
@@ -19966,10 +19855,6 @@ p, li { white-space: pre-wrap; }
         <translation>ตำแหน่ง</translation>
     </message>
     <message>
-        <source>Placement algorithm:</source>
-        <translation type="obsolete">Placement algorithm:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="942"/>
         <source>Line color</source>
         <translation type="unfinished"></translation>
@@ -19999,10 +19884,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsOraclePlugin</name>
-    <message>
-        <source>Select GeoRaster</source>
-        <translation type="obsolete">เลือก GeoRaster</translation>
-    </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Select Oracle GeoRaster</source>
@@ -20622,10 +20503,6 @@ geometry.</translation>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="151"/>
         <source>Search in columns</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">ค้นหา:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="87"/>
@@ -23333,18 +23210,6 @@ p, li { white-space: pre-wrap; }
         <translation>ภาพหยาบ</translation>
     </message>
     <message>
-        <source>Columns:</source>
-        <translation type="obsolete">ช่อง:</translation>
-    </message>
-    <message>
-        <source>Rows:</source>
-        <translation type="obsolete">แถว:</translation>
-    </message>
-    <message>
-        <source>No Data:</source>
-        <translation type="obsolete">ไม่มีข้อมูล:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="146"/>
         <source>Metadata</source>
         <translation>ข้อมูลบรรยายข้อมูล</translation>
@@ -23551,10 +23416,6 @@ p, li { white-space: pre-wrap; }
         <translation>ใช้ค่าเบียงเบนมาตรฐาน</translation>
     </message>
     <message>
-        <source>Note:</source>
-        <translation type="obsolete">หมายเหตุ:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="917"/>
         <source>Load min / max values from band</source>
         <translation>Load min / max values from band</translation>
@@ -23734,18 +23595,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1874"/>
         <source>Pyramid resolutions</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1927"/>
@@ -28813,10 +28662,6 @@ Tried URL: %1</source>
         <translation type="unfinished">สี</translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">สี:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="35"/>
         <source>Change</source>
         <translation type="unfinished">เปลี่ยน</translation>
@@ -28921,10 +28766,6 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">สี:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="69"/>
         <source>Change</source>
@@ -28969,18 +28810,10 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">สี:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="35"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="127"/>
         <source>Change</source>
         <translation type="unfinished">เปลี่ยน</translation>
-    </message>
-    <message>
-        <source>Pen width:</source>
-        <translation type="obsolete">ความกว้างของปากกา:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
@@ -29026,10 +28859,6 @@ Tried URL: %1</source>
         <source>Change</source>
         <translation type="unfinished">เปลี่ยน</translation>
     </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">ขนาด:</translation>
-    </message>
 </context>
 <context>
     <name>WidgetSvgMarker</name>
@@ -29057,10 +28886,6 @@ Tried URL: %1</source>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="126"/>
         <source>SVG Image</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">ขนาด:</translation>
     </message>
 </context>
 <context>
@@ -29142,29 +28967,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="83"/>
         <source>Export text labels</source>
         <translation>ส่งออกตัวอักษร</translation>
-    </message>
-    <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="obsolete">Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>

@@ -147,7 +147,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="220"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="136"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="211"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="223"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="166"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="77"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
@@ -246,7 +246,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="89"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="204"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="120"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="195"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="207"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
         <translation>Ulostulo shapefile tiedosto</translation>
@@ -435,7 +435,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="125"/>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="140"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="149"/>
         <source>Use this number of points</source>
         <translation>Käytettävien pisteiden lkm.</translation>
     </message>
@@ -531,51 +531,63 @@ p, li { white-space: pre-wrap; }
         <translation>Generoi jaksolliset pisteet</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="39"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
+        <source>buttonGroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="42"/>
         <source>Input Coordinates</source>
         <translation>Syötä raja-arvot</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="48"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="54"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="66"/>
         <source>X Min</source>
         <translation>X min.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="62"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="68"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="93"/>
         <source>Y Min</source>
         <translation>Y min.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="76"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="82"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="120"/>
         <source>X Max</source>
         <translation>X maks.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="90"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="96"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="147"/>
         <source>Y Max</source>
         <translation>Y maks.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="102"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="108"/>
         <source>Grid Spacing</source>
         <translation>Ruudukon välit</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="110"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="116"/>
         <source>Use this point spacing</source>
         <translation>Käytä tätä pisteväliä</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="159"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="122"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="152"/>
+        <source>buttonGroup_2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
         <translation>Lisää satunnainen siirtymä pisteiden välille</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="179"/>
+        <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
         <source>Initial inset from corner (LH side)</source>
         <translation>Alkuperäinen lisäys kulmasta (LH puoli)</translation>
     </message>
@@ -1320,14 +1332,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <translation>Symbolin ominaisuudet</translation>
     </message>
     <message>
-        <source>Symbol preview:</source>
-        <translation type="obsolete">Symbolin esikatselu:</translation>
-    </message>
-    <message>
-        <source>Symbol layer type:</source>
-        <translation type="obsolete">Symbolitason tyyppi:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="49"/>
         <source>Symbol layer properties</source>
         <translation>Symbolitason ominaisuudet</translation>
@@ -1336,10 +1340,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="65"/>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
         <translation>Tällä symbolitasolla ei ole käyttöliittymää asetuksille.</translation>
-    </message>
-    <message>
-        <source>Symbol layers:</source>
-        <translation type="obsolete">Symbolin ominaisuudet:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
@@ -1380,61 +1380,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="212"/>
         <source>Move down</source>
         <translation>Siirrä ylös</translation>
-    </message>
-</context>
-<context>
-    <name>EngineConfigDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialogi</translation>
-    </message>
-    <message>
-        <source>Search method</source>
-        <translation type="obsolete">Etsintätyyppi</translation>
-    </message>
-    <message>
-        <source>Chain (fast)</source>
-        <translation type="obsolete">Ketjutus (nopea)</translation>
-    </message>
-    <message>
-        <source>Popmusic Tabu</source>
-        <translation type="obsolete">Popmusic Tabu</translation>
-    </message>
-    <message>
-        <source>Popmusic Chain</source>
-        <translation type="obsolete">Popmusic Chain</translation>
-    </message>
-    <message>
-        <source>Popmusic Tabu Chain</source>
-        <translation type="obsolete">Popmusic Tabu Chain</translation>
-    </message>
-    <message>
-        <source>FALP (fastest)</source>
-        <translation type="obsolete">FALP (nopein)</translation>
-    </message>
-    <message>
-        <source>Number of candidates</source>
-        <translation type="obsolete">Ehdokkaiden lukumäärä</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">Piste</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">Viiva</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">Monikulmio</translation>
-    </message>
-    <message>
-        <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="obsolete">Näytä kaikki nimiöt (mukanalukien romahdetut nimiöt)</translation>
-    </message>
-    <message>
-        <source>Show label candidates (for debugging)</source>
-        <translation type="obsolete">Näytä nimiöehdokkaat (testausta varten)</translation>
     </message>
 </context>
 <context>
@@ -2906,52 +2851,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>Gui</name>
-    <message>
-        <source>Welcome to your automatically generated plugin!</source>
-        <translation type="obsolete">Tervetuloa automaattisesti luotuun liitännäiseesi!</translation>
-    </message>
-    <message>
-        <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-        <translation type="obsolete">Tämä on kuitenkin vain alku. Nyt sinun täytyy ohjelmoida se tekemään jotain hyödyllistä. Jatka lukemista päästäksesi alkuun.</translation>
-    </message>
-    <message>
-        <source>Documentation:</source>
-        <translation type="obsolete">Dokumentaatio:</translation>
-    </message>
-    <message>
-        <source>You really need to read the QGIS API Documentation now at:</source>
-        <translation type="obsolete">Nyt sinun todella täytyy lukea QGIS API dokumentaatio:</translation>
-    </message>
-    <message>
-        <source>In particular look at the following classes:</source>
-        <translation type="obsolete">Lue varsinkin seuraavista luokista:</translation>
-    </message>
-    <message>
-        <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-        <translation type="obsolete">QgsPlugin kertoo liitännäiseltä vaaditun toiminnan. Katso lisätietoa alta.</translation>
-    </message>
-    <message>
-        <source>What are all the files in my generated plugin directory for?</source>
-        <translation type="obsolete">Mikä on luodun liitännäisen kansiossa olevien tiedostojen tarkoitus?</translation>
-    </message>
-    <message>
-        <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation type="obsolete">Tämä on luotu CMake tiedosto, sen avulla liitännäinen luodaan. Sinun tulisi lisätä sovellusriippuvuudet ja lähdetiedostot tähän tiedostoon.</translation>
-    </message>
-</context>
-<context>
-    <name>Labeling</name>
-    <message>
-        <source>Labeling</source>
-        <translation type="obsolete">Nimeäminen</translation>
-    </message>
-    <message>
-        <source>&amp;Labeling</source>
-        <translation type="obsolete">&amp;Nimeäminen</translation>
-    </message>
-</context>
-<context>
     <name>OgrConverterGuiBase</name>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="26"/>
@@ -3848,10 +3747,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/app/qgspluginregistry.cpp" line="445"/>
         <source>Error when reading metadata of plugin %1</source>
         <translation>Virhe luettaess liitännäisen (%1) metadataa</translation>
-    </message>
-    <message>
-        <source>SQLite DB (*.sqlite);;All files (*.*)</source>
-        <translation type="obsolete">SQLite Tietokanta (*.sqlite);;Kaikki tiedostot (*.*)</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1227"/>
@@ -5473,10 +5368,6 @@ Ota yhteys kehittäjiin.
         <translation>Kaappaa monikulmiot</translation>
     </message>
     <message>
-        <source>Move Feature</source>
-        <translation type="obsolete">Siirrä kohde</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="770"/>
         <location filename="../src/app/qgisapp.cpp" line="772"/>
         <source>Reshape Features</source>
@@ -5792,19 +5683,6 @@ Ota yhteys kehittäjiin.
         <translation>Päivitä kartta (piirtää uudelleen)</translation>
     </message>
     <message>
-        <source>New Vector Layer...</source>
-        <translation type="obsolete">Uusi vektoritaso...</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+N</source>
-        <comment>Create a New Vector Layer</comment>
-        <translation type="obsolete">Ctrl+Shift+N</translation>
-    </message>
-    <message>
-        <source>Create a New Vector Layer</source>
-        <translation type="obsolete">Luo uuden vektoritason</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="986"/>
         <source>Add Vector Layer...</source>
         <translation>Lisää vektori taso...</translation>
@@ -5899,22 +5777,6 @@ Ota yhteys kehittäjiin.
         <location filename="../src/app/qgisapp.cpp" line="1019"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Mahdollistaa nykyisen tason muokkauksen</translation>
-    </message>
-    <message>
-        <source>Save as Shapefile...</source>
-        <translation type="obsolete">Tallenna Shapefile tiedostona...</translation>
-    </message>
-    <message>
-        <source>Save the current layer as a shapefile</source>
-        <translation type="obsolete">Tallentaa nykyisen tason Shapefile tiedostoon</translation>
-    </message>
-    <message>
-        <source>Save Selection as Shapefile...</source>
-        <translation type="obsolete">Tallenna valinta Shapefile tiedostona...</translation>
-    </message>
-    <message>
-        <source>Save the selection as a shapefile</source>
-        <translation type="obsolete">Tallennaa valinna shapefile tiedostoon</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1042"/>
@@ -6034,11 +5896,6 @@ Ota yhteys kehittäjiin.
         <location filename="../src/app/qgisapp.cpp" line="1109"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Siirry kokonäytön tilaan</translation>
-    </message>
-    <message>
-        <source>Ctrl-F</source>
-        <comment>Toggle fullscreen mode</comment>
-        <translation type="obsolete">Ctr+F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1111"/>
@@ -6441,20 +6298,10 @@ Ota yhteys kehittäjiin.
         <translation>Käytät QGIS versiota %1, joka on käännetty koodi revisiosta %2</translation>
     </message>
     <message>
-        <source>
-This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="obsolete">Tämä QGIS on käännetty PostgreSQL tuella.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2403"/>
         <source>
 This copy of QGIS has been built without PostgreSQL support.</source>
         <translation>Tämä QGIS on käännetty ilman PostgreSQL tukea.</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation type="obsolete">Tämä QGIS on käännetty SpatiaLite tuella.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2409"/>
@@ -6493,26 +6340,6 @@ Tämä ohjelmakoodi käännettii toimimaan Qt %1:ssä, ja sitä suoritetaan nyt 
         <translation>Versio</translation>
     </message>
     <message>
-        <source>Whats new in Version 1.4.0?</source>
-        <translation type="obsolete">Mitä uutta on versiossa 1.4.0?</translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="obsolete">Huom. Tämä versio on yksi uusimmista versioista. Ja se sisältää uutta toiminnallisuutta ja laajentaa ohjelmoitavaa rajapintaa verrattuna QGIS versioihin 1.0.x ja 1.3.0. Jos muuttumaton käyttöliittymä, ohjelmoitava API ja parempi tuki on sinulle tärkeää, suosittelemme sinua käyttämään QGISin vanhempaa versiota (1.0.x). Mutta jos haluat kokeilla uusia toimintoja, käytä tätä versiota.</translation>
-    </message>
-    <message>
-        <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation type="obsolete">Tämä julkaisu sisältää noin 200 bugikorjausta, lähes 30 uutta toiminnallisuutta ja on taas askeleen lähempänä täydellistä GIS sovellusta. Muutoksia on viimeisen 3 kuukauden aikana tullut kuitenkin niin paljon että niitä kaikkia on mahdoton kirjata. Joten mainitsemme tässä muutamat tärkeät uudet toiminnallisuudet.</translation>
-    </message>
-    <message>
-        <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation type="obsolete">Ehkä suurin lisäys on uusi vektori symboliikka infrastruktuuri. Tätä rinnakkain vanhan toteutuksen kanssa - voit painamalla nappia vektoritason ominaisuus dialogilla vaihtaa uuden ja vanhan välillä. Tämä ei korvaa vanhaa symboliikkaa täysin (vielä).</translation>
-    </message>
-    <message>
-        <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation type="obsolete">QGIS sisältää nyt kenttälaskimen, pääset käsiksi tähän vektoriasetuksen attribuuttiosioista.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2649"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ei ole oikea tai tunnistettu tiedonlähde</translation>
@@ -6540,14 +6367,6 @@ Tämä ohjelmakoodi käännettii toimimaan Qt %1:ssä, ja sitä suoritetaan nyt 
         <location filename="../src/app/qgisapp.cpp" line="3037"/>
         <source>Save As</source>
         <translation>Tallenna nimellä</translation>
-    </message>
-    <message>
-        <source>New Shapefile</source>
-        <translation type="obsolete">Uusi Shapefile tiedosto</translation>
-    </message>
-    <message>
-        <source>Shapefiles must end on .shp</source>
-        <translation type="obsolete">Shapefile tiedostojen tulee päättyä tunnukseen .shp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3131"/>
@@ -8689,21 +8508,9 @@ Should the existing classes be deleted before classification?</source>
 Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     </message>
     <message>
-        <source>Column:</source>
-        <translation type="obsolete">Sarake:</translation>
-    </message>
-    <message>
-        <source>Symbol:</source>
-        <translation type="obsolete">Symboli:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
         <source>change</source>
         <translation>vaihda</translation>
-    </message>
-    <message>
-        <source>Color ramp:</source>
-        <translation type="obsolete">Liukuväri:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
@@ -9547,18 +9354,6 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation>Laatijan hallinta</translation>
     </message>
     <message>
-        <source>Show</source>
-        <translation type="obsolete">Näytä</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Poista</translation>
-    </message>
-    <message>
-        <source>Rename</source>
-        <translation type="obsolete">Nimeä uudelleen</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="36"/>
         <source>Add</source>
         <translation>Lisää</translation>
@@ -10198,10 +9993,6 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="101"/>
         <source>Maximum rows</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum columns</source>
-        <translation type="obsolete">Sarakkeiden maksimi lkm.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="118"/>
@@ -13476,29 +13267,9 @@ p, li { white-space: pre-wrap; }
         <translation>Valittu liukuväri ei ole käytettävissä.</translation>
     </message>
     <message>
-        <source>Column:</source>
-        <translation type="obsolete">Sarake:</translation>
-    </message>
-    <message>
-        <source>Symbol:</source>
-        <translation type="obsolete">Symboli:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="48"/>
         <source>change</source>
         <translation>vaihda</translation>
-    </message>
-    <message>
-        <source>Classes:</source>
-        <translation type="obsolete">Luokat:</translation>
-    </message>
-    <message>
-        <source>Color ramp:</source>
-        <translation type="obsolete">Liukuväri:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">Tila:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
@@ -17167,22 +16938,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <source>&amp;Collapse all</source>
         <translation>&amp;Romahduta kaikki</translation>
     </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">Lopeta muokkaus</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes to layer %1?</source>
-        <translation type="obsolete">Haluatko tallentaa muutokset tasolle %1?</translation>
-    </message>
-    <message>
-        <source>No Layer Selected</source>
-        <translation type="obsolete">Tasoa ei valittuna</translation>
-    </message>
-    <message>
-        <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Avataksesi attribuuttitaulukon, sinun täytyy valita vektoritaso selitteestä</translation>
-    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -17230,26 +16985,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="440"/>
         <source>&amp;Properties</source>
         <translation>&amp;Ominaisuudet</translation>
-    </message>
-    <message>
-        <source>Save layer as...</source>
-        <translation type="obsolete">Tallenna taso nimellä...</translation>
-    </message>
-    <message>
-        <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="obsolete">Valitse koordinaattijärjestelmä tallennetulle shapefile tiedostolle. Tietopisteet muunnetaan tason koordinaattijärjestelmästä.</translation>
-    </message>
-    <message>
-        <source>Saving done</source>
-        <translation type="obsolete">Tallennus valmis</translation>
-    </message>
-    <message>
-        <source>Export to Shapefile has been completed</source>
-        <translation type="obsolete">Vienti Shapefile tiedostoon valmistui</translation>
-    </message>
-    <message>
-        <source>Save error</source>
-        <translation type="obsolete">Tallennus virhe</translation>
     </message>
 </context>
 <context>
@@ -17563,14 +17298,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Nykyinen taso ei ole vektoritaso</translation>
     </message>
     <message>
-        <source>2.5D shape type not supported</source>
-        <translation type="obsolete">2.5D muototyyppi ei ole tuettu</translation>
-    </message>
-    <message>
-        <source>Adding features to 2.5D shapetypes is not supported yet</source>
-        <translation type="obsolete">Kohteiden lisääminen 2.5 muototyyppeihin ei ole tuettuna vielä</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="65"/>
         <source>Layer cannot be added to</source>
         <translation>Tasoon ei voi lisätä</translation>
@@ -17584,10 +17311,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="72"/>
         <source>Layer not editable</source>
         <translation>Taso ei ole muokattavissa</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektoritason muokkaus ei onnistu. Salliaksesi muokkauksen mene tason tiedostojäseneen, klikkaa hiiren oikeaa näppäintä ja valitse &apos;Salli muokkaus&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
@@ -17678,10 +17401,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Taso ei ole muokattavissa</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektoritason muokkaus ei onnistu. Salliaksesi muokkauksen mene tason tiedostojäseneen, klikkaa hiiren oikeaa näppäintä ja valitse &apos;Salli muokkaus&apos;.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
@@ -17756,10 +17475,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <location filename="../src/app/qgsmaptooladdring.cpp" line="50"/>
         <source>Layer not editable</source>
         <translation>Taso ei ole muokattavissa</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektoritason muokkaus ei onnistu. Salliaksesi muokkauksen mene tason tiedostojäseneen, klikkaa hiiren oikeaa näppäintä ja valitse &apos;Salli muokkaus&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="51"/>
@@ -17970,10 +17685,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektoritason muokkaus ei onnistu. Salliaksesi muokkauksen mene tason tiedostojäseneen, klikkaa hiiren oikeaa näppäintä ja valitse &apos;Salli muokkaus&apos;.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="157"/>
         <source>Feature moved</source>
         <translation>Kohde siirretty</translation>
@@ -18028,10 +17739,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektoritason muokkaus ei onnistu. Salliaksesi muokkauksen mene tason tiedostojäseneen, klikkaa hiiren oikeaa näppäintä ja valitse &apos;Salli muokkaus&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
@@ -18142,10 +17849,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Taso ei ole muokattavissa</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektoritason muokkaus ei onnistu. Salliaksesi muokkauksen mene tason tiedostojäseneen, klikkaa hiiren oikeaa näppäintä ja valitse &apos;Salli muokkaus&apos;.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
@@ -18207,19 +17910,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="58"/>
         <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
         <translation>Oletko asettanut toleranssin valikossa Muokkaa-&gt; Projektin asetukset-&gt; Yleiset?</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMapserverExport</name>
-    <message>
-        <source>Overwrite File?</source>
-        <translation type="obsolete">Korvaa tiedosto?</translation>
-    </message>
-    <message>
-        <source>%1 exists.
-Do you want to overwrite it?</source>
-        <translation type="obsolete">%1 on jo olemassa.
-Haluatko korvata sen?</translation>
     </message>
 </context>
 <context>
@@ -19466,186 +19156,6 @@ p, li { white-space: pre-wrap; }
         <translation>Protokolla</translation>
     </message>
     <message>
-        <source>Encoding :</source>
-        <translation type="obsolete">Koodaus:</translation>
-    </message>
-    <message>
-        <source>BIG5</source>
-        <translation type="obsolete">BIG5</translation>
-    </message>
-    <message>
-        <source>BIG5-HKSCS</source>
-        <translation type="obsolete">BIG5-HKSCS</translation>
-    </message>
-    <message>
-        <source>EUCJP</source>
-        <translation type="obsolete">EUCJP</translation>
-    </message>
-    <message>
-        <source>EUCKR</source>
-        <translation type="obsolete">EUCKR</translation>
-    </message>
-    <message>
-        <source>GB2312</source>
-        <translation type="obsolete">GB2312</translation>
-    </message>
-    <message>
-        <source>GBK</source>
-        <translation type="obsolete">GBK</translation>
-    </message>
-    <message>
-        <source>GB18030</source>
-        <translation type="obsolete">GB18030</translation>
-    </message>
-    <message>
-        <source>JIS7</source>
-        <translation type="obsolete">JIS7</translation>
-    </message>
-    <message>
-        <source>SHIFT-JIS</source>
-        <translation type="obsolete">SHIFT-JIS</translation>
-    </message>
-    <message>
-        <source>TSCII</source>
-        <translation type="obsolete">TSCII</translation>
-    </message>
-    <message>
-        <source>UTF-8</source>
-        <translation type="obsolete">UTF-8</translation>
-    </message>
-    <message>
-        <source>UTF-16</source>
-        <translation type="obsolete">UTF-16</translation>
-    </message>
-    <message>
-        <source>KOI8-R</source>
-        <translation type="obsolete">KOI8-R</translation>
-    </message>
-    <message>
-        <source>KOI8-U</source>
-        <translation type="obsolete">KOI8-U</translation>
-    </message>
-    <message>
-        <source>ISO8859-1</source>
-        <translation type="obsolete">ISO8859-1</translation>
-    </message>
-    <message>
-        <source>ISO8859-2</source>
-        <translation type="obsolete">ISO8859-2</translation>
-    </message>
-    <message>
-        <source>ISO8859-3</source>
-        <translation type="obsolete">ISO8859-3</translation>
-    </message>
-    <message>
-        <source>ISO8859-4</source>
-        <translation type="obsolete">ISO8859-4</translation>
-    </message>
-    <message>
-        <source>ISO8859-5</source>
-        <translation type="obsolete">ISO8859-5</translation>
-    </message>
-    <message>
-        <source>ISO8859-6</source>
-        <translation type="obsolete">ISO8859-6</translation>
-    </message>
-    <message>
-        <source>ISO8859-7</source>
-        <translation type="obsolete">ISO8859-7</translation>
-    </message>
-    <message>
-        <source>ISO8859-8</source>
-        <translation type="obsolete">ISO8859-8</translation>
-    </message>
-    <message>
-        <source>ISO8859-8-I</source>
-        <translation type="obsolete">ISO8859-8-I</translation>
-    </message>
-    <message>
-        <source>ISO8859-9</source>
-        <translation type="obsolete">ISO8859-9</translation>
-    </message>
-    <message>
-        <source>ISO8859-10</source>
-        <translation type="obsolete">ISO8859-10</translation>
-    </message>
-    <message>
-        <source>ISO8859-11</source>
-        <translation type="obsolete">ISO8859-11</translation>
-    </message>
-    <message>
-        <source>ISO8859-12</source>
-        <translation type="obsolete">ISO8859-12</translation>
-    </message>
-    <message>
-        <source>ISO8859-13</source>
-        <translation type="obsolete">ISO8859-13</translation>
-    </message>
-    <message>
-        <source>ISO8859-14</source>
-        <translation type="obsolete">ISO8859-14</translation>
-    </message>
-    <message>
-        <source>ISO8859-15</source>
-        <translation type="obsolete">ISO8859-15</translation>
-    </message>
-    <message>
-        <source>IBM 850</source>
-        <translation type="obsolete">IBM 850</translation>
-    </message>
-    <message>
-        <source>IBM 866</source>
-        <translation type="obsolete">IBM 866</translation>
-    </message>
-    <message>
-        <source>CP874</source>
-        <translation type="obsolete">CP874</translation>
-    </message>
-    <message>
-        <source>CP1250</source>
-        <translation type="obsolete">CP1250</translation>
-    </message>
-    <message>
-        <source>CP1251</source>
-        <translation type="obsolete">CP1251</translation>
-    </message>
-    <message>
-        <source>CP1252</source>
-        <translation type="obsolete">CP1252</translation>
-    </message>
-    <message>
-        <source>CP1253</source>
-        <translation type="obsolete">CP1253</translation>
-    </message>
-    <message>
-        <source>CP1254</source>
-        <translation type="obsolete">CP1254</translation>
-    </message>
-    <message>
-        <source>CP1255</source>
-        <translation type="obsolete">CP1255</translation>
-    </message>
-    <message>
-        <source>CP1256</source>
-        <translation type="obsolete">CP1256</translation>
-    </message>
-    <message>
-        <source>CP1257</source>
-        <translation type="obsolete">CP1257</translation>
-    </message>
-    <message>
-        <source>CP1258</source>
-        <translation type="obsolete">CP1258</translation>
-    </message>
-    <message>
-        <source>Apple Roman</source>
-        <translation type="obsolete">Apple Roman</translation>
-    </message>
-    <message>
-        <source>TIS-620</source>
-        <translation type="obsolete">TIS-620</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
         <source>Encoding</source>
         <translation type="unfinished"></translation>
@@ -20366,10 +19876,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOraclePlugin</name>
     <message>
-        <source>Select GeoRaster</source>
-        <translation type="obsolete">Valitse GeoRaster</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Select Oracle GeoRaster</source>
         <translation type="unfinished"></translation>
@@ -20983,18 +20489,6 @@ geometry.</source>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="151"/>
         <source>Search in columns</source>
         <translation type="unfinished">Etsi sarakkeista</translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">:Etsi</translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="obsolete">Etsintätyyppi:</translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="obsolete">Etsi sarakkeista:</translation>
     </message>
 </context>
 <context>
@@ -22281,31 +21775,6 @@ Result: %3 (%4)</source>
     </message>
 </context>
 <context>
-    <name>QgsPostgresProvider::Conn</name>
-    <message>
-        <source>No PostGIS Support!</source>
-        <translation type="obsolete">PostGIS ei ole tuettu!</translation>
-    </message>
-    <message>
-        <source>Your database has no working PostGIS support.
-</source>
-        <translation type="obsolete">Sinun tietokanta ei sisällä PostGIS tukea.
-</translation>
-    </message>
-    <message>
-        <source>No GEOS Support!</source>
-        <translation type="obsolete">GEOS ei ole tuettu!</translation>
-    </message>
-    <message>
-        <source>Your PostGIS installation has no GEOS support.
-Feature selection and identification will not work properly.
-Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="obsolete">Sinun PostGIS asennus ei sisällä GEOS tukea.
-Kohteiden valinta ja tunnistus ei tule toimimaan oikein.
-Ole hyvä ja asenna PostGIS GEOS tuella (http://geos.refractions.net)</translation>
-    </message>
-</context>
-<context>
     <name>QgsProject</name>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="769"/>
@@ -22643,10 +22112,6 @@ Tästä johtuen projektoinnin valinta ei toimi...</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>EPSG</source>
-        <translation type="obsolete">EPSG</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="91"/>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="131"/>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="240"/>
@@ -22657,10 +22122,6 @@ Tästä johtuen projektoinnin valinta ei toimi...</translation>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="105"/>
         <source>Search</source>
         <translation>Etsi</translation>
-    </message>
-    <message>
-        <source>EPSG ID</source>
-        <translation type="obsolete">EPSG tunniste</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="136"/>
@@ -24450,10 +23911,6 @@ p, li { white-space: pre-wrap; }
         <translation>Renderöinti asetukset</translation>
     </message>
     <message>
-        <source>Renderer:</source>
-        <translation type="obsolete">Renderöijä:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer</source>
         <translation type="unfinished"></translation>
@@ -25271,29 +24728,6 @@ Virhesanoma:
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="121"/>
         <source>Whole number (integer)</source>
         <translation>Kokonaisluku</translation>
-    </message>
-    <message>
-        <source>SQLite error: %1
-
-SQL: %2</source>
-        <translation type="obsolete">SQLite virhe: %1
-
-SQL: %2</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSpatiaLiteProvider::SqliteHandles</name>
-    <message>
-        <source>Failure while connecting to: %1
-
-%2</source>
-        <translation type="obsolete">Tapahtui virhe yhdistettäessä kohteeseen %1
-
-Virhesanoma: %2</translation>
-    </message>
-    <message>
-        <source>invalid metadata tables</source>
-        <translation type="obsolete">Virheelliset metainformaatio taulukot</translation>
     </message>
 </context>
 <context>
@@ -26343,10 +25777,6 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>Tyylien hallinta</translation>
     </message>
     <message>
-        <source>Style item type:</source>
-        <translation type="obsolete">Jäsentyylin tyyppi:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type</source>
         <translation type="unfinished"></translation>
@@ -26487,10 +25917,6 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="252"/>
         <source>Symbols from style</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbols from style:</source>
-        <translation type="obsolete">Symbolit tyylistä</translation>
     </message>
 </context>
 <context>
@@ -26905,14 +26331,6 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Scheme name:</source>
-        <translation type="obsolete">Kaavion nimi:</translation>
-    </message>
-    <message>
-        <source>Colors:</source>
-        <translation type="obsolete">Värit:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="82"/>
         <source>Preview</source>
         <translation>Esikatselu</translation>
@@ -27023,18 +26441,10 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color 1:</source>
-        <translation type="obsolete">1. Väri</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="32"/>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="65"/>
         <source>Change</source>
         <translation>Vaihda</translation>
-    </message>
-    <message>
-        <source>Color 2:</source>
-        <translation type="obsolete">2. Väri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="123"/>
@@ -28101,22 +27511,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/app/qgswmssourceselect.cpp" line="527"/>
         <source>Could not open the WMS Provider</source>
         <translation>WMS tarjoajan avaaminen epäonnistui</translation>
-    </message>
-    <message>
-        <source>Select Layer</source>
-        <translation type="obsolete">Valitse taso</translation>
-    </message>
-    <message>
-        <source>You must select at least one leaf layer first.</source>
-        <translation type="obsolete">Sinun täytyy valita ainakin yksi lehtitaso ensin.</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">Koordinaattijärjestelmä</translation>
-    </message>
-    <message>
-        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="obsolete">Ei vapaata koordinaattijärjestelmää valitsemillesi tasoille.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgswmssourceselect.cpp" line="813"/>
@@ -29227,10 +28621,6 @@ Tried URL: %1</source>
         <translation type="unfinished">Väri</translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Väri:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="35"/>
         <source>Change</source>
         <translation>Vaihda</translation>
@@ -29259,26 +28649,14 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Marker:</source>
-        <translation type="obsolete">Markkeri:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="29"/>
         <source>Change</source>
         <translation>Vaihda</translation>
     </message>
     <message>
-        <source>Marker interval:</source>
-        <translation type="obsolete">Markkerien väli:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
         <source>Rotate marker</source>
         <translation>Kierrä markkeria</translation>
-    </message>
-    <message>
-        <source>Line offset:</source>
-        <translation type="obsolete">Viivan siirtymä:</translation>
     </message>
 </context>
 <context>
@@ -29287,14 +28665,6 @@ Tried URL: %1</source>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="14"/>
         <source>Form</source>
         <translation>Kaavake</translation>
-    </message>
-    <message>
-        <source>Texture width:</source>
-        <translation type="obsolete">Tekstuurin leveys:</translation>
-    </message>
-    <message>
-        <source>Outline:</source>
-        <translation type="obsolete">Ääriviiva:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="22"/>
@@ -29355,30 +28725,10 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Väri:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="69"/>
         <source>Change</source>
         <translation>Vaihda</translation>
-    </message>
-    <message>
-        <source>Border color:</source>
-        <translation type="obsolete">Reunaväri:</translation>
-    </message>
-    <message>
-        <source>Fill style:</source>
-        <translation type="obsolete">Täyttötyyli:</translation>
-    </message>
-    <message>
-        <source>Border style:</source>
-        <translation type="obsolete">Reunatyyli:</translation>
-    </message>
-    <message>
-        <source>Border width:</source>
-        <translation type="obsolete">Reunan leveys:</translation>
     </message>
 </context>
 <context>
@@ -29419,39 +28769,15 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Väri:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="35"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="127"/>
         <source>Change</source>
         <translation>Vaihda</translation>
     </message>
     <message>
-        <source>Pen width:</source>
-        <translation type="obsolete">Piirron leveys:</translation>
-    </message>
-    <message>
-        <source>Offset:</source>
-        <translation type="obsolete">Siirtymä:</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="obsolete">Kynän tyyli:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
         <source>Use custom dash pattern</source>
         <translation>Käyttäjän määrittelemä viivatyyli</translation>
-    </message>
-    <message>
-        <source>Join style:</source>
-        <translation type="obsolete">Yhdistystyyli:</translation>
-    </message>
-    <message>
-        <source>Cap style:</source>
-        <translation type="obsolete">Viivojenpäät:</translation>
     </message>
 </context>
 <context>
@@ -29487,30 +28813,10 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Border color:</source>
-        <translation type="obsolete">Reunaväri:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="59"/>
         <source>Change</source>
         <translation>Vaihda</translation>
-    </message>
-    <message>
-        <source>Fill color:</source>
-        <translation type="obsolete">Täyttöväri:</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">Koko:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">Kulma:</translation>
-    </message>
-    <message>
-        <source>Offset X,Y:</source>
-        <translation type="obsolete">X-,Y-siirtymä:</translation>
     </message>
 </context>
 <context>
@@ -29539,22 +28845,6 @@ Tried URL: %1</source>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="126"/>
         <source>SVG Image</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">Koko:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">Kulma:</translation>
-    </message>
-    <message>
-        <source>Offset X,Y:</source>
-        <translation type="obsolete">X-,Y-siirtymä:</translation>
-    </message>
-    <message>
-        <source>SVG Image:</source>
-        <translation type="obsolete">SVG-kuva:</translation>
     </message>
 </context>
 <context>
@@ -29586,29 +28876,6 @@ Tried URL: %1</source>
 </context>
 <context>
     <name>dxf2shpConverterGui</name>
-    <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="obsolete">Kentän kuvaus: 
-* Syötä DFX tiedosto: polku DFX tiedostolle joka halutaan konvertoida
-* Ulostuleva Shp tiedosto: haluttu muototiedoston nimi joka luodaan
-* Shp ulostuleva tiedostotyyppi: Määrittää ulostulevan muototiedoston tyypin
-* Vie teksti nimiöt laatikko: jos tämä valitaan, ylimääräinen shp pistetaso luodaan, ja siihen kytketty dbf taulukko tulee sisältämään tiedot &quot;TEKSTI&quot; kentistä jotka löytyvät dxf tiedostosta, sekä itse merkkijonot
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it</translation>
-    </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>
         <source>Fields description:
@@ -32698,17 +31965,6 @@ Plugin will not be enabled.</source>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>pluginname</name>
-    <message>
-        <source>[menuitemname]</source>
-        <translation type="obsolete">[menuitemname]</translation>
-    </message>
-    <message>
-        <source>&amp;[menuname]</source>
-        <translation type="obsolete">&amp;[menuname]</translation>
     </message>
 </context>
 <context>

@@ -1095,6 +1095,14 @@ Are you sure you want to proceed?</source>
         <source>Add result to map canvas</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>buttonGroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>buttonGroup_2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DlgSymbolV2Properties</name>
@@ -9590,10 +9598,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Slānis nav rediģējams</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
-    </message>
-    <message>
         <source>Not enough vertices</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9623,6 +9627,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13295,7 +13303,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Orientācija</translation>
     </message>
     <message>
         <source>map</source>
@@ -13363,7 +13371,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aktivizēts</translation>
     </message>
     <message>
         <source>Minimum</source>
@@ -13718,10 +13726,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
-    </message>
-    <message>
         <source>Wrong editing tool</source>
         <translation>Nepareizs rediģēšanas rīks</translation>
     </message>
@@ -13765,6 +13769,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>An error was reported during intersection removal</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolAddIsland</name>
@@ -13779,10 +13787,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>Layer not editable</source>
         <translation>Slānis nav rediģējams</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
     <message>
         <source>Error, could not add island</source>
@@ -13824,6 +13828,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Part added</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolAddRing</name>
@@ -13838,10 +13846,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>Layer not editable</source>
         <translation>Slānis nav rediģējams</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
@@ -13882,6 +13886,10 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>Error, could not add ring</source>
         <translation>Kļūda, nevar pievienot riņķi</translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14004,12 +14012,12 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
-    </message>
-    <message>
         <source>Feature moved</source>
         <translation>Objekts pārvietots</translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14051,10 +14059,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
-    </message>
-    <message>
         <source>Coordinate transform error</source>
         <translation>Koordinātu pārrēķina kļūda</translation>
     </message>
@@ -14065,6 +14069,10 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>Reshape</source>
         <translation>Pārveidot</translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14163,16 +14171,16 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
-    </message>
-    <message>
         <source>Coordinate transform error</source>
         <translation>Koordinātu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16556,6 +16564,14 @@ Jums ir nepieciešams pārstartēt Quantum GIS, lai varētu sākt izmantot šo s
         <source>Are you sure you want to remove the following repository?</source>
         <translation type="unfinished">Vai tiešām vēlaties noņemt sekojošu repozitoriju?</translation>
     </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialogBase</name>
@@ -18059,6 +18075,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Calculating stats for %1</source>
         <translation>Aprēķina statistiku priekš %1</translation>
+    </message>
+    <message>
+        <source>This raster file has no bands and is invalid as a raster layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
