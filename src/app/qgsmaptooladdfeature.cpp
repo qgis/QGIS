@@ -486,11 +486,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           vlayer->endEditCommand();
         }
         mypDialog->deleteLater();
-
-#ifdef Q_OS_WIN
-        // hope your wearing your peril sensitive sunglasses.
-        QgisApp::instance()->skipNextContextMenuEvent();
-#endif
       }
       delete f;
 
