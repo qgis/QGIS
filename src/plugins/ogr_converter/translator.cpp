@@ -207,7 +207,7 @@ bool Translator::translateLayer( OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDa
   Q_ASSERT( 0 != dstLayer );
 
   // Transfer attributes schema
-  if ( !copyFields( dstLayer, srcLayerDefn ) )
+  if ( !copyFields( srcLayerDefn, dstLayer ) )
   {
     QgsDebugMsg( "Faild to copy fields from layer " + mSrcLayer );
     return false;
