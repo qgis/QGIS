@@ -2188,7 +2188,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="119"/>
         <source>Moving average</source>
-        <translation type="unfinished">średnia krocząca</translation>
+        <translation>średnia krocząca</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
@@ -2302,7 +2302,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="106"/>
         <source>Layer stack</source>
-        <translation type="unfinished"></translation>
+        <translation>Każdy plik na oddzielną warstwę</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="116"/>
@@ -5069,7 +5069,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="233"/>
         <source>Character buffer overrun</source>
-        <translation type="unfinished"></translation>
+        <translation>Przepełnienie bufora znaków</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="234"/>
@@ -5448,7 +5448,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2642"/>
         <source>%1 doesn&apos;t have any layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nie zawiera żadnych warstw</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2643"/>
@@ -8201,7 +8201,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="305"/>
         <source>Dial</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokrętło</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="319"/>
@@ -10822,7 +10822,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="71"/>
         <source>Realm</source>
-        <translation type="unfinished"></translation>
+        <translation>Domena</translation>
     </message>
 </context>
 <context>
@@ -11517,37 +11517,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Ustawienia</translation>
+        <translation>Ustawienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="22"/>
         <source>Search method</source>
-        <translation type="unfinished">Metoda wyszukiwania</translation>
+        <translation>Metoda wyszukiwania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="30"/>
         <source>Chain (fast)</source>
-        <translation type="unfinished">Chain (szybki)</translation>
+        <translation>Chain (szybki)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="35"/>
         <source>Popmusic Tabu</source>
-        <translation type="unfinished">Popmusic Tabu (wolny)</translation>
+        <translation>Popmusic Tabu (wolny)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="40"/>
         <source>Popmusic Chain</source>
-        <translation type="unfinished">Popmusic Chain (bardzo wolny)</translation>
+        <translation>Popmusic Chain (bardzo wolny)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="45"/>
         <source>Popmusic Tabu Chain</source>
-        <translation type="unfinished">Popmusic Tabu Chain (wolny)</translation>
+        <translation>Popmusic Tabu Chain (wolny)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="50"/>
         <source>FALP (fastest)</source>
-        <translation type="unfinished">FALP (najszybszy)</translation>
+        <translation>FALP (najszybszy)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="78"/>
@@ -12058,7 +12058,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="600"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="609"/>
@@ -17441,7 +17441,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="84"/>
@@ -17529,7 +17529,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
@@ -17605,7 +17605,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="51"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="66"/>
@@ -17807,7 +17807,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="66"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="157"/>
@@ -17863,7 +17863,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
@@ -17976,7 +17976,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa nie jest w trybie edycji. Aktywuj go w menu Warstwa lub przyciskiem na pasku narzędzi Digitalizacja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="78"/>
@@ -20812,11 +20812,11 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalator wtyczek odinstalował swoją aktualizację. Teraz nastąpi jego zamknięcie i powrót do wersji podstawowej. Możesz uruchomić go ponownie w menu Wtyczki i używać dalej.</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalator wtyczek odinstalował swoją aktualizację. Po ponownym uruchomieniu programu dostępna będzie podstawowa wersja instalatora.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
@@ -21606,7 +21606,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="123"/>
         <source>Point distance tolerance:</source>
-        <translation type="unfinished">Tolerancja odl.punktu:</translation>
+        <translation type="unfinished">Tolerancja odległości punktu:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="145"/>
@@ -22598,7 +22598,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="468"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ten plik nie zawiera żadnych kanałów i nie jest poprawną warstwą rastrową.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2556"/>
@@ -23853,7 +23853,14 @@ p, li { white-space: pre-wrap; }
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1920"/>
@@ -24051,17 +24058,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="424"/>
         <source>, scale </source>
-        <translation type="unfinished">, skala </translation>
+        <translation>, skala </translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="450"/>
         <source>scale </source>
-        <translation type="unfinished">skali </translation>
+        <translation>skala </translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="452"/>
         <source>any scale</source>
-        <translation type="unfinished">dowolna skala</translation>
+        <translation>dowolna skala</translation>
     </message>
 </context>
 <context>
@@ -24205,7 +24212,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="278"/>
         <source>Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Proszę podać mianowniki skal, przy których nastąpi podział reguły, oddzielając je przecinkami (np. 1000,5000):</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
@@ -25281,7 +25288,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will be only consider selected geometries of the reference layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Przy wybranym, operacja będzie uwzględniała jedynie wybrane geometrie warstwy referencyjnej&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="160"/>
@@ -25385,12 +25396,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="30"/>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="81"/>
         <source>SRID</source>
-        <translation>Układ współrzędnych</translation>
+        <translation>Numer ID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="35"/>
         <source>Authority</source>
-        <translation type="unfinished">w bazie</translation>
+        <translation>Baza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="40"/>
@@ -26683,7 +26694,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2854"/>
         <source>no renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>brak renderera</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3204"/>
@@ -26870,12 +26881,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="532"/>
         <source>Slider range</source>
-        <translation>Zakres</translation>
+        <translation>Zakres (suwak)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Dial range</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakres (gałka)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="534"/>
@@ -27733,7 +27744,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="903"/>
         <source>Select layer(s) or a tileset</source>
-        <translation type="unfinished">Wybierz warstwy lub tileset</translation>
+        <translation type="unfinished">Wybierz warstwy lub tileset(y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="908"/>
@@ -28148,7 +28159,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2450"/>
         <source>Tileset Count</source>
-        <translation type="unfinished">Liczba tilesetów</translation>
+        <translation>Liczba tilesetów</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2485"/>
@@ -28312,7 +28323,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="651"/>
         <source>Getting tiles via WMS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobieranie kafli poprzez WMS.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="668"/>
@@ -28320,8 +28331,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -28332,8 +28341,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28343,8 +28350,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28353,8 +28358,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -29150,7 +29153,17 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Opis pól:
+* Źródłowy plik DXF: ścieżka do pliku DXF do konwersji
+* Plik wyjściowy: pożądana nazwa pliku Shapefile do utworzenia
+* Typ pliku docelowego: typ wyjściowego pliku Shapefile
+* Eksportuj etykiety tekstowe: jeśli zaznaczono, utworzony zostanie dodatkowy punktowy Shapefile z tabelą atrybutów zawierającą treść i właściwości pól &quot;TEXT&quot;, znalezionych w pliku DXF.
+
+---
+Rozwijane przez zespół: Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+Kontakt mailowy: scala@itc.cnr.it
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="163"/>
