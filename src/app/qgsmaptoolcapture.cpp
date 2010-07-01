@@ -175,6 +175,11 @@ void QgsMapToolCapture::stopCapturing()
 
   mGeomErrors.clear();
 
+#ifdef Q_OS_WIN
+  // hope your wearing your peril sensitive sunglasses.
+  QgisApp::instance()->skipNextContextMenuEvent();
+#endif
+
   mCapturing = false;
   mCaptureList.clear();
   mCanvas->refresh();
