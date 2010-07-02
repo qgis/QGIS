@@ -887,6 +887,16 @@
 		7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4F10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.h */; };
 		7225EFF710B236C400D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */; };
 		7225EFF810B2375300D23EA2 /* qgsbrushstylecombobox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */; };
+		7237F48111DE3DA000128BAC /* eVisDatabaseConnectionGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47711DE3D9100128BAC /* eVisDatabaseConnectionGui-pt_BR */; };
+		7237F48211DE3DA000128BAC /* MapServerExport-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47811DE3D9100128BAC /* MapServerExport-pt_BR */; };
+		7237F48311DE3DA000128BAC /* QgsCustomProjectionDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47911DE3D9100128BAC /* QgsCustomProjectionDialog-pt_BR */; };
+		7237F48411DE3DA000128BAC /* QgsNewSpatialiteLayerDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47A11DE3D9100128BAC /* QgsNewSpatialiteLayerDialog-pt_BR */; };
+		7237F48511DE3DA000128BAC /* QgsNorthArrowPluginGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47B11DE3D9100128BAC /* QgsNorthArrowPluginGui-pt_BR */; };
+		7237F48611DE3DA000128BAC /* QgsOptions-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47C11DE3D9100128BAC /* QgsOptions-pt_BR */; };
+		7237F48711DE3DA000128BAC /* QgsPluginInstallerDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47D11DE3D9100128BAC /* QgsPluginInstallerDialog-pt_BR */; };
+		7237F48811DE3DA000128BAC /* QgsScaleBarPluginGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47E11DE3D9100128BAC /* QgsScaleBarPluginGui-pt_BR */; };
+		7237F48911DE3DA000128BAC /* QgsSpatiaLiteSourceSelect-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47F11DE3D9100128BAC /* QgsSpatiaLiteSourceSelect-pt_BR */; };
+		7237F48A11DE3DA000128BAC /* QgsStyleV2ManagerDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F48011DE3D9100128BAC /* QgsStyleV2ManagerDialog-pt_BR */; };
 		7238DB6510AA191E00963E09 /* qgsgridfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CF1052B2B0003D1610 /* qgsinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2927,7 +2937,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 72463E3E1122FEF200BE5F17 /* qgis.g.browser */;
+			remoteGlobalIDString = 72463E3E1122FEF200BE5F17;
 			remoteInfo = qgis.g.browser;
 		};
 		72FB0B6C0FFD6B8F0052360B /* PBXContainerItemProxy */ = {
@@ -3369,6 +3379,16 @@
 				721D950611CE911900714113 /* QgsWMSSourceSelect-ru_RU in Copy - context_help */,
 				721D950711CE911900714113 /* QgsWMSSourceSelect-sk_SK in Copy - context_help */,
 				721D950811CE911900714113 /* QgsWMSSourceSelect-sv_SE in Copy - context_help */,
+				7237F48111DE3DA000128BAC /* eVisDatabaseConnectionGui-pt_BR in Copy - context_help */,
+				7237F48211DE3DA000128BAC /* MapServerExport-pt_BR in Copy - context_help */,
+				7237F48311DE3DA000128BAC /* QgsCustomProjectionDialog-pt_BR in Copy - context_help */,
+				7237F48411DE3DA000128BAC /* QgsNewSpatialiteLayerDialog-pt_BR in Copy - context_help */,
+				7237F48511DE3DA000128BAC /* QgsNorthArrowPluginGui-pt_BR in Copy - context_help */,
+				7237F48611DE3DA000128BAC /* QgsOptions-pt_BR in Copy - context_help */,
+				7237F48711DE3DA000128BAC /* QgsPluginInstallerDialog-pt_BR in Copy - context_help */,
+				7237F48811DE3DA000128BAC /* QgsScaleBarPluginGui-pt_BR in Copy - context_help */,
+				7237F48911DE3DA000128BAC /* QgsSpatiaLiteSourceSelect-pt_BR in Copy - context_help */,
+				7237F48A11DE3DA000128BAC /* QgsStyleV2ManagerDialog-pt_BR in Copy - context_help */,
 			);
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5895,6 +5915,16 @@
 		72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayobject.sip; path = ../../python/core/qgsoverlayobject.sip; sourceTree = SOURCE_ROOT; };
 		72331DFC0F8E2A5D00398D2B /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = ../../src/core/spatialite/sqlite3.c; sourceTree = SOURCE_ROOT; };
 		72331DFD0F8E2A5D00398D2B /* spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spatialite.c; path = ../../src/core/spatialite/spatialite.c; sourceTree = SOURCE_ROOT; };
+		7237F47711DE3D9100128BAC /* eVisDatabaseConnectionGui-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "eVisDatabaseConnectionGui-pt_BR"; path = "../../resources/context_help/eVisDatabaseConnectionGui-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47811DE3D9100128BAC /* MapServerExport-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "MapServerExport-pt_BR"; path = "../../resources/context_help/MapServerExport-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47911DE3D9100128BAC /* QgsCustomProjectionDialog-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCustomProjectionDialog-pt_BR"; path = "../../resources/context_help/QgsCustomProjectionDialog-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47A11DE3D9100128BAC /* QgsNewSpatialiteLayerDialog-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewSpatialiteLayerDialog-pt_BR"; path = "../../resources/context_help/QgsNewSpatialiteLayerDialog-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47B11DE3D9100128BAC /* QgsNorthArrowPluginGui-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNorthArrowPluginGui-pt_BR"; path = "../../resources/context_help/QgsNorthArrowPluginGui-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47C11DE3D9100128BAC /* QgsOptions-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOptions-pt_BR"; path = "../../resources/context_help/QgsOptions-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47D11DE3D9100128BAC /* QgsPluginInstallerDialog-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPluginInstallerDialog-pt_BR"; path = "../../resources/context_help/QgsPluginInstallerDialog-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47E11DE3D9100128BAC /* QgsScaleBarPluginGui-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsScaleBarPluginGui-pt_BR"; path = "../../resources/context_help/QgsScaleBarPluginGui-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F47F11DE3D9100128BAC /* QgsSpatiaLiteSourceSelect-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsSpatiaLiteSourceSelect-pt_BR"; path = "../../resources/context_help/QgsSpatiaLiteSourceSelect-pt_BR"; sourceTree = SOURCE_ROOT; };
+		7237F48011DE3D9100128BAC /* QgsStyleV2ManagerDialog-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsStyleV2ManagerDialog-pt_BR"; path = "../../resources/context_help/QgsStyleV2ManagerDialog-pt_BR"; sourceTree = SOURCE_ROOT; };
 		723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspalgeometry.cpp; path = ../../src/core/qgspalgeometry.cpp; sourceTree = SOURCE_ROOT; };
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
@@ -12230,6 +12260,16 @@
 				721D944E11CE90DF00714113 /* QgsWMSSourceSelect-sv_SE */,
 				7263051711D7058E00574433 /* QgsDelimitedTextPluginGui-fr_FR */,
 				7263051811D7058E00574433 /* QgsIdentifyResults-fr_FR */,
+				7237F47711DE3D9100128BAC /* eVisDatabaseConnectionGui-pt_BR */,
+				7237F47811DE3D9100128BAC /* MapServerExport-pt_BR */,
+				7237F47911DE3D9100128BAC /* QgsCustomProjectionDialog-pt_BR */,
+				7237F47A11DE3D9100128BAC /* QgsNewSpatialiteLayerDialog-pt_BR */,
+				7237F47B11DE3D9100128BAC /* QgsNorthArrowPluginGui-pt_BR */,
+				7237F47C11DE3D9100128BAC /* QgsOptions-pt_BR */,
+				7237F47D11DE3D9100128BAC /* QgsPluginInstallerDialog-pt_BR */,
+				7237F47E11DE3D9100128BAC /* QgsScaleBarPluginGui-pt_BR */,
+				7237F47F11DE3D9100128BAC /* QgsSpatiaLiteSourceSelect-pt_BR */,
+				7237F48011DE3D9100128BAC /* QgsStyleV2ManagerDialog-pt_BR */,
 			);
 			name = context_help;
 			path = ../../resources/context_help;
