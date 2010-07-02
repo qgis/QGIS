@@ -183,6 +183,7 @@ QGIS_LIB_SUBDIR = lib // qgispython lib MUST be in MacOS/lib
 QGIS_DATA_SUBDIR = ../Resources
 QGIS_PLUGIN_SUBDIR = ../PlugIns/qgis
 QGIS_LIBEXEC_SUBDIR = lib/gqis
+QGIS_LIBEXEC_REL = ../.. // for backing out in relative paths, match depth of _SUBDIR above
 QGIS_HEADER_SEARCH_BASE = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include
 HEADER_SEARCH_PATHS = $(QGIS_HEADER_SEARCH_BASE)
 ALWAYS_SEARCH_USER_PATHS = NO
