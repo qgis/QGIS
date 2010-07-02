@@ -28,9 +28,6 @@
      <property name="checked">
       <bool>true</bool>
      </property>
-     <attribute name="buttonGroup">
-      <string>buttonGroup</string>
-     </attribute>
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
@@ -41,9 +38,6 @@
      <property name="text">
       <string>Input Coordinates</string>
      </property>
-     <attribute name="buttonGroup">
-      <string>buttonGroup</string>
-     </attribute>
     </widget>
    </item>
    <item row="3" column="0">
@@ -118,9 +112,6 @@
           <property name="checked">
            <bool>true</bool>
           </property>
-          <attribute name="buttonGroup">
-           <string>buttonGroup_2</string>
-          </attribute>
          </widget>
         </item>
         <item>
@@ -148,9 +139,6 @@
           <property name="text">
            <string>Use this number of points</string>
           </property>
-          <attribute name="buttonGroup">
-           <string>buttonGroup_2</string>
-          </attribute>
          </widget>
         </item>
         <item>
@@ -398,8 +386,4 @@
    </hints>
   </connection>
  </connections>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
-  <buttongroup name="buttonGroup_2"/>
- </buttongroups>
 </ui>
