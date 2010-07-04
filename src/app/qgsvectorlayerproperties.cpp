@@ -781,10 +781,58 @@ QString QgsVectorLayerProperties::metadata()
   myMetadata += "</td></tr>";
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
   myMetadata += "<tr><td>";
+
+  // Try to be a bit clever over what number format we use for the
+  // extents. Some people don't like it using scientific notation when the
+  // numbers get large, but for small numbers this is the more practical
+  // option (so we can't force the format to 'f' for all values).
+  // The scheme:
+  // - for all numbers with more than 5 digits, force non-scientific notation
+  // and 2 digits after the decimal point.
+  // - for all smaller numbers let the OS decide which format to use (it will
+  // generally use non-scientific unless the number gets much less than 1).
+
+  QString xMin, yMin, xMax, yMax;
+  double changeoverValue = 99999; // The 'largest' 5 digit number
+  if (fabs(myExtent.xMinimum()) > changeoverValue)
+    {
+      xMin = QString("%1").arg(myExtent.xMinimum(), 0, 'f', 2);
+    }
+  else
+    {
+      xMin = QString("%1").arg(myExtent.xMinimum());
+    }
+
+  if (fabs(myExtent.yMinimum()) > changeoverValue)
+    {
+      yMin = QString("%1").arg(myExtent.yMinimum(), 0, 'f', 2);
+    }
+  else
+    {
+      yMin = QString("%1").arg(myExtent.yMinimum());
+    }
+
+  if (fabs(myExtent.xMaximum()) > changeoverValue)
+    {
+      xMax = QString("%1").arg(myExtent.xMaximum(), 0, 'f', 2);
+    }
+  else
+    {
+      xMax = QString("%1").arg(myExtent.xMaximum());
+    }
+
+  if (fabs(myExtent.yMaximum()) > changeoverValue)
+    {
+      yMax = QString("%1").arg(myExtent.yMaximum(), 0, 'f', 2);
+    }
+  else
+    {
+      yMax = QString("%1").arg(myExtent.yMaximum());
+    }
+
   myMetadata += tr( "In layer spatial reference system units : " )
                 + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                .arg( myExtent.xMinimum() ).arg( myExtent.yMinimum() )
-                .arg( myExtent.xMaximum() ).arg( myExtent.yMaximum() );
+                .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
   myMetadata += "</td></tr>";
 
   //extents in project cs
