@@ -38,6 +38,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
   populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
+  populateCONVDialog();
 
   connect( pbULEditDevices, SIGNAL( clicked() ), this, SLOT( openDeviceEditor() ) );
   connect( pbDLEditDevices, SIGNAL( clicked() ), this, SLOT( openDeviceEditor() ) );
@@ -130,7 +131,8 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
     // or convert between waypoints/tracks=
     case 4:
     {
-      int convertType = cmbCONVType->currentIndex();
+      int convertType = cmbCONVType->itemData(cmbCONVType->currentIndex()).toInt();
+
       emit convertGPSFile( leCONVInput->text(),
                            convertType,
                            leCONVOutput->text(),
@@ -327,6 +329,13 @@ void QgsGPSPluginGui::populatePortComboBoxes()
   cmbULPort->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
+void QgsGPSPluginGui::populateCONVDialog()
+{
+  cmbCONVType->addItem(tr("Waypoints from a route"), QVariant(int(0)));
+  cmbCONVType->addItem(tr("Waypoints from a track"), QVariant(int(3)));
+  cmbCONVType->addItem(tr("Route from waypoints"), QVariant(int(1)));
+  cmbCONVType->addItem(tr("Track from waypoints"), QVariant(int(2)));
+}
 
 void QgsGPSPluginGui::populateULLayerComboBox()
 {
