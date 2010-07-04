@@ -279,7 +279,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   QgsCategoryList cats;
   _createCategories( cats, unique_vals, mCategorizedSymbol, ramp );
 
-  bool deleteExisting = false;
   if ( !mOldClassificationAttribute.isEmpty() &&
        attrName != mOldClassificationAttribute &&
        mRenderer->categories().count() > 0 )
@@ -292,30 +291,30 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
       return;
-    if ( res == QMessageBox::Yes )
-      deleteExisting = true;
+
+    bool deleteExisting = ( res == QMessageBox::Yes );
+    if ( !deleteExisting )
+    {
+      QgsCategoryList prevCats = mRenderer->categories();
+      for ( int i = 0; i < cats.size(); ++i )
+      {
+        bool contains = false;
+        QVariant value = cats.at( i ).value();
+        for ( int j = 0; j < prevCats.size() && !contains; ++j )
+        {
+          if ( prevCats.at( j ).value() == value )
+            contains = true;
+        }
+
+        if ( !contains )
+          prevCats.append( cats.at( i ) );
+      }
+      cats = prevCats;
+    }
+
   }
 
   mOldClassificationAttribute = attrName;
-
-  if ( !deleteExisting )
-  {
-    QgsCategoryList prevCats = mRenderer->categories();
-    for ( int i = 0; i < cats.size(); ++i )
-    {
-      bool contains = false;
-      QVariant value = cats.at( i ).value();
-      for ( int j = 0; j < prevCats.size() && !contains; ++j )
-      {
-        if ( prevCats.at( j ).value() == value )
-          contains = true;
-      }
-
-      if ( !contains )
-        prevCats.append( cats.at( i ) );
-    }
-    cats = prevCats;
-  }
 
   // TODO: if not all categories are desired, delete some!
   /*
