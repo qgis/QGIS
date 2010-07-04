@@ -82,9 +82,10 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk.setEnabled( True )
 
     def compute(self, inVect, inField, value, perc, progressBar):
+        mlayer = ftools_utils.getMapLayerByName(inVect)
+        mlayer.removeSelection(True)
         vlayer = ftools_utils.getVectorLayerByName(inVect)
         vprovider = vlayer.dataProvider()
-        mlayer = ftools_utils.getMapLayerByName(inVect)
         allAttrs = vprovider.attributeIndexes()
         vprovider.select(allAttrs)
         index = vprovider.fieldNameIndex(inField)
@@ -93,7 +94,6 @@ class Dialog(QDialog, Ui_Dialog):
         unique = ftools_utils.getUniqueValues(vprovider, int(index))
         inFeat = QgsFeature()
         selran = []
-        mlayer.removeSelection(True)
         nFeat = vprovider.featureCount() * len(unique)
         nElement = 0
         self.progressBar.setValue(0)
@@ -111,9 +111,9 @@ class Dialog(QDialog, Ui_Dialog):
                     self.progressBar.setValue(nElement)
                 if perc: selVal = int(round((value / 100.0000) * len(FIDs), 0))
                 else: selVal = value
-                if selVal >= len(FIDs): selran = FIDs
-                else: selran = random.sample(FIDs, selVal)
-                selran.extend(mlayer.selectedFeaturesIds())
-                mlayer.setSelectedFeatures(selran)
+                if selVal >= len(FIDs): selFeat = FIDs
+                else: selFeat = random.sample(FIDs, selVal)
+                selran.extend(selFeat)
+            mlayer.setSelectedFeatures(selran)
         else:
             mlayer.setSelectedFeatures(range(0, mlayer.featureCount()))
