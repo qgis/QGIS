@@ -391,6 +391,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * i
     else if ( t == QVariant::Double )
       value = newtext.toDouble();
     mRenderer->updateCategoryValue( idx, value );
+    item->setData( value );
   }
   else if ( item->column() == 2 )
   {
