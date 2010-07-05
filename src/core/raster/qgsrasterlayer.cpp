@@ -5701,7 +5701,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
       ySize = fabs((( rasterYSize ) / mMapToPixel->mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5;
     }
   }
-  if ( ySize == 0 )
+  if ( ySize < 1 || xSize < 1 )
   {
     return false;
   }
