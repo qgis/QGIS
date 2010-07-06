@@ -1,13 +1,14 @@
 /***************************************************************************
                                qgsvectorlayer.cpp
+                              --------------------
+          begin                : Oct 29, 2003
+          copyright            : (C) 2003 by Gary E.Sherman
+          email                : sherman at mrcc.com
+
   This class implements a generic means to display vector layers. The features
   and attributes are read from the data store using a "data provider" plugin.
   QgsVectorLayer can be used with any data store for which an appropriate
   plugin is available.
-                              -------------------
-          begin                : Oct 29, 2003
-          copyright            : (C) 2003 by Gary E.Sherman
-          email                : sherman at mrcc.com
 
 ***************************************************************************/
 
