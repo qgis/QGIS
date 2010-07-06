@@ -1096,12 +1096,8 @@ Are you sure you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>buttonGroup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>buttonGroup_2</source>
-        <translation type="unfinished"></translation>
+        <source>Area</source>
+        <translation type="unfinished">Platība</translation>
     </message>
 </context>
 <context>
@@ -9901,6 +9897,22 @@ Lūdzu izvēlēties derīgu.</translation>
     <message>
         <source>Choose a file name to save under</source>
         <translation>Izvēlieties faila nosaukumu ar kādu saglabāt</translation>
+    </message>
+    <message>
+        <source>Waypoints from a route</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waypoints from a track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Route from waypoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track from waypoints</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
