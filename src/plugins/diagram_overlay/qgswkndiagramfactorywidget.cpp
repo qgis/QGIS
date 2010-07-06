@@ -121,10 +121,13 @@ void QgsWKNDiagramFactoryWidget::setExistingFactory( const QgsDiagramFactory* f 
 
 void QgsWKNDiagramFactoryWidget::addAttribute()
 {
-  QTreeWidgetItem* newItem = new QTreeWidgetItem( mAttributesTreeWidget );
+  QString currentText = mAttributesComboBox->currentText();
+  if ( currentText.isEmpty() )
+    return;
+
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
 
   //text
-  QString currentText = mAttributesComboBox->currentText();
   newItem->setText( 0, currentText );
 
   //and icon
@@ -134,10 +137,7 @@ void QgsWKNDiagramFactoryWidget::addAttribute()
   QColor randomColor( red, green, blue );
   newItem->setBackground( 1, QBrush( randomColor ) );
 
-  if ( !currentText.isNull() && !currentText.isEmpty() )
-  {
-    mAttributesTreeWidget->addTopLevelItem( newItem );
-  }
+  mAttributesTreeWidget->addTopLevelItem( newItem );
 }
 
 void QgsWKNDiagramFactoryWidget::removeAttribute()
