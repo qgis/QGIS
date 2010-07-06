@@ -5730,7 +5730,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="974"/>
         <source>New Shapefile Layer...</source>
-        <translation>Nowa warstwa shapefile...</translation>
+        <translation>Nowa warstwa Shapefile...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="975"/>
@@ -6524,7 +6524,7 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="901"/>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Measure Angle</source>
-        <translation>Pomiar powierzchni</translation>
+        <translation>Pomiar kąta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="915"/>
@@ -6739,7 +6739,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1461"/>
         <source>New</source>
-        <translation>Nowy</translation>
+        <translation>Utwórz nową warstwę wektorową</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1531"/>
