@@ -719,6 +719,61 @@ class Qgis2Map:
     # using a mapfile pre-processor, the proper id field can be substituted in the following:
     return str("%" + tableName + "_id%")
 
+
+  # Get RGB code from a XML color node, returning string like '45 124 255'
+  def getRgbFromNode(self, symbolNode, elementName):
+    if symbolNode == None or symbolNode.getElementsByTagName(elementName).length == 0:
+        return ''
+    colorNode = symbolNode.getElementsByTagName(elementName)[0]
+    return colorNode.getAttribute('red').encode('utf-8') + ' ' + colorNode.getAttribute('green').encode('utf-8') + ' ' + colorNode.getAttribute('blue').encode('utf-8')
+
+
+  # Get a size (multiplied by symbolSizeMultiplier) from given sizeNode's child with elementName 
+  def getSizeStringFromNode(self, symbolNode, elementName):
+    if symbolNode == None or symbolNode.getElementsByTagName(elementName).length == 0:
+        return ''
+    size = float(symbolNode.getElementsByTagName(elementName)[0].childNodes[0].nodeValue.encode('utf-8'))
+    symbolSize = size * symbolSizeMultiplier
+    return str(symbolSize)
+
+
+  def getSymbolProperty(self, symbolNode, elementName):
+    if symbolNode == None or symbolNode.getElementsByTagName(elementName).length == 0:
+        return ''
+    return str(symbolNode.getElementsByTagName(elementName)[0].childNodes[0].nodeValue.encode('utf-8'))
+
+
+  def writeClassStyleContent(self, symbolNode, geometry):
+    outlinecolor = self.getRgbFromNode(symbolNode, 'outlinecolor')
+    fillcolor    = self.getRgbFromNode(symbolNode, 'fillcolor')
+    pointsize    = self.getSizeStringFromNode(symbolNode, 'pointsize')
+    outlinewidth = self.getSizeStringFromNode(symbolNode, 'outlinewidth')
+    fillpattern  = self.getSymbolProperty(symbolNode, 'fillpattern');
+
+    class_def = "       STYLE\n"
+    # for POINT by SYMBOL and SIZE
+    if geometry == 'POINT':
+        # use the point symbol map to lookup the mapserver symbol type
+        symbol = self.msSymbol( geometry, symbolNode )
+        class_def += "         SYMBOL " + symbol + " \n"
+        class_def += "         SIZE " + pointsize + " \n"
+    # for LINE and POLYGON size define by WIDTH
+    else:
+        class_def += "         WIDTH " + outlinewidth + " \n"
+
+    # for LINE defined by COLOR from outlinecolor
+    if geometry == 'LINE':
+        class_def += "         COLOR " + outlinecolor + "\n"
+    # for POLYGON and POINT defined by COLOR from fillcolor and OUTLINECOLOR from outlinecolor
+    else:
+        class_def += "         OUTLINECOLOR " + outlinecolor + "\n"
+        if 'NoBrush' != fillpattern:
+            class_def += "         COLOR " + fillcolor + "\n"
+
+    class_def += "       END\n"
+    return class_def
+
+
   # Simple renderer ouput
   # We need the layer node and symbol node
   def simpleRenderer(self, layerNode, symbolNode):
@@ -729,20 +784,7 @@ class Qgis2Map:
 
     class_def += "       NAME '" + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "' \n"
 
-    class_def += "       STYLE\n"
-    # use the point symbol map to lookup the mapserver symbol type
-    symbol = self.msSymbol( geometry, symbolNode )
-    class_def += "         SYMBOL " + symbol + " \n"
-    class_def += self.getSymbolSizeString(symbolNode)
-
-    # outline color
-    outlineNode = symbolNode.getElementsByTagName('outlinecolor')[0]
-    class_def += "         OUTLINECOLOR " + outlineNode.getAttribute('red').encode('utf-8') + ' ' + outlineNode.getAttribute('green').encode('utf-8') + ' ' + outlineNode.getAttribute('blue').encode('utf-8') + "\n"
-    # color
-    colorNode = symbolNode.getElementsByTagName('fillcolor')[0]
-    class_def += "         COLOR " + colorNode.getAttribute('red').encode('utf-8') + ' ' + colorNode.getAttribute('green').encode('utf-8') + ' ' + colorNode.getAttribute('blue').encode('utf-8') + "\n"
-
-    class_def += "       END\n"
+    class_def += self.writeClassStyleContent(symbolNode, geometry)
 
     class_def += self.msLabel( layerNode ) 
 
@@ -750,12 +792,6 @@ class Qgis2Map:
     class_def += "    END\n"
 
     return class_def
-
-
-  def getSymbolSizeString(self, symbolNode):
-    size = float(symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8'))
-    symbolSize = size * symbolSizeMultiplier
-    return "         SIZE " + str(symbolSize) + " \n"
 
 
   # Graduated symbol renderer output
@@ -785,22 +821,7 @@ class Qgis2Map:
 
       class_def += "      EXPRESSION ( ([" + classField + "] >= " + lower + ") AND ([" + classField + "] <= " + upper + ") )\n"
 
-      class_def += "      STYLE\n"
-      symbol = self.msSymbol( geometry, symbolNode )
-      class_def += "        SYMBOL " + symbol + "\n"
-
-      # Symbol size 
-      if geometry == 'POINT' or geometry == 'LINE':
-        class_def += self.getSymbolSizeString(cls)
-
-      # outline color
-      outlineNode = cls.getElementsByTagName('outlinecolor')[0]
-      class_def += "          OUTLINECOLOR " + outlineNode.getAttribute('red').encode('utf-8') + ' ' + outlineNode.getAttribute('green').encode('utf-8') + ' ' + outlineNode.getAttribute('blue').encode('utf-8') + "\n"
-      # color
-      colorNode = cls.getElementsByTagName('fillcolor')[0]
-      class_def += "          COLOR " + colorNode.getAttribute('red').encode('utf-8') + ' ' + colorNode.getAttribute('green').encode('utf-8') + ' ' + colorNode.getAttribute('blue').encode('utf-8') + "\n"
-
-      class_def += "        END\n"
+      class_def += self.writeClassStyleContent(cls, geometry)
 
       # label
       class_def += self.msLabel( layerNode ) 
@@ -809,6 +830,7 @@ class Qgis2Map:
       class_def += "    END\n"
 
     return class_def
+
 
   # Continuous symbol renderer output
   def continuousRenderer(self, layerNode, symbolNode):
@@ -827,8 +849,8 @@ class Qgis2Map:
     # color
     lower = symbolNode.getElementsByTagName('lowestsymbol')[0].getElementsByTagName('symbol')[0]
     upper = symbolNode.getElementsByTagName('highestsymbol')[0].getElementsByTagName('symbol')[0]
-    lowerColor = lower.getElementsByTagName('fillcolor')[0]
-    upperColor = upper.getElementsByTagName('fillcolor')[0]
+    lowerColor = lower.getElementsByTagName('outlinecolor')[0]
+    upperColor = upper.getElementsByTagName('outlinecolor')[0]
 
     # outline color
     outlineNode = lower.getElementsByTagName('outlinecolor')[0]
@@ -842,11 +864,43 @@ class Qgis2Map:
     class_def += "        DATARANGE " + lower.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + ' ' + upper.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + '\n'
 
     class_def += "        RANGEITEM '" + classField + "'\n"
-    class_def += "      END\n"
 
-    class_def += "      STYLE\n"
-    class_def += "        OUTLINECOLOR " + outlineNode.getAttribute('red').encode('utf-8') + " " + outlineNode.getAttribute('green').encode('utf-8') + " " + outlineNode.getAttribute('blue').encode('utf-8') + "\n"
+
+    # upper and lower have same size
+    outlinecolor = self.getRgbFromNode(upper, 'outlinecolor')
+    fillcolor    = self.getRgbFromNode(upper, 'fillcolor')
+    outlinewidth = self.getSizeStringFromNode(upper, 'outlinewidth')
+
+    size = float(lower.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8'))
+    pointsize = 2 * size * symbolSizeMultiplier
+
+
+    # for POINT by SYMBOL and SIZE
+    if geometry == 'POINT':
+        # use the point symbol map to lookup the mapserver symbol type
+        symbol = self.msSymbol( geometry, symbolNode )
+        class_def += "         SYMBOL " + symbol + " \n"
+        class_def += "         SIZE " + str(pointsize) + " \n"
+    # for LINE and POLYGON size define by WIDTH
+    else:
+        class_def += "         WIDTH " + outlinewidth + " \n"
+
+    # for LINE defined by COLOR from outlinecolor
+    if geometry == 'LINE':
+        class_def += "         COLOR " + outlinecolor + "\n"
+    # for POLYGON and POINT defined by COLOR from fillcolor and OUTLINECOLOR from outlinecolor
+    else:
+        class_def += "         COLOR " + fillcolor + "\n"
+
     class_def += "      END\n"
+    
+    # only outlines for polygons
+    outline = symbolNode.getElementsByTagName('polygonoutline')
+    if geometry == 'POLYGON' and outline is not None and '1' == outline[0].childNodes[0].nodeValue.encode('utf-8'):
+      class_def += "     STYLE\n"
+      class_def += "       WIDTH 1 " + "\n"
+      class_def += "       OUTLINECOLOR 0 0 0" + "\n"
+      class_def += "     END\n"
 
     # label
     class_def +=  self.msLabel( layerNode )
@@ -855,7 +909,7 @@ class Qgis2Map:
     class_def += "    END\n"
 
     return class_def
-    
+
 
   # Unique value renderer output
   def uniqueRenderer(self, layerNode, symbolNode):
@@ -882,47 +936,23 @@ class Qgis2Map:
       # If there's a label use it, otherwise autogenerate one
       try:
         label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode('utf-8')
-        class_def += "      NAME '" + label + "'\n"
+        class_def += '      NAME "' + label + '"\n'
       except:
-        class_def += "      NAME '" + classField + " = " + lower + "' \n"
+        class_def += '      NAME "' + classField + ' = ' + lower + '" \n'
 
-      class_def += "      EXPRESSION '" + lower + "' \n"
+      class_def += '      EXPRESSION "' + lower + '" \n'
 
-      # Get the symbol name
-      symbol = self.msSymbol( geometry, symbolNode )  
-      
-      class_def += "      STYLE\n"
-      class_def += "        SYMBOL " + symbol + "\n"
-
-      # Symbol size 
-      if geometry == 'POINT' or geometry == 'LINE':
-        class_def += self.getSymbolSizeString(cls)
-
-      # outline color
-      outlineNode = cls.getElementsByTagName('outlinecolor')[0]
-      class_def += "         OUTLINECOLOR "  \
-            + outlineNode.getAttribute('red').encode('utf-8') + ' ' \
-            + outlineNode.getAttribute('green').encode('utf-8') + ' ' \
-            + outlineNode.getAttribute('blue').encode('utf-8') \
-            + "\n"
-
-      # color
-      colorNode = cls.getElementsByTagName('fillcolor')[0]
-      class_def += "         COLOR "  \
-            + colorNode.getAttribute('red').encode('utf-8') + ' ' \
-            + colorNode.getAttribute('green').encode('utf-8') + ' ' \
-            + colorNode.getAttribute('blue').encode('utf-8') \
-            + "\n"
-      class_def += "       END\n"
+      class_def += self.writeClassStyleContent(cls, geometry)
 
       # label
       class_def +=  self.msLabel( layerNode )
-      
+
       # end of CLASS  
       class_def += "    END\n"
 
     return class_def
-    
+
+
   # Utility method to format a proj4 text string into mapserver format
   def formatProj4(self, proj4text):
     parms = proj4text.split(" ")
@@ -931,6 +961,7 @@ class Qgis2Map:
       p = p.replace("+","")
       ret = ret + "    '" + p + "'\n"
     return ret
+
 
   def getProj4(self, proj4text):
     """Returns the proj4 string as a dictionary with key value pairs."""
@@ -950,6 +981,7 @@ class Qgis2Map:
         ret[key] = value
     return ret
 
+
   # Determines the symbol name and adds it to the symbol queue
   def msSymbol(self, geometry, symbolNode):
     # contains the same markup for a layer regardless of type
@@ -958,9 +990,11 @@ class Qgis2Map:
     symbol = '0'
 
     if geometry == 'POLYGON':
-      symbol = '0'
+      #symbol = '0'
+      pass
     elif geometry == 'LINE':
-      symbol = '0'
+      #symbol = '0'
+      pass
     elif geometry == 'POINT':
       try:
         symbolName = qgis2map_symbol[symbolNode.getElementsByTagName('pointsymbol')[0].childNodes[0].nodeValue.encode('utf-8')]
@@ -1083,7 +1117,12 @@ class Qgis2Map:
       # qgis uses a fill color around the label
       # Note that buffer only works for truetype fonts
       buffer = labelNode.getElementsByTagName('buffersize')[0].getAttribute('value').encode('utf-8')
-      labelBlock += "      BUFFER " + buffer + "\n"
+      bufferon = labelNode.getElementsByTagName('bufferenabled')[0].getAttribute('on').encode('utf-8')
+      buffercolor= self.getRgbFromNode(labelNode, 'buffercolor')
+      if bufferon is not None and '1' == bufferon:
+        # not sure if we should use this BUFFER
+        #labelBlock += "      BUFFER " + buffer + "\n"
+        labelBlock += "      BACKGROUNDCOLOR " + buffercolor + "\n"
 
       # alignment in QGis corresponds to position in MapServer
       alignment = labelNode.getElementsByTagName('alignment')[0].getAttribute('value').encode('utf-8')
