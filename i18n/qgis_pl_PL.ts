@@ -1400,11 +1400,11 @@ Na pewno chcesz kontynuować?</translation>
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="unfinished">Katalog źródłowy:</translation>
+        <translation>Katalog ź&amp;ródłowy:</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="unfinished">Katalog docelowy:</translation>
+        <translation>Katalog &amp;docelowy:</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
@@ -1438,7 +1438,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation>Wirtualny raster (VRT)</translation>
+        <translation>Twórz wirtualny raster (VRT)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
@@ -1446,7 +1446,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation>Warstwice</translation>
+        <translation>Generuj warstwice</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
@@ -1470,7 +1470,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation>Złącz</translation>
+        <translation>Mozajkuj</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
@@ -1478,7 +1478,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation>Sieve</translation>
+        <translation>Generalizuj raster</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
@@ -1486,7 +1486,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Proximity</source>
-        <translation>Sąsiedztwo</translation>
+        <translation>Twórz mapę sąsiedztwa</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
@@ -1494,15 +1494,15 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation>Prawie czarne/białe</translation>
+        <translation>Usuń szumy</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation>Konwertuje prawie czarne/białe na skrajne wartości</translation>
+        <translation>Konwertuje prawie czarne oraz prawie białe na skrajne wartości</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation>Reprojekcja</translation>
+        <translation>Zmień odwzorowanie</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
@@ -1510,7 +1510,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation>Siatka</translation>
+        <translation>Twórz grid</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
@@ -1518,7 +1518,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation>Konwersja</translation>
+        <translation>Konwertuj</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
@@ -1526,7 +1526,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation>Informacja</translation>
+        <translation>Wyświetl informację o rastrze</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
@@ -1551,7 +1551,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <source>Clipper</source>
         <translatorcomment>termin z GIMPa</translatorcomment>
-        <translation>Kadrowanie</translation>
+        <translation>Kadruj</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
@@ -28345,8 +28345,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28355,8 +28353,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -28367,8 +28363,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28377,8 +28371,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
