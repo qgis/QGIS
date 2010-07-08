@@ -365,10 +365,13 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
     }
     else if ( theLayer->type() == QgsMapLayer::RasterLayer )
     {
+#if 0 //MH100708: disabled for 1.5 release because of performance problems
       QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theLayer );
       QPixmap myPixmap( 32, 32 );
       rlayer->thumbnailAsPixmap( &myPixmap );
       return myPixmap;
+#endif //0
+      return QPixmap();
     }
   }
 
