@@ -1048,7 +1048,7 @@ void QgsComposer::restoreWindowState()
   QSettings settings;
   restoreGeometry( settings.value( "/Composer/geometry" ).toByteArray() );
   QVariant splitterState = settings.value( "/Composer/splitterState" );
-  if ( splitterState != QVariant::QVariant() )
+  if ( !splitterState.isNull() )
   {
     //mSplitter->restoreState(settings.value("/Composer/splitterState").toByteArray());
   }
