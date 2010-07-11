@@ -380,6 +380,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
+            <property name="text">
+             <string>Create raster icons in legend</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="cbxHideSplash">
             <property name="text">
              <string>Hide splash screen at startup</string>
