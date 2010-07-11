@@ -47,7 +47,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface ):
   connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCRS() ) );
   connect( treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), this, SLOT( changeCRSFilter() ) );
   populateConnectionList();
-
   mProjectionSelector = new QgsGenericProjectionSelector( this );
   mProjectionSelector->setMessage();
 }
@@ -86,6 +85,11 @@ void QgsWFSSourceSelect::populateConnectionList()
     btnEdit->setEnabled( false );
     btnDelete->setEnabled( false );
   }
+
+  //set last used connection
+  QSettings s;
+  QString selectedConnection = s.value( "/Qgis/connections-wfs/selected" ).toString();
+  cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnection ) );
 }
 
 QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
@@ -425,4 +429,10 @@ void QgsWFSSourceSelect::changeCRSFilter()
       }
     }
   }
+}
+
+void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
+{
+  QSettings s;
+  s.setValue( "/Qgis/connections-wfs/selected", cmbConnections->currentText() );
 }
