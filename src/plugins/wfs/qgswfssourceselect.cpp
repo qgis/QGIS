@@ -89,7 +89,11 @@ void QgsWFSSourceSelect::populateConnectionList()
   //set last used connection
   QSettings s;
   QString selectedConnection = s.value( "/Qgis/connections-wfs/selected" ).toString();
-  cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnection ) );
+  int index = cmbConnections->findText( selectedConnection );
+  if( index != -1 )
+  {
+    cmbConnections->setCurrentIndex( index );
+  }
 }
 
 QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
