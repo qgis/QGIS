@@ -19467,6 +19467,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsOptionsBase</name>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
+        <source>Create raster icons in legend</source>
+        <translation>Pokazuj miniaturki rastrów w legendzie</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
         <source>Hide splash screen at startup</source>
         <translation>Nie pokazuj ekranu powitalnego przy starcie</translation>
     </message>
