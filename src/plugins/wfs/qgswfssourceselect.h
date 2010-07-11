@@ -80,6 +80,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void addLayer();
     void changeCRS();
     void changeCRSFilter();
+    void on_cmbConnections_activated( int index );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
