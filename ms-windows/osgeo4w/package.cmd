@@ -89,8 +89,8 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_INTERNAL_SPATIALITE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-16/include ^
-	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-16/lib/gdal_i.lib ^
+	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-17/include ^
+	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-17/lib/gdal_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python25/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python25/libs/python25.lib ^
