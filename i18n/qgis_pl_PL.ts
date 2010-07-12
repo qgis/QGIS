@@ -19649,7 +19649,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="413"/>
         <source>Add new layers to selected group</source>
-        <translation>Dodaj nowe warstwy do grupy wybranych</translation>
+        <translation>Nowe warstwy dodawaj do wybranej grupy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="428"/>
