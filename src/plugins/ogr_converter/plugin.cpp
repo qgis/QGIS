@@ -26,8 +26,6 @@
 #include <QAction>
 #include <QFile>
 #include <QToolBar>
-// std
-#include <cassert>
 
 #include <ogr_api.h>
 
@@ -46,7 +44,7 @@ OgrPlugin::OgrPlugin( QgisInterface * theQgisInterface ) :
     mQGisIface( theQgisInterface ),
     mQActionPointer( 0 )
 {
-  assert( 0 != mQGisIface );
+  Q_ASSERT( mQGisIface );
 }
 
 OgrPlugin::~OgrPlugin()
@@ -83,7 +81,7 @@ void OgrPlugin::help()
 
 void OgrPlugin::run()
 {
-  assert( 0 != mQGisIface );
+  Q_ASSERT( mQGisIface );
 
   Dialog* ogrDialog = new Dialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   ogrDialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -92,13 +90,13 @@ void OgrPlugin::run()
 
 void OgrPlugin::unload()
 {
-  assert( 0 != mQGisIface );
+  Q_ASSERT( mQGisIface );
 
   // TODO: Who is responsible for OGR cleanup?
   //OGRCleanupAll();
 
   // remove the GUI
-  mQGisIface->removePluginMenu( "OG&R Converter", mQActionPointer );
+  mQGisIface->removePluginMenu( tr( "OG&R Converter" ), mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
