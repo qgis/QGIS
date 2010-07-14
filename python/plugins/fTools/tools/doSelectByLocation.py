@@ -59,10 +59,10 @@ class Dialog(QDialog, Ui_Dialog):
         selectLayer = ftools_utils.getVectorLayerByName(inPts)
         inputProvider = inputLayer.dataProvider()
         allAttrs = inputProvider.attributeIndexes()
-        inputProvider.select(allAttrs)
+        inputProvider.select(allAttrs, QgsRectangle())
         selectProvider = selectLayer.dataProvider()
         allAttrs = selectProvider.attributeIndexes()
-        selectProvider.select(allAttrs)
+        selectProvider.select(allAttrs, QgsRectangle())
         feat = QgsFeature()
         infeat = QgsFeature()
         geom = QgsGeometry()
@@ -75,6 +75,7 @@ class Dialog(QDialog, Ui_Dialog):
         while selectProvider.nextFeature(feat):
             geom = QgsGeometry(feat.geometry())
             intersects = index.intersects(geom.boundingBox())
+            print len(intersects)
             for id in intersects:
                 inputProvider.featureAtId(int(id), infeat, True)
                 tmpGeom = QgsGeometry( infeat.geometry() )
