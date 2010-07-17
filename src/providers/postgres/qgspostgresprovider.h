@@ -383,6 +383,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool isQuery;
 
     /**
+     * geometry is geography
+     */
+    bool isGeography;
+
+    /**
      * Name of the table with no schema
      */
     QString mTableName;

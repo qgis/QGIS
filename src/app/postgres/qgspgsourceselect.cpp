@@ -606,66 +606,105 @@ QStringList QgsPgSourceSelect::pkCandidates( PGconn *pg, QString schemaName, QSt
 
 bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly )
 {
-  int n = 0;
+  int nColumns = 0;
+  int nGTables = 0;
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  // The following query returns only tables that exist and the user has SELECT privilege on.
-  // Can't use regclass here because table must exist, else error occurs.
-  QString sql = "select "
-                "f_table_name,"
-                "f_table_schema,"
-                "f_geometry_column,"
-                "type,"
-                "pg_class.relkind"
-                " from "
-                "geometry_columns,"
-                "pg_class,"
-                "pg_namespace"
-                " where "
-                "relname=f_table_name"
-                " and f_table_schema=nspname"
-                " and pg_namespace.oid=pg_class.relnamespace"
-                " and has_schema_privilege(pg_namespace.nspname,'usage')"
-                " and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
-                " order by "
-                "f_table_schema,f_table_name,f_geometry_column";
+  PGresult *result = 0;
 
-  PGresult *result = PQexec( pg, sql.toUtf8() );
-  if ( result )
+  for ( int i = 0; i < 2; i++ )
   {
-    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    QString gtableName, columnName;
+
+    if ( i == 0 )
     {
-      QMessageBox::warning( this,
-                            tr( "Accessible tables could not be determined" ),
-                            tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
-                                "The error message from the database was:\n%1\n" )
-                            .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
-      n = -1;
+      gtableName = "geometry_columns";
+      columnName = "f_geometry_column";
     }
-    else if ( PQntuples( result ) > 0 )
+    else if ( i == 1 )
     {
-      for ( int idx = 0; idx < PQntuples( result ); idx++ )
+      gtableName = "geography_columns";
+      columnName = "f_geography_column";
+    }
+
+    // The following query returns only tables that exist and the user has SELECT privilege on.
+    // Can't use regclass here because table must exist, else error occurs.
+    QString sql = QString( "select "
+                           "f_table_name,"
+                           "f_table_schema,"
+                           "%2,"
+                           "upper(type),"
+                           "pg_class.relkind"
+                           " from "
+                           "%1,"
+                           "pg_class,"
+                           "pg_namespace"
+                           " where "
+                           "relname=f_table_name"
+                           " and f_table_schema=nspname"
+                           " and pg_namespace.oid=pg_class.relnamespace"
+                           " and has_schema_privilege(pg_namespace.nspname,'usage')"
+                           " and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
+                           " order by "
+                           "f_table_schema,f_table_name,%2" ).arg( gtableName ).arg( columnName );
+
+    QgsDebugMsg( "sql: " + sql );
+
+    result = PQexec( pg, sql.toUtf8() );
+    if ( result )
+    {
+      if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
       {
-        QString tableName = QString::fromUtf8( PQgetvalue( result, idx, 0 ) );
-        QString schemaName = QString::fromUtf8( PQgetvalue( result, idx, 1 ) );
-        QString column = QString::fromUtf8( PQgetvalue( result, idx, 2 ) );
-        QString type = QString::fromUtf8( PQgetvalue( result, idx, 3 ) );
-        QString relkind = QString::fromUtf8( PQgetvalue( result, idx, 4 ) );
+        PGresult *r = PQexec( pg, "COMMIT" );
+        if ( r )
+          PQclear( r );
+      }
+      else
+      {
+        nGTables++;
 
-        QString as = "";
-        if ( type == "GEOMETRY" && !searchGeometryColumnsOnly )
+        if ( PQntuples( result ) > 0 )
         {
-          addSearchGeometryColumn( schemaName, tableName,  column );
-          as = type = "WAITING";
-        }
 
-        mTableModel.addTableEntry( type, schemaName, tableName, column, relkind == "v" ? pkCandidates( pg, schemaName, tableName ) : QStringList(), "" );
-        n++;
+          for ( int idx = 0; idx < PQntuples( result ); idx++ )
+          {
+            QString tableName = QString::fromUtf8( PQgetvalue( result, idx, 0 ) );
+            QString schemaName = QString::fromUtf8( PQgetvalue( result, idx, 1 ) );
+            QString column = QString::fromUtf8( PQgetvalue( result, idx, 2 ) );
+            QString type = QString::fromUtf8( PQgetvalue( result, idx, 3 ) );
+            QString relkind = QString::fromUtf8( PQgetvalue( result, idx, 4 ) );
+
+            QgsDebugMsg( QString( "%1 %2.%3.%4: %5 %6" )
+                         .arg( gtableName )
+                         .arg( schemaName ).arg( tableName ).arg( column )
+                         .arg( type )
+                         .arg( relkind ) );
+
+            QString as = "";
+            if ( type == "GEOMETRY" && !searchGeometryColumnsOnly )
+            {
+              addSearchGeometryColumn( schemaName, tableName,  column );
+              as = type = "WAITING";
+            }
+
+            mTableModel.addTableEntry( type, schemaName, tableName, column, relkind == "v" ? pkCandidates( pg, schemaName, tableName ) : QStringList(), "" );
+            nColumns++;
+          }
+        }
       }
     }
+
+    PQclear( result );
+    result = 0;
   }
 
-  PQclear( result );
+  if ( nColumns == 0 )
+  {
+    QMessageBox::warning( this,
+                          tr( "Accessible tables could not be determined" ),
+                          tr( "Database connection was successful, but the accessible tables could not be determined." ) );
+    nColumns = -1;
+  }
 
   //search for geometry columns in tables that are not in the geometry_columns metatable
   QApplication::restoreOverrideCursor();
@@ -676,38 +715,46 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
     // geometry_columns table. This code is specific to postgresql,
     // but an equivalent query should be possible in other
     // databases.
-    sql = "select "
-          "pg_class.relname,"
-          "pg_namespace.nspname,"
-          "pg_attribute.attname,"
-          "pg_class.relkind"
-          " from "
-          "pg_attribute,"
-          "pg_class,"
-          "pg_namespace"
-          " where "
-          "pg_namespace.oid = pg_class.relnamespace"
-          " and pg_attribute.attrelid = pg_class.oid "
-          " and ("
-          "pg_attribute.atttypid = regtype('geometry')"
-          " or pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype=regtype('geometry'))"
-          ")"
-          " and has_schema_privilege(pg_namespace.nspname,'usage')"
-          " and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')";
+    QString sql = "select "
+                  "pg_class.relname"
+                  ",pg_namespace.nspname"
+                  ",pg_attribute.attname"
+                  ",pg_class.relkind"
+                  " from "
+                  "pg_attribute"
+                  ",pg_class"
+                  ",pg_namespace"
+                  " where "
+                  "pg_namespace.oid=pg_class.relnamespace"
+                  " and pg_attribute.attrelid = pg_class.oid"
+                  " and ("
+                  "pg_attribute.atttypid::regtype::text IN ('geometry','geography')"
+                  " or pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype::regtype::text IN ('geometry','geography'))"
+                  ")"
+                  " and has_schema_privilege( pg_namespace.nspname, 'usage' )"
+                  " and has_table_privilege( '\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"', 'select' )";
+
     // user has select privilege
     if ( searchPublicOnly )
       sql += " and pg_namespace.nspname = 'public'";
 
-    if ( n > 0 )
+    if ( nColumns > 0 )
     {
       sql += " and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
+
+      if ( nGTables > 1 )
+      {
+        sql += " and not exists (select * from geography_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
+      }
     }
     else
     {
-      n = 0;
+      nColumns = 0;
     }
 
-    sql += " and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
+    sql += " and pg_class.relkind in( 'v', 'r' )"; // only from views and relations (tables)
+
+    QgsDebugMsg( "sql: " + sql );
 
     result = PQexec( pg, sql.toUtf8() );
 
@@ -718,8 +765,8 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
                             tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
                                 "The error message from the database was:\n%1\n" )
                             .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
-      if ( n == 0 )
-        n = -1;
+      if ( nColumns == 0 )
+        nColumns = -1;
     }
     else if ( PQntuples( result ) > 0 )
     {
@@ -737,17 +784,20 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
         QString column = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // attname
         QString relkind = QString::fromUtf8( PQgetvalue( result, i, 3 ) ); // relation kind
 
+        QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
+
         addSearchGeometryColumn( schema, table, column );
         //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
-        mTableModel.addTableEntry( "Waiting", schema, table, column, relkind == "v" ? pkCandidates( pg, schema, table ) : QStringList(), "" );
-        n++;
+        mTableModel.addTableEntry( tr( "Waiting" ), schema, table, column, relkind == "v" ? pkCandidates( pg, schema, table ) : QStringList(), "" );
+        nColumns++;
       }
     }
 
     PQclear( result );
+    result = 0;
   }
 
-  if ( n == 0 )
+  if ( nColumns == 0 )
   {
     QMessageBox::warning( this,
                           tr( "No accessible tables found" ),
@@ -756,7 +806,7 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
                               "geometry." ) );
   }
 
-  return n > 0;
+  return nColumns > 0;
 }
 
 QString QgsPgSourceSelect::fullDescription( QString schema, QString table,
@@ -852,7 +902,9 @@ void QgsGeomColumnTypeThread::getLayerTypes()
         query += "\"" + schemas[i] + "\".\"" + tables[i] + "\"";
       }
 
-      PGresult* gresult = PQexec( pd, query.toUtf8() );
+      QgsDebugMsg( "sql: " + query );
+
+      PGresult *gresult = PQexec( pd, query.toUtf8() );
       QString type;
       if ( PQresultStatus( gresult ) == PGRES_TUPLES_OK )
       {

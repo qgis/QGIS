@@ -68,7 +68,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   providerId = providerIds++;
 
-  QgsDebugMsg( "Postgresql Layer Creation" );
   QgsDebugMsg( "URI: " + uri );
 
   mUri = QgsDataSourceURI( uri );
@@ -78,6 +77,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mTableName = mUri.table();
   geometryColumn = mUri.geometryColumn();
   sqlWhereClause = mUri.sql();
+  isGeography = false;
 
   if ( mSchemaName.isEmpty() &&
        mTableName.startsWith( "(select", Qt::CaseInsensitive ) &&
@@ -374,6 +374,10 @@ QString QgsPostgresProvider::fieldExpression( const QgsField &fld ) const
   {
     return QString( "asewkt(%1)" ).arg( quotedIdentifier( fld.name() ) );
   }
+  else if ( type == "geography" )
+  {
+    return QString( "st_astext(%1)" ).arg( quotedIdentifier( fld.name() ) );
+  }
   else
   {
     return quotedIdentifier( fld.name() ) + "::text";
@@ -392,9 +396,16 @@ bool QgsPostgresProvider::declareCursor(
 
     if ( fetchGeometry )
     {
-      query += QString( ",asbinary(%1,'%2')" )
-               .arg( quotedIdentifier( geometryColumn ) )
-               .arg( endianString() );
+      if ( isGeography )
+      {
+        query += QString( ",st_asbinary(%1)" ).arg( quotedIdentifier( geometryColumn ) );
+      }
+      else
+      {
+        query += QString( ",asbinary(%1,'%2')" )
+                 .arg( quotedIdentifier( geometryColumn ) )
+                 .arg( endianString() );
+      }
     }
 
     for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
@@ -539,21 +550,32 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
   if ( !rect.isEmpty() )
   {
-    if ( useIntersect )
+    if ( isGeography )
     {
-      // Contributed by #qgis irc "creeping"
-      // This version actually invokes PostGIS's use of spatial indexes
-      whereClause = QString( "%1 && setsrid('BOX3D(%2)'::box3d,%3) and intersects(%1,setsrid('BOX3D(%2)'::box3d,%3))" )
-                    .arg( quotedIdentifier( geometryColumn ) )
-                    .arg( rect.asWktCoordinates() )
-                    .arg( srid );
+      rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
+      if ( !rect.isFinite() )
+        whereClause = "false";
     }
-    else
+
+    if ( whereClause.isEmpty() )
     {
-      whereClause = QString( "%1 && setsrid('BOX3D(%2)'::box3d,%3)" )
-                    .arg( quotedIdentifier( geometryColumn ) )
-                    .arg( rect.asWktCoordinates() )
-                    .arg( srid );
+
+      if ( useIntersect )
+      {
+        // Contributed by #qgis irc "creeping"
+        // This version actually invokes PostGIS's use of spatial indexes
+        whereClause = QString( "%1 && setsrid('BOX3D(%2)'::box3d,%3) and intersects(%1,setsrid('BOX3D(%2)'::box3d,%3))" )
+                      .arg( quotedIdentifier( geometryColumn ) )
+                      .arg( rect.asWktCoordinates() )
+                      .arg( srid );
+      }
+      else
+      {
+        whereClause = QString( "%1 && setsrid('BOX3D(%2)'::box3d,%3)" )
+                      .arg( quotedIdentifier( geometryColumn ) )
+                      .arg( rect.asWktCoordinates() )
+                      .arg( srid );
+      }
     }
   }
 
@@ -2305,6 +2327,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           values += QString( ",geomfromewkt(%1)" ).arg( quotedValue( it->toString() ) );
         }
+        else if ( fit->typeName() == "geography" )
+        {
+          values += QString( ",st_geographyfromewkt(%1)" ).arg( quotedValue( it->toString() ) );
+        }
         else
         {
           values += "," + quotedValue( it->toString() );
@@ -2316,6 +2342,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         if ( fit->typeName() == "geometry" )
         {
           values += QString( ",geomfromewkt($%1)" ).arg( defaultValues.size() + offset );
+        }
+        else if ( fit->typeName() == "geography" )
+        {
+          values += QString( ",st_geographyfromewkt($%1)" ).arg( defaultValues.size() + offset );
         }
         else
         {
@@ -2576,7 +2606,9 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else
             first = false;
 
-          sql += QString( fld.typeName() != "geometry" ? "%1=%2" : "%1=geomfromewkt(%2)" )
+          sql += QString( fld.typeName() == "geometry" ? "%1=geomfromewkt(%2)" :
+                          fld.typeName() == "geography" ? "%1=st_geographyfromewkt(%2)" :
+                          "%1=%2" )
                  .arg( quotedIdentifier( fld.name() ) )
                  .arg( quotedValue( siter->toString() ) );
         }
@@ -2779,6 +2811,9 @@ long QgsPostgresProvider::featureCount() const
 
 QgsRectangle QgsPostgresProvider::extent()
 {
+  if ( isGeography )
+    return QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+
   if ( layerExtent.isEmpty() )
   {
     QString sql;
@@ -2986,7 +3021,6 @@ bool QgsPostgresProvider::getGeometryDetails()
         .arg( quotedValue( schemaName ) );
 
   QgsDebugMsg( "Getting geometry column: " + sql );
-
   result = connectionRO->PQexec( sql );
 
   QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
@@ -2995,6 +3029,28 @@ bool QgsPostgresProvider::getGeometryDetails()
   {
     fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
     srid = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
+  }
+
+  if ( srid.isEmpty() || fType.isEmpty() )
+  {
+    sql = QString( "select upper(type),srid from geography_columns"
+                   " where f_table_name=%1 and f_geography_column=%2 and f_table_schema=%3" )
+          .arg( quotedValue( tableName ) )
+          .arg( quotedValue( geomCol ) )
+          .arg( quotedValue( schemaName ) );
+
+    QgsDebugMsg( "Getting geography column: " + sql );
+    result = connectionRO->PQexec( sql );
+
+    QgsDebugMsg( "geography column query returned " + QString::number( PQntuples( result ) ) );
+
+    if ( PQntuples( result ) > 0 )
+    {
+      fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
+      srid = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
+
+      isGeography = true;
+    }
   }
 
   if ( srid.isEmpty() || fType.isEmpty() )
@@ -3116,6 +3172,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     QgsDebugMsg( "type is " + fType );
     QgsDebugMsg( "Feature type is " + QString::number( geomType ) );
     QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[geomType] ) );
+    QgsDebugMsg( "Geometry is geography " + isGeography );
   }
   else
   {
