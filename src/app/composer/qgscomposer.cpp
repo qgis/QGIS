@@ -541,29 +541,54 @@ void QgsComposer::print( QPrinter &printer )
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  if ( mComposition->printAsRaster() )
+  bool printAsRaster = mComposition->printAsRaster();
+
+  if ( printAsRaster )
   {
     //print out via QImage, code copied from on_mActionExportAsImage_activated
     int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
     int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
     QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-    image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
-    image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
-    image.fill( 0 );
-    QPainter imagePainter( &image );
-    QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-    QRectF targetArea( 0, 0, width, height );
-    mComposition->render( &imagePainter, targetArea, sourceArea );
-    imagePainter.end();
-    p.drawImage( targetArea, image, targetArea );
+    if ( !image.isNull() )
+    {
+      image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
+      image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
+      image.fill( 0 );
+      QPainter imagePainter( &image );
+      QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+      QRectF targetArea( 0, 0, width, height );
+      mComposition->render( &imagePainter, targetArea, sourceArea );
+      imagePainter.end();
+      p.drawImage( targetArea, image, targetArea );
+    }
+    else
+    {
+      QApplication::restoreOverrideCursor();
+      int answer = QMessageBox::warning( 0,
+                                         tr( "Image too large" ),
+                                         tr( "Creation of image with %1x%2 pixels failed.  Retry without 'Print As Raster'?" )
+                                         .arg( width ).arg( height ),
+                                         QMessageBox::Ok | QMessageBox::Cancel,
+                                         QMessageBox::Ok );
+      if ( answer == QMessageBox::Cancel )
+      {
+        mComposition->setPlotStyle( savedPlotStyle );
+        return;
+      }
+
+      QApplication::setOverrideCursor( Qt::BusyCursor );
+      printAsRaster = false;
+    }
   }
-  else
+
+  if ( !printAsRaster )
   {
     //better in case of custom page size, but only possible with Qt>=4.4.0
     QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
     mComposition->render( &p, paperRectPixel, paperRectMM );
   }
+
   mComposition->setPlotStyle( savedPlotStyle );
   QApplication::restoreOverrideCursor();
 }
@@ -580,18 +605,19 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
 
   int memuse = width * height * 3 / 1000000;  // pixmap + image
-  QgsDebugMsg( QString( "Image %1 x %2" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
   QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
 
-  if ( memuse > 200 )   // cca 4500 x 4500
+  if ( memuse > 200 )   // about 4500x4500
   {
     int answer = QMessageBox::warning( 0, tr( "Big image" ),
-                                       tr( "To create image %1 x %2 requires circa %3 MB of memory" )
+                                       tr( "To create image %1x%2 requires about %3 MB of memory. Proceed?" )
                                        .arg( width ).arg( height ).arg( memuse ),
-                                       QMessageBox::Ok,  QMessageBox::Abort );
+                                       QMessageBox::Ok | QMessageBox::Cancel,  QMessageBox::Ok );
 
     raise();
-    if ( answer == QMessageBox::Abort ) return;
+    if ( answer == QMessageBox::Cancel )
+      return;
   }
 
   // Get file and format (stolen from qgisapp.cpp but modified significantely)
@@ -678,12 +704,22 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   myQSettings.setValue( "/UI/lastSaveAsImageFormat", myFilterMap[myFilterString] );
   myQSettings.setValue( "/UI/lastSaveAsImageFile", myOutputFileNameQString );
 
-  if ( myOutputFileNameQString == "" ) return;
+  if ( myOutputFileNameQString == "" )
+    return;
+
+  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+  if ( image.isNull() )
+  {
+    QMessageBox::warning( 0,
+                          tr( "Image too big" ),
+                          tr( "Creation of image with %1x%2 pixels failed.  Export aborted." )
+                          .arg( width ).arg( height ),
+                          QMessageBox::Ok );
+    return;
+  }
 
   mComposition->setPlotStyle( QgsComposition::Print );
   mView->setScene( 0 );
-
-  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
   image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
   image.fill( 0 );
