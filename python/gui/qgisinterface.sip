@@ -266,5 +266,8 @@ class QgisInterface : QObject
        @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
 
+    /**This signal is emitted when QGIS' initialization is complete 
+       @note added in version 1.6*/ 
+    void initializationCompleted(); 
 };
 

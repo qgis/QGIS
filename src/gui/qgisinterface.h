@@ -309,6 +309,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /**This signal is emitted before a new composer instance is going to be removed
        @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
+    /**This signal is emitted when the initialization is complete
+       @note added in version 1.6*/
+    void initializationCompleted();
 };
 
 // FIXME: also in core/qgis.h
