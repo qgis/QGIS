@@ -6843,3 +6843,8 @@ void QgisApp::namUpdate()
   QgsNetworkAccessManager::instance()->setProxy( proxy );
 #endif
 }
+
+void QgisApp::completeInitialization()
+{
+  emit initializationCompleted();
+}

@@ -364,6 +364,10 @@ class QgisApp : public QMainWindow
     void skipNextContextMenuEvent();
 #endif
 
+    //! emit initializationCompleted signal
+    //! @note added in 1.6
+    void completeInitialization();
+
   public slots:
     //! Zoom to full extent
     void zoomFull();
@@ -751,6 +755,10 @@ class QgisApp : public QMainWindow
     /**This signal is emitted before a new composer instance is going to be removed
       @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
+
+    /**This signal is emitted when QGIS' initialization is complete
+     @note added in version 1.6*/
+    void initializationCompleted();
 
   private:
     /** This method will open a dialog so the user can select the sublayers

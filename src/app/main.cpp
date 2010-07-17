@@ -774,5 +774,8 @@ int main( int argc, char *argv[] )
 
   mypSplash->finish( qgis );
   delete mypSplash;
+
+  qgis->completeInitialization();
+
   return myApp.exec();
 }
