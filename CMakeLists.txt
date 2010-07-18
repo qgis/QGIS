@@ -45,7 +45,8 @@ SET (PLUGINS_ALSO_BINARIES FALSE)
 # try to configure and build GRASS plugin by default
 SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
 IF (WITH_GRASS)
-  SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
+  FIND_PACKAGE(GRASS)
+  SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
 ENDIF (WITH_GRASS)
 
 # try to configure and build POSTGRESQL support
@@ -145,9 +146,6 @@ ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 IF (WITH_POSTGRESQL)
   FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
 ENDIF (WITH_POSTGRESQL)
-IF (WITH_GRASS)
-  FIND_PACKAGE(GRASS)    # GRASS plugin
-ENDIF (WITH_GRASS)
 IF (WITH_QWT)
   FIND_PACKAGE(QWT)
 ENDIF(WITH_QWT)

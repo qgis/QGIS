@@ -44,7 +44,7 @@ ENDMACRO (CHECK_GRASS)
 # search for grass installations
 
 # list of paths which to search - user's choice as first
-SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass c:/msys/local)
+SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass c:/msys/local /opt/grass)
 
 # mac-specific path
 IF (APPLE)
