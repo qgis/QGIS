@@ -17,10 +17,9 @@
 #MESSAGE("Searching for QWT")
 FIND_PATH(QWT_INCLUDE_DIR qwt.h 
   /usr/include
-  /usr/include/qwt-qt4
   /usr/local/include
   "$ENV{LIB_DIR}/include" 
-  "$ENV{LIB_DIR}/include/qwt"
+  PATH_SUFFIXES qwt-qt4 qwt
   )
 FIND_LIBRARY(QWT_LIBRARY qwt PATHS 
   /usr/lib
