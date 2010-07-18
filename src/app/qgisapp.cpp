@@ -4931,9 +4931,7 @@ void QgisApp::showPluginManager()
 void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( "qgispython" );
-#if defined(Q_WS_MAC)
-  pythonlibName.prepend( QgsApplication::prefixPath() + "/lib/" );
-#elif defined(Q_OS_LINUX)
+#if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::prefixPath() + "/" + QGIS_LIB_SUBDIR + "/" );
 #endif
 #ifdef __MINGW32__
