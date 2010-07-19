@@ -547,8 +547,11 @@ class Qgis2Map:
         layer_def += "      'wms_style' '" + ','.join(wmsStyles) + "'\n"
         layer_def += "    END\n"
 
+      elif providerString == 'ogr':
+        layer_def += "    DATA '" + dataString.split('|')[0] + "'\n"
+
       else: 
-        # its a standard ogr, gdal or grass layer
+        # it's a standard gdal or grass layer
         layer_def += "    DATA '" + dataString + "'\n"
       
       # WMS settings for all layers
