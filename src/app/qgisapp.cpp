@@ -611,7 +611,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       else
       {
         QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
-        openLayer( fileName );
+        openLayer( fileName , true);
       }
     }
   }
@@ -3403,17 +3403,28 @@ void QgisApp::openProject( const QString & fileName )
   Used to process a commandline argument or OpenDocument AppleEvent.
   @returns true if the file is successfully opened
   */
-bool QgisApp::openLayer( const QString & fileName )
+bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
 {
   QFileInfo fileInfo( fileName );
 
   // try to load it as raster
-  QgsMapLayer* ok = NULL;
+  bool ok(false);
   CPLPushErrorHandler( CPLQuietErrorHandler );
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
-    ok = addRasterLayer( fileName, fileInfo.completeBaseName() );
+    {
+      ok  = (addRasterLayer( fileName, fileInfo.completeBaseName() ) != NULL);
+    }
   else // nope - try to load it as a shape/ogr
-    ok = addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" );
+    {
+      if (allowInteractive)
+	{
+	  ok = addVectorLayers(QStringList(fileName), "System", "file");
+	}
+      else
+	{
+	  ok = (addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" ) != NULL);
+	}
+    }
 
   CPLPopErrorHandler();
 
