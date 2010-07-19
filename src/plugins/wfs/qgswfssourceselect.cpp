@@ -90,7 +90,7 @@ void QgsWFSSourceSelect::populateConnectionList()
   QSettings s;
   QString selectedConnection = s.value( "/Qgis/connections-wfs/selected" ).toString();
   int index = cmbConnections->findText( selectedConnection );
-  if( index != -1 )
+  if ( index != -1 )
   {
     cmbConnections->setCurrentIndex( index );
   }
@@ -150,13 +150,24 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
   QgsHttpTransaction http( request );
   if ( !http.getSynchronously( result ) )
   {
-    QMessageBox::critical( 0, tr( "Error" ), tr( "The capabilities document could not be retrieved from the server" ) );
+    QMessageBox::critical( 0, tr( "Could not download capabilities document" ), http.errorString() );
+    return 1;
   }
 
   QDomDocument capabilitiesDocument;
-  if ( !capabilitiesDocument.setContent( result, true ) )
+  QString capabilitiesDocError;
+  if ( !capabilitiesDocument.setContent( result, true, &capabilitiesDocError ) )
   {
-    return 1; //error
+    QMessageBox::critical( 0, tr( "Capabilities document is not valid" ), capabilitiesDocError );
+    return 1;
+  }
+
+  QDomNodeList exlist = capabilitiesDocument.elementsByTagName( "ExceptionText" );
+  if ( exlist.length() )
+  {
+    QDomElement ex = exlist.at( 0 ).toElement();
+    QMessageBox::critical( 0, tr( "Error" ), ex.firstChild().nodeValue() );
+    return 1;
   }
 
 
