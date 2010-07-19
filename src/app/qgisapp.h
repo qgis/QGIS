@@ -142,9 +142,13 @@ class QgisApp : public QMainWindow
       Used to process a commandline argument or OpenDocument AppleEvent.
       @returns true if the file is successfully opened
       */
-    bool openLayer( const QString & fileName );
-    /** Open the specified project file; prompt to save previous project if necessary.
-      Used to process a commandline argument or OpenDocument AppleEvent.
+    bool openLayer( const QString & fileName, bool allowInteractive = false );
+    /** Open the specified file (project, vector, or raster); prompt to save
+      previous project if necessary. 
+      Used to process a commandline argument, OpenDocument AppleEvent, or a
+      file drag/drop event. Set interactive to true if it is ok to ask the
+      user for information (mostly for when a vector layer has sublayers and
+      we want to ask which sublayers to use).
       */
     void openProject( const QString & fileName );
     /** opens a qgis project file
