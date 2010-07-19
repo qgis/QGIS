@@ -74,6 +74,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       RandomSelectGeometryAtId =     1 << 10,
       /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId = 1 << 11,
+      CreateAttributeIndex = 1 << 12
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -271,6 +272,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @return true in case of success
      */
     virtual bool createSpatialIndex();
+
+    /**Create an attribute index on the datasource*/
+    virtual bool createAttributeIndex( int field );
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether

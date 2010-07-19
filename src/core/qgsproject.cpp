@@ -677,6 +677,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
   bool returnStatus = true;
 
   emit layerLoaded( 0, nl.count() );
+  QList<QgsVectorLayer*> vLayerList; //collect
 
   for ( int i = 0; i < nl.count(); i++ )
   {
@@ -716,6 +717,11 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     if ( mapLayer->readXML( node ) )
     {
       mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
+      if( vLayer )
+      {
+        vLayerList.push_back( vLayer );
+      }
     }
     else
     {
@@ -727,8 +733,18 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
       brokenNodes.push_back( node );
     }
-
     emit layerLoaded( i + 1, nl.count() );
+  }
+
+  //Update field map of layers with joins.
+  //Needs to be done here once all dependent layers are loaded
+  QList<QgsVectorLayer*>::iterator vIt = vLayerList.begin();
+  for(; vIt != vLayerList.end(); ++vIt )
+  {
+    if( (*vIt)->vectorJoins().size() > 0 )
+    {
+      (*vIt)->updateFieldMap();
+    }
   }
 
   return qMakePair( returnStatus, brokenNodes );

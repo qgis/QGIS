@@ -220,7 +220,7 @@ QgsOgrProvider::~QgsOgrProvider()
   }
 }
 
-bool QgsOgrProvider::setSubsetString( QString theSQL )
+bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
 {
   QgsCPLErrorHandler handler;
 
@@ -277,7 +277,10 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
 
   // getting the total number of features in the layer
   // TODO: This can be expensive, do we really need it!
-  recalculateFeatureCount();
+  if( updateFeatureCount )
+  {
+    recalculateFeatureCount();
+  }
 
   // check the validity of the layer
   QgsDebugMsg( "checking validity" );
@@ -1023,6 +1026,20 @@ bool QgsOgrProvider::createSpatialIndex()
   return indexfile.exists();
 }
 
+bool QgsOgrProvider::createAttributeIndex( int field )
+{
+  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString dropSql = QString( "DROP INDEX ON %1" ).arg( quotedIdentifier( layerName ) );
+  QString createSql = QString( "CREATE INDEX ON %1 USING %2" ).arg( quotedIdentifier( layerName ) ).arg( fields()[field].name() );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( dropSql ).data(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( createSql ).data(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
+
+  QFileInfo fi( mFilePath );     // to get the base name
+  //find out, if the .idm file is there
+  QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".idm" ) );
+  return indexfile.exists();
+}
+
 bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 {
   QgsCPLErrorHandler handler;
@@ -1157,6 +1174,7 @@ int QgsOgrProvider::capabilities() const
       // adding attributes was added in GDAL 1.6
       ability |= AddAttributes;
 #endif
+      ability |= CreateAttributeIndex;
 
       if ( mAttributeFields.size() == 0 )
       {

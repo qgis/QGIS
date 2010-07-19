@@ -21,6 +21,7 @@
 #include <limits>
 
 #include "qgisapp.h"
+#include "qgsaddjoindialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
@@ -33,6 +34,7 @@
 #include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
@@ -131,6 +133,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   leEditFormInit->setText( layer->editFormInit() );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+
+  //insert existing join info
+   QList< QgsVectorJoinInfo > joins = layer->vectorJoins();
+   for( int i = 0; i < joins.size(); ++i )
+   {
+      addJoinToTreeWidget( joins[i] );
+   }
 
   //for each overlay plugin create a new tab
   int position;
@@ -1158,6 +1167,69 @@ void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
 
   // update GUI!
   updateSymbologyPage();
+}
+
+void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
+{
+  QgsAddJoinDialog d( layer );
+  if( d.exec() == QDialog::QDialog::Accepted )
+  {
+    QgsVectorJoinInfo info;
+    info.targetField = d.targetField();
+    info.joinLayerId = d.joinedLayerId();
+    info.joinField = d.joinField();
+    if( layer )
+    {
+      //create attribute index if possible. Todo: ask user if this should be done (e.g. in QgsAddJoinDialog)
+      if( d.createAttributeIndex() )
+      {
+        QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
+        if( joinLayer )
+        {
+          joinLayer->dataProvider()->createAttributeIndex( info.joinField );
+        }
+      }
+
+      layer->addJoin( info );
+      loadRows(); //update attribute tab
+      addJoinToTreeWidget( info );
+    }
+  }
+}
+
+void QgsVectorLayerProperties::addJoinToTreeWidget( QgsVectorJoinInfo& join )
+{
+  QTreeWidgetItem* joinItem = new QTreeWidgetItem();
+
+  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
+  if( !joinLayer )
+  {
+    return;
+  }
+
+  joinItem->setText( 0, joinLayer->name() );
+  joinItem->setData( 0, Qt::UserRole, join.joinLayerId );
+  QString joinFieldName = joinLayer->pendingFields().value( join.joinField ).name();
+  QString targetFieldName = layer->pendingFields().value( join.targetField ).name();
+  joinItem->setText( 1, joinFieldName );
+  joinItem->setData( 1, Qt::UserRole, join.joinField );
+  joinItem->setText( 2, targetFieldName );
+  joinItem->setData( 2, Qt::UserRole, join.targetField );
+
+  mJoinTreeWidget->addTopLevelItem( joinItem );
+}
+
+void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
+{
+  QTreeWidgetItem* currentJoinItem = mJoinTreeWidget->currentItem();
+  if( !layer || !currentJoinItem )
+  {
+    return;
+  }
+
+  layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
+  loadRows();
+  mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
 }
 
 void QgsVectorLayerProperties::useNewSymbology()
