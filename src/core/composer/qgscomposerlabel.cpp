@@ -20,7 +20,8 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) )
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ), \
+    mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop )
 {
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
@@ -49,7 +50,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
                       rect().height() - 2 * penWidth - 2 * mMargin );
 
 
-  drawText( painter, painterRect, displayText(), mFont );
+  drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
 
   drawFrame( painter );
   if ( isSelected() )
@@ -112,6 +113,8 @@ QFont QgsComposerLabel::font() const
 
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
+  QString alignment;
+
   if ( elem.isNull() )
   {
     return false;
@@ -121,6 +124,9 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   composerLabelElem.setAttribute( "labelText", mText );
   composerLabelElem.setAttribute( "margin", QString::number( mMargin ) );
+
+  composerLabelElem.setAttribute( "halign", mHAlignment );
+  composerLabelElem.setAttribute( "valign", mVAlignment );
 
 
   //font
@@ -141,6 +147,8 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
 bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
+  QString alignment;
+
   if ( itemElem.isNull() )
   {
     return false;
@@ -153,6 +161,12 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //margin
   mMargin = itemElem.attribute( "margin" ).toDouble();
+
+  //Horizontal alignment
+  mHAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "halign" ).toInt() );
+
+  //Vertical alignment
+  mVAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "valign" ).toInt() );
 
   //font
   QDomNodeList labelFontList = itemElem.elementsByTagName( "LabelFont" );
