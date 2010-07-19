@@ -18464,8 +18464,8 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
-        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
-        <translation>Jeśli serwer WMS wymaga uwierzytelnienia, wprowadź nazwę użytkownika i, opcjonalnie, hasło</translation>
+        <source>If the service requires basic authentication, enter a user name and optional password</source>
+        <translation>Jeśli usługa wymaga uwierzytelnienia, wprowadź nazwę użytkownika i, opcjonalnie, hasło</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="97"/>

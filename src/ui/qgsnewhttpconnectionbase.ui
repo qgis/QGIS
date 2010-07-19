@@ -81,7 +81,7 @@
       <item row="2" column="0" colspan="5">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>If the WMS requires basic authentication, enter a user name and optional password</string>
+         <string>If the service requires basic authentication, enter a user name and optional password</string>
         </property>
         <property name="textFormat">
          <enum>Qt::PlainText</enum>
