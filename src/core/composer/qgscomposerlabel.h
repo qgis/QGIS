@@ -43,6 +43,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     QFont font() const;
     void setFont( const QFont& f );
+    Qt::AlignmentFlag vAlign() const { return mVAlignment; }
+    Qt::AlignmentFlag hAlign() const { return mHAlignment; }
+    void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+    void setVAlign( Qt::AlignmentFlag a ) {mVAlignment = a;}
     double margin() {return mMargin;}
     void setMargin( double m ) {mMargin = m;}
 
@@ -76,6 +80,12 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     // Font color
     QColor mFontColor;
+
+    // Horizontal Alignment
+    Qt::AlignmentFlag mHAlignment;
+
+    // Vertical Alignment
+    Qt::AlignmentFlag mVAlignment;
 
     /**Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
     void replaceDateText( QString& text ) const;

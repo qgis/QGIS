@@ -34,6 +34,12 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidg
   {
     mTextEdit->setText( mComposerLabel->text() );
     mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
+    mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
+    mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
+    mBottomRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignBottom );
+    mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
+    mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
+    mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
   }
 }
 
@@ -88,3 +94,56 @@ void QgsComposerLabelWidget::on_mFontColorButton_clicked()
   mComposerLabel->setFontColor( newColor );
 }
 
+void QgsComposerLabelWidget::on_mCenterRadioButton_clicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setHAlign( Qt::AlignHCenter );
+    mComposerLabel->update();
+  }
+}
+
+void QgsComposerLabelWidget::on_mRightRadioButton_clicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setHAlign( Qt::AlignRight );
+    mComposerLabel->update();
+  }
+}
+
+void QgsComposerLabelWidget::on_mLeftRadioButton_clicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setHAlign( Qt::AlignLeft );
+    mComposerLabel->update();
+  }
+}
+
+void QgsComposerLabelWidget::on_mTopRadioButton_clicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setVAlign( Qt::AlignTop );
+    mComposerLabel->update();
+  }
+}
+
+void QgsComposerLabelWidget::on_mBottomRadioButton_clicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setVAlign( Qt::AlignBottom );
+    mComposerLabel->update();
+  }
+}
+
+void QgsComposerLabelWidget::on_mMiddleRadioButton_clicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setVAlign( Qt::AlignVCenter );
+    mComposerLabel->update();
+  }
+}

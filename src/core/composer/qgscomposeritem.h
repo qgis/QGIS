@@ -143,7 +143,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font ) const;
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement = Qt::AlignLeft, Qt::AlignmentFlag valignement = Qt::AlignTop ) const;
 
     /**Returns the font width in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
