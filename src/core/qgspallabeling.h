@@ -88,6 +88,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QColor bufferColor;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
     bool mergeLines;
+    bool multiLineLabels; //draw labels on multiple lines if they contain '\n'
     double minFeatureSize; // minimum feature size to be labelled (in mm)
 
     // called from register feature hook
