@@ -24,20 +24,16 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
   public slots:
     void changeSingleSymbol();
 
-    void rotationFieldSelected();
-    void sizeScaleFieldSelected();
+    void rotationFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( QString fldName );
 
   protected:
-
-    void populateMenu( QMenu* menu, const char* slot, QString fieldName );
-    void updateMenu( QMenu* menu, QString fieldName );
 
     QgsSingleSymbolRendererV2* mRenderer;
     QgsSymbolV2SelectorDialog* mSelector;
     QgsSymbolV2* mSingleSymbol;
 
-    QMenu* mRotationMenu;
-    QMenu* mSizeScaleMenu;
+    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 };
 
 

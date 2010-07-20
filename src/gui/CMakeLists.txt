@@ -65,6 +65,7 @@ symbology-ng/qgssinglesymbolrendererv2widget.h
 symbology-ng/qgscategorizedsymbolrendererv2widget.h
 symbology-ng/qgsgraduatedsymbolrendererv2widget.h
 symbology-ng/qgsrulebasedrendererv2widget.h
+symbology-ng/qgsrendererv2widget.h
 symbology-ng/qgsrendererv2propertiesdialog.h
 symbology-ng/qgsstylev2managerdialog.h
 symbology-ng/qgssymbollevelsv2dialog.h

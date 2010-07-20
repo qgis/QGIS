@@ -120,8 +120,39 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   }
 
   // find the right category
-  return symbolForValue( ita->toDouble() );
+  QgsSymbolV2* symbol = symbolForValue( ita->toDouble() );
 
+
+  if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
+    return symbol; // no data-defined rotation/scaling - just return the symbol
+
+  // find out rotation, size scale
+  double rotation = 0;
+  double sizeScale = 1;
+  if ( mRotationFieldIdx != -1 )
+    rotation = attrMap[mRotationFieldIdx].toDouble();
+  if ( mSizeScaleFieldIdx != -1 )
+    sizeScale = attrMap[mSizeScaleFieldIdx].toDouble();
+
+  // take a temporary symbol (or create it if doesn't exist)
+  QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
+
+  // modify the temporary symbol and return it
+  if ( tempSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
+    if ( mRotationFieldIdx != -1 )
+      markerSymbol->setAngle( rotation );
+    if ( mSizeScaleFieldIdx != -1 )
+      markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+  }
+  else if ( tempSymbol->type() == QgsSymbolV2::Line )
+  {
+    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( tempSymbol );
+    if ( mSizeScaleFieldIdx != -1 )
+      lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
+  }
+  return tempSymbol;
 }
 
 void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
@@ -129,9 +160,23 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
   // find out classification attribute index from name
   mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
 
+  mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
+  mSizeScaleFieldIdx = ( mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField ) );
+
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
+  {
     it->symbol()->startRender( context );
+
+    if ( mRotationFieldIdx != -1 || mSizeScaleFieldIdx != -1 )
+    {
+      QgsSymbolV2* tempSymbol = it->symbol()->clone();
+      tempSymbol->setRenderHints(( mRotationFieldIdx != -1 ? QgsSymbolV2::DataDefinedRotation : 0 ) |
+                                 ( mSizeScaleFieldIdx != -1 ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
+      tempSymbol->startRender( context );
+      mTempSymbols[ it->symbol()] = tempSymbol;
+    }
+  }
 }
 
 void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
@@ -139,12 +184,25 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
     it->symbol()->startRender( context );
+
+  // cleanup mTempSymbols
+  QHash<QgsSymbolV2*, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
+  for ( ; it2 != mTempSymbols.end(); ++it2 )
+  {
+    it2.value()->stopRender( context );
+    delete it2.value();
+  }
+  mTempSymbols.clear();
 }
 
 QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
   QList<QString> lst;
   lst.append( mAttrName );
+  if ( !mRotationField.isEmpty() )
+    lst.append( mRotationField );
+  if ( !mSizeScaleField.isEmpty() )
+    lst.append( mSizeScaleField );
   return lst;
 }
 
@@ -196,6 +254,8 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   if ( mSourceColorRamp )
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setRotationField( rotationField() );
+  r->setSizeScaleField( sizeScaleField() );
   return r;
 }
 
@@ -392,6 +452,14 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
       r->setMode( Quantile );
   }
 
+  QDomElement rotationElem = element.firstChildElement( "rotation" );
+  if ( !rotationElem.isNull() )
+    r->setRotationField( rotationElem.attribute( "field" ) );
+
+  QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
+  if ( !sizeScaleElem.isNull() )
+    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
+
   // TODO: symbol levels
   return r;
 }
@@ -457,6 +525,14 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     modeElem.setAttribute( "name", modeString );
     rendererElem.appendChild( modeElem );
   }
+
+  QDomElement rotationElem = doc.createElement( "rotation" );
+  rotationElem.setAttribute( "field", mRotationField );
+  rendererElem.appendChild( rotationElem );
+
+  QDomElement sizeScaleElem = doc.createElement( "sizescale" );
+  sizeScaleElem.setAttribute( "field", mSizeScaleField );
+  rendererElem.appendChild( sizeScaleElem );
 
   return rendererElem;
 }

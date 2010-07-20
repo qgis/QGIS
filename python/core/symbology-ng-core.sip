@@ -249,6 +249,16 @@ public:
   QgsVectorColorRampV2* sourceColorRamp();
   void setSourceColorRamp(QgsVectorColorRampV2* ramp /Transfer/);
 
+  //! @note added in 1.6
+  void setRotationField( QString fieldName );
+  //! @note added in 1.6
+  QString rotationField() const;
+
+  //! @note added in 1.6
+  void setSizeScaleField( QString fieldName );
+  //! @note added in 1.6
+  QString sizeScaleField() const;
+
 protected:
 
   QgsSymbolV2* symbolForValue(QVariant value);
@@ -347,6 +357,16 @@ public:
 
   QgsVectorColorRampV2* sourceColorRamp();
   void setSourceColorRamp(QgsVectorColorRampV2* ramp /Transfer/);
+
+  //! @note added in 1.6
+  void setRotationField( QString fieldName );
+  //! @note added in 1.6
+  QString rotationField() const;
+
+  //! @note added in 1.6
+  void setSizeScaleField( QString fieldName );
+  //! @note added in 1.6
+  QString sizeScaleField() const;
 
 protected:
   QgsSymbolV2* symbolForValue(double value);
