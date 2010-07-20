@@ -30,6 +30,11 @@ QgsSearchString::QgsSearchString()
   mTree = NULL;
 }
 
+QgsSearchString::QgsSearchString( const QString & str )
+{
+  mTree = NULL;
+  setString( str );
+}
 
 QgsSearchString::QgsSearchString( const QgsSearchString& str )
 {
@@ -62,8 +67,10 @@ QgsSearchString::~QgsSearchString()
 
 bool QgsSearchString::setString( QString str )
 {
+  mParserErrorMsg.clear();
+
   // empty string
-  if ( str == "" )
+  if ( str.isEmpty() )
   {
     clear();
     return true;
@@ -107,5 +114,5 @@ void QgsSearchString::clear()
 {
   delete mTree;
   mTree = NULL;
-  mString = "";
+  mString.clear();
 }

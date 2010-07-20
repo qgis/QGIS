@@ -35,8 +35,12 @@ class QgsSearchTreeNode;
 class CORE_EXPORT QgsSearchString
 {
   public:
-    //! constructor
+    //! construct an empty string
     QgsSearchString();
+
+    //! construct and parse a string
+    //! @note added in v1.6
+    QgsSearchString( const QString & str );
 
     //! copy constructor - makes also copy of search tree
     QgsSearchString( const QgsSearchString& str );
