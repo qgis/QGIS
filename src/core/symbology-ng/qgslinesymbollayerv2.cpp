@@ -102,6 +102,13 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
+  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  {
+    double scaledWidth = context.outputLineWidth( mWidth );
+    mPen.setWidthF( scaledWidth );
+    mSelPen.setWidthF( scaledWidth );
+  }
+
   p->setPen( context.selected() ? mSelPen : mPen );
   if ( mOffset == 0 )
   {
@@ -250,8 +257,12 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mMarker->setOutputUnit( context.outputUnit() );
 
   // if being rotated, it gets initialized with every line segment
+  int hints = 0;
   if ( mRotateMarker )
-    mMarker->setRenderHints( QgsSymbolV2::DataDefinedRotation );
+    hints |= QgsSymbolV2::DataDefinedRotation;
+  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+    hints |= QgsSymbolV2::DataDefinedSizeScale;
+  mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext() );
 }
