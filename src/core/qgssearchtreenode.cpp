@@ -214,6 +214,9 @@ QString QgsSearchTreeNode::makeSearchString()
         case opRegexp: str += " ~ "; break;
         case opLike: str += " LIKE "; break;
 
+          // TODO: other opeators / functions
+        case opCONCAT: str += " || "; break;
+
         default: str += " ? ";
       }
 
@@ -548,9 +551,26 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
       //don't convert to numbers in case of string concatenation
       if ( mLeft && mRight && !value1.isNumeric() && !value2.isNumeric() )
       {
+        // TODO: concatenation using '+' operator should be removed in favor of '||' operator
+        // because it may lead to surprising behavior if numbers are stored in a string
         if ( mOp == opPLUS )
         {
           return QgsSearchTreeValue( value1.string() + value2.string() );
+        }
+      }
+
+      // string concatenation ||
+      if ( mLeft && mRight && mOp == opCONCAT )
+      {
+        if ( value1.isNumeric() && value2.isNumeric() )
+        {
+          return QgsSearchTreeValue( 5, "Operator doesn't match the argument types." );
+        }
+        else
+        {
+          QString arg1 = value1.isNumeric() ? QString::number( value1.number() ) : value1.string();
+          QString arg2 = value2.isNumeric() ? QString::number( value2.number() ) : value2.string();
+          return QgsSearchTreeValue( arg1 + arg2 );
         }
       }
 

@@ -36,9 +36,13 @@ class QgsSearchTreeNode
       opASIN,
       opACOS,
       opATAN,
+
+      // conversion
       opTOINT,
       opTOREAL,
       opTOSTRING,
+
+      // measuring
       opLENGTH,
       opAREA,
 
@@ -50,7 +54,10 @@ class QgsSearchTreeNode
       opGE,   // >=
       opLE,   // <=
       opRegexp, // ~
-      opLike  // LIKE
+      opLike,  // LIKE
+
+      // string handling
+      opCONCAT
     };
 
     //! constructors
