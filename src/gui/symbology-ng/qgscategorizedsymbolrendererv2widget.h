@@ -31,6 +31,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void deleteAllCategories();
     void changeCurrentValue( QStandardItem * item );
 
+    void rotationFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( QString fldName );
+
   protected slots:
     void addCategory();
 
@@ -62,6 +65,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     QgsCategorizedSymbolRendererV2* mRenderer;
 
     QgsSymbolV2* mCategorizedSymbol;
+
+    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 
   private:
     QString mOldClassificationAttribute;

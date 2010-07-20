@@ -12,6 +12,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h" // for uniqueValues
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -69,6 +70,14 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   // update GUI from renderer
   updateUiFromRenderer();
+
+  // menus for data-defined rotation/size
+  QMenu* advMenu = new QMenu;
+  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
+      mRenderer->rotationField(), mRenderer->sizeScaleField() );
+  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
+  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
+  btnAdvanced->setMenu( advMenu );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
@@ -405,4 +414,14 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsRendererCategoryV2 cat( QString(), symbol, QString() );
   addCategory( cat );
   mRenderer->addCategory( cat );
+}
+
+void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
+{
+  mRenderer->setRotationField( fldName );
+}
+
+void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+{
+  mRenderer->setSizeScaleField( fldName );
 }

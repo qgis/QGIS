@@ -96,17 +96,33 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
 
+    //! @note added in 1.6
+    void setRotationField( QString fieldName ) { mRotationField = fieldName; }
+    //! @note added in 1.6
+    QString rotationField() const { return mRotationField; }
+
+    //! @note added in 1.6
+    void setSizeScaleField( QString fieldName ) { mSizeScaleField = fieldName; }
+    //! @note added in 1.6
+    QString sizeScaleField() const { return mSizeScaleField; }
+
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
     QgsSymbolV2* mSourceSymbol;
     QgsVectorColorRampV2* mSourceColorRamp;
+    QString mRotationField;
+    QString mSizeScaleField;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
+    int mRotationFieldIdx, mSizeScaleFieldIdx;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbolV2*> mSymbolHash;
+
+    //! temporary symbols, used for data-defined rotation and scaling
+    QHash<QString, QgsSymbolV2*> mTempSymbols;
 
     void rebuildHash();
 

@@ -13,6 +13,7 @@
 
 #include "qgsludialog.h"
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -67,6 +68,14 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   // initialize from previously set renderer
   updateUiFromRenderer();
+
+  // menus for data-defined rotation/size
+  QMenu* advMenu = new QMenu;
+  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
+      mRenderer->rotationField(), mRenderer->sizeScaleField() );
+  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
+  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
+  btnAdvanced->setMenu( advMenu );
 }
 
 QgsGraduatedSymbolRendererV2Widget::~QgsGraduatedSymbolRendererV2Widget()
@@ -332,4 +341,14 @@ void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * ite
     int idx = item->row();
     mRenderer->updateRangeLabel( idx, label );
   }
+}
+
+void QgsGraduatedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
+{
+  mRenderer->setRotationField( fldName );
+}
+
+void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+{
+  mRenderer->setSizeScaleField( fldName );
 }

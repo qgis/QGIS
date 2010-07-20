@@ -34,6 +34,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     /**Removes a class from the classification*/
     void deleteCurrentClass();
 
+    void rotationFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( QString fldName );
+
   protected:
     void updateUiFromRenderer();
 
@@ -60,6 +63,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     int mRowSelected;
 
+    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 
 };
 

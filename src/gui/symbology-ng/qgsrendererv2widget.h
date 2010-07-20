@@ -35,4 +35,44 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     QgsStyleV2* mStyle;
 };
 
+
+////////////
+
+#include <QObject>
+
+class QMenu;
+class QgsField;
+
+typedef QMap<int, QgsField> QgsFieldMap;
+
+/**
+Utility class for prividing GUI for data-defined rendering.
+*/
+class QgsRendererV2DataDefinedMenus : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFieldMap& flds, QString rotationField, QString sizeScaleField );
+
+    void populateMenu( QMenu* menu, const char* slot, QString fieldName );
+    void updateMenu( QMenu* menu, QString fieldName );
+
+  public slots:
+
+    void rotationFieldSelected();
+    void sizeScaleFieldSelected();
+
+  signals:
+
+    void rotationFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( QString fldName );
+
+  protected:
+    QMenu* mRotationMenu;
+    QMenu* mSizeScaleMenu;
+    const QgsFieldMap& mFlds;
+};
+
 #endif // QGSRENDERERV2WIDGET_H
