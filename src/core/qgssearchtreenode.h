@@ -72,9 +72,13 @@ class CORE_EXPORT QgsSearchTreeNode
       opASIN,
       opACOS,
       opATAN,
+
+      // conversion
       opTOINT,
       opTOREAL,
       opTOSTRING,
+
+      // measuring
       opLENGTH,
       opAREA,
 
@@ -88,7 +92,10 @@ class CORE_EXPORT QgsSearchTreeNode
       opGE,   // >=
       opLE,   // <=
       opRegexp, // ~
-      opLike  // LIKE
+      opLike,  // LIKE
+
+      // string handling
+      opCONCAT
     };
 
     //! constructors
