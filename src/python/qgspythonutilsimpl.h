@@ -79,6 +79,9 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! return current path for home directory python plugins
     QString homePluginsPath();
 
+    //! return a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable
+    QStringList extraPluginsPaths();
+
     //! return list of all available python plugins
     QStringList pluginList();
 

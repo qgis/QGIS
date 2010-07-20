@@ -59,17 +59,18 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString( "import sys" ); // import sys module (for display / exception hooks)
   runString( "import os" ); // import os module (for user paths)
 
+  // construct a list of plugin paths
+  // plugin dirs passed in QGIS_PLUGINPATH env. variable have highest priority (usually empty)
+  // locally installed plugins have priority over the system plugins
+  QStringList pluginpaths = extraPluginsPaths();
+  pluginpaths << homePluginsPath() << pluginsPath();
+
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
-#ifdef Q_OS_WIN
-  runString( "oldhome=None\n" );
-  runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
-  runString( "os.environ['HOME']=os.environ['USERPROFILE']" );
-#endif
-  runString( "sys.path = [\"" + pythonPath() + "\", os.path.expanduser(\"~/.qgis/python\"), os.path.expanduser(\"~/.qgis/python/plugins\"), \"" + pluginsPath() + "\" ] + sys.path" );
-#ifdef Q_OS_WIN
-  runString( "if oldhome: os.environ['HOME']=oldhome\n" );
-#endif
+  QStringList newpaths;
+  newpaths << pythonPath() << homePythonPath();
+  newpaths += pluginpaths;
+  runString( "sys.path = [\"" + newpaths.join("\", \"") + "\"] + sys.path" );
 
   // import SIP
   if ( !runString( "from sip import wrapinstance, unwrapinstance",
@@ -102,6 +103,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     exitPython();
     return;
   }
+
+  // tell the utils script where to look for the plugins
+  runString( "qgis.utils.plugin_paths = [\"" + pluginpaths.join( "\",\"" ) + "\"]" );
 
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
@@ -390,13 +394,29 @@ QString QgsPythonUtilsImpl::pluginsPath()
 
 QString QgsPythonUtilsImpl::homePythonPath()
 {
-  return QgsApplication::qgisSettingsDirPath() + "/python";
+  return QgsApplication::qgisSettingsDirPath() + "python";
 }
 
 QString QgsPythonUtilsImpl::homePluginsPath()
 {
   return homePythonPath() + "/plugins";
 }
+
+QStringList QgsPythonUtilsImpl::extraPluginsPaths()
+{
+  const char* cpaths = getenv( "QGIS_PLUGINPATH" );
+  if (cpaths == NULL)
+    return QStringList();
+
+  QString paths = QString::fromLocal8Bit( cpaths );
+  if ( paths.contains( ';' ) ) // keep windows users happy
+    return paths.split( ';' );
+  else if ( paths.contains( ':' ) ) // keep unix users happy
+    return paths.split( ':' );
+  else
+    return QStringList( paths ); // just one path
+}
+
 
 QStringList QgsPythonUtilsImpl::pluginList()
 {

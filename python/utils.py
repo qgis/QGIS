@@ -60,6 +60,9 @@ def initInterface(pointer):
 #######################
 # PLUGINS
 
+# list of plugin paths. it gets filled in by the QGIS python library
+plugin_paths = []
+
 # dictionary of plugins
 plugins = {}
 
@@ -77,31 +80,16 @@ def findPlugins(path):
   return plugins
 
 def updateAvailablePlugins():
-  from qgis.core import QgsApplication
-  plugindirs = [ 
-    unicode(QgsApplication.pkgDataPath()) + "/python/plugins",
-    unicode(QgsApplication.qgisSettingsDirPath()) + "/python/plugins"
-  ]
-  env = os.environ.get("QGIS_PLUGINPATH")
-  if env:
-      plugindirs.extend(env.split(";"))
-
+  """ go thrgouh the plugin_paths list and find out what plugins are available """
   # merge the lists
   plugins = []
-  for pluginpath in plugindirs:
-      newplugins = findPlugins(pluginpath)
-      if len(newplugins) > 0:
-          if pluginpath not in sys.path:
-              sys.path.append(pluginpath)
-          for p in newplugins:
-              if p not in plugins: 
-                  plugins.append(p)
+  for pluginpath in plugin_paths:
+    for p in findPlugins(pluginpath):
+      if p not in plugins:
+        plugins.append(p)
 
   global available_plugins
   available_plugins = plugins
-
-# update list on start
-updateAvailablePlugins()
 
 
 def pluginMetadata(packageName, fct):
