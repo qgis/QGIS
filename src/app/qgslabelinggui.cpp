@@ -119,6 +119,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWid
   chkNoObstacle->setChecked( !lyr.obstacle );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
   chkMergeLines->setChecked( lyr.mergeLines );
+  chkMultiLine->setChecked( lyr.multiLineLabels );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
 
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
@@ -216,6 +217,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.obstacle = !chkNoObstacle->isChecked();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();
+  lyr.multiLineLabels = chkMultiLine->isChecked();
   if ( chkScaleBasedVisibility->isChecked() )
   {
     lyr.scaleMin = spinScaleMin->value();

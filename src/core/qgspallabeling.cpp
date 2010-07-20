@@ -122,6 +122,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   bufferColor = Qt::white;
   labelPerPart = false;
   mergeLines = false;
+  multiLineLabels = false;
   minFeatureSize = 0.0;
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
@@ -145,6 +146,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   bufferColor = s.bufferColor;
   labelPerPart = s.labelPerPart;
   mergeLines = s.mergeLines;
+  multiLineLabels = s.multiLineLabels;
   minFeatureSize = s.minFeatureSize;
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
@@ -201,6 +203,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   bufferColor = _readColor( layer, "labeling/bufferColor" );
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
+  multiLineLabels = layer->customProperty( "labeling/multiLineLabels" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
 }
 
@@ -229,6 +232,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   _writeColor( layer, "labeling/bufferColor", bufferColor );
   layer->setCustomProperty( "labeling/labelPerPart", labelPerPart );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
+  layer->setCustomProperty( "labeling/multiLineLabels", multiLineLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
 }
 
@@ -273,9 +277,27 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeo
 void QgsPalLayerSettings::calculateLabelSize( QString text, double& labelX, double& labelY )
 {
   QRectF labelRect = fontMetrics->boundingRect( text );
-  double w = labelRect.width() / rasterCompressFactor;
-  double h = labelRect.height() / rasterCompressFactor;
-
+  double w, h;
+  if ( !multiLineLabels )
+  {
+    w = labelRect.width() / rasterCompressFactor;
+    h = labelRect.height() / rasterCompressFactor;
+  }
+  else
+  {
+    QStringList multiLineSplit = text.split( "\n" );
+    h = fontMetrics->height() * multiLineSplit.size() / rasterCompressFactor;
+    w = 0;
+    for ( int i = 0; i < multiLineSplit.size(); ++i )
+    {
+      double width = fontMetrics->width( multiLineSplit.at( i ) );
+      if ( width > w )
+      {
+        w = width;
+      }
+      w /= rasterCompressFactor;
+    }
+  }
   QgsPoint ptSize = xform->toMapCoordinates( w, h );
 
   labelX = fabs( ptSize.x() - ptZero.x() );
@@ -650,38 +672,48 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
 
   //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
 
-  painter->save();
-  painter->translate( QPointF( outPt.x(), outPt.y() ) );
-  painter->rotate( -label->getAlpha() * 180 / M_PI );
-
-  // scale down painter: the font size has been multiplied by raster scale factor
-  // to workaround a Qt font scaling bug with small font sizes
-  painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
-
-  painter->translate( QPointF( 0, - lyr.fontMetrics->descent() ) );
-
-  if ( drawBuffer )
+  QStringList multiLineList;
+  if ( lyr.multiLineLabels )
   {
-    // we're drawing buffer
-    drawLabelBuffer( painter, txt, lyr.textFont, lyr.bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , lyr.bufferColor );
+    multiLineList = txt.split( "\n" );
   }
   else
   {
-    // we're drawing real label
-    /*painter->setFont( lyr.textFont );
-    painter->setPen( lyr.textColor );
-    painter->drawText((0,0, txt);*/
-
-    QPainterPath path;
-    path.addText( 0, 0, lyr.textFont, txt );
-    painter->setPen( Qt::NoPen );
-    painter->setBrush( lyr.textColor );
-    painter->drawPath( path );
+    multiLineList << txt;
   }
-  painter->restore();
 
-  if ( label->getNextPart() )
-    drawLabel( label->getNextPart(), painter, xform, drawBuffer );
+  for ( int i = 0; i < multiLineList.size(); ++i )
+  {
+    painter->save();
+    painter->translate( QPointF( outPt.x(), outPt.y() ) );
+    painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+    // scale down painter: the font size has been multiplied by raster scale factor
+    // to workaround a Qt font scaling bug with small font sizes
+    painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
+
+    double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * lyr.fontMetrics->height();
+    painter->translate( QPointF( 0, - lyr.fontMetrics->descent() - yMultiLineOffset ) );
+
+    if ( drawBuffer )
+    {
+      // we're drawing buffer
+      drawLabelBuffer( painter, multiLineList.at( i ), lyr.textFont, lyr.bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , lyr.bufferColor );
+    }
+    else
+    {
+      // we're drawing real label
+      QPainterPath path;
+      path.addText( 0, 0, lyr.textFont, multiLineList.at( i ) );
+      painter->setPen( Qt::NoPen );
+      painter->setBrush( lyr.textColor );
+      painter->drawPath( path );
+    }
+    painter->restore();
+
+    if ( label->getNextPart() )
+      drawLabel( label->getNextPart(), painter, xform, drawBuffer );
+  }
 }
 
 
