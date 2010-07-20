@@ -941,7 +941,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Please specify intersect unique ID field</source>
         <translatorcomment>ciągle nie widzę co tłumaczę M.</translatorcomment>
-        <translation type="unfinished">Podaj unikalne pole ID do przecięcia</translation>
+        <translation>Podaj unikalne pole ID warstwy przecinającej</translation>
     </message>
     <message>
         <source>Created output point shapefile:
@@ -1131,11 +1131,11 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="unfinished">Środek ciężkości</translation>
+        <translation>Środek ciężkości</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="unfinished">Odległość</translation>
+        <translation>Macierz odległości</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
@@ -1330,7 +1330,7 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Input directory</source>
-        <translation>Katalog źródłowa</translation>
+        <translation>Katalog źródłowy</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="62"/>
@@ -8003,7 +8003,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="611"/>
         <source>Attribute table - %1 (No matching features)</source>
-        <translation>Tabela atrybutów - %1 (Brak pasujących obiekt)</translation>
+        <translation>Tabela atrybutów - %1 (brak pasujących obiektów)</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="698"/>
@@ -10651,12 +10651,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="456"/>
         <source>inverse transform</source>
-        <translation type="unfinished">transformacja odwrotna</translation>
+        <translation>Transformacja z mapy do warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="463"/>
         <source>forward transform</source>
-        <translation type="unfinished">transformacja</translation>
+        <translation>Transformacja z warstwy do mapy</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="483"/>
@@ -10664,9 +10664,10 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
 %2
 failed with error: %3
 </source>
-        <translation>%1 z
+        <translation>%1 dla współrzędnych
 %2
-nie powiodło się z błędem: %3</translation>
+nie powiodła się z błędem: %3
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
@@ -11767,7 +11768,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="268"/>
         <source>area</source>
-        <translation>Powierzchnia</translation>
+        <translation>powierzchnia</translation>
+    </message>
+    <message>
+        <source>rownum</source>
+        <translation>nr wiersza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="278"/>
@@ -12032,7 +12037,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="579"/>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodawanie obiektów do warstw z wieloczęściowymi geometriami nie jest jeszcze obsługiwane. Proszę wybrać inną edytowalną, płaską warstwę i spróbować ponownie.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="591"/>
@@ -27724,7 +27729,15 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwrócony URL dla żądań GetMap
+
+  %2
+
+różni się od tego podanego dla GetCapabilities
+
+  %1
+
+Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo wszystko?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="444"/>
@@ -27737,7 +27750,15 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwrócony URL dla żądań GetFeatureInfo
+
+  %2
+
+różni się od tego podanego dla GetCapabilities
+
+  %1
+
+Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo wszystko?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="527"/>
@@ -27790,9 +27811,9 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
-            <numerusform>%n wybranych warstw</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Wybrano %n warstwę</numerusform>
+            <numerusform>Wybrano %n warstwy</numerusform>
+            <numerusform>Wybrano %n warstw</numerusform>
         </translation>
     </message>
     <message>
@@ -27913,12 +27934,12 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="208"/>
         <source>Ignore GetMap URL</source>
-        <translation>Ignoruj GetMap URL</translation>
+        <translation>Ignoruj URL dla GetMap</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="218"/>
         <source>Ignore GetFeatureInfo URL</source>
-        <translation>Ignoruj GetFeatureInfo URL</translation>
+        <translation>Ignoruj URL dla GetFeatureInfo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
@@ -28349,8 +28370,8 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="784"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
-            <numerusform>%n  zapytanie o kafel w tle</numerusform>
+        <translation>
+            <numerusform>%n zapytanie o kafel w tle</numerusform>
             <numerusform>%n zapytania o kafle w tle</numerusform>
             <numerusform>%n zapytań o kafle w tle</numerusform>
         </translation>
@@ -28360,8 +28381,10 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="785"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>, %n kafel znaleziono</numerusform>
+            <numerusform>, %n kafle znaleziono</numerusform>
+            <numerusform>, %n kafli znaleziono</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28369,8 +28392,10 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="786"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>, %n kafla brakuje.</numerusform>
+            <numerusform>, %n kafli brakuje.</numerusform>
+            <numerusform>, %n kafli brakuje.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28378,14 +28403,16 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="787"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>, %n błąd.</numerusform>
+            <numerusform>, %n błędy.</numerusform>
+            <numerusform>, %n błędów.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="730"/>
         <source>tile request err %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>błąd %1 żądania kafla: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="811"/>
@@ -28407,17 +28434,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="922"/>
         <source>empty of capabilities: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Brak Capabilities: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="927"/>
         <source>Download of capabilities failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pobieranie Capabilities nie powiodło się: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="939"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pobrano %1 z %2 bajtów Capabilities.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="944"/>
@@ -30116,7 +30143,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation>Złącz shapefile w jeden</translation>
+        <translation>Połącz pliki Shapefile w jeden</translation>
     </message>
     <message>
         <source>fTools Information</source>
