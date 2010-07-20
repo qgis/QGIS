@@ -102,6 +102,8 @@ string      "'"{str_char}*"'"
 
 {string}  { return STRING; }
 
+"$rownum" { return ROWNUM; }
+
 "$area" { return AREA; }
 "$length" { return LENGTH; }
 

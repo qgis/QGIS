@@ -125,6 +125,8 @@ QgsSearchTreeNode::~QgsSearchTreeNode()
 
 void QgsSearchTreeNode::init()
 {
+  mCalc = NULL;
+
   if ( mType == tOperator && ( mOp == opLENGTH || mOp == opAREA ) )
   {
     //initialize QgsDistanceArea
@@ -134,9 +136,10 @@ void QgsSearchTreeNode::init()
     QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
     mCalc->setEllipsoid( ellipsoid );
   }
-  else
+  else if ( mType == tOperator && mOp == opROWNUM )
   {
-    mCalc = NULL;
+    // initialize row number to a sane value
+    mNumber = 0;
   }
 }
 
@@ -535,6 +538,12 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
         return QgsSearchTreeValue( mCalc->measure( geom ) );
       }
 
+      if ( mOp == opROWNUM )
+      {
+        // the row number has to be previously set by the caller using setCurrentRowNumber
+        return QgsSearchTreeValue( mNumber );
+      }
+
       //string operations with one argument
       if ( !mRight && !value1.isNumeric() )
       {
@@ -633,6 +642,25 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
       return QgsSearchTreeValue( 4, QString::number( mType ) ); // unknown token
   }
 }
+
+
+void QgsSearchTreeNode::setCurrentRowNumber( int rownum )
+{
+  if ( mType == tOperator )
+  {
+    if ( mOp == opROWNUM )
+      mNumber = rownum;
+    else
+    {
+      // propagate the new row number to children
+      if ( mLeft )
+        mLeft->setCurrentRowNumber( rownum );
+      if ( mRight )
+        mRight->setCurrentRowNumber( rownum );
+    }
+  }
+}
+
 
 
 int QgsSearchTreeValue::compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2, Qt::CaseSensitivity cs )

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
+    <width>624</width>
     <height>686</height>
    </rect>
   </property>
@@ -269,6 +269,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="5">
+       <widget class="QPushButton" name="mRowNumButton">
+        <property name="text">
+         <string>rownum</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -328,6 +335,7 @@
   <tabstop>mToStringButton</tabstop>
   <tabstop>mLengthButton</tabstop>
   <tabstop>mAreaButton</tabstop>
+  <tabstop>mRowNumButton</tabstop>
   <tabstop>mExpressionTextEdit</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>

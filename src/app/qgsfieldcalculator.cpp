@@ -154,6 +154,7 @@ void QgsFieldCalculator::accept()
     mVectorLayer->blockSignals( true );
 
     bool useGeometry = calcString.contains( "$area" ) || calcString.contains( "$length" );
+    int rownum = 1;
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
     while ( mVectorLayer->nextFeature( feature ) )
@@ -165,6 +166,8 @@ void QgsFieldCalculator::accept()
           continue;
         }
       }
+
+      searchTree->setCurrentRowNumber( rownum );
 
       QgsSearchTreeValue value;
       if ( useGeometry )
@@ -188,6 +191,8 @@ void QgsFieldCalculator::accept()
       {
         mVectorLayer->changeAttributeValue( feature.id(), attributeId, value.string(), false );
       }
+
+      rownum++;
     }
 
     // stop blocking layerModified signals and make sure that one layerModified signal is emitted
@@ -385,6 +390,11 @@ void QgsFieldCalculator::on_mLengthButton_clicked()
 void QgsFieldCalculator::on_mAreaButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( "$area" );
+}
+
+void QgsFieldCalculator::on_mRowNumButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( "$rownum" );
 }
 
 void QgsFieldCalculator::on_mSamplePushButton_clicked()
