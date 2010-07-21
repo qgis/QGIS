@@ -100,6 +100,7 @@ void usage( std::string const & appName )
             << "\t[--nologo]\thide splash screen\n"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
+            << "\t[--configpath path]\tuse the given path for all user configuration\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -288,6 +289,10 @@ int main( int argc, char *argv[] )
   // which is useful for testing
   QString myTranslationCode;
 
+  // The user can specify a path which will override the default path of custom
+  // user settings (~/.qgis) and it will be used for QSettings INI file
+  QString configpath;
+
 #ifndef WIN32
   if ( !bundleclicked( argc, argv ) )
   {
@@ -314,13 +319,14 @@ int main( int argc, char *argv[] )
         {"project",  required_argument, 0, 'p'},
         {"extent",   required_argument, 0, 'e'},
         {"optionspath", required_argument, 0, 'o'},
+        {"configpath", required_argument, 0, 'c'},
         {0, 0, 0, 0}
       };
 
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      optionChar = getopt_long( argc, argv, "swhlpeo",
+      optionChar = getopt_long( argc, argv, "swhlpeoc",
                                 long_options, &option_index );
 
       /* Detect the end of the options. */
@@ -372,7 +378,11 @@ int main( int argc, char *argv[] )
           break;
 
         case 'o':
-          QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, optarg );
+          QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optarg );
+          break;
+
+        case 'c':
+          configpath = optarg;
           break;
 
         case '?':
@@ -445,7 +455,12 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
     {
-      QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, argv[++i] );
+      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
+    }
+    else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
+    {
+      configpath = argv[++i];
+      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
     }
     else
     {
@@ -476,7 +491,14 @@ int main( int argc, char *argv[] )
               ).toUtf8().constData();
     exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
-  QgsApplication myApp( argc, argv, myUseGuiFlag );
+
+  if ( !configpath.isEmpty() )
+  {
+    // tell QSettings to use INI format and save the file in custom config path
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
+  }
+
+  QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
 // (if Windows/Mac, use icon from resource)
 #if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)

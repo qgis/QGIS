@@ -58,7 +58,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
   public:
     //QgsApplication(int argc, char ** argv, bool GUIenabled);
-    QgsApplication(SIP_PYLIST argv, bool GUIenabled) /PostHook=__pyQtQAppHook__/ [(int &argc, char **argv, bool GUIenabled)];
+    QgsApplication(SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) /PostHook=__pyQtQAppHook__/ [(int &argc, char **argv, bool GUIenabled, QString customConfigPath = QString() )];
 %MethodCode
         // The Python interface is a list of argument strings that is modified.
         
@@ -73,7 +73,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
             // Create it now the arguments are right.
             static int nargc = argc;
         
-            sipCpp = new sipQgsApplication(nargc, argv, a1);
+            sipCpp = new sipQgsApplication(nargc, argv, a1, *a2);
         
             // Now modify the original list.
             qtgui_UpdatePyArgv(a0, argc, argv);
