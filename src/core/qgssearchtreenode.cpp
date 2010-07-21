@@ -190,9 +190,48 @@ QString QgsSearchTreeNode::makeSearchString()
   QString str;
   if ( mType == tOperator )
   {
-    str += "(";
-    if ( mOp != opNOT )
+    if ( mOp == opSQRT || mOp == opSIN || mOp == opCOS || mOp == opTAN ||
+         mOp == opASIN || mOp == opACOS || mOp == opATAN ||
+         mOp == opTOINT || mOp == opTOREAL || mOp == opTOSTRING )
     {
+      // functions
+      switch ( mOp )
+      {
+        case opSQRT: str += "sqrt"; break;
+        case opSIN: str += "sin"; break;
+        case opCOS: str += "cos"; break;
+        case opTAN: str += "tan"; break;
+        case opASIN: str += "asin"; break;
+        case opACOS: str += "acos"; break;
+        case opATAN: str += "atan"; break;
+        case opTOINT: str += "to int"; break;
+        case opTOREAL: str += "to real"; break;
+        case opTOSTRING: str += "to string"; break;
+        default: str += "?";
+      }
+      // currently all functions take one parameter
+      str += QString( "(%1)" ).arg( mLeft->makeSearchString() );
+    }
+    else if ( mOp == opLENGTH || mOp == opAREA || mOp == opROWNUM )
+    {
+      // special nullary opeators
+      switch ( mOp )
+      {
+        case opLENGTH: str += "$length"; break;
+        case opAREA: str += "$area"; break;
+        case opROWNUM: str += "$rownum"; break;
+        default: str += "?";
+      }
+    }
+    else if ( mOp == opNOT )
+    {
+      // unary NOT operator
+      str += "(NOT " + mLeft->makeSearchString() + ")";
+    }
+    else
+    {
+      // the rest of operator using infix notation
+      str += "(";
       if ( mLeft )
       {
         str += mLeft->makeSearchString();
@@ -206,6 +245,7 @@ QString QgsSearchTreeNode::makeSearchString()
         case opMINUS: str += "-"; break;
         case opMUL:   str += "*"; break;
         case opDIV:   str += "/"; break;
+        case opPOW:   str += "^"; break;
 
         case opEQ: str += " = "; break;
         case opNE: str += " != "; break;
@@ -214,10 +254,12 @@ QString QgsSearchTreeNode::makeSearchString()
         case opGE: str += " >= "; break;
         case opLE: str += " <= "; break;
 
+        case opISNULL: str += " IS NULL"; break;
+        case opISNOTNULL: str += " IS NOT NULL"; break;
+
         case opRegexp: str += " ~ "; break;
         case opLike: str += " LIKE "; break;
 
-          // TODO: other opeators / functions
         case opCONCAT: str += " || "; break;
 
         default: str += " ? ";
@@ -227,13 +269,8 @@ QString QgsSearchTreeNode::makeSearchString()
       {
         str += mRight->makeSearchString();
       }
+      str += ")";
     }
-    else
-    {
-      str += "NOT ";
-      str += mLeft->makeSearchString();
-    }
-    str += ")";
   }
   else if ( mType == tNumber )
   {
