@@ -39,6 +39,7 @@ QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
 QString QgsApplication::mThemeName;
 QStringList QgsApplication::mDefaultSvgPaths;
+QString QgsApplication::mConfigPath = QDir::homePath() + QString( "/.qgis/" );
 
 /*!
   \class QgsApplication
@@ -53,7 +54,7 @@ QStringList QgsApplication::mDefaultSvgPaths;
   so that platform-conditional code is minimized and paths are easier
   to change due to centralization.
 */
-QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
+QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath )
     : QApplication( argc, argv, GUIenabled )
 {
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
@@ -64,6 +65,11 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
   QString myPrefix = myDir.absolutePath();
   setPrefixPath( myPrefix, true );
 #endif
+
+  if ( !customConfigPath.isEmpty() )
+  {
+    mConfigPath = customConfigPath + "/"; // make sure trailing slash is included
+  }
 
   mDefaultSvgPaths << mPkgDataPath + QString( "/svg/" );
   mDefaultSvgPaths << qgisSettingsDirPath() + QString( "svg/" );
@@ -284,7 +290,7 @@ const QString QgsApplication::qgisSpatialiteDbTemplatePath()
  */
 const QString QgsApplication::qgisSettingsDirPath()
 {
-  return QDir::homePath() + QString( "/.qgis/" );
+  return mConfigPath;
 }
 
 /*!

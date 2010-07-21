@@ -26,7 +26,8 @@ class CORE_EXPORT QgsApplication: public QApplication
 {
     Q_OBJECT
   public:
-    QgsApplication( int & argc, char ** argv, bool GUIenabled );
+    //! @note customConfigDir parameter added in v1.6
+    QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
 
     //! Catch exceptions when sending event to receiver.
@@ -197,6 +198,8 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString mPkgDataPath;
     static QString mThemeName;
     static QStringList mDefaultSvgPaths;
+
+    static QString mConfigPath;
 };
 
 #endif
