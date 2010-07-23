@@ -255,7 +255,7 @@ class Qgis2Map:
       logmsg += "\n> We only saved the LAYER portion of the map file. \nMerge this into an excisting map file to see it working\n"
     else:
       logmsg += "\n> If this mapfile is accessible by your mapserver, you\nshould be able to see the capabilities by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities\n"
-      logmsg += "\n> if this mapfile is accessible by your mapserver, you\nshould be able to see a map by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&SERVICE=WMS&LAYERS=ALL&MODE=MAP\n"
+      logmsg += "\n> if this mapfile is accessible by your mapserver, you\nshould be able to see a map by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&LAYERS=ALL&MODE=MAP\n"
     return logmsg
 
   # Write the general parts of the map section
