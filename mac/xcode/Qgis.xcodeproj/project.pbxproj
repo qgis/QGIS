@@ -228,7 +228,6 @@
 
 /* Begin PBXBuildFile section */
 		7202656211BDADAE000A356A /* __init__.py in Copy - tools */ = {isa = PBXBuildFile; fileRef = 7202656111BDAD9E000A356A /* __init__.py */; };
-		720382E00F8B86070083B883 /* qgstolerance.h in Headers */ = {isa = PBXBuildFile; fileRef = 72F8D9420F8924F100D10CE5 /* qgstolerance.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7203830A0F8B8C8F0083B883 /* qgscentralpointpositionmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383000F8B8C2D0083B883 /* qgscentralpointpositionmanager.cpp */; };
 		7203830B0F8B8C8F0083B883 /* qgsoverlayobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383080F8B8C2D0083B883 /* qgsoverlayobject.cpp */; };
 		7203830C0F8B8C8F0083B883 /* qgspalobjectpositionmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383050F8B8C2D0083B883 /* qgspalobjectpositionmanager.cpp */; };
@@ -465,105 +464,6 @@
 		7209F4A80F3A5229003DC336 /* qgsquerybuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6430F39E57A003DC336 /* qgsquerybuilder.cpp */; };
 		7209F4BA0F3A5434003DC336 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F4B80F3A5434003DC336 /* CoreFoundation.framework */; };
 		7209F4BB0F3A5434003DC336 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F4B90F3A5434003DC336 /* CoreServices.framework */; };
-		7209F5AB0F3A56C9003DC336 /* qgis.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6820F39E57A003DC336 /* qgis.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5AC0F3A56C9003DC336 /* qgisgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7430F39E57A003DC336 /* qgisgui.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5AD0F3A56C9003DC336 /* qgisinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7450F39E57A003DC336 /* qgisinterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5AE0F3A56C9003DC336 /* qgisplugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209EC130F39E57B003DC336 /* qgisplugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5AF0F3A56C9003DC336 /* qgsapplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6840F39E57A003DC336 /* qgsapplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B00F3A56C9003DC336 /* qgsattributeaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6860F39E57A003DC336 /* qgsattributeaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B10F3A56C9003DC336 /* qgsclipper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6880F39E57A003DC336 /* qgsclipper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B20F3A56C9003DC336 /* qgscliptominmaxenhancement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6DB0F39E57A003DC336 /* qgscliptominmaxenhancement.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B30F3A56C9003DC336 /* qgscolorbutton.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7470F39E57A003DC336 /* qgscolorbutton.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B40F3A56C9003DC336 /* qgscolorrampshader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6DD0F39E57A003DC336 /* qgscolorrampshader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B50F3A56C9003DC336 /* qgscomposeritemgroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6670F39E57A003DC336 /* qgscomposeritemgroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B60F3A56C9003DC336 /* qgscomposerlegend.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E66B0F39E57A003DC336 /* qgscomposerlegend.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B70F3A56C9003DC336 /* qgscomposermap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E66D0F39E57A003DC336 /* qgscomposermap.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B80F3A56C9003DC336 /* qgscomposerpicture.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E66F0F39E57A003DC336 /* qgscomposerpicture.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5B90F3A56C9003DC336 /* qgscomposerscalebar.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6710F39E57A003DC336 /* qgscomposerscalebar.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5BA0F3A56C9003DC336 /* qgscomposerview.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7490F39E57A003DC336 /* qgscomposerview.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5BB0F3A56C9003DC336 /* qgscontexthelp.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68A0F39E57A003DC336 /* qgscontexthelp.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5BC0F3A56C9003DC336 /* qgscontinuouscolorrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F70F39E57A003DC336 /* qgscontinuouscolorrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5BD0F3A56C9003DC336 /* qgscontrastenhancement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6DF0F39E57A003DC336 /* qgscontrastenhancement.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5BE0F3A56C9003DC336 /* qgscontrastenhancementfunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E10F39E57A003DC336 /* qgscontrastenhancementfunction.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5BF0F3A56C9003DC336 /* qgscoordinatereferencesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68C0F39E57A003DC336 /* qgscoordinatereferencesystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C00F3A56C9003DC336 /* qgscoordinatetransform.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68E0F39E57A003DC336 /* qgscoordinatetransform.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C10F3A56C9003DC336 /* qgscsexception.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68F0F39E57A003DC336 /* qgscsexception.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C20F3A56C9003DC336 /* qgscursors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E74B0F39E57A003DC336 /* qgscursors.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C30F3A56C9003DC336 /* qgsdataprovider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6900F39E57A003DC336 /* qgsdataprovider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C40F3A56C9003DC336 /* qgsdatasourceuri.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6920F39E57A003DC336 /* qgsdatasourceuri.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C50F3A56C9003DC336 /* qgsdetaileditemdelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E74F0F39E57A003DC336 /* qgsdetaileditemdelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C60F3A56C9003DC336 /* qgsdetaileditemwidget.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7510F39E57A003DC336 /* qgsdetaileditemwidget.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C70F3A56C9003DC336 /* qgsdistancearea.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6940F39E57A003DC336 /* qgsdistancearea.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C80F3A56C9003DC336 /* qgsencodingfiledialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7530F39E57A003DC336 /* qgsencodingfiledialog.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5C90F3A56C9003DC336 /* qgsexception.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6960F39E57A003DC336 /* qgsexception.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5CA0F3A56C9003DC336 /* qgsfeature.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6980F39E57A003DC336 /* qgsfeature.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5CB0F3A56C9003DC336 /* qgsfield.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E69A0F39E57A003DC336 /* qgsfield.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5CC0F3A56C9003DC336 /* qgsfiledropedit.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7550F39E57A003DC336 /* qgsfiledropedit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5CD0F3A56C9003DC336 /* qgsfreakoutshader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E30F39E57A003DC336 /* qgsfreakoutshader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5CE0F3A56C9003DC336 /* qgsgenericprojectionselector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7570F39E57A003DC336 /* qgsgenericprojectionselector.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5CF0F3A56C9003DC336 /* qgsgeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E69C0F39E57A003DC336 /* qgsgeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D00F3A56C9003DC336 /* qgsgraduatedsymbolrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F90F39E57A003DC336 /* qgsgraduatedsymbolrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D10F3A56C9003DC336 /* qgshttptransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E69E0F39E57A003DC336 /* qgshttptransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D20F3A56C9003DC336 /* qgslabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A00F39E57A003DC336 /* qgslabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D30F3A56C9003DC336 /* qgslabelattributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A20F39E57A003DC336 /* qgslabelattributes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D40F3A56C9003DC336 /* qgslegendmodel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6770F39E57A003DC336 /* qgslegendmodel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D50F3A56C9003DC336 /* qgslinearminmaxenhancement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E50F39E57A003DC336 /* qgslinearminmaxenhancement.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D60F3A56C9003DC336 /* qgslinearminmaxenhancementwithclip.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E70F39E57A003DC336 /* qgslinearminmaxenhancementwithclip.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D70F3A56C9003DC336 /* qgslogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A40F39E57A003DC336 /* qgslogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D80F3A56C9003DC336 /* qgsmapcanvas.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7590F39E57A003DC336 /* qgsmapcanvas.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5D90F3A56C9003DC336 /* qgsmapcanvasitem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E75B0F39E57A003DC336 /* qgsmapcanvasitem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5DA0F3A56C9003DC336 /* qgsmapcanvasmap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E75D0F39E57A003DC336 /* qgsmapcanvasmap.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5DB0F3A56C9003DC336 /* qgsmapcanvassnapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E75F0F39E57A003DC336 /* qgsmapcanvassnapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5DC0F3A56C9003DC336 /* qgsmaplayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A60F39E57A003DC336 /* qgsmaplayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5DD0F3A56C9003DC336 /* qgsmaplayerregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A80F39E57A003DC336 /* qgsmaplayerregistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5DE0F3A56C9003DC336 /* qgsmapoverviewcanvas.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7610F39E57A003DC336 /* qgsmapoverviewcanvas.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5DF0F3A56C9003DC336 /* qgsmaprenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6AA0F39E57A003DC336 /* qgsmaprenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E00F3A56C9003DC336 /* qgsmaptip.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7630F39E57A003DC336 /* qgsmaptip.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E10F3A56C9003DC336 /* qgsmaptool.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7650F39E57A003DC336 /* qgsmaptool.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E20F3A56C9003DC336 /* qgsmaptoolemitpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7670F39E57A003DC336 /* qgsmaptoolemitpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E30F3A56C9003DC336 /* qgsmaptoolpan.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7690F39E57A003DC336 /* qgsmaptoolpan.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E40F3A56C9003DC336 /* qgsmaptoolzoom.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E76B0F39E57A003DC336 /* qgsmaptoolzoom.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E50F3A56C9003DC336 /* qgsmaptopixel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6AC0F39E57A003DC336 /* qgsmaptopixel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E60F3A56C9003DC336 /* qgsmarkercatalogue.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E70F3A56C9003DC336 /* qgsmessageoutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6AE0F39E57A003DC336 /* qgsmessageoutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E80F3A56C9003DC336 /* qgsmessageviewer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E76D0F39E57A003DC336 /* qgsmessageviewer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5E90F3A56C9003DC336 /* qgspoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B00F39E57A003DC336 /* qgspoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5EA0F3A56C9003DC336 /* qgsproject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B20F39E57A003DC336 /* qgsproject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5EB0F3A56C9003DC336 /* qgsprojectfiletransform.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B40F39E57A003DC336 /* qgsprojectfiletransform.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5EC0F3A56C9003DC336 /* qgsprojectionselector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E76F0F39E57A003DC336 /* qgsprojectionselector.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5ED0F3A56C9003DC336 /* qgsprojectproperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B60F39E57A003DC336 /* qgsprojectproperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5EE0F3A56C9003DC336 /* qgsprojectversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B80F39E57A003DC336 /* qgsprojectversion.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5EF0F3A56C9003DC336 /* qgsprovidercountcalcevent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6BA0F39E57A003DC336 /* qgsprovidercountcalcevent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F00F3A56C9003DC336 /* qgsproviderextentcalcevent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6BC0F39E57A003DC336 /* qgsproviderextentcalcevent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F10F3A56C9003DC336 /* qgsprovidermetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6BE0F39E57A003DC336 /* qgsprovidermetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F20F3A56C9003DC336 /* qgsproviderregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C00F39E57A003DC336 /* qgsproviderregistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F30F3A56C9003DC336 /* qgspseudocolorshader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E90F39E57A003DC336 /* qgspseudocolorshader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F40F3A56C9003DC336 /* qgsquickprint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7710F39E57A003DC336 /* qgsquickprint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F50F3A56C9003DC336 /* qgsrasterbandstats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6EA0F39E57A003DC336 /* qgsrasterbandstats.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F60F3A577C003DC336 /* qgsrasterdataprovider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C20F39E57A003DC336 /* qgsrasterdataprovider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F70F3A577C003DC336 /* qgsrasterlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6EC0F39E57A003DC336 /* qgsrasterlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F80F3A577C003DC336 /* qgsrastershader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6EF0F39E57A003DC336 /* qgsrastershader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5F90F3A577C003DC336 /* qgsrastershaderfunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F10F39E57A003DC336 /* qgsrastershaderfunction.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5FA0F3A577C003DC336 /* qgsrastertransparency.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F30F39E57A003DC336 /* qgsrastertransparency.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5FB0F3A577C003DC336 /* qgsrectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C40F39E57A003DC336 /* qgsrectangle.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5FC0F3A577C003DC336 /* qgsrendercontext.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C60F39E57A003DC336 /* qgsrendercontext.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5FD0F3A577C003DC336 /* qgsrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6FB0F39E57A003DC336 /* qgsrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5FE0F3A577C003DC336 /* qgsrendererplugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209EC140F39E57B003DC336 /* qgsrendererplugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F5FF0F3A577C003DC336 /* qgsrubberband.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7730F39E57A003DC336 /* qgsrubberband.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6000F3A577C003DC336 /* qgsrunprocess.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C80F39E57A003DC336 /* qgsrunprocess.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6010F3A577C003DC336 /* qgsscalecalculator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6CA0F39E57A003DC336 /* qgsscalecalculator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6020F3A577C003DC336 /* qgssearchstring.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6CC0F39E57A003DC336 /* qgssearchstring.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6030F3A577C003DC336 /* qgssearchtreenode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D00F39E57A003DC336 /* qgssearchtreenode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6040F3A577C003DC336 /* qgssinglesymbolrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6FD0F39E57A003DC336 /* qgssinglesymbolrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6050F3A577C003DC336 /* qgssnapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D20F39E57A003DC336 /* qgssnapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6060F3A577C003DC336 /* qgsspatialindex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7110F39E57A003DC336 /* qgsspatialindex.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6070F3A577C003DC336 /* qgssymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E73A0F39E57A003DC336 /* qgssymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6080F3A577C003DC336 /* qgssymbologyutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E73C0F39E57A003DC336 /* qgssymbologyutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F6090F3A577C003DC336 /* qgsuniquevaluerenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6FF0F39E57A003DC336 /* qgsuniquevaluerenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F60A0F3A577C003DC336 /* qgsvectordataprovider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D40F39E57A003DC336 /* qgsvectordataprovider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F60B0F3A577C003DC336 /* qgsvectorfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D60F39E57A003DC336 /* qgsvectorfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F60C0F3A577C003DC336 /* qgsvectorlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D80F39E57A003DC336 /* qgsvectorlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7209F60D0F3A577C003DC336 /* qgsvertexmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7750F39E57A003DC336 /* qgsvertexmarker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7209F6160F3A5CA6003DC336 /* asc.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7209E78A0F39E57A003DC336 /* asc.icns */; };
 		7209F6170F3A5CA6003DC336 /* ddf.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7209E78C0F39E57A003DC336 /* ddf.icns */; };
 		7209F6180F3A5CA6003DC336 /* dem.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7209E78D0F39E57A003DC336 /* dem.icns */; };
@@ -897,11 +797,6 @@
 		7237F48811DE3DA000128BAC /* QgsScaleBarPluginGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47E11DE3D9100128BAC /* QgsScaleBarPluginGui-pt_BR */; };
 		7237F48911DE3DA000128BAC /* QgsSpatiaLiteSourceSelect-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47F11DE3D9100128BAC /* QgsSpatiaLiteSourceSelect-pt_BR */; };
 		7237F48A11DE3DA000128BAC /* QgsStyleV2ManagerDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F48011DE3D9100128BAC /* QgsStyleV2ManagerDialog-pt_BR */; };
-		7238DB6510AA191E00963E09 /* qgsgridfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CF1052B2B0003D1610 /* qgsinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597D11052B2B0003D1610 /* qgstininterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7238DB6B10AA198C00963E09 /* qgsrasterviewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F40F39E57A003DC336 /* qgsrasterviewport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
@@ -1037,10 +932,6 @@
 		7268C06911829664001BC9C4 /* qgsspatialquerydialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C041118294E5001BC9C4 /* qgsspatialquerydialog.h */; };
 		7268C06A11829664001BC9C4 /* qgsspatialqueryplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */; };
 		7268C06B11829683001BC9C4 /* qgsspatialquerydialogbase.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7268C042118294E5001BC9C4 /* qgsspatialquerydialogbase.qrc */; };
-		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268E80711021E6B00B96374 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		7268E83C110234D400B96374 /* analysis.sip in Sources */ = {isa = PBXBuildFile; fileRef = 7276104A10A60AC300C89AF0 /* analysis.sip */; };
 		7268E85B1102393600B96374 /* x_python_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268E8371102347B00B96374 /* x_python_dummy.cpp */; };
@@ -1083,6 +974,150 @@
 		72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */; };
 		72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */; };
 		72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDF0FACCE520011C963 /* qgsmaptoolsimplify.h */; };
+		7285A10811F9115F0060F78F /* qgis.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6820F39E57A003DC336 /* qgis.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10911F9115F0060F78F /* qgsapplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6840F39E57A003DC336 /* qgsapplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10A11F9115F0060F78F /* qgsattributeaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6860F39E57A003DC336 /* qgsattributeaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10B11F9115F0060F78F /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10C11F9115F0060F78F /* qgsclipper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6880F39E57A003DC336 /* qgsclipper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10D11F9115F0060F78F /* qgscontexthelp.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68A0F39E57A003DC336 /* qgscontexthelp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10E11F9115F0060F78F /* qgscoordinatereferencesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68C0F39E57A003DC336 /* qgscoordinatereferencesystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A10F11F9115F0060F78F /* qgscoordinatetransform.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68E0F39E57A003DC336 /* qgscoordinatetransform.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11011F9115F0060F78F /* qgscredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 72DAAF3E111A6064000DC8B7 /* qgscredentials.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11111F9115F0060F78F /* qgscsexception.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E68F0F39E57A003DC336 /* qgscsexception.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11211F9115F0060F78F /* qgsdatasourceuri.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6920F39E57A003DC336 /* qgsdatasourceuri.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11311F9115F0060F78F /* qgsdistancearea.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6940F39E57A003DC336 /* qgsdistancearea.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11411F9115F0060F78F /* qgsexception.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6960F39E57A003DC336 /* qgsexception.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11511F9115F0060F78F /* qgsfeature.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6980F39E57A003DC336 /* qgsfeature.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11611F9115F0060F78F /* qgsfield.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E69A0F39E57A003DC336 /* qgsfield.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11711F9115F0060F78F /* qgsgeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E69C0F39E57A003DC336 /* qgsgeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11811F9115F0060F78F /* qgshttptransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E69E0F39E57A003DC336 /* qgshttptransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11911F9115F0060F78F /* qgslabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A00F39E57A003DC336 /* qgslabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11A11F9115F0060F78F /* qgslabelattributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A20F39E57A003DC336 /* qgslabelattributes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11B11F9115F0060F78F /* qgslogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A40F39E57A003DC336 /* qgslogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11C11F9115F0060F78F /* qgsmaplayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A60F39E57A003DC336 /* qgsmaplayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11D11F9115F0060F78F /* qgsmaplayerregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6A80F39E57A003DC336 /* qgsmaplayerregistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11E11F9115F0060F78F /* qgsmaprenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6AA0F39E57A003DC336 /* qgsmaprenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A11F11F9115F0060F78F /* qgsmaptopixel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6AC0F39E57A003DC336 /* qgsmaptopixel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12011F9115F0060F78F /* qgsmessageoutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6AE0F39E57A003DC336 /* qgsmessageoutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12111F9115F0060F78F /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12211F9115F0060F78F /* qgspallabeling.h in Headers */ = {isa = PBXBuildFile; fileRef = 72A93DE711B5E570007E8AE7 /* qgspallabeling.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12311F9115F0060F78F /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12411F9115F0060F78F /* qgspluginlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12511F9115F0060F78F /* qgspluginlayerregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12611F9115F0060F78F /* qgspoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B00F39E57A003DC336 /* qgspoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12711F9115F0060F78F /* qgsprojectfiletransform.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B40F39E57A003DC336 /* qgsprojectfiletransform.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12811F9115F0060F78F /* qgsprojectproperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B60F39E57A003DC336 /* qgsprojectproperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12911F9115F0060F78F /* qgsprojectversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6B80F39E57A003DC336 /* qgsprojectversion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12A11F9115F0060F78F /* qgsprovidercountcalcevent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6BA0F39E57A003DC336 /* qgsprovidercountcalcevent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12B11F9115F0060F78F /* qgsproviderextentcalcevent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6BC0F39E57A003DC336 /* qgsproviderextentcalcevent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12C11F9115F0060F78F /* qgsprovidermetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6BE0F39E57A003DC336 /* qgsprovidermetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12D11F9115F0060F78F /* qgsproviderregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C00F39E57A003DC336 /* qgsproviderregistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12E11F9115F0060F78F /* qgsrasterdataprovider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C20F39E57A003DC336 /* qgsrasterdataprovider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A12F11F9115F0060F78F /* qgsrectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C40F39E57A003DC336 /* qgsrectangle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13011F9115F0060F78F /* qgsrendercontext.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C60F39E57A003DC336 /* qgsrendercontext.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13111F9115F0060F78F /* qgsrunprocess.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6C80F39E57A003DC336 /* qgsrunprocess.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13211F9115F0060F78F /* qgsscalecalculator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6CA0F39E57A003DC336 /* qgsscalecalculator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13311F9115F0060F78F /* qgssearchstring.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6CC0F39E57A003DC336 /* qgssearchstring.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13411F9115F0060F78F /* qgssearchtreenode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D00F39E57A003DC336 /* qgssearchtreenode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13511F9115F0060F78F /* qgssnapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D20F39E57A003DC336 /* qgssnapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13611F9115F0060F78F /* qgstolerance.h in Headers */ = {isa = PBXBuildFile; fileRef = 72F8D9420F8924F100D10CE5 /* qgstolerance.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13711F9115F0060F78F /* qgsvectordataprovider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D40F39E57A003DC336 /* qgsvectordataprovider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13811F9115F0060F78F /* qgsvectorfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D60F39E57A003DC336 /* qgsvectorfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13911F9115F0060F78F /* qgsvectorlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6D80F39E57A003DC336 /* qgsvectorlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13A11F9115F0060F78F /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13B11F911F60060F78F /* qgscomposerlegenditem.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BDBF38119D931B0036158D /* qgscomposerlegenditem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13C11F911F60060F78F /* qgslegendmodel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6770F39E57A003DC336 /* qgslegendmodel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13D11F912340060F78F /* qgscliptominmaxenhancement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6DB0F39E57A003DC336 /* qgscliptominmaxenhancement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13E11F912340060F78F /* qgscolorrampshader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6DD0F39E57A003DC336 /* qgscolorrampshader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A13F11F912340060F78F /* qgscontrastenhancement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6DF0F39E57A003DC336 /* qgscontrastenhancement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14011F912340060F78F /* qgscontrastenhancementfunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E10F39E57A003DC336 /* qgscontrastenhancementfunction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14111F912340060F78F /* qgsfreakoutshader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E30F39E57A003DC336 /* qgsfreakoutshader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14211F912340060F78F /* qgslinearminmaxenhancement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E50F39E57A003DC336 /* qgslinearminmaxenhancement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14311F912340060F78F /* qgslinearminmaxenhancementwithclip.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E70F39E57A003DC336 /* qgslinearminmaxenhancementwithclip.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14411F912340060F78F /* qgspseudocolorshader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6E90F39E57A003DC336 /* qgspseudocolorshader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14511F912340060F78F /* qgsrasterbandstats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6EA0F39E57A003DC336 /* qgsrasterbandstats.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14611F912340060F78F /* qgsrasterlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6EC0F39E57A003DC336 /* qgsrasterlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14711F912340060F78F /* qgsrastershader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6EF0F39E57A003DC336 /* qgsrastershader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14811F912340060F78F /* qgsrastershaderfunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F10F39E57A003DC336 /* qgsrastershaderfunction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14911F912340060F78F /* qgsrastertransparency.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F30F39E57A003DC336 /* qgsrastertransparency.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14A11F912340060F78F /* qgsrasterviewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F40F39E57A003DC336 /* qgsrasterviewport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14B11F912790060F78F /* qgscontinuouscolorrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F70F39E57A003DC336 /* qgscontinuouscolorrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14C11F912790060F78F /* qgsgraduatedsymbolrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F90F39E57A003DC336 /* qgsgraduatedsymbolrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14D11F912790060F78F /* qgsrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6FB0F39E57A003DC336 /* qgsrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14E11F912790060F78F /* qgssinglesymbolrenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6FD0F39E57A003DC336 /* qgssinglesymbolrenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A14F11F912790060F78F /* qgsuniquevaluerenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6FF0F39E57A003DC336 /* qgsuniquevaluerenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15011F912CD0060F78F /* qgscategorizedsymbolrendererv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF6E10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15111F912CD0060F78F /* qgscolorbrewerpalette.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF6F10B2298A00D23EA2 /* qgscolorbrewerpalette.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15211F912CD0060F78F /* qgsfillsymbollayerv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7110B2298A00D23EA2 /* qgsfillsymbollayerv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15311F912CD0060F78F /* qgsgraduatedsymbolrendererv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7310B2298A00D23EA2 /* qgsgraduatedsymbolrendererv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15411F912CD0060F78F /* qgslinesymbollayerv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7510B2298A00D23EA2 /* qgslinesymbollayerv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15511F912CD0060F78F /* qgsmarkercatalogue.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15611F912CD0060F78F /* qgsmarkersymbollayerv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7710B2298A00D23EA2 /* qgsmarkersymbollayerv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15711F912CD0060F78F /* qgsrendererv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7910B2298A00D23EA2 /* qgsrendererv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15811F912CD0060F78F /* qgsrendererv2registry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7B10B2298A00D23EA2 /* qgsrendererv2registry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15911F912CD0060F78F /* qgssinglesymbolrendererv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7D10B2298A00D23EA2 /* qgssinglesymbolrendererv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15A11F912CD0060F78F /* qgsstylev2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF7F10B2298A00D23EA2 /* qgsstylev2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15B11F912CD0060F78F /* qgssymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E73A0F39E57A003DC336 /* qgssymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15C11F912CD0060F78F /* qgssymbollayerv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF8110B2298A00D23EA2 /* qgssymbollayerv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15D11F912CD0060F78F /* qgssymbollayerv2registry.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF8310B2298A00D23EA2 /* qgssymbollayerv2registry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15E11F912CD0060F78F /* qgssymbollayerv2utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF8510B2298A00D23EA2 /* qgssymbollayerv2utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A15F11F912CD0060F78F /* qgssymbologyutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E73C0F39E57A003DC336 /* qgssymbologyutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16011F912CD0060F78F /* qgssymbologyv2conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 7289FAAA10E0166F0027BCEA /* qgssymbologyv2conversion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16111F912CD0060F78F /* qgssymbolv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF8710B2298A00D23EA2 /* qgssymbolv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16211F912CD0060F78F /* qgsvectorcolorrampv2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225EF8910B2298B00D23EA2 /* qgsvectorcolorrampv2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16311F912DE0060F78F /* qgsspatialindex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7110F39E57A003DC336 /* qgsspatialindex.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16611F9137B0060F78F /* qgsgeometryanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16711F9137B0060F78F /* qgsgridfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16811F9137B0060F78F /* qgsidwinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16911F9137B0060F78F /* qgsinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CF1052B2B0003D1610 /* qgsinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16A11F9137B0060F78F /* qgstininterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597D11052B2B0003D1610 /* qgstininterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16B11F9137B0060F78F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16E11F914010060F78F /* qgisgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7430F39E57A003DC336 /* qgisgui.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A16F11F914010060F78F /* qgisinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7450F39E57A003DC336 /* qgisinterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17011F914010060F78F /* qgscolorbutton.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7470F39E57A003DC336 /* qgscolorbutton.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17111F914010060F78F /* qgscredentialdialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 72DAAF42111A60D2000DC8B7 /* qgscredentialdialog.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17211F914010060F78F /* qgscursors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E74B0F39E57A003DC336 /* qgscursors.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17311F914010060F78F /* qgsencodingfiledialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7530F39E57A003DC336 /* qgsencodingfiledialog.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17411F914010060F78F /* qgsfiledropedit.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7550F39E57A003DC336 /* qgsfiledropedit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17511F914010060F78F /* qgsgenericprojectionselector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7570F39E57A003DC336 /* qgsgenericprojectionselector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17611F914010060F78F /* qgsmapcanvas.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7590F39E57A003DC336 /* qgsmapcanvas.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17711F914010060F78F /* qgsmapcanvasitem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E75B0F39E57A003DC336 /* qgsmapcanvasitem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17811F914010060F78F /* qgsmapcanvasmap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E75D0F39E57A003DC336 /* qgsmapcanvasmap.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17911F914010060F78F /* qgsmapcanvassnapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E75F0F39E57A003DC336 /* qgsmapcanvassnapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17A11F914010060F78F /* qgsmaptip.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7630F39E57A003DC336 /* qgsmaptip.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17B11F914010060F78F /* qgsmaptool.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7650F39E57A003DC336 /* qgsmaptool.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17C11F914010060F78F /* qgsmaptoolemitpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7670F39E57A003DC336 /* qgsmaptoolemitpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17D11F914010060F78F /* qgsmaptoolpan.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7690F39E57A003DC336 /* qgsmaptoolpan.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17E11F914010060F78F /* qgsmaptoolzoom.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E76B0F39E57A003DC336 /* qgsmaptoolzoom.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A17F11F914010060F78F /* qgsmessageviewer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E76D0F39E57A003DC336 /* qgsmessageviewer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A18011F914010060F78F /* qgsprojectionselector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E76F0F39E57A003DC336 /* qgsprojectionselector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A18111F914010060F78F /* qgsrubberband.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7730F39E57A003DC336 /* qgsrubberband.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A18211F914010060F78F /* qgsvertexmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7750F39E57A003DC336 /* qgsvertexmarker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A18F11F916A80060F78F /* qgsdataprovider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6900F39E57A003DC336 /* qgsdataprovider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19011F916A80060F78F /* qgsnetworkaccessmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 72F8205411971C7800822E90 /* qgsnetworkaccessmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19111F916EB0060F78F /* qgscomposerattributetable.h in Headers */ = {isa = PBXBuildFile; fileRef = 72C8D7D41178B6A3005B5B87 /* qgscomposerattributetable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19211F916EB0060F78F /* qgscomposeritem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6650F39E57A003DC336 /* qgscomposeritem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19311F916EB0060F78F /* qgscomposeritemgroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6670F39E57A003DC336 /* qgscomposeritemgroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19411F916EB0060F78F /* qgscomposerlegend.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E66B0F39E57A003DC336 /* qgscomposerlegend.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19511F916EB0060F78F /* qgscomposermap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E66D0F39E57A003DC336 /* qgscomposermap.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19611F916EB0060F78F /* qgscomposerpicture.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E66F0F39E57A003DC336 /* qgscomposerpicture.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19711F916EB0060F78F /* qgscomposerscalebar.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6710F39E57A003DC336 /* qgscomposerscalebar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19811F916EB0060F78F /* qgscomposershape.h in Headers */ = {isa = PBXBuildFile; fileRef = 72C93CE110B58AD2003A618E /* qgscomposershape.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19911F916EB0060F78F /* qgscomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6730F39E57A003DC336 /* qgscomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19A11F917210060F78F /* qextserialenumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 727800F210FB76E200574B67 /* qextserialenumerator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19B11F917210060F78F /* qextserialport.h in Headers */ = {isa = PBXBuildFile; fileRef = 727800F410FB76E200574B67 /* qextserialport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19C11F917210060F78F /* qgsgpsconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 72AF7B0410F8EC1600BD549A /* qgsgpsconnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19D11F917210060F78F /* qgsgpsdetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 72D2486E1100CD2300923469 /* qgsgpsdetector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19E11F917210060F78F /* qgsnmeaconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 72AF7B0A10F8EC1600BD549A /* qgsnmeaconnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A19F11F91D2E0060F78F /* qgsattributeeditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 72D0A5441018989600EE6279 /* qgsattributeeditor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A011F91D2E0060F78F /* qgscomposerview.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7490F39E57A003DC336 /* qgscomposerview.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A111F91D2E0060F78F /* qgsdetaileditemdelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E74F0F39E57A003DC336 /* qgsdetaileditemdelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A211F91D2E0060F78F /* qgsdetaileditemwidget.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7510F39E57A003DC336 /* qgsdetaileditemwidget.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A311F91D2E0060F78F /* qgsformannotationitem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7297AA531160EC9E00DC6F2D /* qgsformannotationitem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A411F91D2E0060F78F /* qgslegendinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 72A51A5110CE063E00E202D7 /* qgslegendinterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A511F91D2E0060F78F /* qgsludialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 72EB30FF10B99969002A971B /* qgsludialog.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A611F91D2E0060F78F /* qgsprojectbadlayerguihandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7285A1A711F91D2E0060F78F /* qgsquickprint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E7710F39E57A003DC336 /* qgsquickprint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7286D640106276D3008D83A6 /* qgsmaptoolrotatepointsymbols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */; };
 		7286D641106276D3008D83A6 /* qgspointrotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */; };
 		7289FAAB10E016A60027BCEA /* qgssymbologyv2conversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7289FAA910E0166F0027BCEA /* qgssymbologyv2conversion.cpp */; };
@@ -1273,7 +1308,6 @@
 		729BBF3E0F407D81001BCB63 /* qgispython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC810F39E57B003DC336 /* qgispython.cpp */; };
 		729BBF3F0F407D82001BCB63 /* qgspythonutilsimpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC830F39E57B003DC336 /* qgspythonutilsimpl.cpp */; };
 		729E6DF610A78A4F00D72B73 /* qgsoverlayanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729E6DF410A78A3C00D72B73 /* qgsoverlayanalyzer.cpp */; };
-		729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72A07CC90F3BC2DE004FC2A4 /* qgsmemoryprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC5F0F39E57B003DC336 /* qgsmemoryprovider.cpp */; };
 		72A07CFC0F3BD3C5004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07CFF0F3BD3E1004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -1439,7 +1473,6 @@
 		72B236BD115707EF007B4803 /* qgspointdisplacementrendererwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A811570705007B4803 /* qgspointdisplacementrendererwidget.cpp */; };
 		72B236BE11570801007B4803 /* qgspointdisplacementrendererwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A911570705007B4803 /* qgspointdisplacementrendererwidget.h */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
-		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72BDBF39119D93480036158D /* qgscomposerlegenditem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BDBF37119D931B0036158D /* qgscomposerlegenditem.cpp */; };
 		72BDC390116E1CDD0088DEB4 /* qgsspatialitesridsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BDC38E116E1CBB0088DEB4 /* qgsspatialitesridsdialog.cpp */; };
 		72BDC391116E1CDD0088DEB4 /* qgsspatialitesridsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72BDC38F116E1CBB0088DEB4 /* qgsspatialitesridsdialog.h */; };
@@ -1769,8 +1802,6 @@
 		72ED33A6110FD64F00526CF5 /* qgspluginlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72ED33A2110FCB4D00526CF5 /* qgspluginlayer.cpp */; };
 		72ED33A7110FD64F00526CF5 /* qgspluginlayer.h in Sources */ = {isa = PBXBuildFile; fileRef = 72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */; };
 		72ED33A8110FD64F00526CF5 /* qgspluginlayerregistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72ED33A4110FCB4D00526CF5 /* qgspluginlayerregistry.cpp */; };
-		72ED33A9110FD66D00526CF5 /* qgspluginlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */; };
-		72ED33AA110FD66D00526CF5 /* qgspluginlayerregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */; };
 		72EF7B1011CFAEA300263425 /* QgsNewSpatialiteLayerDialog-ja_JP in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72EF7B0F11CFAE9600263425 /* QgsNewSpatialiteLayerDialog-ja_JP */; };
 		72EF7B1211CFAECA00263425 /* eVisDatabaseConnectionGui-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72EF7B1111CFAEBF00263425 /* eVisDatabaseConnectionGui-es_ES */; };
 		72EF7B1411CFAEEE00263425 /* QgsVectorLayerProperties-ja_JP in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72EF7B1311CFAEE400263425 /* QgsVectorLayerProperties-ja_JP */; };
@@ -1818,7 +1849,6 @@
 		72FB54CE0FAF3B5E00AB2F8D /* qgsattributetabledelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */; };
 		72FB54CF0FAF3B5E00AB2F8D /* qgsattributetablememorymodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */; };
 		72FE24C7105BE1B50026B6CB /* CONTRIBUTORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E30F4147890022BE1F /* CONTRIBUTORS */; };
-		72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72FEE38B111D31AC00D28C1A /* libqgisgrass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 72A07E3A0F3BEE16004FC2A4 /* libqgisgrass.dylib */; };
 		72FEE39B111D31D000D28C1A /* qgsgrassrasterprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FEE382111D314200D28C1A /* qgsgrassrasterprovider.cpp */; };
 		72FEE3A1111D32BE00D28C1A /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -4575,7 +4605,6 @@
 		7209EBBF0F39E57B003DC336 /* interpolation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = interpolation.png; path = ../../src/plugins/interpolation/interpolation.png; sourceTree = SOURCE_ROOT; };
 		7209EBC00F39E57B003DC336 /* interpolator.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interpolator.qrc; path = ../../src/plugins/interpolation/interpolator.qrc; sourceTree = SOURCE_ROOT; };
 		7209EBC90F39E57B003DC336 /* options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = options.png; path = ../../src/plugins/interpolation/options.png; sourceTree = SOURCE_ROOT; };
-		7209EBCC0F39E57B003DC336 /* qgisinterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgisinterpolator.h; path = ../../src/plugins/interpolation/qgisinterpolator.h; sourceTree = SOURCE_ROOT; };
 		7209EBD10F39E57B003DC336 /* qgsidwinterpolatordialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsidwinterpolatordialog.cpp; path = ../../src/plugins/interpolation/qgsidwinterpolatordialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209EBD20F39E57B003DC336 /* qgsidwinterpolatordialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsidwinterpolatordialog.h; path = ../../src/plugins/interpolation/qgsidwinterpolatordialog.h; sourceTree = SOURCE_ROOT; };
 		7209EBD30F39E57B003DC336 /* qgsidwinterpolatordialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsidwinterpolatordialogbase.ui; path = ../../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -9761,7 +9790,6 @@
 				7209EBBF0F39E57B003DC336 /* interpolation.png */,
 				7209EBC00F39E57B003DC336 /* interpolator.qrc */,
 				7209EBC90F39E57B003DC336 /* options.png */,
-				7209EBCC0F39E57B003DC336 /* qgisinterpolator.h */,
 				7209EBD10F39E57B003DC336 /* qgsidwinterpolatordialog.cpp */,
 				7209EBD20F39E57B003DC336 /* qgsidwinterpolatordialog.h */,
 				7209EBD30F39E57B003DC336 /* qgsidwinterpolatordialogbase.ui */,
@@ -13949,120 +13977,150 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7209F5AB0F3A56C9003DC336 /* qgis.h in Headers */,
-				7209F5AC0F3A56C9003DC336 /* qgisgui.h in Headers */,
-				7209F5AD0F3A56C9003DC336 /* qgisinterface.h in Headers */,
-				7209F5AE0F3A56C9003DC336 /* qgisplugin.h in Headers */,
-				7209F5AF0F3A56C9003DC336 /* qgsapplication.h in Headers */,
-				7209F5B00F3A56C9003DC336 /* qgsattributeaction.h in Headers */,
-				7209F5B10F3A56C9003DC336 /* qgsclipper.h in Headers */,
-				7209F5B20F3A56C9003DC336 /* qgscliptominmaxenhancement.h in Headers */,
-				7209F5B30F3A56C9003DC336 /* qgscolorbutton.h in Headers */,
-				7209F5B40F3A56C9003DC336 /* qgscolorrampshader.h in Headers */,
-				7209F5B50F3A56C9003DC336 /* qgscomposeritemgroup.h in Headers */,
-				7209F5B60F3A56C9003DC336 /* qgscomposerlegend.h in Headers */,
-				7209F5B70F3A56C9003DC336 /* qgscomposermap.h in Headers */,
-				7209F5B80F3A56C9003DC336 /* qgscomposerpicture.h in Headers */,
-				7209F5B90F3A56C9003DC336 /* qgscomposerscalebar.h in Headers */,
-				7209F5BA0F3A56C9003DC336 /* qgscomposerview.h in Headers */,
-				7209F5BB0F3A56C9003DC336 /* qgscontexthelp.h in Headers */,
-				7209F5BC0F3A56C9003DC336 /* qgscontinuouscolorrenderer.h in Headers */,
-				7209F5BD0F3A56C9003DC336 /* qgscontrastenhancement.h in Headers */,
-				7209F5BE0F3A56C9003DC336 /* qgscontrastenhancementfunction.h in Headers */,
-				7209F5BF0F3A56C9003DC336 /* qgscoordinatereferencesystem.h in Headers */,
-				7209F5C00F3A56C9003DC336 /* qgscoordinatetransform.h in Headers */,
-				7209F5C10F3A56C9003DC336 /* qgscsexception.h in Headers */,
-				7209F5C20F3A56C9003DC336 /* qgscursors.h in Headers */,
-				7209F5C30F3A56C9003DC336 /* qgsdataprovider.h in Headers */,
-				7209F5C40F3A56C9003DC336 /* qgsdatasourceuri.h in Headers */,
-				7209F5C50F3A56C9003DC336 /* qgsdetaileditemdelegate.h in Headers */,
-				7209F5C60F3A56C9003DC336 /* qgsdetaileditemwidget.h in Headers */,
-				7209F5C70F3A56C9003DC336 /* qgsdistancearea.h in Headers */,
-				7209F5C80F3A56C9003DC336 /* qgsencodingfiledialog.h in Headers */,
-				7209F5C90F3A56C9003DC336 /* qgsexception.h in Headers */,
-				7209F5CA0F3A56C9003DC336 /* qgsfeature.h in Headers */,
-				7209F5CB0F3A56C9003DC336 /* qgsfield.h in Headers */,
-				7209F5CC0F3A56C9003DC336 /* qgsfiledropedit.h in Headers */,
-				7209F5CD0F3A56C9003DC336 /* qgsfreakoutshader.h in Headers */,
-				7209F5CE0F3A56C9003DC336 /* qgsgenericprojectionselector.h in Headers */,
-				7209F5CF0F3A56C9003DC336 /* qgsgeometry.h in Headers */,
-				7209F5D00F3A56C9003DC336 /* qgsgraduatedsymbolrenderer.h in Headers */,
-				7209F5D10F3A56C9003DC336 /* qgshttptransaction.h in Headers */,
-				7209F5D20F3A56C9003DC336 /* qgslabel.h in Headers */,
-				7209F5D30F3A56C9003DC336 /* qgslabelattributes.h in Headers */,
-				7209F5D40F3A56C9003DC336 /* qgslegendmodel.h in Headers */,
-				7209F5D50F3A56C9003DC336 /* qgslinearminmaxenhancement.h in Headers */,
-				7209F5D60F3A56C9003DC336 /* qgslinearminmaxenhancementwithclip.h in Headers */,
-				7209F5D70F3A56C9003DC336 /* qgslogger.h in Headers */,
-				7209F5D80F3A56C9003DC336 /* qgsmapcanvas.h in Headers */,
-				7209F5D90F3A56C9003DC336 /* qgsmapcanvasitem.h in Headers */,
-				7209F5DA0F3A56C9003DC336 /* qgsmapcanvasmap.h in Headers */,
-				7209F5DB0F3A56C9003DC336 /* qgsmapcanvassnapper.h in Headers */,
-				7209F5DC0F3A56C9003DC336 /* qgsmaplayer.h in Headers */,
-				7209F5DD0F3A56C9003DC336 /* qgsmaplayerregistry.h in Headers */,
-				7209F5DE0F3A56C9003DC336 /* qgsmapoverviewcanvas.h in Headers */,
-				7209F5DF0F3A56C9003DC336 /* qgsmaprenderer.h in Headers */,
-				7209F5E00F3A56C9003DC336 /* qgsmaptip.h in Headers */,
-				7209F5E10F3A56C9003DC336 /* qgsmaptool.h in Headers */,
-				7209F5E20F3A56C9003DC336 /* qgsmaptoolemitpoint.h in Headers */,
-				7209F5E30F3A56C9003DC336 /* qgsmaptoolpan.h in Headers */,
-				7209F5E40F3A56C9003DC336 /* qgsmaptoolzoom.h in Headers */,
-				7209F5E50F3A56C9003DC336 /* qgsmaptopixel.h in Headers */,
-				7209F5E60F3A56C9003DC336 /* qgsmarkercatalogue.h in Headers */,
-				7209F5E70F3A56C9003DC336 /* qgsmessageoutput.h in Headers */,
-				7209F5E80F3A56C9003DC336 /* qgsmessageviewer.h in Headers */,
-				7209F5E90F3A56C9003DC336 /* qgspoint.h in Headers */,
-				7209F5EA0F3A56C9003DC336 /* qgsproject.h in Headers */,
-				7209F5EB0F3A56C9003DC336 /* qgsprojectfiletransform.h in Headers */,
-				7209F5EC0F3A56C9003DC336 /* qgsprojectionselector.h in Headers */,
-				7209F5ED0F3A56C9003DC336 /* qgsprojectproperty.h in Headers */,
-				7209F5EE0F3A56C9003DC336 /* qgsprojectversion.h in Headers */,
-				7209F5EF0F3A56C9003DC336 /* qgsprovidercountcalcevent.h in Headers */,
-				7209F5F00F3A56C9003DC336 /* qgsproviderextentcalcevent.h in Headers */,
-				7209F5F10F3A56C9003DC336 /* qgsprovidermetadata.h in Headers */,
-				7209F5F20F3A56C9003DC336 /* qgsproviderregistry.h in Headers */,
-				7209F5F30F3A56C9003DC336 /* qgspseudocolorshader.h in Headers */,
-				7209F5F40F3A56C9003DC336 /* qgsquickprint.h in Headers */,
-				7209F5F50F3A56C9003DC336 /* qgsrasterbandstats.h in Headers */,
-				7209F5F60F3A577C003DC336 /* qgsrasterdataprovider.h in Headers */,
-				7209F5F70F3A577C003DC336 /* qgsrasterlayer.h in Headers */,
-				7209F5F80F3A577C003DC336 /* qgsrastershader.h in Headers */,
-				7209F5F90F3A577C003DC336 /* qgsrastershaderfunction.h in Headers */,
-				7209F5FA0F3A577C003DC336 /* qgsrastertransparency.h in Headers */,
-				7238DB6B10AA198C00963E09 /* qgsrasterviewport.h in Headers */,
-				7209F5FB0F3A577C003DC336 /* qgsrectangle.h in Headers */,
-				7209F5FC0F3A577C003DC336 /* qgsrendercontext.h in Headers */,
-				7209F5FD0F3A577C003DC336 /* qgsrenderer.h in Headers */,
-				7209F5FE0F3A577C003DC336 /* qgsrendererplugin.h in Headers */,
-				7209F5FF0F3A577C003DC336 /* qgsrubberband.h in Headers */,
-				7209F6000F3A577C003DC336 /* qgsrunprocess.h in Headers */,
-				7209F6010F3A577C003DC336 /* qgsscalecalculator.h in Headers */,
-				7209F6020F3A577C003DC336 /* qgssearchstring.h in Headers */,
-				7209F6030F3A577C003DC336 /* qgssearchtreenode.h in Headers */,
-				7209F6040F3A577C003DC336 /* qgssinglesymbolrenderer.h in Headers */,
-				7209F6050F3A577C003DC336 /* qgssnapper.h in Headers */,
-				7209F6060F3A577C003DC336 /* qgsspatialindex.h in Headers */,
-				7209F6070F3A577C003DC336 /* qgssymbol.h in Headers */,
-				7209F6080F3A577C003DC336 /* qgssymbologyutils.h in Headers */,
-				7209F6090F3A577C003DC336 /* qgsuniquevaluerenderer.h in Headers */,
-				7209F60A0F3A577C003DC336 /* qgsvectordataprovider.h in Headers */,
-				7209F60B0F3A577C003DC336 /* qgsvectorfilewriter.h in Headers */,
-				7209F60C0F3A577C003DC336 /* qgsvectorlayer.h in Headers */,
-				7209F60D0F3A577C003DC336 /* qgsvertexmarker.h in Headers */,
-				720382E00F8B86070083B883 /* qgstolerance.h in Headers */,
-				7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */,
-				7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */,
-				7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */,
-				7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */,
-				72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */,
-				729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */,
-				72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */,
-				7238DB6510AA191E00963E09 /* qgsgridfilewriter.h in Headers */,
-				7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */,
-				7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */,
-				7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */,
-				72ED33A9110FD66D00526CF5 /* qgspluginlayer.h in Headers */,
-				72ED33AA110FD66D00526CF5 /* qgspluginlayerregistry.h in Headers */,
+				7285A10811F9115F0060F78F /* qgis.h in Headers */,
+				7285A10911F9115F0060F78F /* qgsapplication.h in Headers */,
+				7285A10A11F9115F0060F78F /* qgsattributeaction.h in Headers */,
+				7285A10B11F9115F0060F78F /* qgscentralpointpositionmanager.h in Headers */,
+				7285A10C11F9115F0060F78F /* qgsclipper.h in Headers */,
+				7285A10D11F9115F0060F78F /* qgscontexthelp.h in Headers */,
+				7285A10E11F9115F0060F78F /* qgscoordinatereferencesystem.h in Headers */,
+				7285A10F11F9115F0060F78F /* qgscoordinatetransform.h in Headers */,
+				7285A11011F9115F0060F78F /* qgscredentials.h in Headers */,
+				7285A11111F9115F0060F78F /* qgscsexception.h in Headers */,
+				7285A11211F9115F0060F78F /* qgsdatasourceuri.h in Headers */,
+				7285A11311F9115F0060F78F /* qgsdistancearea.h in Headers */,
+				7285A11411F9115F0060F78F /* qgsexception.h in Headers */,
+				7285A11511F9115F0060F78F /* qgsfeature.h in Headers */,
+				7285A11611F9115F0060F78F /* qgsfield.h in Headers */,
+				7285A11711F9115F0060F78F /* qgsgeometry.h in Headers */,
+				7285A11811F9115F0060F78F /* qgshttptransaction.h in Headers */,
+				7285A11911F9115F0060F78F /* qgslabel.h in Headers */,
+				7285A11A11F9115F0060F78F /* qgslabelattributes.h in Headers */,
+				7285A11B11F9115F0060F78F /* qgslogger.h in Headers */,
+				7285A11C11F9115F0060F78F /* qgsmaplayer.h in Headers */,
+				7285A11D11F9115F0060F78F /* qgsmaplayerregistry.h in Headers */,
+				7285A11E11F9115F0060F78F /* qgsmaprenderer.h in Headers */,
+				7285A11F11F9115F0060F78F /* qgsmaptopixel.h in Headers */,
+				7285A12011F9115F0060F78F /* qgsmessageoutput.h in Headers */,
+				7285A12111F9115F0060F78F /* qgsoverlayobjectpositionmanager.h in Headers */,
+				7285A12211F9115F0060F78F /* qgspallabeling.h in Headers */,
+				7285A12311F9115F0060F78F /* qgspalobjectpositionmanager.h in Headers */,
+				7285A12411F9115F0060F78F /* qgspluginlayer.h in Headers */,
+				7285A12511F9115F0060F78F /* qgspluginlayerregistry.h in Headers */,
+				7285A12611F9115F0060F78F /* qgspoint.h in Headers */,
+				7285A12711F9115F0060F78F /* qgsprojectfiletransform.h in Headers */,
+				7285A12811F9115F0060F78F /* qgsprojectproperty.h in Headers */,
+				7285A12911F9115F0060F78F /* qgsprojectversion.h in Headers */,
+				7285A12A11F9115F0060F78F /* qgsprovidercountcalcevent.h in Headers */,
+				7285A12B11F9115F0060F78F /* qgsproviderextentcalcevent.h in Headers */,
+				7285A12C11F9115F0060F78F /* qgsprovidermetadata.h in Headers */,
+				7285A12D11F9115F0060F78F /* qgsproviderregistry.h in Headers */,
+				7285A12E11F9115F0060F78F /* qgsrasterdataprovider.h in Headers */,
+				7285A12F11F9115F0060F78F /* qgsrectangle.h in Headers */,
+				7285A13011F9115F0060F78F /* qgsrendercontext.h in Headers */,
+				7285A13111F9115F0060F78F /* qgsrunprocess.h in Headers */,
+				7285A13211F9115F0060F78F /* qgsscalecalculator.h in Headers */,
+				7285A13311F9115F0060F78F /* qgssearchstring.h in Headers */,
+				7285A13411F9115F0060F78F /* qgssearchtreenode.h in Headers */,
+				7285A13511F9115F0060F78F /* qgssnapper.h in Headers */,
+				7285A13611F9115F0060F78F /* qgstolerance.h in Headers */,
+				7285A13711F9115F0060F78F /* qgsvectordataprovider.h in Headers */,
+				7285A13811F9115F0060F78F /* qgsvectorfilewriter.h in Headers */,
+				7285A13911F9115F0060F78F /* qgsvectorlayer.h in Headers */,
+				7285A13A11F9115F0060F78F /* qgsvectoroverlay.h in Headers */,
+				7285A13B11F911F60060F78F /* qgscomposerlegenditem.h in Headers */,
+				7285A13C11F911F60060F78F /* qgslegendmodel.h in Headers */,
+				7285A13D11F912340060F78F /* qgscliptominmaxenhancement.h in Headers */,
+				7285A13E11F912340060F78F /* qgscolorrampshader.h in Headers */,
+				7285A13F11F912340060F78F /* qgscontrastenhancement.h in Headers */,
+				7285A14011F912340060F78F /* qgscontrastenhancementfunction.h in Headers */,
+				7285A14111F912340060F78F /* qgsfreakoutshader.h in Headers */,
+				7285A14211F912340060F78F /* qgslinearminmaxenhancement.h in Headers */,
+				7285A14311F912340060F78F /* qgslinearminmaxenhancementwithclip.h in Headers */,
+				7285A14411F912340060F78F /* qgspseudocolorshader.h in Headers */,
+				7285A14511F912340060F78F /* qgsrasterbandstats.h in Headers */,
+				7285A14611F912340060F78F /* qgsrasterlayer.h in Headers */,
+				7285A14711F912340060F78F /* qgsrastershader.h in Headers */,
+				7285A14811F912340060F78F /* qgsrastershaderfunction.h in Headers */,
+				7285A14911F912340060F78F /* qgsrastertransparency.h in Headers */,
+				7285A14A11F912340060F78F /* qgsrasterviewport.h in Headers */,
+				7285A14B11F912790060F78F /* qgscontinuouscolorrenderer.h in Headers */,
+				7285A14C11F912790060F78F /* qgsgraduatedsymbolrenderer.h in Headers */,
+				7285A14D11F912790060F78F /* qgsrenderer.h in Headers */,
+				7285A14E11F912790060F78F /* qgssinglesymbolrenderer.h in Headers */,
+				7285A14F11F912790060F78F /* qgsuniquevaluerenderer.h in Headers */,
+				7285A15011F912CD0060F78F /* qgscategorizedsymbolrendererv2.h in Headers */,
+				7285A15111F912CD0060F78F /* qgscolorbrewerpalette.h in Headers */,
+				7285A15211F912CD0060F78F /* qgsfillsymbollayerv2.h in Headers */,
+				7285A15311F912CD0060F78F /* qgsgraduatedsymbolrendererv2.h in Headers */,
+				7285A15411F912CD0060F78F /* qgslinesymbollayerv2.h in Headers */,
+				7285A15511F912CD0060F78F /* qgsmarkercatalogue.h in Headers */,
+				7285A15611F912CD0060F78F /* qgsmarkersymbollayerv2.h in Headers */,
+				7285A15711F912CD0060F78F /* qgsrendererv2.h in Headers */,
+				7285A15811F912CD0060F78F /* qgsrendererv2registry.h in Headers */,
+				7285A15911F912CD0060F78F /* qgssinglesymbolrendererv2.h in Headers */,
+				7285A15A11F912CD0060F78F /* qgsstylev2.h in Headers */,
+				7285A15B11F912CD0060F78F /* qgssymbol.h in Headers */,
+				7285A15C11F912CD0060F78F /* qgssymbollayerv2.h in Headers */,
+				7285A15D11F912CD0060F78F /* qgssymbollayerv2registry.h in Headers */,
+				7285A15E11F912CD0060F78F /* qgssymbollayerv2utils.h in Headers */,
+				7285A15F11F912CD0060F78F /* qgssymbologyutils.h in Headers */,
+				7285A16011F912CD0060F78F /* qgssymbologyv2conversion.h in Headers */,
+				7285A16111F912CD0060F78F /* qgssymbolv2.h in Headers */,
+				7285A16211F912CD0060F78F /* qgsvectorcolorrampv2.h in Headers */,
+				7285A16311F912DE0060F78F /* qgsspatialindex.h in Headers */,
+				7285A16611F9137B0060F78F /* qgsgeometryanalyzer.h in Headers */,
+				7285A16711F9137B0060F78F /* qgsgridfilewriter.h in Headers */,
+				7285A16811F9137B0060F78F /* qgsidwinterpolator.h in Headers */,
+				7285A16911F9137B0060F78F /* qgsinterpolator.h in Headers */,
+				7285A16A11F9137B0060F78F /* qgstininterpolator.h in Headers */,
+				7285A16B11F9137B0060F78F /* qgszonalstatistics.h in Headers */,
+				7285A16E11F914010060F78F /* qgisgui.h in Headers */,
+				7285A16F11F914010060F78F /* qgisinterface.h in Headers */,
+				7285A17011F914010060F78F /* qgscolorbutton.h in Headers */,
+				7285A17111F914010060F78F /* qgscredentialdialog.h in Headers */,
+				7285A17211F914010060F78F /* qgscursors.h in Headers */,
+				7285A17311F914010060F78F /* qgsencodingfiledialog.h in Headers */,
+				7285A17411F914010060F78F /* qgsfiledropedit.h in Headers */,
+				7285A17511F914010060F78F /* qgsgenericprojectionselector.h in Headers */,
+				7285A17611F914010060F78F /* qgsmapcanvas.h in Headers */,
+				7285A17711F914010060F78F /* qgsmapcanvasitem.h in Headers */,
+				7285A17811F914010060F78F /* qgsmapcanvasmap.h in Headers */,
+				7285A17911F914010060F78F /* qgsmapcanvassnapper.h in Headers */,
+				7285A17A11F914010060F78F /* qgsmaptip.h in Headers */,
+				7285A17B11F914010060F78F /* qgsmaptool.h in Headers */,
+				7285A17C11F914010060F78F /* qgsmaptoolemitpoint.h in Headers */,
+				7285A17D11F914010060F78F /* qgsmaptoolpan.h in Headers */,
+				7285A17E11F914010060F78F /* qgsmaptoolzoom.h in Headers */,
+				7285A17F11F914010060F78F /* qgsmessageviewer.h in Headers */,
+				7285A18011F914010060F78F /* qgsprojectionselector.h in Headers */,
+				7285A18111F914010060F78F /* qgsrubberband.h in Headers */,
+				7285A18211F914010060F78F /* qgsvertexmarker.h in Headers */,
+				7285A18F11F916A80060F78F /* qgsdataprovider.h in Headers */,
+				7285A19011F916A80060F78F /* qgsnetworkaccessmanager.h in Headers */,
+				7285A19111F916EB0060F78F /* qgscomposerattributetable.h in Headers */,
+				7285A19211F916EB0060F78F /* qgscomposeritem.h in Headers */,
+				7285A19311F916EB0060F78F /* qgscomposeritemgroup.h in Headers */,
+				7285A19411F916EB0060F78F /* qgscomposerlegend.h in Headers */,
+				7285A19511F916EB0060F78F /* qgscomposermap.h in Headers */,
+				7285A19611F916EB0060F78F /* qgscomposerpicture.h in Headers */,
+				7285A19711F916EB0060F78F /* qgscomposerscalebar.h in Headers */,
+				7285A19811F916EB0060F78F /* qgscomposershape.h in Headers */,
+				7285A19911F916EB0060F78F /* qgscomposition.h in Headers */,
+				7285A19A11F917210060F78F /* qextserialenumerator.h in Headers */,
+				7285A19B11F917210060F78F /* qextserialport.h in Headers */,
+				7285A19C11F917210060F78F /* qgsgpsconnection.h in Headers */,
+				7285A19D11F917210060F78F /* qgsgpsdetector.h in Headers */,
+				7285A19E11F917210060F78F /* qgsnmeaconnection.h in Headers */,
+				7285A19F11F91D2E0060F78F /* qgsattributeeditor.h in Headers */,
+				7285A1A011F91D2E0060F78F /* qgscomposerview.h in Headers */,
+				7285A1A111F91D2E0060F78F /* qgsdetaileditemdelegate.h in Headers */,
+				7285A1A211F91D2E0060F78F /* qgsdetaileditemwidget.h in Headers */,
+				7285A1A311F91D2E0060F78F /* qgsformannotationitem.h in Headers */,
+				7285A1A411F91D2E0060F78F /* qgslegendinterface.h in Headers */,
+				7285A1A511F91D2E0060F78F /* qgsludialog.h in Headers */,
+				7285A1A611F91D2E0060F78F /* qgsprojectbadlayerguihandler.h in Headers */,
+				7285A1A711F91D2E0060F78F /* qgsquickprint.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15091,7 +15149,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "GUI_UI=\"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\n\nfor u in qgsdetaileditemwidgetbase qgsgenericprojectionselectorbase qgsmessageviewer qgsprojectionselectorbase\ndo\n\tcp -f \"$GUI_UI/ui_$u.h\" \"$QGIS_BUILD_PATH/Headers/qgis/\"\ndone\n";
+			shellScript = "GUI_UI=\"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\n\nfor u in qgsdetaileditemwidgetbase qgsgenericprojectionselectorbase qgsmessageviewer qgsprojectionselectorbase qgscredentialdialog\ndo\n\tcp -f \"$GUI_UI/ui_$u.h\" \"$QGIS_BUILD_PATH/Headers/qgis/\"\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 		7256FA100F41D03B0022BE1F /* Script - qt.conf */ = {
