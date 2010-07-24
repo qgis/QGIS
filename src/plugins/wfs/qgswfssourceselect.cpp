@@ -150,7 +150,8 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
   QgsHttpTransaction http( request );
   if ( !http.getSynchronously( result ) )
   {
-    QMessageBox::critical( 0, tr( "Could not download capabilities document" ), http.errorString() );
+    QMessageBox::critical( 0, tr( "Error" ),
+      tr( "Could not download capabilities document: " ) + http.errorString() );
     return 1;
   }
 
@@ -158,19 +159,21 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
   QString capabilitiesDocError;
   if ( !capabilitiesDocument.setContent( result, true, &capabilitiesDocError ) )
   {
-    QMessageBox::critical( 0, tr( "Capabilities document is not valid" ), capabilitiesDocError );
+    QMessageBox::critical( 0, tr( "Error" ),
+      tr( "Capabilities document is not valid: " ) + capabilitiesDocError );
     return 1;
   }
 
-  QDomNodeList exlist = capabilitiesDocument.elementsByTagName( "ExceptionText" );
-  if ( exlist.length() )
+  QDomElement doc = capabilitiesDocument.documentElement();
+  if ( doc.tagName() == "ExceptionReport" )
   {
-    QDomElement ex = exlist.at( 0 ).toElement();
-    QMessageBox::critical( 0, tr( "Error" ), ex.firstChild().nodeValue() );
+    QDomNode ex = doc.firstChild();
+    QString exc = ex.toElement().attribute("exceptionCode", "Exception");
+    QDomElement ext = ex.firstChild().toElement();
+    QMessageBox::critical( 0, tr( "Error" ),
+      exc + ": " + ext.firstChild().nodeValue() );
     return 1;
   }
-
-
 
   //get the <FeatureType> elements
   QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS( WFS_NAMESPACE, "FeatureType" );
