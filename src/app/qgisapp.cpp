@@ -3462,7 +3462,7 @@ void QgisApp::saveMapAsImage()
 
   //find out the last used filter
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedFilter = myQSettings.value( "/UI/saveAsImageFilter" ).toString();
+  QString myLastUsedFilter = myQSettings.value( "/UI/lastSaveAsImageFilter" ).toString();
   QString myLastUsedDir = myQSettings.value( "/UI/lastSaveAsImageDir", "." ).toString();
 
   // get a list of supported output image types
