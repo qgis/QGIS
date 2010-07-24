@@ -144,7 +144,7 @@ class QgisApp : public QMainWindow
       */
     bool openLayer( const QString & fileName, bool allowInteractive = false );
     /** Open the specified file (project, vector, or raster); prompt to save
-      previous project if necessary. 
+      previous project if necessary.
       Used to process a commandline argument, OpenDocument AppleEvent, or a
       file drag/drop event. Set interactive to true if it is ok to ask the
       user for information (mostly for when a vector layer has sublayers and
