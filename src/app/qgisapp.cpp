@@ -611,7 +611,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       else
       {
         QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
-        openLayer( fileName , true);
+        openLayer( fileName, true );
       }
     }
   }
@@ -3408,23 +3408,23 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   QFileInfo fileInfo( fileName );
 
   // try to load it as raster
-  bool ok(false);
+  bool ok( false );
   CPLPushErrorHandler( CPLQuietErrorHandler );
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
-    {
-      ok  = (addRasterLayer( fileName, fileInfo.completeBaseName() ) != NULL);
-    }
+  {
+    ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
+  }
   else // nope - try to load it as a shape/ogr
+  {
+    if ( allowInteractive )
     {
-      if (allowInteractive)
-	{
-	  ok = addVectorLayers(QStringList(fileName), "System", "file");
-	}
-      else
-	{
-	  ok = (addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" ) != NULL);
-	}
+      ok = addVectorLayers( QStringList( fileName ), "System", "file" );
     }
+    else
+    {
+      ok = addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" );
+    }
+  }
 
   CPLPopErrorHandler();
 
