@@ -1857,15 +1857,15 @@ bool QgsGeorefPluginGui::equalGCPlists( const QgsGCPList &list1, const QgsGCPLis
 
   int count = list1.count();
   int j = 0;
-  for ( int i = 0; i < count; ++i )
+  for ( int i = 0; i < count; ++i, ++j )
   {
     QgsGeorefDataPoint *p1 = list1.at( i );
     QgsGeorefDataPoint *p2 = list2.at( j );
-    qDebug() << "p1" << "pix" << p1->pixelCoords().toString() << "map" << p1->mapCoords().toString();
-    qDebug() << "p2" << "pix" << p2->pixelCoords().toString() << "map" << p2->mapCoords().toString();
+    if ( p1->pixelCoords() != p2->pixelCoords() )
+      return false;
+
     if ( p1->mapCoords() != p2->mapCoords() )
       return false;
-    ++j;
   }
 
   return true;
