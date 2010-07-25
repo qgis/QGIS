@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
+/* $Id: qgsgeoreftoolmovepoint.cpp 13187 2010-03-28 22:14:44Z jef $ */
 
 #include "qgsmapcanvas.h"
 
@@ -31,6 +31,11 @@ void QgsGeorefToolMovePoint::canvasPressEvent( QMouseEvent *e )
     mStartPointMapCoords = e->pos();
     emit pointPressed( e->pos() );
   }
+}
+
+bool QgsGeorefToolMovePoint::isCanvas(QgsMapCanvas *canvas)
+{
+  return (mCanvas == canvas);
 }
 
 void QgsGeorefToolMovePoint::canvasMoveEvent( QMouseEvent *e )
