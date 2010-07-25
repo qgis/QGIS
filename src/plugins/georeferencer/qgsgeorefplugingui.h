@@ -102,6 +102,10 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void showMouseCoords( const QgsPoint pt );
     void updateMouseCoordinatePrecision();
 
+    // when one Layer is removed
+    void layerWillBeRemoved ( QString theLayerId );
+    void extentsChanged(); // Use for need add again Raster (case above)
+
     bool updateGeorefTransform();
 
   private:
@@ -121,6 +125,9 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void createDockWidgets();
     void createStatusBar();
     void setupConnections();
+
+    // Mapcanvas Plugin
+    void addRaster(QString file);
 
     // settings
     void readSettings();
@@ -207,6 +214,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsGCPList mInitialPoints;
     QgsMapCanvas *mCanvas;
     QgsRasterLayer *mLayer;
+    bool mAgainAddRaster;
 
     QgsMapTool *mToolZoomIn;
     QgsMapTool *mToolZoomOut;

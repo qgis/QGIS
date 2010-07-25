@@ -84,6 +84,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
     , mIface( theQgisInterface )
     , mLayer( 0 )
+    , mAgainAddRaster ( false )
     , mMovingPoint( 0 )
     , mMapCoordsDialog( 0 )
     , mUseZeroForTrans( false )
@@ -249,17 +250,8 @@ void QgsGeorefPluginGui::openRaster()
   if ( mLayer )
     QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), false );
 
-  //add new raster layer
-  mLayer = new QgsRasterLayer( mRasterFileName, "Raster" );;
-
-  // add to map layer registry, do not signal addition
-  // so layer is not added to legend
-  QgsMapLayerRegistry::instance()->addMapLayer( mLayer, false );
-
-  // add layer to map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( QgsMapCanvasLayer( mLayer ) );
-  mCanvas->setLayerSet( layers );
+  // Add raster
+  addRaster(mRasterFileName);
 
   // load previously added points
   mGCPpointsFileName = mRasterFileName + ".points";
@@ -748,6 +740,29 @@ void QgsGeorefPluginGui::updateMouseCoordinatePrecision()
   mMousePrecisionDecimalPlaces = dp;
 }
 
+void QgsGeorefPluginGui::extentsChanged()
+{
+  if ( mAgainAddRaster )
+  {
+    if ( QFile::exists( mRasterFileName ) )
+    {
+      addRaster(mRasterFileName);
+    }
+    else
+    {
+      mLayer = 0;
+      mAgainAddRaster = false;
+    }
+  }
+}
+
+// Registry layer QGis
+void QgsGeorefPluginGui::layerWillBeRemoved ( QString theLayerId )
+{
+  mAgainAddRaster = ( mLayer  && mLayer->getLayerID().compare(theLayerId) == 0 )
+                  ? true : false;
+}
+
 // ------------------------------ private ---------------------------------- //
 // Gui
 void QgsGeorefPluginGui::createActions()
@@ -982,6 +997,28 @@ void QgsGeorefPluginGui::setupConnections()
   // Connect status from ZoomLast/ZoomNext to corresponding action
   connect( mCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
   connect( mCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
+  // Connect when one Layer is removed - Case where change the Projetct in QGIS
+  connect( QgsMapLayerRegistry::instance() , SIGNAL( layerWillBeRemoved (QString) ), this, SLOT( layerWillBeRemoved (QString) ) );
+
+  // Connect extents changed - Use for need add again Raster
+  connect( mCanvas, SIGNAL( extentsChanged () ), this, SLOT( extentsChanged() ) );
+
+}
+
+// Mapcanvas Plugin
+void QgsGeorefPluginGui::addRaster(QString file)
+{
+  mLayer = new QgsRasterLayer( file, "Raster" );
+
+  // so layer is not added to legend
+  QgsMapLayerRegistry::instance()->addMapLayer( mLayer, false );
+
+  // add layer to map canvas
+  QList<QgsMapCanvasLayer> layers;
+  layers.append( QgsMapCanvasLayer( mLayer ) );
+  mCanvas->setLayerSet( layers );
+
+  mAgainAddRaster = false;
 }
 
 // Settings
