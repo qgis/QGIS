@@ -222,8 +222,10 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsMapTool *mToolAddPoint;
     QgsMapTool *mToolDeletePoint;
     QgsMapTool *mToolMovePoint;
+    QgsMapTool *mToolMovePointQgis;
 
     QgsGeorefDataPoint *mMovingPoint;
+    QgsGeorefDataPoint *mMovingPointQgis;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans;

@@ -122,15 +122,33 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
-bool QgsGeorefDataPoint::contains( const QPoint &p )
+bool QgsGeorefDataPoint::contains( const QPoint &p, bool isMapPlugin )
 {
-  QPointF pnt = mGCPSourceItem->mapFromScene( p );
-  return mGCPSourceItem->shape().contains( pnt );
+  if ( isMapPlugin )
+  {
+    QPointF pnt = mGCPSourceItem->mapFromScene( p );
+    return mGCPSourceItem->shape().contains( pnt );
+  }
+  else
+  {
+    QPointF pnt = mGCPDestinationItem->mapFromScene( p );
+    return mGCPDestinationItem->shape().contains( pnt );
+  }
 }
 
-void QgsGeorefDataPoint::moveTo( const QPoint &p )
+void QgsGeorefDataPoint::moveTo( const QPoint &p, bool isMapPlugin )
 {
-  QgsPoint pnt = mGCPSourceItem->toMapCoordinates( p );
-  setPixelCoords( pnt );
+  if ( isMapPlugin )
+  {
+    QgsPoint pnt = mGCPSourceItem->toMapCoordinates( p );
+    mPixelCoords = pnt;
+  }
+  else
+  {
+    QgsPoint pnt = mGCPDestinationItem->toMapCoordinates( p );
+    mMapCoords = pnt;
+  }
+  mGCPSourceItem->update();
+  mGCPDestinationItem->update();
   updateCoords();
 }

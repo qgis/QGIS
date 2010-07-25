@@ -46,7 +46,7 @@ class QgsGeorefDataPoint : public QObject
     int id() const { return mId; }
     void setId( int id );
 
-    bool contains( const QPoint &p );
+    bool contains( const QPoint &p, bool isMapPlugin );
 
     QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
     QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
@@ -55,7 +55,7 @@ class QgsGeorefDataPoint : public QObject
     void setResidual( const QPointF& r );
 
   public slots:
-    void moveTo( const QPoint & );
+    void moveTo( const QPoint &, bool isMapPlugin );
     void updateCoords();
 
   private:

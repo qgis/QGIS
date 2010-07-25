@@ -86,6 +86,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
     , mLayer( 0 )
     , mAgainAddRaster ( false )
     , mMovingPoint( 0 )
+    , mMovingPointQgis ( 0 )
     , mMapCoordsDialog( 0 )
     , mUseZeroForTrans( false )
     , mLoadInQgis( false )
@@ -153,6 +154,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   delete mToolAddPoint;
   delete mToolDeletePoint;
   delete mToolMovePoint;
+  delete mToolMovePointQgis;
 
 }
 
@@ -382,6 +384,7 @@ void QgsGeorefPluginGui::setDeletePointTool()
 void QgsGeorefPluginGui::setMovePointTool()
 {
   mCanvas->setMapTool( mToolMovePoint );
+  mIface->mapCanvas()->setMapTool( mToolMovePointQgis );
 }
 
 // View slots
@@ -478,7 +481,7 @@ void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
     QgsGeorefDataPoint* pt = *it;
-    if ( /*pt->pixelCoords() == coords ||*/ pt->contains( coords ) ) // first operand for removing from GCP table
+    if ( /*pt->pixelCoords() == coords ||*/ pt->contains( coords, true ) ) // first operand for removing from GCP table
     {
       int row = mPoints.indexOf( *it );
       mGCPListWidget->model()->removeRow( row );
@@ -507,28 +510,54 @@ void QgsGeorefPluginGui::deleteDataPoint( int index )
 
 void QgsGeorefPluginGui::selectPoint( const QPoint &p )
 {
+  // Get Map Sender
+  QObject *tool = sender();
+  if ( tool == 0)
+  {
+    return;
+  }
+  bool isMapPlugin = ( (void *)tool == (void *)mToolMovePoint ) ? true : false;
+
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
-    if (( *it )->contains( p ) )
+    if ( ( *it )->contains( p, isMapPlugin ) )
     {
-      mMovingPoint = *it;
+      isMapPlugin ? mMovingPoint = *it : mMovingPointQgis = *it;
       break;
     }
   }
+
 }
 
 void QgsGeorefPluginGui::movePoint( const QPoint &p )
 {
-  if ( mMovingPoint )
+  // Get Map Sender
+  QObject *tool = sender();
+  if ( tool == 0)
   {
-    mMovingPoint->moveTo( p );
+    return;
+  }
+  bool isMapPlugin = ( (void *)tool == (void *)mToolMovePoint ) ? true : false;
+  QgsGeorefDataPoint *mvPoint = (isMapPlugin ? mMovingPoint : mMovingPointQgis);
+
+  if ( mvPoint )
+  {
+    mvPoint->moveTo( p, isMapPlugin );
     mGCPListWidget->updateGCPList();
   }
+
 }
 
 void QgsGeorefPluginGui::releasePoint( const QPoint &p )
 {
-  mMovingPoint = 0;
+  // Get Map Sender
+  QObject *tool = sender();
+  if ( tool == 0)
+  {
+    return;
+  }
+  bool isMapPlugin = ( (void *)tool == (void *)mToolMovePoint ) ? true : false;
+  isMapPlugin ? mMovingPoint = 0 : mMovingPointQgis = 0;
 }
 
 void QgsGeorefPluginGui::showCoordDialog( const QgsPoint &pixelCoords )
@@ -892,6 +921,16 @@ void QgsGeorefPluginGui::createMapCanvas()
   connect( mToolMovePoint, SIGNAL( pointMoved( const QPoint & ) ),
            this, SLOT( movePoint( const QPoint & ) ) );
   connect( mToolMovePoint, SIGNAL( pointReleased( const QPoint & ) ),
+           this, SLOT( releasePoint( const QPoint & ) ) );
+
+  // Point in Qgis Map
+  mToolMovePointQgis = new QgsGeorefToolMovePoint( mIface->mapCanvas() );
+  mToolMovePointQgis->setAction( mActionMoveGCPPoint );
+  connect( mToolMovePointQgis, SIGNAL( pointPressed( const QPoint & ) ),
+           this, SLOT( selectPoint( const QPoint & ) ) );
+  connect( mToolMovePointQgis, SIGNAL( pointMoved( const QPoint & ) ),
+           this, SLOT( movePoint( const QPoint & ) ) );
+  connect( mToolMovePointQgis, SIGNAL( pointReleased( const QPoint & ) ),
            this, SLOT( releasePoint( const QPoint & ) ) );
 
   QSettings s;
