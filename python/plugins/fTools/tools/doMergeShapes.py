@@ -17,6 +17,7 @@ class Dialog( QDialog, Ui_Dialog ):
     self.iface = iface
 
     self.mergeThread = None
+    self.inputFiles = None
 
     self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
     self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
@@ -32,18 +33,18 @@ class Dialog( QDialog, Ui_Dialog ):
     if inDir.isEmpty():
       return
 
-    workDir = QDir( inDir )
-    workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-    nameFilter = QStringList() << "*.shp" << "*.SHP"
-    workDir.setNameFilters( nameFilter )
-    self.inputFiles = workDir.entryList()
-    if self.inputFiles.count() == 0:
-      QMessageBox.warning( self, self.tr( "No shapefiles found" ),
-        self.tr( "There are no shapefiles in this directory. Please select another one." ) )
-      self.inputFiles = None
-      return
+    #workDir = QDir( inDir )
+    #workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
+    #nameFilter = QStringList() << "*.shp" << "*.SHP"
+    #workDir.setNameFilters( nameFilter )
+    #self.inputFiles = workDir.entryList()
+    #if self.inputFiles.count() == 0:
+    #  QMessageBox.warning( self, self.tr( "No shapefiles found" ),
+    #    self.tr( "There are no shapefiles in this directory. Please select another one." ) )
+    #  self.inputFiles = None
+    #  return
 
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
+    #self.progressFiles.setRange( 0, self.inputFiles.count() )
     self.leInputDir.setText( inDir )
 
   def outFile( self ):
@@ -56,6 +57,20 @@ class Dialog( QDialog, Ui_Dialog ):
     QDialog.reject( self )
 
   def accept( self ):
+    if self.inputFiles is None:
+      workDir = QDir( self.leInputDir.text() )
+      workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
+      nameFilter = QStringList() << "*.shp" << "*.SHP"
+      workDir.setNameFilters( nameFilter )
+      self.inputFiles = workDir.entryList()
+      if self.inputFiles.count() == 0:
+        QMessageBox.warning( self, self.tr( "No shapefiles found" ),
+          self.tr( "There are no shapefiles in this directory. Please select another one." ) )
+        self.inputFiles = None
+        return
+
+      self.progressFiles.setRange( 0, self.inputFiles.count() )
+
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
