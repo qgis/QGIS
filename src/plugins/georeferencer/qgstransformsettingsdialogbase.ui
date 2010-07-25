@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>356</width>
-    <height>381</height>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,26 +93,6 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <item>
-        <property name="text">
-         <string>NONE</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>LZW</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>PACKBITS</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>DEFLATE</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="4" column="0">

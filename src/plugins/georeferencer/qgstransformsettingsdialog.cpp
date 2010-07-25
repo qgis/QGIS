@@ -46,6 +46,19 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   mRegExpValidator = new QRegExpValidator( QRegExp( "(^epsg:{1}\\s*\\d+)|(^\\+proj.*)", Qt::CaseInsensitive ), leTargetSRS );
   leTargetSRS->setValidator( mRegExpValidator );
 
+  // Populate CompressionComboBox
+  mListCompression.append("NONE");
+  mListCompression.append("LZW");
+  mListCompression.append("PACKBITS");
+  mListCompression.append("DEFLATE");
+  QStringList listCompressionTr;
+  foreach ( QString item, mListCompression)
+  {
+    listCompressionTr.append(tr(item.toAscii().data()));
+  }
+  cmbCompressionComboBox->addItems(listCompressionTr);
+
+
   QSettings s;
   cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
   cmbResampling->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastresampling", 0 ).toInt() );
@@ -86,7 +99,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
     tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->currentIndex();
 
   rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
-  comprMethod = cmbCompressionComboBox->currentText();
+  comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() );
   if ( mWorldFileCheckBox->isChecked() )
   {
     raster = "";
