@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
+/* $Id: qgstransformsettingsdialog.h 13764 2010-06-21 12:11:11Z mhugent $ */
 
 #ifndef QGSTRANSFORMSETTINGSDIALOG_H
 #define QGSTRANSFORMSETTINGSDIALOG_H
@@ -57,6 +57,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     QString mModifiedRaster;
 
     int mCountGCPpoints;
+
+    QStringList mListCompression;
 };
 
 #endif // QGSTRANSFORMSETTINGSDIALOG_H
