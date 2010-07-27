@@ -3,5 +3,5 @@
 
 <qgisgrassmodule label="Calculate univariate statistics of vector map features" module="v.univar">
 	<option key="map" typeoption="type"/>
-	<field key="column" layer="input" type="integer,double" label="Attribute field" />
+	<field key="column" layer="map" type="integer,double" label="Attribute field" />
 </qgisgrassmodule>
