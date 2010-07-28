@@ -27,44 +27,37 @@ using namespace std;
 class QgsStandardItem : public QStandardItem
 {
   public:
-    QgsStandardItem( QString text ) : QStandardItem( text ) { init(); }
-    QgsStandardItem( int value ) : QStandardItem( QString::number( value ) ) { init(); }
-    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 2 ) ) { init(); }
-
-  private:
-    void init()
+    QgsStandardItem( QString text ) : QStandardItem( text )
     {
+      // In addition to the DisplayRole, also set the user role, which is used for sorting.
+      setData( QVariant( text ), Qt::UserRole);
+      setTextAlignment( Qt::AlignRight );
+    }
+
+    QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
+    {
+      // In addition to the DisplayRole, also set the user role, which is used for sorting.
+      // This is needed for numerical sorting to work corretly (otherwise sorting is lexicographic).
+      setData( QVariant( value ), Qt::UserRole);
       setTextAlignment( Qt::AlignCenter );
     }
-};
-
-#define QGSSTANDARDITEM(value) (new QgsStandardItem(value))
-
-#if 0
-template <class T> class QNumericItem : public QStandardItem
-{
-  public:
-    QNumericItem( T value ) : QStandardItem( QString( "%1" ).arg( value ) ), mValue( value )
+    
+    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 2 ) )
     {
+      // In addition to the DisplayRole, also set the user role, which is used for sorting.
+      // This is needed for numerical sorting to work corretly (otherwise sorting is lexicographic).
+      setData( QVariant( value ), Qt::UserRole);
+      setTextAlignment( Qt::AlignRight );
     }
-
-    bool operator < ( const QStandardItem &other ) const
-    {
-      const QNumericItem<T> *otherD = dynamic_cast<const QNumericItem<T> *>( &other );
-      if ( otherD == NULL )
-        return false;
-      return mValue < otherD->mValue;
-    }
-  private:
-    T mValue;
 };
-#endif
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
     : QStandardItemModel( parent )
     , mGCPList( 0 )
     , mGeorefTransform( 0 )
 {
+  // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
+  setSortRole( Qt::UserRole );
 }
 
 void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
@@ -82,7 +75,7 @@ void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *theGeorefTransform
 
 void QgsGCPListModel::updateModel()
 {
-  clear();
+  //clear();
   if ( !mGCPList )
     return;
 
@@ -91,8 +84,6 @@ void QgsGCPListModel::updateModel()
 
   vector<QgsPoint> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
-
-
 
   //  // Setup table header
   QStringList itemLabels;
@@ -136,11 +127,11 @@ void QgsGCPListModel::updateModel()
       si->setCheckState( Qt::Unchecked );
 
     setItem( i, j++, si );
-    setItem( i, j++, QGSSTANDARDITEM( i ) /*create_item<int>(i)*/ );
-    setItem( i, j++, QGSSTANDARDITEM( p->pixelCoords().x() ) /*create_item<double>( p->pixelCoords().x() )*/ );
-    setItem( i, j++, QGSSTANDARDITEM( -p->pixelCoords().y() ) /*create_item<double>(-p->pixelCoords().y() )*/ );
-    setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().x() ) /*create_item<double>( p->mapCoords().x() )*/ );
-    setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().y() ) /*create_item<double>( p->mapCoords().y() )*/ );
+    setItem( i, j++, new QgsStandardItem( i ) );
+    setItem( i, j++, new QgsStandardItem( p->pixelCoords().x() ) );
+    setItem( i, j++, new QgsStandardItem( -p->pixelCoords().y() ) );
+    setItem( i, j++, new QgsStandardItem( p->mapCoords().x() ) );
+    setItem( i, j++, new QgsStandardItem( p->mapCoords().y() ) );
 
     double residual;
     double dX = 0;
@@ -179,19 +170,17 @@ void QgsGCPListModel::updateModel()
 
     if ( residual >= 0.f )
     {
-      setItem( i, j++, QGSSTANDARDITEM( dX ) /*create_item<double>(dX)*/ );
-      setItem( i, j++, QGSSTANDARDITEM( dY ) /*create_item<double>(-dY)*/ );
-      setItem( i, j++, QGSSTANDARDITEM( residual ) /*create_item<double>(residual)*/ );
+      setItem( i, j++, new QgsStandardItem( dX ) );
+      setItem( i, j++, new QgsStandardItem( dY ) );
+      setItem( i, j++, new QgsStandardItem( residual ) );
     }
     else
     {
-      setItem( i, j++, QGSSTANDARDITEM( "n/a" ) /*create_std_item("n/a")*/ );
-      setItem( i, j++, QGSSTANDARDITEM( "n/a" ) /*create_std_item("n/a")*/ );
-      setItem( i, j++, QGSSTANDARDITEM( "n/a" ) /*create_std_item("n/a")*/ );
+      setItem( i, j++, new QgsStandardItem( "n/a" ) );
+      setItem( i, j++, new QgsStandardItem( "n/a" ) );
+      setItem( i, j++, new QgsStandardItem( "n/a" ) );
     }
   }
-  //sort();  // Sort data
-  //reset(); // Signal to views that the model has changed
 }
 
 // --------------------------- public slots -------------------------------- //
@@ -207,19 +196,3 @@ void QgsGCPListModel::onGCPListModified()
 void QgsGCPListModel::onTransformationModified()
 {
 }
-
-#if 0
-template <class T> QNumericItem<T> *create_item( const T value, bool isEditable = true )
-{
-  QNumericItem<T> *item = new QNumericItem<T>( value );
-  item->setEditable( isEditable );
-  return item;
-}
-
-QStandardItem *create_std_item( const QString &S, bool isEditable = false )
-{
-  QStandardItem *std_item = new QStandardItem( S );
-  std_item->setEditable( isEditable );
-  return std_item;
-}
-#endif
