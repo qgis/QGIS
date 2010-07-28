@@ -61,6 +61,7 @@
 #include "qgstransformsettingsdialog.h"
 
 #include "qgsgeorefplugingui.h"
+#include <assert.h>
 
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
@@ -483,16 +484,10 @@ void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
     QgsGeorefDataPoint* pt = *it;
     if ( /*pt->pixelCoords() == coords ||*/ pt->contains( coords, true ) ) // first operand for removing from GCP table
     {
-      int row = mPoints.indexOf( *it );
-      mGCPListWidget->model()->removeRow( row );
-
       delete *it;
       mPoints.erase( it );
-
       mGCPListWidget->updateGCPList();
-      //      mGCPListWidget->setGCPList(&mPoints);
-      //      logRequaredGCPs();
-
+      
       mCanvas->refresh();
       break;
     }
@@ -500,10 +495,10 @@ void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
   updateGeorefTransform();
 }
 
-void QgsGeorefPluginGui::deleteDataPoint( int index )
+void QgsGeorefPluginGui::deleteDataPoint( int theGCPIndex )
 {
-  mGCPListWidget->model()->removeRow( index );
-  delete mPoints.takeAt( index );
+  assert( theGCPIndex >= 0 );
+  delete mPoints.takeAt( theGCPIndex );
   mGCPListWidget->updateGCPList();
   updateGeorefTransform();
 }
@@ -1932,11 +1927,9 @@ bool QgsGeorefPluginGui::equalGCPlists( const QgsGCPList &list1, const QgsGCPLis
 
 void QgsGeorefPluginGui::clearGCPData()
 {
-  int rowCount = mGCPListWidget->model()->rowCount();
-  mGCPListWidget->model()->removeRows( 0, rowCount );
-
   qDeleteAll( mPoints );
   mPoints.clear();
+  mGCPListWidget->updateGCPList();
 
   mIface->mapCanvas()->refresh();
 }
