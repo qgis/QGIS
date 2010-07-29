@@ -1496,6 +1496,11 @@
 		72D0A5431018980500EE6279 /* qgsmarkercatalogue.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; };
 		72D2486F1100CD7400923469 /* qgsgpsdetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D2486D1100CD2300923469 /* qgsgpsdetector.cpp */; };
 		72D248701100CD7400923469 /* qgsgpsdetector.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D2486E1100CD2300923469 /* qgsgpsdetector.h */; };
+		72D4747C1201112600C7DD9C /* NorthArrow_blackgreenblack.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 72D474771201110800C7DD9C /* NorthArrow_blackgreenblack.svg */; };
+		72D4747D1201112600C7DD9C /* NorthArrow_blackwhiteblack.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 72D474781201110800C7DD9C /* NorthArrow_blackwhiteblack.svg */; };
+		72D4747E1201112600C7DD9C /* NorthArrow_blackyellowblack.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 72D474791201110900C7DD9C /* NorthArrow_blackyellowblack.svg */; };
+		72D4747F1201112600C7DD9C /* NorthArrow_bluegreenblue.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 72D4747A1201110900C7DD9C /* NorthArrow_bluegreenblue.svg */; };
+		72D474801201112600C7DD9C /* NorthArrow_source.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 72D4747B1201110900C7DD9C /* NorthArrow_source.svg */; };
 		72D84C1F1044BC3A009F8F39 /* qgsmaptoolreshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */; };
 		72DAAF3F111A6090000DC8B7 /* qgscredentials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DAAF3D111A6064000DC8B7 /* qgscredentials.cpp */; };
 		72DAAF40111A6090000DC8B7 /* qgscredentials.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DAAF3E111A6064000DC8B7 /* qgscredentials.h */; };
@@ -3143,6 +3148,11 @@
 				7256F37A0F414AE40022BE1F /* NorthArrow14.svg in Copy - svg-n_arrow */,
 				7256F37B0F414AE40022BE1F /* NorthArrow15.svg in Copy - svg-n_arrow */,
 				7256F37C0F414AE40022BE1F /* NorthArrow16.svg in Copy - svg-n_arrow */,
+				72D4747C1201112600C7DD9C /* NorthArrow_blackgreenblack.svg in Copy - svg-n_arrow */,
+				72D4747D1201112600C7DD9C /* NorthArrow_blackwhiteblack.svg in Copy - svg-n_arrow */,
+				72D4747E1201112600C7DD9C /* NorthArrow_blackyellowblack.svg in Copy - svg-n_arrow */,
+				72D4747F1201112600C7DD9C /* NorthArrow_bluegreenblue.svg in Copy - svg-n_arrow */,
+				72D474801201112600C7DD9C /* NorthArrow_source.svg in Copy - svg-n_arrow */,
 				724D05CE10A910F200F9680A /* north-arrow_1_simple_half_arrow.svg in Copy - svg-n_arrow */,
 				724D05CF10A910F200F9680A /* north-arrow_2_simple_half_arrow.svg in Copy - svg-n_arrow */,
 				724D05D010A910F200F9680A /* north-arrow_3_simple_symmetric_triangular.svg in Copy - svg-n_arrow */,
@@ -7427,6 +7437,11 @@
 		72D2486D1100CD2300923469 /* qgsgpsdetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgpsdetector.cpp; path = ../../src/core/gps/qgsgpsdetector.cpp; sourceTree = SOURCE_ROOT; };
 		72D2486E1100CD2300923469 /* qgsgpsdetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgpsdetector.h; path = ../../src/core/gps/qgsgpsdetector.h; sourceTree = SOURCE_ROOT; };
 		72D248721100CDB900923469 /* qwineventnotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qwineventnotifier.h; path = ../../src/core/gps/qextserialport/qwineventnotifier.h; sourceTree = SOURCE_ROOT; };
+		72D474771201110800C7DD9C /* NorthArrow_blackgreenblack.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NorthArrow_blackgreenblack.svg; path = ../../images/svg/north_arrows/NorthArrow_blackgreenblack.svg; sourceTree = SOURCE_ROOT; };
+		72D474781201110800C7DD9C /* NorthArrow_blackwhiteblack.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NorthArrow_blackwhiteblack.svg; path = ../../images/svg/north_arrows/NorthArrow_blackwhiteblack.svg; sourceTree = SOURCE_ROOT; };
+		72D474791201110900C7DD9C /* NorthArrow_blackyellowblack.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NorthArrow_blackyellowblack.svg; path = ../../images/svg/north_arrows/NorthArrow_blackyellowblack.svg; sourceTree = SOURCE_ROOT; };
+		72D4747A1201110900C7DD9C /* NorthArrow_bluegreenblue.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NorthArrow_bluegreenblue.svg; path = ../../images/svg/north_arrows/NorthArrow_bluegreenblue.svg; sourceTree = SOURCE_ROOT; };
+		72D4747B1201110900C7DD9C /* NorthArrow_source.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NorthArrow_source.svg; path = ../../images/svg/north_arrows/NorthArrow_source.svg; sourceTree = SOURCE_ROOT; };
 		72D84C131044BBB7009F8F39 /* mActionReshape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionReshape.png; path = ../../images/themes/default/mActionReshape.png; sourceTree = SOURCE_ROOT; };
 		72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolreshape.cpp; path = ../../src/app/qgsmaptoolreshape.cpp; sourceTree = SOURCE_ROOT; };
 		72D84C1E1044BBFD009F8F39 /* qgsmaptoolreshape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolreshape.h; path = ../../src/app/qgsmaptoolreshape.h; sourceTree = SOURCE_ROOT; };
@@ -10802,6 +10817,11 @@
 				724D05C310A910B400F9680A /* north-arrow_15_checkerboard_corner_arrows.svg */,
 				724D05C410A910B400F9680A /* north-arrow_16_corner_arrows_unfilled_with_circle.svg */,
 				724D05C510A910B400F9680A /* north-arrow_17_corner_n_e.svg */,
+				72D474771201110800C7DD9C /* NorthArrow_blackgreenblack.svg */,
+				72D474781201110800C7DD9C /* NorthArrow_blackwhiteblack.svg */,
+				72D474791201110900C7DD9C /* NorthArrow_blackyellowblack.svg */,
+				72D4747A1201110900C7DD9C /* NorthArrow_bluegreenblue.svg */,
+				72D4747B1201110900C7DD9C /* NorthArrow_source.svg */,
 				7209EE680F39E5D9003DC336 /* NorthArrow1.svg */,
 				7209EE700F39E5D9003DC336 /* NorthArrow2.svg */,
 				7209EE710F39E5D9003DC336 /* NorthArrow3.svg */,
