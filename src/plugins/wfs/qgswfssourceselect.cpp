@@ -19,20 +19,26 @@
 #include "qgswfssourceselect.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
-#include "qgshttptransaction.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h" //for current view extent
+#include "qgsnetworkaccessmanager.h"
+
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QSettings>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface ): QDialog( parent ), mIface( iface )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface )
+    : QDialog( parent )
+    , mIface( iface )
+    , mCapabilitiesReply( 0 )
 {
   setupUi( this );
   btnAdd = buttonBox->button( QDialogButtonBox::Ok );
@@ -128,127 +134,165 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
   return *( crsSet.constBegin() );
 }
 
-int QgsWFSSourceSelect::getCapabilities( const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts )
+void QgsWFSSourceSelect::capabilitiesReplyFinished()
 {
-  switch ( e )
+  if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
   {
-    case QgsWFSSourceSelect::GET:
-      return getCapabilitiesGET( uri, typenames, crs, titles, abstracts );
-    case QgsWFSSourceSelect::POST:
-      return getCapabilitiesPOST( uri, typenames, crs, titles, abstracts );
-    case QgsWFSSourceSelect::SOAP:
-      return getCapabilitiesSOAP( uri, typenames, crs, titles, abstracts );
+    QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
+      QNetworkRequest request( redirect.toUrl() );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+      mCapabilitiesReply->deleteLater();
+      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+
+      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+      return;
+    }
+
+    QByteArray buffer = mCapabilitiesReply->readAll();
+
+    QgsDebugMsg( "parsing capabilities: " + buffer );
+
+    QString capabilitiesDocError;
+    QDomDocument capabilitiesDocument;
+    if ( capabilitiesDocument.setContent( buffer, true, &capabilitiesDocError ) )
+    {
+      QDomElement doc = capabilitiesDocument.documentElement();
+      if ( doc.tagName() != "ExceptionReport" )
+      {
+        std::list<QString> typenames;
+        std::list< std::list<QString> > crs;
+        std::list<QString> titles;
+        std::list<QString> abstracts;
+
+        //get the <FeatureType> elements
+        QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS( WFS_NAMESPACE, "FeatureType" );
+        for ( unsigned int i = 0; i < featureTypeList.length(); ++i )
+        {
+          QString tname, title, abstract;
+          QDomElement featureTypeElem = featureTypeList.at( i ).toElement();
+          std::list<QString> featureCRSList; //CRS list for this feature
+
+          //Name
+          QDomNodeList nameList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Name" );
+          if ( nameList.length() > 0 )
+          {
+            tname = nameList.at( 0 ).toElement().text();
+            //strip away namespace prefixes
+            /* if ( tname.contains( ":" ) )
+               {
+               tname = tname.section( ":", 1, 1 );
+               }*/
+          }
+          //Title
+          QDomNodeList titleList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Title" );
+          if ( titleList.length() > 0 )
+          {
+            title = titleList.at( 0 ).toElement().text();
+          }
+          //Abstract
+          QDomNodeList abstractList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Abstract" );
+          if ( abstractList.length() > 0 )
+          {
+            abstract = abstractList.at( 0 ).toElement().text();
+          }
+
+          //DefaultSRS is always the first entry in the feature srs list
+          QDomNodeList defaultCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "DefaultSRS" );
+          if ( defaultCRSList.length() > 0 )
+          {
+            featureCRSList.push_back( defaultCRSList.at( 0 ).toElement().text() );
+          }
+
+          //OtherSRS
+          QDomNodeList otherCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "OtherSRS" );
+          for ( unsigned int i = 0; i < otherCRSList.length(); ++i )
+          {
+            featureCRSList.push_back( otherCRSList.at( i ).toElement().text() );
+          }
+
+          //Support <SRS> for compatibility with older versions
+          QDomNodeList srsList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "SRS" );
+          for ( unsigned int i = 0; i < srsList.length(); ++i )
+          {
+            featureCRSList.push_back( srsList.at( i ).toElement().text() );
+          }
+
+          crs.push_back( featureCRSList );
+          typenames.push_back( tname );
+          titles.push_back( title );
+          abstracts.push_back( abstract );
+        }
+
+        //insert the available CRS into mAvailableCRS
+        mAvailableCRS.clear();
+        std::list<QString>::const_iterator typeNameIter;
+        std::list< std::list<QString> >::const_iterator crsIter;
+        for ( typeNameIter = typenames.begin(), crsIter = crs.begin(); typeNameIter != typenames.end(); ++typeNameIter, ++crsIter )
+        {
+          std::list<QString> currentCRSList;
+          for ( std::list<QString>::const_iterator it = crsIter->begin(); it != crsIter->end(); ++it )
+          {
+            currentCRSList.push_back( *it );
+          }
+          mAvailableCRS.insert( std::make_pair( *typeNameIter, currentCRSList ) );
+        }
+
+        //insert the typenames, titles and abstracts into the tree view
+        std::list<QString>::const_iterator t_it = titles.begin();
+        std::list<QString>::const_iterator n_it = typenames.begin();
+        std::list<QString>::const_iterator a_it = abstracts.begin();
+        for ( ; t_it != titles.end(); ++t_it, ++n_it, ++a_it )
+        {
+          QTreeWidgetItem* newItem = new QTreeWidgetItem();
+          newItem->setText( 0, *t_it );
+          newItem->setText( 1, *n_it );
+          newItem->setText( 2, *a_it );
+          treeWidget->addTopLevelItem( newItem );
+        }
+
+        if ( typenames.size() > 0 )
+        {
+          btnAdd->setEnabled( true );
+          treeWidget->setCurrentItem( treeWidget->topLevelItem( 0 ) );
+          btnChangeSpatialRefSys->setEnabled( true );
+        }
+        else
+        {
+          QMessageBox::information( 0, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
+          btnAdd->setEnabled( false );
+        }
+      }
+      else
+      {
+        QDomNode ex = doc.firstChild();
+        QString exc = ex.toElement().attribute( "exceptionCode", "Exception" );
+        QDomElement ext = ex.firstChild().toElement();
+        QMessageBox::critical( 0, tr( "Error" ), exc + ": " + ext.firstChild().nodeValue() );
+      }
+    }
+    else
+    {
+      QMessageBox::critical( 0, tr( "Capabilities document is not valid" ), capabilitiesDocError );
+    }
   }
-  return 1;
+  else
+  {
+    QMessageBox::critical( 0, tr( "GetCapabilities Error" ), mCapabilitiesReply->errorString() );
+  }
+
+  btnConnect->setEnabled( true );
+  mCapabilitiesReply->deleteLater();
+  mCapabilitiesReply = 0;
 }
 
-int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts )
+void QgsWFSSourceSelect::capabilitiesReplyProgress( qint64, qint64 )
 {
-  QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
-
-  QByteArray result;
-  QgsHttpTransaction http( request );
-  if ( !http.getSynchronously( result ) )
-  {
-    QMessageBox::critical( 0, tr( "Error" ),
-      tr( "Could not download capabilities document: " ) + http.errorString() );
-    return 1;
-  }
-
-  QDomDocument capabilitiesDocument;
-  QString capabilitiesDocError;
-  if ( !capabilitiesDocument.setContent( result, true, &capabilitiesDocError ) )
-  {
-    QMessageBox::critical( 0, tr( "Error" ),
-      tr( "Capabilities document is not valid: " ) + capabilitiesDocError );
-    return 1;
-  }
-
-  QDomElement doc = capabilitiesDocument.documentElement();
-  if ( doc.tagName() == "ExceptionReport" )
-  {
-    QDomNode ex = doc.firstChild();
-    QString exc = ex.toElement().attribute("exceptionCode", "Exception");
-    QDomElement ext = ex.firstChild().toElement();
-    QMessageBox::critical( 0, tr( "Error" ),
-      exc + ": " + ext.firstChild().nodeValue() );
-    return 1;
-  }
-
-  //get the <FeatureType> elements
-  QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS( WFS_NAMESPACE, "FeatureType" );
-  for ( unsigned int i = 0; i < featureTypeList.length(); ++i )
-  {
-    QString tname, title, abstract;
-    QDomElement featureTypeElem = featureTypeList.at( i ).toElement();
-    std::list<QString> featureCRSList; //CRS list for this feature
-
-    //Name
-    QDomNodeList nameList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Name" );
-    if ( nameList.length() > 0 )
-    {
-      tname = nameList.at( 0 ).toElement().text();
-      //strip away namespace prefixes
-      /* if ( tname.contains( ":" ) )
-       {
-         tname = tname.section( ":", 1, 1 );
-       }*/
-    }
-    //Title
-    QDomNodeList titleList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Title" );
-    if ( titleList.length() > 0 )
-    {
-      title = titleList.at( 0 ).toElement().text();
-    }
-    //Abstract
-    QDomNodeList abstractList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Abstract" );
-    if ( abstractList.length() > 0 )
-    {
-      abstract = abstractList.at( 0 ).toElement().text();
-    }
-
-    //DefaultSRS is always the first entry in the feature srs list
-    QDomNodeList defaultCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "DefaultSRS" );
-    if ( defaultCRSList.length() > 0 )
-    {
-      featureCRSList.push_back( defaultCRSList.at( 0 ).toElement().text() );
-    }
-
-    //OtherSRS
-    QDomNodeList otherCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "OtherSRS" );
-    for ( unsigned int i = 0; i < otherCRSList.length(); ++i )
-    {
-      featureCRSList.push_back( otherCRSList.at( i ).toElement().text() );
-    }
-
-    //Support <SRS> for compatibility with older versions
-    QDomNodeList srsList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "SRS" );
-    for ( unsigned int i = 0; i < srsList.length(); ++i )
-    {
-      featureCRSList.push_back( srsList.at( i ).toElement().text() );
-    }
-
-    crs.push_back( featureCRSList );
-    typenames.push_back( tname );
-    titles.push_back( title );
-    abstracts.push_back( abstract );
-  }
-
-
-  //print out result for a test
-  QgsDebugMsg( result );
-
-  return 0;
-}
-
-int QgsWFSSourceSelect::getCapabilitiesPOST( const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts )
-{
-  return 1; //soon...
-}
-
-int QgsWFSSourceSelect::getCapabilitiesSOAP( const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts )
-{
-  return 1; //soon...
 }
 
 void QgsWFSSourceSelect::addEntryToServerList()
@@ -296,11 +340,6 @@ void QgsWFSSourceSelect::connectToServer()
   QgsDebugMsg( QString( "url is: %1" ).arg( mUri ) );
 
   //make a GetCapabilities request
-  std::list<QString> typenames;
-  std::list< std::list<QString> > crsList;
-  std::list<QString> titles;
-  std::list<QString> abstracts;
-
   //modify mUri to add '?' or '&' at the end if it is not already there
   if ( !( mUri.contains( "?" ) ) )
   {
@@ -311,50 +350,16 @@ void QgsWFSSourceSelect::connectToServer()
     mUri.append( "&" );
   }
 
-  if ( getCapabilities( mUri, QgsWFSSourceSelect::GET, typenames, crsList, titles, abstracts ) != 0 )
-  {
-    QgsDebugMsg( "error during GetCapabilities request" );
-  }
-
-  //insert the available CRS into mAvailableCRS
-  mAvailableCRS.clear();
-  std::list<QString>::const_iterator typeNameIter;
-  std::list< std::list<QString> >::const_iterator crsIter;
-  for ( typeNameIter = typenames.begin(), crsIter = crsList.begin(); typeNameIter != typenames.end(); ++typeNameIter, ++crsIter )
-  {
-    std::list<QString> currentCRSList;
-    for ( std::list<QString>::const_iterator it = crsIter->begin(); it != crsIter->end(); ++it )
-    {
-      currentCRSList.push_back( *it );
-    }
-    mAvailableCRS.insert( std::make_pair( *typeNameIter, currentCRSList ) );
-  }
-
-  //insert the typenames, titles and abstracts into the tree view
+  btnConnect->setEnabled( false );
   treeWidget->clear();
-  std::list<QString>::const_iterator t_it = titles.begin();
-  std::list<QString>::const_iterator n_it = typenames.begin();
-  std::list<QString>::const_iterator a_it = abstracts.begin();
-  for ( ; t_it != titles.end(); ++t_it, ++n_it, ++a_it )
-  {
-    QTreeWidgetItem* newItem = new QTreeWidgetItem();
-    newItem->setText( 0, *t_it );
-    newItem->setText( 1, *n_it );
-    newItem->setText( 2, *a_it );
-    treeWidget->addTopLevelItem( newItem );
-  }
 
-  if ( typenames.size() > 0 )
-  {
-    btnAdd->setEnabled( true );
-    treeWidget->setCurrentItem( treeWidget->topLevelItem( 0 ) );
-    btnChangeSpatialRefSys->setEnabled( true );
-  }
-  else
-  {
-    btnAdd->setEnabled( false );
-  }
+  QNetworkRequest request( mUri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0" );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
 }
+
 
 void QgsWFSSourceSelect::addLayer()
 {

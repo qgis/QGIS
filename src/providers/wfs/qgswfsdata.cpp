@@ -16,17 +16,16 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
-#include "qgshttptransaction.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 #include <QBuffer>
-#include <QUrl>
 #include <QList>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QProgressDialog>
 #include <QSet>
 #include <QSettings>
-
-//just for a test
-//#include <QProgressDialog>
+#include <QUrl>
 
 const char NS_SEPARATOR = '?';
 const QString GML_NAMESPACE = "http://www.opengis.net/gml";
@@ -35,7 +34,8 @@ QgsWFSData::QgsWFSData(
   const QString& uri,
   QgsRectangle* extent,
   QgsCoordinateReferenceSystem* srs,
-  QList<QgsFeature*> &features,
+  QMap<int, QgsFeature*> &features,
+  QMap<int, QString > &idMap,
   const QString& geometryAttribute,
   const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
   QGis::WkbType* wkbType )
@@ -44,15 +44,13 @@ QgsWFSData::QgsWFSData(
     mExtent( extent ),
     mSrs( srs ),
     mFeatures( features ),
+    mIdMap( idMap ),
     mGeometryAttribute( geometryAttribute ),
     mThematicAttributes( thematicAttributes ),
     mWkbType( wkbType ),
     mFinished( false ),
     mFeatureCount( 0 )
 {
-  //qWarning("Name of the geometry attribute is:");
-  //qWarning(mGeometryAttribute.toLocal8Bit().data());
-
   //find out mTypeName from uri
   QStringList arguments = uri.split( "&" );
   QStringList::const_iterator it;
@@ -61,16 +59,17 @@ QgsWFSData::QgsWFSData(
     if ( it->startsWith( "TYPENAME", Qt::CaseInsensitive ) )
     {
       mTypeName = it->section( "=", 1, 1 );
+      //and strip away namespace prefix
+      QStringList splitList = mTypeName.split( ":" );
+      if ( splitList.size() > 1 )
+      {
+        mTypeName = splitList.at( 1 );
+      }
       QgsDebugMsg( QString( "mTypeName is: %1" ).arg( mTypeName ) );
     }
   }
 
-  QSettings s;
-  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
-
   mEndian = QgsApplication::endian();
-  QObject::connect( &mHttp, SIGNAL( done( bool ) ), this, SLOT( setFinished( bool ) ) );
-  QObject::connect( &mNetworkTimeoutTimer, SIGNAL( timeout() ), this, SLOT( setFinished() ) );
 }
 
 QgsWFSData::~QgsWFSData()
@@ -91,19 +90,12 @@ int QgsWFSData::getWFSData()
     mExtent->set( 0, 0, 0, 0 );
   }
 
-  //separate host from query string
-  QUrl requestUrl( mUri );
-  int portNr = requestUrl.port();
-  if ( portNr != -1 )
-  {
-    mHttp.setHost( requestUrl.host(), portNr );
-  }
-  else
-  {
-    mHttp.setHost( requestUrl.host() );
-  }
+  //QUrl requestUrl( mUri );
+  QNetworkRequest request( mUri );
+  QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
-  QgsHttpTransaction::applyProxySettings( mHttp, mUri );
+  connect( reply, SIGNAL( finished() ), this, SLOT( setFinished() ) );
+  connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( handleProgressEvent( qint64, qint64 ) ) );
 
   //find out if there is a QGIS main window. If yes, display a progress dialog
   QProgressDialog* progressDialog = 0;
@@ -113,37 +105,29 @@ int QgsWFSData::getWFSData()
   {
     progressDialog = new QProgressDialog( tr( "Loading WFS data" ), tr( "Abort" ), 0, 0, mainWindow );
     progressDialog->setWindowModality( Qt::ApplicationModal );
-    connect( &mHttp, SIGNAL( dataReadProgress( int, int ) ), this, SLOT( handleProgressEvent( int, int ) ) );
     connect( this, SIGNAL( dataReadProgress( int ) ), progressDialog, SLOT( setValue( int ) ) );
     connect( this, SIGNAL( totalStepsUpdate( int ) ), progressDialog, SLOT( setMaximum( int ) ) );
-    connect( progressDialog, SIGNAL( canceled() ), &mHttp, SLOT( abort() ) );
+    connect( progressDialog, SIGNAL( canceled() ), this, SLOT( setFinished() ) );
     progressDialog->show();
   }
 
-  //setup timer
-  mNetworkTimeoutTimer.setSingleShot( true );
-  mNetworkTimeoutTimer.start( mNetworkTimeoutMsec );
-  mHttp.get( requestUrl.path() + "?" + QString( requestUrl.encodedQuery() ) );
-
-
-  //loop to read the data
   QByteArray readData;
   int atEnd = 0;
-  QgsDebugMsg( "Entering loop" );
-  while ( !mFinished || mHttp.bytesAvailable() > 0 )
+  while ( !atEnd )
   {
     if ( mFinished )
     {
       atEnd = 1;
     }
-    if ( mHttp.bytesAvailable() != 0 )
+    readData = reply->readAll();
+    if ( readData.size() > 0 )
     {
-      readData = mHttp.readAll();
       XML_Parse( p, readData.data(), readData.size(), atEnd );
     }
-    qApp->processEvents();
+    QCoreApplication::processEvents();
   }
 
+  delete reply;
   delete progressDialog;
 
   if ( mExtent )
@@ -155,28 +139,23 @@ int QgsWFSData::getWFSData()
     }
   }
 
-  return 0; //soon
+  return 0;
 }
 
-void QgsWFSData::setFinished( bool error )
+void QgsWFSData::setFinished( )
 {
-  if ( error )
-  {
-    //qWarning("Finished with error");
-    //qWarning(mHttp.errorString().toLocal8Bit().data());
-  }
-  else
-  {
-    //qWarning("Finished without error");
-  }
   mFinished = true;
 }
 
-void QgsWFSData::handleProgressEvent( int progress, int totalSteps )
+void QgsWFSData::handleProgressEvent( qint64 progress, qint64 totalSteps )
 {
   emit dataReadProgress( progress );
+  if ( totalSteps < 0 )
+  {
+    totalSteps = 0;
+  }
   emit totalStepsUpdate( totalSteps );
-  mNetworkTimeoutTimer.start( mNetworkTimeoutMsec );
+  emit dataProgressAndSteps( progress, totalSteps );
 }
 
 void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
@@ -187,8 +166,16 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsWFSData::coordinate );
     mStringCash.clear();
-    mCoordinateSeparator = readCsFromAttribute( attr );
-    mTupleSeparator = readTsFromAttribute( attr );
+    mCoordinateSeparator = readAttribute( "cs", attr );
+    if ( mCoordinateSeparator.isEmpty() )
+    {
+      mCoordinateSeparator = ",";
+    }
+    mTupleSeparator = readAttribute( "ts", attr );
+    if ( mTupleSeparator.isEmpty() )
+    {
+      mTupleSeparator = " ";
+    }
   }
   else if ( localName == mGeometryAttribute )
   {
@@ -203,6 +190,10 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
     mCurrentFeature = new QgsFeature( mFeatureCount );
     mParseModeStack.push( QgsWFSData::featureMember );
   }
+  else if ( localName == mTypeName )
+  {
+    mCurrentFeatureId = readAttribute( "fid", attr );
+  }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Box" && mParseModeStack.top() == QgsWFSData::boundingBox )
   {
     //read attribute srsName="EPSG:26910"
@@ -211,7 +202,7 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
     {
       QgsDebugMsg( "error, could not get epsg id" );
     }
-    //qWarning(("epsg id is: " + QString::number(epsgNr)).toLocal8Bit().data());
+
     if ( mSrs )
     {
       if ( !mSrs->createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) ) )
@@ -337,14 +328,18 @@ void QgsWFSData::endElement( const XML_Char* el )
 
 
     mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
-    mFeatures << mCurrentFeature;
+    mFeatures.insert( mCurrentFeature->id(), mCurrentFeature );
+    if ( !mCurrentFeatureId.isEmpty() )
+    {
+      mIdMap.insert( mCurrentFeature->id(), mCurrentFeatureId );
+    }
     ++mFeatureCount;
     mParseModeStack.pop();
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Point" )
   {
     std::list<QgsPoint> pointList;
-    if ( pointsFromCoordinateString( pointList, mStringCash, mCoordinateSeparator, mTupleSeparator ) != 0 )
+    if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
     {
       //error
     }
@@ -381,7 +376,7 @@ void QgsWFSData::endElement( const XML_Char* el )
     //add WKB point to the feature
 
     std::list<QgsPoint> pointList;
-    if ( pointsFromCoordinateString( pointList, mStringCash, mCoordinateSeparator, mTupleSeparator ) != 0 )
+    if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
     {
       //error
     }
@@ -414,7 +409,7 @@ void QgsWFSData::endElement( const XML_Char* el )
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "LinearRing" )
   {
     std::list<QgsPoint> pointList;
-    if ( pointsFromCoordinateString( pointList, mStringCash, mCoordinateSeparator, mTupleSeparator ) != 0 )
+    if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
     {
       //error
     }
@@ -508,32 +503,18 @@ int QgsWFSData::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) cons
   return 2;
 }
 
-QString QgsWFSData::readCsFromAttribute( const XML_Char** attr ) const
+QString QgsWFSData::readAttribute( const QString& attributeName, const XML_Char** attr ) const
 {
   int i = 0;
   while ( attr[i] != NULL )
   {
-    if ( strcmp( attr[i], "cs" ) == 0 )
+    if ( attributeName.compare( attr[i] ) == 0 )
     {
       return QString( attr[i+1] );
     }
     ++i;
   }
-  return ",";
-}
-
-QString QgsWFSData::readTsFromAttribute( const XML_Char** attr ) const
-{
-  int i = 0;
-  while ( attr[i] != NULL )
-  {
-    if ( strcmp( attr[i], "ts" ) == 0 )
-    {
-      return QString( attr[i+1] );
-    }
-    ++i;
-  }
-  return " ";
+  return QString();
 }
 
 int QgsWFSData::createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const
@@ -544,9 +525,7 @@ int QgsWFSData::createBBoxFromCoordinateString( QgsRectangle* bb, const QString&
   }
 
   std::list<QgsPoint> points;
-  //qWarning("string is: ");
-  //qWarning(coordString.toLocal8Bit().data());
-  if ( pointsFromCoordinateString( points, coordString, mCoordinateSeparator, mTupleSeparator ) != 0 )
+  if ( pointsFromCoordinateString( points, coordString ) != 0 )
   {
     return 2;
   }
@@ -562,10 +541,10 @@ int QgsWFSData::createBBoxFromCoordinateString( QgsRectangle* bb, const QString&
   return 0;
 }
 
-int QgsWFSData::pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString, const QString& cs, const QString& ts ) const
+int QgsWFSData::pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const
 {
   //tuples are separated by space, x/y by ','
-  QStringList tuples = coordString.split( ts, QString::SkipEmptyParts );
+  QStringList tuples = coordString.split( mTupleSeparator, QString::SkipEmptyParts );
   QStringList tuples_coordinates;
   double x, y;
   bool conversionSuccess;
@@ -573,7 +552,7 @@ int QgsWFSData::pointsFromCoordinateString( std::list<QgsPoint>& points, const Q
   QStringList::const_iterator tupleIterator;
   for ( tupleIterator = tuples.constBegin(); tupleIterator != tuples.constEnd(); ++tupleIterator )
   {
-    tuples_coordinates = tupleIterator->split( cs, QString::SkipEmptyParts );
+    tuples_coordinates = tupleIterator->split( mCoordinateSeparator, QString::SkipEmptyParts );
     if ( tuples_coordinates.size() < 2 )
     {
       continue;
