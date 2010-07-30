@@ -108,6 +108,35 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
     void                *mGDALTransformerArgs;
 };
 
+/**
+ * A planar projective transform, expressed by a homography.
+ *
+ * Implements model fitting which minimizes algebraic error using total least squares.
+ */
+class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
+{
+  public:
+    QgsProjectiveGeorefTransform()  { }
+    ~QgsProjectiveGeorefTransform() { }
+
+    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords );
+    uint getMinimumGCPCount() const;
+
+    GDALTransformerFunc  GDALTransformer()     const { return QgsProjectiveGeorefTransform::projective_transform; }
+    void                *GDALTransformerArgs() const { return ( void * )&mParameters; }
+  private:
+    struct ProjectiveParameters
+    {
+      double H[9];        // Homography
+      double Hinv[9];     // Inverted homography
+      bool   hasInverse;  // Could the inverted homography be calculated?
+    } mParameters;
+
+    static int projective_transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
+                                     double *x, double *y, double *z, int *panSuccess );
+};
+
+
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
   mTransformParametrisation = InvalidTransform;
@@ -216,6 +245,7 @@ QgsGeorefTransformInterface *QgsGeorefTransform::createImplementation( Transform
     case PolynomialOrder2: return new QgsGDALGeorefTransform( false, 2 );
     case PolynomialOrder3: return new QgsGDALGeorefTransform( false, 3 );
     case ThinPlateSpline:  return new QgsGDALGeorefTransform( true, 0 );
+    case Projective:       return new QgsProjectiveGeorefTransform;
     default:               return NULL;
       break;
   }
@@ -526,4 +556,110 @@ void QgsGDALGeorefTransform::destroy_gdal_args()
     else
       GDALDestroyGCPTransformer( mGDALTransformerArgs );
   }
+}
+
+bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
+{
+  if ( mapCoords.size() < getMinimumGCPCount() )
+    return false;
+  
+  QgsLeastSquares::projective( mapCoords, pixelCoords, mParameters.H );
+
+  // Invert the homography matrix using adjoint matrix
+  double *H = mParameters.H;
+
+  double adjoint[9];
+  adjoint[0] =  H[4]*H[8] - H[5]*H[7];
+  adjoint[1] = -H[1]*H[8] + H[2]*H[7];
+  adjoint[2] =  H[1]*H[5] - H[2]*H[4];
+
+  adjoint[3] = -H[3]*H[8] + H[5]*H[6];
+  adjoint[4] =  H[0]*H[8] - H[2]*H[6];
+  adjoint[5] = -H[0]*H[5] + H[2]*H[3];
+
+  adjoint[6] =  H[3]*H[7] - H[4]*H[6];
+  adjoint[7] = -H[0]*H[7] + H[1]*H[6];
+  adjoint[8] =  H[0]*H[4] - H[1]*H[3];
+
+  double det = H[0]*adjoint[0] + H[3]*adjoint[1] + H[6]*adjoint[2];
+
+  if (std::abs(det) < 1024.0*std::numeric_limits<double>::epsilon())
+  {
+    mParameters.hasInverse = false;
+  }
+  else
+  {
+    mParameters.hasInverse = true;
+    double oo_det = 1.0/det;
+    for ( int i = 0; i < 9; i++ )
+    {
+      mParameters.Hinv[i] = adjoint[i]*oo_det;
+    }
+
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        double sum = 0.0;
+        for (int k = 0; k < 3; k++) {
+          sum+= H[j*3 + k]*mParameters.Hinv[i + k*3];
+        }
+        std::cout<<sum<<", ";
+      }
+      std::cout<<std::endl;
+    }
+  }
+  return true;
+}
+
+uint QgsProjectiveGeorefTransform::getMinimumGCPCount() const
+{
+  return 4;
+}
+
+int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
+    double *x, double *y, double *z, int *panSuccess )
+{
+  ProjectiveParameters* t = static_cast<ProjectiveParameters*>( pTransformerArg );
+  if ( t == NULL )
+  {
+    return false;
+  }
+
+  double *H;
+  if ( !bDstToSrc )
+  {
+    H = t->H;
+  }
+  else
+  {
+    if ( !t->hasInverse )
+    {
+      for (int i = 0; i < nPointCount; ++i )
+      {
+        panSuccess[i] = false;
+      }
+      return false;
+    }
+    H = t->Hinv;
+  }
+
+  
+  for (int i = 0; i < nPointCount; ++i )
+  {
+    double Z = x[i]*H[6] + y[i]*H[7] + H[8];
+    // Projects to infinity?
+    if ( std::abs(Z) < 1024.0*std::numeric_limits<double>::epsilon() )
+    {
+      panSuccess[i] = false;
+      continue;
+    }
+    double X = (x[i]*H[0] + y[i]*H[1] + H[2]) / Z;
+    double Y = (x[i]*H[3] + y[i]*H[4] + H[5]) / Z;
+
+    x[i] = X;
+    y[i] = Y;
+ 
+    panSuccess[i] = true;
+  }
+
+  return true;
 }
