@@ -36,8 +36,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
     enum REQUEST_ENCODING
     {
       GET,
-      POST,
-      SOAP,/*Note that this goes also through HTTP POST but additionally uses soap envelope and friends*/
       FILE  //reads from a file on disk
     };
 
@@ -80,6 +78,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
     QString name() const;
     QString description() const;
 
+    virtual int capabilities() const;
+
     /* new functions */
 
     /**Sets the encoding type in which the provider makes requests and interprets
@@ -90,6 +90,35 @@ class QgsWFSProvider: public QgsVectorDataProvider
        stores them in a vector*/
     int getFeature( const QString& uri );
 
+    //Editing operations
+    /**
+     * Adds a list of features
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool addFeatures( QgsFeatureList &flist );
+
+    /**
+     * Deletes one or more features
+     * @param id list containing feature ids to delete
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool deleteFeatures( const QgsFeatureIds &id );
+
+    /**
+     * Changes geometries of existing features
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return               True in case of success and false in case of failure
+     */
+    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+
+    /**
+     * Changes attribute values of existing features.
+     * @param attr_map a map containing changed attributes
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
   signals:
     void dataReadProgressMessage( QString message );
@@ -99,9 +128,17 @@ class QgsWFSProvider: public QgsVectorDataProvider
      and emits the dataReadProgressMessage signal*/
     void handleWFSProgressMessage( int done, int total );
 
+    /**Sets mNetworkRequestFinished flag to true*/
+    void networkRequestFinished();
+
+  private:
+    bool mNetworkRequestFinished;
 
   protected:
+    /**Thematic attributes*/
     QgsFieldMap mFields;
+    /**Name of geometry attribute*/
+    QString mGeometryAttribute;
     /**The encoding used for request/response. Can be GET, POST or SOAP*/
     REQUEST_ENCODING mEncoding;
     /**Bounding box for the layer*/
@@ -116,8 +153,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
     QList<int> mSelectedFeatures;
     /**Iterator on the feature vector for use in rewind(), nextFeature(), etc...*/
     QList<int>::iterator mFeatureIterator;
-    /**Vector where the features are inserted*/
-    QList<QgsFeature*> mFeatures;
+    /**Map <feature Id / feature> */
+    QMap<int, QgsFeature* > mFeatures;
+    /**Stores the relation between provider ids and WFS server ids*/
+    QMap<int, QString > mIdMap;
     /**Geometry type of the features in this layer*/
     mutable QGis::WkbType mWKBType;
     /**Source CRS*/
@@ -125,6 +164,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int mFeatureCount;
     /**Flag if provider is valid*/
     bool mValid;
+    /**Namespace URL of the server (comes from DescribeFeatureDocument)*/
+    QString mWfsNamespace;
+    /**Server capabilities for this layer (generated from capabilities document)*/
+    int mCapabilities;
 
 
     /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
@@ -142,7 +185,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
 
     /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
-    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields ) const;
+    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
     int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes ) const;
 
@@ -171,6 +214,55 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
     /**Tries to create a QgsCoordinateReferenceSystem object and assign it to mSourceCRS. Returns 0 in case of success*/
     int setCRSFromGML2( const QDomElement& wfsCollectionElement );
+
+
+    //methods to write GML2
+
+    QDomElement createGeometryElem( QgsGeometry* g, QDomDocument& doc ) /*const*/;
+    QDomElement createLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
+    QDomElement createMultiLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
+    QDomElement createPointElem( QgsGeometry* geom, QDomDocument& doc ) const;
+    QDomElement createMultiPointElem( QgsGeometry* geom, QDomDocument& doc ) const;
+    QDomElement createPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const;
+    QDomElement createMultiPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const;
+
+    /**Create a GML coordinate string from a point list.
+      @param points list of data points
+      @param coordString out: GML coord string
+      @return 0 in case of success*/
+    QDomElement createCoordinateElem( const QVector<QgsPoint> points, QDomDocument& doc ) const;
+
+    //helper methods for WFS-T
+
+    /**Extracts the typename from the providers url
+      @return typename or a null string in case of error*/
+    QString typeNameFromUrl() const;
+
+    /**Removes a possible namespace prefix from a typename*/
+    void removeNamespacePrefix( QString& tname ) const;
+    /**Returns namespace prefix (or an empty string if there is no prefix)*/
+    QString nameSpacePrefix( const QString& tname ) const;
+
+    /**Sends the transaction document to the server using HTTP POST
+      @return true if transmission to the server succeeded, otherwise false
+        note: true does not automatically mean that the transaction succeeded*/
+    bool sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse );
+
+    /**Creates a transaction element and adds it (normally as first element) to the document*/
+    QDomElement createTransactionElement( QDomDocument& doc ) const;
+
+    /**True if the server response means success*/
+    bool transactionSuccess( const QDomDocument& serverResponse ) const;
+    /**Returns the inserted ids*/
+    QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
+    /**Returns a key suitable for new items*/
+    int findNewKey() const;
+    /**Retrieve capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
+    void getLayerCapabilities();
+    /**Takes <Operations> element and updates the capabilities*/
+    void appendSupportedOperations( const QDomElement& operationsElem, int& capabilities ) const;
+    /**Shows a message box with the exception string (or does nothing if the xml document is not an exception)*/
+    void handleException( const QDomDocument& serverResponse ) const;
 };
 
 #endif

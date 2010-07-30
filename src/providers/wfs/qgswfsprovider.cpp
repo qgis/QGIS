@@ -15,19 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#define WFS_THRESHOLD 200
+
 #include "qgsapplication.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgshttptransaction.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgswfsdata.h"
 #include "qgswfsprovider.h"
 #include "qgsspatialindex.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 #include <QDomDocument>
+#include <QMessageBox>
 #include <QDomNodeList>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QFile>
+#include <QUrl>
 #include <QWidget>
 #include <cfloat>
 
@@ -38,12 +44,18 @@ static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
-    : QgsVectorDataProvider( uri ), mUseIntersect( false ), mSourceCRS( 0 ), mFeatureCount( 0 ), mValid( true )
+    : QgsVectorDataProvider( uri ),
+    mNetworkRequestFinished( true ),
+    mUseIntersect( false ),
+    mSourceCRS( 0 ),
+    mFeatureCount( 0 ),
+    mValid( true )
 {
   mSpatialIndex = new QgsSpatialIndex;
   if ( getFeature( uri ) == 0 )
   {
     mValid = true;
+    getLayerCapabilities();
 
     //set spatial filter to the whole extent
     //select(mExtent, false); //MH TODO: fix this in provider0_9-branch
@@ -191,7 +203,7 @@ int QgsWFSProvider::getFeature( const QString& uri )
   if ( mEncoding == QgsWFSProvider::FILE )
   {
     //guess geometry attribute and other attributes from schema or from .gml file
-    if ( describeFeatureTypeFile( uri, geometryAttribute, mFields ) != 0 )
+    if ( describeFeatureTypeFile( uri, mGeometryAttribute, mFields ) != 0 )
     {
       return 1;
     }
@@ -200,7 +212,7 @@ int QgsWFSProvider::getFeature( const QString& uri )
   {
     QString describeFeatureUri = uri;
     describeFeatureUri.replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) );
-    if ( describeFeatureType( describeFeatureUri, geometryAttribute, mFields ) != 0 )
+    if ( describeFeatureType( describeFeatureUri, mGeometryAttribute, mFields ) != 0 )
     {
       return 1;
     }
@@ -208,11 +220,363 @@ int QgsWFSProvider::getFeature( const QString& uri )
 
   if ( mEncoding == QgsWFSProvider::GET )
   {
-    return getFeatureGET( uri, geometryAttribute );
+    return getFeatureGET( uri, mGeometryAttribute );
   }
   else//local file
   {
-    return getFeatureFILE( uri, geometryAttribute ); //read the features from disk
+    return getFeatureFILE( uri, mGeometryAttribute ); //read the features from disk
+  }
+}
+
+bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
+{
+  //create <Transaction> xml
+  QDomDocument transactionDoc;
+  QDomElement transactionElem = createTransactionElement( transactionDoc );
+  transactionDoc.appendChild( transactionElem );
+
+  //find out typename from uri and strip namespace prefix
+  QString tname = typeNameFromUrl();
+  if ( tname.isNull() )
+  {
+    return false;
+  }
+  removeNamespacePrefix( tname );
+
+  //Add the features
+  QgsFeatureList::iterator featureIt = flist.begin();
+  for ( ; featureIt != flist.end(); ++featureIt )
+  {
+    //Insert element
+    QDomElement insertElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Insert" );
+    transactionElem.appendChild( insertElem );
+
+    QDomElement featureElem = transactionDoc.createElementNS( mWfsNamespace, tname );
+
+    //add thematic attributes
+    QgsAttributeMap featureAttributes = featureIt->attributeMap();
+    QgsFieldMap::const_iterator fieldIt = mFields.constBegin();
+    for ( ; fieldIt != mFields.constEnd(); ++fieldIt )
+    {
+      QgsAttributeMap::const_iterator valueIt = featureAttributes.find( fieldIt.key() );
+      if ( valueIt != featureAttributes.constEnd() )
+      {
+        QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, fieldIt.value().name() );
+        QDomText fieldText = transactionDoc.createTextNode( valueIt.value().toString() );
+        fieldElem.appendChild( fieldText );
+        featureElem.appendChild( fieldElem );
+      }
+    }
+
+    //add geometry column (as gml)
+    QDomElement geomElem = transactionDoc.createElementNS( mWfsNamespace, mGeometryAttribute );
+    QDomElement gmlElem = createGeometryElem( featureIt->geometry(), transactionDoc );
+    if ( !gmlElem.isNull() )
+    {
+      geomElem.appendChild( gmlElem );
+      featureElem.appendChild( geomElem );
+    }
+
+    insertElem.appendChild( featureElem );
+  }
+
+  QDomDocument serverResponse;
+  bool success = sendTransactionDocument( transactionDoc, serverResponse );
+  if ( !success )
+  {
+    return false;
+  }
+
+  if ( transactionSuccess( serverResponse ) )
+  {
+    //transaction successful. Add the features to mSpatialIndex
+    if ( mSpatialIndex )
+    {
+      QStringList idList = insertedFeatureIds( serverResponse );
+      QStringList::const_iterator idIt = idList.constBegin();
+      featureIt = flist.begin();
+
+      for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
+      {
+        int newId = findNewKey();
+        featureIt->setFeatureId( newId );
+        mFeatures.insert( newId, new QgsFeature( *featureIt ) );
+        mIdMap.insert( newId, *idIt );
+        mSpatialIndex->insertFeature( *featureIt );
+        mFeatureCount = mFeatures.size();
+      }
+      return true;
+    }
+  }
+  else
+  {
+    handleException( serverResponse );
+    return false;
+  }
+}
+
+bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
+{
+  if ( id.size() < 1 )
+  {
+    return true;
+  }
+
+  //find out typename from uri and strip namespace prefix
+  QString tname = typeNameFromUrl();
+  if ( tname.isNull() )
+  {
+    return false;
+  }
+
+  //create <Transaction> xml
+  QDomDocument transactionDoc;
+  QDomElement transactionElem = createTransactionElement( transactionDoc );
+  transactionDoc.appendChild( transactionElem );
+  //delete element
+  QDomElement deleteElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Delete" );
+  deleteElem.setAttribute( "typeName", tname );
+  QDomElement filterElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "Filter" );
+
+
+  QgsFeatureIds::const_iterator idIt = id.constBegin();
+  for ( ; idIt != id.constEnd(); ++idIt )
+  {
+    //find out feature id
+    QMap< int, QString >::const_iterator fidIt = mIdMap.find( *idIt );
+    if ( fidIt == mIdMap.constEnd() )
+    {
+      continue;
+    }
+    QDomElement featureIdElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "FeatureId" );
+    featureIdElem.setAttribute( "fid", fidIt.value() );
+    filterElem.appendChild( featureIdElem );
+  }
+
+  deleteElem.appendChild( filterElem );
+  transactionElem.appendChild( deleteElem );
+
+  QDomDocument serverResponse;
+  bool success = sendTransactionDocument( transactionDoc, serverResponse );
+  if ( !success )
+  {
+    return false;
+  }
+
+  if ( transactionSuccess( serverResponse ) )
+  {
+    idIt = id.constBegin();
+    for ( ; idIt != id.constEnd(); ++idIt )
+    {
+      QMap<int, QgsFeature* >::iterator fIt = mFeatures.find( *idIt );
+      if ( fIt != mFeatures.end() )
+      {
+        if ( mSpatialIndex )
+        {
+          mSpatialIndex->deleteFeature( *fIt.value() );
+        }
+        delete fIt.value();
+        mFeatures.remove( *idIt );
+      }
+    }
+    return true;
+  }
+  else
+  {
+    handleException( serverResponse );
+    return false;
+  }
+}
+
+bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+{
+  //find out typename from uri and strip namespace prefix
+  QString tname = typeNameFromUrl();
+  if ( tname.isNull() )
+  {
+    return false;
+  }
+
+  //create <Transaction> xml
+  QDomDocument transactionDoc;
+  QDomElement transactionElem = createTransactionElement( transactionDoc );
+  transactionDoc.appendChild( transactionElem );
+
+  QgsGeometryMap::iterator geomIt = geometry_map.begin();
+  for ( ; geomIt != geometry_map.end(); ++geomIt )
+  {
+    //find out feature id
+    QMap< int, QString >::const_iterator fidIt = mIdMap.find( geomIt.key() );
+    if ( fidIt == mIdMap.constEnd() )
+    {
+      continue;
+    }
+
+    QDomElement updateElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Update" );
+    updateElem.setAttribute( "typeName", tname );
+    //Property
+    QDomElement propertyElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Property" );
+    QDomElement nameElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Name" );
+    QDomText nameText = transactionDoc.createTextNode( mGeometryAttribute );
+    nameElem.appendChild( nameText );
+    propertyElem.appendChild( nameElem );
+    QDomElement valueElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Value" );
+    QDomElement gmlElem = createGeometryElem( &geomIt.value(), transactionDoc );
+    valueElem.appendChild( gmlElem );
+    propertyElem.appendChild( valueElem );
+    updateElem.appendChild( propertyElem );
+
+    //filter
+    QDomElement filterElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "Filter" );
+    QDomElement featureIdElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "FeatureId" );
+    featureIdElem.setAttribute( "fid", fidIt.value() );
+    filterElem.appendChild( featureIdElem );
+    updateElem.appendChild( filterElem );
+
+    transactionElem.appendChild( updateElem );
+  }
+
+  QDomDocument serverResponse;
+  bool success = sendTransactionDocument( transactionDoc, serverResponse );
+  if ( !success )
+  {
+    return false;
+  }
+
+  if ( transactionSuccess( serverResponse ) )
+  {
+    geomIt = geometry_map.begin();
+    for ( ; geomIt != geometry_map.end(); ++geomIt )
+    {
+      QMap<int, QgsFeature* >::iterator fIt = mFeatures.find( geomIt.key() );
+      if ( fIt == mFeatures.end() )
+      {
+        continue;
+      }
+      QgsFeature* currentFeature = fIt.value();
+      if ( !currentFeature )
+      {
+        continue;
+      }
+
+      if ( mSpatialIndex )
+      {
+        mSpatialIndex->deleteFeature( *currentFeature );
+        fIt.value()->setGeometry( geomIt.value() );
+        mSpatialIndex->insertFeature( *currentFeature );
+      }
+    }
+    return true;
+  }
+  else
+  {
+    handleException( serverResponse );
+    return false;
+  }
+}
+
+bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+{
+  //find out typename from uri and strip namespace prefix
+  QString tname = typeNameFromUrl();
+  if ( tname.isNull() )
+  {
+    return false;
+  }
+
+  const QgsFieldMap& fieldMap = fields();
+
+  //create <Transaction> xml
+  QDomDocument transactionDoc;
+  QDomElement transactionElem = createTransactionElement( transactionDoc );
+  transactionDoc.appendChild( transactionElem );
+
+  QgsChangedAttributesMap::const_iterator attIt = attr_map.constBegin();
+  for ( ; attIt != attr_map.constEnd(); ++attIt )
+  {
+    //find out wfs server feature id
+    QMap< int, QString >::const_iterator fidIt = mIdMap.find( attIt.key() );
+    if ( fidIt == mIdMap.constEnd() )
+    {
+      continue;
+    }
+
+    QDomElement updateElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Update" );
+    updateElem.setAttribute( "typeName", tname );
+
+    QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
+    for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
+    {
+      QString fieldName;
+      QgsFieldMap::const_iterator fieldIt = fieldMap.find( attMapIt.key() );
+      if ( fieldIt == fieldMap.constEnd() )
+      {
+        continue;
+      }
+      fieldName = fieldIt.value().name();
+
+      QDomElement propertyElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Property" );
+
+      QDomElement nameElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Name" );
+      QDomText nameText = transactionDoc.createTextNode( fieldName );
+      nameElem.appendChild( nameText );
+      propertyElem.appendChild( nameElem );
+
+      QDomElement valueElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Value" );
+      QDomText valueText = transactionDoc.createTextNode( attMapIt.value().toString() );
+      valueElem.appendChild( valueText );
+      propertyElem.appendChild( valueElem );
+
+      updateElem.appendChild( propertyElem );
+    }
+
+    //Filter
+    QDomElement filterElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "Filter" );
+    QDomElement featureIdElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "FeatureId" );
+    featureIdElem.setAttribute( "fid", fidIt.value() );
+    filterElem.appendChild( featureIdElem );
+    updateElem.appendChild( filterElem );
+
+    transactionElem.appendChild( updateElem );
+  }
+
+  QDomDocument serverResponse;
+  bool success = sendTransactionDocument( transactionDoc, serverResponse );
+  if ( !success )
+  {
+    return false;
+  }
+
+  if ( transactionSuccess( serverResponse ) )
+  {
+    //change attributes in mFeatures
+    attIt = attr_map.constBegin();
+    for ( ; attIt != attr_map.constEnd(); ++attIt )
+    {
+      QMap<int, QgsFeature*>::iterator fIt = mFeatures.find( attIt.key() );
+      if ( fIt == mFeatures.end() )
+      {
+        continue;
+      }
+
+      QgsFeature* currentFeature = fIt.value();
+      if ( !currentFeature )
+      {
+        continue;
+      }
+
+      QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
+      for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
+      {
+        currentFeature->changeAttribute( attMapIt.key(), attMapIt.value() );
+      }
+    }
+    return true;
+  }
+  else
+  {
+    handleException( serverResponse );
+    return false;
   }
 }
 
@@ -222,10 +586,6 @@ int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAt
   {
     case QgsWFSProvider::GET:
       return describeFeatureTypeGET( uri, geometryAttribute, fields );
-    case QgsWFSProvider::POST:
-      return describeFeatureTypePOST( uri, geometryAttribute, fields );
-    case QgsWFSProvider::SOAP:
-      return describeFeatureTypeSOAP( uri, geometryAttribute, fields );
     case QgsWFSProvider::FILE:
       return describeFeatureTypeFile( uri, geometryAttribute, fields );
   }
@@ -234,37 +594,6 @@ int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAt
 
 int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAttribute )
 {
-#if 0 //the old and slower method with DOM
-  //assemble request string
-  QString request = uri /*+ "&OUTPUTFORMAT=gml3"*/; //use gml2 as it is supported by most wfs servers
-  QByteArray result;
-  QgsHttpTransaction http( request );
-  http.getSynchronously( result );
-
-  QDomDocument getFeatureDocument;
-  if ( !getFeatureDocument.setContent( result, true ) )
-  {
-    return 1; //error
-  }
-
-  QDomElement featureCollectionElement = getFeatureDocument.documentElement();
-
-  //get and set Extent
-  if ( getExtentFromGML2( &mExtent, featureCollectionElement ) != 0 )
-  {
-    return 3;
-  }
-
-  setCRSFromGML2( featureCollectionElement );
-
-  if ( getFeaturesFromGML2( featureCollectionElement, geometryAttribute ) != 0 )
-  {
-    return 4;
-  }
-
-  return 0;
-#endif
-
   //the new and faster method with the expat SAX parser
 
   //allows fast searchings with attribute name. Also needed is attribute Index and type infos
@@ -274,8 +603,8 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
     thematicAttributes.insert( it.value().name(), qMakePair( it.key(), it.value() ) );
   }
 
-  QgsWFSData dataReader( uri, &mExtent, &mSourceCRS, mFeatures, geometryAttribute, thematicAttributes, &mWKBType );
-  QObject::connect( dataReader.http(), SIGNAL( dataReadProgress( int, int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
+  QgsWFSData dataReader( uri, &mExtent, &mSourceCRS, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
+  QObject::connect( &dataReader, SIGNAL( dataProgressAndSteps( int , int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 
   //also connect to statusChanged signal of qgisapp (if it exists)
   QWidget* mainWindow = 0;
@@ -304,25 +633,15 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QgsDebugMsg( QString( "feature count after request is: %1" ).arg( mFeatures.size() ) );
   QgsDebugMsg( QString( "mExtent after request is: %1" ).arg( mExtent.toString() ) );
 
-  for ( QList<QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
+  for ( QMap<int, QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
   {
     QgsDebugMsg( "feature " + QString::number(( *it )->id() ) );
-    mSpatialIndex->insertFeature( **it );
+    mSpatialIndex->insertFeature( *( it.value() ) );
   }
 
   mFeatureCount = mFeatures.size();
 
   return 0;
-}
-
-int QgsWFSProvider::getFeaturePOST( const QString& uri, const QString& geometryAttribute )
-{
-  return 1; //soon...
-}
-
-int QgsWFSProvider::getFeatureSOAP( const QString& uri, const QString& geometryAttribute )
-{
-  return 1; //soon...
 }
 
 int QgsWFSProvider::getFeatureFILE( const QString& uri, const QString& geometryAttribute )
@@ -362,15 +681,27 @@ int QgsWFSProvider::getFeatureFILE( const QString& uri, const QString& geometryA
 
 int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
 {
-  QByteArray result;
-  QgsHttpTransaction http( uri );
-  if ( !http.getSynchronously( result ) )
+  if ( !mNetworkRequestFinished )
   {
     return 1;
   }
+
+  mNetworkRequestFinished = false;
+
+  QNetworkRequest request( uri );
+  QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
+  connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
+  while ( !mNetworkRequestFinished )
+  {
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WFS_THRESHOLD );
+  }
+
+  QByteArray response = reply->readAll();
+  reply->deleteLater();
+
   QDomDocument describeFeatureDocument;
 
-  if ( !describeFeatureDocument.setContent( result, true ) )
+  if ( !describeFeatureDocument.setContent( response, true ) )
   {
     return 2;
   }
@@ -383,14 +714,9 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
   return 0;
 }
 
-int QgsWFSProvider::describeFeatureTypePOST( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
+void QgsWFSProvider::networkRequestFinished()
 {
-  return 1; //soon...
-}
-
-int QgsWFSProvider::describeFeatureTypeSOAP( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
-{
-  return 1; //soon...
+  mNetworkRequestFinished = true;
 }
 
 int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
@@ -434,7 +760,7 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
   return 0;
 }
 
-int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields ) const
+int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields )
 {
   //get the <schema> root element
   QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( "http://www.w3.org/2001/XMLSchema", "schema" );
@@ -443,6 +769,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     return 1;
   }
   QDomElement schemaElement = schemaNodeList.at( 0 ).toElement();
+  mWfsNamespace = schemaElement.attribute( "targetNamespace" );
   QDomElement complexTypeElement; //the <complexType> element corresponding to the feature type
 
   //find out, on which lines the first <element> or the first <complexType> occur. If <element> occurs first (mapserver), read the type of the relevant <complexType> tag. If <complexType> occurs first (geoserver), search for information about the feature type directly under this first complexType element
@@ -792,7 +1119,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
     {
       //insert bbox and pointer to feature into search tree
       mSpatialIndex->insertFeature( *f );
-      mFeatures << f;
+      mFeatures.insert( f->id(), f );
       ++mFeatureCount;
     }
     ++counter;
@@ -1387,6 +1714,212 @@ void QgsWFSProvider::handleWFSProgressMessage( int done, int total )
   emit dataReadProgressMessage( message );
 }
 
+QDomElement QgsWFSProvider::createGeometryElem( QgsGeometry* geom, QDomDocument& doc ) /*const*/
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+
+  QDomElement geomElement;
+
+  QString geomTypeName;
+  QGis::WkbType wkbType = geom->wkbType();
+  switch ( wkbType )
+  {
+    case QGis::WKBPoint:
+      geomElement = createPointElem( geom, doc );
+      break;
+    case QGis::WKBMultiPoint:
+      geomElement = createMultiPointElem( geom, doc );
+      break;
+    case QGis::WKBLineString:
+      geomElement = createLineStringElem( geom, doc );
+      break;
+    case QGis::WKBMultiLineString:
+      geomElement = createMultiLineStringElem( geom, doc );
+      break;
+    case QGis::WKBPolygon:
+      geomElement = createPolygonElem( geom, doc );
+      break;
+    case QGis::WKBMultiPolygon:
+      geomElement = createMultiPolygonElem( geom, doc );
+      break;
+    default:
+      return QDomElement();
+  }
+
+  if ( !geomElement.isNull() )
+  {
+    //append layer srs
+    QgsCoordinateReferenceSystem layerCrs = crs();
+    if ( layerCrs.isValid() )
+    {
+      geomElement.setAttribute( "srsName", QString( "EPSG:" ) + QString::number( layerCrs.epsg() ) );
+    }
+  }
+  return geomElement;
+}
+
+QDomElement QgsWFSProvider::createLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+
+  QDomElement lineStringElem = doc.createElementNS( "http://www.opengis.net/gml", "LineString" );
+  QDomElement coordElem = createCoordinateElem( geom->asPolyline(), doc );
+  lineStringElem.appendChild( coordElem );
+  return lineStringElem;
+}
+
+QDomElement QgsWFSProvider::createMultiLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+
+  QDomElement multiLineStringElem = doc.createElementNS( "http://www.opengis.net/gml", "MultiLineString" );
+  QgsMultiPolyline multiline = geom->asMultiPolyline();
+
+  QgsMultiPolyline::const_iterator multiLineIt = multiline.constBegin();
+  for ( ; multiLineIt != multiline.constEnd(); ++multiLineIt )
+  {
+    QgsGeometry* lineGeom = QgsGeometry::fromPolyline( *multiLineIt );
+    if ( lineGeom )
+    {
+      QDomElement lineStringMemberElem = doc.createElementNS( "http://www.opengis.net/gml", "lineStringMember" );
+      QDomElement lineElem = createLineStringElem( lineGeom, doc );
+      lineStringMemberElem.appendChild( lineElem );
+      multiLineStringElem.appendChild( lineStringMemberElem );
+    }
+    delete lineGeom;
+  }
+
+  return multiLineStringElem;
+}
+
+QDomElement QgsWFSProvider::createPointElem( QgsGeometry* geom, QDomDocument& doc ) const
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+
+  QDomElement pointElem = doc.createElementNS( "http://www.opengis.net/gml", "Point" );
+  QgsPoint p = geom->asPoint();
+  QVector<QgsPoint> v;
+  v.append( p );
+  QDomElement coordElem = createCoordinateElem( v, doc );
+  pointElem.appendChild( coordElem );
+  return pointElem;
+}
+
+QDomElement QgsWFSProvider::createMultiPointElem( QgsGeometry* geom, QDomDocument& doc ) const
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+
+  QDomElement multiPointElem = doc.createElementNS( "http://www.opengis.net/gml", "MultiPoint" );
+  QgsMultiPoint multiPoint = geom->asMultiPoint();
+
+  QgsMultiPoint::const_iterator multiPointIt = multiPoint.constBegin();
+  for ( ; multiPointIt != multiPoint.constEnd(); ++multiPointIt )
+  {
+    QgsGeometry* pointGeom = QgsGeometry::fromPoint( *multiPointIt );
+    if ( pointGeom )
+    {
+      QDomElement multiPointMemberElem = doc.createElementNS( "http://www.opengis.net/gml", "pointMember" );
+      QDomElement pointElem = createPointElem( pointGeom, doc );
+      multiPointMemberElem.appendChild( pointElem );
+      multiPointElem.appendChild( multiPointMemberElem );
+    }
+  }
+  return multiPointElem;
+}
+
+QDomElement QgsWFSProvider::createPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+
+  QDomElement polygonElem = doc.createElementNS( "http://www.opengis.net/gml", "Polygon" );
+  QgsPolygon poly = geom->asPolygon();
+  for ( int i = 0; i < poly.size(); ++i )
+  {
+    QString boundaryName;
+    if ( i == 0 )
+    {
+      boundaryName = "outerBoundaryIs";
+    }
+    else
+    {
+      boundaryName = "innerBoundaryIs";
+    }
+    QDomElement boundaryElem = doc.createElementNS( "http://www.opengis.net/gml", boundaryName );
+    QDomElement ringElem = doc.createElementNS( "http://www.opengis.net/gml", "LinearRing" );
+    QDomElement coordElem = createCoordinateElem( poly.at( i ), doc );
+    ringElem.appendChild( coordElem );
+    boundaryElem.appendChild( ringElem );
+    polygonElem.appendChild( boundaryElem );
+  }
+  return polygonElem;
+}
+
+QDomElement QgsWFSProvider::createMultiPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const
+{
+  if ( !geom )
+  {
+    return QDomElement();
+  }
+  QDomElement multiPolygonElem = doc.createElementNS( "http://www.opengis.net/gml", "MultiPolygon" );
+  QgsMultiPolygon multipoly = geom->asMultiPolygon();
+
+  QgsMultiPolygon::const_iterator polyIt = multipoly.constBegin();
+  for ( ; polyIt != multipoly.constEnd(); ++polyIt )
+  {
+    QgsGeometry* polygonGeom = QgsGeometry::fromPolygon( *polyIt );
+    if ( polygonGeom )
+    {
+      QDomElement polygonMemberElem = doc.createElementNS( "http://www.opengis.net/gml", "polygonMember" );
+      QDomElement polygonElem = createPolygonElem( polygonGeom, doc );
+      delete polygonGeom;
+      polygonMemberElem.appendChild( polygonElem );
+      multiPolygonElem.appendChild( polygonMemberElem );
+    }
+  }
+  return multiPolygonElem;
+}
+
+QDomElement QgsWFSProvider::createCoordinateElem( const QVector<QgsPoint> points, QDomDocument& doc ) const
+{
+  QDomElement coordElem = doc.createElementNS( "http://www.opengis.net/gml", "coordinates" );
+  coordElem.setAttribute( "cs", "," );
+  coordElem.setAttribute( "ts", " " );
+
+  QString coordString;
+  QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
+  for ( ; pointIt != points.constEnd(); ++pointIt )
+  {
+    if ( pointIt != points.constBegin() )
+    {
+      coordString += " ";
+    }
+    coordString += QString::number( pointIt->x() );
+    coordString += ",";
+    coordString += QString::number( pointIt->y() );
+  }
+
+  QDomText coordText = doc.createTextNode( coordString );
+  coordElem.appendChild( coordText );
+  return coordElem;
+}
 
 QString QgsWFSProvider::name() const
 {
@@ -1398,6 +1931,283 @@ QString QgsWFSProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
+int QgsWFSProvider::capabilities() const
+{
+  return mCapabilities;
+}
+
+QString QgsWFSProvider::typeNameFromUrl() const
+{
+  QStringList urlSplit = dataSourceUri().split( "?" );
+  if ( urlSplit.size() > 1 )
+  {
+    QStringList keyValueSplit = urlSplit.at( 1 ).split( "&" );
+    QStringList::const_iterator kvIt = keyValueSplit.constBegin();
+    for ( ; kvIt != keyValueSplit.constEnd(); ++kvIt )
+    {
+      if ( kvIt->startsWith( "typename", Qt::CaseInsensitive ) )
+      {
+        QStringList equalSplit = kvIt->split( "=" );
+        if ( equalSplit.size() > 1 )
+        {
+          return equalSplit.at( 1 );
+        }
+      }
+    }
+  }
+
+  return QString();
+}
+
+void QgsWFSProvider::removeNamespacePrefix( QString& tname ) const
+{
+  if ( tname.contains( ":" ) )
+  {
+    QStringList splitList = tname.split( ":" );
+    if ( splitList.size() > 1 )
+    {
+      tname = splitList.at( 1 );
+    }
+  }
+}
+
+QString QgsWFSProvider::nameSpacePrefix( const QString& tname ) const
+{
+  QStringList splitList = tname.split( ":" );
+  if ( splitList.size() < 2 )
+  {
+    return QString();
+  }
+  return splitList.at( 0 );
+}
+
+bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse )
+{
+  if ( doc.isNull() || !mNetworkRequestFinished )
+  {
+    return false;
+  }
+
+  mNetworkRequestFinished = false;
+  QString serverUrl = dataSourceUri().split( "?" ).at( 0 );
+  QNetworkRequest request( serverUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, "text/xml" );
+  QNetworkReply* reply = QgsNetworkAccessManager::instance()->post( request, doc.toByteArray( -1 ) );
+
+  connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
+  while ( !mNetworkRequestFinished )
+  {
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WFS_THRESHOLD );
+  }
+
+  QByteArray response = reply->readAll();
+  reply->deleteLater();
+  serverResponse.setContent( response, true );
+  return true;
+}
+
+QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
+{
+  QDomElement transactionElem = doc.createElementNS( "http://www.opengis.net/wfs", "Transaction" );
+  transactionElem.setAttribute( "version", "1.0.0" );
+  transactionElem.setAttribute( "service", "WFS" );
+  transactionElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + " " \
+                                + dataSourceUri().replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) ) );
+
+  QString namespacePrefix = nameSpacePrefix( typeNameFromUrl() );
+  if ( !namespacePrefix.isEmpty() )
+  {
+    transactionElem.setAttribute( "xmlns:" + namespacePrefix, mWfsNamespace );
+  }
+
+  return transactionElem;
+}
+
+bool QgsWFSProvider::transactionSuccess( const QDomDocument& serverResponse ) const
+{
+  if ( serverResponse.isNull() )
+  {
+    return false;
+  }
+
+  QDomElement documentElem = serverResponse.documentElement();
+  if ( documentElem.isNull() )
+  {
+    return false;
+  }
+
+  QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( "http://www.opengis.net/wfs", "TransactionResult" );
+  if ( transactionResultList.size() < 1 )
+  {
+    return false;
+  }
+
+  QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( "http://www.opengis.net/wfs", "Status" );
+  if ( statusList.size() < 1 )
+  {
+    return false;
+  }
+
+  if ( statusList.at( 0 ).firstChildElement().localName() == "SUCCESS" )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument& serverResponse ) const
+{
+  QStringList ids;
+  if ( serverResponse.isNull() )
+  {
+    return ids;
+  }
+
+  QDomElement rootElem = serverResponse.documentElement();
+  if ( rootElem.isNull() )
+  {
+    return ids;
+  }
+
+  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( "http://www.opengis.net/wfs", "InsertResult" );
+  for ( int i = 0; i < insertResultList.size(); ++i )
+  {
+    QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( "http://www.opengis.net/ogc", "FeatureId" );
+    for ( int j = 0; j < featureIdList.size(); ++j )
+    {
+      QString fidString = featureIdList.at( j ).toElement().attribute( "fid" );
+      if ( !fidString.isEmpty() )
+      {
+        ids << fidString;
+      }
+    }
+  }
+  return ids;
+}
+
+int QgsWFSProvider::findNewKey() const
+{
+  if ( mFeatures.isEmpty() )
+  {
+    return 0;
+  }
+
+  //else return highest key + 1
+  QMap<int, QgsFeature*>::const_iterator lastIt = mFeatures.end();
+  lastIt --;
+  return lastIt.key() + 1;
+}
+
+void QgsWFSProvider::getLayerCapabilities()
+{
+  int capabilities = 0;
+  if ( !mNetworkRequestFinished )
+  {
+    mCapabilities = 0;
+    return;
+  }
+  mNetworkRequestFinished = false;
+
+
+  //get capabilities document
+  QString uri = dataSourceUri();
+  uri.replace( QString( "GetFeature" ), QString( "GetCapabilities" ) );
+  QNetworkRequest request( uri );
+  QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
+
+  connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
+  while ( !mNetworkRequestFinished )
+  {
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WFS_THRESHOLD );
+  }
+  QByteArray response = reply->readAll();
+  reply->deleteLater();
+
+  QDomDocument capabilitiesDocument;
+  QString capabilitiesDocError;
+  if ( !capabilitiesDocument.setContent( response, true, &capabilitiesDocError ) )
+  {
+    mCapabilities = 0;
+    return;
+  }
+
+  //go to <FeatureTypeList>
+  QDomElement featureTypeListElem = capabilitiesDocument.documentElement().firstChildElement( "FeatureTypeList" );
+  if ( featureTypeListElem.isNull() )
+  {
+    mCapabilities = 0;
+    return;
+  }
+
+  QDomElement operationsElem = featureTypeListElem.firstChildElement( "Operations" );
+  if ( !operationsElem.isNull() )
+  {
+    appendSupportedOperations( operationsElem, capabilities );
+  }
+
+  //find the <FeatureType> for this layer
+  QString thisLayerName = typeNameFromUrl();
+  QDomNodeList featureTypeList = featureTypeListElem.elementsByTagName( "FeatureType" );
+  for ( int i = 0; i < featureTypeList.size(); ++i )
+  {
+    QString name = featureTypeList.at( i ).firstChildElement( "Name" ).text();
+    if ( name == thisLayerName )
+    {
+      appendSupportedOperations( featureTypeList.at( i ).firstChildElement( "Operations" ), capabilities );
+      break;
+    }
+  }
+
+  mCapabilities = capabilities;
+}
+
+void QgsWFSProvider::appendSupportedOperations( const QDomElement& operationsElem, int& capabilities ) const
+{
+  if ( operationsElem.isNull() )
+  {
+    return;
+  }
+
+  QDomNodeList childList = operationsElem.childNodes();
+  for ( int i = 0; i < childList.size(); ++i )
+  {
+    QString elemName = childList.at( i ).toElement().tagName();
+    if ( elemName == "Insert" )
+    {
+      capabilities |= QgsVectorDataProvider::AddFeatures;
+    }
+    else if ( elemName == "Update" )
+    {
+      capabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+      capabilities |= QgsVectorDataProvider::ChangeGeometries;
+    }
+    else if ( elemName == "Delete" )
+    {
+      capabilities |= QgsVectorDataProvider::DeleteFeatures;
+    }
+  }
+}
+
+void QgsWFSProvider::handleException( const QDomDocument& serverResponse ) const
+{
+  QDomElement exceptionElem = serverResponse.documentElement();
+  if ( exceptionElem.isNull() || exceptionElem.tagName() != "ServiceExceptionReport" )
+  {
+    return;
+  }
+
+  //possibly this class is used not in a gui application
+  if ( QApplication::topLevelWidgets().size() < 1 )
+  {
+    return;
+  }
+  QString message = exceptionElem.firstChildElement( "ServiceException" ).text();
+  QMessageBox::critical( 0, tr( "Error" ), message );
+}
 
 QGISEXTERN QgsWFSProvider* classFactory( const QString *uri )
 {

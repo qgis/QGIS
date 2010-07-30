@@ -15,8 +15,6 @@
 #ifndef QGSWFSDATA_H
 #define QGSWFSDATA_H
 
-#include <QHttp>
-#include <QTimer>
 #include <expat.h>
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -40,7 +38,8 @@ class QgsWFSData: public QObject
       const QString& uri,
       QgsRectangle* extent,
       QgsCoordinateReferenceSystem* srs,
-      QList<QgsFeature*> &features,
+      QMap<int, QgsFeature* > &features,
+      QMap<int, QString > &idMap,
       const QString& geometryAttribute,
       const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
       QGis::WkbType* wkbType );
@@ -53,18 +52,18 @@ class QgsWFSData: public QObject
        @param features the features of the layer
     @return 0 in case of success*/
     int getWFSData();
-    /**Returns a pointer to the internal QHttp object (mainly for the purpose of making singal/slot connections*/
-    const QHttp* http() const {return &mHttp;}
 
   private slots:
-    void setFinished( bool error = true );
+    void setFinished();
 
     /**Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'*/
-    void handleProgressEvent( int progress, int totalSteps );
+    void handleProgressEvent( qint64 progress, qint64 totalSteps );
 
   signals:
     void dataReadProgress( int progress );
     void totalStepsUpdate( int totalSteps );
+    //also emit signal with progress and totalSteps together (this is better for the status message)
+    void dataProgressAndSteps( int progress, int totalSteps );
 
   private:
 
@@ -108,12 +107,9 @@ class QgsWFSData: public QObject
        @param attr attribute strings
        @return 0 in case of success*/
     int readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const;
-    /**Reads the 'cs' (coordinate separator) attribute.
-     @return the cs attribute value or the default value ","*/
-    QString readCsFromAttribute( const XML_Char** attr ) const;
-    /**Reads the 'ts' (tuple separator) attribute.
-       @return the ts attribute value or the devault value " "*/
-    QString readTsFromAttribute( const XML_Char** attr ) const;
+    /**Reads attribute as string
+      @return attribute value or an empty string if no such attribute*/
+    QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
     /**Creates a rectangle from a coordinate string.
      @return 0 in case of success*/
     int createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const;
@@ -123,7 +119,8 @@ class QgsWFSData: public QObject
        @param cs coortinate separator
        @param ts tuple separator
        @return 0 in case of success*/
-    int pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString, const QString& cs, const QString& ts ) const;
+    int pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const;
+
     int getPointWKB( unsigned char** wkb, int* size, const QgsPoint& ) const;
     int getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& lineCoordinates ) const;
     int getRingWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& ringCoordinates ) const;
@@ -149,20 +146,21 @@ class QgsWFSData: public QObject
     /**Source srs of the layer*/
     QgsCoordinateReferenceSystem* mSrs;
     /**The features of the layer*/
-    QList<QgsFeature*> &mFeatures;
+    QMap<int, QgsFeature* > &mFeatures;
+    /**Stores the relation between provider ids and WFS server ids*/
+    QMap<int, QString > &mIdMap;
     /**Name of geometry attribute*/
     QString mGeometryAttribute;
     const QMap<QString, QPair<int, QgsField> > &mThematicAttributes;
     QGis::WkbType* mWkbType;
     /**True if the request is finished*/
     bool mFinished;
-    /**The HTTP client object*/
-    QHttp mHttp;
     /**Keep track about the most important nested elements*/
     std::stack<parseMode> mParseModeStack;
     /**This contains the character data if an important element has been encountered*/
     QString mStringCash;
     QgsFeature* mCurrentFeature;
+    QString mCurrentFeatureId;
     int mFeatureCount;
     /**The total WKB for a feature*/
     unsigned char* mCurrentWKB;
@@ -179,8 +177,6 @@ class QgsWFSData: public QObject
     QString mCoordinateSeparator;
     /**Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
-    int mNetworkTimeoutMsec;
-    QTimer mNetworkTimeoutTimer;
 };
 
 #endif
