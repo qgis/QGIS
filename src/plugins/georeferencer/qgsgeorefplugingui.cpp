@@ -1796,6 +1796,8 @@ QString QgsGeorefPluginGui::convertTransformEnumToString( QgsGeorefTransform::Tr
       return tr( "Polynomial 3" );
     case QgsGeorefTransform::ThinPlateSpline:
       return tr( "Thin plate spline (TPS)" );
+    case QgsGeorefTransform::Projective:
+      return tr( "Projective" );
     default:
       return tr( "Not set" );
   }

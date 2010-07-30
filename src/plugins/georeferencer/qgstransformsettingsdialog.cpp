@@ -36,6 +36,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   cmbTransformType->addItem( tr( "Linear" ) , ( int )QgsGeorefTransform::Linear ) ;
   cmbTransformType->addItem( tr( "Helmert" ), ( int )QgsGeorefTransform::Helmert );
+  cmbTransformType->addItem( tr( "Projective" ), ( int )QgsGeorefTransform::Projective );
   cmbTransformType->addItem( tr( "Polynomial 1" ), ( int )QgsGeorefTransform::PolynomialOrder1 );
   cmbTransformType->addItem( tr( "Polynomial 2" ), ( int )QgsGeorefTransform::PolynomialOrder2 );
   cmbTransformType->addItem( tr( "Polynomial 3" ), ( int )QgsGeorefTransform::PolynomialOrder3 );
@@ -96,7 +97,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   if ( cmbTransformType->currentIndex() == -1 )
     tp = QgsGeorefTransform::InvalidTransform;
   else
-    tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->currentIndex();
+    tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt();
 
   rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
   comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() );

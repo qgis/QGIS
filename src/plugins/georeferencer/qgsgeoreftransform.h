@@ -67,7 +67,8 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
       PolynomialOrder2,
       PolynomialOrder3,
       ThinPlateSpline,
-      InvalidTransform
+      Projective,
+      InvalidTransform = 65535
     };
 
     QgsGeorefTransform( TransformParametrisation parametrisation );

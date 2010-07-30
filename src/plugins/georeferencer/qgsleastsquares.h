@@ -36,6 +36,10 @@ class QgsLeastSquares
 
     static void affine( std::vector<QgsPoint> mapCoords,
                         std::vector<QgsPoint> pixelCoords );
+
+    static void projective( std::vector<QgsPoint> mapCoords,
+                            std::vector<QgsPoint> pixelCoords,
+                            double H[9] );
 };
 
 
