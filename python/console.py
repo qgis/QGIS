@@ -78,7 +78,7 @@ class PythonConsole(QWidget):
     self.l = QVBoxLayout()
     self.l.addWidget(self.edit)
     self.setLayout(self.l)
-    self.setWindowTitle("Python console")
+    self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
     s = QSettings()
     self.restoreGeometry(s.value("/python/console/geometry").toByteArray())
@@ -132,9 +132,9 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
     self.buffer = []
 
-    self.insertTaggedText("To access Quantum GIS environment from this console\n"
-                          "use qgis.utils.iface object (instance of QgisInterface class).\n"
-			  "\n", ConsoleHighlighter.INIT)
+    self.insertTaggedText(QCoreApplication.translate("PythonConsole", "To access Quantum GIS environment from this console\n"
+                          "use qgis.utils.iface object (instance of QgisInterface class).\n\n"),
+			  ConsoleHighlighter.INIT)
 
     for line in _init_commands:
       self.runsource(line)
