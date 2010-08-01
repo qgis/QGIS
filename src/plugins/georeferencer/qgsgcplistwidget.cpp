@@ -43,7 +43,7 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   proxyModel->setSortRole( Qt::UserRole );
   setModel( proxyModel );
   setSortingEnabled( true );
-  
+
   setContextMenuPolicy( Qt::CustomContextMenu );
   setFocusPolicy( Qt::NoFocus );
 
@@ -99,7 +99,7 @@ void QgsGCPListWidget::updateGCPList()
 void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
 {
   index = static_cast<const QSortFilterProxyModel*>( model() )->mapToSource( index );
-  QStandardItem *item = mGCPListModel->item( index.row(), 1);
+  QStandardItem *item = mGCPListModel->item( index.row(), 1 );
   bool ok;
   int id = item->text().toInt( &ok );
 
@@ -193,7 +193,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeRow() ) );
   m.addAction( removeAction );
   m.exec( QCursor::pos(), removeAction );
-  
+
   index = static_cast<const QSortFilterProxyModel*>( model() )->mapToSource( index );
   mPrevRow = index.row();
   mPrevColumn = index.column();

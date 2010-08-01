@@ -61,7 +61,6 @@
 #include "qgstransformsettingsdialog.h"
 
 #include "qgsgeorefplugingui.h"
-#include <assert.h>
 
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
@@ -85,9 +84,9 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
     , mIface( theQgisInterface )
     , mLayer( 0 )
-    , mAgainAddRaster ( false )
+    , mAgainAddRaster( false )
     , mMovingPoint( 0 )
-    , mMovingPointQgis ( 0 )
+    , mMovingPointQgis( 0 )
     , mMapCoordsDialog( 0 )
     , mUseZeroForTrans( false )
     , mLoadInQgis( false )
@@ -254,7 +253,7 @@ void QgsGeorefPluginGui::openRaster()
     QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), false );
 
   // Add raster
-  addRaster(mRasterFileName);
+  addRaster( mRasterFileName );
 
   // load previously added points
   mGCPpointsFileName = mRasterFileName + ".points";
@@ -487,7 +486,7 @@ void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
       delete *it;
       mPoints.erase( it );
       mGCPListWidget->updateGCPList();
-      
+
       mCanvas->refresh();
       break;
     }
@@ -497,7 +496,7 @@ void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
 
 void QgsGeorefPluginGui::deleteDataPoint( int theGCPIndex )
 {
-  assert( theGCPIndex >= 0 );
+  Q_ASSERT( theGCPIndex >= 0 );
   delete mPoints.takeAt( theGCPIndex );
   mGCPListWidget->updateGCPList();
   updateGeorefTransform();
@@ -506,34 +505,24 @@ void QgsGeorefPluginGui::deleteDataPoint( int theGCPIndex )
 void QgsGeorefPluginGui::selectPoint( const QPoint &p )
 {
   // Get Map Sender
-  QObject *tool = sender();
-  if ( tool == 0)
-  {
-    return;
-  }
-  bool isMapPlugin = ( (void *)tool == (void *)mToolMovePoint ) ? true : false;
+  bool isMapPlugin = sender() == mToolMovePoint;
+  QgsGeorefDataPoint *&mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
 
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
-    if ( ( *it )->contains( p, isMapPlugin ) )
+    if (( *it )->contains( p, isMapPlugin ) )
     {
-      isMapPlugin ? mMovingPoint = *it : mMovingPointQgis = *it;
+      mvPoint = *it;
       break;
     }
   }
-
 }
 
 void QgsGeorefPluginGui::movePoint( const QPoint &p )
 {
   // Get Map Sender
-  QObject *tool = sender();
-  if ( tool == 0)
-  {
-    return;
-  }
-  bool isMapPlugin = ( (void *)tool == (void *)mToolMovePoint ) ? true : false;
-  QgsGeorefDataPoint *mvPoint = (isMapPlugin ? mMovingPoint : mMovingPointQgis);
+  bool isMapPlugin = sender() == mToolMovePoint;
+  QgsGeorefDataPoint *mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
 
   if ( mvPoint )
   {
@@ -546,13 +535,14 @@ void QgsGeorefPluginGui::movePoint( const QPoint &p )
 void QgsGeorefPluginGui::releasePoint( const QPoint &p )
 {
   // Get Map Sender
-  QObject *tool = sender();
-  if ( tool == 0)
+  if ( sender() == mToolMovePoint )
   {
-    return;
+    mMovingPoint = 0;
   }
-  bool isMapPlugin = ( (void *)tool == (void *)mToolMovePoint ) ? true : false;
-  isMapPlugin ? mMovingPoint = 0 : mMovingPointQgis = 0;
+  else
+  {
+    mMovingPointQgis = 0;
+  }
 }
 
 void QgsGeorefPluginGui::showCoordDialog( const QgsPoint &pixelCoords )
@@ -770,7 +760,7 @@ void QgsGeorefPluginGui::extentsChanged()
   {
     if ( QFile::exists( mRasterFileName ) )
     {
-      addRaster(mRasterFileName);
+      addRaster( mRasterFileName );
     }
     else
     {
@@ -781,10 +771,9 @@ void QgsGeorefPluginGui::extentsChanged()
 }
 
 // Registry layer QGis
-void QgsGeorefPluginGui::layerWillBeRemoved ( QString theLayerId )
+void QgsGeorefPluginGui::layerWillBeRemoved( QString theLayerId )
 {
-  mAgainAddRaster = ( mLayer  && mLayer->getLayerID().compare(theLayerId) == 0 )
-                  ? true : false;
+  mAgainAddRaster = mLayer && mLayer->getLayerID().compare( theLayerId ) == 0;
 }
 
 // ------------------------------ private ---------------------------------- //
@@ -1032,15 +1021,15 @@ void QgsGeorefPluginGui::setupConnections()
   connect( mCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
   connect( mCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
   // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsMapLayerRegistry::instance() , SIGNAL( layerWillBeRemoved (QString) ), this, SLOT( layerWillBeRemoved (QString) ) );
+  connect( QgsMapLayerRegistry::instance() , SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
 
   // Connect extents changed - Use for need add again Raster
-  connect( mCanvas, SIGNAL( extentsChanged () ), this, SLOT( extentsChanged() ) );
+  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
 
 }
 
 // Mapcanvas Plugin
-void QgsGeorefPluginGui::addRaster(QString file)
+void QgsGeorefPluginGui::addRaster( QString file )
 {
   mLayer = new QgsRasterLayer( file, "Raster" );
 
