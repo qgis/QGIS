@@ -316,8 +316,8 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
 
   // Change coordinate frame of image and pre-image from normalized to map and pixel coordinates.
   // H' = denormalizeMapCoords*H*normalizePixelCoords
-  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Hmatrix.matrix, &normPixelMatrix.matrix, 0.0, prodMatrix );
-  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &denormMapMatrix.matrix, prodMatrix, 0.0, &Hmatrix.matrix );
+  gsl_blas_dgemm( CblasNoTrans, CblasNoTrans, 1.0, &Hmatrix.matrix, &normPixelMatrix.matrix, 0.0, prodMatrix );
+  gsl_blas_dgemm( CblasNoTrans, CblasNoTrans, 1.0, &denormMapMatrix.matrix, prodMatrix, 0.0, &Hmatrix.matrix );
 
   gsl_matrix_free( prodMatrix );
   gsl_matrix_free( S );
