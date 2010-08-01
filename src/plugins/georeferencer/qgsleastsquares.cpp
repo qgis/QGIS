@@ -181,40 +181,40 @@ void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
  * Also returns 3x3 homogenous matrices which can be used to normalize and de-normalize coordinates.
  */
 void normalizeCoordinates( const std::vector<QgsPoint> coords, std::vector<QgsPoint> &normalizedCoords,
-                           double normalizeMatrix[9], double denormalizeMatrix[9])
+                           double normalizeMatrix[9], double denormalizeMatrix[9] )
 {
   // Calculate center of gravity
   double cogX = 0.0, cogY = 0.0;
   for ( uint i = 0; i < coords.size(); i++ )
   {
-    cogX+= coords[i].x();
-    cogY+= coords[i].y();
+    cogX += coords[i].x();
+    cogY += coords[i].y();
   }
-  cogX*= 1.0/coords.size();
-  cogY*= 1.0/coords.size();
+  cogX *= 1.0 / coords.size();
+  cogY *= 1.0 / coords.size();
 
   // Calculate mean distance to origin
   double meanDist = 0.0;
   for ( uint i = 0; i < coords.size(); i++ )
   {
-    double X = (coords[i].x() - cogX);
-    double Y = (coords[i].y() - cogY);
-    meanDist+= sqrt( X*X + Y*Y );
+    double X = ( coords[i].x() - cogX );
+    double Y = ( coords[i].y() - cogY );
+    meanDist += sqrt( X * X + Y * Y );
   }
-  meanDist*= 1.0/coords.size();
+  meanDist *= 1.0 / coords.size();
 
-  double OOD = meanDist/sqrt(2);
-  double D   = 1.0/OOD;
-  normalizedCoords.resize(coords.size());
+  double OOD = meanDist / sqrt( 2.0 );
+  double D   = 1.0 / OOD;
+  normalizedCoords.resize( coords.size() );
   for ( uint i = 0; i < coords.size(); i++ )
   {
-    normalizedCoords[i] = QgsPoint( (coords[i].x() - cogX)*D, (coords[i].y() - cogY)*D );
+    normalizedCoords[i] = QgsPoint(( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
   }
 
-  normalizeMatrix[0] =   D; normalizeMatrix[1] = 0.0; normalizeMatrix[2] = -cogX*D;
-  normalizeMatrix[3] = 0.0; normalizeMatrix[4] =   D; normalizeMatrix[5] = -cogY*D;
+  normalizeMatrix[0] =   D; normalizeMatrix[1] = 0.0; normalizeMatrix[2] = -cogX * D;
+  normalizeMatrix[3] = 0.0; normalizeMatrix[4] =   D; normalizeMatrix[5] = -cogY * D;
   normalizeMatrix[6] = 0.0; normalizeMatrix[7] = 0.0; normalizeMatrix[8] =   1.0;
-  
+
   denormalizeMatrix[0] = OOD; denormalizeMatrix[1] = 0.0; denormalizeMatrix[2] = cogX;
   denormalizeMatrix[3] = 0.0; denormalizeMatrix[4] = OOD; denormalizeMatrix[5] = cogY;
   denormalizeMatrix[6] = 0.0; denormalizeMatrix[7] = 0.0; denormalizeMatrix[8] =  1.0;
@@ -235,14 +235,14 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
 
   std::vector<QgsPoint> mapCoordsNormalized;
   std::vector<QgsPoint> pixelCoordsNormalized;
-  
+
   double normMap[9], denormMap[9];
   double normPixel[9], denormPixel[9];
   normalizeCoordinates( mapCoords, mapCoordsNormalized, normMap, denormMap );
   normalizeCoordinates( pixelCoords, pixelCoordsNormalized, normPixel, denormPixel );
   mapCoords = mapCoordsNormalized;
   pixelCoords = pixelCoordsNormalized;
-  
+
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
   uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
