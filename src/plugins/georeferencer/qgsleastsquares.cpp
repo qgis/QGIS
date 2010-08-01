@@ -187,11 +187,12 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = std::max(9u, (uint)mapCoords.size()*2u);
+  uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
   uint n = 9;
-  gsl_matrix *S = gsl_matrix_alloc ( m, n );
+  gsl_matrix *S = gsl_matrix_alloc( m, n );
 
-  for ( uint i = 0; i < mapCoords.size(); i++ ) {
+  for ( uint i = 0; i < mapCoords.size(); i++ )
+  {
     gsl_matrix_set( S, i*2, 0,  pixelCoords[i].x() );
     gsl_matrix_set( S, i*2, 1, -pixelCoords[i].y() );
     gsl_matrix_set( S, i*2, 2, 1.0 );
@@ -201,33 +202,33 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
     gsl_matrix_set( S, i*2, 5, 0.0 );
 
     gsl_matrix_set( S, i*2, 6, -mapCoords[i].x()* pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2, 7, -mapCoords[i].x()*-pixelCoords[i].y() );
+    gsl_matrix_set( S, i*2, 7, -mapCoords[i].x()* -pixelCoords[i].y() );
     gsl_matrix_set( S, i*2, 8, -mapCoords[i].x()*1.0 );
 
-    gsl_matrix_set( S, i*2+1, 0, 0.0 );
-    gsl_matrix_set( S, i*2+1, 1, 0.0 );
-    gsl_matrix_set( S, i*2+1, 2, 0.0 );
+    gsl_matrix_set( S, i*2 + 1, 0, 0.0 );
+    gsl_matrix_set( S, i*2 + 1, 1, 0.0 );
+    gsl_matrix_set( S, i*2 + 1, 2, 0.0 );
 
-    gsl_matrix_set( S, i*2+1, 3, pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2+1, 4, -pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2+1, 5, 1.0 );
+    gsl_matrix_set( S, i*2 + 1, 3, pixelCoords[i].x() );
+    gsl_matrix_set( S, i*2 + 1, 4, -pixelCoords[i].y() );
+    gsl_matrix_set( S, i*2 + 1, 5, 1.0 );
 
-    gsl_matrix_set( S, i*2+1, 6, -mapCoords[i].y()* pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2+1, 7, -mapCoords[i].y()*-pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2+1, 8, -mapCoords[i].y()*1.0 );
+    gsl_matrix_set( S, i*2 + 1, 6, -mapCoords[i].y()* pixelCoords[i].x() );
+    gsl_matrix_set( S, i*2 + 1, 7, -mapCoords[i].y()* -pixelCoords[i].y() );
+    gsl_matrix_set( S, i*2 + 1, 8, -mapCoords[i].y()*1.0 );
   }
 
-  if (mapCoords.size() == 4)
+  if ( mapCoords.size() == 4 )
   {
     // The GSL SVD routine only supports matrices with rows >= columns (m >= n)
     // Unfortunately, we can't use the SVD of the transpose (i.e. S^T = (U D V^T)^T = V D U^T)
-    // to work around this, because the solution lies in the right nullspace of S, and 
+    // to work around this, because the solution lies in the right nullspace of S, and
     // gsl only supports a thin SVD of S^T, which does not return these vectors.
 
     // HACK: duplicate last row to get a 9x9 equation system
-    for (int j = 0; j < 9; j++)
+    for ( int j = 0; j < 9; j++ )
     {
-      gsl_matrix_set( S, 8, j, gsl_matrix_get( S, 7, j) );
+      gsl_matrix_set( S, 8, j, gsl_matrix_get( S, 7, j ) );
     }
   }
 
@@ -235,17 +236,16 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
   // with Sh = min and |h|=1. The solution "h" is given by the
   // right singular eigenvector of S corresponding, to the smallest
   // singular value (via SVD).
-  gsl_matrix *V = gsl_matrix_alloc (n, n);
-  gsl_vector *singular_values = gsl_vector_alloc(n);
-  gsl_vector *work = gsl_vector_alloc(n);
+  gsl_matrix *V = gsl_matrix_alloc( n, n );
+  gsl_vector *singular_values = gsl_vector_alloc( n );
+  gsl_vector *work = gsl_vector_alloc( n );
 
   // V = n x n
   // U = m x n (thin SVD)  U D V^T
-  gsl_linalg_SV_decomp(S, V, singular_values, work);
+  gsl_linalg_SV_decomp( S, V, singular_values, work );
 
-  double eigen[9];
   // Columns of V store the right singular vectors of S
-  for (int i = 0; i < n; i++)
+  for ( unsigned int i = 0; i < n; i++ )
   {
     H[i] = gsl_matrix_get( V, i, n - 1 );
   }
