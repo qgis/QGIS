@@ -562,8 +562,16 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const std::vector<Q
 {
   if ( mapCoords.size() < getMinimumGCPCount() )
     return false;
+
+
+  // HACK: flip y coordinates, because georeferencer and gdal use different conventions
+  std::vector<QgsPoint> flippedPixelCoords( pixelCoords.size() );
+  for ( uint i = 0; i < pixelCoords.size(); i++ )
+  {
+    flippedPixelCoords[i] = QgsPoint( pixelCoords[i].x(), -pixelCoords[i].y() );
+  }
   
-  QgsLeastSquares::projective( mapCoords, pixelCoords, mParameters.H );
+  QgsLeastSquares::projective( mapCoords, flippedPixelCoords, mParameters.H );
 
   // Invert the homography matrix using adjoint matrix
   double *H = mParameters.H;
