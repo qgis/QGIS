@@ -603,17 +603,6 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const std::vector<Q
     {
       mParameters.Hinv[i] = adjoint[i]*oo_det;
     }
-
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        double sum = 0.0;
-        for (int k = 0; k < 3; k++) {
-          sum+= H[j*3 + k]*mParameters.Hinv[i + k*3];
-        }
-        std::cout<<sum<<", ";
-      }
-      std::cout<<std::endl;
-    }
   }
   return true;
 }
