@@ -43,6 +43,7 @@
 				7217CEA410FE32330064D760 /* PBXTargetDependency */,
 				72E706FA0F42613A00142011 /* PBXTargetDependency */,
 				7256F1D10F411D080022BE1F /* PBXTargetDependency */,
+				72E25B261207106200E2895A /* PBXTargetDependency */,
 			);
 			name = "Full Qgis";
 			productName = "Full Qgis";
@@ -210,6 +211,18 @@
 			);
 			name = "plugin installer";
 			productName = "fTools plugin";
+		};
+		72E25B1F12070F9900E2895A /* bundling */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 72E25B2212070FE000E2895A /* Build configuration list for PBXAggregateTarget "bundling" */;
+			buildPhases = (
+				72E25B1E12070F9900E2895A /* Script - bundle Qt */,
+				72E25B2412070FFB00E2895A /* Script - bundle extras */,
+			);
+			dependencies = (
+			);
+			name = bundling;
+			productName = bundling;
 		};
 		72E706F20F42611800142011 /* Python */ = {
 			isa = PBXAggregateTarget;
@@ -1747,6 +1760,7 @@
 		72DEE28311B95B38004ED376 /* repoUnavailable.png in Copy - base */ = {isa = PBXBuildFile; fileRef = 7209EDF30F39E5D9003DC336 /* repoUnavailable.png */; };
 		72DEE28411B95B38004ED376 /* unzip.py in Copy - base */ = {isa = PBXBuildFile; fileRef = 7209EDF60F39E5D9003DC336 /* unzip.py */; };
 		72DEE28511B95B38004ED376 /* version_compare.py in Copy - base */ = {isa = PBXBuildFile; fileRef = 7209EDF70F39E5D9003DC336 /* version_compare.py */; };
+		72E25B33120714C500E2895A /* qgsrendererv2widget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3D10B2275E00D23EA2 /* qgsrendererv2widget.h */; };
 		72E35C921104C02A00B0EA85 /* qgsdashspacedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E35C901104BFFE00B0EA85 /* qgsdashspacedialog.cpp */; };
 		72E35C931104C02A00B0EA85 /* qgsdashspacedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72E35C911104BFFE00B0EA85 /* qgsdashspacedialog.h */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
@@ -2940,6 +2954,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72DEE27011B95AFF004ED376;
 			remoteInfo = "plugin installer";
+		};
+		72E25B251207106200E2895A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72E25B1F12070F9900E2895A /* bundling */;
+			remoteInfo = bundling;
 		};
 		72E706F50F42612B00142011 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -14988,8 +15009,6 @@
 				7256F57E0F41C66D0022BE1F /* Copy - context_help */,
 				729288B80F71FF25006D9489 /* Script - i18n */,
 				7256FA100F41D03B0022BE1F /* Script - qt.conf */,
-				72E70A950F427FC100142011 /* Script - bundle Qt */,
-				726302380F4532E000E4441E /* Script - bundle extras */,
 			);
 			buildRules = (
 				721828C110BA34E2008D715D /* PBXBuildRule */,
@@ -15027,6 +15046,7 @@
 				721597EA1052B46D003D1610 /* qgis_analysis */,
 				7209F3120F3A2F2B003DC336 /* qgis_gui */,
 				8D0C4E890486CD37000505A6 /* Qgis */,
+				72E25B1F12070F9900E2895A /* bundling */,
 				729BBEFE0F40770B001BCB63 /* qgis_help */,
 				729BBF320F407CBA001BCB63 /* qgispython */,
 				7268E86611023A8700B96374 /* python core */,
@@ -15185,21 +15205,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"\" > \"$CONFIGURATION_BUILD_DIR/Qgis.app/Contents/Resources/qt.conf\"\n\nexit 0\n";
-			showEnvVarsInLog = 0;
-		};
-		726302380F4532E000E4441E /* Script - bundle extras */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Script - bundle extras";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\nmkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\n\nQGISPYDIR=\"$QGIS_BUILD_PATH/MacOS/$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\techo \"Copying libpq...\"\n\tditto -X $QARCHS \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDAL_PREFIX/lib/libgdal.dylib\" ] ; then\n\techo \"Copying GDAL...\"\n\tditto -X $QARCHS \"$GDAL_PREFIX/lib/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tditto -X $QARCHS \"$PYSITE/osgeo\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/\"\n\tfor p in gdal gdalconst gdalnumeric ogr osr\n\tdo\n\t\tditto -X $QARCHS \"$PYSITE/$p.py\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/\"\n\tdone\n\tfor p in $GDAL_PROGS\n\tdo\n\t\tif [ -e \"$GDAL_PREFIX/bin/$p\" ] ; then\n\t\t\tditto -X $QARCHS \"$GDAL_PREFIX/bin/$p\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\n\t\tfi\n\tdone\n\tglib=`otool -L \"$GDAL_PREFIX/lib/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJ_PREFIX/lib/libproj.dylib\" ] ; then\n\techo \"Copying PROJ...\"\n\tditto -X $QARCHS \"$PROJ_PREFIX/lib/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJ_PREFIX/lib/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\techo \"Copying GEOS...\"\n\tditto -X $QARCHS \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\techo \"Copying Sqlite3...\"\n\tditto -X $QARCHS \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\techo \"Copying GSL...\"\n\tditto -X $QARCHS \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tditto -X $QARCHS \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"Updating bundled library paths...\"\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\techo \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\\\"\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\techo \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\\\"\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR\"\n# clean out pyc\nfind python -name *.pyc -print0 | xargs -0 rm -f\n# python binary modules\npymodlist=`find -x python -name *.so`\nfor p in $pymodlist\ndo\n\techo \"install_name_tool $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG \\\"$p\\\"\"\n\tinstall_name_tool $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG \"$p\"\ndone\n\n# change bundled progs from above bundling\n# will get error on qgis_help.app\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\nbinlist=`ls`\nfor p in $binlist\ndo\n\techo \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/$p\\\"\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/$p\"\ndone\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\ncd \"$PROJECT_DIR\"\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7268C04D118294F2001BC9C4 /* Script - ui */ = {
@@ -15607,6 +15612,36 @@
 			shellScript = "plug=\"plugin_installer\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\texport PATH=\"$TARGET_TEMP_DIR/python/bin:$PATH\"\nfi\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
+		72E25B1E12070F9900E2895A /* Script - bundle Qt */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - bundle Qt";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# copy Qt frameworks\necho \"Copying Qt frameworks...\"\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] && [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto -X $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\nmkdir -p \"$APPDIRC/PlugIns/codecs\"\nfor c in cn jp kr tw\ndo\n\tif [ ! -f \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$QT_PLUGINS_DIR/codecs/libq$c\"\"codecs.dylib\" \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\tfi\ndone\n\n# Qwt\n\necho \"Copying Qwt and updating library paths...\"\nQWTROOT=\"$QWT_PREFIX/lib\"\nif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\tditto -X $QARCHS \"$QWTROOT/libqwt.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\tqlib=`otool -L \"$QWTROOT/libqwt.dylib\" | grep -E -m 1 \"libqwt.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tQWT_CHG=\"-change $qlib @executable_path/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\techo \"install_name_tool $QWT_CHG \\\"$APPDIR/Qgis\\\"\"\n\tinstall_name_tool $QWT_CHG \"$APPDIR/Qgis\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\techo \"Copying PyQt library paths...\"\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto -X $QARCHS \"$PYSITE/sip.so\" \"$QGISPYDIR/\"\n\t\tcp -fp \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t# PyQwt\n\tif [ -d \"$PYSITE/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\techo \"Copying PyQwt and updating library paths...\"\n\t\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/_iqt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/Qwt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/Qwt5/\"*.py  \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -Rfp \"$PYSITE/PyQt$QT_FWVER/uic\" \"$QGISPYDIR/PyQt$QT_FWVER\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqt.so\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\"\n\tfi\nfi\n\n# GRASS plugin libexec stuff may link Qt\nif [ -d \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin\" ] ; then\n\tln -sfh ../$QGIS_LIBEXEC_REL/$QGIS_FW_SUBDIR \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/Frameworks\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls libqgis*.dylib`\nif [ \"$PYSITE\" ] ; then\n\tcd \"$QGISPYDIR/qgis\"\n\tqgpylist=`ls *.so`\nfi\n\n# main Qt framework loop\n\necho \"Updating Qt library paths...\"\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tif [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\tqq=`otool -L \"$QT_PREFIX_FW/$q.framework/$q\" | grep -E -m 1 \"$q.framework.*\\(\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tq_chg=\"-change $qq @executable_path/$QGIS_FW_SUBDIR/$q.framework/$q\"\n\t\t# app\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/Qgis\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/Qgis\"\n\t\t# qgis_help qt linking done with symlinks\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t\t# libs\n\t\tfor ql in $qgliblist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIB_SUBDIR/$ql\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\t\tdone\n\t\t# GRASS libexec stuff\n\t\tif [ -f \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\"\n\t\tfi\n\t\t# plugins\n\t\tfor qp in $pluglist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\t\tdone\n\t\t# qt fw\n\t\tfor qf in $QTLISTQG\n\t\tdo\n\t\t\tif [ -d \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework\" ] ; then\n\t\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\t\t\tfi\n\t\tdone\n\t\t# qt plugs\n\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t\tfor c in cn jp kr tw\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/codecs/libq$c\\\"\\\"codecs.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\t\tdone\n\t\t# Qwt\n\t\tif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\t\tfi\n\t\t# PyQt\n\t\tif [ \"$PYSITE\" ] ; then\n\t\t\tfor pq in $PYQTLIST\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\t\tdone\n\t\t\tfor pg in $qgpylist\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/qgis/$pg\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/qgis/$pg\"\n\t\t\tdone\n\t\t\tif [ -d \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\t\t\tfor pw in _iqt Qwt\n\t\t\t\tdo\n\t\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\\\"\"\n\t\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\"\n\t\t\t\tdone\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		72E25B2412070FFB00E2895A /* Script - bundle extras */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - bundle extras";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\nmkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\n\nQGISPYDIR=\"$QGIS_BUILD_PATH/MacOS/$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\techo \"Copying libpq...\"\n\tditto -X $QARCHS \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDAL_PREFIX/lib/libgdal.dylib\" ] ; then\n\techo \"Copying GDAL...\"\n\tditto -X $QARCHS \"$GDAL_PREFIX/lib/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tditto -X $QARCHS \"$PYSITE/osgeo\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/\"\n\tfor p in gdal gdalconst gdalnumeric ogr osr\n\tdo\n\t\tditto -X $QARCHS \"$PYSITE/$p.py\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/\"\n\tdone\n\tfor p in $GDAL_PROGS\n\tdo\n\t\tif [ -e \"$GDAL_PREFIX/bin/$p\" ] ; then\n\t\t\tditto -X $QARCHS \"$GDAL_PREFIX/bin/$p\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\n\t\tfi\n\tdone\n\tglib=`otool -L \"$GDAL_PREFIX/lib/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJ_PREFIX/lib/libproj.dylib\" ] ; then\n\techo \"Copying PROJ...\"\n\tditto -X $QARCHS \"$PROJ_PREFIX/lib/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJ_PREFIX/lib/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\techo \"Copying GEOS...\"\n\tditto -X $QARCHS \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\techo \"Copying Sqlite3...\"\n\tditto -X $QARCHS \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\techo \"Copying GSL...\"\n\tditto -X $QARCHS \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tditto -X $QARCHS \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"Updating bundled library paths...\"\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\techo \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\\\"\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\techo \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\\\"\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR\"\n# clean out pyc\nfind python -name *.pyc -print0 | xargs -0 rm -f\n# python binary modules\npymodlist=`find -x python -name *.so`\nfor p in $pymodlist\ndo\n\techo \"install_name_tool $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG \\\"$p\\\"\"\n\tinstall_name_tool $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG \"$p\"\ndone\n\n# change bundled progs from above bundling\n# will get error on qgis_help.app\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\nbinlist=`ls`\nfor p in $binlist\ndo\n\techo \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/$p\\\"\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/$p\"\ndone\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\ncd \"$PROJECT_DIR\"\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		72E706ED0F42589900142011 /* fix linking */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -15621,20 +15656,6 @@
 			shellPath = /bin/sh;
 			shellScript = "install_name_tool -change @executable_path/$QGIS_LIB_SUBDIR/libqgis_core.dylib @executable_path/../../../../$QGIS_LIB_SUBDIR/libqgis_core.dylib \"$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"\n\n# so Qt doesn't get confused with installed Qt, symlink to Qgis Frameworks\n# works better than @executable_paths all the way down to Qgis frameworks\n\nln -sfh ../../../../Frameworks $CONFIGURATION_BUILD_DIR/$PRODUCT_NAME.app/Contents\n\n# and don't forget the qt.conf\n\nmkdir -p \"$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME.app/Contents/Resources\"\ntouch \"$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME.app/Contents/Resources/qt.conf\"\n\nexit 0\n";
 			showEnvVarsInLog = 0;
-		};
-		72E70A950F427FC100142011 /* Script - bundle Qt */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Script - bundle Qt";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# copy Qt frameworks\necho \"Copying Qt frameworks...\"\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] && [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto -X $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\nmkdir -p \"$APPDIRC/PlugIns/codecs\"\nfor c in cn jp kr tw\ndo\n\tif [ ! -f \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$QT_PLUGINS_DIR/codecs/libq$c\"\"codecs.dylib\" \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\tfi\ndone\n\n# Qwt\n\necho \"Copying Qwt and updating library paths...\"\nQWTROOT=\"$QWT_PREFIX/lib\"\nif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\tditto -X $QARCHS \"$QWTROOT/libqwt.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\tqlib=`otool -L \"$QWTROOT/libqwt.dylib\" | grep -E -m 1 \"libqwt.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tQWT_CHG=\"-change $qlib @executable_path/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\techo \"install_name_tool $QWT_CHG \\\"$APPDIR/Qgis\\\"\"\n\tinstall_name_tool $QWT_CHG \"$APPDIR/Qgis\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\techo \"Copying PyQt library paths...\"\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto -X $QARCHS \"$PYSITE/sip.so\" \"$QGISPYDIR/\"\n\t\tcp -fp \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t# PyQwt\n\tif [ -d \"$PYSITE/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\techo \"Copying PyQwt and updating library paths...\"\n\t\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/_iqt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/Qwt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/Qwt5/\"*.py  \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -Rfp \"$PYSITE/PyQt$QT_FWVER/uic\" \"$QGISPYDIR/PyQt$QT_FWVER\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqt.so\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\"\n\tfi\nfi\n\n# GRASS plugin libexec stuff may link Qt\nif [ -d \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin\" ] ; then\n\tln -s ../$QGIS_LIBEXEC_REL/$QGIS_FW_SUBDIR \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/Frameworks\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls libqgis*.dylib`\nif [ \"$PYSITE\" ] ; then\n\tcd \"$QGISPYDIR/qgis\"\n\tqgpylist=`ls *.so`\nfi\n\n# main Qt framework loop\n\necho \"Updating Qt library paths...\"\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tif [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\tqq=`otool -L \"$QT_PREFIX_FW/$q.framework/$q\" | grep -E -m 1 \"$q.framework.*\\(\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tq_chg=\"-change $qq @executable_path/$QGIS_FW_SUBDIR/$q.framework/$q\"\n\t\t# app\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/Qgis\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/Qgis\"\n\t\t# qgis_help qt linking done with symlinks\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t\t# libs\n\t\tfor ql in $qgliblist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIB_SUBDIR/$ql\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\t\tdone\n\t\t# GRASS libexec stuff\n\t\tif [ -f \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\"\n\t\tfi\n\t\t# plugins\n\t\tfor qp in $pluglist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\t\tdone\n\t\t# qt fw\n\t\tfor qf in $QTLISTQG\n\t\tdo\n\t\t\tif [ -d \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework\" ] ; then\n\t\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\t\t\tfi\n\t\tdone\n\t\t# qt plugs\n\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t\tfor c in cn jp kr tw\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/codecs/libq$c\\\"\\\"codecs.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\t\tdone\n\t\t# Qwt\n\t\tif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\t\tfi\n\t\t# PyQt\n\t\tif [ \"$PYSITE\" ] ; then\n\t\t\tfor pq in $PYQTLIST\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\t\tdone\n\t\t\tfor pg in $qgpylist\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/qgis/$pg\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/qgis/$pg\"\n\t\t\tdone\n\t\t\tif [ -d \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\t\t\tfor pw in _iqt Qwt\n\t\t\t\tdo\n\t\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\\\"\"\n\t\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\"\n\t\t\t\tdone\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n";
 		};
 		72F3DABA11D70D4900FFA738 /* Script - svnver plist */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -15959,6 +15980,7 @@
 				7225EFC010B22D2000D23EA2 /* qgscategorizedsymbolrendererv2widget.h in Sources */,
 				7225EFC110B22D2000D23EA2 /* qgsgraduatedsymbolrendererv2widget.h in Sources */,
 				7225EFC210B22D2000D23EA2 /* qgsrendererv2propertiesdialog.h in Sources */,
+				72E25B33120714C500E2895A /* qgsrendererv2widget.h in Sources */,
 				7225EFC310B22D2000D23EA2 /* qgssinglesymbolrendererv2widget.h in Sources */,
 				7225EFC410B22D2000D23EA2 /* qgsstylev2managerdialog.h in Sources */,
 				7225EFC510B22D2000D23EA2 /* qgssymbollayerv2widget.h in Sources */,
@@ -17081,6 +17103,11 @@
 			isa = PBXTargetDependency;
 			target = 72DEE27011B95AFF004ED376 /* plugin installer */;
 			targetProxy = 72DEE28611B95B4C004ED376 /* PBXContainerItemProxy */;
+		};
+		72E25B261207106200E2895A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72E25B1F12070F9900E2895A /* bundling */;
+			targetProxy = 72E25B251207106200E2895A /* PBXContainerItemProxy */;
 		};
 		72E706F60F42612B00142011 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -19660,6 +19687,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_NET)",
 				);
 				PRODUCT_NAME = wfsplugin.so;
 				TARGET_PLUGINDIR = wfs;
@@ -19698,6 +19726,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_NET)",
 				);
 				PRODUCT_NAME = wfsplugin.so;
 				TARGET_PLUGINDIR = wfs;
@@ -20246,6 +20275,27 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = "fTools plugin";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		72E25B2012070F9A00E2895A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = bundling;
+			};
+			name = Debug;
+		};
+		72E25B2112070F9A00E2895A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = bundling;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -21168,6 +21218,15 @@
 			buildConfigurations = (
 				72DEE27911B95AFF004ED376 /* Debug */,
 				72DEE27A11B95AFF004ED376 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72E25B2212070FE000E2895A /* Build configuration list for PBXAggregateTarget "bundling" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72E25B2012070F9A00E2895A /* Debug */,
+				72E25B2112070F9A00E2895A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
