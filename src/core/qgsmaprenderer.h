@@ -121,11 +121,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
 
     void setOutputSize( QSize size, int dpi );
+    void setOutputSize( QSizeF size, double dpi );
 
     //!accessor for output dpi
-    int outputDpi();
+    double outputDpi();
     //!accessor for output size
     QSize outputSize();
+    QSizeF outputSizeF();
 
     //! transform extent in layer's CRS to extent in output CRS
     QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
@@ -249,7 +251,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! indicates whether it's map image for overview
     bool mOverview;
 
-    QSize mSize;
+    QSizeF mSize;
 
     //! detemines whether on the fly projection support is enabled
     bool mProjectionsEnabled;

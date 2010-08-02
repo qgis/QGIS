@@ -44,11 +44,14 @@ class QgsComposerMap : QgsComposerItem
       BoundaryDirection
     };
 
+    /**This function is deprecated*/
+    void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
+
     /** \brief Draw to paint device
     @param extent map extent
     @param size size in scene coordinates
     @param dpi scene dpi*/
-    void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
+    void draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );

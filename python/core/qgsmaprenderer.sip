@@ -90,11 +90,14 @@ class QgsMapRenderer : QObject
     void enableOverviewMode(bool isOverview = true);
 
     void setOutputSize(QSize size, int dpi);
+    void setOutputSize( QSizeF size, double dpi );
     
     //!accessor for output dpi
-    int outputDpi();
+    double outputDpi();
+
     //!accessor for output size
     QSize outputSize();
+    QSizeF outputSizeF();
     
     //! transform extent in layer's CRS to extent in output CRS
     QgsRectangle layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRectangle extent);

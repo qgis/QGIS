@@ -96,9 +96,14 @@ QgsComposerMap::~QgsComposerMap()
 {
 }
 
+void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi )
+{
+  draw( painter, extent, QSizeF( size.width(), size.height() ), dpi );
+}
+
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
-void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi )
+void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi )
 {
   if ( !painter )
   {
@@ -206,7 +211,7 @@ void QgsComposerMap::cache( void )
 
   QPainter p( &mCacheImage );
 
-  draw( &p, requestExtent, QSize( w, h ), mCacheImage.logicalDpiX() );
+  draw( &p, requestExtent, QSizeF( w, h ), mCacheImage.logicalDpiX() );
   p.end();
   mCacheUpdated = true;
 
@@ -293,7 +298,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
 
-    QSize theSize( requestRectangle.width() * mapUnitsToMM(), requestRectangle.height() * mapUnitsToMM() );
+    QSizeF theSize( requestRectangle.width() * mapUnitsToMM(), requestRectangle.height() * mapUnitsToMM() );
     QgsPoint rotationPoint = QgsPoint(( mExtent.xMaximum() + mExtent.xMinimum() ) / 2.0, ( mExtent.yMaximum() + mExtent.yMinimum() ) / 2.0 );
 
     //shift such that rotation point is at 0/0 point in the coordinate system
