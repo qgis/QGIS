@@ -922,11 +922,17 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     bool labeling = false;
     if ( rendererContext.labelingEngine() )
     {
-      int attrIndex;
+      QSet<int> attrIndex;
       if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
       {
-        if ( !attributes.contains( attrIndex ) )
-          attributes << attrIndex;
+        QSet<int>::const_iterator attIt = attrIndex.constBegin();
+        for ( ; attIt != attrIndex.constEnd(); ++attIt )
+        {
+          if ( !attributes.contains( *attIt ) )
+          {
+            attributes << *attIt;
+          }
+        }
         labeling = true;
       }
     }
@@ -978,11 +984,17 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     bool labeling = false;
     if ( rendererContext.labelingEngine() )
     {
-      int attrIndex;
+      QSet<int> attrIndex;
       if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
       {
-        if ( !attributes.contains( attrIndex ) )
-          attributes << attrIndex;
+        QSet<int>::const_iterator attIt = attrIndex.constBegin();
+        for ( ; attIt != attrIndex.constEnd(); ++attIt )
+        {
+          if ( !attributes.contains( *attIt ) )
+          {
+            attributes << *attIt;
+          }
+        }
         labeling = true;
       }
     }

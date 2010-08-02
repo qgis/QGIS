@@ -95,12 +95,17 @@ class QgsPalGeometry : public PalGeometry
       return mInfo;
     }
 
+    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
+    void addDataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant v ) { mDataDefinedValues.insert( p, v ); }
+
   protected:
     GEOSGeometry* mG;
     QString mText;
     QByteArray mStrId;
     int mId;
     LabelInfo* mInfo;
+    /**Stores attribute values for data defined properties*/
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 };
 
 // -------------
@@ -151,6 +156,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
 
+  dataDefinedProperties = s.dataDefinedProperties;
   fontMetrics = NULL;
   ct = NULL;
 }
@@ -179,6 +185,64 @@ static void _writeColor( QgsVectorLayer* layer, QString property, QColor color )
   layer->setCustomProperty( property + "B", color.blue() );
 }
 
+static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < 9; ++i )
+  {
+    QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
+    QVariant propertyValue;
+    if ( it == propertyMap.constEnd() )
+    {
+      propertyValue = QVariant(); //we cannot delete properties, so we just insert an invalid variant
+    }
+    else
+    {
+      propertyValue = *it;
+    }
+    layer->setCustomProperty( "labeling/dataDefinedProperty" + QString::number( i ), propertyValue );
+  }
+}
+
+static void _readDataDefinedProperty( QgsVectorLayer* layer, QgsPalLayerSettings::DataDefinedProperties p, \
+                                      QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
+{
+  QVariant propertyField = layer->customProperty( "labeling/dataDefinedProperty" + QString::number( p ) );
+  bool conversionOk;
+  int fieldIndex;
+
+  if ( propertyField.isValid() )
+  {
+    fieldIndex = propertyField.toInt( &conversionOk );
+    if ( conversionOk )
+    {
+      propertyMap.insert( p, fieldIndex );
+    }
+  }
+}
+
+static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Size, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Color, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Bold, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Italic, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Underline, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Strikeout, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Family, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferSize, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferColor, propertyMap );
+}
+
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
@@ -205,6 +269,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   multiLineLabels = layer->customProperty( "labeling/multiLineLabels" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
+  _readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
 void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
@@ -234,6 +299,17 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/multiLineLabels", multiLineLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
+  _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
+}
+
+void QgsPalLayerSettings::setDataDefinedProperty( DataDefinedProperties p, int attributeIndex )
+{
+  dataDefinedProperties.insert( p, attributeIndex );
+}
+
+void QgsPalLayerSettings::removeDataDefinedProperty( DataDefinedProperties p )
+{
+  dataDefinedProperties.remove( p );
 }
 
 bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const
@@ -274,9 +350,14 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeo
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
-void QgsPalLayerSettings::calculateLabelSize( QString text, double& labelX, double& labelY )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetrics* fm, QString text, double& labelX, double& labelY )
 {
-  QRectF labelRect = fontMetrics->boundingRect( text );
+  if ( !fm )
+  {
+    return;
+  }
+
+  QRectF labelRect = fm->boundingRect( text );
   double w, h;
   if ( !multiLineLabels )
   {
@@ -286,11 +367,11 @@ void QgsPalLayerSettings::calculateLabelSize( QString text, double& labelX, doub
   else
   {
     QStringList multiLineSplit = text.split( "\n" );
-    h = fontMetrics->height() * multiLineSplit.size() / rasterCompressFactor;
+    h = fm->height() * multiLineSplit.size() / rasterCompressFactor;
     w = 0;
     for ( int i = 0; i < multiLineSplit.size(); ++i )
     {
-      double width = fontMetrics->width( multiLineSplit.at( i ) );
+      double width = fm->width( multiLineSplit.at( i ) );
       if ( width > w )
       {
         w = width;
@@ -309,7 +390,30 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 {
   QString labelText = f.attributeMap()[fieldIndex].toString();
   double labelX, labelY; // will receive label size
-  calculateLabelSize( labelText, labelX, labelY );
+
+  //data defined label size?
+  QMap< DataDefinedProperties, int >::const_iterator it = dataDefinedProperties.find( QgsPalLayerSettings::Size );
+  if ( it != dataDefinedProperties.constEnd() )
+  {
+    QFont labelFont = textFont;
+    //find out size
+    QVariant size = f.attributeMap().value( *it );
+    if ( size.isValid() )
+    {
+      double sizeDouble = size.toDouble();
+      if ( sizeDouble <= 0 )
+      {
+        return;
+      }
+      labelFont.setPointSize( sizeToPixel( sizeDouble, context ) );
+    }
+    QFontMetrics labelFontMetrics( labelFont );
+    calculateLabelSize( &labelFontMetrics, labelText, labelX, labelY );
+  }
+  else
+  {
+    calculateLabelSize( fontMetrics, labelText, labelX, labelY );
+  }
 
   QgsGeometry* geom = f.geometry();
   if ( ct != NULL ) // reproject the geometry if necessary
@@ -344,6 +448,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // TODO: allow layer-wide feature dist in PAL...?
   if ( dist != 0 )
     feat->setDistLabel( fabs( ptOne.x() - ptZero.x() )* dist * vectorScaleFactor );
+
+  //add parameters for data defined labeling to QgsPalGeometry
+  QMap< DataDefinedProperties, int >::const_iterator dIt = dataDefinedProperties.constBegin();
+  for ( ; dIt != dataDefinedProperties.constEnd(); ++dIt )
+  {
+    lbl->addDataDefinedValue( dIt.key(), f.attributeMap()[dIt.value()] );
+  }
+}
+
+int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c ) const
+{
+  // set font size from points to output size
+  double pixelSize = 0.3527 * size * c.scaleFactor() * c.rasterScaleFactor() + 0.5;
+  return ( int )pixelSize;
 }
 
 
@@ -387,8 +505,7 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
   return lyrTmp.enabled;
 }
 
-
-int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx )
+int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
   Q_ASSERT( mMapRenderer != NULL );
 
@@ -403,7 +520,14 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRend
   int fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
   if ( fldIndex == -1 )
     return 0;
-  attrIndex = fldIndex;
+  attrIndices.insert( fldIndex );
+
+  //add indices of data defined fields
+  QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator dIt = lyrTmp.dataDefinedProperties.constBegin();
+  for ( ; dIt != lyrTmp.dataDefinedProperties.constEnd(); ++dIt )
+  {
+    attrIndices.insert( dIt.value() );
+  }
 
   // add layer settings to the pallabeling hashtable: <QgsVectorLayer*, QgsPalLayerSettings>
   mActiveLayers.insert( layer, lyrTmp );
@@ -445,10 +569,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRend
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
 
-  // set font size from points to output size
-  double size = 0.3527 * lyr.textFont.pointSizeF() * ctx.scaleFactor();
-  // request larger font and then scale down painter (to avoid Qt font scale bug)
-  lyr.textFont.setPixelSize(( int )( size*ctx.rasterScaleFactor() + 0.5 ) );
+  lyr.textFont.setPixelSize( lyr.sizeToPixel( lyr.textFont.pointSizeF(), ctx ) );
 
   //raster and vector scale factors
   lyr.vectorScaleFactor = ctx.scaleFactor();
@@ -587,11 +708,86 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   for ( ; it != labels->end(); ++it )
   {
     const QgsPalLayerSettings& lyr = layer(( *it )->getLayerName() );
+    QFont fontForLabel = lyr.textFont;
+    QColor fontColor = lyr.textColor;
+    double bufferSize = lyr.bufferSize;
+    QColor bufferColor = lyr.bufferColor;
+
+    QgsPalGeometry* palGeometry = dynamic_cast< QgsPalGeometry* >(( *it )->getFeaturePart()->getUserGeometry() );
+    if ( !palGeometry )
+    {
+      continue;
+    }
+
+    //apply data defined settings for the label
+    //font size
+    QVariant dataDefinedSize = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Size );
+    if ( dataDefinedSize.isValid() )
+    {
+      fontForLabel.setPointSize( lyr.sizeToPixel( dataDefinedSize.toDouble(), context ) );
+    }
+    //font color
+    QVariant dataDefinedColor = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Color );
+    if ( dataDefinedColor.isValid() )
+    {
+      fontColor.setNamedColor( dataDefinedColor.toString() );
+      if ( !fontColor.isValid() )
+      {
+        fontColor = lyr.textColor;
+      }
+    }
+    //font bold
+    QVariant dataDefinedBold = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Bold );
+    if ( dataDefinedBold.isValid() )
+    {
+      fontForLabel.setBold(( bool )dataDefinedBold.toInt() );
+    }
+    //font italic
+    QVariant dataDefinedItalic = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Italic );
+    if ( dataDefinedItalic.isValid() )
+    {
+      fontForLabel.setItalic(( bool ) dataDefinedItalic.toInt() );
+    }
+    //font underline
+    QVariant dataDefinedUnderline = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Underline );
+    if ( dataDefinedUnderline.isValid() )
+    {
+      fontForLabel.setUnderline(( bool ) dataDefinedUnderline.toInt() );
+    }
+    //font strikeout
+    QVariant dataDefinedStrikeout = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Strikeout );
+    if ( dataDefinedStrikeout.isValid() )
+    {
+      fontForLabel.setStrikeOut(( bool ) dataDefinedStrikeout.toInt() );
+    }
+    //font family
+    QVariant dataDefinedFontFamily = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Family );
+    if ( dataDefinedFontFamily.isValid() )
+    {
+      fontForLabel.setFamily( dataDefinedFontFamily.toString() );
+    }
+    //buffer size
+    QVariant dataDefinedBufferSize = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::BufferSize );
+    if ( dataDefinedBufferSize.isValid() )
+    {
+      bufferSize = dataDefinedBufferSize.toDouble();
+    }
+
+    //buffer color
+    QVariant dataDefinedBufferColor = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::BufferColor );
+    if ( dataDefinedBufferColor.isValid() )
+    {
+      bufferColor.setNamedColor( dataDefinedBufferColor.toString() );
+      if ( !bufferColor.isValid() )
+      {
+        bufferColor = lyr.bufferColor;
+      }
+    }
 
     if ( lyr.bufferSize != 0 )
-      drawLabel( *it, painter, xform, true );
+      drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferSize, bufferColor, true );
 
-    drawLabel( *it, painter, xform );
+    drawLabel( *it, painter, fontForLabel, fontColor, xform );
   }
 
   QgsDebugMsg( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ) );
@@ -660,7 +856,8 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 
 #include "qgslogger.h"
 
-void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer )
+void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize, \
+                                const QColor& bufferColor, bool drawBuffer )
 {
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
 
@@ -698,21 +895,21 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     if ( drawBuffer )
     {
       // we're drawing buffer
-      drawLabelBuffer( painter, multiLineList.at( i ), lyr.textFont, lyr.bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , lyr.bufferColor );
+      drawLabelBuffer( painter, multiLineList.at( i ), f, bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , bufferColor );
     }
     else
     {
       // we're drawing real label
       QPainterPath path;
-      path.addText( 0, 0, lyr.textFont, multiLineList.at( i ) );
+      path.addText( 0, 0, f, multiLineList.at( i ) );
       painter->setPen( Qt::NoPen );
-      painter->setBrush( lyr.textColor );
+      painter->setBrush( c );
       painter->drawPath( path );
     }
     painter->restore();
 
     if ( label->getNextPart() )
-      drawLabel( label->getNextPart(), painter, xform, drawBuffer );
+      drawLabel( label->getNextPart(), painter, f, c, xform, drawBuffer );
   }
 }
 
