@@ -125,23 +125,37 @@ bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
 
 void QgsMapRenderer::setOutputSize( QSize size, int dpi )
 {
+  mSize = QSizeF( size.width(), size.height() );
+  mScaleCalculator->setDpi( dpi );
+  adjustExtentToSize();
+}
+
+void QgsMapRenderer::setOutputSize( QSizeF size, double dpi )
+{
   mSize = size;
   mScaleCalculator->setDpi( dpi );
   adjustExtentToSize();
 }
-int QgsMapRenderer::outputDpi()
+
+double QgsMapRenderer::outputDpi()
 {
   return mScaleCalculator->dpi();
 }
+
 QSize QgsMapRenderer::outputSize()
+{
+  return mSize.toSize();
+}
+
+QSizeF QgsMapRenderer::outputSizeF()
 {
   return mSize;
 }
 
 void QgsMapRenderer::adjustExtentToSize()
 {
-  int myHeight = mSize.height();
-  int myWidth = mSize.width();
+  double myHeight = mSize.height();
+  double myWidth = mSize.width();
 
   QgsMapToPixel newCoordXForm;
 
@@ -154,10 +168,8 @@ void QgsMapRenderer::adjustExtentToSize()
 
   // calculate the translation and scaling parameters
   // mapUnitsPerPixel = map units per pixel
-  double mapUnitsPerPixelY = static_cast<double>( mExtent.height() )
-                             / static_cast<double>( myHeight );
-  double mapUnitsPerPixelX = static_cast<double>( mExtent.width() )
-                             / static_cast<double>( myWidth );
+  double mapUnitsPerPixelY = mExtent.height() / myHeight;
+  double mapUnitsPerPixelX = mExtent.width() / myWidth;
   mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
