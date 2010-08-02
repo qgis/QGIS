@@ -39,7 +39,7 @@ See the Qgis {\field{\*\fldinst{HYPERLINK "http://wiki.qgis.org/qgiswiki/Buildin
 \
 \ul QGIS source\ulnone \
 \
-\ul Qt 4.4+ frameworks\ulnone  - install debug version if desired (may require a separate installer download)\
+\ul Qt 4.4+ frameworks\ulnone  - install debug version if desired (may require a separate installer download).  At least Qt Cocoa 4.6 is needed on Snow Leopard for a 64bit build.\
 \
 \ul GDAL library or framework\ulnone  - a universal GDAL.framework is available.\
 \
@@ -55,11 +55,13 @@ See the Qgis {\field{\*\fldinst{HYPERLINK "http://wiki.qgis.org/qgiswiki/Buildin
 \
 \ul Postgres client library\ulnone  (optional) - normally available in a full Postgres installation.\
 \
-\ul SQLite3 library\ulnone  - OSX includes SQLite 3, or use a more recent SQLite framework (recommended), or compile from source.\
+\ul SQLite3 library\ulnone  - OSX includes SQLite 3, or use a more recent SQLite framework (recommended), or use the internal copy.\
 \
-\ul Spatialite library\ulnone  - Spatialite is included in the SQLite framework starting with 3.6.11.  Or compile from source (includes its own SQLite).\
+\ul Spatialite library\ulnone  - Spatialite is included in the SQLite framework starting with 3.6.11.  Or usethe internal copy (tied to the internal SQLite).\
 \
 \ul Expat library\ulnone  - Leopard and above includes expat.  The one in X11 should work on Tiger, but I prefer to avoid X11 dependencies.\
+\
+\ul Bison\ulnone  - Leopard and above includes bison.  Tiger has an old bison that won't work for QGIS.  See the QGIS install instructions for info about how to compile and install this on Tiger.\
 \
 \ul gpsbabel\ulnone  (optional) - for the GPS Import plugin.  A universal gpsbabel is available from gpsbabel.org.\
 \
@@ -67,7 +69,7 @@ See the Qgis {\field{\*\fldinst{HYPERLINK "http://wiki.qgis.org/qgiswiki/Buildin
 \
 \ul SIP\ulnone  and \ul PyQt\ulnone  - make sure that they fully support the installed Qt version.  Development versions may cause trouble for QGIS.  See the QGIS install instructions for info about how to compile and install these.\
 \
-\ul [Py]Qwt\ulnone  - Qwt needed for GPS tracking function.  PyQwt used for some 3rd-party plugins.  Since PyQwt installs inside PyQt, it must be bundled along with PyQt.  The PyQwt sources can be used, but extra steps are needed to compile Qwt and PyQwt separately.\
+\ul [Py]Qwt\ulnone  - Qwt needed for GPS tracking function.  PyQwt used for some 3rd-party plugins.  Since PyQwt installs inside PyQt, it must be bundled along with PyQt.  The PyQwt sources can be used, but extra steps are needed to compile Qwt and PyQwt separately.  See the QGIS install instructions for info about how to compile and install these.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -92,7 +94,9 @@ The xcconfig file is a simple text file with environment variables and values, a
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \ul Defaults\
 \ulnone \
-The default configuration is for a universal build, with the Leopard (10.5) SDK.  GDAL, PROJ, GEOS, GSL and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Postgres is expected in default /usr/local builds.  Expat is from the system on Leopard and above, and is expected in /usr/local on Tiger.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used on Tiger, and the system Python is used on Leopard and above.\
+The default configuration is for a universal build, with the Leopard (10.5) SDK.\
+\
+GDAL, PROJ, GEOS, GSL and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Postgres is expected in default /usr/local builds.  Expat is from the system on Leopard and above, and is expected in /usr/local on Tiger.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used on Tiger, and the system Python is used on Leopard and above.\
 \
 By default, Qt and the Postgres client library are bundled in the Qgis application.\
 \
@@ -207,12 +211,12 @@ For library forms, the PREFIX (described later) defaults to
 \f1\fs20 static
 \f0\fs24  is all that's needed.\
 \
-The version for GRASS and Python can't be detected by the config file, so make sure these are correct.\
+The version for Qt, PyQt, GRASS and Python can't be detected by the config file, so make sure these are correct.  Python version default is automatic by the SDKSYS.\
 \
 See detailed dependency notes below.\
 \
 \
-\ul Bundle options\ulnone  - Some libraries and programs can be bundled in the Qgis.app package for a more portable Qgis.app.  These are pretty straightforward - yes or no.  At some time I will add more checking logic, but for now be explicit.  Generally, you don't need to bundle frameworks or system libraries.  The only logic checks whether the dynamic library or program exists, so it automatically excludes static libraries and frameworks, but it doesn't check whether it's a system library, so you could end up bundling libsqlite from the system.\
+\ul Bundle options\ulnone  - Some libraries and programs can be bundled in the Qgis.app package for a more portable Qgis.app.  These are pretty straightforward - yes or no.  At some time I will add more checking logic, but for now be explicit.  Generally, you don't need to bundle frameworks or system libraries.  The logic only checks whether the dynamic library or program exists, so it automatically excludes static libraries and frameworks, but it doesn't check whether it's a system library, so you could end up bundling libsqlite from the system.\
 \
 \ul Prefixes\ulnone  - If you have unix libraries installed in a location other than 
 \f1\fs20 /usr/local
@@ -289,6 +293,8 @@ The \ul Full QGIS\ulnone   target will build Qgis with Python support and all de
 Xcode doesn't have a way to conditionally build targets, just code within sources (with standard macro switches).  It 
 \i will
 \i0  try to keep building as much as it can after errors.  The last target built is the Qgis application itself, which has all the bundling and cleanup steps.  So, if a dependency is missing for a plugin, it will have errors and fail to build, then the app bundling and cleanup will work with what succeeded.\
+\
+If recompiling any other target, you should then also recompile the \ul bundle\ulnone  target so the bundling steps do their post-processing, else some internal library paths will be wrong.\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \ul Cleaning\ulnone  - to clean the project 

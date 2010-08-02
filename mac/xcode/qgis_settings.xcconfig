@@ -162,10 +162,9 @@ QWT_PREFIX_static = $(QWT_PREFIX_shared)
 SDKROOT_tig = /Developer/SDKs/MacOSX10.4u.sdk
 SDKROOT_leo = /Developer/SDKs/MacOSX10.5.sdk
 SDKROOT_snow = /Developer/SDKs/MacOSX10.6.sdk
-// all archs 32bit until Qt Cocoa works
 ARCHS_tig = ppc i386
 ARCHS_leo = ppc i386
-ARCHS_snow = i386 // ;x86_64
+ARCHS_snow = i386 x86_64
 
 SDKROOT = $(SDKROOT_$(SDKSYS))
 SYMROOT = build/$(SDKSYS)
@@ -389,10 +388,10 @@ PYTHON_VERSION_snow = 2.6
 PYTHON_FORM_tig = fw
 PYTHON_FORM_leo = system
 PYTHON_FORM_snow = system
-// all archs 32bit until Qt Cocoa works; should match ARCHS
+// should match ARCHS
 ARCHS_P_tig = ppc;i386
 ARCHS_P_leo = ppc;i386
-ARCHS_P_snow = i386 // ;x86_64
+ARCHS_P_snow = i386;x86_64
 
 PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
 PYTHON_PREFIX_system = /System/Library/Frameworks/Python.framework
