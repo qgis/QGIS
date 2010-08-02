@@ -48,6 +48,10 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
   protected:
     void populatePlacementMethods();
     void populateFieldNames();
+    void populateDataDefinedCombos( QgsPalLayerSettings& s );
+    /**Sets data defined property attribute to map (if selected in combo box)*/
+    void setDataDefinedProperty( const QComboBox* c, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
+    void setCurrentComboValue( QComboBox* c, const QgsPalLayerSettings& s, QgsPalLayerSettings::DataDefinedProperties p );
     void updateFont( QFont font );
 
   private:

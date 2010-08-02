@@ -70,6 +70,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWid
   QgsPalLayerSettings lyr;
   lyr.readFromLayer( layer );
 
+  populateDataDefinedCombos( lyr );
+
   // placement
   switch ( lyr.placement )
   {
@@ -237,6 +239,18 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.bufferSize = 0;
   }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
+
+  //data defined labeling
+  setDataDefinedProperty( mSizeAttributeComboBox, QgsPalLayerSettings::Size, lyr );
+  setDataDefinedProperty( mColorAttributeComboBox, QgsPalLayerSettings::Color, lyr );
+  setDataDefinedProperty( mBoldAttributeComboBox, QgsPalLayerSettings::Bold, lyr );
+  setDataDefinedProperty( mItalicAttributeComboBox, QgsPalLayerSettings::Italic, lyr );
+  setDataDefinedProperty( mUnderlineAttributeComboBox, QgsPalLayerSettings::Underline, lyr );
+  setDataDefinedProperty( mStrikeoutAttributeComboBox, QgsPalLayerSettings::Strikeout, lyr );
+  setDataDefinedProperty( mFontFamilyAttributeComboBox, QgsPalLayerSettings::Family, lyr );
+  setDataDefinedProperty( mBufferSizeAttributeComboBox, QgsPalLayerSettings:: BufferSize, lyr );
+  setDataDefinedProperty( mBufferColorAttributeComboBox, QgsPalLayerSettings::BufferColor, lyr );
+
   return lyr;
 }
 
@@ -248,6 +262,79 @@ void QgsLabelingGui::populateFieldNames()
   {
     cboFieldName->addItem( it->name() );
   }
+}
+
+void QgsLabelingGui::setDataDefinedProperty( const QComboBox* c, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr )
+{
+  if ( !c )
+  {
+    return;
+  }
+
+  QVariant propertyField = c->itemData( c->currentIndex() );
+  if ( propertyField.isValid() )
+  {
+    lyr.setDataDefinedProperty( p, propertyField.toInt() );
+  }
+}
+
+void QgsLabelingGui::setCurrentComboValue( QComboBox* c, const QgsPalLayerSettings& s, QgsPalLayerSettings::DataDefinedProperties p )
+{
+  if ( !c )
+  {
+    return;
+  }
+
+  QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = s.dataDefinedProperties.find( p );
+  if ( it == s.dataDefinedProperties.constEnd() )
+  {
+    c->setCurrentIndex( 0 );
+  }
+  else
+  {
+    c->setCurrentIndex( c->findData( it.value() ) );
+  }
+}
+
+void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
+{
+  QList<QComboBox*> comboList;
+  comboList << mSizeAttributeComboBox;
+  comboList << mColorAttributeComboBox;
+  comboList << mBoldAttributeComboBox;
+  comboList << mItalicAttributeComboBox;
+  comboList << mUnderlineAttributeComboBox;
+  comboList << mStrikeoutAttributeComboBox;
+  comboList << mFontFamilyAttributeComboBox;
+  comboList << mBufferSizeAttributeComboBox;
+  comboList << mBufferColorAttributeComboBox;
+
+  QList<QComboBox*>::iterator comboIt = comboList.begin();
+  for ( ; comboIt != comboList.end(); ++comboIt )
+  {
+    ( *comboIt )->addItem( "", QVariant() );
+  }
+
+  const QgsFieldMap& fields = mLayer->dataProvider()->fields();
+  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); it++ )
+  {
+    for ( comboIt = comboList.begin(); comboIt != comboList.end(); ++comboIt )
+    {
+      ( *comboIt )->addItem( it.value().name(), it.key() );
+    }
+
+  }
+
+  //set current combo boxes to already existing indices
+  setCurrentComboValue( mSizeAttributeComboBox, s, QgsPalLayerSettings::Size );
+  setCurrentComboValue( mColorAttributeComboBox, s, QgsPalLayerSettings::Color );
+  setCurrentComboValue( mBoldAttributeComboBox, s, QgsPalLayerSettings::Bold );
+  setCurrentComboValue( mItalicAttributeComboBox, s, QgsPalLayerSettings::Italic );
+  setCurrentComboValue( mUnderlineAttributeComboBox, s, QgsPalLayerSettings::Underline );
+  setCurrentComboValue( mStrikeoutAttributeComboBox, s, QgsPalLayerSettings::Strikeout );
+  setCurrentComboValue( mFontFamilyAttributeComboBox, s, QgsPalLayerSettings::Family );
+  setCurrentComboValue( mBufferSizeAttributeComboBox, s , QgsPalLayerSettings::BufferSize );
+  setCurrentComboValue( mBufferColorAttributeComboBox, s, QgsPalLayerSettings::BufferColor );
 }
 
 void QgsLabelingGui::changeTextColor()

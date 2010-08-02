@@ -72,6 +72,19 @@ class CORE_EXPORT QgsPalLayerSettings
       MapOrientation = 8
     };
 
+    enum DataDefinedProperties
+    {
+      Size = 0,
+      Bold,
+      Italic,
+      Underline,
+      Color,
+      Strikeout,
+      Family,
+      BufferSize,
+      BufferColor,
+    };
+
     QString fieldName;
     Placement placement;
     unsigned int placementFlags;
@@ -92,13 +105,18 @@ class CORE_EXPORT QgsPalLayerSettings
     double minFeatureSize; // minimum feature size to be labelled (in mm)
 
     // called from register feature hook
-    void calculateLabelSize( QString text, double& labelX, double& labelY );
+    void calculateLabelSize( const QFontMetrics* fm, QString text, double& labelX, double& labelY );
 
     // implementation of register feature hook
     void registerFeature( QgsFeature& f, const QgsRenderContext& context );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
+
+    /**Set a property as data defined*/
+    void setDataDefinedProperty( DataDefinedProperties p, int attributeIndex );
+    /**Set a property to static instead data defined*/
+    void removeDataDefinedProperty( DataDefinedProperties p );
 
     // temporary stuff: set when layer gets prepared
     pal::Layer* palLayer;
@@ -108,6 +126,15 @@ class CORE_EXPORT QgsPalLayerSettings
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
     QList<QgsPalGeometry*> geometries;
+
+    /**Stores field indices for data defined layer properties*/
+    QMap< DataDefinedProperties, int > dataDefinedProperties;
+
+    /**Calculates pixel size (considering scale factors and oversampling)
+     @param label size (pixels, possibily map units in future)
+     @param c rendercontext
+     @return font pixel size*/
+    int sizeToPixel( double size, const QgsRenderContext& c ) const;
 
   private:
     /**Checks if a feature is larger than a minimum size (in mm)
@@ -154,7 +181,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx );
+    virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx );
     //! hook called when drawing for every feature in a layer
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
@@ -166,13 +193,14 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual QgsLabelingEngineInterface* clone();
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
-    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer = false );
+    //!drawLabel
+    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1, \
+                    const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
     static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color );
 
   protected:
 
     void initPal();
-
 
   protected:
     // temporary hashtable of layer settings, being filled during labeling, cleared once labeling's done

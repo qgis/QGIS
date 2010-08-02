@@ -17,7 +17,8 @@ public:
   //! called to find out whether the layer is used for labeling
   virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
   //! called when starting rendering of a layer
-  virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx ) = 0;
+  //! @note: this method was added in version 1.6
+  virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
   //! called for every feature
   virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
   //! called when the map is drawn and labels should be placed
