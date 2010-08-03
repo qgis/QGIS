@@ -25,12 +25,11 @@ QgsRasterDataProvider::QgsRasterDataProvider(): mDpi( -1 )
 {
 }
 
-
 QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
-    : QgsDataProvider( uri ), mDpi( -1 )
+    : QgsDataProvider( uri )
+    , mDpi( -1 )
 {
 }
-
 
 QString QgsRasterDataProvider::capabilitiesString() const
 {
@@ -51,6 +50,11 @@ bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QS
 {
   theResults.clear();
   return false;
+}
+
+QString QgsRasterDataProvider::lastErrorFormat()
+{
+  return "text/plain";
 }
 
 // ENDS

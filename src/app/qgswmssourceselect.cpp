@@ -1021,20 +1021,17 @@ void QgsWMSSourceSelect::showStatusMessage( QString const &theMessage )
 
 void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
 {
-#if 0
-  QMessageBox::warning(
-    this,
-    wms->lastErrorTitle(),
-    tr( "Could not understand the response.  The %1 provider said:\n%2", "COMMENTED OUT" )
-    .arg( wms->name() ).arg( wms->lastError() )
-  );
-#endif
-
   QgsMessageViewer * mv = new QgsMessageViewer( this );
   mv->setWindowTitle( wms->lastErrorTitle() );
-  mv->setMessageAsPlainText( tr( "Could not understand the response.  The %1 provider said:\n%2" )
-                             .arg( wms->name() ).arg( wms->lastError() )
-                           );
+
+  if ( wms->lastErrorFormat() == "text/html" )
+  {
+    mv->setMessageAsHtml( wms->lastError() );
+  }
+  else
+  {
+    mv->setMessageAsPlainText( tr( "Could not understand the response.  The %1 provider said:\n%2" ).arg( wms->name() ).arg( wms->lastError() ) );
+  }
   mv->showMessage( true ); // Is deleted when closed
 }
 
@@ -1042,8 +1039,7 @@ void QgsWMSSourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which server was selected.
   QSettings settings;
-  settings.setValue( "/Qgis/connections-wms/selected",
-                     cmbConnections->currentText() );
+  settings.setValue( "/Qgis/connections-wms/selected", cmbConnections->currentText() );
 }
 
 void QgsWMSSourceSelect::on_btnAddDefault_clicked()

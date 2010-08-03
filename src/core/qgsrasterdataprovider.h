@@ -172,6 +172,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
      */
     virtual QString lastError() = 0;
 
+    /**
+     * \brief   Returns the format of the error text for the last error in this provider
+     *
+     * \note added in 1.6
+     */
+    virtual QString lastErrorFormat();
+
+
     /**Returns the dpi of the output device.
       @note: this method was added in version 1.2*/
     int dpi() const {return mDpi;}

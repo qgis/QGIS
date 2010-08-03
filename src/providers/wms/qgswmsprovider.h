@@ -579,8 +579,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-
     QString lastError();
+
+    /**
+     * \brief   Returns the format of the error message (text or html)
+     */
+    QString lastErrorFormat();
 
     /** return a provider name
 
@@ -883,6 +887,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * The error message associated with the last WMS error.
      */
     QString mError;
+
+
+    /** The mime type of the message
+     */
+    QString mErrorFormat;
 
     //! A QgsCoordinateTransform is used for transformation of WMS layer extents
     QgsCoordinateTransform *mCoordinateTransform;
