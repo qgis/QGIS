@@ -727,6 +727,7 @@ void QgsWmsProvider::tileReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      mErrorFormat = "text/plain";
       mError = tr( "tile request err %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
 
@@ -808,6 +809,7 @@ void QgsWmsProvider::cacheReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = cacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      mErrorFormat = "text/plain";
       mError = tr( "map request error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
 
@@ -865,7 +867,16 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
     if ( httpcapabilitiesresponse.isEmpty() )
     {
-      QgsDebugMsg( "empty capabilities: " + mError );
+      mErrorFormat = "text/plain";
+      mError = tr( "empty capabilities document" );
+      return false;
+    }
+
+    if ( httpcapabilitiesresponse.startsWith( "<html>" ) ||
+         httpcapabilitiesresponse.startsWith( "<HTML>" ) )
+    {
+      mErrorFormat = "text/html";
+      mError = httpcapabilitiesresponse;
       return false;
     }
 
@@ -919,11 +930,13 @@ void QgsWmsProvider::capabilitiesReplyFinished()
 
     if ( httpcapabilitiesresponse.isEmpty() )
     {
+      mErrorFormat = "text/plain";
       mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
     }
   }
   else
   {
+    mErrorFormat = "text/plain";
     mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
     QgsDebugMsg( "error: " + mError );
     httpcapabilitiesresponse.clear();
@@ -966,9 +979,12 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabili
   if ( !contentSuccess )
   {
     mErrorCaption = tr( "Dom Exception" );
-    mError = tr( "Could not get WMS capabilities: %1 at line %2 column %3\n" )
-             .arg( errorMsg ).arg( errorLine ).arg( errorColumn )
-             + tr( "This is probably due to an incorrect WMS Server URL." );
+    mErrorFormat = "text/plain";
+    mError = tr( "Could not get WMS capabilities: %1 at line %2 column %3\nThis is probably due to an incorrect WMS Server URL.\nResponse was:\n\n%4" )
+             .arg( errorMsg )
+             .arg( errorLine )
+             .arg( errorColumn )
+             .arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -986,10 +1002,12 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabili
   )
   {
     mErrorCaption = tr( "Dom Exception" );
-    mError = tr( "Could not get WMS capabilities in the "
-                 "expected format (DTD): no %1 or %2 found\n" )
-             .arg( "WMS_Capabilities" ).arg( "WMT_MS_Capabilities" )
-             + tr( "This is probably due to an incorrect WMS Server URL." );
+    mErrorFormat = "text/plain";
+    mError = tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag:%3\nResponse was:\n%4" )
+             .arg( "WMS_Capabilities" )
+             .arg( "WMT_MS_Capabilities" )
+             .arg( docElem.tagName() )
+             .arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -1825,11 +1843,13 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
   if ( !contentSuccess )
   {
     mErrorCaption = tr( "Dom Exception" );
-    mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4" )
+    mErrorFormat = "text/plain";
+    mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4\n\nResponse was:\n\n%4" )
              .arg( mBaseUrl )
              .arg( errorMsg )
              .arg( errorLine )
-             .arg( errorColumn );
+             .arg( errorColumn )
+             .arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -1875,10 +1895,12 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
   QString seCode = e.attribute( "code" );
   QString seText = e.text();
 
+  mErrorFormat = "text/plain";
+
   // set up friendly descriptions for the service exception
   if ( seCode == "InvalidFormat" )
   {
-    mError = tr( "Request contains a Format not offered by the server." );
+    mError = tr( "Request contains a format not offered by the server." );
   }
   else if ( seCode == "InvalidCRS" )
   {
@@ -2744,6 +2766,7 @@ void QgsWmsProvider::identifyReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = mIdentifyReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      mErrorFormat = "text/plain";
       mError = tr( "map request error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
 
@@ -2781,6 +2804,10 @@ QString QgsWmsProvider::lastError()
   return mError;
 }
 
+QString QgsWmsProvider::lastErrorFormat()
+{
+  return mErrorFormat;
+}
 
 QString  QgsWmsProvider::name() const
 {
