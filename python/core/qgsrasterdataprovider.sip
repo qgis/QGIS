@@ -8,9 +8,9 @@
 
 class QgsRasterDataProvider : QgsDataProvider
 {
-    % TypeHeaderCode
+%TypeHeaderCode
 #include <qgsrasterdataprovider.h>
-    % End
+%End
 
   public:
 
