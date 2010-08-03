@@ -1,6 +1,8 @@
 qgis (1.6.0) UNRELEASED; urgency=low
 
   * new development version after 1.6 branch
+  * qgis-plugin-grass-common breaks earlier versions of qgis-common: add
+    control fields.
  
  -- Jürgen E. Fischer <jef@norbit.de>  Wed, 21 Jul 2010 10:12:48 +0200
 

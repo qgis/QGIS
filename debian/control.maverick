@@ -80,6 +80,8 @@ Description: GRASS plugin for Quantum GIS
 Package: qgis-plugin-grass-common
 Architecture: all
 Depends: python
+Replaces: qgis-common (<< 1.5)
+Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
