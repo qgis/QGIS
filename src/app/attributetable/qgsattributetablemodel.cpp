@@ -497,11 +497,6 @@ void QgsAttributeTableModel::incomingChangeLayout()
   emit layoutAboutToBeChanged();
 }
 
-static void _runPythonString( const QString &expr )
-{
-  QgisApp::instance()->runPythonString( expr );
-}
-
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
 {
   QList< QPair<QString, QString> > attributes;
@@ -514,5 +509,5 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
     );
   }
 
-  mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ), _runPythonString );
+  mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );
 }

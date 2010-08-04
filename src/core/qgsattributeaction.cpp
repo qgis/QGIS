@@ -68,6 +68,10 @@ void QgsAttributeAction::doAction( int index, const QList< QPair<QString, QStrin
     {
       executePython( expandedAction );
     }
+    else if ( smPythonExecute )
+    {
+      smPythonExecute( expandedAction );
+    }
   }
   else
   {
@@ -151,3 +155,9 @@ bool QgsAttributeAction::readXML( const QDomNode& layer_node )
   return true;
 }
 
+void ( *QgsAttributeAction::smPythonExecute )( const QString & ) = 0;
+
+void QgsAttributeAction::setPythonExecute( void ( *runPython )( const QString & ) )
+{
+  smPythonExecute = runPython;
+}

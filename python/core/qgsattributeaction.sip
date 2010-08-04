@@ -49,13 +49,12 @@ class QgsAttributeAction
     // dialog box.
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
 
-/*
     //! Does the action using the given values. defaultValueIndex is an
     // index into values which indicates which value in the values vector
     // is to be used if the action has a default placeholder.
+    // @note added to python API in 1.6 (without executePython parameter)
     void doAction( int index, const QList< QPair<QString, QString> > &values,
-                   int defaultValueIndex = 0, void *executePython = 0 );
- */
+                   int defaultValueIndex = 0 );
 
     //! Removes all actions
     void clearActions();

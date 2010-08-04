@@ -32,6 +32,7 @@
 
 class QDomNode;
 class QDomDocument;
+class QgsPythonUtils;
 
 /** \ingroup core
  * Utility class that encapsulates an action based on vector attributes.
@@ -109,6 +110,7 @@ class  CORE_EXPORT QgsAttributeAction
     //! Does the action using the given values. defaultValueIndex is an
     // index into values which indicates which value in the values vector
     // is to be used if the action has a default placeholder.
+    // @note parameter executePython deprecated (and missing in python binding)
     void doAction( int index, const QList< QPair<QString, QString> > &values,
                    int defaultValueIndex = 0, void ( *executePython )( const QString & ) = 0 );
 
@@ -130,8 +132,11 @@ class  CORE_EXPORT QgsAttributeAction
     QgsAction &at( int idx ) { return mActions[idx]; }
     QgsAction &operator[]( int idx ) { return mActions[idx]; }
 
+    static void setPythonExecute( void ( * )( const QString & ) );
+
   private:
     QList<QgsAction> mActions;
+    static void ( *smPythonExecute )( const QString & );
 };
 
 #endif
