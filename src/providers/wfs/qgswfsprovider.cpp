@@ -261,10 +261,14 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
       QgsAttributeMap::const_iterator valueIt = featureAttributes.find( fieldIt.key() );
       if ( valueIt != featureAttributes.constEnd() )
       {
-        QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, fieldIt.value().name() );
-        QDomText fieldText = transactionDoc.createTextNode( valueIt.value().toString() );
-        fieldElem.appendChild( fieldText );
-        featureElem.appendChild( fieldElem );
+        QVariant fieldValue = valueIt.value();
+        if ( fieldValue.isValid() && !fieldValue.isNull() )
+        {
+          QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, fieldIt.value().name() );
+          QDomText fieldText = transactionDoc.createTextNode( fieldValue.toString() );
+          fieldElem.appendChild( fieldText );
+          featureElem.appendChild( fieldElem );
+        }
       }
     }
 
@@ -2003,6 +2007,7 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
   QByteArray response = reply->readAll();
   reply->deleteLater();
   serverResponse.setContent( response, true );
+
   return true;
 }
 
