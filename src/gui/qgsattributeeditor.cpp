@@ -354,7 +354,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           le->setCompleter( c );
         }
 
-        if ( myFieldType == QVariant::Int )
+        if ( myFieldType == QVariant::Int || myFieldType == QVariant::LongLong )
         {
           le->setValidator( new QIntValidator( le ) );
         }
@@ -545,6 +545,20 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
     }
     break;
+    case QVariant::LongLong:
+    {
+      bool ok;
+      qlonglong myLongValue = text.toLong( &ok );
+      if ( ok && !text.isEmpty() )
+      {
+        value = QVariant( myLongValue );
+        modified = true;
+      }
+      else if ( modified )
+      {
+        value = QVariant( theField.type() );
+      }
+    }
     case QVariant::Double:
     {
       bool ok;
@@ -668,7 +682,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       QString text;
       if ( value.isNull() )
-        if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double )
+        if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong )
           text = "";
         else
           text = "NULL";

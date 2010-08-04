@@ -146,6 +146,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       {
         mypLabel->setText( myFieldName + tr( " (dbl)" ) );
       }
+      else if ( myFieldType == QVariant::LongLong )
+      {
+        mypLabel->setText( myFieldName + tr( " (long)" ) );
+      }
       else //string
       {
         //any special behaviour for string goes here
