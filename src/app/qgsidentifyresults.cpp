@@ -44,11 +44,6 @@
 
 #include "qgslogger.h"
 
-static void _runPythonString( const QString &expr )
-{
-  QgisApp::instance()->runPythonString( expr );
-}
-
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem )
     : QAction( name, results )
     , mLayer( vl )
@@ -60,7 +55,7 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsIdentifyResults *res
 
 void QgsFeatureAction::execute()
 {
-  mLayer->actions()->doAction( mAction, mAttributes, mIdx, _runPythonString );
+  mLayer->actions()->doAction( mAction, mAttributes, mIdx );
 }
 
 class QgsIdentifyResultsDock : public QDockWidget

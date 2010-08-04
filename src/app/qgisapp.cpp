@@ -159,6 +159,7 @@
 #include "qgscredentialdialog.h"
 #include "qgstilescalewidget.h"
 #include "qgsquerybuilder.h"
+#include "qgsattributeaction.h"
 
 #ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
@@ -4939,6 +4940,11 @@ void QgisApp::showPluginManager()
   }
 }
 
+static void _runPythonString( const QString &expr )
+{
+  QgisApp::instance()->runPythonString( expr );
+}
+
 void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( "qgispython" );
@@ -4983,6 +4989,7 @@ void QgisApp::loadPythonSupport()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsPluginRegistry::instance()->setPythonUtils( mPythonUtils );
+    QgsAttributeAction::setPythonExecute( _runPythonString );
 
     mActionShowPythonDialog = new QAction( tr( "Python Console" ), this );
     QgsShortcutsManager::instance()->registerAction( mActionShowPythonDialog );
