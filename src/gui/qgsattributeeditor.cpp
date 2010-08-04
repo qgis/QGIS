@@ -22,6 +22,7 @@
 #include <qgsuniquevaluerenderer.h>
 #include <qgscategorizedsymbolrendererv2.h>
 #include <qgssymbol.h>
+#include <qgslonglongvalidator.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -354,9 +355,13 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           le->setCompleter( c );
         }
 
-        if ( myFieldType == QVariant::Int || myFieldType == QVariant::LongLong )
+        if ( myFieldType == QVariant::Int )
         {
           le->setValidator( new QIntValidator( le ) );
+        }
+        else if ( myFieldType == QVariant::LongLong )
+        {
+          le->setValidator( new QgsLongLongValidator( le ) );
         }
         else if ( myFieldType == QVariant::Double )
         {
