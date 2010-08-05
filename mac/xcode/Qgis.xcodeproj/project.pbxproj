@@ -835,6 +835,7 @@
 		724D05D410A910F200F9680A /* north-arrow_7_big_circle_with_small_arrow_unfilled_n.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BB10A910B400F9680A /* north-arrow_7_big_circle_with_small_arrow_unfilled_n.svg */; };
 		724D05D510A910F200F9680A /* north-arrow_8_checkered.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BC10A910B400F9680A /* north-arrow_8_checkered.svg */; };
 		724D05D610A910F200F9680A /* north-arrow_9_half_arrow_unfilled.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BD10A910B400F9680A /* north-arrow_9_half_arrow_unfilled.svg */; };
+		724DB096120AED9100600685 /* qgslonglongvalidator.h in Sources */ = {isa = PBXBuildFile; fileRef = 724DB095120AED7F00600685 /* qgslonglongvalidator.h */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F3190F4149390022BE1F /* qgis-icon-16x16.png in Copy - images-icons */ = {isa = PBXBuildFile; fileRef = 7209EE190F39E5D9003DC336 /* qgis-icon-16x16.png */; };
 		7256F31A0F4149390022BE1F /* qgis-icon-60x60.png in Copy - images-icons */ = {isa = PBXBuildFile; fileRef = 7209EE1A0F39E5D9003DC336 /* qgis-icon-60x60.png */; };
@@ -6158,6 +6159,7 @@
 		724D064510A9112D00F9680A /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/newgis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
 		724D064610A9112D00F9680A /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/newgis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		724D064710A9112D00F9680A /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/newgis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
+		724DB095120AED7F00600685 /* qgslonglongvalidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgslonglongvalidator.h; path = ../../src/gui/qgslonglongvalidator.h; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
 		7256F2DE0F4147890022BE1F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = SOURCE_ROOT; };
@@ -9251,6 +9253,7 @@
 				7209E7570F39E57A003DC336 /* qgsgenericprojectionselector.h */,
 				72A51A5010CE063E00E202D7 /* qgslegendinterface.cpp */,
 				72A51A5110CE063E00E202D7 /* qgslegendinterface.h */,
+				724DB095120AED7F00600685 /* qgslonglongvalidator.h */,
 				72EB30FE10B99969002A971B /* qgsludialog.cpp */,
 				72EB30FF10B99969002A971B /* qgsludialog.h */,
 				7209E7580F39E57A003DC336 /* qgsmapcanvas.cpp */,
@@ -15954,6 +15957,7 @@
 				729287980F71D415006D9489 /* qgsdetaileditemwidget.h in Sources */,
 				729287990F71D415006D9489 /* qgsencodingfiledialog.h in Sources */,
 				7292879A0F71D415006D9489 /* qgsgenericprojectionselector.h in Sources */,
+				724DB096120AED9100600685 /* qgslonglongvalidator.h in Sources */,
 				7292879B0F71D415006D9489 /* qgsmapcanvas.h in Sources */,
 				7292879C0F71D415006D9489 /* qgsmapoverviewcanvas.h in Sources */,
 				7292879D0F71D415006D9489 /* qgsmaptoolemitpoint.h in Sources */,
