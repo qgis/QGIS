@@ -440,11 +440,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
     void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
 
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
+      \note added in v1.6 */
+    void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
+
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
+    
+    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent 
+      \note added in v1.6 */
+    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );

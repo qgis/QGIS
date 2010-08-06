@@ -269,16 +269,24 @@ public:
     QString colorShadingAlgorithmAsString() const;
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
-    void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
+    // (would need MethodCode directive) void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
-    void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
+    // (would need MethodCode directive) void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
+
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
+      \note added in v1.6 */
+    void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
+    
+    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
+    // (would need MethodCode directive) void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
-    void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
+    // (would need MethodCode directive) void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
-    void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
+    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent 
+      \note added in v1.6 */
+    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );

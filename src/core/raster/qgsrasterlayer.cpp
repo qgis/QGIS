@@ -1243,6 +1243,14 @@ void QgsRasterLayer::computeMinimumMaximumEstimates( QString theBand, double* th
   computeMinimumMaximumEstimates( bandNumber( theBand ), theMinMax );
 }
 
+void QgsRasterLayer::computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax )
+{
+  double theMinMax[2];
+  computeMinimumMaximumEstimates( theBand, theMinMax );
+  theMin = theMinMax[0];
+  theMax = theMinMax[1];
+}
+
 /**
  * @param theBand The band (number) for which to calculate the min max values
  * @param theMinMax Pointer to a double[2] which hold the estimated min max
@@ -1291,6 +1299,14 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
 void QgsRasterLayer::computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax )
 {
   computeMinimumMaximumFromLastExtent( bandNumber( theBand ), theMinMax );
+}
+
+void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax )
+{
+  double theMinMax[2];
+  computeMinimumMaximumFromLastExtent( theBand, theMinMax );
+  theMin = theMinMax[0];
+  theMax = theMinMax[1];
 }
 
 /**
