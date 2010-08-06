@@ -82,4 +82,5 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def addLayerIntoCanvas(self, fileInfo):
       vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
       if vl.isValid():
-        vl.setProviderEncoding(self.lastEncoding)
+        if hasattr(self, 'lastEncoding'):
+          vl.setProviderEncoding(self.lastEncoding)
