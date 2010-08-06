@@ -416,6 +416,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   QgsGeometry* geom = f.geometry();
+  GEOSGeometry* geos_geom = geom->asGeos();
+  if ( geos_geom == NULL )
+    return; // invalid geometry
+
   if ( ct != NULL ) // reproject the geometry if necessary
     geom->transform( *ct );
 
@@ -424,7 +428,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     return;
   }
 
-  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, GEOSGeom_clone( geom->asGeos() ) );
+  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, GEOSGeom_clone( geos_geom ) );
 
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );
