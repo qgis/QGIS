@@ -20,11 +20,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       BaseBatchWidget.__init__(self, self.iface, "gdal_translate")
 
       # set the default QSpinBoxes and QProgressBar value
+      self.outsizeSpin.setValue(25)
       self.progressBar.setValue(0)
 
       self.progressBar.hide()
       self.formatLabel.hide()
       self.formatCombo.hide()
+
+      if Utils.Version( Utils.GdalConfig.version() ) < "1.7":
+        index = self.expandCombo.findText('gray', Qt.MatchFixedString)
+        if index >= 0:
+          self.expandCombo.removeItem(index)
 
       self.outputFormat = Utils.fillRasterOutputFormat()
 
@@ -34,7 +40,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
           (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
           (self.selectTargetSRSButton, None, self.targetSRSCheck),
-          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox)
+          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox),
+          (self.outsizeSpin, SIGNAL("valueChanged(const QString &)"), self.outsizeCheck),
+          (self.nodataSpin, SIGNAL("valueChanged(int)"), self.nodataCheck),
+          (self.expandCombo, SIGNAL("currentIndexChanged(int)"), self.expandCheck, "1.6.0"),
+          (self.sdsCheck, SIGNAL("stateChanged(int)")),
+          (self.srcwinEdit, SIGNAL("textChanged(const QString &)"), self.srcwinCheck),
+          (self.prjwinEdit, SIGNAL("textChanged(const QString &)"), self.prjwinCheck)
         ]
       )
 
@@ -160,6 +172,46 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         for opt in self.creationOptionsTable.options():
           arguments << "-co"
           arguments << opt
+      if self.outsizeCheck.isChecked() and self.outsizeSpin.value() != 100:
+              arguments << "-outsize"
+              arguments << self.outsizeSpin.text()
+              arguments << self.outsizeSpin.text()
+      if self.expandCheck.isChecked():
+          arguments << "-expand"
+          arguments << self.expandCombo.currentText().toLower()
+      if self.nodataCheck.isChecked():
+          arguments << "-a_nodata"
+          arguments << str(self.nodataSpin.value())
+      if self.sdsCheck.isChecked():
+          arguments << "-sds"
+      if self.srcwinCheck.isChecked() and not self.srcwinEdit.text().isEmpty():
+          #coordList = []
+          coordList = self.srcwinEdit.text().split( ' ', QString.SkipEmptyParts )
+          if len(coordList) == 4 and not coordList[3].isEmpty():
+              try:
+                  for x in coordList:
+                      test = int(x)
+              except ValueError:
+                  #print "Coordinates must be integer numbers."
+                  QMessageBox.critical(self, "Translate - srcwin", "Image coordinates (pixels) must be integer numbers.")
+              else:
+                  arguments << "-srcwin"
+                  for x in coordList:
+                      arguments << x
+      if self.prjwinCheck.isChecked() and not self.prjwinEdit.text().isEmpty():
+          #coordList = []
+          coordList = self.prjwinEdit.text().split( ' ', QString.SkipEmptyParts )
+          if len(coordList) == 4 and not coordList[3].isEmpty():
+              try:
+                  for x in coordList:
+                      test = float(x)
+              except ValueError:
+                  #print "Coordinates must be integer numbers."
+                  QMessageBox.critical(self, "Translate - prjwin", "Image coordinates (geographic) must be numbers.")
+              else:
+                  arguments << "-projwin"
+                  for x in coordList:
+                    arguments << x
       if self.isBatchEnabled():
         if self.formatCombo.currentIndex() != 0:
           arguments << "-of"
