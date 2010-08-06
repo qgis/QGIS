@@ -30,22 +30,19 @@ class QgsStandardItem : public QStandardItem
     QgsStandardItem( QString text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
+      // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
       setData( QVariant( text ), Qt::UserRole );
       setTextAlignment( Qt::AlignRight );
     }
 
     QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
     {
-      // In addition to the DisplayRole, also set the user role, which is used for sorting.
-      // This is needed for numerical sorting to work corretly (otherwise sorting is lexicographic).
       setData( QVariant( value ), Qt::UserRole );
       setTextAlignment( Qt::AlignCenter );
     }
 
     QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 2 ) )
     {
-      // In addition to the DisplayRole, also set the user role, which is used for sorting.
-      // This is needed for numerical sorting to work corretly (otherwise sorting is lexicographic).
       setData( QVariant( value ), Qt::UserRole );
       setTextAlignment( Qt::AlignRight );
     }
