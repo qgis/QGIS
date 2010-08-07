@@ -41,6 +41,11 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //not a color but a quantity, e.g. temperature or elevation
     struct ColorRampItem
     {
+      //! default constructor
+      ColorRampItem() {}
+      //! convenience constructor - added in v1.6
+      ColorRampItem( double val, QColor col, QString lbl = QString() ) : label(lbl), value(val), color(col) {}
+      
       QString label;
       double value;
       QColor color;
