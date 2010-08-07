@@ -20774,7 +20774,7 @@ geometry.</source>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation>L&apos;installatore di plugin ha individuato un plugin obsoleto che maschera una nuova versione creata per questa versione di QGIS. Questo accade a casa di alcuni file associati a QGIS da una precedente installazione. Utilizzare il Plugin Installar per rimuovere questo plugin in modo da poter visualizzare le nuove versioni create per questa copia di QGIS.</translation>
+        <translation>L&apos;installatore di plugin ha individuato un plugin obsoleto che maschera una nuova versione creata per questa versione di QGIS. Questo accade a casa di alcuni file associati a QGIS da una precedente installazione. Utilizzare il Plugin Installer per rimuovere questo plugin in modo da poter visualizzare le nuove versioni create per questa copia di QGIS.</translation>
     </message>
 </context>
 <context>
