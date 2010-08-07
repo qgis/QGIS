@@ -426,8 +426,9 @@ public:
     /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
     void setNoDataValue( double theNoData );
 
-    /** \brief Set the raster shader function to a user defined function */
-    void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
+    /** \brief Set the raster shader function to a user defined function
+      \note ownership of the shader function is transfered to raster shader */
+    void setRasterShaderFunction( QgsRasterShaderFunction* theFunction /Transfer/ );
 
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red color) */
     void setRedBandName( const QString & theBandName );

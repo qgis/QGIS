@@ -3525,12 +3525,6 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
 
 void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
-  //Free old shader if it is not a userdefined shader
-  if ( mColorShadingAlgorithm != QgsRasterLayer::UserDefinedShader && 0 != mRasterShader->rasterShaderFunction() )
-  {
-    delete( mRasterShader->rasterShaderFunction() );
-  }
-
   if ( theFunction )
   {
     mRasterShader->setRasterShaderFunction( theFunction );

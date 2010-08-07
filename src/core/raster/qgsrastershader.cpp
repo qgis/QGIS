@@ -31,6 +31,7 @@ QgsRasterShader::QgsRasterShader( double theMinimumValue, double theMaximumValue
 
 QgsRasterShader::~QgsRasterShader()
 {
+  delete mRasterShaderFunction;
 }
 
 /**
@@ -84,6 +85,7 @@ void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunct
 
   if ( 0 != theFunction )
   {
+    delete mRasterShaderFunction;
     mRasterShaderFunction = theFunction;
   }
 }
