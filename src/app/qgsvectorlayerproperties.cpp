@@ -135,11 +135,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
   //insert existing join info
-   QList< QgsVectorJoinInfo > joins = layer->vectorJoins();
-   for( int i = 0; i < joins.size(); ++i )
-   {
-      addJoinToTreeWidget( joins[i] );
-   }
+  QList< QgsVectorJoinInfo > joins = layer->vectorJoins();
+  for ( int i = 0; i < joins.size(); ++i )
+  {
+    addJoinToTreeWidget( joins[i] );
+  }
 
   //for each overlay plugin create a new tab
   int position;
@@ -803,41 +803,41 @@ QString QgsVectorLayerProperties::metadata()
 
   QString xMin, yMin, xMax, yMax;
   double changeoverValue = 99999; // The 'largest' 5 digit number
-  if (fabs(myExtent.xMinimum()) > changeoverValue)
-    {
-      xMin = QString("%1").arg(myExtent.xMinimum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.xMinimum() ) > changeoverValue )
+  {
+    xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
+  }
   else
-    {
-      xMin = QString("%1").arg(myExtent.xMinimum());
-    }
+  {
+    xMin = QString( "%1" ).arg( myExtent.xMinimum() );
+  }
 
-  if (fabs(myExtent.yMinimum()) > changeoverValue)
-    {
-      yMin = QString("%1").arg(myExtent.yMinimum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.yMinimum() ) > changeoverValue )
+  {
+    yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
+  }
   else
-    {
-      yMin = QString("%1").arg(myExtent.yMinimum());
-    }
+  {
+    yMin = QString( "%1" ).arg( myExtent.yMinimum() );
+  }
 
-  if (fabs(myExtent.xMaximum()) > changeoverValue)
-    {
-      xMax = QString("%1").arg(myExtent.xMaximum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.xMaximum() ) > changeoverValue )
+  {
+    xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
+  }
   else
-    {
-      xMax = QString("%1").arg(myExtent.xMaximum());
-    }
+  {
+    xMax = QString( "%1" ).arg( myExtent.xMaximum() );
+  }
 
-  if (fabs(myExtent.yMaximum()) > changeoverValue)
-    {
-      yMax = QString("%1").arg(myExtent.yMaximum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.yMaximum() ) > changeoverValue )
+  {
+    yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
+  }
   else
-    {
-      yMax = QString("%1").arg(myExtent.yMaximum());
-    }
+  {
+    yMax = QString( "%1" ).arg( myExtent.yMaximum() );
+  }
 
   myMetadata += tr( "In layer spatial reference system units : " )
                 + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
@@ -1172,19 +1172,19 @@ void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
 void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
 {
   QgsAddJoinDialog d( layer );
-  if( d.exec() == QDialog::QDialog::Accepted )
+  if ( d.exec() == QDialog::Accepted )
   {
     QgsVectorJoinInfo info;
     info.targetField = d.targetField();
     info.joinLayerId = d.joinedLayerId();
     info.joinField = d.joinField();
-    if( layer )
+    if ( layer )
     {
       //create attribute index if possible. Todo: ask user if this should be done (e.g. in QgsAddJoinDialog)
-      if( d.createAttributeIndex() )
+      if ( d.createAttributeIndex() )
       {
         QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
-        if( joinLayer )
+        if ( joinLayer )
         {
           joinLayer->dataProvider()->createAttributeIndex( info.joinField );
         }
@@ -1202,7 +1202,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( QgsVectorJoinInfo& join )
   QTreeWidgetItem* joinItem = new QTreeWidgetItem();
 
   QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
-  if( !joinLayer )
+  if ( !joinLayer )
   {
     return;
   }
@@ -1222,7 +1222,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( QgsVectorJoinInfo& join )
 void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
 {
   QTreeWidgetItem* currentJoinItem = mJoinTreeWidget->currentItem();
-  if( !layer || !currentJoinItem )
+  if ( !layer || !currentJoinItem )
   {
     return;
   }
