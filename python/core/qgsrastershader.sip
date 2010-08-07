@@ -31,8 +31,9 @@ public:
   bool shade(double, int* /Out/, int* /Out/, int* /Out/);
   /** \brief generates and new RGB value based on original RGB value */
   bool shade(double, double, double, int* /Out/, int* /Out/, int* /Out/);
-  /** \brief A public method that allows the user to set their own shader function */
-  void setRasterShaderFunction(QgsRasterShaderFunction*);
+  /** \brief A public method that allows the user to set their own shader function
+    \note Raster shader takes ownership of the shader function instance */ 
+  void setRasterShaderFunction(QgsRasterShaderFunction* /Transfer/);
   /** \brief Set the maximum value */
   void setMaximumValue(double);
   /** \brief Return the minimum value */

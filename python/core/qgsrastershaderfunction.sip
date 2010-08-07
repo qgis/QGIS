@@ -3,7 +3,22 @@ class QgsRasterShaderFunction
 {
 %TypeHeaderCode
 #include <qgsrastershaderfunction.h>
+#include <qgscolorrampshader.h>
+#include <qgsfreakoutshader.h>
+#include <qgspseudocolorshader.h>
 %End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsColorRampShader*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsColorRampShader;
+  else if (dynamic_cast<QgsFreakOutShader*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsFreakOutShader;
+  else if (dynamic_cast<QgsPseudoColorShader*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsPseudoColorShader;
+  else
+    sipClass = 0;
+%End
+
 
 public:
   QgsRasterShaderFunction(double theMinimumValue = 0.0, double theMaximumValue = 255.0);

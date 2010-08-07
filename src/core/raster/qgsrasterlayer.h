@@ -449,8 +449,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
-    
-    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent 
+
+    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
     void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
 
@@ -592,7 +592,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
     void setNoDataValue( double theNoData );
 
-    /** \brief Set the raster shader function to a user defined function */
+    /** \brief Set the raster shader function to a user defined function
+      \note ownership of the shader function is transfered to raster shader */
     void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
 
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red color) */

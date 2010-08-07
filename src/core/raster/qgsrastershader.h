@@ -56,7 +56,8 @@ class CORE_EXPORT QgsRasterShader
     /** \brief generates and new RGB value based on original RGB value */
     bool shade( double, double, double, int*, int*, int* );
 
-    /** \brief A public method that allows the user to set their own shader function */
+    /** \brief A public method that allows the user to set their own shader function
+      \note Raster shader takes ownership of the shader function instance */
     void setRasterShaderFunction( QgsRasterShaderFunction* );
 
     /** \brief Set the maximum value */
