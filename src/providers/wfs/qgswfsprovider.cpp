@@ -35,6 +35,7 @@
 #include <QFile>
 #include <QUrl>
 #include <QWidget>
+#include <QPair>
 #include <cfloat>
 
 static const QString TEXT_PROVIDER_KEY = "WFS";

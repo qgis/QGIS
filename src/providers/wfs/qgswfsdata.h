@@ -25,6 +25,7 @@
 #include <list>
 #include <set>
 #include <stack>
+#include <QPair>
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 

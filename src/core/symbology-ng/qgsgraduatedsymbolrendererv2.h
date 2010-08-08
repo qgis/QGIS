@@ -131,7 +131,11 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     int mRotationFieldIdx, mSizeScaleFieldIdx;
 
     //! temporary symbols, used for data-defined rotation and scaling
+#if QT_VERSION < 0x40600
+    QMap<QgsSymbolV2*, QgsSymbolV2*> mTempSymbols;
+#else
     QHash<QgsSymbolV2*, QgsSymbolV2*> mTempSymbols;
+#endif
 
     QgsSymbolV2* symbolForValue( double value );
 };
