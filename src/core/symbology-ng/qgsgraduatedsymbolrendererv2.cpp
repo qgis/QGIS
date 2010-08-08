@@ -186,7 +186,11 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
     it->symbol()->startRender( context );
 
   // cleanup mTempSymbols
+#if QT_VERSION < 0x40600
+  QMap<QgsSymbolV2*, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
+#else
   QHash<QgsSymbolV2*, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
+#endif
   for ( ; it2 != mTempSymbols.end(); ++it2 )
   {
     it2.value()->stopRender( context );
