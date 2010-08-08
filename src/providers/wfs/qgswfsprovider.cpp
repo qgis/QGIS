@@ -191,7 +191,7 @@ int QgsWFSProvider::getFeature( const QString& uri )
   QString geometryAttribute;
 
   //Local url or HTTP?
-  if ( uri.startsWith( "http://" ) )
+  if ( uri.startsWith( "http" ) )
   {
     mEncoding = QgsWFSProvider::GET;
   }
