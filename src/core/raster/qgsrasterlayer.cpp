@@ -3490,6 +3490,35 @@ void QgsRasterLayer::setMaximumValue( QString theBand, double theValue, bool the
   }
 }
 
+void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
+{
+  double myMinMax[2];
+  if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleGandGray )
+  {
+    computeMinimumMaximumFromLastExtent( grayBandName(), myMinMax );
+    setMinimumValue( grayBandName(), myMinMax[0] );
+    setMaximumValue( grayBandName(), myMinMax[1] );
+
+    setUserDefinedGrayMinimumMaximum( true );
+  }
+  else if ( rasterType() == QgsRasterLayer::Multiband )
+  {
+    computeMinimumMaximumFromLastExtent( redBandName(), myMinMax );
+    setMinimumValue( redBandName(), myMinMax[0], false );
+    setMaximumValue( redBandName(), myMinMax[1], false );
+
+    computeMinimumMaximumFromLastExtent( greenBandName(), myMinMax );
+    setMinimumValue( greenBandName(), myMinMax[0], false );
+    setMaximumValue( greenBandName(), myMinMax[1], false );
+
+    computeMinimumMaximumFromLastExtent( blueBandName(), myMinMax );
+    setMinimumValue( blueBandName(), myMinMax[0], false );
+    setMaximumValue( blueBandName(), myMinMax[1], false );
+
+    setUserDefinedRGBMinimumMaximum( true );
+  }
+}
+
 void QgsRasterLayer::setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag )
 {
   if ( 0 < theBand && theBand <= bandCount() )
