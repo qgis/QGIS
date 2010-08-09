@@ -1624,6 +1624,35 @@ void QgsLegend::legendLayerZoomNative()
   }
 }
 
+void QgsLegend::legendLayerStretchUsingCurrentExtent()
+{
+  //find current Layer
+  QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
+  if ( !currentLayer )
+    return;
+
+  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer->layer() );
+  if ( layer )
+  {
+    if ( layer->drawingStyle() == QgsRasterLayer::SingleBandPseudoColor )
+    {
+      layer->setDrawingStyle( QgsRasterLayer::SingleBandGray );
+    }
+    else if ( layer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandPseudoColor )
+    {
+      layer->setDrawingStyle( QgsRasterLayer::MultiBandSingleGandGray );
+    }
+
+    if ( layer->contrastEnhancementAlgorithmAsString() == "NoEnhancement" )
+    {
+      layer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
+    }
+
+    layer->setMinimumMaximumUsingLastExtent();
+    mMapCanvas->refresh();
+  }
+}
+
 void QgsLegend::readProject( const QDomDocument & doc )
 {
   QDomNodeList nodes = doc.elementsByTagName( "legend" );

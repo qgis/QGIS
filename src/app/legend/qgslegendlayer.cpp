@@ -395,6 +395,12 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     theMenu.addAction( tr( "&Zoom to best scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
+
+    QgsRasterLayer *rasterLayer =  qobject_cast<QgsRasterLayer *>( lyr );
+    if( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+    {
+      theMenu.addAction( tr( "&Stretch using current extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
+    }
   }
 
   // show in overview

@@ -417,6 +417,9 @@ public:
     /** \brief Mutator for setting the maximum value for contrast enhancement */
     void setMaximumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
+    /** \brief Sets the minimum and maximum values for the band(s) currently being displayed using the only pixel values from the last/current extent */
+    void setMinimumMaximumUsingLastExtent();
+
     /** \brief Mutator for setting the minimum value for contrast enhancement */
     void setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
 

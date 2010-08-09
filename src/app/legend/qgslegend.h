@@ -253,9 +253,13 @@ class QgsLegend : public QTreeWidget
     legend layer files*/
     void legendLayerZoom();
 
-    /***Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
+    /**Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
         Only works on raster layers*/
     void legendLayerZoomNative();
+
+    /**Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
+        Only workds on raster layers*/
+    void legendLayerStretchUsingCurrentExtent();
 
     /**Updates check states when the map canvas layer set is changed */
     void refreshCheckStates();
