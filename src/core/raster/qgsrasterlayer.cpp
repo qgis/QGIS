@@ -5412,15 +5412,36 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     //we know we have at least 2 layers...
     mRedBandName = bandName( myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt() );  // sensible default
     mGreenBandName = bandName( myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt() );  // sensible default
+
+    //Check to make sure preferred bands combinations are valid
+    if ( mRedBandName.isEmpty() )
+    {
+      mRedBandName = bandName( 1 );
+    }
+
+    if ( mGreenBandName.isEmpty() )
+    {
+      mGreenBandName = bandName( 2 );
+    }
+
     //for the third layer we cant be sure so..
     if ( GDALGetRasterCount( mGdalDataset ) > 2 )
     {
       mBlueBandName = bandName( myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt() ); // sensible default
+      if ( mBlueBandName.isEmpty() )
+      {
+        mBlueBandName = bandName( 3 );
+      }
     }
     else
     {
       mBlueBandName = bandName( myQSettings.value( "/Raster/defaultBlueBand", 2 ).toInt() );  // sensible default
+      if ( mBlueBandName.isEmpty() )
+      {
+        mBlueBandName = bandName( 2 );
+      }
     }
+
 
     mTransparencyBandName = TRSTRING_NOT_SET;
     mGrayBandName = TRSTRING_NOT_SET;  //sensible default
