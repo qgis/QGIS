@@ -373,6 +373,11 @@ void QgsVectorDataProvider::fillMinMaxCache()
       mCacheMinValues[it.key()] = QVariant( DBL_MAX );
       mCacheMaxValues[it.key()] = QVariant( -DBL_MAX );
     }
+    else
+    {
+      mCacheMinValues[it.key()] = QVariant();
+      mCacheMaxValues[it.key()] = QVariant();
+    }
   }
 
   QgsFeature f;
@@ -401,6 +406,18 @@ void QgsVectorDataProvider::fillMinMaxCache()
           mCacheMinValues[*it] = value;
         if ( value > mCacheMaxValues[*it].toDouble() )
           mCacheMaxValues[*it] = value;
+      }
+      else
+      {
+        QString value = varValue.toString();
+        if ( mCacheMinValues[*it].isNull() || value < mCacheMinValues[*it].toString() )
+        {
+          mCacheMinValues[*it] = value;
+        }
+        if ( mCacheMaxValues[*it].isNull() || value > mCacheMinValues[*it].toString() )
+        {
+          mCacheMaxValues[*it] = value;
+        }
       }
     }
   }
