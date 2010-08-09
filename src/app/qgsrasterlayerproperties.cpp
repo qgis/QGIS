@@ -467,7 +467,7 @@ void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 */
 void QgsRasterLayerProperties::sync()
 {
-  QgsDebugMsg( "called." );
+  QSettings myQSettings;
   QgsDebugMsg( "sync populate symbology tab" );
   /*
    * Symbology Tab
@@ -656,19 +656,28 @@ void QgsRasterLayerProperties::sync()
   cboGray->setCurrentIndex( cboGray->findText( mRasterLayer->grayBandName() ) );
 
   //set the stdDevs and min max values
+  mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
   if ( mRasterLayerIsGdal && rbtnThreeBand->isChecked() )
   {
     mRGBMinimumMaximumEstimated = mRasterLayer->isRGBMinimumMaximumEstimated();
     if ( mRasterLayer->hasUserDefinedRGBMinimumMaximum() )
     {
-      sboxThreeBandStdDev->setValue( 0.0 );
+      sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
       rbtnThreeBandStdDev->setChecked( false );
       rbtnThreeBandMinMax->setChecked( true );
     }
     else
     {
       sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviations() );
-      rbtnThreeBandStdDev->setChecked( true );
+      if ( mRasterLayer->standardDeviations() == 0.0 )
+      {
+        sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
+        rbtnThreeBandStdDev->setChecked( false );
+      }
+      else
+      {
+        rbtnThreeBandStdDev->setChecked( true );
+      }
       rbtnThreeBandMinMax->setChecked( false );
     }
 
@@ -700,14 +709,22 @@ void QgsRasterLayerProperties::sync()
     mGrayMinimumMaximumEstimated = mRasterLayer->isGrayMinimumMaximumEstimated();
     if ( mRasterLayer->hasUserDefinedGrayMinimumMaximum() )
     {
-      sboxSingleBandStdDev->setValue( 0.0 );
+      sboxSingleBandStdDev->setValue( mDefaultStandardDeviation );
       rbtnSingleBandStdDev->setChecked( false );
       rbtnSingleBandMinMax->setChecked( true );
     }
     else
     {
       sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviations() );
-      rbtnSingleBandStdDev->setChecked( true );
+      if ( mRasterLayer->standardDeviations() == 0.0 )
+      {
+        sboxSingleBandStdDev->setValue( mDefaultStandardDeviation );
+        rbtnSingleBandStdDev->setChecked( false );
+      }
+      else
+      {
+        rbtnSingleBandStdDev->setChecked( true );
+      }
       rbtnSingleBandMinMax->setChecked( false );
     }
 
@@ -748,7 +765,6 @@ void QgsRasterLayerProperties::sync()
   }
 
   //Display the current default contrast enhancement algorithm
-  QSettings myQSettings;
   mDefaultRedBand = myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt();
   mDefaultGreenBand = myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt();
   mDefaultBlueBand = myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt();
@@ -775,10 +791,6 @@ void QgsRasterLayerProperties::sync()
   {
     labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
   }
-
-  mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toDouble();
-  sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
-
 
   QgsDebugMsg( "populate transparency tab" );
   /*
@@ -2404,7 +2416,7 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled( bool theState )
 
     if ( mRasterLayer->hasUserDefinedGrayMinimumMaximum() )
     {
-      sboxSingleBandStdDev->setValue( 0.0 );
+      sboxSingleBandStdDev->setValue( mDefaultStandardDeviation );
       rbtnSingleBandMinMax->setChecked( true );
       leGrayMin->setText( QString::number( mRasterLayer->minimumValue( cboGray->currentText() ) ) );
       leGrayMax->setText( QString::number( mRasterLayer->maximumValue( cboGray->currentText() ) ) );
@@ -2412,7 +2424,15 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled( bool theState )
     else
     {
       sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviations() );
-      rbtnSingleBandStdDev->setChecked( true );
+      if ( mRasterLayer->standardDeviations() == 0.0 )
+      {
+        sboxSingleBandStdDev->setValue( mDefaultStandardDeviation );
+        rbtnSingleBandStdDev->setChecked( false );
+      }
+      else
+      {
+        rbtnSingleBandStdDev->setChecked( true );
+      }
     }
 
     // Populate transparency table with single value transparency pixels
@@ -2493,7 +2513,16 @@ void QgsRasterLayerProperties::on_rbtnThreeBand_toggled( bool theState )
     else
     {
       sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviations() );
-      rbtnThreeBandStdDev->setChecked( true );
+      if ( mRasterLayer->standardDeviations() == 0.0 )
+      {
+        sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
+        rbtnThreeBandStdDev->setChecked( false );
+      }
+      else
+      {
+        rbtnThreeBandStdDev->setChecked( true );
+      }
+
     }
 
     // Populate transparency table with single value transparency pixels
