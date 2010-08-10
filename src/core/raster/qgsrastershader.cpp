@@ -82,6 +82,9 @@ bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double th
 void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
   QgsDebugMsg( "called." );
+  
+  if ( mRasterShaderFunction == theFunction )
+    return;
 
   if ( 0 != theFunction )
   {
