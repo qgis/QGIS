@@ -1844,7 +1844,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
   {
     mErrorCaption = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
-    mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4\n\nResponse was:\n\n%4" )
+    mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4\n\nResponse was:\n\n%5" )
              .arg( mBaseUrl )
              .arg( errorMsg )
              .arg( errorLine )
