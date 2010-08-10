@@ -703,7 +703,7 @@ class geoprocessingThread( QThread ):
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
     fields = vproviderA.fields()
-    # check for crs compatability
+    # check for crs compatibility
     crsA = vproviderA.crs()
     crsB = vproviderB.crs()
     if not crsA.isValid() or not crsB.isValid():
@@ -859,7 +859,7 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    # check for crs compatability
+    # check for crs compatibility
     crsA = vproviderA.crs()
     crsB = vproviderB.crs()
     if not crsA.isValid() or not crsB.isValid():
@@ -1027,7 +1027,7 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    # check for crs compatability
+    # check for crs compatibility
     crsA = vproviderA.crs()
     crsB = vproviderB.crs()
     if not crsA.isValid() or not crsB.isValid():
@@ -1161,7 +1161,7 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    # check for crs compatability
+    # check for crs compatibility
     crsA = vproviderA.crs()
     crsB = vproviderB.crs()
     if not crsA.isValid() or not crsB.isValid():
@@ -1254,7 +1254,7 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    # check for crs compatability
+    # check for crs compatibility
     crsA = vproviderA.crs()
     crsB = vproviderB.crs()
     if not crsA.isValid() or not crsB.isValid():
