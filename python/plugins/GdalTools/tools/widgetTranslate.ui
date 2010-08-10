@@ -210,7 +210,7 @@
       <widget class="QCheckBox" name="expandCheck">
        <property name="toolTip">
         <string>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
-Usefull for output drivers such as JPEG, JPEG2000, MrSID, ECW that don't support color indexed datasets. 
+Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don't support color indexed datasets. 
 The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</string>
        </property>
        <property name="text">
@@ -222,7 +222,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
       <widget class="QComboBox" name="expandCombo">
        <property name="toolTip">
         <string>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
-Usefull for output drivers such as JPEG, JPEG2000, MrSID, ECW that don't support color indexed datasets. 
+Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don't support color indexed datasets. 
 The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</string>
        </property>
        <item>
