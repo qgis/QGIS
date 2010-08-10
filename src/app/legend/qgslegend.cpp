@@ -1640,7 +1640,7 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
     }
     else if ( layer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandPseudoColor )
     {
-      layer->setDrawingStyle( QgsRasterLayer::MultiBandSingleGandGray );
+      layer->setDrawingStyle( QgsRasterLayer::MultiBandSingleBandGray );
     }
 
     if ( layer->contrastEnhancementAlgorithmAsString() == "NoEnhancement" )

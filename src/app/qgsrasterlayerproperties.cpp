@@ -532,7 +532,7 @@ void QgsRasterLayerProperties::sync()
       cboxContrastEnhancementAlgorithm->setEnabled( false );
       labelContrastEnhancement->setEnabled( false );
       break;
-    case QgsRasterLayer::MultiBandSingleGandGray:
+    case QgsRasterLayer::MultiBandSingleBandGray:
       rbtnThreeBand->setEnabled( true );
       rbtnSingleBand->setEnabled( true );
       rbtnSingleBand->setChecked( true );
@@ -1049,11 +1049,11 @@ void QgsRasterLayerProperties::apply()
       }
       else
       {
-        QgsDebugMsg( "Setting Raster Drawing Style to :: MultiBandSingleGandGray" );
+        QgsDebugMsg( "Setting Raster Drawing Style to :: MultiBandSingleBandGray" );
         QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" ).arg( cboGray->currentText() ).arg( mRasterLayer->
                      grayBandName() ) );
 
-        mRasterLayer->setDrawingStyle( QgsRasterLayer::MultiBandSingleGandGray );
+        mRasterLayer->setDrawingStyle( QgsRasterLayer::MultiBandSingleBandGray );
 
       }
     }
@@ -2886,7 +2886,7 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
 
 void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
 {
-  if ( mRasterLayerIsGdal && ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleGandGray || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor ) )
+  if ( mRasterLayerIsGdal && ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor ) )
   {
     QgsRasterBandStats myRasterBandStats;
     double myMinimumMaximum[2];
