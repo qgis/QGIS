@@ -204,7 +204,7 @@ example:
     1.3.3. SVN Keyword
     ==================
 
-Each source file should contain the $Id$ keyword. This will be expanded by CVS
+Each source file should contain the $Id$ keyword. This will be expanded by SVN
 to contain useful information about the file, revision, last committer, and
 date/time of last checkin.
 
@@ -214,6 +214,12 @@ top of each source file:
 
     /* $Id$ */
 
+
+You also need to set 
+
+svn propset svn:keywords "Id"
+
+for the new files.
 
 
   1.4. Variable Names
@@ -873,6 +879,9 @@ one special include all tests should have:
   #include <QtTest>
 
 
+Note that we use the new style Qt4 includes - i.e. QtTest is included not
+qttest.h
+
 Beyond that you just continue implementing your class as per normal, pulling 
 in whatever headers you may need:
 
@@ -1383,6 +1392,7 @@ guidelines are followed in layout and design of GUIs.
    environment that the user is using.
 
 
+
   5. Authors
   ==========
 
@@ -1396,7 +1406,7 @@ Original pages from wiki to deprecate:
 - http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
 - http://wiki.qgis.org/qgiswiki/CodingStandards (./)
 - http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
-- http://wiki.qgis.org/qgiswiki/DebuggingPlugins
+- http://www.qgis.org/wiki/How_to_debug_QGIS_Plugins
 - http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
 - http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
 

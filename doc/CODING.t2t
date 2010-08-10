@@ -1272,6 +1272,7 @@ guidelines are followed in layout and design of GUIs.
    Using a button box will ensure that the order of 'OK' and 'Cancel' etc,
    buttons is consistent with the operating system / locale / desktop
    environment that the user is using.
+ +
  
 
 = Authors =
@@ -1286,7 +1287,7 @@ Original pages from wiki to deprecate:
 - http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
 - http://wiki.qgis.org/qgiswiki/CodingStandards (./)
 - http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
-- http://wiki.qgis.org/qgiswiki/DebuggingPlugins
+- http://www.qgis.org/wiki/How_to_debug_QGIS_Plugins
 - http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
 - http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
 
