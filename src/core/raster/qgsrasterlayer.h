@@ -83,7 +83,7 @@ class QLibrary;
  *  PalettedSingleBandGray -> a PaletteD layer drawn in gray scale (using only one of the color components)
  *  PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as psuedo color
  *  PalettedMultiBandColor -> a PaletteD image where the bands contains 24bit color info and 8 bits is pulled out per color
- *  MultiBandSingleGandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
+ *  MultiBandSingleBandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
  *  MultiBandSingleBandPseudoColor -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
  *  MultiBandColor -> a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
  *
@@ -239,6 +239,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       PalettedSingleBandPseudoColor, // a "Palette" layerdrawn using a pseudocolor algorithm
       PalettedMultiBandColor,         // currently not supported
       MultiBandSingleGandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      //added in 1.6 to fix naming glitch
+      MultiBandSingleBandGray=MultiBandSingleGandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
       MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
       MultiBandColor                  //a layer containing 2 or more bands, mapped to RGB color space.
       //In the case of a multiband with only two bands, one band will be mapped to more than one color.

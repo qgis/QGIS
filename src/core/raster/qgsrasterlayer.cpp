@@ -1766,12 +1766,12 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
                                   theQgsMapToPixel, 1 );
       break;
       // a layer containing 2 or more bands, but using only one band to produce a grayscale image
-    case MultiBandSingleGandGray:
-      QgsDebugMsg( "MultiBandSingleGandGray drawing type detected..." );
+    case MultiBandSingleBandGray:
+      QgsDebugMsg( "MultiBandSingleBandGray drawing type detected..." );
       //check the band is set!
       if ( mGrayBandName == TRSTRING_NOT_SET )
       {
-        QgsDebugMsg( "MultiBandSingleGandGray Not Set detected..." + mGrayBandName );
+        QgsDebugMsg( "MultiBandSingleBandGray Not Set detected..." + mGrayBandName );
         break;
       }
       else
@@ -1842,8 +1842,8 @@ QString QgsRasterLayer::drawingStyleAsString() const
     case PalettedMultiBandColor:
       return QString( "PalettedMultiBandColor" );//no need to tr() this its not shown in ui
       break;
-    case MultiBandSingleGandGray:
-      return QString( "MultiBandSingleGandGray" );//no need to tr() this its not shown in ui
+    case MultiBandSingleBandGray:
+      return QString( "MultiBandSingleBandGray" );//no need to tr() this its not shown in ui
       break;
     case MultiBandSingleBandPseudoColor:
       return QString( "MultiBandSingleBandPseudoColor" );//no need to tr() this its not shown in ui
@@ -2078,7 +2078,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
     //
     // Create the legend pixmap - note it is generated on the preadjusted stats
     //
-    if ( mDrawingStyle == MultiBandSingleGandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
+    if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
     {
 
       myLegendQPixmap = QPixmap( 100, 1 );
@@ -2284,7 +2284,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
     //
     // Overlay the layer name
     //
-    if ( mDrawingStyle == MultiBandSingleGandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
+    if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
     {
       myQPainter.setPen( Qt::white );
     }
@@ -2333,7 +2333,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
   //
   // Create the legend pixmap - note it is generated on the preadjusted stats
   //
-  if ( mDrawingStyle == MultiBandSingleGandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
+  if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
   {
 
     myLegendQPixmap = QPixmap( 1, myImageHeight );
@@ -2516,7 +2516,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
   //
   // Overlay the layer name
   //
-  if ( mDrawingStyle == MultiBandSingleGandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
+  if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
   {
     myQPainter2.setPen( Qt::white );
   }
@@ -3434,9 +3434,9 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
   {
     mDrawingStyle = PalettedMultiBandColor;
   }
-  else if ( theDrawingStyleQString == "MultiBandSingleGandGray" )//no need to tr() this its not shown in ui
+  else if ( theDrawingStyleQString == "MultiBandSingleBandGray" )//no need to tr() this its not shown in ui
   {
-    mDrawingStyle = MultiBandSingleGandGray;
+    mDrawingStyle = MultiBandSingleBandGray;
   }
   else if ( theDrawingStyleQString == "MultiBandSingleBandPseudoColor" )//no need to tr() this its not shown in ui
   {
@@ -3493,7 +3493,7 @@ void QgsRasterLayer::setMaximumValue( QString theBand, double theValue, bool the
 void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
 {
   double myMinMax[2];
-  if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleGandGray )
+  if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
   {
     computeMinimumMaximumFromLastExtent( grayBandName(), myMinMax );
     setMinimumValue( grayBandName(), myMinMax[0] );
