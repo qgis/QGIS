@@ -2621,7 +2621,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       // sublayers selection dialog so the user can select the sublayers to actually load.
       if ( sublayers.count() > 1 )
       {
-        askUserForSublayers( layer );
+        askUserForOGRSublayers( layer );
 
         // The first layer loaded is not useful in that case. The user can select it in
         // the list if he wants to load it.
@@ -2674,17 +2674,48 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
   return true;
 } // QgisApp::addVectorLayer()
 
+void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  QStringList sublayers = layer->subLayers();
+
+  QgsDebugMsg( "sublayers:\n  " + sublayers.join( "  \n" ) + "\n" );
+
+  // We initialize a selection dialog and display it.
+  QgsOGRSublayersDialog chooseSublayersDialog( this );
+  chooseSublayersDialog.setWindowTitle( tr( "Select raster layers to add..." ) );
+
+  QStringList layers;
+  for ( int i = 0; i < sublayers.size(); i++ )
+  {
+    layers << QString( "%1|%2|1|%3" ).arg( i ).arg( sublayers[i] ).arg( tr( "Raster" ) );
+  }
+
+  chooseSublayersDialog.populateLayerTable( layers, "|" );
+
+  if ( chooseSublayersDialog.exec() )
+  {
+    foreach( QString layer, chooseSublayersDialog.getSelection() )
+    {
+      QgsRasterLayer *rlayer = new QgsRasterLayer( layer, layer );
+      if ( rlayer && rlayer->isValid() )
+      {
+        addRasterLayer( rlayer );
+      }
+    }
+  }
+}
+
 // This method is the method that does the real job. If the layer given in
 // parameter is NULL, then the method tries to act on the activeLayer.
-void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
+void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 {
   if ( layer == NULL )
   {
-    if ( activeLayer() == NULL || activeLayer()->type() != QgsMapLayer::VectorLayer )
-      return;
-
-    layer = ( QgsVectorLayer* ) activeLayer();
-    if ( layer->dataProvider()->name() != "ogr" )
+    layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+    if ( !layer || layer->dataProvider()->name() != "ogr" )
       return;
   }
 
@@ -2693,6 +2724,7 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
 
   // We initialize a selection dialog and display it.
   QgsOGRSublayersDialog chooseSublayersDialog( this );
+  chooseSublayersDialog.setWindowTitle( tr( "Select vector layers to add..." ) );
   chooseSublayersDialog.populateLayerTable( sublayers );
 
   if ( chooseSublayersDialog.exec() )
@@ -6350,16 +6382,28 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
       // create the layer
       QgsRasterLayer *layer = new QgsRasterLayer( *myIterator, myBaseNameQString );
+      QStringList sublayers = layer->subLayers();
 
-      addRasterLayer( layer );
-
-      //only allow one copy of a ai grid file to be loaded at a
-      //time to prevent the user selecting all adfs in 1 dir which
-      //actually represent 1 coverate,
-
-      if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
+      if ( sublayers.size() > 0 )
       {
-        break;
+        askUserForGDALSublayers( layer );
+
+        // The first layer loaded is not useful in that case. The user can select it in
+        // the list if he wants to load it.
+        delete layer;
+      }
+      else
+      {
+        addRasterLayer( layer );
+
+        //only allow one copy of a ai grid file to be loaded at a
+        //time to prevent the user selecting all adfs in 1 dir which
+        //actually represent 1 coverate,
+
+        if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
+        {
+          break;
+        }
       }
     }
     else
