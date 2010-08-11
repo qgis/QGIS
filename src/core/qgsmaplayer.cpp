@@ -843,6 +843,9 @@ void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & do
 void QgsMapLayer::setCacheImage( QImage * thepImage )
 {
   QgsDebugMsg( "cache Image set!" );
+  if ( mpCacheImage == thepImage )
+    return;
+  
   if ( mpCacheImage )
   {
     delete mpCacheImage;
