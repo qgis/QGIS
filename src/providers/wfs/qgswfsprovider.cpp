@@ -310,8 +310,8 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
         mSpatialIndex->insertFeature( *featureIt );
         mFeatureCount = mFeatures.size();
       }
-      return true;
     }
+    return true;
   }
   else
   {
