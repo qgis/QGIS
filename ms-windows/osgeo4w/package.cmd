@@ -144,10 +144,32 @@ touch exclude
 
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
+	--exclude "apps/%PACKAGENAME%/themes/classic/grass" ^
+	--exclude "apps/%PACKAGENAME%/themes/default/grass" ^
+	--exclude "apps/%PACKAGENAME%/themes/qgis/grass" ^
+	--exclude "apps/%PACKAGENAME%/grass" ^
+	--exclude "apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
+	--exclude "apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
+	--exclude "apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
+	--exclude "apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
-	etc/preremove/%PACKAGENAME%.bat>>%LOG% 2>&1
+	etc/preremove/%PACKAGENAME%.bat ^
+	>>%LOG% 2>&1
+if errorlevel 1 goto error
+
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-%VERSION%-%PACKAGE%.tar.bz2 ^
+	--exclude-from exclude ^
+	"apps/%PACKAGENAME%/themes/classic/grass" ^
+	"apps/%PACKAGENAME%/themes/default/grass" ^
+	"apps/%PACKAGENAME%/themes/gis/grass" ^
+	"apps/%PACKAGENAME%/grass" ^
+	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
+	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
+	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
 goto end
@@ -156,6 +178,7 @@ goto end
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%>>%LOG% 2>&1
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
+if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
