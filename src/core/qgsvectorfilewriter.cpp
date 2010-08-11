@@ -185,6 +185,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     return;
   }
 
+  OGRFeatureDefnH defn = OGR_L_GetLayerDefn( mLayer );
+
   QgsDebugMsg( "created layer" );
 
   // create the fields
@@ -193,7 +195,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   mFields = fields;
   mAttrIdxToOgrIdx.clear();
 
-  int ogrIdx = 0;
   QgsFieldMap::const_iterator fldIt;
   for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
   {
@@ -261,7 +262,18 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       return;
     }
 
-    mAttrIdxToOgrIdx.insert( fldIt.key(), ogrIdx++ );
+    int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
+    if ( ogrIdx < 0 )
+    {
+      QgsDebugMsg( "error creating field " + attrField.name() );
+      mErrorMessage = QObject::tr( "created field %1 not found (OGR error: %2)" )
+                      .arg( attrField.name() )
+                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      mError = ErrAttributeCreationFailed;
+      return;
+    }
+
+    mAttrIdxToOgrIdx.insert( fldIt.key(), ogrIdx );
   }
 
   QgsDebugMsg( "Done creating fields" );
