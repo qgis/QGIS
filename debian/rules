@@ -51,7 +51,6 @@ endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TESTS=TRUE
-	CFLAGS += -DQGISDEBUG=1
 	MAKEFLAGS += VERBOSE=YES
 endif
 

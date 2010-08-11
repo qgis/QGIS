@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev,
  flex, bison, python-dev, cmake (>=2.4.3), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
  sip4 (>= 4.5), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
  libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev
+ python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev, pkg-config
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.0
 XS-Python-Version: current
