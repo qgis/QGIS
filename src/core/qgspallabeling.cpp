@@ -44,6 +44,7 @@
 #include <qgsvectordataprovider.h>
 #include <qgsgeometry.h>
 #include <qgsmaprenderer.h>
+#include "qgslogger.h"
 
 
 using namespace pal;
@@ -416,12 +417,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   QgsGeometry* geom = f.geometry();
+
+  if ( ct ) // reproject the geometry if necessary
+    geom->transform( *ct );
+
   GEOSGeometry* geos_geom = geom->asGeos();
   if ( geos_geom == NULL )
     return; // invalid geometry
-
-  if ( ct != NULL ) // reproject the geometry if necessary
-    geom->transform( *ct );
 
   if ( !checkMinimumSizeMM( context, geom, minFeatureSize ) )
   {
@@ -858,9 +860,7 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
     drawLabelCandidateRect( lp->getNextPart(), painter, xform );
 }
 
-#include "qgslogger.h"
-
-void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize, \
+void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize,
                                 const QColor& bufferColor, bool drawBuffer )
 {
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
