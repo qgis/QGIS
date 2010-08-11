@@ -240,7 +240,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       PalettedMultiBandColor,         // currently not supported
       MultiBandSingleGandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
       //added in 1.6 to fix naming glitch
-      MultiBandSingleBandGray=MultiBandSingleGandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      MultiBandSingleBandGray = MultiBandSingleGandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
       MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
       MultiBandColor                  //a layer containing 2 or more bands, mapped to RGB color space.
       //In the case of a multiband with only two bands, one band will be mapped to more than one color.
@@ -286,8 +286,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  returned in retError.
      */
     static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
-
     static bool isValidRasterFileName( const QString & theFileNameQString );
+    static QStringList subLayers( GDALDatasetH dataset );
+
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );

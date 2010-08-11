@@ -42,14 +42,14 @@ QStringList QgsOGRSublayersDialog::getSelection()
   return list;
 }
 
-void QgsOGRSublayersDialog::populateLayerTable( QStringList theList )
+void QgsOGRSublayersDialog::populateLayerTable( QStringList theList, QString delim )
 {
   for ( int i = 0; i < theList.size(); i++ )
   {
-    QString ligne = theList.at( i );
-    QStringList elements = ligne.split( ":" );
+    QString line = theList.at( i );
+    QStringList elements = line.split( delim );
     QStringList item = QStringList();
     item << elements.at( 0 ) << elements.at( 1 ) << elements.at( 2 ) << elements.at( 3 );
-    layersTable -> addTopLevelItem( new QTreeWidgetItem( item ) );
+    layersTable->addTopLevelItem( new QTreeWidgetItem( item ) );
   }
 }

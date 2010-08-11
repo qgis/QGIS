@@ -444,10 +444,8 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
 /**
  * This helper checks to see whether the file name appears to be a valid raster file name
  */
-bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString,
-    QString & retErrMsg )
+bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg )
 {
-
   GDALDatasetH myDataset;
   registerGdalDrivers();
 
@@ -463,10 +461,15 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString,
   }
   else if ( GDALGetRasterCount( myDataset ) == 0 )
   {
-    GDALClose( myDataset );
-    myDataset = NULL;
-    retErrMsg = tr( "This raster file has no bands and is invalid as a raster layer." );
-    return false;
+    QStringList layers = subLayers( myDataset );
+    if ( layers.size() == 0 )
+    {
+      GDALClose( myDataset );
+      myDataset = NULL;
+      retErrMsg = tr( "This raster file has no bands and is invalid as a raster layer." );
+      return false;
+    }
+    return true;
   }
   else
   {
@@ -476,10 +479,8 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString,
 }
 
 bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString )
-
 {
   QString retErrMsg;
-
   return isValidRasterFileName( theFileNameQString, retErrMsg );
 }
 
@@ -2626,7 +2627,7 @@ QString QgsRasterLayer::metadata()
       }
       else
       {
-        QgsDebugMsg( "band " + QString::number( i ) + "has no metadata" );
+        QgsDebugMsg( "band " + QString::number( i ) + " has no metadata" );
       }
 
       char ** GDALcategories = GDALGetRasterCategoryNames( gdalBand );
@@ -3604,18 +3605,40 @@ void QgsRasterLayer::showStatusMessage( QString const & theMessage )
   emit statusChanged( theMessage );
 }
 
+QStringList QgsRasterLayer::subLayers( GDALDatasetH dataset )
+{
+  QStringList subLayers;
+
+  char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
+  if ( metadata )
+  {
+    for ( int i = 0; metadata[i] != NULL; i++ )
+    {
+      QString layer = QString::fromUtf8( metadata[i] );
+
+      int pos = layer.indexOf( "_NAME=" );
+      if ( pos >= 0 )
+      {
+        subLayers << layer.mid( pos + 6 );
+      }
+    }
+  }
+
+  QgsDebugMsg( "sublayers:\n  " + subLayers.join( "\n  " ) );
+
+  return subLayers;
+}
+
 QStringList QgsRasterLayer::subLayers() const
 {
-
   if ( mDataProvider )
   {
     return mDataProvider->subLayers();
   }
   else
   {
-    return QStringList();   // Empty
+    return subLayers( mGdalDataset );
   }
-
 }
 
 void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
@@ -5258,6 +5281,13 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     GDALReferenceDataset( mGdalDataset );
   }
 
+  if ( subLayers().size() > 0 )
+  {
+    // just to get the sublayers
+    mValid = false;
+    return true;
+  }
+
   //check f this file has pyramids
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
   if ( myGDALBand == NULL )
@@ -5270,14 +5300,8 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     mValid = false;
     return false;
   }
-  if ( GDALGetOverviewCount( myGDALBand ) > 0 )
-  {
-    mHasPyramids = true;
-  }
-  else
-  {
-    mHasPyramids = false;
-  }
+
+  mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
 
   //populate the list of what pyramids exist
   buildPyramidList();

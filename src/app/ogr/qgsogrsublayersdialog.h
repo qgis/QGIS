@@ -19,8 +19,7 @@
 
 #include <QDialog>
 #include <ui_qgsogrsublayersdialogbase.h>
-
-
+#include "qgscontexthelp.h"
 
 class QgsOGRSublayersDialog : public QDialog, private Ui::QgsOGRSublayersDialogBase
 {
@@ -28,9 +27,11 @@ class QgsOGRSublayersDialog : public QDialog, private Ui::QgsOGRSublayersDialogB
   public:
     QgsOGRSublayersDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsOGRSublayersDialog();
-    void populateLayerTable( QStringList theList );
+    void populateLayerTable( QStringList theList, QString delim = ":" );
     QStringList getSelection();
 
+  public slots:
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 #endif
