@@ -249,6 +249,10 @@ class QgisApp : public QMainWindow
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
     QAction *actionSelect() { return mActionSelect; }
+    QAction *actionSelectRectangle() { return mActionSelectRectangle; }
+    QAction *actionSelectPolygon() { return mActionSelectPolygon; }
+    QAction *actionSelectFreehand() { return mActionSelectFreehand; }
+    QAction *actionSelectRadius() { return mActionSelectRadius; }
     QAction *actionIdentify() { return mActionIdentify; }
     QAction *actionMeasure() { return mActionMeasure; }
     QAction *actionMeasureArea() { return mActionMeasureArea; }
@@ -611,6 +615,18 @@ class QgisApp : public QMainWindow
     //! activates the selection tool
     void select();
 
+    //! activates the rectangle selection tool
+    void selectByRectangle();
+
+    //! activates the polygon selection tool
+    void selectByPolygon();
+
+    //! activates the freehand selection tool
+    void selectByFreehand();
+
+    //! activates the radius selection tool
+    void selectByRadius();
+
     //! deselect features from all layers
     void deselectAll();
 
@@ -828,6 +844,7 @@ class QgisApp : public QMainWindow
     QToolBar *mDigitizeToolBar;
     QToolBar *mAdvancedDigitizeToolBar;
     QToolBar *mAttributesToolBar;
+    QToolBar *mFeatureSelectToolBar;
     QToolBar *mPluginToolBar;
     QToolBar *mHelpToolBar;
 
@@ -880,25 +897,31 @@ class QgisApp : public QMainWindow
     QAction *mActionPan;
     QAction *mActionZoomIn;
     QAction *mActionZoomOut;
+    QAction *mActionViewSeparator1;
     QAction *mActionSelect;
+    QAction *mActionSelectRectangle;
+    QAction *mActionSelectPolygon;
+    QAction *mActionSelectFreehand;
+    QAction *mActionSelectRadius;
     QAction *mActionDeselectAll;
+    QAction *mActionViewSeparator2;
     QAction *mActionIdentify;
     QAction *mActionMeasure;
     QAction *mActionMeasureAngle;
     QAction *mActionMeasureArea;
-    QAction *mActionViewSeparator1;
+    QAction *mActionViewSeparator3;
     QAction *mActionZoomFullExtent;
     QAction *mActionZoomToLayer;
     QAction *mActionZoomToSelected;
     QAction *mActionZoomLast;
     QAction *mActionZoomNext;
     QAction *mActionZoomActualSize;
-    QAction *mActionViewSeparator2;
+    QAction *mActionViewSeparator4;
     QAction *mActionMapTips;
     QAction *mActionNewBookmark;
     QAction *mActionShowBookmarks;
     QAction *mActionDraw;
-    QAction *mActionViewSeparator3;
+    QAction *mActionViewSeparator5;
     QAction *mActionTextAnnotation;
     QAction *mActionFormAnnotation;
     QAction *mActionAnnotation;
@@ -1010,6 +1033,10 @@ class QgisApp : public QMainWindow
         QgsMapTool* mReshapeFeatures;
         QgsMapTool* mSplitFeatures;
         QgsMapTool* mSelect;
+        QgsMapTool* mSelectRectangle;
+        QgsMapTool* mSelectPolygon;
+        QgsMapTool* mSelectFreehand;
+        QgsMapTool* mSelectRadius;
         QgsMapTool* mVertexAdd;
         QgsMapTool* mVertexMove;
         QgsMapTool* mVertexDelete;
