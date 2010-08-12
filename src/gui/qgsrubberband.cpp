@@ -438,7 +438,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
   if ( mIsPolygon )
   {
     QgsPolygon polygon;
-    QList<QList<QgsPoint>>::const_iterator it = mPoints.constBegin();
+    QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
     for ( ; it != mPoints.constEnd(); ++it )
     {
       polygon.append( getPolyline( *it ) );
@@ -452,7 +452,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
       if ( mPoints.size() > 1 )
       {
         QgsMultiPolyline multiPolyline;
-        QList<QList<QgsPoint>>::const_iterator it = mPoints.constBegin();
+        QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
         for ( ; it != mPoints.constEnd(); ++it )
         {
           multiPolyline.append( getPolyline( *it ) );
