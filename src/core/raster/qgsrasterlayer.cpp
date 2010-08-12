@@ -824,6 +824,8 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
             continue; // NULL
           }
 
+          myRasterBandStats.sum += myValue;          
+          ++myRasterBandStats.elementCount;
           //only use this element if we have a non null element
           if ( myFirstIterationFlag )
           {
@@ -831,7 +833,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
             myFirstIterationFlag = false;
             myRasterBandStats.minimumValue = myValue;
             myRasterBandStats.maximumValue = myValue;
-            ++myRasterBandStats.elementCount;
           }               //end of true part for first iteration check
           else
           {
@@ -844,9 +845,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
             {
               myRasterBandStats.maximumValue = myValue;
             }
-
-            myRasterBandStats.sum += myValue;
-            ++myRasterBandStats.elementCount;
           }               //end of false part for first iteration check
         }
       }
