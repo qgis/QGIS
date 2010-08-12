@@ -57,6 +57,10 @@ class QgsRubberBand: QgsMapCanvasItem
 
     /**Return vertex*/
     const QgsPoint *getPoint(int i, int j=0) const;
+    
+    /**Returns the rubberband as a Geometry.
+    * added in 1.6 */
+    QgsGeometry* asGeometry();
 
   protected:
     virtual void paint(QPainter* p);

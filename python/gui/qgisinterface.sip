@@ -193,6 +193,10 @@ class QgisInterface : QObject
     virtual QAction *actionZoomIn() = 0;
     virtual QAction *actionZoomOut() = 0;
     virtual QAction *actionSelect() = 0;
+    virtual QAction *actionSelectRectangle() = 0;
+    virtual QAction *actionSelectPolygon() = 0;
+    virtual QAction *actionSelectFreehand() = 0;
+    virtual QAction *actionSelectRadius() = 0;
     virtual QAction *actionIdentify() = 0;
     virtual QAction *actionMeasure() = 0;
     virtual QAction *actionMeasureArea() = 0;

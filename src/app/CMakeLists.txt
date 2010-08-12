@@ -49,6 +49,11 @@ SET(QGIS_APP_SRCS
   qgsmaptoolreshape.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
+  qgsmaptoolselectrectangle.cpp
+  qgsmaptoolselectfreehand.cpp
+  qgsmaptoolselectpolygon.cpp
+  qgsmaptoolselectradius.cpp
+  qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptooltextannotation.cpp
@@ -163,6 +168,10 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolreshape.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselect.h
+  qgsmaptoolselectrectangle.h
+  qgsmaptoolselectfreehand.h
+  qgsmaptoolselectpolygon.h
+  qgsmaptoolselectradius.h
   qgsmaptooladdvertex.h
   qgsmaptooldeletering.h
   qgsmaptooldeletepart.h

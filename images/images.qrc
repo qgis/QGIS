@@ -194,6 +194,10 @@
     <file>themes/default/mActionSaveMapAsImage.png</file>
     <file>themes/default/mActionScaleBar.png</file>
     <file>themes/default/mActionSelect.png</file>
+    <file>themes/default/mActionSelectRectangle.png</file>
+    <file>themes/default/mActionSelectFreehand.png</file>
+    <file>themes/default/mActionSelectPolygon.png</file>
+    <file>themes/default/mActionSelectRadius.png</file>
     <file>themes/default/mActionSelectedToTop.png</file>
     <file>themes/default/mActionSelectPan.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>

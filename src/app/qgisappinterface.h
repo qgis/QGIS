@@ -198,6 +198,10 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionZoomIn();
     virtual QAction *actionZoomOut();
     virtual QAction *actionSelect();
+    virtual QAction *actionSelectRectangle();
+    virtual QAction *actionSelectPolygon();
+    virtual QAction *actionSelectFreehand();
+    virtual QAction *actionSelectRadius();
     virtual QAction *actionIdentify();
     virtual QAction *actionMeasure();
     virtual QAction *actionMeasureArea();

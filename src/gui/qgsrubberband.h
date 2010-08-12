@@ -17,12 +17,12 @@
 #define QGSRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgsgeometry.h"
 #include <QBrush>
 #include <QList>
 #include <QPen>
 #include <QPolygon>
 
-class QgsGeometry;
 class QgsVectorLayer;
 class QPaintEvent;
 
@@ -84,6 +84,10 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**Return vertex*/
     const QgsPoint *getPoint( int i, int j = 0 ) const;
 
+    /**Returns the rubberband as a Geometry.
+    * added in 1.6 */
+    QgsGeometry* asGeometry();
+
   protected:
     virtual void paint( QPainter* p );
 
@@ -101,6 +105,9 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     double mTranslationOffsetY;
 
     QgsRubberBand();
+
+    static QgsPolyline getPolyline( const QList<QgsPoint> & points );
+
 };
 
 #endif

@@ -431,3 +431,50 @@ const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
   else
     return 0;
 }
+
+QgsGeometry *QgsRubberBand::asGeometry()
+{
+  QgsGeometry *geom = NULL;
+  if ( mIsPolygon )
+  {
+    QgsPolygon polygon;
+    QList<QList<QgsPoint>>::const_iterator it = mPoints.constBegin();
+    for ( ; it != mPoints.constEnd(); ++it )
+    {
+      polygon.append( getPolyline( *it ) );
+    }
+    geom = QgsGeometry::fromPolygon( polygon );
+  }
+  else
+  {
+    if ( mPoints.size() > 0 )
+    {
+      if ( mPoints.size() > 1 )
+      {
+        QgsMultiPolyline multiPolyline;
+        QList<QList<QgsPoint>>::const_iterator it = mPoints.constBegin();
+        for ( ; it != mPoints.constEnd(); ++it )
+        {
+          multiPolyline.append( getPolyline( *it ) );
+        }
+        geom = QgsGeometry::fromMultiPolyline( multiPolyline );
+      }
+      else
+      {
+        geom = QgsGeometry::fromPolyline( getPolyline( mPoints[0] ) );
+      }
+    }
+  }
+  return geom;
+}
+
+QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPoint> & points )
+{
+  QgsPolyline polyline;
+  QList<QgsPoint>::const_iterator iter = points.constBegin();
+  for ( ; iter != points.constEnd(); ++iter )
+  {
+    polyline.append( *iter );
+  }
+  return polyline;
+}

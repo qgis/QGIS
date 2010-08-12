@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptoolselect.h  -  map tool for selecting features by single click
+    qgsmaptoolselectfreehand.h  -  map tool for selecting features by freehand
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Jeremy Palmer
@@ -14,24 +14,38 @@
  ***************************************************************************/
 /* $Id$ */
 
-#ifndef QGSMAPTOOLSELECT_H
-#define QGSMAPTOOLSELECT_H
+#ifndef QGSMAPTOOLSELECTFREEHAND_H
+#define QGSMAPTOOLSELECTFREEHAND_H
 
 #include "qgsmaptool.h"
 
 class QgsMapCanvas;
-class QMouseEvent;
+class QgsRubberBand;
 
-class QgsMapToolSelect : public QgsMapTool
+
+class QgsMapToolSelectFreehand : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelect( QgsMapCanvas* canvas );
+    QgsMapToolSelectFreehand( QgsMapCanvas* canvas );
+
+    virtual ~QgsMapToolSelectFreehand();
+
+    //! Overridden mouse move event
+    virtual void canvasMoveEvent( QMouseEvent * e );
+
+    //! Overridden mouse press event
+    virtual void canvasPressEvent( QMouseEvent * e );
 
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
   private:
+
+    //! used for storing all of the maps point for the freehand sketch
+    QgsRubberBand* mRubberBand;
+
+    bool mDragging;
 };
 
 #endif

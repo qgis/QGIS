@@ -289,6 +289,10 @@ QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionZoomIn() { return qgis->actionZoomIn(); }
 QAction *QgisAppInterface::actionZoomOut() { return qgis->actionZoomOut(); }
 QAction *QgisAppInterface::actionSelect() { return qgis->actionSelect(); }
+QAction *QgisAppInterface::actionSelectRectangle() { return qgis->actionSelectRectangle(); }
+QAction *QgisAppInterface::actionSelectPolygon() { return qgis->actionSelectPolygon(); }
+QAction *QgisAppInterface::actionSelectFreehand() { return qgis->actionSelectFreehand(); }
+QAction *QgisAppInterface::actionSelectRadius() { return qgis->actionSelectRadius(); }
 QAction *QgisAppInterface::actionIdentify() { return qgis->actionIdentify(); }
 QAction *QgisAppInterface::actionMeasure() { return qgis->actionMeasure(); }
 QAction *QgisAppInterface::actionMeasureArea() { return qgis->actionMeasureArea(); }
