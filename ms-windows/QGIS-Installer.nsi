@@ -38,7 +38,7 @@ RequestExecutionLevel admin
 
 ;NSIS Includes
 
-!include "MUI2.nsh"
+!include "MUI.nsh"
 !include "LogicLib.nsh"
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -89,6 +89,7 @@ RequestExecutionLevel admin
 	!define INSTALLER_DISPLAYED_NAME "${DISPLAYED_NAME}"
 
 	!addplugindir osgeo4w/untgz
+	!addplugindir osgeo4w/nsis
 !endif
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -282,6 +283,7 @@ FunctionEnd
 
 ;Installer Pages
 
+!define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE ".\Installer-Files\LICENSE.txt"
 
@@ -295,6 +297,7 @@ FunctionEnd
 !insertmacro MUI_UNPAGE_WELCOME
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
+!define MUI_FINISHPAGE_TITLE_3LINES
 !insertmacro MUI_UNPAGE_FINISH
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -400,7 +403,7 @@ Section "Quantum GIS" SecQGIS
 	SetShellVarContext current
 	
 !if ${INSTALLER_TYPE} == "OSGeo4W"
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis-dev.bat"' \
+	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !else
 	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
@@ -413,7 +416,7 @@ Section "Quantum GIS" SecQGIS
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
 	
 !if ${INSTALLER_TYPE} == "OSGeo4W"
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis-dev.bat"' \
+	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !else
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\

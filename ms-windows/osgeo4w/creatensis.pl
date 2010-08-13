@@ -52,7 +52,7 @@ sub getDeps {
 	}
 }
 
-getDeps("qgis-dev");
+getDeps("qgis-full");
 
 if(-f "../addons/bin/NCSEcw.dll") {
 	print "Enabling ECW support...\n";
@@ -63,9 +63,6 @@ if(-f "../addons/bin/lti_dsdk_dll.dll") {
 	print "Enabling MrSID support...\n";
 	getDeps("gdal16-mrsid")
 }
-
-delete $pkgs{"qgis-dev"};
-
 
 foreach my $p ( keys %pkgs ) {
 	$f = "$root/$file{$p}";
@@ -106,7 +103,7 @@ unless(-d "unpacked") {
 
 	system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
 
-	system "tar -C ../addons -cf . | tar -xf -" if -d "../addons";
+	system "tar -C ../addons -cf - . | tar -xf -" if -d "../addons";
 
 	chdir "..";
 }
@@ -194,6 +191,8 @@ open F, "svnversion|";
 $revision = <F>;
 $revision =~ s/\D+$//g;
 close F;
+
+system "unzip packages/Untgz.zip" unless -d "untgz";
 
 chdir "..";
 
