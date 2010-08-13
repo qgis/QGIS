@@ -160,11 +160,11 @@
      </item>
      <item row="4" column="1">
       <widget class="QSpinBox" name="outsizeSpin">
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="toolTip">
         <string>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</string>
@@ -187,22 +187,6 @@
        </property>
        <property name="text">
         <string>No data:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QSpinBox" name="nodataSpin">
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Assign a specified nodata value to output bands.</string>
-       </property>
-       <property name="maximum">
-        <number>255</number>
        </property>
       </widget>
      </item>
@@ -283,6 +267,25 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
        </property>
        <property name="text">
         <string>Sds</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSpinBox" name="nodataSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Assign a specified nodata value to output bands.</string>
+       </property>
+       <property name="minimum">
+        <number>-999999999</number>
+       </property>
+       <property name="maximum">
+        <number>999999999</number>
        </property>
       </widget>
      </item>

@@ -193,7 +193,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                       test = int(x)
               except ValueError:
                   #print "Coordinates must be integer numbers."
-                  QMessageBox.critical(self, "Translate - srcwin", "Image coordinates (pixels) must be integer numbers.")
+                  QMessageBox.critical(self, self.tr("Translate - srcwin"), self.tr("Image coordinates (pixels) must be integer numbers."))
               else:
                   arguments << "-srcwin"
                   for x in coordList:
@@ -207,7 +207,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                       test = float(x)
               except ValueError:
                   #print "Coordinates must be integer numbers."
-                  QMessageBox.critical(self, "Translate - prjwin", "Image coordinates (geographic) must be numbers.")
+                  QMessageBox.critical(self, self.tr("Translate - prjwin"), self.tr("Image coordinates (geographic) must be numbers."))
               else:
                   arguments << "-projwin"
                   for x in coordList:
