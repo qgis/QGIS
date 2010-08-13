@@ -281,8 +281,19 @@ class FileFilter:
   def allRastersFilter(self):
     if self.rastersFilter.isEmpty():
       QgsRasterLayer.buildSupportedRasterFileFilter(self.rastersFilter)
-      # separates multiple extensions (these are joined by a slash)
-      self.rastersFilter.replace( QRegExp('([^/])/([^/])'), '\\1 *.\\2')
+
+      # workaround for QGis < 1.5 (see #2376)
+      # separates multiple extensions that joined by a slash 
+      if QGis.QGIS_VERSION[0:3] < "1.8":
+          formats = self.rastersFilter.split( ";;" )
+          self.rastersFilter = QString()
+          for f in formats:
+            oldExts = QString(f).remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') )
+            newExts = QString(oldExts).replace( '/', ' *.' )
+            if not self.rastersFilter.isEmpty():
+              self.rastersFilter += ';;'
+            self.rastersFilter += f.replace( oldExts, newExts )
+
     return self.rastersFilter
 
   @classmethod
