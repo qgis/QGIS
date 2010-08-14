@@ -460,48 +460,48 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">crea nuova selezione</translation>
+        <translation>crea nuova selezione</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">aggiungi alla selezione corrente</translation>
+        <translation>aggiungi alla selezione corrente</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">rimuovi dalla selezione corrente</translation>
+        <translation>rimuovi dalla selezione corrente</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Seleziona per posizione</translation>
+        <translation>Seleziona per posizione</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Scegli le geometrie nel:</translation>
+        <translation>Scegli le geometrie nel:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">che intersecano geometrie in:</translation>
+        <translation>che intersecano geometrie in:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Modifica la selezione corrente per:</translation>
+        <translation>Modifica la selezione corrente per:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Specifica il vettore in input</translation>
+        <translation>Specifica il vettore in input</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Specifica il vettore scelto</translation>
+        <translation>Specifica il vettore scelto</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Matrice di distanza</translation>
+        <translation>Matrice di distanza</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Matrice in output creata:</translation>
+        <translation>Matrice in output creata:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
@@ -718,35 +718,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Selezione casuale</translation>
+        <translation>Selezione casuale</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Esporta a nuova proiezione</translation>
+        <translation>Esporta a nuova proiezione</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Definisci la proiezione in uso</translation>
+        <translation>Definisci la proiezione in uso</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Griglia vettoriale</translation>
+        <translation>Griglia vettoriale</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Dividi vettore</translation>
+        <translation>Dividi vettore</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Selezione causale con un sottoinsieme</translation>
+        <translation>Selezione causale con un sottoinsieme</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Seleziona un vettore in input</translation>
+        <translation>Seleziona un vettore in input</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Unisci attributi per posizione</translation>
+        <translation>Unisci attributi per posizione</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -755,11 +755,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Unisci attributi</translation>
+        <translation>Unisci attributi</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Punti regolari</translation>
+        <translation>Punti regolari</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
@@ -803,7 +803,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Intersezioni linea</translation>
+        <translation>Intersezioni linea</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="14"/>
@@ -917,7 +917,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Somma lunghezza linee</translation>
+        <translation>Somma lunghezza linee</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -932,145 +932,145 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="obsolete">Specifica il vettore in input</translation>
+        <translation>Specifica il vettore in input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Specifica il vettore in output</translation>
+        <translation>Specifica il vettore in output</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="obsolete">Specifica il vettore lineare da intersecare</translation>
+        <translation>Specifica il vettore lineare da intersecare</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="obsolete">Specifica il campo ID univoco per l&apos;input</translation>
+        <translation>Specifica il campo ID univoco per l&apos;input</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="obsolete">Specifica il campo ID univoco per l&apos;intersezione</translation>
+        <translation>Specifica il campo ID univoco per l&apos;intersezione</translation>
     </message>
     <message>
         <source>Created output point shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Creato uno shapefile puntiforme:
+        <translation>Creato uno shapefile puntiforme:
 %1
 
 Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="obsolete">Nessun vettore in input selezionato</translation>
+        <translation>Nessun vettore in input selezionato</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="obsolete">Scegliere un sistema di riferimento spaziale</translation>
+        <translation>Scegliere un sistema di riferimento spaziale</translation>
     </message>
     <message>
         <source>Created projected shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Creato uno shapefile riproiettato:
+        <translation>Creato uno shapefile riproiettato:
 %1
 
 Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="obsolete">Scegli un CRS di output:</translation>
+        <translation>Scegli un CRS di output:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="obsolete">Scegli il sistema di proiezioni da usare per il layer di output.</translation>
+        <translation>Scegli il sistema di proiezioni da usare per il layer di output.</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="obsolete">Il layer in output sarà ripriettato dal CRS corrente a quello di destinazione.</translation>
+        <translation>Il layer in output sarà ripriettato dal CRS corrente a quello di destinazione.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="obsolete">Nessun CRS valido selezionato</translation>
+        <translation>Nessun CRS valido selezionato</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="obsolete">Il sistema di riferimento spaziale non è valido</translation>
+        <translation>Il sistema di riferimento spaziale non è valido</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="obsolete">Hai scelto due sistemi di riferimento spaziale identici</translation>
+        <translation>Hai scelto due sistemi di riferimento spaziale identici</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="obsolete">Specifica un vettore di destinazione</translation>
+        <translation>Specifica un vettore di destinazione</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="obsolete">Specifica un vettore da unire</translation>
+        <translation>Specifica un vettore da unire</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="obsolete">Nomi di campo non corretti</translation>
+        <translation>Nomi di campo non corretti</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="obsolete">Non sarà creato nessun output. 
+        <translation>Non sarà creato nessun output. 
 Il nome dei seguenti campi è più lungo di 10 caratteri:
 %1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="obsolete">Errore nell&apos;eliminazione dello shapefile</translation>
+        <translation>Errore nell&apos;eliminazione dello shapefile</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="obsolete">Impossibile eliminare lo shapefile esistente
+        <translation>Impossibile eliminare lo shapefile esistente
 %1</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
-        <translation type="obsolete">Specifica un campo di unione</translation>
+        <translation>Specifica un campo di unione</translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation type="obsolete">Specifica un campo di unione</translation>
+        <translation>Specifica un campo di unione</translation>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="obsolete">Seleziona una tabella di input</translation>
+        <translation>Seleziona una tabella di input</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="obsolete">Seleziona una cartella con gli shapefiles da unire</translation>
+        <translation>Seleziona una cartella con gli shapefiles da unire</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="obsolete">Nessuno shapefile trovato</translation>
+        <translation>Nessuno shapefile trovato</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="obsolete">Nessuno shapefile presente in questa cartella. Selezionarne un&apos;altra.</translation>
+        <translation>Nessuno shapefile presente in questa cartella. Selezionarne un&apos;altra.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="obsolete">Cancella l&apos;errore</translation>
+        <translation>Cancella l&apos;errore</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="obsolete">Impossibile eliminare il file %1</translation>
+        <translation>Impossibile eliminare il file %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="obsolete">Unione in corso</translation>
+        <translation>Unione in corso</translation>
     </message>
     <message>
         <source>
@@ -1111,7 +1111,7 @@ QGis developer and user communities
 Folks on #qgis at freenode.net
 All those who have reported bugs/fixes/suggestions/comments/etc.
 </source>
-        <translation type="obsolete">
+        <translation>
 L&apos;obiettivo di fTools è facilitare l&apos;utilizzo delle più comuni operazioni GIS su dati vettoriali, senza la necessità di software e librerie addizionali o complesse soluzioni alternative.
 
 fTools estende le funzionalità di Quantum GIS utilizzando solo le librerie core di QGIS e python. Fornisce una suite di funzioni di analisi e gestione di dati geografici allo stesso tempo facili da utilizzare e funzionali. Sono inoltre state integrate le funzioni di geoprocessing di Horst Duester e Stefan Ziegler, al fine di facilitare e razionalizzare ulteriormente le analisi e la ricerca GIS-based.
@@ -1155,72 +1155,72 @@ Tutti quelli che hanno fornito bugs/correzioni/suggerimenti/commenti/etc.
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Creato uno shapefile di output:
+        <translation>Creato uno shapefile di output:
 %1
 
 Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Join Table</source>
-        <translation type="obsolete">Tabella di unione</translation>
+        <translation>Tabella di unione</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="obsolete">La tabella di input non esiste</translation>
+        <translation>La tabella di input non esiste</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="obsolete">campi uniti</translation>
+        <translation>campi uniti</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="obsolete">Coordinate medie</translation>
+        <translation>Coordinate medie</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="obsolete">Distanza standard</translation>
+        <translation>Distanza standard</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="obsolete">Campo pesato (opzionale)</translation>
+        <translation>Campo pesato (opzionale)</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="obsolete">Campo ID univoco (opzionale)</translation>
+        <translation>Campo ID univoco (opzionale)</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="obsolete">Statistiche delle coordinate</translation>
+        <translation>Statistiche delle coordinate</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="obsolete">Nessun vettore in input selezionato</translation>
+        <translation>Nessun vettore in input selezionato</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
-        <translation type="obsolete">Specifica almeno una statistica consuntiva</translation>
+        <translation>Specifica almeno una statistica consuntiva</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="obsolete">Avviso CRS!</translation>
+        <translation>Avviso CRS!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="obsolete">Attenzione: i layers di input hanno CRS non coincidenti.
+        <translation>Attenzione: i layers di input hanno CRS non coincidenti.
 Questo può provocare risultati inattesi.</translation>
     </message>
     <message>
         <source>Summary field</source>
-        <translation type="obsolete">Campo consuntivo</translation>
+        <translation>Campo consuntivo</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation type="obsolete">Specifica coordinate valide per l&apos;estensione</translation>
+        <translation>Specifica coordinate valide per l&apos;estensione</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation type="obsolete">Sono state inserite coordinate non valide</translation>
+        <translation>Sono state inserite coordinate non valide</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
@@ -1229,140 +1229,140 @@ Questo può provocare risultati inattesi.</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation type="obsolete">Nessuno shapefile in input selezionato</translation>
+        <translation>Nessuno shapefile in input selezionato</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation type="obsolete">Non è possibile definire una proiezione per dati PostGIS...per il momento!</translation>
+        <translation>Non è possibile definire una proiezione per dati PostGIS...per il momento!</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="obsolete">Sistema di riferimento spaziale in output identico. 
+        <translation>Sistema di riferimento spaziale in output identico. 
 Sicuro di voler proseguire?</translation>
     </message>
     <message>
         <source>Defined Projection For:
 %1.shp</source>
-        <translation type="obsolete">Definita la proiezione per:
+        <translation>Definita la proiezione per:
 %1.shp</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="obsolete">Scegli il sistema di proiezioni che definisce il layer corrente.</translation>
+        <translation>Scegli il sistema di proiezioni che definisce il layer corrente.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="obsolete">Le informazioni sul CRS del layer saranno aggiornate al CRS selezionato.</translation>
+        <translation>Le informazioni sul CRS del layer saranno aggiornate al CRS selezionato.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation type="obsolete">Creato uno shapefile di output nella catella:
+        <translation>Creato uno shapefile di output nella catella:
 %1</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
-        <translation type="obsolete">Somma le lunghezze delle linee nei poligoni</translation>
+        <translation>Somma le lunghezze delle linee nei poligoni</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="obsolete">Specifica il layer poligonale di input</translation>
+        <translation>Specifica il layer poligonale di input</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="obsolete">Specifica il layer lineare di input</translation>
+        <translation>Specifica il layer lineare di input</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation type="obsolete">Specifica la lunghezza del campo di output</translation>
+        <translation>Specifica la lunghezza del campo di output</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation type="obsolete">lunghezza del campo</translation>
+        <translation>lunghezza del campo</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
-        <translation type="obsolete">Seleziona un campo di input</translation>
+        <translation>Seleziona un campo di input</translation>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="obsolete">Punti casuali</translation>
+        <translation>Punti casuali</translation>
     </message>
     <message>
         <source>unstratified</source>
-        <translation type="obsolete">non stratificato</translation>
+        <translation>non stratificato</translation>
     </message>
     <message>
         <source>stratified</source>
-        <translation type="obsolete">stratificato</translation>
+        <translation>stratificato</translation>
     </message>
     <message>
         <source>density</source>
-        <translation type="obsolete">densità</translation>
+        <translation>densità</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="obsolete">campo</translation>
+        <translation>campo</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="obsolete">Tipo di layer sconosciuto...</translation>
+        <translation>Tipo di layer sconosciuto...</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
-        <translation type="obsolete">Specifica correttamente le coordinate dell&apos;estensione</translation>
+        <translation>Specifica correttamente le coordinate dell&apos;estensione</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="obsolete">Conta i punti nel poligono</translation>
+        <translation>Conta i punti nel poligono</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="obsolete">Conta i punti nei poligoni</translation>
+        <translation>Conta i punti nei poligoni</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation type="obsolete">Specifica il layer di punti di input</translation>
+        <translation>Specifica il layer di punti di input</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation type="obsolete">Specifica il campo in output per il conteggio</translation>
+        <translation>Specifica il campo in output per il conteggio</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="obsolete">campo per il conteggio dei punti</translation>
+        <translation>campo per il conteggio dei punti</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
-        <translation type="obsolete">Crea una matrice di distanze fra punti</translation>
+        <translation>Crea una matrice di distanze fra punti</translation>
     </message>
     <message>
         <source>Please specify input point layer</source>
-        <translation type="obsolete">Specifica il vettore di punti in input</translation>
+        <translation>Specifica il vettore di punti in input</translation>
     </message>
     <message>
         <source>Please specify output file</source>
-        <translation type="obsolete">Specifica il file di output</translation>
+        <translation>Specifica il file di output</translation>
     </message>
     <message>
         <source>Please specify target point layer</source>
-        <translation type="obsolete">Seleziona il layer puntiforme di destinazione</translation>
+        <translation>Seleziona il layer puntiforme di destinazione</translation>
     </message>
     <message>
         <source>Please specify target unique ID field</source>
-        <translation type="obsolete">Scegli il campo ID univoco di destinazione</translation>
+        <translation>Scegli il campo ID univoco di destinazione</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">Errore durante il caricamento dello shapefile di output:
+        <translation>Errore durante il caricamento dello shapefile di output:
 %1</translation>
     </message>
     <message>
         <source>Unable to read input table!</source>
-        <translation type="obsolete">Impossibile leggere la tabella di input!</translation>
+        <translation>Impossibile leggere la tabella di input!</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
@@ -1442,189 +1442,189 @@ Sicuro di voler proseguire?</translation>
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="obsolete">Cartella in &amp;input:</translation>
+        <translation>Cartella in &amp;input:</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="obsolete">Cartella di &amp;output:</translation>
+        <translation>Cartella di &amp;output:</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="obsolete">Processo fallito. Il programma potrebbe non essere installato oppure non si hanno i permessi necessari per eseguirlo. </translation>
+        <translation>Processo fallito. Il programma potrebbe non essere installato oppure non si hanno i permessi necessari per eseguirlo. </translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="obsolete">Il processo è andato in crash dopo essere stato avviato con successo.</translation>
+        <translation>Il processo è andato in crash dopo essere stato avviato con successo.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="obsolete">Errore sconosciuto.</translation>
+        <translation>Errore sconosciuto.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation type="obsolete">Il file selezionato non è supportato da OGR</translation>
+        <translation>Il file selezionato non è supportato da OGR</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Versione di Quantum GIS rilevata: </translation>
+        <translation>Versione di Quantum GIS rilevata: </translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Questa versione di Gdal Tools richiede una versione QGIS 1.0.0 o superiore.
+        <translation>Questa versione di Gdal Tools richiede una versione QGIS 1.0.0 o superiore.
 Il plugin non sarà installato.</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="obsolete">&amp;Raster</translation>
+        <translation>&amp;Raster</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation type="obsolete">Creazione raster virtuale (catalogo)</translation>
+        <translation>Creazione raster virtuale (catalogo)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="obsolete">Crea un VRT da una lista di raster</translation>
+        <translation>Crea un VRT da una lista di raster</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="obsolete">Curve di livello</translation>
+        <translation>Curve di livello</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="obsolete">Crea curve di livello da un DEM</translation>
+        <translation>Crea curve di livello da un DEM</translation>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="obsolete">Rasterizzazione</translation>
+        <translation>Rasterizzazione</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="obsolete">Trasforma geometrie vettoriali in raster</translation>
+        <translation>Trasforma geometrie vettoriali in raster</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="obsolete">Poligonizzazione</translation>
+        <translation>Poligonizzazione</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="obsolete">Produce una geometria poligonale da un raster</translation>
+        <translation>Produce una geometria poligonale da un raster</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="obsolete">Unione</translation>
+        <translation>Unione</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="obsolete">Crea un mosaico da un insieme di immagini</translation>
+        <translation>Crea un mosaico da un insieme di immagini</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation type="obsolete">Filtro</translation>
+        <translation>Filtro</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="obsolete">Rimuove poligoni raster piccoli</translation>
+        <translation>Rimuove poligoni raster piccoli</translation>
     </message>
     <message>
         <source>Proximity</source>
-        <translation type="obsolete">Prossimità</translation>
+        <translation>Prossimità</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation type="obsolete">Produce una mappa raster di prossimità</translation>
+        <translation>Produce una mappa raster di prossimità</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="obsolete">Quasi nero</translation>
+        <translation>Quasi nero</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="obsolete">Converte bordi quasi neri/bianchi a valore esatto</translation>
+        <translation>Converte bordi quasi neri/bianchi a valore esatto</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="obsolete">Trasformazione</translation>
+        <translation>Trasformazione</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="obsolete">Trasforma un&apos;immagine in un nuovo sistema di riferimento spaziale</translation>
+        <translation>Trasforma un&apos;immagine in un nuovo sistema di riferimento spaziale</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="obsolete">Griglia</translation>
+        <translation>Griglia</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="obsolete">Crea un raster da dati sparsi</translation>
+        <translation>Crea un raster da dati sparsi</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="obsolete">Converti</translation>
+        <translation>Converti</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="obsolete">Converte dati raster in diversi formati</translation>
+        <translation>Converte dati raster in diversi formati</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Informazioni</translation>
+        <translation>Informazioni</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="obsolete">Elenca le informazioni di un raster</translation>
+        <translation>Elenca le informazioni di un raster</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">Assegna proiezione</translation>
+        <translation>Assegna proiezione</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="obsolete">Aggiungi proiezione ad un raster</translation>
+        <translation>Aggiungi proiezione ad un raster</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation type="obsolete">Crea panoramiche</translation>
+        <translation>Crea panoramiche</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="obsolete">Crea o ricostruisce immagini di panoramica</translation>
+        <translation>Crea o ricostruisce immagini di panoramica</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="obsolete">Clipper</translation>
+        <translation>Clipper</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="obsolete">Da RGB a PCT</translation>
+        <translation>Da RGB a PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="obsolete">Converti un&apos;immagine RGB a 24bit in un&apos;immagine con tavolozza a 8bit</translation>
+        <translation>Converti un&apos;immagine RGB a 24bit in un&apos;immagine con tavolozza a 8bit</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="obsolete">Da PCT a RGB</translation>
+        <translation>Da PCT a RGB</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="obsolete">Converti un&apos;immagine con tavolozza a 8bit in un&apos;immagine RGB a 24bit</translation>
+        <translation>Converti un&apos;immagine con tavolozza a 8bit in un&apos;immagine RGB a 24bit</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="obsolete">Impostazioni GdalTools</translation>
+        <translation>Impostazioni GdalTools</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="obsolete">Impostazioni varie per Gdal Tools</translation>
+        <translation>Impostazioni varie per Gdal Tools</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="obsolete">Informazioni su Gdal Tools</translation>
+        <translation>Informazioni su Gdal Tools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="obsolete">Visualizza informazioni su Gdal Tools</translation>
+        <translation>Visualizza informazioni su Gdal Tools</translation>
     </message>
 </context>
 <context>
@@ -1670,7 +1670,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation type="obsolete">
+        <translation>
 (usando GDAL v. %1)</translation>
     </message>
     <message>
@@ -1694,7 +1694,7 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation type="obsolete">GDAL Tools (noto anche come Raster Tools) è un plugin per QuantumGIS che facilita l&apos;utilizzo di GDAL, fornendo un&apos;interfaccia grafica semplificata per i programmi più utilizzati.
+        <translation>GDAL Tools (noto anche come Raster Tools) è un plugin per QuantumGIS che facilita l&apos;utilizzo di GDAL, fornendo un&apos;interfaccia grafica semplificata per i programmi più utilizzati.
 
 Il plugin è sviluppato da Faunalia (http://faunalia.it) in collaborazione con GIS-lab (http://gis-lab.info).
 Icone realizzare da Robert Szczepanek.
@@ -1720,20 +1720,20 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">Terminato</translation>
+        <translation>Terminato</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="obsolete">Operazione completata.</translation>
+        <translation>Operazione completata.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Attenzione</translation>
+        <translation>Attenzione</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="obsolete">I seguenti file non sono stati creati:
+        <translation>I seguenti file non sono stati creati:
 %1</translation>
     </message>
 </context>
@@ -1741,40 +1741,40 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Attenzione</translation>
+        <translation>Attenzione</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="obsolete">Il comando è ancora in esecuzione.
+        <translation>Il comando è ancora in esecuzione.
 Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="obsolete">Parametri non validi.</translation>
+        <translation>Parametri non validi.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Attenzione</translation>
+        <translation>Attenzione</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="obsolete">Nessun file di output creato.</translation>
+        <translation>Nessun file di output creato.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">Terminato</translation>
+        <translation>Terminato</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
-        <translation type="obsolete">Elaborazione completata.</translation>
+        <translation>Elaborazione completata.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="obsolete">%1 non creato.</translation>
+        <translation>%1 non creato.</translation>
     </message>
 </context>
 <context>
@@ -1791,139 +1791,155 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation type="obsolete">Selezionare il file di input per Prossimità</translation>
+        <translation>Selezionare il file di input per Prossimità</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="obsolete">Selezionare il file raster in cui salvare i risultati</translation>
+        <translation>Selezionare il file raster in cui salvare i risultati</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation type="obsolete">Selezionare il file di input per Near Black</translation>
+        <translation>Selezionare il file di input per Near Black</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="obsolete">Selezionare il file di input per Griglia</translation>
+        <translation>Selezionare il file di input per Griglia</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Attenzione</translation>
+        <translation>Attenzione</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation type="obsolete">Attenzione: le informazioni sul sistem di riferimento spaziale di tutti i raster nelle sottocartelle sarà riscritto. Sei sicuro di continuare?</translation>
+        <translation>Attenzione: le informazioni sul sistem di riferimento spaziale di tutti i raster nelle sottocartelle sarà riscritto. Sei sicuro di continuare?</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="obsolete">Selezionare il file da analizzare</translation>
+        <translation>Selezionare il file da analizzare</translation>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
-        <translation type="obsolete">Selezionare la cartella di input dei file cui assegnare la proiezione</translation>
+        <translation>Selezionare la cartella di input dei file cui assegnare la proiezione</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">Assegna proiezione</translation>
+        <translation>Assegna proiezione</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="obsolete">Il raster è già caricato nell&apos;area mappa</translation>
+        <translation>Il raster è già caricato nell&apos;area mappa</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="obsolete">Seleziona i file per VRT</translation>
+        <translation>Seleziona i file per VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="obsolete">Seleziona dove salvare il VRT</translation>
+        <translation>Seleziona dove salvare il VRT</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
-        <translation type="obsolete">VRT (*.vrt)</translation>
+        <translation>VRT (*.vrt)</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
-        <translation type="obsolete">Selezionare il file di input per Trasformazione</translation>
+        <translation>Selezionare il file di input per Trasformazione</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
-        <translation type="obsolete">Selezionare la cartella di input con i files per la Trasformazione</translation>
+        <translation>Selezionare la cartella di input con i files per la Trasformazione</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
-        <translation type="obsolete">Seleziona la cartella di output in cui salvare i risultati</translation>
+        <translation>Seleziona la cartella di output in cui salvare i risultati</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
-        <translation type="obsolete">Selezionare il file di input per Filtro</translation>
+        <translation>Selezionare il file di input per Filtro</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="obsolete">Selezionare i files per Unione</translation>
+        <translation>Selezionare i files per Unione</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="obsolete">Selezionare dove salvare l&apos;output dell&apos;Unione</translation>
+        <translation>Selezionare dove salvare l&apos;output dell&apos;Unione</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="obsolete">Selezionare il file di input per Conversione</translation>
+        <translation>Selezionare il file di input per Conversione</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation type="obsolete">Selezionare il file di input per Poligonizzazione</translation>
+        <translation>Selezionare il file di input per Poligonizzazione</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation type="obsolete">Selezionare dove salvare l&apos;output della Poligonizzazione</translation>
+        <translation>Selezionare dove salvare l&apos;output della Poligonizzazione</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="obsolete">Selezionare il file di input per Profilo</translation>
+        <translation>Selezionare il file di input per Profilo</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="obsolete">Selezionare dove salvare l&apos;output di Profilo</translation>
+        <translation>Selezionare dove salvare l&apos;output di Profilo</translation>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="obsolete">Non ci sono strati raster attivi. Si deve aggiungere almeno uno strato raster per continuare.</translation>
+        <translation>Non ci sono strati raster attivi. Si deve aggiungere almeno uno strato raster per continuare.</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="obsolete">Selezionare il file di input per Trasformare</translation>
+        <translation>Selezionare il file di input per Trasformare</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="obsolete">Selezionare la cartella di input con i file da Trasformare</translation>
+        <translation>Selezionare la cartella di input con i file da Trasformare</translation>
+    </message>
+    <message>
+        <source>Translate - srcwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (pixels) must be integer numbers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate - prjwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (geographic) must be numbers.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
-        <translation type="obsolete">Converti un&apos;immagine con tavolozza a RGB</translation>
+        <translation>Converti un&apos;immagine con tavolozza a RGB</translation>
     </message>
     <message>
         <source>Band to convert:</source>
-        <translation type="obsolete">Banda da convertire:</translation>
+        <translation>Banda da convertire:</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation type="obsolete">Selezionare il file di input per Rasterizzazione</translation>
+        <translation>Selezionare il file di input per Rasterizzazione</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="obsolete">Copia</translation>
+        <translation>Copia</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="obsolete">Copia tutto</translation>
+        <translation>Copia tutto</translation>
     </message>
     <message>
         <source>Select the input file</source>
-        <translation type="obsolete">Selezionare il file di input</translation>
+        <translation>Selezionare il file di input</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
-        <translation type="obsolete">Seleziona la cartella di input con i files</translation>
+        <translation>Seleziona la cartella di input con i files</translation>
     </message>
 </context>
 <context>
@@ -1986,7 +2002,7 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="obsolete">Seleziona la cartella contenente gli eseguibili GDAL</translation>
+        <translation>Seleziona la cartella contenente gli eseguibili GDAL</translation>
     </message>
 </context>
 <context>
@@ -2732,122 +2748,122 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <name>GeometryDialog</name>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Unisci tutto</translation>
+        <translation>Unisci tutto</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="obsolete">Geometria</translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Scegli un vettore in input</translation>
+        <translation>Scegli un vettore in input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Scegli uno shapefile in output</translation>
+        <translation>Scegli uno shapefile in output</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Scegli un valore di tolleranza valido</translation>
+        <translation>Scegli un valore di tolleranza valido</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Scegli un campo UID valido</translation>
+        <translation>Scegli un campo UID valido</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Da parti singole a parti multiple</translation>
+        <translation>Da parti singole a parti multiple</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Shapefile in output</translation>
+        <translation>Shapefile in output</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Da parti multiple a parti singole</translation>
+        <translation>Da parti multiple a parti singole</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Estrai nodi</translation>
+        <translation>Estrai nodi</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Da poligoni a linee</translation>
+        <translation>Da poligoni a linee</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Vettore poligoni in input</translation>
+        <translation>Vettore poligoni in input</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Esporta/Aggiungi colonne geometriche</translation>
+        <translation>Esporta/Aggiungi colonne geometriche</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Vettore in input</translation>
+        <translation>Vettore in input</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Semplifica geometrie</translation>
+        <translation>Semplifica geometrie</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Centroidi del poligono</translation>
+        <translation>Centroidi del poligono</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Shapefile punti in output</translation>
+        <translation>Shapefile punti in output</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Triangolazione di Delaunay</translation>
+        <translation>Triangolazione di Delaunay</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Vettore punti in input</translation>
+        <translation>Vettore punti in input</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Poligono dall&apos;estensione del layer</translation>
+        <translation>Poligono dall&apos;estensione del layer</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Layer in input</translation>
+        <translation>Layer in input</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Shapefile poligoni in output</translation>
+        <translation>Shapefile poligoni in output</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">Geoprocessa</translation>
+        <translation>Geoprocessa</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Impossibile eliminare lo shapefile esistente.</translation>
+        <translation>Impossibile eliminare lo shapefile esistente.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Impossibile eliminare shapefile incompleto.</translation>
+        <translation>Impossibile eliminare shapefile incompleto.</translation>
     </message>
     <message>
         <source>At least two features must have same attribute value!
 Please choose another field...</source>
-        <translation type="obsolete">Almeno due elementi devono avere lo stesso valore di attributo!
+        <translation>Almeno due elementi devono avere lo stesso valore di attributo!
 Scegli un altro campo...</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Errore di scrittura per lo shapefile in output.</translation>
+        <translation>Errore di scrittura per lo shapefile in output.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!
 Please choose larger tolerance...</source>
-        <translation type="obsolete">Errore nell&apos;elaborare la tolleranza specificata!
+        <translation>Errore nell&apos;elaborare la tolleranza specificata!
 Scegli una tolleranza più alta...</translation>
     </message>
     <message>
@@ -2855,7 +2871,7 @@ Scegli una tolleranza più alta...</translation>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Creato uno shapefile di output:
+        <translation>Creato uno shapefile di output:
 %1
 
 Vuoi aggiungerlo alla legenda?</translation>
@@ -2863,7 +2879,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">Errore durante il caricamento dello shapefile di output:
+        <translation>Errore durante il caricamento dello shapefile di output:
 %1</translation>
     </message>
 </context>
@@ -2871,114 +2887,114 @@ Vuoi aggiungerlo alla legenda?</translation>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">Dissolvi tutto</translation>
+        <translation>Dissolvi tutto</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">Geoprocessa</translation>
+        <translation>Geoprocessa</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Scegli un layer di input</translation>
+        <translation>Scegli un layer di input</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Specifica un layer di differenza/intersezione/unione</translation>
+        <translation>Specifica un layer di differenza/intersezione/unione</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Definisci un valore di buffer valido</translation>
+        <translation>Definisci un valore di buffer valido</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">Definisci un campo di dissolvenza</translation>
+        <translation>Definisci un campo di dissolvenza</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Definisci uno shapefile in output</translation>
+        <translation>Definisci uno shapefile in output</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Nessuna geometria selezionata, deseleziona &apos;Usa selezionato&apos; o fai una selezione</translation>
+        <translation>Nessuna geometria selezionata, deseleziona &apos;Usa selezionato&apos; o fai una selezione</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Buffer</translation>
+        <translation>Buffer</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Crea un singolo poligono minimo convesso</translation>
+        <translation>Crea un singolo poligono minimo convesso</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Crea poligoni minimi convessi sulla base di un campo di input</translation>
+        <translation>Crea poligoni minimi convessi sulla base di un campo di input</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Poligono/i convesso/i</translation>
+        <translation>Poligono/i convesso/i</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Dissolvenza</translation>
+        <translation>Dissolvenza</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Layer di differenza</translation>
+        <translation>Layer di differenza</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Differenza</translation>
+        <translation>Differenza</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Layer di intersezione</translation>
+        <translation>Layer di intersezione</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Intersezione</translation>
+        <translation>Intersezione</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Differenza simmetrica</translation>
+        <translation>Differenza simmetrica</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Clip layer</translation>
+        <translation>Clip layer</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Clip</translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Layer di unione</translation>
+        <translation>Layer di unione</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Unione</translation>
+        <translation>Unione</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Impossibile eliminare lo shapefile esistente.</translation>
+        <translation>Impossibile eliminare lo shapefile esistente.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">Chiudi</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <source>No output created. File creation error:
 %1</source>
-        <translation type="obsolete">Nessun output creato. Errore nella creazione del file:
+        <translation>Nessun output creato. Errore nella creazione del file:
 %1</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation>
 Attenzione:</translation>
     </message>
     <message>
@@ -2986,7 +3002,7 @@ Attenzione:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation>
 Alcune geometrie non sembrano essere presenti o non sono valide
 
 Si vuole aggiungere ugualmente il nuovo layer?</translation>
@@ -2995,42 +3011,42 @@ Si vuole aggiungere ugualmente il nuovo layer?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">
+        <translation>
 
 Vuoi aggiungere il nuovo layer alla legenda?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
+        <translation>Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
     </message>
     <message>
         <source>
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
-        <translation type="obsolete">Errore CRS: uno o più layer di input non hanno informazioni sul sistema di riferimento, il risultato potrebbe non essere quello atteso.</translation>
+        <translation>Errore CRS: uno o più layer di input non hanno informazioni sul sistema di riferimento, il risultato potrebbe non essere quello atteso.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">Errore geometria: uno o più elementi sono stati ignorati a causa di incongruenze geometriche.</translation>
+        <translation>Errore geometria: uno o più elementi sono stati ignorati a causa di incongruenze geometriche.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">Errore GEOS di geoprocessing: uno o più elementi hanno incongruenze geometriche.</translation>
+        <translation>Errore GEOS di geoprocessing: uno o più elementi hanno incongruenze geometriche.</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 %2%3</source>
-        <translation type="obsolete">Shapefile in ouput creato:
+        <translation>Shapefile in ouput creato:
 %1
 %2%3</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">Errore durante il caricamento dello shapefile di output:
+        <translation>Errore durante il caricamento dello shapefile di output:
 %1</translation>
     </message>
 </context>
@@ -3191,7 +3207,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">Informazioni OSM</translation>
+        <translation>Informazioni OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -3326,51 +3342,51 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">Download OSM</translation>
+        <translation>Download OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Impossibile salvare il file: %1: %2.</translation>
+        <translation>Impossibile salvare il file: %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">In attesa di risposte dal server OpenStreetMap ...</translation>
+        <translation>In attesa di risposte dal server OpenStreetMap ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Errore durante il download. Risposta del server OpenStreetMap: %1 - %2</translation>
+        <translation>Errore durante il download. Risposta del server OpenStreetMap: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">Errore download OSM</translation>
+        <translation>Errore download OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Errore di download: %1.</translation>
+        <translation>Errore di download: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Recupero dati</translation>
+        <translation>Recupero dati</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">Il server OpenStreetMap da cui si sta scaricando i dati OSM ( ~api.openstreetmap.org) ha alcuni limiti sulla quantità di dati scaricabili. Come riportato alla pagina &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; le coordinate (sia latitudine che longitudine) dell&apos;area della regione da scaricare non devono superare i 0.25 gradi. Nota che Quantum GIS permette di specificare un area anche superiore, è poi il server OpenStreetMap che blocca le richieste che violano i limiti di download.</translation>
+        <translation>Il server OpenStreetMap da cui si sta scaricando i dati OSM ( ~api.openstreetmap.org) ha alcuni limiti sulla quantità di dati scaricabili. Come riportato alla pagina &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; le coordinate (sia latitudine che longitudine) dell&apos;area della regione da scaricare non devono superare i 0.25 gradi. Nota che Quantum GIS permette di specificare un area anche superiore, è poi il server OpenStreetMap che blocca le richieste che violano i limiti di download.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">L&apos;area scelta è troppo grande!</translation>
+        <translation>L&apos;area scelta è troppo grande!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">L&apos;area ha una estensione in latitudine troppo grande!</translation>
+        <translation>L&apos;area ha una estensione in latitudine troppo grande!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">L&apos;area ha una estensione in longitudine troppo grande!</translation>
+        <translation>L&apos;area ha una estensione in longitudine troppo grande!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">Ok! L&apos;area ha una dimensione che potrebbe essere accettata dal server.</translation>
+        <translation>Ok! L&apos;area ha una dimensione che potrebbe essere accettata dal server.</translation>
     </message>
 </context>
 <context>
@@ -3398,23 +3414,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">Plugin OSM</translation>
+        <translation>Plugin OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">La finestra di dialogo &quot;Crea una relazione OSM&quot; è stata chiusa automaticamente in quanto il database attuale di OSM ha subito una modifica.</translation>
+        <translation>La finestra di dialogo &quot;Crea una relazione OSM&quot; è stata chiusa automaticamente in quanto il database attuale di OSM ha subito una modifica.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">Widget elemento OSM</translation>
+        <translation>Widget elemento OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Scegli prima un elemento OSM.</translation>
+        <translation>Scegli prima un elemento OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Scegli prima una relazione da modificare.</translation>
+        <translation>Scegli prima una relazione da modificare.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
@@ -3667,31 +3683,31 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">Salva OSM su file</translation>
+        <translation>Salva OSM su file</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Impossibile salvare il file %1: %2.</translation>
+        <translation>Impossibile salvare il file %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Avvio...</translation>
+        <translation>Avvio...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Salvataggio nodi...</translation>
+        <translation>Salvataggio nodi...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Salvataggio linee...</translation>
+        <translation>Salvataggio linee...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Salvataggio poligoni...</translation>
+        <translation>Salvataggio poligoni...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Salvataggio relazioni...</translation>
+        <translation>Salvataggio relazioni...</translation>
     </message>
 </context>
 <context>
@@ -3799,54 +3815,68 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">Carica su OSM</translation>
+        <translation>Carica su OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Caricamento dei dati ...</translation>
+        <translation>Caricamento dei dati ...</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Errore durante l&apos;esecuzione di codice Python:</translation>
+        <translation>Errore durante l&apos;esecuzione di codice Python:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Versione Python:</translation>
+        <translation>Versione Python:</translation>
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="obsolete">Versione di QGIS:</translation>
+        <translation>Versione di QGIS:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Percorso Python:</translation>
+        <translation>Percorso Python:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Errore Python</translation>
+        <translation>Errore Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="obsolete">Impossibile caricare il plugin &apos;%1&apos; da [&apos;%2&apos;]</translation>
+        <translation>Impossibile caricare il plugin &apos;%1&apos; da [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Impossibile caricare il plugin %1</translation>
+        <translation>Impossibile caricare il plugin %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete">%1 a causa di errore chiamando il metodo classFactory()</translation>
+        <translation>%1 a causa di errore chiamando il metodo classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1 a causa di errore chiamando il metodo initGui()</translation>
+        <translation>%1 a causa di errore chiamando il metodo initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Errore durante lo scaricamento del plugin %1</translation>
+        <translation>Errore durante lo scaricamento del plugin %1</translation>
+    </message>
+</context>
+<context>
+    <name>PythonConsole</name>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished">Console python</translation>
+    </message>
+    <message>
+        <source>To access Quantum GIS environment from this console
+use qgis.utils.iface object (instance of QgisInterface class).
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4000,7 +4030,6 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="61"/>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="35"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="23"/>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="40"/>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="28"/>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="41"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="33"/>
@@ -4998,8 +5027,9 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <translation>CRS non definito - Verrà utilizzato il CRS predefinito</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation type="obsolete">SQLite DB (*.sqlite *.db);;Tutti i file (*)</translation>
+        <translation>SQLite DB (*.sqlite *.db);;Tutti i file (*)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="22"/>
@@ -5158,16 +5188,6 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="unfinished">Selezione dell&apos;estensione oltre il sistema di coordinate del layer.</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="38"/>
-        <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="39"/>
-        <source>[plugindescription]</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8892,7 +8912,7 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="613"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="601"/>
         <source>Big image</source>
         <translation>Immagine grande</translation>
     </message>
@@ -8902,28 +8922,28 @@ Should the existing classes be deleted before classification?</source>
         <translation>Mappa 1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="714"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Image too big</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="753"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
         <source>SVG warning</source>
         <translation>Avviso SVG</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="754"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1495"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="742"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1483"/>
         <source>Don&apos;t show this message again</source>
         <translation>Non mostrare più questo messaggio</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="773"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="761"/>
         <source>SVG Format</source>
         <translation>Formato SVG</translation>
     </message>
@@ -8953,58 +8973,58 @@ Should the existing classes be deleted before classification?</source>
         <translation>Formato PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="568"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
         <source>Image too large</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="569"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="614"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="667"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Scegli un nome di file per salvare l&apos;immagine della mappa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="772"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>Choose a file name to save the map as</source>
         <translation>Scegli un nome di file per salvare la mappa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1166"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1154"/>
         <source>Composer</source>
         <translation>Compositore</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1493"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1481"/>
         <source>Project contains WMS layers</source>
         <translation>Progetto contenente livelli WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1494"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1482"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Alcuni servers WMS (es. UMN mapserver) hanno dei limiti per i parametri WIDTH e HEIGHT. Stampare layer da questi server può superare il limite imposto. In tal caso, il layer WMS non verrà stampato</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="758"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="746"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;La funziona di esportazione SVG in Qgis ha diversi problemi causati da bug e limitazioni </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="643"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="631"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1 format (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="748"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>dovute al codice SVG delle Qt4. In particolare ci sono problemi con i layer che non sono tagliati all`interno dei confini del box della mappa.&lt;/p&gt;</translation>
     </message>
@@ -9013,43 +9033,43 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">La creazione di una immagine %1 x %2 richiede circa %3 MB di memoria</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="763"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="751"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Se serve un formato vettoriale come output da Qgis, e l´output SVG ottenuto non è soddisfacente, si consiglia di utilizzare la stampa su PostScript&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="899"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="887"/>
         <source>save template</source>
         <translation>salva modello</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="925"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
         <source>Save error</source>
         <translation>Errore di scrittura</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="925"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
         <source>Error, could not save file</source>
         <translation>Errore, impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="933"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="921"/>
         <source>Load template</source>
         <translation>Carica modello</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
         <source>Read error</source>
         <translation>Errore di lettura</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
         <source>Error, could not read file</source>
         <translation>Errore, impossibile leggere il file</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
         <source>Content of template file is not valid</source>
         <translation>Il contenuto del file di modello non è valido</translation>
     </message>
@@ -21062,325 +21082,325 @@ geometry.</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Impossibile analizzare l&apos;output dal repository</translation>
+        <translation>Impossibile analizzare l&apos;output dal repository</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Non riesco ad aprire la cartella locale dei plugin </translation>
+        <translation>Non riesco ad aprire la cartella locale dei plugin </translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Recupero Plugin Python...</translation>
+        <translation>Recupero Plugin Python...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">Installa altri plugin aggiuntivi da repository remoti</translation>
+        <translation>Installa altri plugin aggiuntivi da repository remoti</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Ricerca di nuovi plugin...</translation>
+        <translation>Ricerca di nuovi plugin...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">C&apos;è un nuovo plugin disponibile</translation>
+        <translation>C&apos;è un nuovo plugin disponibile</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Plugin, c&apos;è un aggiornamento disponibile</translation>
+        <translation>Plugin, c&apos;è un aggiornamento disponibile</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">Installatore QGIS Plugin Python</translation>
+        <translation>Installatore QGIS Plugin Python</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Errore durante la lettura dal repository:</translation>
+        <translation>Errore durante la lettura dal repository:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Niente da rimuovere! La cartella dei plugin non esiste:</translation>
+        <translation>Niente da rimuovere! La cartella dei plugin non esiste:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Impossibile rimuovere la cartella:</translation>
+        <translation>Impossibile rimuovere la cartella:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Controlla i permessi o rimuovila manualmente</translation>
+        <translation>Controlla i permessi o rimuovila manualmente</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">Conflitto QGIS Plugin:</translation>
+        <translation>Conflitto QGIS Plugin:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">L&apos;installatore di plugin ha individuato un plugin obsoleto che maschera una nuova versione creata per questa versione di QGIS. Questo accade a casa di alcuni file associati a QGIS da una precedente installazione. Utilizzare il Plugin Installer per rimuovere questo plugin in modo da poter visualizzare le nuove versioni create per questa copia di QGIS.</translation>
+        <translation>L&apos;installatore di plugin ha individuato un plugin obsoleto che maschera una nuova versione creata per questa versione di QGIS. Questo accade a casa di alcuni file associati a QGIS da una precedente installazione. Utilizzare il Plugin Installer per rimuovere questo plugin in modo da poter visualizzare le nuove versioni create per questa copia di QGIS.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">Installatore QGIS Python Plugin</translation>
+        <translation>Installatore QGIS Python Plugin</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Errore durante la lettura del repository:</translation>
+        <translation>Errore durante la lettura del repository:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">Tutti i repository</translation>
+        <translation>Tutti i repository</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">connesso</translation>
+        <translation>connesso</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Questo repository è connesso</translation>
+        <translation>Questo repository è connesso</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">non disponibile</translation>
+        <translation>non disponibile</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Questo repository è abilitato, ma non disponibile</translation>
+        <translation>Questo repository è abilitato, ma non disponibile</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">disabilitato</translation>
+        <translation>disabilitato</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">Questo repository è disabilitato</translation>
+        <translation>Questo repository è disabilitato</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">Questo repository è bloccato a causa di incompatibilità con la versione di Quantum GIS in uso</translation>
+        <translation>Questo repository è bloccato a causa di incompatibilità con la versione di Quantum GIS in uso</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">orfani</translation>
+        <translation>orfani</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">qualsiasi stato</translation>
+        <translation>qualsiasi stato</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">aggiornabili e nuovi</translation>
+        <translation>aggiornabili e nuovi</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Questo plugin non è installato</translation>
+        <translation>Questo plugin non è installato</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">Questo plugin è installato</translation>
+        <translation>Questo plugin è installato</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Questo plugin è installato, ma c&apos;è una versione aggiornata disponibile</translation>
+        <translation>Questo plugin è installato, ma c&apos;è una versione aggiornata disponibile</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Questo plugin è installato, ma non è presente nei repository abilitati</translation>
+        <translation>Questo plugin è installato, ma non è presente nei repository abilitati</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Questo plugin non è installato, ed è la prima volta che appare</translation>
+        <translation>Questo plugin non è installato, ed è la prima volta che appare</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Questo plugin è installato, ed è più recente della versione presente in un repository</translation>
+        <translation>Questo plugin è installato, ed è più recente della versione presente in un repository</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">versione installata</translation>
+        <translation>versione installata</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">versione disponibile</translation>
+        <translation>versione disponibile</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">La versione in uso è attualmente la più nuova</translation>
+        <translation>La versione in uso è attualmente la più nuova</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Non ci sono altre versioni disponibili per il download</translation>
+        <translation>Non ci sono altre versioni disponibili per il download</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">disponibile solo localmente</translation>
+        <translation>disponibile solo localmente</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">Installa plugin</translation>
+        <translation>Installa plugin</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Reinstalla plugin</translation>
+        <translation>Reinstalla plugin</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Aggiorna plugin</translation>
+        <translation>Aggiorna plugin</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Installa/aggiorna plugin</translation>
+        <translation>Installa/aggiorna plugin</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Downgrade plugin</translation>
+        <translation>Downgrade plugin</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Si vuole veramente effettuare il downgrade del plugin all&apos;ultima versione disponibile? La versione installata è più recente!</translation>
+        <translation>Si vuole veramente effettuare il downgrade del plugin all&apos;ultima versione disponibile? La versione installata è più recente!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Installazione plugin non riuscita</translation>
+        <translation>Installazione plugin non riuscita</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">Il plugin è scomparso</translation>
+        <translation>Il plugin è scomparso</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">Il plugin sembra sia stato installato ma non è recuperabile. Probabilmente il pacchetto del plugin contiene un nome di cartella sbagliato.È probabile che specificando la lista dei plugin installati si riesca a trovare il plugin. QGIS non è in grado di capire quale sia. Questo vuol dire che è impossibile capire se il plugin è installato o meno e quindi non è possibile informare circa la disponibilità di aggiornamenti. Il plugin può comunque funzionare. Contatta l&apos;autore del plugin e invia una notifica in merito a questo problema.</translation>
+        <translation>Il plugin sembra sia stato installato ma non è recuperabile. Probabilmente il pacchetto del plugin contiene un nome di cartella sbagliato.È probabile che specificando la lista dei plugin installati si riesca a trovare il plugin. QGIS non è in grado di capire quale sia. Questo vuol dire che è impossibile capire se il plugin è installato o meno e quindi non è possibile informare circa la disponibilità di aggiornamenti. Il plugin può comunque funzionare. Contatta l&apos;autore del plugin e invia una notifica in merito a questo problema.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">Plugin installato con successo</translation>
+        <translation>Plugin installato con successo</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Disinstallazione plugin non riuscita</translation>
+        <translation>Disinstallazione plugin non riuscita</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Si è certi di voler disinstallare i seguenti plugin?</translation>
+        <translation>Si è certi di voler disinstallare i seguenti plugin?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Attenzione: questo plugin non è più reperibile dai repository disponibili!</translation>
+        <translation>Attenzione: questo plugin non è più reperibile dai repository disponibili!</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
-        <translation type="obsolete">L&apos;aggiornamento dell&apos;Installatore plugin è stato disinstallato. Adesso l&apos;Installatore plugin si chiuderà e ritornerà alla sua versione originaria. Lo puoi trovare nel meu Plugins e continuare il lavoro.</translation>
+        <translation>L&apos;aggiornamento dell&apos;Installatore plugin è stato disinstallato. Adesso l&apos;Installatore plugin si chiuderà e ritornerà alla sua versione originaria. Lo puoi trovare nel meu Plugins e continuare il lavoro.</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
-        <translation type="obsolete">L&apos;aggiornamento dell&apos;Installatore di plugin è stato disinstallato. Riavvia QGIS per caricare la versione originaria.</translation>
+        <translation>L&apos;aggiornamento dell&apos;Installatore di plugin è stato disinstallato. Riavvia QGIS per caricare la versione originaria.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">Disinstallazione plugin avvenuta</translation>
+        <translation>Disinstallazione plugin avvenuta</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Impossibile aggiungere altri repository con il medesimo URL!</translation>
+        <translation>Impossibile aggiungere altri repository con il medesimo URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Si vuole veramente rimuovere i seguenti repository?</translation>
+        <translation>Si vuole veramente rimuovere i seguenti repository?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">Questo plugin è incompatibile con la versione di Quantum GIS in uso e probabilmente non funzionerà.</translation>
+        <translation>Questo plugin è incompatibile con la versione di Quantum GIS in uso e probabilmente non funzionerà.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Questo plugin sembra corrotto.
+        <translation>Questo plugin sembra corrotto.
 È stato installato ma non può essere caricato.
 Questo il messaggio di errore:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Nota: questo è un plugin fondamentale e non può essere disinstallato</translation>
+        <translation>Nota: questo è un plugin fondamentale e non può essere disinstallato</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">Questo plugin è corrotto</translation>
+        <translation>Questo plugin è corrotto</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">Questo plugin richiede un versione più aggiornata di Quantum GIS</translation>
+        <translation>Questo plugin richiede un versione più aggiornata di Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">Questo plugin richiede un modulo che non è presente</translation>
+        <translation>Questo plugin richiede un modulo che non è presente</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">Plugin reinstallato con successo</translation>
+        <translation>Plugin reinstallato con successo</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Il plugin è progettato per una nuova versione di Quantum GIS. La versione minima richiesta è:</translation>
+        <translation>Il plugin è progettato per una nuova versione di Quantum GIS. La versione minima richiesta è:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">Il plugin dipende da qualche componente che non è presente sul sistema. Per abilitarlo occorre installare i seguenti moduli Python:</translation>
+        <translation>Il plugin dipende da qualche componente che non è presente sul sistema. Per abilitarlo occorre installare i seguenti moduli Python:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">Il plugin è corrotto. Messaggio python:</translation>
+        <translation>Il plugin è corrotto. Messaggio python:</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">aggiornabile</translation>
+        <translation>aggiornabile</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">nuovo!</translation>
+        <translation>nuovo!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">non valido</translation>
+        <translation>non valido</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">non installato</translation>
+        <translation>non installato</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">installato</translation>
+        <translation>installato</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">Il modulo Python richiesto non è installato.
+        <translation>Il modulo Python richiesto non è installato.
 Per maggiori informazioni visitare la home page e il wiki di Quantum GIS.</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">almeno</translation>
+        <translation>almeno</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Plugin python installato.
+        <translation>Plugin python installato.
 Abilitarlo nel Gestore di Plugin.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Plugin python reinstallato.
+        <translation>Plugin python reinstallato.
 Riavvia Quantum GIS per poterlo utilizzare.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Plugin Python disinstallato. Riavvia Quantum GIS per rimuoverlo completamente.</translation>
+        <translation>Plugin Python disinstallato. Riavvia Quantum GIS per rimuoverlo completamente.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Si stanno per aggiungere molti repository di plugin il cui supporto non è autorizzato dal team di Quantum GIS. Generalmente gli autori fanno molta attenzione agli effetti del loro lavoro e sono sicuri, in ogni caso il Team di QGIS non si assume responsabilità in merito.</translation>
+        <translation>Si stanno per aggiungere molti repository di plugin il cui supporto non è autorizzato dal team di Quantum GIS. Generalmente gli autori fanno molta attenzione agli effetti del loro lavoro e sono sicuri, in ogni caso il Team di QGIS non si assume responsabilità in merito.</translation>
     </message>
 </context>
 <context>
@@ -21681,35 +21701,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Avvenuto</translation>
+        <translation>Avvenuto</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Risoluzione del nome host...</translation>
+        <translation>Risoluzione del nome host...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Connessione...</translation>
+        <translation>Connessione...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Host connesso. Invio della richiesta...</translation>
+        <translation>Host connesso. Invio della richiesta...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Scaricamento dati ...</translation>
+        <translation>Scaricamento dati ...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">In attesa</translation>
+        <translation>In attesa</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Chiusura connessione...</translation>
+        <translation>Chiusura connessione...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Errore</translation>
+        <translation>Errore</translation>
     </message>
 </context>
 <context>
@@ -21744,43 +21764,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Installazione...</translation>
+        <translation>Installazione...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Risoluzione del nome host...</translation>
+        <translation>Risoluzione del nome host...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Connessione...</translation>
+        <translation>Connessione...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Host connesso. Invio della richiesta...</translation>
+        <translation>Host connesso. Invio della richiesta...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Scaricamento dati...</translation>
+        <translation>Scaricamento dati...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">In attesa</translation>
+        <translation>In attesa</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Chiusura connessione...</translation>
+        <translation>Chiusura connessione...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Scompattazione (unzip) del plugin non riuscita. Probabilmente l&apos;archivio è corrotto o non esiste nel repository. Controllare i permessi in scrittura della cartella dei plugin:</translation>
+        <translation>Scompattazione (unzip) del plugin non riuscita. Probabilmente l&apos;archivio è corrotto o non esiste nel repository. Controllare i permessi in scrittura della cartella dei plugin:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Annullato dall&apos;utente</translation>
+        <translation>Annullato dall&apos;utente</translation>
     </message>
 </context>
 <context>
@@ -21838,7 +21858,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">non è stato ricevuto nessun messaggio di errore</translation>
+        <translation>non è stato ricevuto nessun messaggio di errore</translation>
     </message>
 </context>
 <context>
@@ -25374,88 +25394,121 @@ L´errore era:
 <context>
     <name>QgsSpatiaLiteSourceSelect</name>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="44"/>
         <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Aggiungi</translation>
+        <translation>&amp;Aggiungi</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="51"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="102"/>
         <source>Wildcard</source>
-        <translation type="obsolete">Wildcard</translation>
+        <translation>Wildcard</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="52"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="106"/>
         <source>RegExp</source>
-        <translation type="obsolete">RegExp</translation>
+        <translation>RegExp</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="54"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="114"/>
         <source>All</source>
-        <translation type="obsolete">Tutto</translation>
+        <translation>Tutto</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="55"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="118"/>
         <source>Table</source>
-        <translation type="obsolete">Tabella</translation>
+        <translation>Tabella</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="56"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="122"/>
         <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="57"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="126"/>
         <source>Geometry column</source>
-        <translation type="obsolete">Colonna geometrie</translation>
+        <translation>Colonna geometrie</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="176"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="244"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="258"/>
         <source>SpatiaLite DB Open Error</source>
-        <translation type="obsolete">Errore apertura SpatiaLite DB</translation>
+        <translation>Errore apertura SpatiaLite DB</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="177"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="245"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="259"/>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="obsolete">Errore durante la connessione verso: %1
+        <translation>Errore durante la connessione verso: %1
 
 %2</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="243"/>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="obsolete">sembra essere un DB SQLite valido, ma non uno SpatialLite ...</translation>
+        <translation>sembra essere un DB SQLite valido, ma non uno SpatialLite ...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="252"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="582"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="740"/>
         <source>unknown error cause</source>
-        <translation type="obsolete">causa errore sconosciuta</translation>
+        <translation>causa errore sconosciuta</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="280"/>
         <source>@</source>
-        <translation type="obsolete">@</translation>
+        <translation>@</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="302"/>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
-        <translation type="obsolete">Scegli un DB SpatiaLite/SQLite da aprire</translation>
+        <translation>Scegli un DB SpatiaLite/SQLite da aprire</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="342"/>
         <source>Confirm Delete</source>
-        <translation type="obsolete">Conferma eliminazione</translation>
+        <translation>Conferma eliminazione</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>Select Table</source>
-        <translation type="obsolete">Scegli tabella</translation>
+        <translation>Scegli tabella</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="obsolete">Prima di aggiungere un layer occorre scegliere una tabella.</translation>
+        <translation>Prima di aggiungere un layer occorre scegliere una tabella.</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="588"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="746"/>
         <source>SpatiaLite getTableInfo Error</source>
-        <translation type="obsolete">Errore SpatiaLite getTableInfo</translation>
+        <translation>Errore SpatiaLite getTableInfo</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="589"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="747"/>
         <source>Failure exploring tables from: %1
 
 %2</source>
-        <translation type="obsolete">Errore durante la lettura delle tabelle da: %1
+        <translation>Errore durante la lettura delle tabelle da: %1
 
 %2</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="340"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="obsolete">Si è sicuri di volere rimuovere la connessione %1 e tutti i parametri associati?</translation>
+        <translation>Si è sicuri di volere rimuovere la connessione %1 e tutti i parametri associati?</translation>
     </message>
 </context>
 <context>
@@ -29210,67 +29263,67 @@ URL provata: %1</translation>
     <name>VisualDialog</name>
     <message>
         <source>Error!</source>
-        <translation type="obsolete">Errore!</translation>
+        <translation>Errore!</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="obsolete">Parametro</translation>
+        <translation>Parametro</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="obsolete">Valore</translation>
+        <translation>Valore</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Scegli vettore in input</translation>
+        <translation>Scegli vettore in input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Specificare il campo di input</translation>
+        <translation>Specificare il campo di input</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Controllo validità geometrica</translation>
+        <translation>Controllo validità geometrica</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Errori geometria</translation>
+        <translation>Errori geometria</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Totale errori trovati</translation>
+        <translation>Totale errori trovati</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Lista valori univoci</translation>
+        <translation>Lista valori univoci</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Valori univoci</translation>
+        <translation>Valori univoci</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Totale valori univoci</translation>
+        <translation>Totale valori univoci</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Statistiche di base</translation>
+        <translation>Statistiche di base</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Output statistiche</translation>
+        <translation>Output statistiche</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Analisi vicino più prossimo</translation>
+        <translation>Analisi vicino più prossimo</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Statistiche vicino più prossimo</translation>
+        <translation>Statistiche vicino più prossimo</translation>
     </message>
 </context>
 <context>
@@ -30400,1990 +30453,2385 @@ Percorso base (es. prende solo il nome del file dall´attributo)</translation>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Versione di Quantum GIS rilevata: </translation>
+        <translation>Versione di Quantum GIS rilevata: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Questa versione di fTools richiede una versione QGIS 1.0.0 o superiore
+        <translation>Questa versione di fTools richiede una versione QGIS 1.0.0 o superiore
 Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation type="obsolete">&amp;Vettore</translation>
+        <translation>&amp;Vettore</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">Strumenti di &amp;Analisi</translation>
+        <translation>Strumenti di &amp;Analisi</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Matrice di distanza</translation>
+        <translation>Matrice di distanza</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Somma lunghezza linee</translation>
+        <translation>Somma lunghezza linee</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Punti nel poligono</translation>
+        <translation>Punti nel poligono</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Statistiche di base</translation>
+        <translation>Statistiche di base</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Lista valori univoci</translation>
+        <translation>Lista valori univoci</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Analisi vicino più prossimo</translation>
+        <translation>Analisi vicino più prossimo</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Media coordinata(e)</translation>
+        <translation>Media coordinata(e)</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Intersezioni linea</translation>
+        <translation>Intersezioni linea</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">Strumenti di &amp;Ricerca</translation>
+        <translation>Strumenti di &amp;Ricerca</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Selezione casuale</translation>
+        <translation>Selezione casuale</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Selezione causale con un sottoinsieme</translation>
+        <translation>Selezione causale con un sottoinsieme</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Punti casuali</translation>
+        <translation>Punti casuali</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Punti regolari</translation>
+        <translation>Punti regolari</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Griglia vettoriale</translation>
+        <translation>Griglia vettoriale</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Seleziona per posizione</translation>
+        <translation>Seleziona per posizione</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Poligono dall&apos;estensione del layer</translation>
+        <translation>Poligono dall&apos;estensione del layer</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">Strumenti di &amp;Geoprocessing</translation>
+        <translation>Strumenti di &amp;Geoprocessing</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Poligono/i convesso/i</translation>
+        <translation>Poligono/i convesso/i</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Buffer</translation>
+        <translation>Buffer</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Intersezione</translation>
+        <translation>Intersezione</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Unione</translation>
+        <translation>Unione</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Differenza simmetrica</translation>
+        <translation>Differenza simmetrica</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Clip</translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Dissolvenza</translation>
+        <translation>Dissolvenza</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Differenza</translation>
+        <translation>Differenza</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">Strumenti di G&amp;eometria</translation>
+        <translation>Strumenti di G&amp;eometria</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Estrai/Aggiungi colonne geometriche</translation>
+        <translation>Estrai/Aggiungi colonne geometriche</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Controlla validità geometria</translation>
+        <translation>Controlla validità geometria</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Centroidi di poligoni</translation>
+        <translation>Centroidi di poligoni</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Triangolazione Delaunay</translation>
+        <translation>Triangolazione Delaunay</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Estrai nodi</translation>
+        <translation>Estrai nodi</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Semplifica geometrie</translation>
+        <translation>Semplifica geometrie</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Da parti multiple a parti singole</translation>
+        <translation>Da parti multiple a parti singole</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Da parti singole a parti multiple</translation>
+        <translation>Da parti singole a parti multiple</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Da poligoni a linee</translation>
+        <translation>Da poligoni a linee</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">Strumenti di gestione &amp;Dati</translation>
+        <translation>Strumenti di gestione &amp;Dati</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Esporta a nuova proiezione</translation>
+        <translation>Esporta a nuova proiezione</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Definisci la proiezione in uso</translation>
+        <translation>Definisci la proiezione in uso</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Unisci attributi</translation>
+        <translation>Unisci attributi</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Unisci attributi per posizione</translation>
+        <translation>Unisci attributi per posizione</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Dividi vettore</translation>
+        <translation>Dividi vettore</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="obsolete">Unisci shapefiles</translation>
+        <translation>Unisci shapefiles</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">Informazioni fTools</translation>
+        <translation>Informazioni fTools</translation>
     </message>
 </context>
 <context>
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Unisci tutto</translation>
+        <translation>Unisci tutto</translation>
     </message>
     <message>
         <source>Polygon area</source>
-        <translation type="obsolete">Area del poligono</translation>
+        <translation>Area del poligono</translation>
     </message>
     <message>
         <source>Polygon perimeter</source>
-        <translation type="obsolete">Perimetro del poligono</translation>
+        <translation>Perimetro del poligono</translation>
     </message>
     <message>
         <source>Line length</source>
-        <translation type="obsolete">Lunghezza della linea</translation>
+        <translation>Lunghezza della linea</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
-        <translation type="obsolete">Coordinata X del punto</translation>
+        <translation>Coordinata X del punto</translation>
     </message>
     <message>
         <source>Point y coordinate</source>
-        <translation type="obsolete">Coordinata Y del punto</translation>
+        <translation>Coordinata Y del punto</translation>
     </message>
 </context>
 <context>
     <name>grasslabel</name>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
         <source>(1-256)</source>
-        <translation type="obsolete">(1-256)</translation>
+        <translation>(1-256)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>3D-Viewer (NVIZ)</source>
-        <translation type="obsolete">Visualizzatore 3D (NVIZ)</translation>
+        <translation>Visualizzatore 3D (NVIZ)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3d Visualization</source>
-        <translation type="obsolete">Visualizzazione 3D</translation>
+        <translation>Visualizzazione 3D</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>Add a value to the current category values</source>
-        <translation type="obsolete">Aggiugi un valore alle categorie in uso</translation>
+        <translation>Aggiugi un valore alle categorie in uso</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="obsolete">Aggiungi elementi al layer (TUTTI gli elementi del tipo di layer selezionato!)</translation>
+        <translation>Aggiungi elementi al layer (TUTTI gli elementi del tipo di layer selezionato!)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add missing centroids to closed boundaries</source>
-        <translation type="obsolete">Aggiungi centroidi mancanti ai contorni chiusi</translation>
+        <translation>Aggiungi centroidi mancanti ai contorni chiusi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
         <source>Add one or more columns to attribute table</source>
-        <translation type="obsolete">Aggiungi una o più colonne alla tabella degli attributi</translation>
+        <translation>Aggiungi una o più colonne alla tabella degli attributi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Allocate network</source>
-        <translation type="obsolete">Assegna rete</translation>
+        <translation>Assegna rete</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Assign constant value to column</source>
-        <translation type="obsolete">Assegna un valore costante alla colonna</translation>
+        <translation>Assegna un valore costante alla colonna</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
-        <translation type="obsolete">Assegna un nuovo valore costante alla colonna soltanto se il risultato della query è TRUE</translation>
+        <translation>Assegna un nuovo valore costante alla colonna soltanto se il risultato della query è TRUE</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="obsolete">Assegna un nuovo valore ad una colonna nella tabella attributi derivante dall&apos;operazione sulle colonne</translation>
+        <translation>Assegna un nuovo valore ad una colonna nella tabella attributi derivante dall&apos;operazione sulle colonne</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation type="obsolete">Assegna un nuovo valore alla colonna derivante dall&apos;operazione sulle colonne soltanto se il risultato della query è TRUE</translation>
+        <translation>Assegna un nuovo valore alla colonna derivante dall&apos;operazione sulle colonne soltanto se il risultato della query è TRUE</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Attribute field</source>
-        <translation type="obsolete">Campo attributi</translation>
+        <translation>Campo attributi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field (interpolated values)</source>
-        <translation type="obsolete">Campo attributi (valori interpolati)</translation>
+        <translation>Campo attributi (valori interpolati)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field to join</source>
-        <translation type="obsolete">Campo attributi da unire</translation>
+        <translation>Campo attributi da unire</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
-        <translation type="obsolete">Auto-bilanciamento dei colori per raster LANDSAT-TM</translation>
+        <translation>Auto-bilanciamento dei colori per raster LANDSAT-TM</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
-        <translation type="obsolete">Interpolazione spline bicubica o bilineare con regolarizzazione Tykhonov</translation>
+        <translation>Interpolazione spline bicubica o bilineare con regolarizzazione Tykhonov</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation type="obsolete">Utility di interpolazione bilineare per mappe raster</translation>
+        <translation>Utility di interpolazione bilineare per mappe raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
         <source>Blend color components for two rasters by given ratio</source>
-        <translation type="obsolete">Componenti del colore per due raster in base a rapporto dato</translation>
+        <translation>Componenti del colore per due raster in base a rapporto dato</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Blend red, green, raster layers to obtain one color raster</source>
-        <translation type="obsolete">Mescola layer rosso, verde per ottenre un raster monocromatico</translation>
+        <translation>Mescola layer rosso, verde per ottenre un raster monocromatico</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
-        <translation type="obsolete">Spezza (con pulizia topologica) i poligoni (importati da formati non topologici, come gli ShapeFile). I contorni vengono spezzati in ogni punto condiviso tra 2 o più poligoni nei punti in cui gli angoli tra segmenti differiscono</translation>
+        <translation>Spezza (con pulizia topologica) i poligoni (importati da formati non topologici, come gli ShapeFile). I contorni vengono spezzati in ogni punto condiviso tra 2 o più poligoni nei punti in cui gli angoli tra segmenti differiscono</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
         <source>Break lines at each intersection of vector</source>
-        <translation type="obsolete">Spezza le linee ad ogni intersezione con un vettore</translation>
+        <translation>Spezza le linee ad ogni intersezione con un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation type="obsolete">Trasformazione di Brovey per unire canali pancromatici multispettrali ad alta risoluzione</translation>
+        <translation>Trasformazione di Brovey per unire canali pancromatici multispettrali ad alta risoluzione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
         <source>Buffer</source>
-        <translation type="obsolete">Buffer</translation>
+        <translation>Buffer</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
         <source>Build polylines from lines</source>
-        <translation type="obsolete">Crea polilinee da linee</translation>
+        <translation>Crea polilinee da linee</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
         <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
-        <translation type="obsolete">Calcola la media del raster con aree della stessa categoria in una mappa di base definita dall&apos;utente</translation>
+        <translation>Calcola la media del raster con aree della stessa categoria in una mappa di base definita dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
         <source>Calculate covariance/correlation matrix for user-defined rasters</source>
-        <translation type="obsolete">Calcola matrice di covarianza/correlazione per raster definiti dall&apos;utente</translation>
+        <translation>Calcola matrice di covarianza/correlazione per raster definiti dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
-        <translation type="obsolete">Calcola matrice degli errori e parametro kappa per la valutazione della precisione del risultato di classificazione</translation>
+        <translation>Calcola matrice degli errori e parametro kappa per la valutazione della precisione del risultato di classificazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
         <source>Calculate geometry statistics for vectors</source>
-        <translation type="obsolete">Calcola statistiche geometriche per i vettori</translation>
+        <translation>Calcola statistiche geometriche per i vettori</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
         <source>Calculate linear regression from two rasters: y = a + b*x</source>
-        <translation type="obsolete">Calcola la regressione lineare da due raster: y = a + b*x</translation>
+        <translation>Calcola la regressione lineare da due raster: y = a + b*x</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
         <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
-        <translation type="obsolete">Calcola la mediana di raster con aree della stessa categoria in una mappa base definita dall&apos;utente</translation>
+        <translation>Calcola la mediana di raster con aree della stessa categoria in una mappa base definita dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
         <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
-        <translation type="obsolete">Calcola la moda di raster con aree della stessa categoria in una mappa base definita dall&apos;utente</translation>
+        <translation>Calcola la moda di raster con aree della stessa categoria in una mappa base definita dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
         <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
-        <translation type="obsolete">Calcola tabella del fattore di indice ottimale per raster LANDSAT-TM</translation>
+        <translation>Calcola tabella del fattore di indice ottimale per raster LANDSAT-TM</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
         <source>Calculate raster surface area</source>
-        <translation type="obsolete">Calcola l&apos;area della superficie del raster</translation>
+        <translation>Calcola l&apos;area della superficie del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
         <source>Calculate shadow maps from exact sun position</source>
-        <translation type="obsolete">Calcola mappe delle ombreggiature dall&apos;esatta posizione del sole</translation>
+        <translation>Calcola mappe delle ombreggiature dall&apos;esatta posizione del sole</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
         <source>Calculate shadow maps from sun position determinated by date/time</source>
-        <translation type="obsolete">Calcola mappe delle ombreggiature dalla posizione del sole definita da data/ora</translation>
+        <translation>Calcola mappe delle ombreggiature dalla posizione del sole definita da data/ora</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
         <source>Calculate statistics for raster</source>
-        <translation type="obsolete">Calcola statistiche per i raster</translation>
+        <translation>Calcola statistiche per i raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
-        <translation type="obsolete">Calcola statistiche univariate per attributi numerici in una tabella di dati</translation>
+        <translation>Calcola statistiche univariate per attributi numerici in una tabella di dati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
         <source>Calculate univariate statistics from raster based on vector objects</source>
-        <translation type="obsolete">Calcola statistiche univariate da raster basata su oggetti vettoriali</translation>
+        <translation>Calcola statistiche univariate da raster basata su oggetti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
-        <translation type="obsolete">Calcola statistiche univariate dalle celle non nulle di un raster</translation>
+        <translation>Calcola statistiche univariate dalle celle non nulle di un raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
         <source>Calculate univariate statistics of vector map features</source>
-        <translation type="obsolete">Calcola statistiche univariate di geometrie vettoriali</translation>
+        <translation>Calcola statistiche univariate di geometrie vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="obsolete">Calcola il volume di clumps di dati, e crea un vettore con i centroidi dei clump</translation>
+        <translation>Calcola il volume di clumps di dati, e crea un vettore con i centroidi dei clump</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
         <source>Category or object oriented statistics</source>
-        <translation type="obsolete">Statistiche orientate alla categoria o all&apos;oggetto</translation>
+        <translation>Statistiche orientate alla categoria o all&apos;oggetto</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
         <source>Cats</source>
-        <translation type="obsolete">Cats</translation>
+        <translation>Cats</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
         <source>Change category values and labels</source>
-        <translation type="obsolete">Cambia valori di categoria e le etichette</translation>
+        <translation>Cambia valori di categoria e le etichette</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
         <source>Change field</source>
-        <translation type="obsolete">Cambia campo</translation>
+        <translation>Cambia campo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
         <source>Change layer number</source>
-        <translation type="obsolete">Cambia numero del layer</translation>
+        <translation>Cambia numero del layer</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
         <source>Change resolution</source>
-        <translation type="obsolete">Cambia risoluzione</translation>
+        <translation>Cambia risoluzione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
         <source>Change the type of boundary dangle to line</source>
-        <translation type="obsolete">Cambia il tipo di confine in una linea</translation>
+        <translation>Cambia il tipo di confine in una linea</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
         <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
-        <translation type="obsolete">Cambia il tipo di ponte che collega un&apos;area ed un&apos;isola o 2 isole dal contorno ad una linea</translation>
+        <translation>Cambia il tipo di ponte che collega un&apos;area ed un&apos;isola o 2 isole dal contorno ad una linea</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
         <source>Change the type of geometry elements</source>
-        <translation type="obsolete">Cambia il tipo di elementi geometrici</translation>
+        <translation>Cambia il tipo di elementi geometrici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
         <source>Choose appropriate format</source>
-        <translation type="obsolete">Specifica un formato appropriato</translation>
+        <translation>Specifica un formato appropriato</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
         <source>Columns management</source>
-        <translation type="obsolete">Gestione colonne</translation>
+        <translation>Gestione colonne</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
         <source>Compares bit patterns with raster</source>
-        <translation type="obsolete">Confronta bit pattern con il raster</translation>
+        <translation>Confronta bit pattern con il raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
         <source>Compress and decompress raster</source>
-        <translation type="obsolete">Comprime e decomprime raster</translation>
+        <translation>Comprime e decomprime raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
         <source>Compress raster</source>
-        <translation type="obsolete">Comprime raster</translation>
+        <translation>Comprime raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Computes a coordinate transformation based on the control points</source>
-        <translation type="obsolete">Calcola una trasformazione di coordinate in base ai punti di controllo</translation>
+        <translation>Calcola una trasformazione di coordinate in base ai punti di controllo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
         <source>Concentric circles</source>
-        <translation type="obsolete">Cerchi concentrici</translation>
+        <translation>Cerchi concentrici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
         <source>Config</source>
-        <translation type="obsolete">Config</translation>
+        <translation>Config</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
-        <translation type="obsolete">Percorso più breve che collega i nodi (commesso viaggiatore)</translation>
+        <translation>Percorso più breve che collega i nodi (commesso viaggiatore)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
-        <translation type="obsolete">Connette i nodi selezionati utilizzando l&apos;algoritmo dell&apos;albero di Steiner</translation>
+        <translation>Connette i nodi selezionati utilizzando l&apos;algoritmo dell&apos;albero di Steiner</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Connect vector to database</source>
-        <translation type="obsolete">Connette un vettore al database</translation>
+        <translation>Connette un vettore al database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
         <source>Convert 2D vector to 3D by sampling raster</source>
-        <translation type="obsolete">Converte un vettore da 2D a 3D mediante il campionamento del raster</translation>
+        <translation>Converte un vettore da 2D a 3D mediante il campionamento del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation type="obsolete">Converte un vettore da 2D a 3D mediante il campionamento di raster dell&apos;altitudine. Per default utilizza il campionamento al vicino più prossimo</translation>
+        <translation>Converte un vettore da 2D a 3D mediante il campionamento di raster dell&apos;altitudine. Per default utilizza il campionamento al vicino più prossimo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
-        <translation type="obsolete">Converte un vettore GRASS binario in un vettore GRASS ASCII</translation>
+        <translation>Converte un vettore GRASS binario in un vettore GRASS ASCII</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert a raster to vector</source>
-        <translation type="obsolete">Converte un raster in vettore</translation>
+        <translation>Converte un raster in vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert a vector to raster</source>
-        <translation type="obsolete">Converte un vettore in raster</translation>
+        <translation>Converte un vettore in raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
-        <translation type="obsolete">Converte le misure di direzione e distanza in coordinate e vice-versa</translation>
+        <translation>Converte le misure di direzione e distanza in coordinate e vice-versa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert boundaries to lines</source>
-        <translation type="obsolete">Converte contorni in linee</translation>
+        <translation>Converte contorni in linee</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
         <source>Convert centroids to points</source>
-        <translation type="obsolete">Converte centroidi in punti</translation>
+        <translation>Converte centroidi in punti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
         <source>Convert coordinates</source>
-        <translation type="obsolete">Converte coordinate</translation>
+        <translation>Converte coordinate</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
-        <translation type="obsolete">Converte coordinate da una proiezione ad un&apos;altra (con frontend cs2cs)</translation>
+        <translation>Converte coordinate da una proiezione ad un&apos;altra (con frontend cs2cs)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
         <source>Convert lines to boundaries</source>
-        <translation type="obsolete">Converte linee in contorni</translation>
+        <translation>Converte linee in contorni</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
         <source>Convert points to centroids</source>
-        <translation type="obsolete">Converte punti in centroidi</translation>
+        <translation>Converte punti in centroidi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
         <source>Convert raster to vector areas</source>
-        <translation type="obsolete">Converte raster in aree vettoriali</translation>
+        <translation>Converte raster in aree vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
         <source>Convert raster to vector lines</source>
-        <translation type="obsolete">Converte raster in linee vettoriali</translation>
+        <translation>Converte raster in linee vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
         <source>Convert raster to vector points</source>
-        <translation type="obsolete">Converte raster in punti vettoriali</translation>
+        <translation>Converte raster in punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
         <source>Convert vector to raster using attribute values</source>
-        <translation type="obsolete">Converte vettori in raster usando i valori degli attributi</translation>
+        <translation>Converte vettori in raster usando i valori degli attributi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
         <source>Convert vector to raster using constant</source>
-        <translation type="obsolete">Converte vettori in raster usando valori costanti</translation>
+        <translation>Converte vettori in raster usando valori costanti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
         <source>Convex hull</source>
-        <translation type="obsolete">Poligono/i convesso/i</translation>
+        <translation>Poligono/i convesso/i</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
         <source>Copy a table</source>
-        <translation type="obsolete">Copia una tabella</translation>
+        <translation>Copia una tabella</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
         <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
-        <translation type="obsolete">Copia anche la tabella attributi (attualmente possibile soltanto per la tabella del layer 1)</translation>
+        <translation>Copia anche la tabella attributi (attualmente possibile soltanto per la tabella del layer 1)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
         <source>Count of neighbouring points</source>
-        <translation type="obsolete">Conteggio dei punti vicini più prossimi</translation>
+        <translation>Conteggio dei punti vicini più prossimi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
-        <translation type="obsolete">Crea mappa di volumi 3D in base ai valori di un raster di altitudine 2D</translation>
+        <translation>Crea mappa di volumi 3D in base ai valori di un raster di altitudine 2D</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Create a MASK for limiting raster operation</source>
-        <translation type="obsolete">Crea una MASK per limitare le operazioni sui raster</translation>
+        <translation>Crea una MASK per limitare le operazioni sui raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
         <source>Create a map containing concentric rings</source>
-        <translation type="obsolete">Crea una mappa contenente anelli concentrici</translation>
+        <translation>Crea una mappa contenente anelli concentrici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
         <source>Create a raster plane</source>
-        <translation type="obsolete">Crea un raster piano</translation>
+        <translation>Crea un raster piano</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Create and add new table to vector</source>
-        <translation type="obsolete">Crea e aggiunge una nuova tabella al vettore</translation>
+        <translation>Crea e aggiunge una nuova tabella al vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
         <source>Create and/or modify raster support files</source>
-        <translation type="obsolete">Crea e/o modifica i file di supporto del raster</translation>
+        <translation>Crea e/o modifica i file di supporto del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
         <source>Create aspect raster from DEM (digital elevation model)</source>
-        <translation type="obsolete">Crea una mappa raster delle esposizioni a partire da un DEM (modello digitale del terreno)</translation>
+        <translation>Crea una mappa raster delle esposizioni a partire da un DEM (modello digitale del terreno)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
         <source>Create cross product of category values from multiple rasters</source>
-        <translation type="obsolete">Crea un prodotto incrociato di valori di categoria da più raster</translation>
+        <translation>Crea un prodotto incrociato di valori di categoria da più raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
         <source>Create fractal surface of given fractal dimension</source>
-        <translation type="obsolete">Crea una superficie di frattali di date dimensioni</translation>
+        <translation>Crea una superficie di frattali di date dimensioni</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
         <source>Create grid in current region</source>
-        <translation type="obsolete">Crea una griglia nella regione attuale</translation>
+        <translation>Crea una griglia nella regione attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
-        <translation type="obsolete">Crea nuovo layer con valori di categorie basate sulla riclassificazione di categorie di un raster impostata dall&apos;utente</translation>
+        <translation>Crea nuovo layer con valori di categorie basate sulla riclassificazione di categorie di un raster impostata dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create new raster by combining other rasters</source>
-        <translation type="obsolete">Crea un nuovo raster dalla combinazione di altri raster</translation>
+        <translation>Crea un nuovo raster dalla combinazione di altri raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create new vector by combining other vectors</source>
-        <translation type="obsolete">Crea un nuovo vettore dalla combinazione di altri vettori</translation>
+        <translation>Crea un nuovo vettore dalla combinazione di altri vettori</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create new vector with current region extent</source>
-        <translation type="obsolete">Crea un nuovo vettore con le estensioni della region attuale</translation>
+        <translation>Crea un nuovo vettore con le estensioni della region attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create nodes on network</source>
-        <translation type="obsolete">Crea nodi su una rete</translation>
+        <translation>Crea nodi su una rete</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create parallel line to input lines</source>
-        <translation type="obsolete">Crea linee parallele alle linee in input</translation>
+        <translation>Crea linee parallele alle linee in input</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
         <source>Create points</source>
-        <translation type="obsolete">Crea punti</translation>
+        <translation>Crea punti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create points along input lines</source>
-        <translation type="obsolete">Crea punti lungo linee</translation>
+        <translation>Crea punti lungo linee</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
         <source>Create points/segments from input vector lines and positions</source>
-        <translation type="obsolete">Crea punti/segmenti da vettori lineari e punti</translation>
+        <translation>Crea punti/segmenti da vettori lineari e punti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
         <source>Create quantization file for floating-point raster</source>
-        <translation type="obsolete">Crea un file di quantizzazione per raster in virgola mobile</translation>
+        <translation>Crea un file di quantizzazione per raster in virgola mobile</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
         <source>Create random 2D/3D vector points</source>
-        <translation type="obsolete">Crea punti vettoriali casuali 2D/3D</translation>
+        <translation>Crea punti vettoriali casuali 2D/3D</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
         <source>Create random cell values with spatial dependence</source>
-        <translation type="obsolete">Crea valori casuali di celle con dipendenza spaziale</translation>
+        <translation>Crea valori casuali di celle con dipendenza spaziale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
         <source>Create random points</source>
-        <translation type="obsolete">Crea punti casuali</translation>
+        <translation>Crea punti casuali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
         <source>Create random vector point contained in raster</source>
-        <translation type="obsolete">Crea punti vettoriali casuali contenuti nel raster</translation>
+        <translation>Crea punti vettoriali casuali contenuti nel raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
-        <translation type="obsolete">Crea un&apos;immagine raster con elementi testuali dal raster (prima serie di indici)</translation>
+        <translation>Crea un&apos;immagine raster con elementi testuali dal raster (prima serie di indici)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
         <source>Create raster of distance to features in input layer</source>
-        <translation type="obsolete">Crea un raster delle distanze dagli elementi nel layer di input</translation>
+        <translation>Crea un raster delle distanze dagli elementi nel layer di input</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
-        <translation type="obsolete">Crea un raster della deviazione gaussiana con media e deviazione standard definita dall&apos;utente</translation>
+        <translation>Crea un raster della deviazione gaussiana con media e deviazione standard definita dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
         <source>Create raster of uniform random deviates with user-defined range</source>
-        <translation type="obsolete">Crea un raster di scostamento uniforme casuale con range definito dall&apos;utente</translation>
+        <translation>Crea un raster di scostamento uniforme casuale con range definito dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create raster with contiguous areas grown by one cell</source>
-        <translation type="obsolete">Crea un raster con aree contigue incrementato di una cella</translation>
+        <translation>Crea un raster con aree contigue incrementato di una cella</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
         <source>Create raster with textural features from raster (second serie of indices)</source>
-        <translation type="obsolete">Crea un&apos;immagine raster con elementi testuali dal raster (seconda serie di indici)</translation>
+        <translation>Crea un&apos;immagine raster con elementi testuali dal raster (seconda serie di indici)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
-        <translation type="obsolete">Crea un raster RGB a partire dai valori di his (hue, intensity, saturation) dei raster</translation>
+        <translation>Crea un raster RGB a partire dai valori di his (hue, intensity, saturation) dei raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
         <source>Create shaded map</source>
-        <translation type="obsolete">Crea mappa delle ombreggiature</translation>
+        <translation>Crea mappa delle ombreggiature</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
         <source>Create slope raster from DEM (digital elevation model)</source>
-        <translation type="obsolete">Crea una mappa raster delle pendenze da un DEM (modello digitale del terreno)</translation>
+        <translation>Crea una mappa raster delle pendenze da un DEM (modello digitale del terreno)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
         <source>Create standard vectors</source>
-        <translation type="obsolete">Crea vettori standard</translation>
+        <translation>Crea vettori standard</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
         <source>Create surface from rasterized contours</source>
-        <translation type="obsolete">Crea una superficie da contorni rasterizzati</translation>
+        <translation>Crea una superficie da contorni rasterizzati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
         <source>Create vector contour from raster at specified levels</source>
-        <translation type="obsolete">Crea contorni vettoriali a partire da un raster a livelli specificati</translation>
+        <translation>Crea contorni vettoriali a partire da un raster a livelli specificati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
         <source>Create vector contour from raster at specified steps</source>
-        <translation type="obsolete">Crea contorni vettoriali da raster a step specificati</translation>
+        <translation>Crea contorni vettoriali da raster a step specificati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
         <source>Create watershed basin</source>
-        <translation type="obsolete">Crea bacino idrografico</translation>
+        <translation>Crea bacino idrografico</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
         <source>Create watershed subbasins raster</source>
-        <translation type="obsolete">Crea un raster di sotto-bacini idrografici</translation>
+        <translation>Crea un raster di sotto-bacini idrografici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
         <source>Cut network by cost isolines</source>
-        <translation type="obsolete">Taglia il grafo per isolinee di costo</translation>
+        <translation>Taglia il grafo per isolinee di costo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
         <source>DXF vector layer</source>
-        <translation type="obsolete">Vettore DXF</translation>
+        <translation>Vettore DXF</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
         <source>Database</source>
-        <translation type="obsolete">Database</translation>
+        <translation>Database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Database connection</source>
-        <translation type="obsolete">Connessione al database</translation>
+        <translation>Connessione al database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Database file</source>
-        <translation type="obsolete">File di database</translation>
+        <translation>File di database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Database management</source>
-        <translation type="obsolete">Amministrazione database</translation>
+        <translation>Amministrazione database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
         <source>Database parameters</source>
-        <translation type="obsolete">Parametri del database</translation>
+        <translation>Parametri del database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
         <source>Delaunay triangulation (areas)</source>
-        <translation type="obsolete">Triangolazione di Delaunay (aree)</translation>
+        <translation>Triangolazione di Delaunay (aree)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
         <source>Delaunay triangulation (lines)</source>
-        <translation type="obsolete">Triangolazione di Delaunay (linee)</translation>
+        <translation>Triangolazione di Delaunay (linee)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
         <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
-        <translation type="obsolete">Triangolazione di Delaunay, diagramma di Voronoi e poligoni convessi</translation>
+        <translation>Triangolazione di Delaunay, diagramma di Voronoi e poligoni convessi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
         <source>Delete category values</source>
-        <translation type="obsolete">Elimina categorie</translation>
+        <translation>Elimina categorie</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
         <source>Develop images and group</source>
-        <translation type="obsolete">Elabora immagini e gruppi</translation>
+        <translation>Elabora immagini e gruppi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
         <source>Develop map</source>
-        <translation type="obsolete">Elabora mappa</translation>
+        <translation>Elabora mappa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
         <source>Directory of rasters to be linked</source>
-        <translation type="obsolete">Cartella dei raster da collegare</translation>
+        <translation>Cartella dei raster da collegare</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
         <source>Disconnect vector from database</source>
-        <translation type="obsolete">Scollega il vettore dal database</translation>
+        <translation>Scollega il vettore dal database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
         <source>Display general DB connection</source>
-        <translation type="obsolete">Visualizza connessioni ai database</translation>
+        <translation>Visualizza connessioni ai database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
         <source>Display list of category values found in raster</source>
-        <translation type="obsolete">Visualizza la lista dei valori di categoria trovati nel raster</translation>
+        <translation>Visualizza la lista dei valori di categoria trovati nel raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
         <source>Display projection information from PROJ.4 projection description file</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione in base al file di descrizione di proiezione PROJ4</translation>
+        <translation>Visualizza le informazioni di proiezione in base al file di descrizione di proiezione PROJ4</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
         <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione in base al file di descrizione di proiezione PROJ4 e crea una nuova location basata su di esso</translation>
+        <translation>Visualizza le informazioni di proiezione in base al file di descrizione di proiezione PROJ4 e crea una nuova location basata su di esso</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
         <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione da un file georeferenziato (raster, vettore) e crea una nuova location basata su di esso</translation>
+        <translation>Visualizza le informazioni di proiezione da un file georeferenziato (raster, vettore) e crea una nuova location basata su di esso</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione da un file ASCII georeferenziato contenente una descrizione di proiezione WKT</translation>
+        <translation>Visualizza le informazioni di proiezione da un file ASCII georeferenziato contenente una descrizione di proiezione WKT</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione da un file ASCII georeferenziato contenente una descrizione di proiezione WKT e crea una nuova location basata su di esso</translation>
+        <translation>Visualizza le informazioni di proiezione da un file ASCII georeferenziato contenente una descrizione di proiezione WKT e crea una nuova location basata su di esso</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
         <source>Display projection information from georeferenced file (raster, vector or image)</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione da un file georeferenziato (raster, vettore o immagine)</translation>
+        <translation>Visualizza le informazioni di proiezione da un file georeferenziato (raster, vettore o immagine)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
         <source>Display projection information of the current location</source>
-        <translation type="obsolete">Visualizza le informazioni di proiezione della location attuale</translation>
+        <translation>Visualizza le informazioni di proiezione della location attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
         <source>Display raster category values and labels</source>
-        <translation type="obsolete">Visualizza i valori delle categorie del raster e le etichette</translation>
+        <translation>Visualizza i valori delle categorie del raster e le etichette</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
         <source>Display results of SQL selection from database</source>
-        <translation type="obsolete">Visualizza i risultati della selezione SQL dal database</translation>
+        <translation>Visualizza i risultati della selezione SQL dal database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
         <source>Display the HTML manual pages of GRASS</source>
-        <translation type="obsolete">Visualizza il manuale di GRASS in formato HTML</translation>
+        <translation>Visualizza il manuale di GRASS in formato HTML</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
         <source>Display vector attributes</source>
-        <translation type="obsolete">Visualizza gli attributi del vettore</translation>
+        <translation>Visualizza gli attributi del vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
         <source>Display vector map attributes with SQL</source>
-        <translation type="obsolete">Visualizza gli attributi del vettore con SQL</translation>
+        <translation>Visualizza gli attributi del vettore con SQL</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
-        <translation type="obsolete">Dissolve i contorni tra aree adiacenti che condividono una categoria comune o un attributo</translation>
+        <translation>Dissolve i contorni tra aree adiacenti che condividono una categoria comune o un attributo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
         <source>Download and import data from WMS server</source>
-        <translation type="obsolete">Scarica e importa dati da un server WMS</translation>
+        <translation>Scarica e importa dati da un server WMS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
         <source>Drop column from attribute table</source>
-        <translation type="obsolete">Elimina colonna dalla tabella attributi</translation>
+        <translation>Elimina colonna dalla tabella attributi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
         <source>E00 vector layer</source>
-        <translation type="obsolete">Vettore E00</translation>
+        <translation>Vettore E00</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
         <source>Execute any SQL statement</source>
-        <translation type="obsolete">Esegue qualsiasi istruzione SQL</translation>
+        <translation>Esegue qualsiasi istruzione SQL</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
         <source>Export</source>
-        <translation type="obsolete">Esporta</translation>
+        <translation>Esporta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation type="obsolete">Esporta 3 raster GRASS (R,G,B) in formato PPM alla risoluzione della region attuale</translation>
+        <translation>Esporta 3 raster GRASS (R,G,B) in formato PPM alla risoluzione della region attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
         <source>Export raster</source>
-        <translation type="obsolete">Esporta raster</translation>
+        <translation>Esporta raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
         <source>Export raster as non-georeferenced PNG image format</source>
-        <translation type="obsolete">Esporta il raster in immagine PNG non georeferenziata</translation>
+        <translation>Esporta il raster in immagine PNG non georeferenziata</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
         <source>Export raster series to MPEG movie</source>
-        <translation type="obsolete">Esporta una serie di raster in formato video MPEG</translation>
+        <translation>Esporta una serie di raster in formato video MPEG</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
-        <translation type="obsolete">Esporta il raster in immagine TIFF 8/24 bit alla risoluzione della region attuale</translation>
+        <translation>Esporta il raster in immagine TIFF 8/24 bit alla risoluzione della region attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
         <source>Export raster to ASCII text file</source>
-        <translation type="obsolete">Esporta il raster in file di testo ASCII</translation>
+        <translation>Esporta il raster in file di testo ASCII</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
         <source>Export raster to ESRI ARCGRID</source>
-        <translation type="obsolete">Esporta il raster in formato ESRI-ARCGRID</translation>
+        <translation>Esporta il raster in formato ESRI-ARCGRID</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="obsolete">Esporta il raster in map file GRIDTAB.FOR (TOPMODEL)</translation>
+        <translation>Esporta il raster in map file GRIDTAB.FOR (TOPMODEL)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export raster to Geo TIFF</source>
-        <translation type="obsolete">Esporta il raster in formato Geo TIFF</translation>
+        <translation>Esporta il raster in formato Geo TIFF</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
         <source>Export raster to POVRAY height-field file</source>
-        <translation type="obsolete">Esporta il raster in file POVRAY height-filed (campo-altezza)</translation>
+        <translation>Esporta il raster in file POVRAY height-filed (campo-altezza)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation type="obsolete">Esporta il raster in formato PPM alla risoluzione della region attuale</translation>
+        <translation>Esporta il raster in formato PPM alla risoluzione della region attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
         <source>Export raster to VTK-ASCII</source>
-        <translation type="obsolete">Esporta il raster in formato VTK-ASCII</translation>
+        <translation>Esporta il raster in formato VTK-ASCII</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
-        <translation type="obsolete">Esporta il raster in formato Virtual Reality Modeling Language (VRML)</translation>
+        <translation>Esporta il raster in formato Virtual Reality Modeling Language (VRML)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
         <source>Export raster to binary MAT-File</source>
-        <translation type="obsolete">Esporta il raster in formato binario MAT-File</translation>
+        <translation>Esporta il raster in formato binario MAT-File</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to binary array</source>
-        <translation type="obsolete">Esporta il raster in un array binario</translation>
+        <translation>Esporta il raster in un array binario</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster to text file as x,y,z values based on cell centers</source>
-        <translation type="obsolete">Esporta il raster in formato testo come valori x,y,z basati sui centri delle celle</translation>
+        <translation>Esporta il raster in formato testo come valori x,y,z basati sui centri delle celle</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to various formats (GDAL library)</source>
-        <translation type="obsolete">Esporta il raster in vari formati (librerie GDAL)</translation>
+        <translation>Esporta il raster in vari formati (librerie GDAL)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export vector</source>
-        <translation type="obsolete">Esporta vettore</translation>
+        <translation>Esporta vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
         <source>Export vector table</source>
-        <translation type="obsolete">Esporta tabella del vettore</translation>
+        <translation>Esporta tabella del vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
         <source>Export vector to DXF</source>
-        <translation type="obsolete">Esporta vettore in formato DXF</translation>
+        <translation>Esporta vettore in formato DXF</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export vector to GML</source>
-        <translation type="obsolete">Esporta vettore in formato GML</translation>
+        <translation>Esporta vettore in formato GML</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export vector to Mapinfo</source>
-        <translation type="obsolete">Esporta vettore in formato Mapinfo</translation>
+        <translation>Esporta vettore in formato Mapinfo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
         <source>Export vector to POV-Ray</source>
-        <translation type="obsolete">Esporta vettore in formato POV-Ray</translation>
+        <translation>Esporta vettore in formato POV-Ray</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
         <source>Export vector to PostGIS</source>
-        <translation type="obsolete">Esporta vettore in PostGIS</translation>
+        <translation>Esporta vettore in PostGIS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
-        <translation type="obsolete">Esporta vettore in tabella PostGIS (database PostgreSQL)</translation>
+        <translation>Esporta vettore in tabella PostGIS (database PostgreSQL)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
         <source>Export vector to SVG</source>
-        <translation type="obsolete">Esporta vettore in formato SVG</translation>
+        <translation>Esporta vettore in formato SVG</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export vector to Shapefile</source>
-        <translation type="obsolete">Esporta vettore in formato shapefile</translation>
+        <translation>Esporta vettore in formato shapefile</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export vector to VTK-ASCII</source>
-        <translation type="obsolete">Esporta vettore in formato VTK-ASCII</translation>
+        <translation>Esporta vettore in formato VTK-ASCII</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export vector to various formats (OGR library)</source>
-        <translation type="obsolete">Esporta vettore in vari formati (librerie OGR)</translation>
+        <translation>Esporta vettore in vari formati (librerie OGR)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
         <source>Exports attribute tables into various format</source>
-        <translation type="obsolete">Esporta tabelle degli attributi in vari formati</translation>
+        <translation>Esporta tabelle degli attributi in vari formati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Extract features from vector</source>
-        <translation type="obsolete">Estrai elementi da un vettore</translation>
+        <translation>Estrai elementi da un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
         <source>Extract selected features</source>
-        <translation type="obsolete">Estrai gli elementi selezionati</translation>
+        <translation>Estrai gli elementi selezionati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
         <source>Extracts terrain parameters from DEM</source>
-        <translation type="obsolete">Estrae parametri del terreno da un DEM</translation>
+        <translation>Estrae parametri del terreno da un DEM</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
         <source>Fast fourier transform for image processing</source>
-        <translation type="obsolete">Trasformazione Fast Fourier per il processamento di immagini</translation>
+        <translation>Trasformazione Fast Fourier per il processamento di immagini</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>File</source>
-        <translation type="obsolete">File</translation>
+        <translation>File</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Fill lake from seed at given level</source>
-        <translation type="obsolete">Riempi un lago da una origine ad un determinato livello</translation>
+        <translation>Riempi un lago da una origine ad un determinato livello</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Fill lake from seed point at given level</source>
-        <translation type="obsolete">Riempi un lago da un punto di origine ad un determinato livello</translation>
+        <translation>Riempi un lago da un punto di origine ad un determinato livello</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
-        <translation type="obsolete">Riempie le aree no-data di un raster usando l&apos;interpolazione spline di v.surf.rst</translation>
+        <translation>Riempie le aree no-data di un raster usando l&apos;interpolazione spline di v.surf.rst</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation type="obsolete">Filtra e crea una mappa di elevazione senza depressioni e una mappa dei flussi di direzione da un raster di altitudine</translation>
+        <translation>Filtra e crea una mappa di elevazione senza depressioni e una mappa dei flussi di direzione da un raster di altitudine</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
         <source>Filter image</source>
-        <translation type="obsolete">Filtra immagine</translation>
+        <translation>Filtra immagine</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
         <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
-        <translation type="obsolete">Trova l&apos;elemento più vicino in un vettore &apos;in&apos; per gli elementi del vettore &apos;da&apos;. Molte informazioni su questa relazione possono essere salvate nella tabella attributi del vettore di input &apos;da&apos;</translation>
+        <translation>Trova l&apos;elemento più vicino in un vettore &apos;in&apos; per gli elementi del vettore &apos;da&apos;. Molte informazioni su questa relazione possono essere salvate nella tabella attributi del vettore di input &apos;da&apos;</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
         <source>Find shortest path on vector network</source>
-        <translation type="obsolete">Trova il percorso minimo in un grafo vettoriale</translation>
+        <translation>Trova il percorso minimo in un grafo vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
         <source>GDAL raster layer</source>
-        <translation type="obsolete">Layer raster GDAL</translation>
+        <translation>Layer raster GDAL</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>GRASS MODULES</source>
-        <translation type="obsolete">MODULI GRASS</translation>
+        <translation>MODULI GRASS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>GRASS shell</source>
-        <translation type="obsolete">Shell di GRASS</translation>
+        <translation>Shell di GRASS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>Gaussian kernel density</source>
-        <translation type="obsolete">Densità kernel gaussiano</translation>
+        <translation>Densità kernel gaussiano</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
         <source>Generalization</source>
-        <translation type="obsolete">Generalizzazione</translation>
+        <translation>Generalizzazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster</source>
-        <translation type="obsolete">Genera un raster di costi cumulativi di spostamento tra posizioni basato su una raster dei costi in input</translation>
+        <translation>Genera un raster di costi cumulativi di spostamento tra posizioni basato su una raster dei costi in input</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
         <source>Generate surface</source>
-        <translation type="obsolete">Genera superfici</translation>
+        <translation>Genera superfici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
         <source>Generate vector contour lines</source>
-        <translation type="obsolete">Genera curve di livello vettoriali</translation>
+        <translation>Genera curve di livello vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
         <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
-        <translation type="obsolete">Georeferenziazione, rettifica e importazione di immagini Terra-ASTER e di DTM tramite gdalwarp</translation>
+        <translation>Georeferenziazione, rettifica e importazione di immagini Terra-ASTER e di DTM tramite gdalwarp</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
         <source>Graphical raster map calculator</source>
-        <translation type="obsolete">Raster map calculator grafico</translation>
+        <translation>Raster map calculator grafico</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
         <source>Help</source>
-        <translation type="obsolete">Guida</translation>
+        <translation>Guida</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
-        <translation type="obsolete">Funzione di trasformazione di un raster da Hue Intensity Saturation (HIS) a Red Green Blue (RGB)</translation>
+        <translation>Funzione di trasformazione di un raster da Hue Intensity Saturation (HIS) a Red Green Blue (RGB)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
         <source>Hydrologic modelling</source>
-        <translation type="obsolete">Modellazione idrologica</translation>
+        <translation>Modellazione idrologica</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
         <source>Imagery</source>
-        <translation type="obsolete">Immagini</translation>
+        <translation>Immagini</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
         <source>Import</source>
-        <translation type="obsolete">Importa</translation>
+        <translation>Importa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
         <source>Import ASCII raster</source>
-        <translation type="obsolete">Importa raster ASCII</translation>
+        <translation>Importa raster ASCII</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
         <source>Import DXF vector</source>
-        <translation type="obsolete">Importa vettore DXF</translation>
+        <translation>Importa vettore DXF</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
-        <translation type="obsolete">Importa raster ESRI ARC/INFO ASCII GRID</translation>
+        <translation>Importa raster ESRI ARC/INFO ASCII GRID</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
         <source>Import ESRI E00 vector</source>
-        <translation type="obsolete">Importa vettore ESRI E00</translation>
+        <translation>Importa vettore ESRI E00</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Import GDAL supported raster</source>
-        <translation type="obsolete">Importa raster supportato da GDAL</translation>
+        <translation>Importa raster supportato da GDAL</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Import GDAL supported raster and create a fitted location</source>
-        <translation type="obsolete">Importa raster supportato da GDAL e crea una location adatta</translation>
+        <translation>Importa raster supportato da GDAL e crea una location adatta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="obsolete">Importa GRIDTAB.FOR (TOPMODEL)</translation>
+        <translation>Importa GRIDTAB.FOR (TOPMODEL)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
         <source>Import MapGen or MatLab vector</source>
-        <translation type="obsolete">Importa vettore MapGen o MatLab</translation>
+        <translation>Importa vettore MapGen o MatLab</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
         <source>Import OGR vector</source>
-        <translation type="obsolete">Importa vettore OGR</translation>
+        <translation>Importa vettore OGR</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
-        <translation type="obsolete">Importa vettori OGR da una sorgente dati combinandoli in un vettore di GRASS</translation>
+        <translation>Importa vettori OGR da una sorgente dati combinandoli in un vettore di GRASS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
         <source>Import OGR/PostGIS vector and create a fitted location</source>
-        <translation type="obsolete">Importa vettore OGR/PostGIS e crea una location adatta</translation>
+        <translation>Importa vettore OGR/PostGIS e crea una location adatta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
         <source>Import SPOT VGT NDVI</source>
-        <translation type="obsolete">Importa SPOT VGT NDVI</translation>
+        <translation>Importa SPOT VGT NDVI</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Import SRTM HGT</source>
-        <translation type="obsolete">Importa SRTM HGT</translation>
+        <translation>Importa SRTM HGT</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
-        <translation type="obsolete">Importa file dei Paesi US-NGA GEOnet Names Server (GNS)</translation>
+        <translation>Importa file dei Paesi US-NGA GEOnet Names Server (GNS)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
-        <translation type="obsolete">Importa tutti i vettori OGR/PostGIS di una sorgente dati e crea una location adatta</translation>
+        <translation>Importa tutti i vettori OGR/PostGIS di una sorgente dati e crea una location adatta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
         <source>Import attribute tables in various formats</source>
-        <translation type="obsolete">Importa tabelle attributi di vari formati</translation>
+        <translation>Importa tabelle attributi di vari formati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
         <source>Import binary MAT-File(v4)</source>
-        <translation type="obsolete">Importa file binario MAT-File(v4)</translation>
+        <translation>Importa file binario MAT-File(v4)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Import binary raster</source>
-        <translation type="obsolete">Importa raster binario</translation>
+        <translation>Importa raster binario</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
         <source>Import geonames.org country files</source>
-        <translation type="obsolete">Importa file dei paesi da geonames.org</translation>
+        <translation>Importa file dei paesi da geonames.org</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import loaded raster</source>
-        <translation type="obsolete">Importa raster caricato</translation>
+        <translation>Importa raster caricato</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import loaded raster and create a fitted location</source>
-        <translation type="obsolete">Importa raster caricato e crea una location adatta</translation>
+        <translation>Importa raster caricato e crea una location adatta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
         <source>Import loaded vector</source>
-        <translation type="obsolete">Importa vettore caricato</translation>
+        <translation>Importa vettore caricato</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
         <source>Import loaded vector and create a fitted location</source>
-        <translation type="obsolete">Importa vettore caricato e crea una location adatta</translation>
+        <translation>Importa vettore caricato e crea una location adatta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import loaded vector selecting some features</source>
-        <translation type="obsolete">Importa vettore caricato selezionando alcuni elementi</translation>
+        <translation>Importa vettore caricato selezionando alcuni elementi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
         <source>Import only some layers of a DXF vector</source>
-        <translation type="obsolete">Importa soltanto alcuni layer di un vettore DXF</translation>
+        <translation>Importa soltanto alcuni layer di un vettore DXF</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
         <source>Import raster</source>
-        <translation type="obsolete">Importa raster</translation>
+        <translation>Importa raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
         <source>Import raster from ASCII polygon/line</source>
-        <translation type="obsolete">Importa raster da linea/poligono ASCII</translation>
+        <translation>Importa raster da linea/poligono ASCII</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
         <source>Import raster from coordinates using univariate statistics</source>
-        <translation type="obsolete">Importa raster da coordinate mediante statistiche univariate</translation>
+        <translation>Importa raster da coordinate mediante statistiche univariate</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
         <source>Import vector</source>
-        <translation type="obsolete">Importa vettore</translation>
+        <translation>Importa vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import vector from gps using gpsbabel</source>
-        <translation type="obsolete">Importa vettore da dispositivo gps mediante gpsbabel</translation>
+        <translation>Importa vettore da dispositivo gps mediante gpsbabel</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import vector from gps using gpstrans</source>
-        <translation type="obsolete">Importa vettore da dispositivo gps mediante gpstrans</translation>
+        <translation>Importa vettore da dispositivo gps mediante gpstrans</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import vector points from database table containing coordinates</source>
-        <translation type="obsolete">Importa punti vettoriali da una tabella di database contenente le coordinate</translation>
+        <translation>Importa punti vettoriali da una tabella di database contenente le coordinate</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
         <source>Input nodes</source>
-        <translation type="obsolete">Nodi di input</translation>
+        <translation>Nodi di input</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
         <source>Input table</source>
-        <translation type="obsolete">Tabella di input</translation>
+        <translation>Tabella di input</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
         <source>Interpolate surface</source>
-        <translation type="obsolete">Superficie di interpolazione</translation>
+        <translation>Superficie di interpolazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Inverse distance squared weighting raster interpolation</source>
-        <translation type="obsolete">Interpolazione raster con l&apos;inverso della distanza quadratica</translation>
+        <translation>Interpolazione raster con l&apos;inverso della distanza quadratica</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
-        <translation type="obsolete">Interpolazione raster con l&apos;inverso della distanza quadratica utilizzando un vettoriale di punti</translation>
+        <translation>Interpolazione raster con l&apos;inverso della distanza quadratica utilizzando un vettoriale di punti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation type="obsolete">Trasformazione inversa fast Fourier per il processamento dell&apos;immagine</translation>
+        <translation>Trasformazione inversa fast Fourier per il processamento dell&apos;immagine</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Join table to existing vector table</source>
-        <translation type="obsolete">Unisci la tabella alla tabella di un vettore esistente</translation>
+        <translation>Unisci la tabella alla tabella di un vettore esistente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
         <source>Layers categories management</source>
-        <translation type="obsolete">Gestione categorie dei layer</translation>
+        <translation>Gestione categorie dei layer</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Line-of-sight raster analysis</source>
-        <translation type="obsolete">Analisi raster di intervisibilità (line of sight)</translation>
+        <translation>Analisi raster di intervisibilità (line of sight)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation type="obsolete">Collega un raster GDAL ad un raster GRASS</translation>
+        <translation>Collega un raster GDAL ad un raster GRASS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Link GDAL supported raster to binary raster</source>
-        <translation type="obsolete">Collega un layer raster GDAL ad un raster GRASS</translation>
+        <translation>Collega un layer raster GDAL ad un raster GRASS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation type="obsolete">Collega tutti i raster GDAL di una cartella ai raster GRASS</translation>
+        <translation>Collega tutti i raster GDAL di una cartella ai raster GRASS</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
         <translatorcomment>contorto. in inglese riesce a essere compatto. Miglioramenti sono benvenuti.</translatorcomment>
-        <translation type="obsolete">Assegna a ogni cella di output la funzione dei valori delle corrispondenti celle dei raster in input</translation>
+        <translation>Assegna a ogni cella di output la funzione dei valori delle corrispondenti celle dei raster in input</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
         <source>Manage features</source>
-        <translation type="obsolete">Gestisci elementi</translation>
+        <translation>Gestisci elementi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
         <source>Manage image colors</source>
-        <translation type="obsolete">Gestisci colori immagine</translation>
+        <translation>Gestisci colori immagine</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Manage map colors</source>
-        <translation type="obsolete">Gestisci colori della mappa</translation>
+        <translation>Gestisci colori della mappa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Manage raster cells value</source>
-        <translation type="obsolete">Gestisci valori delle celle del raster</translation>
+        <translation>Gestisci valori delle celle del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Manage training dataset</source>
-        <translation type="obsolete">Gestisci i dati di prova</translation>
+        <translation>Gestisci i dati di prova</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
         <source>Map algebra</source>
-        <translation type="obsolete">Map algebra</translation>
+        <translation>Map algebra</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
         <source>Map type conversion</source>
-        <translation type="obsolete">Conversione fra tipi di mappa</translation>
+        <translation>Conversione fra tipi di mappa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
         <source>MapGen or MatLab vector layer</source>
-        <translation type="obsolete">Vettore MapGen o MapLab</translation>
+        <translation>Vettore MapGen o MapLab</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
         <source>Mask</source>
-        <translation type="obsolete">Mask</translation>
+        <translation>Mask</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
         <source>Metadata support</source>
-        <translation type="obsolete">Supporto ai metadati</translation>
+        <translation>Supporto ai metadati</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
         <source>Mosaic up to 4 images</source>
-        <translation type="obsolete">Mosaico fino a 4 immagini</translation>
+        <translation>Mosaico fino a 4 immagini</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
         <source>Name for new raster file (specify file extension)</source>
-        <translation type="obsolete">Nome per il nuovo file raster (specifica l&apos;estensione del file)</translation>
+        <translation>Nome per il nuovo file raster (specifica l&apos;estensione del file)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
         <source>Name for new vector file (specify file extension)</source>
-        <translation type="obsolete">Nome per il nuovo vettore (specifica l&apos;estensione del file)</translation>
+        <translation>Nome per il nuovo vettore (specifica l&apos;estensione del file)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
         <source>Name of the table to create</source>
-        <translation type="obsolete">Nome della tabella da creare</translation>
+        <translation>Nome della tabella da creare</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
         <source>Neighborhood analysis</source>
-        <translation type="obsolete">Analisi dei vicini</translation>
+        <translation>Analisi dei vicini</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
         <source>Network analysis</source>
-        <translation type="obsolete">Analisi di reti</translation>
+        <translation>Analisi di reti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
         <source>Network maintenance</source>
-        <translation type="obsolete">Manutenzione grafo (network)</translation>
+        <translation>Manutenzione grafo (network)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
         <source>OGR file</source>
-        <translation type="obsolete">File OGR</translation>
+        <translation>File OGR</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>OGR vector layer</source>
-        <translation type="obsolete">Vettore OGR</translation>
+        <translation>Vettore OGR</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
         <source>Others</source>
-        <translation type="obsolete">Altri</translation>
+        <translation>Altri</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
         <source>Output GML file</source>
-        <translation type="obsolete">File GML di output</translation>
+        <translation>File GML di output</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Output Shapefile</source>
-        <translation type="obsolete">Shapefile in output</translation>
+        <translation>Shapefile in output</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
         <source>Output layer name (used in GML file)</source>
-        <translation type="obsolete">Nome del layer in output (usato nel file GML)</translation>
+        <translation>Nome del layer in output (usato nel file GML)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
         <source>Output raster values along user-defined transect line(s)</source>
-        <translation type="obsolete">Valori del raster in output lungo uno o più transetti lineari definiti dall&apos;utente</translation>
+        <translation>Valori del raster in output lungo uno o più transetti lineari definiti dall&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
         <source>Overlay</source>
-        <translation type="obsolete">Sovrapposizione</translation>
+        <translation>Sovrapposizione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
         <source>Overlay maps</source>
-        <translation type="obsolete">Mappe di sovrapposizione</translation>
+        <translation>Mappe di sovrapposizione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
         <source>Path to the OGR data source</source>
-        <translation type="obsolete">Percorso alla sorgente dati OGR</translation>
+        <translation>Percorso alla sorgente dati OGR</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
         <source>Percentage of first layer (0-99)</source>
-        <translation type="obsolete">Percentuale del primo layer (0-99)</translation>
+        <translation>Percentuale del primo layer (0-99)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation type="obsolete">Esegue una trasformazione affine (spostamento, scalatura e rotazione, o con GCP) su un vettore</translation>
+        <translation>Esegue una trasformazione affine (spostamento, scalatura e rotazione, o con GCP) su un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
         <source>Print projection information from a georeferenced file</source>
-        <translation type="obsolete">Stampa le informazioni di proiezione da un file georeferenziato</translation>
+        <translation>Stampa le informazioni di proiezione da un file georeferenziato</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation type="obsolete">Stampa le informazioni di proiezione da un file georeferenziato e crea una nuova location adatta</translation>
+        <translation>Stampa le informazioni di proiezione da un file georeferenziato e crea una nuova location adatta</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
         <source>Print projection information of the current location</source>
-        <translation type="obsolete">Stampa le informazioni di proiezione della location attuale</translation>
+        <translation>Stampa le informazioni di proiezione della location attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Projection conversion of vector</source>
-        <translation type="obsolete">Riproietta un vettore da una location alla location attuale</translation>
+        <translation>Riproietta un vettore da una location alla location attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
         <source>Projection management</source>
-        <translation type="obsolete">Gestione delle proiezioni</translation>
+        <translation>Gestione delle proiezioni</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
         <source>Put geometry variables in database</source>
-        <translation type="obsolete">Inserisce le variabili geometriche in database</translation>
+        <translation>Inserisce le variabili geometriche in database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
         <source>Query rasters on their category values and labels</source>
-        <translation type="obsolete">Interrogazione di raster in base alle categorie e alle etichette</translation>
+        <translation>Interrogazione di raster in base alle categorie e alle etichette</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
         <source>Random location perturbations of vector points</source>
-        <translation type="obsolete">Perturbazione casuale della posizione di punti vettoriali</translation>
+        <translation>Perturbazione casuale della posizione di punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
         <source>Randomly partition points into test/train sets</source>
         <translatorcomment>train == allenamento, ma non convince.</translatorcomment>
-        <translation type="obsolete">Suddivide casualmente i punti in sottogruppi per verifica/training</translation>
+        <translation>Suddivide casualmente i punti in sottogruppi per verifica/training</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
         <source>Raster</source>
-        <translation type="obsolete">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
         <source>Raster buffer</source>
-        <translation type="obsolete">Buffer raster</translation>
+        <translation>Buffer raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
         <source>Raster file matrix filter</source>
-        <translation type="obsolete">Filtro di matrice raster</translation>
+        <translation>Filtro di matrice raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
         <source>Raster neighbours analysis</source>
-        <translation type="obsolete">Analisi raster dei punti vicini</translation>
+        <translation>Analisi raster dei punti vicini</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Raster support</source>
-        <translation type="obsolete">Supporto ai raster</translation>
+        <translation>Supporto ai raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
         <source>Re-project raster from a location to the current location</source>
-        <translation type="obsolete">Riproietta un raster da una location alla location attuale</translation>
+        <translation>Riproietta un raster da una location alla location attuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation type="obsolete">Ricostruisce la topologia per tutti i vettori nel mapset</translation>
+        <translation>Ricostruisce la topologia per tutti i vettori nel mapset</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Recategorize contiguous cells to unique categories</source>
-        <translation type="obsolete">Ricategorizza celle contigue a categoria unica</translation>
+        <translation>Ricategorizza celle contigue a categoria unica</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
         <source>Reclass category values</source>
-        <translation type="obsolete">Riclassifica i valori delle categorie</translation>
+        <translation>Riclassifica i valori delle categorie</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Reclass category values using a column attribute (integer positive)</source>
-        <translation type="obsolete">Riclassifica i valori di categoria in base ad un attributo (intero positivo)</translation>
+        <translation>Riclassifica i valori di categoria in base ad un attributo (intero positivo)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
         <source>Reclass category values using a rules file</source>
-        <translation type="obsolete">Riclassifica i valori di categoria in base ad un file di regole</translation>
+        <translation>Riclassifica i valori di categoria in base ad un file di regole</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
         <source>Reclass raster using reclassification rules</source>
-        <translation type="obsolete">Riclassifica un raster mediante regole di riclassificazione</translation>
+        <translation>Riclassifica un raster mediante regole di riclassificazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation type="obsolete">Riclassifica un raster con aree più grandi dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster con aree più grandi dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation type="obsolete">Riclassifica un raster con aree più piccoli dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster con aree più piccoli dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
-        <translation type="obsolete">Riclassifica un raster maggiore o minore dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster maggiore o minore dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
         <source>Recode categorical raster using reclassification rules</source>
-        <translation type="obsolete">Ricodifica categorica di un raster mediante regole di classificazione</translation>
+        <translation>Ricodifica categorica di un raster mediante regole di classificazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
         <source>Recode raster</source>
-        <translation type="obsolete">Ricodifica raster</translation>
+        <translation>Ricodifica raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Reconnect vector to a new database</source>
-        <translation type="obsolete">Riconnette un vettore ad un nuovo database</translation>
+        <translation>Riconnette un vettore ad un nuovo database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
         <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
-        <translation type="obsolete">Funzione di trasformazione dei colori di un raster da Red Green Blue (RGB) a Hue Intensity Saturation (HIS)</translation>
+        <translation>Funzione di trasformazione dei colori di un raster da Red Green Blue (RGB) a Hue Intensity Saturation (HIS)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
         <source>Region</source>
-        <translation type="obsolete">Region</translation>
+        <translation>Region</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
         <source>Region settings</source>
-        <translation type="obsolete">Impostazioni della region</translation>
+        <translation>Impostazioni della region</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
-        <translation type="obsolete">Interpolazione spline regolarizzata con tensione di un raster basata su punti vettoriali</translation>
+        <translation>Interpolazione spline regolarizzata con tensione di un raster basata su punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation type="obsolete">Re-interpolazione e calcolo di analisi topografica mediante spline regolarizzata con tensione e appiattimento</translation>
+        <translation>Re-interpolazione e calcolo di analisi topografica mediante spline regolarizzata con tensione e appiattimento</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
         <source>Remove all lines or boundaries of zero length</source>
-        <translation type="obsolete">Rimuove tutte le linee o i contorni di lunghezza nulla</translation>
+        <translation>Rimuove tutte le linee o i contorni di lunghezza nulla</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Remove bridges connecting area and island or 2 islands</source>
-        <translation type="obsolete">Rimuovi punti di connessione tra area e isola o 2 isole</translation>
+        <translation>Rimuovi punti di connessione tra area e isola o 2 isole</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Remove dangles</source>
-        <translation type="obsolete">Rimuovi nodi appesi</translation>
+        <translation>Rimuovi nodi appesi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
         <source>Remove duplicate area centroids</source>
-        <translation type="obsolete">Rimuove centroidi duplicati di un&apos;area</translation>
+        <translation>Rimuove centroidi duplicati di un&apos;area</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
         <source>Remove duplicate lines (pay attention to categories!)</source>
-        <translation type="obsolete">Rimuove linee duplicate (attenzione alle categorie!)</translation>
+        <translation>Rimuove linee duplicate (attenzione alle categorie!)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
         <source>Remove existing attribute table of vector</source>
-        <translation type="obsolete">Rimuove la tabella attributi esistente di un vettore</translation>
+        <translation>Rimuove la tabella attributi esistente di un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
         <source>Remove outliers from vector point data</source>
-        <translation type="obsolete">Rimuove i valori anomali dai dati un vettore puntuale</translation>
+        <translation>Rimuove i valori anomali dai dati un vettore puntuale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
         <source>Remove small angles between lines at nodes</source>
-        <translation type="obsolete">Rimuovi piccoli angoli tra linee e nodi</translation>
+        <translation>Rimuovi piccoli angoli tra linee e nodi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="obsolete">Rimuovi piccole aree, viene rimosso il contorno più lungo con area adiacente</translation>
+        <translation>Rimuovi piccole aree, viene rimosso il contorno più lungo con area adiacente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="obsolete">Rimuovi i vertici sotto una certa soglia di tolleranza da linee e contorni, il contorno viene tagliato solo se la topologia non è danneggiata (nuove intersezioni, attachement cambiato), il primo e l&apos;ultimo segmento del contorno non viene mai cambiato</translation>
+        <translation>Rimuovi i vertici sotto una certa soglia di tolleranza da linee e contorni, il contorno viene tagliato solo se la topologia non è danneggiata (nuove intersezioni, attachement cambiato), il primo e l&apos;ultimo segmento del contorno non viene mai cambiato</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
         <source>Rename column in attribute table</source>
-        <translation type="obsolete">Rinomina colonna della tabella degli attributi</translation>
+        <translation>Rinomina colonna della tabella degli attributi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
         <source>Report and statistics</source>
-        <translation type="obsolete">Report e statistiche</translation>
+        <translation>Report e statistiche</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
         <source>Reports</source>
-        <translation type="obsolete">Report</translation>
+        <translation>Report</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
         <source>Reports and statistics</source>
-        <translation type="obsolete">Report e statistiche</translation>
+        <translation>Report e statistiche</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
         <source>Reproject raster from another Location</source>
-        <translation type="obsolete">Riproietta un raster da un&apos;altra location</translation>
+        <translation>Riproietta un raster da un&apos;altra location</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Reproject vector from another Location</source>
-        <translation type="obsolete">Riproietta un vettore da un&apos;altra location</translation>
+        <translation>Riproietta un vettore da un&apos;altra location</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
         <source>Resample raster using aggregation</source>
-        <translation type="obsolete">Ricampiona un raster mediante aggregazione</translation>
+        <translation>Ricampiona un raster mediante aggregazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
         <source>Resample raster using interpolation</source>
-        <translation type="obsolete">Ricampiona un raster mediante interpolazione</translation>
+        <translation>Ricampiona un raster mediante interpolazione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
         <source>Resample raster. Set new resolution first</source>
-        <translation type="obsolete">Ricampiona un raster. Impostare prima la nuova risoluzione</translation>
+        <translation>Ricampiona un raster. Impostare prima la nuova risoluzione</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Rescale the range of category values in raster</source>
-        <translation type="obsolete">Rigraduazione del range dei valori di categoria nel raster</translation>
+        <translation>Rigraduazione del range dei valori di categoria nel raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
         <source>Sample raster at site locations</source>
-        <translation type="obsolete">Campiona raster a determinate posizioni</translation>
+        <translation>Campiona raster a determinate posizioni</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
         <source>Save the current region as a named region</source>
-        <translation type="obsolete">Salva la region attuale con nome</translation>
+        <translation>Salva la region attuale con nome</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
         <source>Select features by attributes</source>
-        <translation type="obsolete">Estrai gli oggetti in base agli attributi</translation>
+        <translation>Estrai gli oggetti in base agli attributi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Select features overlapped by features in another map</source>
-        <translation type="obsolete">Estrai gli oggetti sovrapposti agli oggetti di un&apos;altra mappa</translation>
+        <translation>Estrai gli oggetti sovrapposti agli oggetti di un&apos;altra mappa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
         <source>Set PostgreSQL DB connection</source>
-        <translation type="obsolete">Imposta la connessione ad un DB PostgreSQL</translation>
+        <translation>Imposta la connessione ad un DB PostgreSQL</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
         <source>Set boundary definitions by edge (n-s-e-w)</source>
-        <translation type="obsolete">Imposta la definizione del contorno in base ai bordi (n-s-e-w)</translation>
+        <translation>Imposta la definizione del contorno in base ai bordi (n-s-e-w)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
         <source>Set boundary definitions for raster</source>
-        <translation type="obsolete">Imposta la definizione del contorno per un raster</translation>
+        <translation>Imposta la definizione del contorno per un raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
         <source>Set boundary definitions from raster</source>
-        <translation type="obsolete">Imposta la definizione del contorno da un raster</translation>
+        <translation>Imposta la definizione del contorno da un raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
         <source>Set boundary definitions from vector</source>
-        <translation type="obsolete">Imposta la definizione del contorno da un vettore</translation>
+        <translation>Imposta la definizione del contorno da un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
         <source>Set boundary definitions to current or default region</source>
-        <translation type="obsolete">Imposta la definizione del contorno alla region attuale o alla region di default</translation>
+        <translation>Imposta la definizione del contorno alla region attuale o alla region di default</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
         <source>Set color rules based on stddev from a map&apos;s mean value</source>
-        <translation type="obsolete">Imposta le regole di colore basate su deviazione standard in base al valore medio di una mappa</translation>
+        <translation>Imposta le regole di colore basate su deviazione standard in base al valore medio di una mappa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
         <source>Set general DB connection</source>
-        <translation type="obsolete">Impostazioni generali di connessione al DB</translation>
+        <translation>Impostazioni generali di connessione al DB</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Set general DB connection with a schema (PostgreSQL only)</source>
-        <translation type="obsolete">Impostazioni generali di connessione al DB con uno schema (solo per PostgreSQL)</translation>
+        <translation>Impostazioni generali di connessione al DB con uno schema (solo per PostgreSQL)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
         <source>Set raster color table</source>
-        <translation type="obsolete">Imposta tabella colori del raster</translation>
+        <translation>Imposta tabella colori del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
         <source>Set raster color table from existing raster</source>
-        <translation type="obsolete">Imposta tabella colori da un raster esistente</translation>
+        <translation>Imposta tabella colori da un raster esistente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
         <source>Set raster color table from setted tables</source>
-        <translation type="obsolete">Imposta tabella colori da tabelle impostate</translation>
+        <translation>Imposta tabella colori da tabelle impostate</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
         <source>Set raster color table from user-defined rules</source>
-        <translation type="obsolete">Imposta tabella colori da impostazioni dell&apos;utente</translation>
+        <translation>Imposta tabella colori da impostazioni dell&apos;utente</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
         <source>Set region to align to raster</source>
-        <translation type="obsolete">Imposta la region in base al raster</translation>
+        <translation>Imposta la region in base al raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
         <source>Set the region to match multiple rasters</source>
-        <translation type="obsolete">Imposta la region in base a più raster</translation>
+        <translation>Imposta la region in base a più raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
         <source>Set the region to match multiple vectors</source>
-        <translation type="obsolete">Imposta la region in base a più vettori</translation>
+        <translation>Imposta la region in base a più vettori</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
         <source>Set user/password for driver/database</source>
-        <translation type="obsolete">Imposta utente/password per il driver/database</translation>
+        <translation>Imposta utente/password per il driver/database</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
         <source>Sets the boundary definitions for a raster map</source>
-        <translation type="obsolete">Definisce le impostazioni del contorno (boundary) per una mappa raster</translation>
+        <translation>Definisce le impostazioni del contorno (boundary) per una mappa raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Show database connection for vector</source>
-        <translation type="obsolete">Mostra la connessione al database per il vettore</translation>
+        <translation>Mostra la connessione al database per il vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
         <source>Shrink current region until it meets non-NULL data from raster</source>
-        <translation type="obsolete">Riduci la regione corrente fino a che coincide con le celle non nulle del raster</translation>
+        <translation>Riduci la regione corrente fino a che coincide con le celle non nulle del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
         <source>Simple map algebra</source>
-        <translation type="obsolete">Map algebra semplice</translation>
+        <translation>Map algebra semplice</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
         <source>Simplify vector</source>
-        <translation type="obsolete">Semplifica vettore</translation>
+        <translation>Semplifica vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Snap lines to vertex in threshold</source>
-        <translation type="obsolete">Aggancia le linee al vertice all&apos;interno della soglia</translation>
+        <translation>Aggancia le linee al vertice all&apos;interno della soglia</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
         <source>Solar and irradiation model</source>
-        <translation type="obsolete">Modello di irradiazione solare</translation>
+        <translation>Modello di irradiazione solare</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
         <source>Spatial analysis</source>
-        <translation type="obsolete">Analisi spaziali</translation>
+        <translation>Analisi spaziali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
         <source>Spatial models</source>
-        <translation type="obsolete">Modelli spaziali</translation>
+        <translation>Modelli spaziali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
         <source>Split lines to shorter segments</source>
-        <translation type="obsolete">Spezza linee in segmenti più piccoli</translation>
+        <translation>Spezza linee in segmenti più piccoli</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
         <source>Statistics</source>
-        <translation type="obsolete">Statistiche</translation>
+        <translation>Statistiche</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
         <source>Sum raster cell values</source>
-        <translation type="obsolete">Somma di valori delle celle raster</translation>
+        <translation>Somma di valori delle celle raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
         <source>Surface management</source>
-        <translation type="obsolete">Gestione superficie</translation>
+        <translation>Gestione superficie</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
         <source>Tables management</source>
-        <translation type="obsolete">Gestione tabelle</translation>
+        <translation>Gestione tabelle</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="obsolete">Tabula le coincidenze delle categorie di due raster</translation>
+        <translation>Tabula le coincidenze delle categorie di due raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="obsolete">Prende dati vettoriali di flusso, li converte a raster e sottrae la profondità dal DEM in output</translation>
+        <translation>Prende dati vettoriali di flusso, li converte a raster e sottrae la profondità dal DEM in output</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
-        <translation type="obsolete">Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 4</translation>
+        <translation>Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 4</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
-        <translation type="obsolete">Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 5</translation>
+        <translation>Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 5</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
-        <translation type="obsolete">Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 7</translation>
+        <translation>Trasformazione Tasseled Cap (Kauth Thomas) per raster LANDSAT-TM 7</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
         <source>Tassled cap vegetation index</source>
-        <translation type="obsolete">Indice di vegetazione tasseled cap</translation>
+        <translation>Indice di vegetazione tasseled cap</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
         <source>Terrain analysis</source>
-        <translation type="obsolete">Analisi del terreno</translation>
+        <translation>Analisi del terreno</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
         <source>Tests of normality on vector points</source>
-        <translation type="obsolete">Test di normalità su punti vettoriali</translation>
+        <translation>Test di normalità su punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
         <source>Text file</source>
-        <translation type="obsolete">File di testo</translation>
+        <translation>File di testo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
         <source>Thin no-zero cells that denote line features</source>
-        <translation type="obsolete">Affina le celle non-zero che delineano elementi lineari</translation>
+        <translation>Affina le celle non-zero che delineano elementi lineari</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
         <source>Toolset for cleaning topology of vector map</source>
-        <translation type="obsolete">Strumenti per la pulizia topologica di un vettore</translation>
+        <translation>Strumenti per la pulizia topologica di un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
         <source>Topology management</source>
-        <translation type="obsolete">Gestione topologia</translation>
+        <translation>Gestione topologia</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Trace a flow through an elevation model</source>
-        <translation type="obsolete">Traccia un flusso su un modello altitudinale</translation>
+        <translation>Traccia un flusso su un modello altitudinale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
         <source>Transform cells with value in null cells</source>
-        <translation type="obsolete">Trasforma celle con valore in celle con valore nullo</translation>
+        <translation>Trasforma celle con valore in celle con valore nullo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
         <source>Transform features</source>
-        <translation type="obsolete">Trasforma elementi</translation>
+        <translation>Trasforma elementi</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
         <source>Transform image</source>
-        <translation type="obsolete">Trasforma immagine</translation>
+        <translation>Trasforma immagine</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
         <source>Transform null cells in value cells</source>
-        <translation type="obsolete">Trasforma celle di valore nullo in celle con valore</translation>
+        <translation>Trasforma celle di valore nullo in celle con valore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
         <source>Transform value cells in null cells</source>
-        <translation type="obsolete">Trasforma celle con valore in celle con valore nullo</translation>
+        <translation>Trasforma celle con valore in celle con valore nullo</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
         <source>Type in map names separated by a comma</source>
-        <translation type="obsolete">Inserisci i nomi delle mappe separati da virgole</translation>
+        <translation>Inserisci i nomi delle mappe separati da virgole</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
         <source>Update raster statistics</source>
-        <translation type="obsolete">Aggiorna statistiche del raster</translation>
+        <translation>Aggiorna statistiche del raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
         <source>Update vector map metadata</source>
-        <translation type="obsolete">Aggiorna i metadati di un vettore</translation>
+        <translation>Aggiorna i metadati di un vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
         <source>Upload raster values at positions of vector points to the table</source>
-        <translation type="obsolete">Inserisci nella tabella i valori del raster in corrispondenza di punti vettoriali</translation>
+        <translation>Inserisci nella tabella i valori del raster in corrispondenza di punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
         <source>Upload vector values at positions of vector points</source>
-        <translation type="obsolete">Inserisci i valori del vettore in corrispondenza di punti vettoriali</translation>
+        <translation>Inserisci i valori del vettore in corrispondenza di punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Vector</source>
-        <translation type="obsolete">Vettore</translation>
+        <translation>Vettore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Vector buffer</source>
-        <translation type="obsolete">Buffer vettoriale</translation>
+        <translation>Buffer vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
         <source>Vector geometry analysis</source>
-        <translation type="obsolete">Analisi geometrica vettoriale</translation>
+        <translation>Analisi geometrica vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
         <source>Vector intersection</source>
-        <translation type="obsolete">Intersezione vettoriale</translation>
+        <translation>Intersezione vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
         <source>Vector non-intersection</source>
-        <translation type="obsolete">Non-intersezione vettoriale</translation>
+        <translation>Non-intersezione vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
         <source>Vector subtraction</source>
-        <translation type="obsolete">Sottrazione vettoriale</translation>
+        <translation>Sottrazione vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
         <source>Vector union</source>
-        <translation type="obsolete">Unione vettoriale</translation>
+        <translation>Unione vettoriale</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Vector update by other maps</source>
-        <translation type="obsolete">Aggiornamento di un vettore da altre mappe</translation>
+        <translation>Aggiornamento di un vettore da altre mappe</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
         <source>Visibility graph construction</source>
-        <translation type="obsolete">Costruzione del grafico di visibilità</translation>
+        <translation>Costruzione del grafico di visibilità</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
         <source>Voronoi diagram (area)</source>
-        <translation type="obsolete">Diagramma di Voronoi (aree)</translation>
+        <translation>Diagramma di Voronoi (aree)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
         <source>Voronoi diagram (lines)</source>
-        <translation type="obsolete">Diagramma di Voronoi (linee)</translation>
+        <translation>Diagramma di Voronoi (linee)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
         <source>Watershed Analysis</source>
-        <translation type="obsolete">Analisi bacino idrografico</translation>
+        <translation>Analisi bacino idrografico</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Work with vector points</source>
-        <translation type="obsolete">Lavora con punti vettoriali</translation>
+        <translation>Lavora con punti vettoriali</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
         <source>Write only features link to a record</source>
-        <translation type="obsolete">Scrivi soltanto gli elementi collegati ad un record</translation>
+        <translation>Scrivi soltanto gli elementi collegati ad un record</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="obsolete">Funzione zero-crossing di rilevamento dei bordi nel raster per l&apos;analisi di immagine</translation>
-    </message>
-</context>
-<context>
-    <name>pluginname</name>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="73"/>
-        <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
-        <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="80"/>
-        <source>&amp;[menuname]</source>
-        <translation type="unfinished"></translation>
+        <translation>Funzione zero-crossing di rilevamento dei bordi nel raster per l&apos;analisi di immagine</translation>
     </message>
 </context>
 <context>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="obsolete">Lung. Max:</translation>
+        <translation>Lung. Max:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="obsolete">Lung. min:</translation>
+        <translation>Lung. min:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="obsolete">Lung. media:</translation>
+        <translation>Lung. media:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="obsolete">Riempito:</translation>
+        <translation>Riempito:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="obsolete">Vuoto:</translation>
+        <translation>Vuoto:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="obsolete">N:</translation>
+        <translation>N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="obsolete">Media:</translation>
+        <translation>Media:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="obsolete">Dev. Std.:</translation>
+        <translation>Dev. Std.:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="obsolete">Somma:</translation>
+        <translation>Somma:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="obsolete">Min:</translation>
+        <translation>Min:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="obsolete">Max:</translation>
+        <translation>Max:</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="obsolete">CV:</translation>
+        <translation>CV:</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="obsolete">Numero di valori univoci:</translation>
+        <translation>Numero di valori univoci:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="obsolete">Intervallo:</translation>
+        <translation>Intervallo:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="obsolete">Mediana:</translation>
+        <translation>Mediana:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="obsolete">Distanza media osservata:</translation>
+        <translation>Distanza media osservata:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="obsolete">Distanza media attesa:</translation>
+        <translation>Distanza media attesa:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="obsolete">Indice vicino più prossimo:</translation>
+        <translation>Indice vicino più prossimo:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="obsolete">Z-Score:</translation>
+        <translation>Z-Score:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">La geometria %1 contiene un buco non annidato</translation>
+        <translation>La geometria %1 contiene un buco non annidato</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">La geometria %1 non è chiusa</translation>
+        <translation>La geometria %1 non è chiusa</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">La geometria %1 interseca se stessa</translation>
+        <translation>La geometria %1 interseca se stessa</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">La geometria %1 ha un ordine di vertici non corretto</translation>
+        <translation>La geometria %1 ha un ordine di vertici non corretto</translation>
     </message>
 </context>
 </TS>

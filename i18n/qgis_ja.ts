@@ -453,15 +453,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">ベクタレイヤの分割</translation>
+        <translation>ベクタレイヤの分割</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">サブセットのランダム選択</translation>
+        <translation>サブセットのランダム選択</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">場所で属性を結合する</translation>
+        <translation>場所で属性を結合する</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="49"/>
@@ -684,35 +684,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">ランダム選択</translation>
+        <translation>ランダム選択</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">距離マトリックス</translation>
+        <translation>距離マトリックス</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">出力shapefileを指定してください</translation>
+        <translation>出力shapefileを指定してください</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">新しい投影法へエクスポートする</translation>
+        <translation>新しい投影法へエクスポートする</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">現在の投影法を定義する</translation>
+        <translation>現在の投影法を定義する</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">ベクタグリッド</translation>
+        <translation>ベクタグリッド</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">場所による選択</translation>
+        <translation>場所による選択</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">線長の合計</translation>
+        <translation>線長の合計</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -721,7 +721,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">属性を結合する</translation>
+        <translation>属性を結合する</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
@@ -765,7 +765,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">ラインの交差</translation>
+        <translation>ラインの交差</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="14"/>
@@ -885,168 +885,168 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="obsolete">入力ラインレイヤを指定してください</translation>
+        <translation>入力ラインレイヤを指定してください</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="obsolete">交差判定に利用するレイヤを指定して下さい</translation>
+        <translation>交差判定に利用するレイヤを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="obsolete">入力ユニークIDフィールドを指定して下さい</translation>
+        <translation>入力ユニークIDフィールドを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="obsolete">交差ユニークIDフィールドを指定して下さい</translation>
+        <translation>交差ユニークIDフィールドを指定して下さい</translation>
     </message>
     <message>
         <source>Created output point shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">以下の出力ポイントshapefileが作成されました:
+        <translation>以下の出力ポイントshapefileが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="obsolete">入力レイヤが指定されていません</translation>
+        <translation>入力レイヤが指定されていません</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="obsolete">空間参照系を指定してください</translation>
+        <translation>空間参照系を指定してください</translation>
     </message>
     <message>
         <source>Created projected shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">以下の投影されたshapefileが作成されました:
+        <translation>以下の投影されたshapefileが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="obsolete">出力空間参照システム選択:</translation>
+        <translation>出力空間参照システム選択:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="obsolete">出力レイヤに指定する投影法を選択して下さい.</translation>
+        <translation>出力レイヤに指定する投影法を選択して下さい.</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="obsolete">出力レイヤはカレントCRSから出力CRSに投影されます.</translation>
+        <translation>出力レイヤはカレントCRSから出力CRSに投影されます.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="obsolete">有効なCRSが選択されていません</translation>
+        <translation>有効なCRSが選択されていません</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="obsolete">出力空間参照システムが正しくないです</translation>
+        <translation>出力空間参照システムが正しくないです</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="obsolete">出力空間参照システムを選択して下さい</translation>
+        <translation>出力空間参照システムを選択して下さい</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="obsolete">作業対象ベクタレイヤを選択して下さい</translation>
+        <translation>作業対象ベクタレイヤを選択して下さい</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="obsolete">結合するベクタレイヤを選択して下さい</translation>
+        <translation>結合するベクタレイヤを選択して下さい</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="obsolete">出力は作成されません.
+        <translation>出力は作成されません.
 以下のフィールド名が10文字より長いです:
 %1</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
-        <translation type="obsolete">結合する対象フィールドを選択して下さい</translation>
+        <translation>結合する対象フィールドを選択して下さい</translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation type="obsolete">結合するフィールドを選択して下さい</translation>
+        <translation>結合するフィールドを選択して下さい</translation>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="obsolete">入力テーブルを選択して下さい</translation>
+        <translation>入力テーブルを選択して下さい</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">以下の出力shapefileが作成されました:
+        <translation>以下の出力shapefileが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
     <message>
         <source>Join Table</source>
-        <translation type="obsolete">テーブル結合</translation>
+        <translation>テーブル結合</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="obsolete">入力テーブルがありません</translation>
+        <translation>入力テーブルがありません</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="obsolete">結合されたフィールド</translation>
+        <translation>結合されたフィールド</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="obsolete">平均座標</translation>
+        <translation>平均座標</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="obsolete">標準的な距離</translation>
+        <translation>標準的な距離</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="obsolete">（オプショナル)ウェイトフィールド</translation>
+        <translation>（オプショナル)ウェイトフィールド</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="obsolete">（オプショナル)ユニークIDフィールド</translation>
+        <translation>（オプショナル)ユニークIDフィールド</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="obsolete">座標統計</translation>
+        <translation>座標統計</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="obsolete">入力ベクタレイヤが指定されていません</translation>
+        <translation>入力ベクタレイヤが指定されていません</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
-        <translation type="obsolete">集計方法を少なくとも１つは選択して下さい</translation>
+        <translation>集計方法を少なくとも１つは選択して下さい</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="obsolete">CRS警告!</translation>
+        <translation>CRS警告!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="obsolete">警告:入力レイヤには該当する空間参照システムがありません.
+        <translation>警告:入力レイヤには該当する空間参照システムがありません.
 これは予想外の結果を引き起こします.</translation>
     </message>
     <message>
         <source>Summary field</source>
-        <translation type="obsolete">集計フィールド</translation>
+        <translation>集計フィールド</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation type="obsolete">領域の正しい座標値を指定して下さい</translation>
+        <translation>領域の正しい座標値を指定して下さい</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation type="obsolete">不正な領域座標数値が入力されました</translation>
+        <translation>不正な領域座標数値が入力されました</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
@@ -1055,185 +1055,185 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation type="obsolete">入力shapefileが指定されていません</translation>
+        <translation>入力shapefileが指定されていません</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation type="obsolete">PostGISデータにはまだ投影法が定義されていません!</translation>
+        <translation>PostGISデータにはまだ投影法が定義されていません!</translation>
     </message>
     <message>
         <source>Defined Projection For:
 %1.shp</source>
-        <translation type="obsolete">%1.shp用に
+        <translation>%1.shp用に
 定義された投影法</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="obsolete">カレントレイヤのための投影法を選択して下さい.</translation>
+        <translation>カレントレイヤのための投影法を選択して下さい.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="obsolete">レイヤの空間参照システム情報は選択された空間参照システムで更新されます.</translation>
+        <translation>レイヤの空間参照システム情報は選択された空間参照システムで更新されます.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation type="obsolete">以下のフォルダに出力shapefileが作成されました
+        <translation>以下のフォルダに出力shapefileが作成されました
 %1</translation>
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">新規選択中</translation>
+        <translation>新規選択中</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">現在の選択に追加しています</translation>
+        <translation>現在の選択に追加しています</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">現在の選択から除去しています</translation>
+        <translation>現在の選択から除去しています</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">中の地物を選択する:</translation>
+        <translation>中の地物を選択する:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">交差する地物が中にある:</translation>
+        <translation>交差する地物が中にある:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">現在選択中のものが修正される:</translation>
+        <translation>現在選択中のものが修正される:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">入力レイヤを選択して下さい</translation>
+        <translation>入力レイヤを選択して下さい</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">レイヤを選択して下さい</translation>
+        <translation>レイヤを選択して下さい</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
-        <translation type="obsolete">ポリゴンのライン延長合計</translation>
+        <translation>ポリゴンのライン延長合計</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="obsolete">入力ポイントベクタレイヤを指定して下さい</translation>
+        <translation>入力ポイントベクタレイヤを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="obsolete">入力ラインベクタレイヤを指定して下さい</translation>
+        <translation>入力ラインベクタレイヤを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation type="obsolete">出力延長フィールドを指定して下さい</translation>
+        <translation>出力延長フィールドを指定して下さい</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation type="obsolete">長さフィールド</translation>
+        <translation>長さフィールド</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">入力ベクタレイヤを指定してください</translation>
+        <translation>入力ベクタレイヤを指定してください</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
-        <translation type="obsolete">入力フィールドを指定してください</translation>
+        <translation>入力フィールドを指定してください</translation>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="obsolete">ランダム点群</translation>
+        <translation>ランダム点群</translation>
     </message>
     <message>
         <source>unstratified</source>
-        <translation type="obsolete">階層化されていない</translation>
+        <translation>階層化されていない</translation>
     </message>
     <message>
         <source>stratified</source>
-        <translation type="obsolete">階層化されていない</translation>
+        <translation>階層化されていない</translation>
     </message>
     <message>
         <source>density</source>
-        <translation type="obsolete">密度</translation>
+        <translation>密度</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="obsolete">フィールド</translation>
+        <translation>フィールド</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="obsolete">レイヤタイプが不明...</translation>
+        <translation>レイヤタイプが不明...</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">規則的な点群</translation>
+        <translation>規則的な点群</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
         <translatorcomment>properlyはpropertyかな？</translatorcomment>
-        <translation type="obsolete">領域の座標を指定して下さい</translation>
+        <translation>領域の座標を指定して下さい</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="obsolete">ポリゴン中の点の数を数える</translation>
+        <translation>ポリゴン中の点の数を数える</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="obsolete">ポリゴン中の点の数を数える</translation>
+        <translation>ポリゴン中の点の数を数える</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation type="obsolete">入力ポイントベクタレイヤを指定して下さい</translation>
+        <translation>入力ポイントベクタレイヤを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation type="obsolete">出力カウントフィールドを指定して下さい</translation>
+        <translation>出力カウントフィールドを指定して下さい</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="obsolete">ポイントカウントフィールド</translation>
+        <translation>ポイントカウントフィールド</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
-        <translation type="obsolete">ポイント距離行列の作成</translation>
+        <translation>ポイント距離行列の作成</translation>
     </message>
     <message>
         <source>Please specify input point layer</source>
-        <translation type="obsolete">入力ポイントレイヤを指定して下さい</translation>
+        <translation>入力ポイントレイヤを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify output file</source>
-        <translation type="obsolete">対象出力ファイルを指定してください</translation>
+        <translation>対象出力ファイルを指定してください</translation>
     </message>
     <message>
         <source>Please specify target point layer</source>
-        <translation type="obsolete">対象ポイントレイヤを指定してください</translation>
+        <translation>対象ポイントレイヤを指定してください</translation>
     </message>
     <message>
         <source>Please specify target unique ID field</source>
-        <translation type="obsolete">対象ユニークIDフィールドを指定してください</translation>
+        <translation>対象ユニークIDフィールドを指定してください</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">作成された出力行列:</translation>
+        <translation>作成された出力行列:</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">出力shapefileローディング中のエラー
+        <translation>出力shapefileローディング中のエラー
 %1</translation>
     </message>
     <message>
         <source>Unable to read input table!</source>
-        <translation type="obsolete">入力テーブルを読み込めません!</translation>
+        <translation>入力テーブルを読み込めません!</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="obsolete">選択された空間参照システムの識別情報出力です
+        <translation>選択された空間参照システムの識別情報出力です
 
 本当に実行しますか?</translation>
     </message>
@@ -1244,45 +1244,45 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="obsolete">フィールド名が不正です</translation>
+        <translation>フィールド名が不正です</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="obsolete">shapeファイル削除エラー</translation>
+        <translation>shapeファイル削除エラー</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="obsolete">shapeファイルを削除できません
+        <translation>shapeファイルを削除できません
 %1</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="obsolete">結合するshapeファイルがあるディレクトリを選択して下さい</translation>
+        <translation>結合するshapeファイルがあるディレクトリを選択して下さい</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="obsolete">shapeファイルがありません</translation>
+        <translation>shapeファイルがありません</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="obsolete">このディレクトリにはshapeファイルが存在しません.他のディレクトリを選択して下さい.</translation>
+        <translation>このディレクトリにはshapeファイルが存在しません.他のディレクトリを選択して下さい.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="obsolete">削除エラー</translation>
+        <translation>削除エラー</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="obsolete">ファイル%1を削除できません</translation>
+        <translation>ファイル%1を削除できません</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="obsolete">結合中</translation>
+        <translation>結合中</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
@@ -1338,7 +1338,7 @@ QGis developer and user communities
 Folks on #qgis at freenode.net
 All those who have reported bugs/fixes/suggestions/comments/etc.
 </source>
-        <translation type="obsolete">
+        <translation>
 fToolsの目的は多くの共通のベクターベースGISタスクのために追加ソフトウェアやライブラリ、または複雑な回避方法を利用しないでワンストップリソースを提供することです.
 
 fToolsはQGISのコア機能とpythonライブラリのみを利用したQuantumGISの拡張機能として設計されています.急速に機能が増えつつある空間データ管理と解析機能を提供しています.加えてDr. Horst Duester and Stefan Zieglerによるジオプロセッシング機能が併合されてGISベースの調査と解析がさらに効率的に利用できるようになりました.
@@ -1440,189 +1440,189 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <name>GdalTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Quantum　GISのバージョンが検出されました: </translation>
+        <translation>Quantum　GISのバージョンが検出されました: </translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">このバージョンのGdalツールはバージョン1.0.0以上のQGISが必要です
+        <translation>このバージョンのGdalツールはバージョン1.0.0以上のQGISが必要です
 プラグインは有効になりません.</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="obsolete">ラスタ(&amp;R)</translation>
+        <translation>ラスタ(&amp;R)</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation type="obsolete">仮想ラスタの構築(カタログ)</translation>
+        <translation>仮想ラスタの構築(カタログ)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="obsolete">データセットのリストからVRTを作成する</translation>
+        <translation>データセットのリストからVRTを作成する</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="obsolete">等高線</translation>
+        <translation>等高線</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="obsolete">DEMからベクタ等高線を作成する</translation>
+        <translation>DEMからベクタ等高線を作成する</translation>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="obsolete">ラスタ化</translation>
+        <translation>ラスタ化</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="obsolete">ベクタジオメトリをラスタに焼き付ける</translation>
+        <translation>ベクタジオメトリをラスタに焼き付ける</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="obsolete">ポリゴン化</translation>
+        <translation>ポリゴン化</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="obsolete">ラスタからポリゴン地物を作成する</translation>
+        <translation>ラスタからポリゴン地物を作成する</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="obsolete">結合</translation>
+        <translation>結合</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="obsolete">画像のセットから簡単にモザイクを作成します</translation>
+        <translation>画像のセットから簡単にモザイクを作成します</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation type="obsolete">ふるい</translation>
+        <translation>ふるい</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="obsolete">小さいラスタポリゴンを除去します</translation>
+        <translation>小さいラスタポリゴンを除去します</translation>
     </message>
     <message>
         <source>Proximity</source>
-        <translation type="obsolete">近接図</translation>
+        <translation>近接図</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation type="obsolete">ラスタ近接図を作成します</translation>
+        <translation>ラスタ近接図を作成します</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="obsolete">黒補正</translation>
+        <translation>黒補正</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="obsolete">ほとんど黒/白の境界を的確な値に変換する</translation>
+        <translation>ほとんど黒/白の境界を的確な値に変換する</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="obsolete">ワープ</translation>
+        <translation>ワープ</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="obsolete">画像を新しい座標系に変換する</translation>
+        <translation>画像を新しい座標系に変換する</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="obsolete">グリッド</translation>
+        <translation>グリッド</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="obsolete">散在したデータからラスタを作成する</translation>
+        <translation>散在したデータからラスタを作成する</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="obsolete">変換</translation>
+        <translation>変換</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="obsolete">異なった形式間でラスタデータを変換する</translation>
+        <translation>異なった形式間でラスタデータを変換する</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">情報</translation>
+        <translation>情報</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="obsolete">ラスタデータセットに関する情報リスト</translation>
+        <translation>ラスタデータセットに関する情報リスト</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">投影法の割り当て</translation>
+        <translation>投影法の割り当て</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="obsolete">ラスタへの投影法情報追加</translation>
+        <translation>ラスタへの投影法情報追加</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation type="obsolete">オーバービューの作成</translation>
+        <translation>オーバービューの作成</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="obsolete">オーバービューイメージの作成または再作成</translation>
+        <translation>オーバービューイメージの作成または再作成</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="obsolete">クリッパー</translation>
+        <translation>クリッパー</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="obsolete">RGBをPCTに変換する</translation>
+        <translation>RGBをPCTに変換する</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="obsolete">24bit RGBイメージを8bitパレットに変換する</translation>
+        <translation>24bit RGBイメージを8bitパレットに変換する</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="obsolete">PCTをRGBに変換する</translation>
+        <translation>PCTをRGBに変換する</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="obsolete">8bitパレットイメージを24bit RGBに変換する</translation>
+        <translation>8bitパレットイメージを24bit RGBに変換する</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="obsolete">GdalTools設定</translation>
+        <translation>GdalTools設定</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="obsolete">Gdal Toolsに関する多彩な設定</translation>
+        <translation>Gdal Toolsに関する多彩な設定</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="obsolete">GdalToolsについて</translation>
+        <translation>GdalToolsについて</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="obsolete">Gdal Toolsに関する情報を表示します</translation>
+        <translation>Gdal Toolsに関する情報を表示します</translation>
     </message>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="obsolete">入力ディレクトリ(&amp;I):</translation>
+        <translation>入力ディレクトリ(&amp;I):</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="obsolete">出力ディレクトリ(&amp;O):</translation>
+        <translation>出力ディレクトリ(&amp;O):</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="obsolete">このプロセスは起動に失敗しました. 起動用プログラムが存在しないか起動用プログラムを実行するための権限が不足していると思われます.</translation>
+        <translation>このプロセスは起動に失敗しました. 起動用プログラムが存在しないか起動用プログラムを実行するための権限が不足していると思われます.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="obsolete">このプロセスは起動に成功した後しばらくしてクラッシュしました.</translation>
+        <translation>このプロセスは起動に成功した後しばらくしてクラッシュしました.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="obsolete">不明なエラーが発生しました.</translation>
+        <translation>不明なエラーが発生しました.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation type="obsolete">選択されたファイルはサポートされているOGR形式ではありません</translation>
+        <translation>選択されたファイルはサポートされているOGR形式ではありません</translation>
     </message>
 </context>
 <context>
@@ -1668,7 +1668,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation type="obsolete">
+        <translation>
 （GAL v %1を利用しています)</translation>
     </message>
     <message>
@@ -1692,7 +1692,7 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation type="obsolete">GDALツールズ (AKAラスタツールズ)はGDALユーティリティのユーザの仕事を楽にするためのQuantumGISのプラグインです.このプログラムでは多くのプログラム用に簡単なグラフィカルインターフェースを提供しています.
+        <translation>GDALツールズ (AKAラスタツールズ)はGDALユーティリティのユーザの仕事を楽にするためのQuantumGISのプラグインです.このプログラムでは多くのプログラム用に簡単なグラフィカルインターフェースを提供しています.
 
 このプラグインはFaunalia (http://faunalia.it) が開発を行いました.またGIS-lab (http://gis-lab.info)の助力を受けました.
 Robert Szczepanekによってアイコンが作られました.
@@ -1718,20 +1718,20 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">終了しました</translation>
+        <translation>終了しました</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="obsolete">処理は完了しました.</translation>
+        <translation>処理は完了しました.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="obsolete">以下のファイルは作成されませんでした: 
+        <translation>以下のファイルは作成されませんでした: 
 %1</translation>
     </message>
 </context>
@@ -1739,40 +1739,40 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="obsolete">コマンドは実行中です.
+        <translation>コマンドは実行中です.
 これを強制的に終了しますか?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="obsolete">パラメータが不正です.</translation>
+        <translation>パラメータが不正です.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="obsolete">出力ファイルが作成されませんでした.</translation>
+        <translation>出力ファイルが作成されませんでした.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">終了しました</translation>
+        <translation>終了しました</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
-        <translation type="obsolete">処理が完了しました.</translation>
+        <translation>処理が完了しました.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="obsolete">%1は作成されませんでした.</translation>
+        <translation>%1は作成されませんでした.</translation>
     </message>
 </context>
 <context>
@@ -1789,139 +1789,155 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
-        <translation type="obsolete">パレットイメージを24bit RGBに変換する</translation>
+        <translation>パレットイメージを24bit RGBに変換する</translation>
     </message>
     <message>
         <source>Band to convert:</source>
-        <translation type="obsolete">変換するバンド:</translation>
+        <translation>変換するバンド:</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="obsolete">変換するファイルを選択して下さい</translation>
+        <translation>変換するファイルを選択して下さい</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="obsolete">結果を保存するラスタファイルを指定してください</translation>
+        <translation>結果を保存するラスタファイルを指定してください</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
-        <translation type="obsolete">変換するファイル群が格納されているディレクトリを指定して下さい</translation>
+        <translation>変換するファイル群が格納されているディレクトリを指定して下さい</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
-        <translation type="obsolete">結果を保存する出力ディレクトリを指定して下さい</translation>
+        <translation>結果を保存する出力ディレクトリを指定して下さい</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="obsolete">変換する入力ファイルを選んで下さい</translation>
+        <translation>変換する入力ファイルを選んで下さい</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation type="obsolete">黒補正を行う入力ファイルを選択してください</translation>
+        <translation>黒補正を行う入力ファイルを選択してください</translation>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="obsolete">アクティブなラスタレイヤがありません.継続するためにはラスタレイヤを追加する必要があります.</translation>
+        <translation>アクティブなラスタレイヤがありません.継続するためにはラスタレイヤを追加する必要があります.</translation>
     </message>
     <message>
         <source>Select the input file</source>
-        <translation type="obsolete">入力ファイルを指定して下さい</translation>
+        <translation>入力ファイルを指定して下さい</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="obsolete">変換するファイルが存在する入力ディレクトリを指定して下さい</translation>
+        <translation>変換するファイルが存在する入力ディレクトリを指定して下さい</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
-        <translation type="obsolete">ファイルが存在する入力ディレクトリを指定して下さい</translation>
+        <translation>ファイルが存在する入力ディレクトリを指定して下さい</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
-        <translation type="obsolete">変換するファイルを指定して下さい</translation>
+        <translation>変換するファイルを指定して下さい</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="obsolete">VRTのためのファイルを選択して下さい</translation>
+        <translation>VRTのためのファイルを選択して下さい</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="obsolete">VRTを保存する場所を選択して下さい</translation>
+        <translation>VRTを保存する場所を選択して下さい</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
-        <translation type="obsolete">VRT (*.vrt)</translation>
+        <translation>VRT (*.vrt)</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
-        <translation type="obsolete">ふるいをかける入力ファイルを選択してください</translation>
+        <translation>ふるいをかける入力ファイルを選択してください</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation type="obsolete">ポリゴン化する入力ファイルを選択してください</translation>
+        <translation>ポリゴン化する入力ファイルを選択してください</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation type="obsolete">ポリゴン化の結果を保存する場所を選択して下さい</translation>
+        <translation>ポリゴン化の結果を保存する場所を選択して下さい</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="obsolete">結合するファイルを選択して下さい</translation>
+        <translation>結合するファイルを選択して下さい</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="obsolete">結合結果を保存する場所を選択して下さい</translation>
+        <translation>結合結果を保存する場所を選択して下さい</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="obsolete">コピー</translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="obsolete">全部をコピーする</translation>
+        <translation>全部をコピーする</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="obsolete">解析するファイルを選択して下さい</translation>
+        <translation>解析するファイルを選択して下さい</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="obsolete">グリッドのための入力ファイルを選択して下さい</translation>
+        <translation>グリッドのための入力ファイルを選択して下さい</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="obsolete">等高線のための入力ファイルを選択して下さい</translation>
+        <translation>等高線のための入力ファイルを選択して下さい</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="obsolete">等高線を保存する場所を指定して下さい</translation>
+        <translation>等高線を保存する場所を指定して下さい</translation>
+    </message>
+    <message>
+        <source>Translate - srcwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (pixels) must be integer numbers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate - prjwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (geographic) must be numbers.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation type="obsolete">ラスタライズする入力ファイルを選択してください</translation>
+        <translation>ラスタライズする入力ファイルを選択してください</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation type="obsolete">近接図を作成する入力ファイルを指定して下さい</translation>
+        <translation>近接図を作成する入力ファイルを指定して下さい</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation type="obsolete">警告 サブフォルダにある全てのラスタのCRS情報が上書きされます.よろしいですか?</translation>
+        <translation>警告 サブフォルダにある全てのラスタのCRS情報が上書きされます.よろしいですか?</translation>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
-        <translation type="obsolete">投影法を割り当てるファイルがあるディレクトリを選択して下さい</translation>
+        <translation>投影法を割り当てるファイルがあるディレクトリを選択して下さい</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">投影法の割り当て</translation>
+        <translation>投影法の割り当て</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="obsolete">このラスタはすでにマップキャンバスにあります</translation>
+        <translation>このラスタはすでにマップキャンバスにあります</translation>
     </message>
 </context>
 <context>
@@ -1984,7 +2000,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="obsolete">GDAL実行プログラムがあるディレクトリを選択して下さい</translation>
+        <translation>GDAL実行プログラムがあるディレクトリを選択して下さい</translation>
     </message>
 </context>
 <context>
@@ -2730,122 +2746,122 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <name>GeometryDialog</name>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">全てを結合</translation>
+        <translation>全てを結合</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="obsolete">ジオメトリ</translation>
+        <translation>ジオメトリ</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">入力ベクタレイヤを指定してください</translation>
+        <translation>入力ベクタレイヤを指定してください</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">出力shapefileを指定してください</translation>
+        <translation>出力shapefileを指定してください</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">正しい許容値を指定してください</translation>
+        <translation>正しい許容値を指定してください</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">正しいUIDフィールドを指定してください</translation>
+        <translation>正しいUIDフィールドを指定してください</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">シングルパートをマルチパートへ</translation>
+        <translation>シングルパートをマルチパートへ</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Shapefileへ出力</translation>
+        <translation>Shapefileへ出力</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">マルチパートをシングルパートへ</translation>
+        <translation>マルチパートをシングルパートへ</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">ノードの展開</translation>
+        <translation>ノードの展開</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">ポリゴンをラインに</translation>
+        <translation>ポリゴンをラインに</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">ポリゴンベクタレイヤを入力</translation>
+        <translation>ポリゴンベクタレイヤを入力</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">ジオメトリカラムの出力/追加</translation>
+        <translation>ジオメトリカラムの出力/追加</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">ベクタレイヤーの入力</translation>
+        <translation>ベクタレイヤーの入力</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">ジオメトリの簡素化</translation>
+        <translation>ジオメトリの簡素化</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">ポリゴンの中心点</translation>
+        <translation>ポリゴンの中心点</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">点をshapefileへ出力する</translation>
+        <translation>点をshapefileへ出力する</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">ドロネー三角形分割</translation>
+        <translation>ドロネー三角形分割</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">ポイントベクタレイヤの入力</translation>
+        <translation>ポイントベクタレイヤの入力</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">レイヤ領域のポリゴン</translation>
+        <translation>レイヤ領域のポリゴン</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">レイヤの入力</translation>
+        <translation>レイヤの入力</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">ポリゴンのshapefile出力</translation>
+        <translation>ポリゴンのshapefile出力</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">空間演算中</translation>
+        <translation>空間演算中</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">既存のshapefileを削除できません.</translation>
+        <translation>既存のshapefileを削除できません.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">不完全なshapefileを削除できません.</translation>
+        <translation>不完全なshapefileを削除できません.</translation>
     </message>
     <message>
         <source>At least two features must have same attribute value!
 Please choose another field...</source>
-        <translation type="obsolete">同じ属性値をもつ２つの地物が少なくとも選択されている必要があります!
+        <translation>同じ属性値をもつ２つの地物が少なくとも選択されている必要があります!
 別のフィールドを選択して下さい...</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">出力shapefile書き込み中にエラー発生.</translation>
+        <translation>出力shapefile書き込み中にエラー発生.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!
 Please choose larger tolerance...</source>
-        <translation type="obsolete">指定許容値での計算に失敗しました
+        <translation>指定許容値での計算に失敗しました
 さらに大きい許容値を選択して下さい...</translation>
     </message>
     <message>
@@ -2854,14 +2870,14 @@ Please choose larger tolerance...</source>
 
 Would you like to add the new layer to the TOC?</source>
         <translatorcomment>TOCはどう翻訳するか不明</translatorcomment>
-        <translation type="obsolete">以下の出力shapefileが作成されました:
+        <translation>以下の出力shapefileが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">出力shapefileローディング中のエラー
+        <translation>出力shapefileローディング中のエラー
 %1</translation>
     </message>
 </context>
@@ -2869,108 +2885,108 @@ Would you like to add the new layer to the TOC?</source>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">空間演算中</translation>
+        <translation>空間演算中</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">入力レイヤを指定してください</translation>
+        <translation>入力レイヤを指定してください</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">差分/交差/統合の処理を行うレイヤを指定して下さい</translation>
+        <translation>差分/交差/統合の処理を行うレイヤを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">正しいバッファの値を指定してください</translation>
+        <translation>正しいバッファの値を指定してください</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">融合フィールドを指定して下さい</translation>
+        <translation>融合フィールドを指定して下さい</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">出力shapefileを指定してください</translation>
+        <translation>出力shapefileを指定してください</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">地物が選択されていません。&apos;Use selected&apos;のチェックを外すか選択をしてください</translation>
+        <translation>地物が選択されていません。&apos;Use selected&apos;のチェックを外すか選択をしてください</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">バッファ</translation>
+        <translation>バッファ</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">単一の最小凸包を作る</translation>
+        <translation>単一の最小凸包を作る</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">入力されたフィールドに基づいた凸包を作る</translation>
+        <translation>入力されたフィールドに基づいた凸包を作る</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">凸包</translation>
+        <translation>凸包</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">融合</translation>
+        <translation>融合</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">レイヤの差分</translation>
+        <translation>レイヤの差分</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">差分</translation>
+        <translation>差分</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">レイヤの交差</translation>
+        <translation>レイヤの交差</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">交差</translation>
+        <translation>交差</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">対称差分</translation>
+        <translation>対称差分</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">レイヤをクリップする</translation>
+        <translation>レイヤをクリップする</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">クリップ</translation>
+        <translation>クリップ</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">統合レイヤ</translation>
+        <translation>統合レイヤ</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">統合</translation>
+        <translation>統合</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">既存のshapefileを削除できません.</translation>
+        <translation>既存のshapefileを削除できません.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">閉じる</translation>
+        <translation>閉じる</translation>
     </message>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">全てを融合する</translation>
+        <translation>全てを融合する</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation>
 警告:</translation>
     </message>
     <message>
@@ -2978,7 +2994,7 @@ Warnings:</source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation>
 いくつかの出力ジオメトリが欠落しているか不正です
 
 そのまま新レイヤを追加しますか?</translation>
@@ -2987,52 +3003,52 @@ Would you like to add the new layer anyway?</source>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">
+        <translation>
 
 TOCに新しいレイヤを追加しますか?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation>
 入力座標参照系エラー:異なる座標参照系が検出されました.結果が期待と異なると思われます.</translation>
     </message>
     <message>
         <source>
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation>
 入力座標参照系エラー:一つまたはそれ以上の数の入力レイヤは座標参照情報がありません.期待通りの結果はできません.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">
+        <translation>
 地物ジオメトリエラー:1個またはそれ以上の数の地物のジオメトリが不正なため無視されました.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">
+        <translation>
 GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメトリが不正です.</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 %2%3</source>
-        <translation type="obsolete">出力shapefileを作成しました
+        <translation>出力shapefileを作成しました
 %1
 %2%3</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">出力shapefileローディング中のエラー
+        <translation>出力shapefileローディング中のエラー
 %1</translation>
     </message>
     <message>
         <source>No output created. File creation error:
 %1</source>
-        <translation type="obsolete">出力は作成されませんでした.ファイル作成エラー
+        <translation>出力は作成されませんでした.ファイル作成エラー
 %1</translation>
     </message>
 </context>
@@ -3248,7 +3264,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM情報</translation>
+        <translation>OSM情報</translation>
     </message>
 </context>
 <context>
@@ -3328,58 +3344,58 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSMダウンロード</translation>
+        <translation>OSMダウンロード</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">ファイル保存ができません %1:%2.</translation>
+        <translation>ファイル保存ができません %1:%2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">OpenStreetMapサーバーの反応を待っています...</translation>
+        <translation>OpenStreetMapサーバーの反応を待っています...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">ダウンロードプロセス失敗。OpenStreetMapサーバーのレスポンス:%1 - %2</translation>
+        <translation>ダウンロードプロセス失敗。OpenStreetMapサーバーのレスポンス:%1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">OSMダウンロードエラー</translation>
+        <translation>OSMダウンロードエラー</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">ダウンロード失敗:%1.</translation>
+        <translation>ダウンロード失敗:%1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">データ取得中</translation>
+        <translation>データ取得中</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">あなたがOSMデータをダウンロードしているオープンストリートマップサーバー(~ api.openstreetmap.org) は取得できるデータ量の制限があります.それについては以下に記述があります &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; またダウンロードする領域の緯度あるいは経度が0.25度以上のものはダウンロードできません..注　QuantumGISでの作業では自由に領域設定を行えます、しかしオープンストリートマップサーバーは制限をこえるダウンロード要求をすべて拒絶します. </translation>
+        <translation>あなたがOSMデータをダウンロードしているオープンストリートマップサーバー(~ api.openstreetmap.org) は取得できるデータ量の制限があります.それについては以下に記述があります &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; またダウンロードする領域の緯度あるいは経度が0.25度以上のものはダウンロードできません..注　QuantumGISでの作業では自由に領域設定を行えます、しかしオープンストリートマップサーバーは制限をこえるダウンロード要求をすべて拒絶します. </translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">緯度、経度の領域が広すぎぎます!</translation>
+        <translation>緯度、経度の領域が広すぎぎます!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">緯度方向の領域が広すぎます!</translation>
+        <translation>緯度方向の領域が広すぎます!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">経度方向の領域が広すぎます!</translation>
+        <translation>経度方向の領域が広すぎます!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK!領域は多分サーバーに受け付けられました。</translation>
+        <translation>OK!領域は多分サーバーに受け付けられました。</translation>
     </message>
 </context>
 <context>
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM地物ドックウィジェット</translation>
+        <translation>OSM地物ドックウィジェット</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
@@ -3549,19 +3565,19 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSMプラグイン</translation>
+        <translation>OSMプラグイン</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">&apos;OSMリレーション作成&apos;ダイアログはカレントOSMデータベースに変更が加えられたため自動的に閉じました.</translation>
+        <translation>&apos;OSMリレーション作成&apos;ダイアログはカレントOSMデータベースに変更が加えられたため自動的に閉じました.</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">OSM地物を最初に選択してください.</translation>
+        <translation>OSM地物を最初に選択してください.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">編集するリレーションを最初に選択してください.</translation>
+        <translation>編集するリレーションを最初に選択してください.</translation>
     </message>
 </context>
 <context>
@@ -3669,31 +3685,31 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">OSMをファイルに保存します</translation>
+        <translation>OSMをファイルに保存します</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">ファイル%1:%2に保存できません.</translation>
+        <translation>ファイル%1:%2に保存できません.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">初期化中...</translation>
+        <translation>初期化中...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">ノードの保存中...</translation>
+        <translation>ノードの保存中...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">線の保存中...</translation>
+        <translation>線の保存中...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">ポリゴンの保存中...</translation>
+        <translation>ポリゴンの保存中...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">リレーションの保存中...</translation>
+        <translation>リレーションの保存中...</translation>
     </message>
 </context>
 <context>
@@ -3736,11 +3752,11 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSMアップロード</translation>
+        <translation>OSMアップロード</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">データアップデート中...</translation>
+        <translation>データアップデート中...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3812,43 +3828,57 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Pythonプログラムを実行中にエラーが発生しました:</translation>
+        <translation>Pythonプログラムを実行中にエラーが発生しました:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Pythonバージョン:</translation>
+        <translation>Pythonバージョン:</translation>
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="obsolete">QGISバージョン:</translation>
+        <translation>QGISバージョン:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Python path:</translation>
+        <translation>Python path:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Pythonのエラー</translation>
+        <translation>Pythonのエラー</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="obsolete">[&apos;%2&apos;]からプラグイン&apos;%1&apos;をロードできませんでした</translation>
+        <translation>[&apos;%2&apos;]からプラグイン&apos;%1&apos;をロードできませんでした</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">%1プラグインをロードできませｎでした</translation>
+        <translation>%1プラグインをロードできませｎでした</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete">%1は内部でclassFactory()メソッドを呼び出し中にエラーが発生しました</translation>
+        <translation>%1は内部でclassFactory()メソッドを呼び出し中にエラーが発生しました</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1は内部でinitGui()メソッドを呼び出し中にエラーが発生しました</translation>
+        <translation>%1は内部でinitGui()メソッドを呼び出し中にエラーが発生しました</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">%1プラグインをアンロード時にエラーが発生しました</translation>
+        <translation>%1プラグインをアンロード時にエラーが発生しました</translation>
+    </message>
+</context>
+<context>
+    <name>PythonConsole</name>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished">Pythonコンソール</translation>
+    </message>
+    <message>
+        <source>To access Quantum GIS environment from this console
+use qgis.utils.iface object (instance of QgisInterface class).
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4002,7 +4032,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="61"/>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="35"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="23"/>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="40"/>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="28"/>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="41"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="33"/>
@@ -5086,8 +5115,9 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>ベクタレイヤに対する空間検索を行うプラグイン</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation type="obsolete">SQLite DB(*.sqlite *.db);;全ファイル (*)</translation>
+        <translation>SQLite DB(*.sqlite *.db);;全ファイル (*)</translation>
     </message>
     <message>
         <location filename="../src/app/main.cpp" line="487"/>
@@ -5157,16 +5187,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="unfinished">選択した領域がレイヤの座標系を越えている</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="38"/>
-        <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="39"/>
-        <source>[plugindescription]</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8848,7 +8868,7 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="613"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="601"/>
         <source>Big image</source>
         <translation>巨大イメージ</translation>
     </message>
@@ -8858,28 +8878,28 @@ Should the existing classes be deleted before classification?</source>
         <translation>地図1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="714"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Image too big</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="753"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
         <source>SVG warning</source>
         <translation>SVG警告</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="754"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1495"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="742"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1483"/>
         <source>Don&apos;t show this message again</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="773"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="761"/>
         <source>SVG Format</source>
         <translation>SVG形式</translation>
     </message>
@@ -8909,58 +8929,58 @@ Should the existing classes be deleted before classification?</source>
         <translation>PDF形式</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="568"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
         <source>Image too large</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="569"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="614"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="667"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
         <source>Choose a file name to save the map image as</source>
         <translation>地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="772"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>Choose a file name to save the map as</source>
         <translation>地図を保存するファイル名を指定して下さい。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1166"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1154"/>
         <source>Composer</source>
         <translation>コンポーザ</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1493"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1481"/>
         <source>Project contains WMS layers</source>
         <translation>プロジェクトにはWMSレイヤが含まれます。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1494"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1482"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>いくつかのWMSサーバー（たとえばUMN　mapserver)ではWIDTHとHEIGHTパラメータの制限があります。このようなサーバーのレイヤを印刷する場合この制限を超えることがあります。この場合、このWMSレイヤは印刷されません。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="758"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="746"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;QgisのSVG出力機能はQt4のSVGコードのバグや欠陥に起因する多くの問題があります。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="643"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="631"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1形式 (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="748"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4のsvgコードでは特に地図のバウンディングボックスでレイヤがクリップされない問題があります&lt;/P&gt;</translation>
     </message>
@@ -8969,43 +8989,43 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">%1 x %2のイメージを作成するためにはおよそ%3MBのメモリが必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="763"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="751"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>もしあなたがQgisでベクタ形式の出力ファイルが必要ならばPostScriptで出力することを推奨します。SVGで出力する場合は満足できるものができません&lt;/P&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="899"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="887"/>
         <source>save template</source>
         <translation>テンプレートの保存</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="925"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
         <source>Save error</source>
         <translation>保存エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="925"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
         <source>Error, could not save file</source>
         <translation>エラー、ファイルの保存ができませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="933"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="921"/>
         <source>Load template</source>
         <translation>テンプレートのロード</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
         <source>Read error</source>
         <translation>読み込みエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
         <source>Error, could not read file</source>
         <translation>エラー,ファイルを読めませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
         <source>Content of template file is not valid</source>
         <translation>テンプレートファイルの内容が不正です</translation>
     </message>
@@ -21005,326 +21025,326 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">リポジトリの出力を解釈できません</translation>
+        <translation>リポジトリの出力を解釈できません</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">ローカルのプラグインディレクトリを開けません</translation>
+        <translation>ローカルのプラグインディレクトリを開けません</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">削除するものはありません！プラグインディレクトリが存在しません:</translation>
+        <translation>削除するものはありません！プラグインディレクトリが存在しません:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">ディレクトリの削除失敗:</translation>
+        <translation>ディレクトリの削除失敗:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">権限を確認するか手動で削除して下さい</translation>
+        <translation>権限を確認するか手動で削除して下さい</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Pythonプラグインを呼び出す...</translation>
+        <translation>Pythonプラグインを呼び出す...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">外部のリポジトリからプラグインをインストールする</translation>
+        <translation>外部のリポジトリからプラグインをインストールする</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">新しいプラグインを探しています...</translation>
+        <translation>新しいプラグインを探しています...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGISプラグインがコンフリクトをおこしています:</translation>
+        <translation>QGISプラグインがコンフリクトをおこしています:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">プラグインインストーラはこのQGISのバージョンでは廃止されたプラグインを見つけました。これは以前のQGISインストール時のファイルに起因する問題でしょう。プラグインインストーラで古いプラグインを削除してください。古いプラグインが新しい版のプラグインのインストールを妨害しています。</translation>
+        <translation>プラグインインストーラはこのQGISのバージョンでは廃止されたプラグインを見つけました。これは以前のQGISインストール時のファイルに起因する問題でしょう。プラグインインストーラで古いプラグインを削除してください。古いプラグインが新しい版のプラグインのインストールを妨害しています。</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">新しいプラグインが使用可能です</translation>
+        <translation>新しいプラグインが使用可能です</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">更新されたプラグインが使用可能です</translation>
+        <translation>更新されたプラグインが使用可能です</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Pythonプラグインインストーラ</translation>
+        <translation>QGIS Pythonプラグインインストーラ</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">リポジトリの読み込みエラー:</translation>
+        <translation>リポジトリの読み込みエラー:</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Pythonプラグインインストーラ</translation>
+        <translation>QGIS Pythonプラグインインストーラ</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">リポジトリの読み込みエラー:</translation>
+        <translation>リポジトリの読み込みエラー:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">すべてのリポジトリ</translation>
+        <translation>すべてのリポジトリ</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">接続</translation>
+        <translation>接続</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">このリポジトリは接続されました</translation>
+        <translation>このリポジトリは接続されました</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">有効ではありません</translation>
+        <translation>有効ではありません</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">このリポジトリは接続可能ですが，利用できません</translation>
+        <translation>このリポジトリは接続可能ですが，利用できません</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">利用できない</translation>
+        <translation>利用できない</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">このリポジトリは利用できません</translation>
+        <translation>このリポジトリは利用できません</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
+        <translation>このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">オーファン</translation>
+        <translation>オーファン</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">全ての状態</translation>
+        <translation>全ての状態</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">未インストール</translation>
+        <translation>未インストール</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">インストール済</translation>
+        <translation>インストール済</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">更新可能で新しい</translation>
+        <translation>更新可能で新しい</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">プライグインはインストールされていません</translation>
+        <translation>プライグインはインストールされていません</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">プラグインはインストールされています</translation>
+        <translation>プラグインはインストールされています</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">プラグインはインストールされていますが，新しいものが利用可能です</translation>
+        <translation>プラグインはインストールされていますが，新しいものが利用可能です</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">このプラグインはインストールされています。しかし動作可能なリポジトリ情報を見つけられません</translation>
+        <translation>このプラグインはインストールされています。しかし動作可能なリポジトリ情報を見つけられません</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">プラグインはインストールされてなく，はじめてみるものです</translation>
+        <translation>プラグインはインストールされてなく，はじめてみるものです</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">プラグインはインストールされており，リポジトリで利用可能なものよりも新しいです</translation>
+        <translation>プラグインはインストールされており，リポジトリで利用可能なものよりも新しいです</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">このプラグインはあなたのQuantum GISのバージョンに適合しません。多分これは動作しません。</translation>
+        <translation>このプラグインはあなたのQuantum GISのバージョンに適合しません。多分これは動作しません。</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">必要なPythonモジュールがインストールされていません。
+        <translation>必要なPythonモジュールがインストールされていません。
 詳しい情報はプラグインのホームページかQuantum GIS wikiを参照してください。</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">このプラグインは多分壊れています。
+        <translation>このプラグインは多分壊れています。
 これはインストールされていますがロードできません
 エラーメッセージを表示します:</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">アップグレード可能</translation>
+        <translation>アップグレード可能</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">最新!</translation>
+        <translation>最新!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">無効</translation>
+        <translation>無効</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">注:これはアンインストールできないコアプラグインです</translation>
+        <translation>注:これはアンインストールできないコアプラグインです</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">インストール済みバージョン</translation>
+        <translation>インストール済みバージョン</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">利用可能バージョン</translation>
+        <translation>利用可能バージョン</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">このプラグインには利用可能な新しいバージョンがあります</translation>
+        <translation>このプラグインには利用可能な新しいバージョンがあります</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">ダウンロード可能なバージョンはありません</translation>
+        <translation>ダウンロード可能なバージョンはありません</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">プラグインは壊れています</translation>
+        <translation>プラグインは壊れています</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">プラグインを使用するには新しいバージョンのQuantum GISが必要です</translation>
+        <translation>プラグインを使用するには新しいバージョンのQuantum GISが必要です</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">少なくとも</translation>
+        <translation>少なくとも</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">プラグインは無いモジュールが必要です</translation>
+        <translation>プラグインは無いモジュールが必要です</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">ローカルでのみ利用可能</translation>
+        <translation>ローカルでのみ利用可能</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">プラグインをインストール</translation>
+        <translation>プラグインをインストール</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">プラグインを再インストール</translation>
+        <translation>プラグインを再インストール</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">プラグインをアップグレード</translation>
+        <translation>プラグインをアップグレード</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">プラグインをインストール/アップグレード</translation>
+        <translation>プラグインをインストール/アップグレード</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">プラグインをダウングレード</translation>
+        <translation>プラグインをダウングレード</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">プラグインをもっとも新しい利用可能バージョンからダウングレードしますか? インストールされているものが新しいです!</translation>
+        <translation>プラグインをもっとも新しい利用可能バージョンからダウングレードしますか? インストールされているものが新しいです!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">プラグインのインストールに失敗しました</translation>
+        <translation>プラグインのインストールに失敗しました</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">プラグインが消失しました</translation>
+        <translation>プラグインが消失しました</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">このプラグインは多分インストールされているけど、どこにあるのか不明です.多分プラグインパッケージが不正な名前のディレクトリ名を含んでいます
+        <translation>このプラグインは多分インストールされているけど、どこにあるのか不明です.多分プラグインパッケージが不正な名前のディレクトリ名を含んでいます
 インストールされているプラグインのリストを調べて下さい.多分そこでプラグインを見つけることができるでしょう.しかしどれが不正な名前を含むプラグインなのかはわかりません.もしプラグインがインストールされていて利用可能な更新情報が伝えられているならば問題はわかりません.プラグインは動くはずですから.プラグインの作者に連絡してこの問題を伝えて下さい.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">プラグインのインストールは成功しました</translation>
+        <translation>プラグインのインストールは成功しました</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Pythonプラグインがインストールされています。
+        <translation>Pythonプラグインがインストールされています。
 プラグインマネージャでこれを有効にすることができます。</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">プラグインは上手く再インストールされました</translation>
+        <translation>プラグインは上手く再インストールされました</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Pythonプラグインが再インストールされました。
+        <translation>Pythonプラグインが再インストールされました。
 これをリロードするためにQuantum GISをリスタートさせる必要があります。</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
+        <translation>プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">プラグインはシステムにないコンポーネントに依存しています。利用するためには以下のPythonモジュールをインストールする必要があります:</translation>
+        <translation>プラグインはシステムにないコンポーネントに依存しています。利用するためには以下のPythonモジュールをインストールする必要があります:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">プライグインは壊れています。Pythonからの出力:</translation>
+        <translation>プライグインは壊れています。Pythonからの出力:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">プラグインのアンインストール失敗</translation>
+        <translation>プラグインのアンインストール失敗</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">本当に以下のプラグインをアンインストールしますか?</translation>
+        <translation>本当に以下のプラグインをアンインストールしますか?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">警告 このプラグインはアクセスできるリポジトリ内で有効ではありません!</translation>
+        <translation>警告 このプラグインはアクセスできるリポジトリ内で有効ではありません!</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
-        <translation type="obsolete">プラグインインストーラのアップデートでアンインストールされました.プラグインインストーラは終了して最初のバージョンに戻ります.プラグインメニューからプラグインインストーラを選択して処理を続けられます.</translation>
+        <translation>プラグインインストーラのアップデートでアンインストールされました.プラグインインストーラは終了して最初のバージョンに戻ります.プラグインメニューからプラグインインストーラを選択して処理を続けられます.</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
-        <translation type="obsolete">プラグインインストーラのアップデートでアンインストールされました.プラグインインストーラの最初のバージョンをロードするためにQGISを再起動してください.</translation>
+        <translation>プラグインインストーラのアップデートでアンインストールされました.プラグインインストーラの最初のバージョンをロードするためにQGISを再起動してください.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">プラグインは上手くアンインストールされました</translation>
+        <translation>プラグインは上手くアンインストールされました</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
+        <translation>Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Quantum GISチームによりサポートやオーソライズされてないプラグインリポジトリが追加されました。プラグインの制作者はそれらが有用かつ安全に動作するための努力をしていますが，しかしながら，それらに対して責任を負わなくてもいいことを確認下さい。</translation>
+        <translation>Quantum GISチームによりサポートやオーソライズされてないプラグインリポジトリが追加されました。プラグインの制作者はそれらが有用かつ安全に動作するための努力をしていますが，しかしながら，それらに対して責任を負わなくてもいいことを確認下さい。</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">別のリポジトリを同じURLで登録できません!</translation>
+        <translation>別のリポジトリを同じURLで登録できません!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">以下のリポジトリを本当に削除しますか?</translation>
+        <translation>以下のリポジトリを本当に削除しますか?</translation>
     </message>
 </context>
 <context>
@@ -21625,35 +21645,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">成功</translation>
+        <translation>成功</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">ホスト名を解決中...</translation>
+        <translation>ホスト名を解決中...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">接続...</translation>
+        <translation>接続...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">ホストに接続。リクエストを送信中...</translation>
+        <translation>ホストに接続。リクエストを送信中...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">データダウンロード中...</translation>
+        <translation>データダウンロード中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">待機</translation>
+        <translation>待機</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">接続を閉じています...</translation>
+        <translation>接続を閉じています...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">エラー</translation>
+        <translation>エラー</translation>
     </message>
 </context>
 <context>
@@ -21688,43 +21708,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">インストール中...</translation>
+        <translation>インストール中...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">ホスト名を解決中...</translation>
+        <translation>ホスト名を解決中...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">接続...</translation>
+        <translation>接続...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">ホストに接続。リクエストを送信中...</translation>
+        <translation>ホストに接続。リクエストを送信中...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">データダウンロード中...</translation>
+        <translation>データダウンロード中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">待機</translation>
+        <translation>待機</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">接続を閉じています...</translation>
+        <translation>接続を閉じています...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">エラー</translation>
+        <translation>エラー</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">プラグインパッケージの解凍に失敗しました。多分ファイルが壊れているかリポジトリで欠損していると思われます。またプラグインディレクトリに書き込み権限があるかどうか確認してください:</translation>
+        <translation>プラグインパッケージの解凍に失敗しました。多分ファイルが壊れているかリポジトリで欠損していると思われます。またプラグインディレクトリに書き込み権限があるかどうか確認してください:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">ユーザーにより中断</translation>
+        <translation>ユーザーにより中断</translation>
     </message>
 </context>
 <context>
@@ -21782,7 +21802,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">エラーメッセージはありません</translation>
+        <translation>エラーメッセージはありません</translation>
     </message>
 </context>
 <context>
@@ -25314,88 +25334,121 @@ The error was:
 <context>
     <name>QgsSpatiaLiteSourceSelect</name>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="44"/>
         <source>&amp;Add</source>
-        <translation type="obsolete">追加(&amp;A)</translation>
+        <translation>追加(&amp;A)</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="51"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="102"/>
         <source>Wildcard</source>
-        <translation type="obsolete">ワイルドカード</translation>
+        <translation>ワイルドカード</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="52"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="106"/>
         <source>RegExp</source>
-        <translation type="obsolete">正規表現</translation>
+        <translation>正規表現</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="54"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="114"/>
         <source>All</source>
-        <translation type="obsolete">全ての</translation>
+        <translation>全ての</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="55"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="118"/>
         <source>Table</source>
-        <translation type="obsolete">テーブル</translation>
+        <translation>テーブル</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="56"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="122"/>
         <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="57"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="126"/>
         <source>Geometry column</source>
-        <translation type="obsolete">ジオメトリカラム</translation>
+        <translation>ジオメトリカラム</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="176"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="244"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="258"/>
         <source>SpatiaLite DB Open Error</source>
-        <translation type="obsolete">SpatiaLite DBオープンエラー</translation>
+        <translation>SpatiaLite DBオープンエラー</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="177"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="245"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="259"/>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="obsolete">%1への接続中にエラーが発生しました
+        <translation>%1への接続中にエラーが発生しました
 
 %2</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="243"/>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="obsolete">正しいSQLite DBのようですが正しいSpatiaLiteではありません...</translation>
+        <translation>正しいSQLite DBのようですが正しいSpatiaLiteではありません...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="252"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="582"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="740"/>
         <source>unknown error cause</source>
-        <translation type="obsolete">不明なエラーが発生しました</translation>
+        <translation>不明なエラーが発生しました</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="280"/>
         <source>@</source>
-        <translation type="obsolete">@</translation>
+        <translation>@</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="302"/>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
-        <translation type="obsolete">オープンするSpatiaLite/SQLite DBを選択してください</translation>
+        <translation>オープンするSpatiaLite/SQLite DBを選択してください</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="342"/>
         <source>Confirm Delete</source>
-        <translation type="obsolete">削除を確認</translation>
+        <translation>削除を確認</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>Select Table</source>
-        <translation type="obsolete">テーブルを選択</translation>
+        <translation>テーブルを選択</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="obsolete">レイヤを追加するにはテーブルを選択してください。</translation>
+        <translation>レイヤを追加するにはテーブルを選択してください。</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="588"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="746"/>
         <source>SpatiaLite getTableInfo Error</source>
-        <translation type="obsolete">SpatiaLite　getTableInfoエラー</translation>
+        <translation>SpatiaLite　getTableInfoエラー</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="589"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="747"/>
         <source>Failure exploring tables from: %1
 
 %2</source>
-        <translation type="obsolete">%1からテーブルを検索中に失敗しました
+        <translation>%1からテーブルを検索中に失敗しました
 
 %2</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="340"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="obsolete">%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
     </message>
 </context>
 <context>
@@ -29125,67 +29178,67 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Error!</source>
-        <translation type="obsolete">エラー!</translation>
+        <translation>エラー!</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">最小近傍分析</translation>
+        <translation>最小近傍分析</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="obsolete">パラメータ</translation>
+        <translation>パラメータ</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="obsolete">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">入力ベクタレイヤを指定してください</translation>
+        <translation>入力ベクタレイヤを指定してください</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">入力フィールドを指定してください</translation>
+        <translation>入力フィールドを指定してください</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">ジオメトリの整合性をチェック</translation>
+        <translation>ジオメトリの整合性をチェック</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">ジオメトリエラー</translation>
+        <translation>ジオメトリエラー</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">トータルで遭遇したエラー</translation>
+        <translation>トータルで遭遇したエラー</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">ユニーク値のリスト</translation>
+        <translation>ユニーク値のリスト</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">ユニーク値</translation>
+        <translation>ユニーク値</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">トータルユニーク値</translation>
+        <translation>トータルユニーク値</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">基本統計</translation>
+        <translation>基本統計</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">統計値出力</translation>
+        <translation>統計値出力</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">最小近傍分析</translation>
+        <translation>最小近傍分析</translation>
     </message>
 </context>
 <context>
@@ -30315,1990 +30368,2385 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Quantum　GISのバージョンが検出されました: </translation>
+        <translation>Quantum　GISのバージョンが検出されました: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">このバージョンのfToolsはQGISバージョン1.0.0以上が必要です
+        <translation>このバージョンのfToolsはQGISバージョン1.0.0以上が必要です
 プラグインは有効になりません.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
         <translatorcomment>アクセラレータが不正ではないか？（＆V)はViewで利用している</translatorcomment>
-        <translation type="obsolete">ベクタ</translation>
+        <translation>ベクタ</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">解析ツール(&amp;A)</translation>
+        <translation>解析ツール(&amp;A)</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">距離マトリックス</translation>
+        <translation>距離マトリックス</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">線長の合計</translation>
+        <translation>線長の合計</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">ポリゴン内の点</translation>
+        <translation>ポリゴン内の点</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">基本統計</translation>
+        <translation>基本統計</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">ユニーク値のリスト</translation>
+        <translation>ユニーク値のリスト</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">最小近傍解析</translation>
+        <translation>最小近傍解析</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">平均座標(群)</translation>
+        <translation>平均座標(群)</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">ラインの交差</translation>
+        <translation>ラインの交差</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">調査ツール(&amp;R)</translation>
+        <translation>調査ツール(&amp;R)</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">ランダム選択</translation>
+        <translation>ランダム選択</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">サブセットのランダム選択</translation>
+        <translation>サブセットのランダム選択</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">ランダム点群</translation>
+        <translation>ランダム点群</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">規則的な点群</translation>
+        <translation>規則的な点群</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">ベクタグリッド</translation>
+        <translation>ベクタグリッド</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">場所による選択</translation>
+        <translation>場所による選択</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">レイヤ領域のポリゴン</translation>
+        <translation>レイヤ領域のポリゴン</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">空間演算ツール(&amp;G)</translation>
+        <translation>空間演算ツール(&amp;G)</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">凸包</translation>
+        <translation>凸包</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">バッファ</translation>
+        <translation>バッファ</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">交差</translation>
+        <translation>交差</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">統合</translation>
+        <translation>統合</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">対称差分</translation>
+        <translation>対称差分</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">クリップ</translation>
+        <translation>クリップ</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">融合</translation>
+        <translation>融合</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">差分</translation>
+        <translation>差分</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">ジオメトリツール(&amp;G)</translation>
+        <translation>ジオメトリツール(&amp;G)</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">ジオメトリカラムの出力/追加</translation>
+        <translation>ジオメトリカラムの出力/追加</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">ジオメトリの整合性をチェック</translation>
+        <translation>ジオメトリの整合性をチェック</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">ポリゴンの重心</translation>
+        <translation>ポリゴンの重心</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">ドロネー三角形分割</translation>
+        <translation>ドロネー三角形分割</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">ノードを展開する</translation>
+        <translation>ノードを展開する</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">ジオメトリを簡素化する</translation>
+        <translation>ジオメトリを簡素化する</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">マルチパートをシングルパートにする</translation>
+        <translation>マルチパートをシングルパートにする</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">シングルパートをマルチパートにする</translation>
+        <translation>シングルパートをマルチパートにする</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">ポリゴンをラインにする</translation>
+        <translation>ポリゴンをラインにする</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">データマネジメントツール(&amp;D)</translation>
+        <translation>データマネジメントツール(&amp;D)</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">新しい投影法へエクスポートする</translation>
+        <translation>新しい投影法へエクスポートする</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">現在の投影法を定義する</translation>
+        <translation>現在の投影法を定義する</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">属性を結合する</translation>
+        <translation>属性を結合する</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">場所で属性を結合する</translation>
+        <translation>場所で属性を結合する</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">ベクタレイヤの分割</translation>
+        <translation>ベクタレイヤの分割</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="obsolete">複数のshapeファイルを１つに結合します</translation>
+        <translation>複数のshapeファイルを１つに結合します</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools情報</translation>
+        <translation>fTools情報</translation>
     </message>
 </context>
 <context>
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">全てを結合</translation>
+        <translation>全てを結合</translation>
     </message>
     <message>
         <source>Polygon area</source>
-        <translation type="obsolete">ポリゴン面積</translation>
+        <translation>ポリゴン面積</translation>
     </message>
     <message>
         <source>Polygon perimeter</source>
-        <translation type="obsolete">ポリゴン周辺の長さ</translation>
+        <translation>ポリゴン周辺の長さ</translation>
     </message>
     <message>
         <source>Line length</source>
-        <translation type="obsolete">ライン　長さ</translation>
+        <translation>ライン　長さ</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
-        <translation type="obsolete">ポイント x座標</translation>
+        <translation>ポイント x座標</translation>
     </message>
     <message>
         <source>Point y coordinate</source>
-        <translation type="obsolete">ポイント ｙ座標</translation>
+        <translation>ポイント ｙ座標</translation>
     </message>
 </context>
 <context>
     <name>grasslabel</name>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
         <source>(1-256)</source>
-        <translation type="obsolete">(1-256)</translation>
+        <translation>(1-256)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>3D-Viewer (NVIZ)</source>
-        <translation type="obsolete">3D-ビューワー（NVIZ)</translation>
+        <translation>3D-ビューワー（NVIZ)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3d Visualization</source>
-        <translation type="obsolete">3d可視化</translation>
+        <translation>3d可視化</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>Add a value to the current category values</source>
-        <translation type="obsolete">現在のカテゴリ値群に値を追加する</translation>
+        <translation>現在のカテゴリ値群に値を追加する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="obsolete">レイヤに要素を追加する(全要素が選択レイヤのタイプである必要!)</translation>
+        <translation>レイヤに要素を追加する(全要素が選択レイヤのタイプである必要!)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add missing centroids to closed boundaries</source>
-        <translation type="obsolete">閉領域の欠落重心点を追加する</translation>
+        <translation>閉領域の欠落重心点を追加する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
         <source>Add one or more columns to attribute table</source>
-        <translation type="obsolete">属性テーブルに1個または複数のカラムを追加する</translation>
+        <translation>属性テーブルに1個または複数のカラムを追加する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Allocate network</source>
-        <translation type="obsolete">ネットワークの配置</translation>
+        <translation>ネットワークの配置</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Assign constant value to column</source>
-        <translation type="obsolete">定数をカラムに設定する</translation>
+        <translation>定数をカラムに設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
-        <translation type="obsolete">クエリの結果が真である場合のみ定数をカラムに設定する</translation>
+        <translation>クエリの結果が真である場合のみ定数をカラムに設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="obsolete">操作の結果を属性テーブルのカラムの新しい値として割り当てます</translation>
+        <translation>操作の結果を属性テーブルのカラムの新しい値として割り当てます</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation type="obsolete">検索の結果が真である場合のみ操作の結果を属性テーブルのカラムの新しい値として割り当てます</translation>
+        <translation>検索の結果が真である場合のみ操作の結果を属性テーブルのカラムの新しい値として割り当てます</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Attribute field</source>
-        <translation type="obsolete">属性フィールド</translation>
+        <translation>属性フィールド</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field (interpolated values)</source>
-        <translation type="obsolete">属性フィールド（補間された値)</translation>
+        <translation>属性フィールド（補間された値)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field to join</source>
-        <translation type="obsolete">属性フィールドを結合する</translation>
+        <translation>属性フィールドを結合する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
-        <translation type="obsolete">LANDSAT-TMラスタ用の自動調整カラー</translation>
+        <translation>LANDSAT-TMラスタ用の自動調整カラー</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
-        <translation type="obsolete">Tykhonov regularization付きの双三次または双一次スプライン補間</translation>
+        <translation>Tykhonov regularization付きの双三次または双一次スプライン補間</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation type="obsolete">ラスタマップ用双一次補間ユーティリティ</translation>
+        <translation>ラスタマップ用双一次補間ユーティリティ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
         <source>Blend color components for two rasters by given ratio</source>
-        <translation type="obsolete">指定比率で２つのラスタの色を混ぜる</translation>
+        <translation>指定比率で２つのラスタの色を混ぜる</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Blend red, green, raster layers to obtain one color raster</source>
-        <translation type="obsolete">1個のカラーラスタから入手した色でラスタレイヤの赤と緑を混ぜる</translation>
+        <translation>1個のカラーラスタから入手した色でラスタレイヤの赤と緑を混ぜる</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
-        <translation type="obsolete">ポリゴン（位相構造が無い）を切断します（Shapefileのような位相構造が無い形式からインポートされたもの）境界は2個以上のポリゴンに共有される点で分割されます.それらのセグメントの角度は異なります</translation>
+        <translation>ポリゴン（位相構造が無い）を切断します（Shapefileのような位相構造が無い形式からインポートされたもの）境界は2個以上のポリゴンに共有される点で分割されます.それらのセグメントの角度は異なります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
         <source>Break lines at each intersection of vector</source>
-        <translation type="obsolete">ラインをベクタの交差点で切断する</translation>
+        <translation>ラインをベクタの交差点で切断する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation type="obsolete">マルチスペクトルで高解像度のパンクロマチックチャネルを結合するBrovey変換</translation>
+        <translation>マルチスペクトルで高解像度のパンクロマチックチャネルを結合するBrovey変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
         <source>Buffer</source>
-        <translation type="obsolete">バッファ</translation>
+        <translation>バッファ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
         <source>Build polylines from lines</source>
-        <translation type="obsolete">ラインからポリラインを作成する</translation>
+        <translation>ラインからポリラインを作成する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
         <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
-        <translation type="obsolete">ユーザ定義ベースマップで領域内で同じカテゴリのラスタの平均を計算します</translation>
+        <translation>ユーザ定義ベースマップで領域内で同じカテゴリのラスタの平均を計算します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
         <source>Calculate covariance/correlation matrix for user-defined rasters</source>
-        <translation type="obsolete">ユーザ定義ラスタで共分散/相関マトリックスを計算します</translation>
+        <translation>ユーザ定義ラスタで共分散/相関マトリックスを計算します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
-        <translation type="obsolete">分類結果の精度保障のためエラーマトリックスとkappaパラメータを計算します</translation>
+        <translation>分類結果の精度保障のためエラーマトリックスとkappaパラメータを計算します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
         <source>Calculate geometry statistics for vectors</source>
-        <translation type="obsolete">ベクタのジオメトリ統計を計算する</translation>
+        <translation>ベクタのジオメトリ統計を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
         <source>Calculate linear regression from two rasters: y = a + b*x</source>
-        <translation type="obsolete">2つのラスタの直線回帰 y = a + b*x を計算する</translation>
+        <translation>2つのラスタの直線回帰 y = a + b*x を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
         <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
-        <translation type="obsolete">ユーザ定義ベースマップで領域内で同じカテゴリのラスタの中央値を計算します</translation>
+        <translation>ユーザ定義ベースマップで領域内で同じカテゴリのラスタの中央値を計算します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
         <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
-        <translation type="obsolete">ユーザ定義ベースマップで領域内で同じカテゴリのラスタの最頻値を計算します</translation>
+        <translation>ユーザ定義ベースマップで領域内で同じカテゴリのラスタの最頻値を計算します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
         <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
-        <translation type="obsolete">LANDSAT-TMラスタの最適インデックファクタを計算する</translation>
+        <translation>LANDSAT-TMラスタの最適インデックファクタを計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
         <source>Calculate raster surface area</source>
-        <translation type="obsolete">ラスタ面の領域を計算する</translation>
+        <translation>ラスタ面の領域を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
         <source>Calculate shadow maps from exact sun position</source>
-        <translation type="obsolete">正確な太陽の位置を利用して陰影図を計算する</translation>
+        <translation>正確な太陽の位置を利用して陰影図を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
         <source>Calculate shadow maps from sun position determinated by date/time</source>
-        <translation type="obsolete">日付と時刻に基づいた太陽の位置を利用して陰影図を計算する</translation>
+        <translation>日付と時刻に基づいた太陽の位置を利用して陰影図を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
         <source>Calculate statistics for raster</source>
-        <translation type="obsolete">ラスタの統計値を計算する</translation>
+        <translation>ラスタの統計値を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
-        <translation type="obsolete">データテーブルの数値属性の単変量統計を計算する</translation>
+        <translation>データテーブルの数値属性の単変量統計を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
         <source>Calculate univariate statistics from raster based on vector objects</source>
-        <translation type="obsolete">ラスタベースのベクタオブジェクトの単変量統計を計算する</translation>
+        <translation>ラスタベースのベクタオブジェクトの単変量統計を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
-        <translation type="obsolete">ラスタ中のnullでないセルの単変量統計を計算する</translation>
+        <translation>ラスタ中のnullでないセルの単変量統計を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
         <source>Calculate univariate statistics of vector map features</source>
-        <translation type="obsolete">ベクタマップ地物の単変量統計を計算する</translation>
+        <translation>ベクタマップ地物の単変量統計を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="obsolete">データ群のボリュームを計算して重心点群でベクタをつくります</translation>
+        <translation>データ群のボリュームを計算して重心点群でベクタをつくります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
         <source>Category or object oriented statistics</source>
-        <translation type="obsolete">カテゴリ又はオブジェクト指向統計</translation>
+        <translation>カテゴリ又はオブジェクト指向統計</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
         <source>Cats</source>
         <translatorcomment>これはどうかな？猫じゃないよね。</translatorcomment>
-        <translation type="obsolete">カテゴリ</translation>
+        <translation>カテゴリ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
         <source>Change category values and labels</source>
-        <translation type="obsolete">カテゴリの値とラベルの変更</translation>
+        <translation>カテゴリの値とラベルの変更</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
         <source>Change field</source>
-        <translation type="obsolete">フィールドの変更</translation>
+        <translation>フィールドの変更</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
         <source>Change layer number</source>
-        <translation type="obsolete">レイヤ番号の変更</translation>
+        <translation>レイヤ番号の変更</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
         <source>Change resolution</source>
-        <translation type="obsolete">解像度の変更</translation>
+        <translation>解像度の変更</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
         <source>Change the type of boundary dangle to line</source>
-        <translation type="obsolete">ラインにかかる境界の型を変える</translation>
+        <translation>ラインにかかる境界の型を変える</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
         <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
-        <translation type="obsolete">領域と島または2つの島の間の境界線からラインへのブリッジのタイプを変更します　　　</translation>
+        <translation>領域と島または2つの島の間の境界線からラインへのブリッジのタイプを変更します　　　</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
         <source>Change the type of geometry elements</source>
-        <translation type="obsolete">ジオメトリエレメントの型を変える</translation>
+        <translation>ジオメトリエレメントの型を変える</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
         <source>Choose appropriate format</source>
-        <translation type="obsolete">適切な形式を選択する</translation>
+        <translation>適切な形式を選択する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
         <source>Columns management</source>
-        <translation type="obsolete">カラムの管理</translation>
+        <translation>カラムの管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
         <source>Compares bit patterns with raster</source>
-        <translation type="obsolete">ラスタのビットパターンを比較する</translation>
+        <translation>ラスタのビットパターンを比較する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
         <source>Compress and decompress raster</source>
-        <translation type="obsolete">ラスタの圧縮と解凍</translation>
+        <translation>ラスタの圧縮と解凍</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
         <source>Compress raster</source>
-        <translation type="obsolete">ラスタの圧縮</translation>
+        <translation>ラスタの圧縮</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Computes a coordinate transformation based on the control points</source>
-        <translation type="obsolete">コントロールポイントに基づいた座標変換を計算する</translation>
+        <translation>コントロールポイントに基づいた座標変換を計算する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
         <source>Concentric circles</source>
-        <translation type="obsolete">同心円</translation>
+        <translation>同心円</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
         <source>Config</source>
-        <translation type="obsolete">構成</translation>
+        <translation>構成</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
-        <translation type="obsolete">最短経路でノードを接続する（巡回セールスマン）</translation>
+        <translation>最短経路でノードを接続する（巡回セールスマン）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
-        <translation type="obsolete">最短ツリーで選択されたノードを接続する（スタイナーツリー)</translation>
+        <translation>最短ツリーで選択されたノードを接続する（スタイナーツリー)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Connect vector to database</source>
-        <translation type="obsolete">ベクタをデータベースに接続する</translation>
+        <translation>ベクタをデータベースに接続する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
         <source>Convert 2D vector to 3D by sampling raster</source>
-        <translation type="obsolete">サンプリングラスタを利用して２Dベクタを３Dに変換する</translation>
+        <translation>サンプリングラスタを利用して２Dベクタを３Dに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation type="obsolete">標高ラスタをサンプリングして２次元ベクタを３次元ベクタに変換します.デフォルトサンプリングは最近傍法です</translation>
+        <translation>標高ラスタをサンプリングして２次元ベクタを３次元ベクタに変換します.デフォルトサンプリングは最近傍法です</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
-        <translation type="obsolete">GRASSバイナリベクタをGRASS ASCIIベクタに変換する</translation>
+        <translation>GRASSバイナリベクタをGRASS ASCIIベクタに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert a raster to vector</source>
-        <translation type="obsolete">ラスタをベクタに変換する</translation>
+        <translation>ラスタをベクタに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert a vector to raster</source>
-        <translation type="obsolete">ベクタをラスタに変換する</translation>
+        <translation>ベクタをラスタに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
-        <translation type="obsolete">方向と距離の計測結果を座標列に変換する、または逆変換する</translation>
+        <translation>方向と距離の計測結果を座標列に変換する、または逆変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert boundaries to lines</source>
-        <translation type="obsolete">境界をラインに変換する</translation>
+        <translation>境界をラインに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
         <source>Convert centroids to points</source>
-        <translation type="obsolete">重心を点に変換する</translation>
+        <translation>重心を点に変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
         <source>Convert coordinates</source>
-        <translation type="obsolete">座標群の変換</translation>
+        <translation>座標群の変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
-        <translation type="obsolete">座標群をある投影法から別の投影法に変換する（cs2csのフロントエンド)</translation>
+        <translation>座標群をある投影法から別の投影法に変換する（cs2csのフロントエンド)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
         <source>Convert lines to boundaries</source>
-        <translation type="obsolete">ラインを境界に変換する</translation>
+        <translation>ラインを境界に変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
         <source>Convert points to centroids</source>
-        <translation type="obsolete">点群を重心に変換する</translation>
+        <translation>点群を重心に変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
         <source>Convert raster to vector areas</source>
-        <translation type="obsolete">ラスタをベクタエリアに変換する</translation>
+        <translation>ラスタをベクタエリアに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
         <source>Convert raster to vector lines</source>
-        <translation type="obsolete">ラスタをベクタラインに変換する</translation>
+        <translation>ラスタをベクタラインに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
         <source>Convert raster to vector points</source>
-        <translation type="obsolete">ラスタをベクタ点群に変換する</translation>
+        <translation>ラスタをベクタ点群に変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
         <source>Convert vector to raster using attribute values</source>
-        <translation type="obsolete">属性値を利用してベクタをラスタに変換する</translation>
+        <translation>属性値を利用してベクタをラスタに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
         <source>Convert vector to raster using constant</source>
-        <translation type="obsolete">定数を利用してベクタをラスタに変換する</translation>
+        <translation>定数を利用してベクタをラスタに変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
         <source>Convex hull</source>
-        <translation type="obsolete">凸包</translation>
+        <translation>凸包</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
         <source>Copy a table</source>
-        <translation type="obsolete">テーブルをコピーする</translation>
+        <translation>テーブルをコピーする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
         <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
-        <translation type="obsolete">属性テーブルもコピーします（レイヤ毎に１テーブルのコピーのみサポートされています）</translation>
+        <translation>属性テーブルもコピーします（レイヤ毎に１テーブルのコピーのみサポートされています）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
         <source>Count of neighbouring points</source>
-        <translation type="obsolete">近隣のポイント数を数える</translation>
+        <translation>近隣のポイント数を数える</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
-        <translation type="obsolete">２Dの標高とラスタの値に基づいて３Dボリュームマップを作成する</translation>
+        <translation>２Dの標高とラスタの値に基づいて３Dボリュームマップを作成する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Create a MASK for limiting raster operation</source>
-        <translation type="obsolete">ラスタオペレーションを制限するためのマスクを作る</translation>
+        <translation>ラスタオペレーションを制限するためのマスクを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
         <source>Create a map containing concentric rings</source>
-        <translation type="obsolete">同心円を含んだ地図を作ります</translation>
+        <translation>同心円を含んだ地図を作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
         <source>Create a raster plane</source>
-        <translation type="obsolete">ラスタ面を作成します</translation>
+        <translation>ラスタ面を作成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Create and add new table to vector</source>
-        <translation type="obsolete">新しいテーブルを作ってベクタに追加する</translation>
+        <translation>新しいテーブルを作ってベクタに追加する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
         <source>Create and/or modify raster support files</source>
-        <translation type="obsolete">ラスタサポートファイルを作成または修正する</translation>
+        <translation>ラスタサポートファイルを作成または修正する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
         <source>Create aspect raster from DEM (digital elevation model)</source>
-        <translation type="obsolete">傾斜方位ラスタをDEM（デジタル標高モデル）から作る</translation>
+        <translation>傾斜方位ラスタをDEM（デジタル標高モデル）から作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
         <source>Create cross product of category values from multiple rasters</source>
-        <translation type="obsolete">複数のラスタからクロスで作成されたカテゴリ値を作成します</translation>
+        <translation>複数のラスタからクロスで作成されたカテゴリ値を作成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
         <source>Create fractal surface of given fractal dimension</source>
-        <translation type="obsolete">与えられたフラクタル次元にしたがってフラクタル面を作ります</translation>
+        <translation>与えられたフラクタル次元にしたがってフラクタル面を作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
         <source>Create grid in current region</source>
-        <translation type="obsolete">現在の領域にグリッドを作る</translation>
+        <translation>現在の領域にグリッドを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
-        <translation type="obsolete">既存ラスタの分類を再分類したユーザ定義の分類の値に基づいて新レイヤを作成します</translation>
+        <translation>既存ラスタの分類を再分類したユーザ定義の分類の値に基づいて新レイヤを作成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create new raster by combining other rasters</source>
-        <translation type="obsolete">別のラスタを混合した新しいラスタを作る</translation>
+        <translation>別のラスタを混合した新しいラスタを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create new vector by combining other vectors</source>
-        <translation type="obsolete">別のベクタを混合した新しいベクタを作る</translation>
+        <translation>別のベクタを混合した新しいベクタを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create new vector with current region extent</source>
-        <translation type="obsolete">現在の領域の範囲で新しいベクタを作る</translation>
+        <translation>現在の領域の範囲で新しいベクタを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create nodes on network</source>
-        <translation type="obsolete">ネットワークのノードを作る</translation>
+        <translation>ネットワークのノードを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create parallel line to input lines</source>
-        <translation type="obsolete">入力ラインの平行線を作る</translation>
+        <translation>入力ラインの平行線を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
         <source>Create points</source>
-        <translation type="obsolete">点を作る</translation>
+        <translation>点を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create points along input lines</source>
-        <translation type="obsolete">入力ラインにそってポイントを作る</translation>
+        <translation>入力ラインにそってポイントを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
         <source>Create points/segments from input vector lines and positions</source>
-        <translation type="obsolete">入力ベクタラインと位置から点群/セグメントを作成します</translation>
+        <translation>入力ベクタラインと位置から点群/セグメントを作成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
         <source>Create quantization file for floating-point raster</source>
-        <translation type="obsolete">浮動小数点値で構成されたラスタから量子化データを作る</translation>
+        <translation>浮動小数点値で構成されたラスタから量子化データを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
         <source>Create random 2D/3D vector points</source>
-        <translation type="obsolete">ランダムな2D/3Dポイントを作る</translation>
+        <translation>ランダムな2D/3Dポイントを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
         <source>Create random cell values with spatial dependence</source>
-        <translation type="obsolete">空間依存性を利用してランダムなセルの値を作ります</translation>
+        <translation>空間依存性を利用してランダムなセルの値を作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
         <source>Create random points</source>
-        <translation type="obsolete">ランダムな点群を作る</translation>
+        <translation>ランダムな点群を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
         <source>Create random vector point contained in raster</source>
-        <translation type="obsolete">ラスタに含まれるランダムなベクタ点群を作る</translation>
+        <translation>ラスタに含まれるランダムなベクタ点群を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
-        <translation type="obsolete">ラスタからのテクスチャ地物を使ってラスタを作ります(第1系統インデックス)</translation>
+        <translation>ラスタからのテクスチャ地物を使ってラスタを作ります(第1系統インデックス)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
         <source>Create raster of distance to features in input layer</source>
-        <translation type="obsolete">入力レイヤの地物に対する距離のラスタを作ります</translation>
+        <translation>入力レイヤの地物に対する距離のラスタを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
-        <translation type="obsolete">ユーザ定義平均と標準偏差によるガウス分布によるラスタを作ります</translation>
+        <translation>ユーザ定義平均と標準偏差によるガウス分布によるラスタを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
         <source>Create raster of uniform random deviates with user-defined range</source>
-        <translation type="obsolete">ユーザ定義範囲の一様ランダム偏差を使ったラスタを作ります</translation>
+        <translation>ユーザ定義範囲の一様ランダム偏差を使ったラスタを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create raster with contiguous areas grown by one cell</source>
-        <translation type="obsolete">一個のセルから拡張した連続領域を使ってラスタを作ります</translation>
+        <translation>一個のセルから拡張した連続領域を使ってラスタを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
         <source>Create raster with textural features from raster (second serie of indices)</source>
-        <translation type="obsolete">ラスタからのテクスチャ地物を使ってラスタを作ります(第２系統インデックス)</translation>
+        <translation>ラスタからのテクスチャ地物を使ってラスタを作ります(第２系統インデックス)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
-        <translation type="obsolete">別ラスタの色相　明度　彩度（HIS)を混合して赤、緑、青（RGB)のラスタを作ります</translation>
+        <translation>別ラスタの色相　明度　彩度（HIS)を混合して赤、緑、青（RGB)のラスタを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
         <source>Create shaded map</source>
-        <translation type="obsolete">陰影図を作る</translation>
+        <translation>陰影図を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
         <source>Create slope raster from DEM (digital elevation model)</source>
-        <translation type="obsolete">DEM(デジタル標高モデル）から傾斜ラスタを作る</translation>
+        <translation>DEM(デジタル標高モデル）から傾斜ラスタを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
         <source>Create standard vectors</source>
-        <translation type="obsolete">標準ベクタを作る</translation>
+        <translation>標準ベクタを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
         <source>Create surface from rasterized contours</source>
-        <translation type="obsolete">ラスタ化された等高線から面を作る</translation>
+        <translation>ラスタ化された等高線から面を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
         <source>Create vector contour from raster at specified levels</source>
-        <translation type="obsolete">ラスタから指定レベルのベクタ等高線を作る</translation>
+        <translation>ラスタから指定レベルのベクタ等高線を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
         <source>Create vector contour from raster at specified steps</source>
-        <translation type="obsolete">ラスタから指定ステップのベクタ等高線を作る</translation>
+        <translation>ラスタから指定ステップのベクタ等高線を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
         <source>Create watershed basin</source>
-        <translation type="obsolete">流域を作る</translation>
+        <translation>流域を作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
         <source>Create watershed subbasins raster</source>
-        <translation type="obsolete">流域ラスタを作る</translation>
+        <translation>流域ラスタを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
         <source>Cut network by cost isolines</source>
-        <translation type="obsolete">ネットワークを等費用線で切断する</translation>
+        <translation>ネットワークを等費用線で切断する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
         <source>DXF vector layer</source>
-        <translation type="obsolete">DXFベクタレイヤ</translation>
+        <translation>DXFベクタレイヤ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
         <source>Database</source>
-        <translation type="obsolete">データベース</translation>
+        <translation>データベース</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Database connection</source>
-        <translation type="obsolete">データベース接続</translation>
+        <translation>データベース接続</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Database file</source>
-        <translation type="obsolete">データベースファイル</translation>
+        <translation>データベースファイル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Database management</source>
-        <translation type="obsolete">データベース管理</translation>
+        <translation>データベース管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
         <source>Database parameters</source>
-        <translation type="obsolete">データベースパラメータ</translation>
+        <translation>データベースパラメータ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
         <source>Delaunay triangulation (areas)</source>
-        <translation type="obsolete">ドロネイ三角分割（領域）</translation>
+        <translation>ドロネイ三角分割（領域）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
         <source>Delaunay triangulation (lines)</source>
-        <translation type="obsolete">ドロネイ三角分割（線）</translation>
+        <translation>ドロネイ三角分割（線）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
         <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
-        <translation type="obsolete">ドロネイ三角分割 ボロノイ図 と凸包</translation>
+        <translation>ドロネイ三角分割 ボロノイ図 と凸包</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
         <source>Delete category values</source>
-        <translation type="obsolete">カテゴリ値を削除する</translation>
+        <translation>カテゴリ値を削除する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
         <source>Develop images and group</source>
-        <translation type="obsolete">画像とグループを展開する</translation>
+        <translation>画像とグループを展開する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
         <source>Develop map</source>
-        <translation type="obsolete">地図を展開する</translation>
+        <translation>地図を展開する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
         <source>Directory of rasters to be linked</source>
-        <translation type="obsolete">ラスタのディレクトリがリンクされる</translation>
+        <translation>ラスタのディレクトリがリンクされる</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
         <source>Disconnect vector from database</source>
-        <translation type="obsolete">ベクタをデータベースから切断する</translation>
+        <translation>ベクタをデータベースから切断する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
         <source>Display general DB connection</source>
-        <translation type="obsolete">データベース接続情報を表示する</translation>
+        <translation>データベース接続情報を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
         <source>Display list of category values found in raster</source>
-        <translation type="obsolete">ラスタ内のカテゴリ情報リストを表示する</translation>
+        <translation>ラスタ内のカテゴリ情報リストを表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
         <source>Display projection information from PROJ.4 projection description file</source>
-        <translation type="obsolete">PROJ.4解説ファイルにある投影法情報を表示します</translation>
+        <translation>PROJ.4解説ファイルにある投影法情報を表示します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
         <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
-        <translation type="obsolete">PROJ.4解説ファイルにある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
+        <translation>PROJ.4解説ファイルにある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
         <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
-        <translation type="obsolete">ジオリファレンスされたファイル(ラスタ、ベクタまたは画像)にある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
+        <translation>ジオリファレンスされたファイル(ラスタ、ベクタまたは画像)にある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
-        <translation type="obsolete">WKT（well known text)を含むジオリファレンスされたASCIIファイルにある投影法情報を表示します</translation>
+        <translation>WKT（well known text)を含むジオリファレンスされたASCIIファイルにある投影法情報を表示します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
-        <translation type="obsolete">WKT（well known text)を含むジオリファレンスされたASCIIファイルにある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
+        <translation>WKT（well known text)を含むジオリファレンスされたASCIIファイルにある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
         <source>Display projection information from georeferenced file (raster, vector or image)</source>
-        <translation type="obsolete">ジオリファレンスされたファイル(ラスタ、ベクタまたは画像)にある投影法情報を表示します,</translation>
+        <translation>ジオリファレンスされたファイル(ラスタ、ベクタまたは画像)にある投影法情報を表示します,</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
         <source>Display projection information of the current location</source>
-        <translation type="obsolete">現在のロケーションの投影法情報を表示する</translation>
+        <translation>現在のロケーションの投影法情報を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
         <source>Display raster category values and labels</source>
-        <translation type="obsolete">ラスタカテゴリ値とラベルを表示する</translation>
+        <translation>ラスタカテゴリ値とラベルを表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
         <source>Display results of SQL selection from database</source>
-        <translation type="obsolete">データベースからSQLで検索した結果を表示する</translation>
+        <translation>データベースからSQLで検索した結果を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
         <source>Display the HTML manual pages of GRASS</source>
-        <translation type="obsolete">GRASSのHTML版マニュアルページを表示する</translation>
+        <translation>GRASSのHTML版マニュアルページを表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
         <source>Display vector attributes</source>
-        <translation type="obsolete">ベクタ属性を表示する</translation>
+        <translation>ベクタ属性を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
         <source>Display vector map attributes with SQL</source>
-        <translation type="obsolete">ベクタマップの属性をSQLを使って表示する</translation>
+        <translation>ベクタマップの属性をSQLを使って表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
-        <translation type="obsolete">隣接した面で同じカテゴリ値か属性値をもつものの間の境界線をなくす（ディゾルブ）</translation>
+        <translation>隣接した面で同じカテゴリ値か属性値をもつものの間の境界線をなくす（ディゾルブ）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
         <source>Download and import data from WMS server</source>
-        <translation type="obsolete">WMSサーバからデータをダウンロードしてインポートする</translation>
+        <translation>WMSサーバからデータをダウンロードしてインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
         <source>Drop column from attribute table</source>
-        <translation type="obsolete">属性テーブルからカラムを削除する</translation>
+        <translation>属性テーブルからカラムを削除する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
         <source>E00 vector layer</source>
-        <translation type="obsolete">E00ベクタレイヤ</translation>
+        <translation>E00ベクタレイヤ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
         <source>Execute any SQL statement</source>
-        <translation type="obsolete">任意のSQL文を実行する</translation>
+        <translation>任意のSQL文を実行する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
         <source>Export</source>
-        <translation type="obsolete">エキスポート</translation>
+        <translation>エキスポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation type="obsolete">3 GRASS ラスタ (R,G,B)を現在の領域の解像度でPPM画像にエキスポートします</translation>
+        <translation>3 GRASS ラスタ (R,G,B)を現在の領域の解像度でPPM画像にエキスポートします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
         <source>Export raster</source>
-        <translation type="obsolete">ラスタをエキスポートする</translation>
+        <translation>ラスタをエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
         <source>Export raster as non-georeferenced PNG image format</source>
-        <translation type="obsolete">ラスタを空間参照情報が無いPNG画像形式でエキスポートする</translation>
+        <translation>ラスタを空間参照情報が無いPNG画像形式でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
         <source>Export raster series to MPEG movie</source>
-        <translation type="obsolete">連続したラスタをMPEG動画像としてエクスポートする</translation>
+        <translation>連続したラスタをMPEG動画像としてエクスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
-        <translation type="obsolete">現在の領域の現在の解像度のラスタを8/24ビットのTIFF画像でエキスポートする</translation>
+        <translation>現在の領域の現在の解像度のラスタを8/24ビットのTIFF画像でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
         <source>Export raster to ASCII text file</source>
-        <translation type="obsolete">ラスタをASCIIテキストファイルでエキスポートする</translation>
+        <translation>ラスタをASCIIテキストファイルでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
         <source>Export raster to ESRI ARCGRID</source>
-        <translation type="obsolete">ラスタをESRI ARCGRIDでエキスポートする</translation>
+        <translation>ラスタをESRI ARCGRIDでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="obsolete">ラスタからGRIDATB.FOR マップファイル(TOPMODEL)をエキスポートします</translation>
+        <translation>ラスタからGRIDATB.FOR マップファイル(TOPMODEL)をエキスポートします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export raster to Geo TIFF</source>
-        <translation type="obsolete">ラスタをGeo TIFFでエキスポートする</translation>
+        <translation>ラスタをGeo TIFFでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
         <source>Export raster to POVRAY height-field file</source>
-        <translation type="obsolete">ラスタをPOVRAY高さフィールドファイルでエキスポートする</translation>
+        <translation>ラスタをPOVRAY高さフィールドファイルでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation type="obsolete">現在の領域の現在の解像度のラスタをPPM画像でエキスポートする</translation>
+        <translation>現在の領域の現在の解像度のラスタをPPM画像でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
         <source>Export raster to VTK-ASCII</source>
-        <translation type="obsolete">ラスタをVTK－ASCII形式でエキスポートする</translation>
+        <translation>ラスタをVTK－ASCII形式でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
-        <translation type="obsolete">ラスタをバーチャルリアリティモデリングランゲージ（VRML)にエキスポートする</translation>
+        <translation>ラスタをバーチャルリアリティモデリングランゲージ（VRML)にエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
         <source>Export raster to binary MAT-File</source>
-        <translation type="obsolete">ラスタをバイナリMAT-Fileにエキスポートする</translation>
+        <translation>ラスタをバイナリMAT-Fileにエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to binary array</source>
-        <translation type="obsolete">ラスタをバイナリ配列にエキスポートする</translation>
+        <translation>ラスタをバイナリ配列にエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster to text file as x,y,z values based on cell centers</source>
-        <translation type="obsolete">ラスタをセルに中心の値のx,y,zが記述されたテキストファイルにエキスポートする</translation>
+        <translation>ラスタをセルに中心の値のx,y,zが記述されたテキストファイルにエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to various formats (GDAL library)</source>
-        <translation type="obsolete">ラスタを様々な形式（GDAL library)にエキスポートする</translation>
+        <translation>ラスタを様々な形式（GDAL library)にエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export vector</source>
-        <translation type="obsolete">ベクタをエクスポートする</translation>
+        <translation>ベクタをエクスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
         <source>Export vector table</source>
-        <translation type="obsolete">ベクタテーブルをエクスポートする</translation>
+        <translation>ベクタテーブルをエクスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
         <source>Export vector to DXF</source>
-        <translation type="obsolete">ベクタをDXFでエキスポートする</translation>
+        <translation>ベクタをDXFでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export vector to GML</source>
-        <translation type="obsolete">ベクタをGMLでエキスポートする</translation>
+        <translation>ベクタをGMLでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export vector to Mapinfo</source>
-        <translation type="obsolete">ベクタをMapInfo形式でエキスポートする</translation>
+        <translation>ベクタをMapInfo形式でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
         <source>Export vector to POV-Ray</source>
-        <translation type="obsolete">ベクタをPOV-Ray形式でエキスポートする</translation>
+        <translation>ベクタをPOV-Ray形式でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
         <source>Export vector to PostGIS</source>
-        <translation type="obsolete">ベクタをPostGISにエキスポートする</translation>
+        <translation>ベクタをPostGISにエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
-        <translation type="obsolete">ベクタをPostGIS(PostgreSQL)データベーステーブルにエキスポートする</translation>
+        <translation>ベクタをPostGIS(PostgreSQL)データベーステーブルにエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
         <source>Export vector to SVG</source>
-        <translation type="obsolete">ベクタをSVGにエキスポートする</translation>
+        <translation>ベクタをSVGにエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export vector to Shapefile</source>
-        <translation type="obsolete">ベクタをShapefileに出力する</translation>
+        <translation>ベクタをShapefileに出力する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export vector to VTK-ASCII</source>
-        <translation type="obsolete">ベクタをVTK-ASCIIでエキスポートする</translation>
+        <translation>ベクタをVTK-ASCIIでエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export vector to various formats (OGR library)</source>
-        <translation type="obsolete">ベクタを様々な形式（OGR library)でエキスポートする</translation>
+        <translation>ベクタを様々な形式（OGR library)でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
         <source>Exports attribute tables into various format</source>
-        <translation type="obsolete">属性テーブルを様々な形式でエキスポートする</translation>
+        <translation>属性テーブルを様々な形式でエキスポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Extract features from vector</source>
-        <translation type="obsolete">ベクタから地物を抽出する</translation>
+        <translation>ベクタから地物を抽出する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
         <source>Extract selected features</source>
-        <translation type="obsolete">選択した地物を抽出する</translation>
+        <translation>選択した地物を抽出する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
         <source>Extracts terrain parameters from DEM</source>
-        <translation type="obsolete">DEMから地形パラメータを抽出する</translation>
+        <translation>DEMから地形パラメータを抽出する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
         <source>Fast fourier transform for image processing</source>
-        <translation type="obsolete">イメージ処理のためのファーストフーリエ変換</translation>
+        <translation>イメージ処理のためのファーストフーリエ変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>File</source>
-        <translation type="obsolete">ファイル</translation>
+        <translation>ファイル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Fill lake from seed at given level</source>
-        <translation type="obsolete">与えられたレベルのシードで湖を満たす</translation>
+        <translation>与えられたレベルのシードで湖を満たす</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Fill lake from seed point at given level</source>
-        <translation type="obsolete">指定点で与えられたレベルで湖を満たす</translation>
+        <translation>指定点で与えられたレベルで湖を満たす</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
-        <translation type="obsolete">v.surf.rst スプライン補間を使ってラスタのデータが無い領域を満たします</translation>
+        <translation>v.surf.rst スプライン補間を使ってラスタのデータが無い領域を満たします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation type="obsolete">フィルタを行い俯角無しの標高図を作成します,さらに標高ラスタから方位図を導きだします</translation>
+        <translation>フィルタを行い俯角無しの標高図を作成します,さらに標高ラスタから方位図を導きだします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
         <source>Filter image</source>
-        <translation type="obsolete">画像をフィルタする</translation>
+        <translation>画像をフィルタする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
         <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
-        <translation type="obsolete">ベクタ内エレメント&apos;from&apos;から一番近いベクタ内エレメント&apos;to&apos;を探します.この関係に関する多くの情報は&apos;from&apos;入力ベクタ属性デーブルにアップロードされるでしょう</translation>
+        <translation>ベクタ内エレメント&apos;from&apos;から一番近いベクタ内エレメント&apos;to&apos;を探します.この関係に関する多くの情報は&apos;from&apos;入力ベクタ属性デーブルにアップロードされるでしょう</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
         <source>Find shortest path on vector network</source>
-        <translation type="obsolete">ベクタネットワークで最短経路を探索する</translation>
+        <translation>ベクタネットワークで最短経路を探索する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
         <source>GDAL raster layer</source>
-        <translation type="obsolete">GDALラスタレイヤ</translation>
+        <translation>GDALラスタレイヤ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>GRASS MODULES</source>
-        <translation type="obsolete">GRASSモジュール</translation>
+        <translation>GRASSモジュール</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>GRASS shell</source>
-        <translation type="obsolete">GRASS shell</translation>
+        <translation>GRASS shell</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>Gaussian kernel density</source>
-        <translation type="obsolete">ガウスカーネル密度</translation>
+        <translation>ガウスカーネル密度</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
         <source>Generalization</source>
-        <translation type="obsolete">一般化</translation>
+        <translation>一般化</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster</source>
-        <translation type="obsolete">入力ラスタのコストに基づく位置間移動の累積コストを利用したラスタを生成します</translation>
+        <translation>入力ラスタのコストに基づく位置間移動の累積コストを利用したラスタを生成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
         <source>Generate surface</source>
-        <translation type="obsolete">面の作成</translation>
+        <translation>面の作成</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
         <source>Generate vector contour lines</source>
-        <translation type="obsolete">ベクタ等高線の作成</translation>
+        <translation>ベクタ等高線の作成</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
         <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
-        <translation type="obsolete">gdalwarpを利用してTerra-ASTER画像とDEMの空間参照の調整とインポートを行います</translation>
+        <translation>gdalwarpを利用してTerra-ASTER画像とDEMの空間参照の調整とインポートを行います</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
         <source>Graphical raster map calculator</source>
-        <translation type="obsolete">グラフィカルラスタマップ計算機</translation>
+        <translation>グラフィカルラスタマップ計算機</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
         <source>Help</source>
-        <translation type="obsolete">ヘルプ</translation>
+        <translation>ヘルプ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
-        <translation type="obsolete">色相　明度　彩度（HIS)を赤、緑、青（RGB)ラスタカラーに変換する機能</translation>
+        <translation>色相　明度　彩度（HIS)を赤、緑、青（RGB)ラスタカラーに変換する機能</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
         <source>Hydrologic modelling</source>
-        <translation type="obsolete">水理モデル</translation>
+        <translation>水理モデル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
         <source>Imagery</source>
-        <translation type="obsolete">画像</translation>
+        <translation>画像</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
         <source>Import</source>
-        <translation type="obsolete">インポート</translation>
+        <translation>インポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
         <source>Import ASCII raster</source>
-        <translation type="obsolete">ASCIIラスタのインポート</translation>
+        <translation>ASCIIラスタのインポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
         <source>Import DXF vector</source>
-        <translation type="obsolete">DXFベクタのインポート</translation>
+        <translation>DXFベクタのインポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
-        <translation type="obsolete">ESRI ARC/INFO ASCII GRIDをインポートする</translation>
+        <translation>ESRI ARC/INFO ASCII GRIDをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
         <source>Import ESRI E00 vector</source>
-        <translation type="obsolete">ESRI E00をインポートする</translation>
+        <translation>ESRI E00をインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Import GDAL supported raster</source>
-        <translation type="obsolete">GDALでサポートされているラスタをインポートする</translation>
+        <translation>GDALでサポートされているラスタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Import GDAL supported raster and create a fitted location</source>
-        <translation type="obsolete">GDALでサポートされるラスタをインポートして適切なロケーションを作成する</translation>
+        <translation>GDALでサポートされるラスタをインポートして適切なロケーションを作成する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="obsolete">GRIDATB.FOR (TOPMODEL)のインポート</translation>
+        <translation>GRIDATB.FOR (TOPMODEL)のインポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
         <source>Import MapGen or MatLab vector</source>
-        <translation type="obsolete">MapGenまたはMatLabベクタのインポート</translation>
+        <translation>MapGenまたはMatLabベクタのインポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
         <source>Import OGR vector</source>
-        <translation type="obsolete">OGRベクタをインポートする</translation>
+        <translation>OGRベクタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
-        <translation type="obsolete">提供されたデータソースのOGRベクタをインポートしてGRASSベクタに混在させる</translation>
+        <translation>提供されたデータソースのOGRベクタをインポートしてGRASSベクタに混在させる</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
         <source>Import OGR/PostGIS vector and create a fitted location</source>
-        <translation type="obsolete">OGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
+        <translation>OGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
         <source>Import SPOT VGT NDVI</source>
-        <translation type="obsolete">SPOT VGT NDVIをインポートする</translation>
+        <translation>SPOT VGT NDVIをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Import SRTM HGT</source>
-        <translation type="obsolete">SRTM HGTをインポートする</translation>
+        <translation>SRTM HGTをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
-        <translation type="obsolete">US-NGA GEOnet Names Server (GNS)のカントリーファイルをインポートします</translation>
+        <translation>US-NGA GEOnet Names Server (GNS)のカントリーファイルをインポートします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
-        <translation type="obsolete">提供されたデータソースのOGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
+        <translation>提供されたデータソースのOGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
         <source>Import attribute tables in various formats</source>
-        <translation type="obsolete">様々な形式の属性テーブルをインポートします</translation>
+        <translation>様々な形式の属性テーブルをインポートします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
         <source>Import binary MAT-File(v4)</source>
-        <translation type="obsolete">MAT-File(v4)バイナリをインポートする</translation>
+        <translation>MAT-File(v4)バイナリをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Import binary raster</source>
-        <translation type="obsolete">バイナリラスタをインポートする</translation>
+        <translation>バイナリラスタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
         <source>Import geonames.org country files</source>
-        <translation type="obsolete">geonames.orgのカントリーファイルをインポートします</translation>
+        <translation>geonames.orgのカントリーファイルをインポートします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import loaded raster</source>
-        <translation type="obsolete">ロードされたラスタをインポートする</translation>
+        <translation>ロードされたラスタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import loaded raster and create a fitted location</source>
-        <translation type="obsolete">ロードされたラスタをインポートしてその領域のロケーションを作成する</translation>
+        <translation>ロードされたラスタをインポートしてその領域のロケーションを作成する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
         <source>Import loaded vector</source>
-        <translation type="obsolete">ロードされたベクタをインポートする</translation>
+        <translation>ロードされたベクタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
         <source>Import loaded vector and create a fitted location</source>
-        <translation type="obsolete">ロードされたベクタをインポートしてその領域のロケーションを作成する</translation>
+        <translation>ロードされたベクタをインポートしてその領域のロケーションを作成する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import loaded vector selecting some features</source>
-        <translation type="obsolete">ロードされたベクタの選択された地物をインポートする</translation>
+        <translation>ロードされたベクタの選択された地物をインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
         <source>Import only some layers of a DXF vector</source>
-        <translation type="obsolete">DXFベクタのいくつかのレイヤのみインポートする</translation>
+        <translation>DXFベクタのいくつかのレイヤのみインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
         <source>Import raster</source>
-        <translation type="obsolete">ラスタをインポートする</translation>
+        <translation>ラスタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
         <source>Import raster from ASCII polygon/line</source>
-        <translation type="obsolete">ASCIIポリゴン/ラインからラスタをインポートする</translation>
+        <translation>ASCIIポリゴン/ラインからラスタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
         <source>Import raster from coordinates using univariate statistics</source>
-        <translation type="obsolete">単変量統計を利用して座標列からラスタをインポートする</translation>
+        <translation>単変量統計を利用して座標列からラスタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
         <source>Import vector</source>
-        <translation type="obsolete">ベクタのインポート</translation>
+        <translation>ベクタのインポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import vector from gps using gpsbabel</source>
-        <translation type="obsolete">gpsbabelを利用してgpsからベクタをインポートする</translation>
+        <translation>gpsbabelを利用してgpsからベクタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import vector from gps using gpstrans</source>
-        <translation type="obsolete">gpstransを利用してgpsからベクタをインポートする</translation>
+        <translation>gpstransを利用してgpsからベクタをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import vector points from database table containing coordinates</source>
-        <translation type="obsolete">座標を持つデータベーステーブルからベクタポイントをインポートする</translation>
+        <translation>座標を持つデータベーステーブルからベクタポイントをインポートする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
         <source>Input nodes</source>
-        <translation type="obsolete">ノードを入力する</translation>
+        <translation>ノードを入力する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
         <source>Input table</source>
-        <translation type="obsolete">テーブルを入力する</translation>
+        <translation>テーブルを入力する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
         <source>Interpolate surface</source>
-        <translation type="obsolete">面を補間する</translation>
+        <translation>面を補間する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Inverse distance squared weighting raster interpolation</source>
-        <translation type="obsolete">逆距離平方荷重によるラスタ補間</translation>
+        <translation>逆距離平方荷重によるラスタ補間</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
-        <translation type="obsolete">ベクタポイントに基づいた逆距離平方荷重によるラスタ補間</translation>
+        <translation>ベクタポイントに基づいた逆距離平方荷重によるラスタ補間</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation type="obsolete">イメージ処理のための逆ファーストフーリエ変換</translation>
+        <translation>イメージ処理のための逆ファーストフーリエ変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Join table to existing vector table</source>
-        <translation type="obsolete">既存ベクタテーブルにテーブルを結合する</translation>
+        <translation>既存ベクタテーブルにテーブルを結合する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
         <source>Layers categories management</source>
-        <translation type="obsolete">レイヤカテゴリの管理</translation>
+        <translation>レイヤカテゴリの管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Line-of-sight raster analysis</source>
-        <translation type="obsolete">視線ラスタ解析</translation>
+        <translation>視線ラスタ解析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation type="obsolete">GDALでサポートされるラスタレイヤをバイナリラスタマップレイヤにリンクする</translation>
+        <translation>GDALでサポートされるラスタレイヤをバイナリラスタマップレイヤにリンクする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Link GDAL supported raster to binary raster</source>
-        <translation type="obsolete">GDALでサポートされるラスタをバイナリラスタにリンクする</translation>
+        <translation>GDALでサポートされるラスタをバイナリラスタにリンクする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation type="obsolete">ディレクトリ内の全てのGDALでサポートされるラスタをバイナリラスタにリンクする</translation>
+        <translation>ディレクトリ内の全てのGDALでサポートされるラスタをバイナリラスタにリンクする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="obsolete">入力ラスタのセルに依存する値をそれぞれのせるに割り当てる機能を動かします</translation>
+        <translation>入力ラスタのセルに依存する値をそれぞれのせるに割り当てる機能を動かします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
         <source>Manage features</source>
-        <translation type="obsolete">地物の管理</translation>
+        <translation>地物の管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
         <source>Manage image colors</source>
-        <translation type="obsolete">イメージカラーの管理</translation>
+        <translation>イメージカラーの管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Manage map colors</source>
-        <translation type="obsolete">マップカラーの管理</translation>
+        <translation>マップカラーの管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Manage raster cells value</source>
-        <translation type="obsolete">ラスタセルの値の管理</translation>
+        <translation>ラスタセルの値の管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Manage training dataset</source>
-        <translation type="obsolete">トレイニングデータセットの管理</translation>
+        <translation>トレイニングデータセットの管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
         <source>Map algebra</source>
-        <translation type="obsolete">地図演算</translation>
+        <translation>地図演算</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
         <source>Map type conversion</source>
-        <translation type="obsolete">地図の型変換</translation>
+        <translation>地図の型変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
         <source>MapGen or MatLab vector layer</source>
-        <translation type="obsolete">MapGenまたはMatLabベクタレイヤ</translation>
+        <translation>MapGenまたはMatLabベクタレイヤ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
         <source>Mask</source>
-        <translation type="obsolete">マスク</translation>
+        <translation>マスク</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
         <source>Metadata support</source>
-        <translation type="obsolete">メタデータサポート</translation>
+        <translation>メタデータサポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
         <source>Mosaic up to 4 images</source>
-        <translation type="obsolete">最大4個の画像のモザイク</translation>
+        <translation>最大4個の画像のモザイク</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
         <source>Name for new raster file (specify file extension)</source>
-        <translation type="obsolete">新ラスタファイルの名前(ファイル拡張子を指定)</translation>
+        <translation>新ラスタファイルの名前(ファイル拡張子を指定)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
         <source>Name for new vector file (specify file extension)</source>
-        <translation type="obsolete">新ベクタファイルの名前(ファイル拡張子を指定)</translation>
+        <translation>新ベクタファイルの名前(ファイル拡張子を指定)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
         <source>Name of the table to create</source>
-        <translation type="obsolete">作成するテーブルの名前</translation>
+        <translation>作成するテーブルの名前</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
         <source>Neighborhood analysis</source>
-        <translation type="obsolete">近隣解析</translation>
+        <translation>近隣解析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
         <source>Network analysis</source>
-        <translation type="obsolete">ネットワーク解析</translation>
+        <translation>ネットワーク解析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
         <source>Network maintenance</source>
-        <translation type="obsolete">ネットワークメンテナンス</translation>
+        <translation>ネットワークメンテナンス</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
         <source>OGR file</source>
-        <translation type="obsolete">OGRファイル</translation>
+        <translation>OGRファイル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>OGR vector layer</source>
-        <translation type="obsolete">OGRベクタレイヤ</translation>
+        <translation>OGRベクタレイヤ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
         <source>Others</source>
-        <translation type="obsolete">その他</translation>
+        <translation>その他</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
         <source>Output GML file</source>
-        <translation type="obsolete">GMLファイルに出力</translation>
+        <translation>GMLファイルに出力</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Output Shapefile</source>
-        <translation type="obsolete">Shapefileに出力</translation>
+        <translation>Shapefileに出力</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
         <source>Output layer name (used in GML file)</source>
-        <translation type="obsolete">出力レイヤ名(GMLファイル内で利用)</translation>
+        <translation>出力レイヤ名(GMLファイル内で利用)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
         <source>Output raster values along user-defined transect line(s)</source>
-        <translation type="obsolete">ユーザ定義横断ラインに沿ったラスタ値の出力</translation>
+        <translation>ユーザ定義横断ラインに沿ったラスタ値の出力</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
         <source>Overlay</source>
-        <translation type="obsolete">オーバーレイ</translation>
+        <translation>オーバーレイ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
         <source>Overlay maps</source>
-        <translation type="obsolete">地図をオーバーレイする</translation>
+        <translation>地図をオーバーレイする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
         <source>Path to the OGR data source</source>
-        <translation type="obsolete">OGRデータソースへのパス</translation>
+        <translation>OGRデータソースへのパス</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
         <source>Percentage of first layer (0-99)</source>
-        <translation type="obsolete">最初のレイヤ（0-99)のパーセンテージ</translation>
+        <translation>最初のレイヤ（0-99)のパーセンテージ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation type="obsolete">ベクタデータにアフィン変換（シフト、スケール、回転、またはGPC)を実行する</translation>
+        <translation>ベクタデータにアフィン変換（シフト、スケール、回転、またはGPC)を実行する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
         <source>Print projection information from a georeferenced file</source>
-        <translation type="obsolete">空間参照情報があるファイルの投影法情報を表示する</translation>
+        <translation>空間参照情報があるファイルの投影法情報を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation type="obsolete">空間参照情報があるファイルの投影法情報を表示して、その上方から新しいロケーションを作る</translation>
+        <translation>空間参照情報があるファイルの投影法情報を表示して、その上方から新しいロケーションを作る</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
         <source>Print projection information of the current location</source>
-        <translation type="obsolete">カレントロケーションの投影法情報を表示する</translation>
+        <translation>カレントロケーションの投影法情報を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Projection conversion of vector</source>
-        <translation type="obsolete">ベクタの投影法を変換する</translation>
+        <translation>ベクタの投影法を変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
         <source>Projection management</source>
-        <translation type="obsolete">投影法管理</translation>
+        <translation>投影法管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
         <source>Put geometry variables in database</source>
-        <translation type="obsolete">データベースのジオメトリ変数を加える</translation>
+        <translation>データベースのジオメトリ変数を加える</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
         <source>Query rasters on their category values and labels</source>
-        <translation type="obsolete">ラスタのカテゴリ値とラベルを検索する</translation>
+        <translation>ラスタのカテゴリ値とラベルを検索する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
         <source>Random location perturbations of vector points</source>
-        <translation type="obsolete">ベクタポイントを摂動させたランダムロケーション</translation>
+        <translation>ベクタポイントを摂動させたランダムロケーション</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
         <source>Randomly partition points into test/train sets</source>
-        <translation type="obsolete">ランダムに仕切られた点群をテスト/トレイニングセットに配置します</translation>
+        <translation>ランダムに仕切られた点群をテスト/トレイニングセットに配置します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
         <source>Raster</source>
-        <translation type="obsolete">ラスタ</translation>
+        <translation>ラスタ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
         <source>Raster buffer</source>
-        <translation type="obsolete">ラスタバッファ</translation>
+        <translation>ラスタバッファ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
         <source>Raster file matrix filter</source>
-        <translation type="obsolete">ラスタファイル行列フィルタ</translation>
+        <translation>ラスタファイル行列フィルタ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
         <source>Raster neighbours analysis</source>
-        <translation type="obsolete">ラスタを近傍分析します</translation>
+        <translation>ラスタを近傍分析します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Raster support</source>
-        <translation type="obsolete">ラスタサポート</translation>
+        <translation>ラスタサポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
         <source>Re-project raster from a location to the current location</source>
-        <translation type="obsolete">あるロケーションのラスタをカレントロケーションに再プロジェクトする</translation>
+        <translation>あるロケーションのラスタをカレントロケーションに再プロジェクトする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation type="obsolete">マップセットの全ベクタのトポロジを再構築します</translation>
+        <translation>マップセットの全ベクタのトポロジを再構築します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Recategorize contiguous cells to unique categories</source>
-        <translation type="obsolete">連続したセルをユニークカテゴリに最分類する</translation>
+        <translation>連続したセルをユニークカテゴリに最分類する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
         <source>Reclass category values</source>
-        <translation type="obsolete">カテゴリー値を再分類します</translation>
+        <translation>カテゴリー値を再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Reclass category values using a column attribute (integer positive)</source>
-        <translation type="obsolete">カラムの属性値（正の整数）を利用してカテゴリ値を再分類します</translation>
+        <translation>カラムの属性値（正の整数）を利用してカテゴリ値を再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
         <source>Reclass category values using a rules file</source>
-        <translation type="obsolete">ルールファイルを利用してカテゴリ値を再分類します</translation>
+        <translation>ルールファイルを利用してカテゴリ値を再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
         <source>Reclass raster using reclassification rules</source>
-        <translation type="obsolete">再分類ルールを利用してラスタを再分類します</translation>
+        <translation>再分類ルールを利用してラスタを再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation type="obsolete">ユーザが定義した領域サイズ（ヘクタール）より大きいパッチでラスタを再分類します</translation>
+        <translation>ユーザが定義した領域サイズ（ヘクタール）より大きいパッチでラスタを再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation type="obsolete">ユーザが定義した領域サイズ（ヘクタール）より小さいパッチでラスタを再分類します</translation>
+        <translation>ユーザが定義した領域サイズ（ヘクタール）より小さいパッチでラスタを再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
-        <translation type="obsolete">ユーザが定義した領域サイズ（ヘクタール）より大きい又は小さいサイズでラスタを再分類します</translation>
+        <translation>ユーザが定義した領域サイズ（ヘクタール）より大きい又は小さいサイズでラスタを再分類します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
         <source>Recode categorical raster using reclassification rules</source>
-        <translation type="obsolete">再分類ルールを利用して分類されたラスタを再コード化します</translation>
+        <translation>再分類ルールを利用して分類されたラスタを再コード化します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
         <source>Recode raster</source>
-        <translation type="obsolete">ラスタを記録します</translation>
+        <translation>ラスタを記録します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Reconnect vector to a new database</source>
-        <translation type="obsolete">新しいデータベースでベクタを再接続します</translation>
+        <translation>新しいデータベースでベクタを再接続します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
         <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
-        <translation type="obsolete">赤、緑、青（RGB)を色相　明度　彩度（HIS)ラスタカラーに変換する機能</translation>
+        <translation>赤、緑、青（RGB)を色相　明度　彩度（HIS)ラスタカラーに変換する機能</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
         <source>Region</source>
-        <translation type="obsolete">領域</translation>
+        <translation>領域</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
         <source>Region settings</source>
-        <translation type="obsolete">領域設定</translation>
+        <translation>領域設定</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
-        <translation type="obsolete">ラスタのテンションを利用した正規化されたスプラインをベクタポイントに基づいて補間します</translation>
+        <translation>ラスタのテンションを利用した正規化されたスプラインをベクタポイントに基づいて補間します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation type="obsolete">再補間とテンションとスムージングを使った正規化スプラインによるトポロジック解析を計算します</translation>
+        <translation>再補間とテンションとスムージングを使った正規化スプラインによるトポロジック解析を計算します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
         <source>Remove all lines or boundaries of zero length</source>
-        <translation type="obsolete">境界の長さが0である全てのラインを削除します</translation>
+        <translation>境界の長さが0である全てのラインを削除します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Remove bridges connecting area and island or 2 islands</source>
-        <translation type="obsolete">領域と島、または２つの島の間のブリッジを削除します</translation>
+        <translation>領域と島、または２つの島の間のブリッジを削除します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Remove dangles</source>
-        <translation type="obsolete">ぶら下がりを削除します</translation>
+        <translation>ぶら下がりを削除します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
         <source>Remove duplicate area centroids</source>
-        <translation type="obsolete">重複する面の重心を削除する</translation>
+        <translation>重複する面の重心を削除する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
         <source>Remove duplicate lines (pay attention to categories!)</source>
-        <translation type="obsolete">重複ラインを削除します（カテゴリに注意して下さい!)</translation>
+        <translation>重複ラインを削除します（カテゴリに注意して下さい!)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
         <source>Remove existing attribute table of vector</source>
-        <translation type="obsolete">ベクタテーブルの既存属性を削除する</translation>
+        <translation>ベクタテーブルの既存属性を削除する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
         <source>Remove outliers from vector point data</source>
-        <translation type="obsolete">ベクタポイントデータから異常値を削除します</translation>
+        <translation>ベクタポイントデータから異常値を削除します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
         <source>Remove small angles between lines at nodes</source>
-        <translation type="obsolete">ラインとノードの間の微小角度を削除します</translation>
+        <translation>ラインとノードの間の微小角度を削除します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="obsolete">隣接したエリアを削除した最長境界線の微小エリアを削除します</translation>
+        <translation>隣接したエリアを削除した最長境界線の微小エリアを削除します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="obsolete">ラインと境界線からの距離が閾値内の頂点を削除します　境界線はトポロジが損なわれない場合にのみ切り取りできます（重心の変更された付属物との新しい交差）境界線の最初と最後のセグメントは変更できません</translation>
+        <translation>ラインと境界線からの距離が閾値内の頂点を削除します　境界線はトポロジが損なわれない場合にのみ切り取りできます（重心の変更された付属物との新しい交差）境界線の最初と最後のセグメントは変更できません</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
         <source>Rename column in attribute table</source>
-        <translation type="obsolete">属性テーブルのカラム名を変える</translation>
+        <translation>属性テーブルのカラム名を変える</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
         <source>Report and statistics</source>
-        <translation type="obsolete">レポートと統計</translation>
+        <translation>レポートと統計</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
         <source>Reports</source>
-        <translation type="obsolete">レポート</translation>
+        <translation>レポート</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
         <source>Reports and statistics</source>
-        <translation type="obsolete">レポートと統計</translation>
+        <translation>レポートと統計</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
         <source>Reproject raster from another Location</source>
-        <translation type="obsolete">別ロケーションからラスタをプロジェクトにいれます</translation>
+        <translation>別ロケーションからラスタをプロジェクトにいれます</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Reproject vector from another Location</source>
-        <translation type="obsolete">別ロケーションからベクタをプロジェクトにいれます</translation>
+        <translation>別ロケーションからベクタをプロジェクトにいれます</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
         <source>Resample raster using aggregation</source>
-        <translation type="obsolete">アグリゲーションを使ってラスタの再サンプリングをします</translation>
+        <translation>アグリゲーションを使ってラスタの再サンプリングをします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
         <source>Resample raster using interpolation</source>
-        <translation type="obsolete">補間を使ってラスタの再サンプリングをします</translation>
+        <translation>補間を使ってラスタの再サンプリングをします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
         <source>Resample raster. Set new resolution first</source>
-        <translation type="obsolete">ラスタの再サンプリングをします.最初に新しい解像度を指定して下さい</translation>
+        <translation>ラスタの再サンプリングをします.最初に新しい解像度を指定して下さい</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Rescale the range of category values in raster</source>
-        <translation type="obsolete">ラスタの分類値を再スケールします</translation>
+        <translation>ラスタの分類値を再スケールします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
         <source>Sample raster at site locations</source>
-        <translation type="obsolete">サイトロケーションのサンプルラスタ</translation>
+        <translation>サイトロケーションのサンプルラスタ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
         <source>Save the current region as a named region</source>
-        <translation type="obsolete">現在の領域に名前をつけて保存します</translation>
+        <translation>現在の領域に名前をつけて保存します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
         <source>Select features by attributes</source>
-        <translation type="obsolete">地物を属性で選択する</translation>
+        <translation>地物を属性で選択する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Select features overlapped by features in another map</source>
-        <translation type="obsolete">地物を他の地図の地物との重なりで条件で選択する</translation>
+        <translation>地物を他の地図の地物との重なりで条件で選択する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
         <source>Set PostgreSQL DB connection</source>
-        <translation type="obsolete">PostgreSQL　DB接続を設定する</translation>
+        <translation>PostgreSQL　DB接続を設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
         <source>Set boundary definitions by edge (n-s-e-w)</source>
-        <translation type="obsolete">隅の指定による境界指定（北-南-東-西)</translation>
+        <translation>隅の指定による境界指定（北-南-東-西)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
         <source>Set boundary definitions for raster</source>
-        <translation type="obsolete">ラスタ用境界指定</translation>
+        <translation>ラスタ用境界指定</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
         <source>Set boundary definitions from raster</source>
-        <translation type="obsolete">ラスタの値を利用した境界指定</translation>
+        <translation>ラスタの値を利用した境界指定</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
         <source>Set boundary definitions from vector</source>
-        <translation type="obsolete">ベクタの値を利用した境界指定</translation>
+        <translation>ベクタの値を利用した境界指定</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
         <source>Set boundary definitions to current or default region</source>
-        <translation type="obsolete">境界の定義を現在のデフォルト領域に設定します</translation>
+        <translation>境界の定義を現在のデフォルト領域に設定します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
         <source>Set color rules based on stddev from a map&apos;s mean value</source>
-        <translation type="obsolete">地図の平均値からの標準偏差に基づいた色の規則を設定します</translation>
+        <translation>地図の平均値からの標準偏差に基づいた色の規則を設定します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
         <source>Set general DB connection</source>
-        <translation type="obsolete">一般データベース接続の設定</translation>
+        <translation>一般データベース接続の設定</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Set general DB connection with a schema (PostgreSQL only)</source>
-        <translation type="obsolete">スキーマを利用した一般データベース接続設定（PostgreSQLのみ)</translation>
+        <translation>スキーマを利用した一般データベース接続設定（PostgreSQLのみ)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
         <source>Set raster color table</source>
-        <translation type="obsolete">ラスタカラーテーブルの設定</translation>
+        <translation>ラスタカラーテーブルの設定</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
         <source>Set raster color table from existing raster</source>
-        <translation type="obsolete">既存ラスタの値をラスタカラーテーブルに設定します</translation>
+        <translation>既存ラスタの値をラスタカラーテーブルに設定します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
         <source>Set raster color table from setted tables</source>
-        <translation type="obsolete">設定されたテーブルの値を使ってラスタカラーテーブルを設定します</translation>
+        <translation>設定されたテーブルの値を使ってラスタカラーテーブルを設定します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
         <source>Set raster color table from user-defined rules</source>
-        <translation type="obsolete">ユーザ定義のルールでラスタカラーテーブルを設定する</translation>
+        <translation>ユーザ定義のルールでラスタカラーテーブルを設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
         <source>Set region to align to raster</source>
-        <translation type="obsolete">ラスタに合わせて領域を設定する</translation>
+        <translation>ラスタに合わせて領域を設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
         <source>Set the region to match multiple rasters</source>
-        <translation type="obsolete">複数のラスタに合わせて領域を設定する</translation>
+        <translation>複数のラスタに合わせて領域を設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
         <source>Set the region to match multiple vectors</source>
-        <translation type="obsolete">複数のベクタに合わせて領域を設定する</translation>
+        <translation>複数のベクタに合わせて領域を設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
         <source>Set user/password for driver/database</source>
-        <translation type="obsolete">ドライバ/データベースのユーザ名/パスワードを設定する</translation>
+        <translation>ドライバ/データベースのユーザ名/パスワードを設定する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
         <source>Sets the boundary definitions for a raster map</source>
-        <translation type="obsolete">ラスタマップの境界定義を設定します</translation>
+        <translation>ラスタマップの境界定義を設定します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Show database connection for vector</source>
-        <translation type="obsolete">ベクタのデータベース接続を表示する</translation>
+        <translation>ベクタのデータベース接続を表示する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
         <source>Shrink current region until it meets non-NULL data from raster</source>
-        <translation type="obsolete">現在の領域をラスタのNULLでない値が出現する場所まで縮小する</translation>
+        <translation>現在の領域をラスタのNULLでない値が出現する場所まで縮小する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
         <source>Simple map algebra</source>
-        <translation type="obsolete">単純な地図演算</translation>
+        <translation>単純な地図演算</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
         <source>Simplify vector</source>
-        <translation type="obsolete">ベクタの簡素化</translation>
+        <translation>ベクタの簡素化</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Snap lines to vertex in threshold</source>
-        <translation type="obsolete">閾値内の点にラインをスナップさせる</translation>
+        <translation>閾値内の点にラインをスナップさせる</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
         <source>Solar and irradiation model</source>
-        <translation type="obsolete">太陽と照射角度のモデル</translation>
+        <translation>太陽と照射角度のモデル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
         <source>Spatial analysis</source>
-        <translation type="obsolete">空間分析</translation>
+        <translation>空間分析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
         <source>Spatial models</source>
-        <translation type="obsolete">空間モデル</translation>
+        <translation>空間モデル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
         <source>Split lines to shorter segments</source>
-        <translation type="obsolete">ラインをより短いセグメントに分割する</translation>
+        <translation>ラインをより短いセグメントに分割する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
         <source>Statistics</source>
-        <translation type="obsolete">統計</translation>
+        <translation>統計</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
         <source>Sum raster cell values</source>
-        <translation type="obsolete">ラスタセル値の合計</translation>
+        <translation>ラスタセル値の合計</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
         <source>Surface management</source>
-        <translation type="obsolete">面の管理</translation>
+        <translation>面の管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
         <source>Tables management</source>
-        <translation type="obsolete">テーブル管理</translation>
+        <translation>テーブル管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="obsolete">２つのラスタ間で分類が相互に一致する一覧を作ります</translation>
+        <translation>２つのラスタ間で分類が相互に一致する一覧を作ります</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="obsolete">ベクタストリームデータを取得してラスタに変換します.そして出力DEMから深さを引きます</translation>
+        <translation>ベクタストリームデータを取得してラスタに変換します.そして出力DEMから深さを引きます</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
-        <translation type="obsolete">LANDSAT-TM 4ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
+        <translation>LANDSAT-TM 4ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
-        <translation type="obsolete">LANDSAT-TM 5ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
+        <translation>LANDSAT-TM 5ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
-        <translation type="obsolete">LANDSAT-TM 7ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
+        <translation>LANDSAT-TM 7ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
         <source>Tassled cap vegetation index</source>
-        <translation type="obsolete">Tasseled cap植生指数</translation>
+        <translation>Tasseled cap植生指数</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
         <source>Terrain analysis</source>
-        <translation type="obsolete">地形解析</translation>
+        <translation>地形解析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
         <source>Tests of normality on vector points</source>
-        <translation type="obsolete">ベクタ点群の正規性をテストします</translation>
+        <translation>ベクタ点群の正規性をテストします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
         <source>Text file</source>
-        <translation type="obsolete">テキストファイル</translation>
+        <translation>テキストファイル</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
         <source>Thin no-zero cells that denote line features</source>
-        <translation type="obsolete">ライン地物を示す0でないセルを間引く</translation>
+        <translation>ライン地物を示す0でないセルを間引く</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
         <source>Toolset for cleaning topology of vector map</source>
-        <translation type="obsolete">ベクタマップトポロジクリーニングツールセット</translation>
+        <translation>ベクタマップトポロジクリーニングツールセット</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
         <source>Topology management</source>
-        <translation type="obsolete">トポロジ管理</translation>
+        <translation>トポロジ管理</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Trace a flow through an elevation model</source>
-        <translation type="obsolete">高さモデルにしたがって流れをトレースします</translation>
+        <translation>高さモデルにしたがって流れをトレースします</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
         <source>Transform cells with value in null cells</source>
-        <translation type="obsolete">値が無いセル中の値が有るセルを変換する</translation>
+        <translation>値が無いセル中の値が有るセルを変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
         <source>Transform features</source>
-        <translation type="obsolete">地物を変換する</translation>
+        <translation>地物を変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
         <source>Transform image</source>
-        <translation type="obsolete">画像を変換する</translation>
+        <translation>画像を変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
         <source>Transform null cells in value cells</source>
-        <translation type="obsolete">値があるセル中の値が無いセルを変換する</translation>
+        <translation>値があるセル中の値が無いセルを変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
         <source>Transform value cells in null cells</source>
-        <translation type="obsolete">値が無いセル中の値が有るセルを変換する</translation>
+        <translation>値が無いセル中の値が有るセルを変換する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
         <source>Type in map names separated by a comma</source>
-        <translation type="obsolete">コンマ区切りで地図の名前をタイプする</translation>
+        <translation>コンマ区切りで地図の名前をタイプする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
         <source>Update raster statistics</source>
-        <translation type="obsolete">ラスタの統計を更新する</translation>
+        <translation>ラスタの統計を更新する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
         <source>Update vector map metadata</source>
-        <translation type="obsolete">ベクタマップのメタデータを更新する</translation>
+        <translation>ベクタマップのメタデータを更新する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
         <source>Upload raster values at positions of vector points to the table</source>
-        <translation type="obsolete">ベクタポイントの位置にあるラスタの値をテーブルにアップロードする</translation>
+        <translation>ベクタポイントの位置にあるラスタの値をテーブルにアップロードする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
         <source>Upload vector values at positions of vector points</source>
-        <translation type="obsolete">ベクタポイントの位置にあるベクタ値をアップロードする</translation>
+        <translation>ベクタポイントの位置にあるベクタ値をアップロードする</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Vector</source>
-        <translation type="obsolete">ベクタ</translation>
+        <translation>ベクタ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Vector buffer</source>
-        <translation type="obsolete">ベクタバッファ</translation>
+        <translation>ベクタバッファ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
         <source>Vector geometry analysis</source>
-        <translation type="obsolete">ベクタ空間解析</translation>
+        <translation>ベクタ空間解析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
         <source>Vector intersection</source>
-        <translation type="obsolete">ベクタ交差</translation>
+        <translation>ベクタ交差</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
         <source>Vector non-intersection</source>
-        <translation type="obsolete">交差していないベクタ</translation>
+        <translation>交差していないベクタ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
         <source>Vector subtraction</source>
-        <translation type="obsolete">ベクタ減算</translation>
+        <translation>ベクタ減算</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
         <source>Vector union</source>
-        <translation type="obsolete">ベクタ統合</translation>
+        <translation>ベクタ統合</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Vector update by other maps</source>
-        <translation type="obsolete">他の地図によってアップデートされたベクタ</translation>
+        <translation>他の地図によってアップデートされたベクタ</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
         <source>Visibility graph construction</source>
-        <translation type="obsolete">可視性グラフ構築</translation>
+        <translation>可視性グラフ構築</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
         <source>Voronoi diagram (area)</source>
-        <translation type="obsolete">ボロノイ図（面）</translation>
+        <translation>ボロノイ図（面）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
         <source>Voronoi diagram (lines)</source>
-        <translation type="obsolete">ボロノイ図（線）</translation>
+        <translation>ボロノイ図（線）</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
         <source>Watershed Analysis</source>
-        <translation type="obsolete">流域解析</translation>
+        <translation>流域解析</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Work with vector points</source>
-        <translation type="obsolete">ベクタポイントで作業する</translation>
+        <translation>ベクタポイントで作業する</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
         <source>Write only features link to a record</source>
-        <translation type="obsolete">レコードにリンクした地物のみ書き込む</translation>
+        <translation>レコードにリンクした地物のみ書き込む</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="obsolete">イメージ解析のラスタ機能でゼロ交点エッジが検出されました</translation>
-    </message>
-</context>
-<context>
-    <name>pluginname</name>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="73"/>
-        <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
-        <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="80"/>
-        <source>&amp;[menuname]</source>
-        <translation type="unfinished"></translation>
+        <translation>イメージ解析のラスタ機能でゼロ交点エッジが検出されました</translation>
     </message>
 </context>
 <context>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="obsolete">最大 長さ:</translation>
+        <translation>最大 長さ:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="obsolete">最小 長さ:</translation>
+        <translation>最小 長さ:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="obsolete">平均 長さ:</translation>
+        <translation>平均 長さ:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="obsolete">満たされた:</translation>
+        <translation>満たされた:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="obsolete">空の:</translation>
+        <translation>空の:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="obsolete">N:</translation>
+        <translation>N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="obsolete">平均値:</translation>
+        <translation>平均値:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="obsolete">標準偏差:</translation>
+        <translation>標準偏差:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="obsolete">合計:</translation>
+        <translation>合計:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="obsolete">最小:</translation>
+        <translation>最小:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="obsolete">最大:</translation>
+        <translation>最大:</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="obsolete">CV:</translation>
+        <translation>CV:</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="obsolete">ユニークな値の数:</translation>
+        <translation>ユニークな値の数:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="obsolete">範囲:</translation>
+        <translation>範囲:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="obsolete">中央値:</translation>
+        <translation>中央値:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="obsolete">観測された平均値:</translation>
+        <translation>観測された平均値:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="obsolete">想定平均距離:</translation>
+        <translation>想定平均距離:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="obsolete">最小近傍インデックス:</translation>
+        <translation>最小近傍インデックス:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="obsolete">Z値:</translation>
+        <translation>Z値:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">地物 %1 はネストしていない穴を持っています</translation>
+        <translation>地物 %1 はネストしていない穴を持っています</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">地物%1は閉じていません</translation>
+        <translation>地物%1は閉じていません</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">地物%1は自分の線が交差しています</translation>
+        <translation>地物%1は自分の線が交差しています</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">地物%1は不正な順番のノードを持ちます</translation>
+        <translation>地物%1は不正な順番のノードを持ちます</translation>
     </message>
 </context>
 </TS>
