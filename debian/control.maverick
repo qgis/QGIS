@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7), libgdal1-dev, libpq-dev,
  libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, libproj-dev, libexpat1-dev, 
  flex, bison, python-dev, cmake (>= 2.6), python-sip (>= 4.5.0), python-central (>=0.5), python,
  libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0),
- libqt4-sql (>=4.4.0), libqt4-webkit-dev (>= 4.4.0),
+ libqt4-sql (>=4.4.0), libqtwebkit-dev,
  python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0), python-sip-dev (>= 4.5.0), pyqt4-dev-tools,
  libqwt5-qt4-dev, libspatialite-dev
 Build-Conflicts: libqgis-dev, qgis-dev
