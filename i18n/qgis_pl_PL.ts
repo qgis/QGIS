@@ -2242,7 +2242,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation>Złącz</translation>
+        <translation>Złącz rastry</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="106"/>
@@ -17358,12 +17358,12 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="397"/>
         <source>&amp;Zoom to best scale (100%)</source>
-        <translation>&amp;Powiększ do najlepszej skali (100%)</translation>
+        <translation>Powiększ do najlepszej &amp;skali (100%)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="402"/>
         <source>&amp;Stretch using current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rozciągnij kontrast w aktualnym zasięgu</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="407"/>
@@ -32122,6 +32122,19 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
         <translation type="obsolete">Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
+    </message>
+</context>
+<context>
+    <name>PythonConsole</name>
+    <message>
+        <source>To access Quantum GIS environment from this console
+use qgis.utils.iface object (instance of QgisInterface class).
+
+</source>
+        <translation>Dostęp do środowiska Quantum GIS uzyskasz poprzez obiekt
+qgis.utils.iface (instancję klasy QgisInterface).
+
+</translation>
     </message>
 </context>
 </TS>
