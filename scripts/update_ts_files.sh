@@ -51,14 +51,27 @@ echo Saving Qt translations
 tar --remove-files -cf i18n/qt_ts.tar i18n/qt_*.ts
 exclude=
 opts=
-for i in "$@"; do
-  if [ -f "i18n/qgis_$i.ts" ]; then
-    exclude="$exclude --exclude i18n/qgis_$i.ts"
+while (( $# > 0 )); do
+  arg=$1
+  shift
+
+  if [ "$arg" = "-a" ]; then
+    arg=$1
+    shift
+    if [ -f "i18n/qgis_$arg.ts" ]; then
+      echo "cannot add existing tranlation $arg"
+      exit 1
+    else
+      add="$add $arg"
+    fi
+  elif [ -f "i18n/qgis_$arg.ts" ]; then
+    exclude="$exclude --exclude i18n/qgis_$arg.ts"
   else
-    opts=" $i"
+    opts="$opts $arg"
   fi
 done
-if [ -n "$exclude" ]; then
+
+if [ -n "$exclude" -o -n "$add" ]; then
   echo Saving excluded translations
   tar --remove-files -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
 fi
@@ -86,5 +99,22 @@ do
 	[ -f "$i" ] && mv "$i" "$i.save"
 done
 qmake -project -o qgis_ts.pro -nopwd src python i18n
+if [ -n "$add" ]; then
+	for i in $add; do
+		echo "Adding translation for $i"
+		echo "TRANSLATIONS += i18n/qgis_$i.ts" >> qgis_ts.pro
+	done
+fi
 echo Updating translations
 lupdate$opts -verbose qgis_ts.pro
+
+if [ -n "$add" ]; then
+	for i in $add; do
+		if [ -f i18n/qgis_$i.ts ]; then
+			svn add i18n/qgis_$i.ts
+		else
+			echo "Translaiton for $i was not added"
+			exit 1
+		fi
+	done
+fi
