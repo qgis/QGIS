@@ -495,19 +495,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
 void QgsComposer::on_mActionPrint_triggered()
 {
-  //QPrinter printer;
-  if ( mComposition )
-  {
-    if ( mComposition->paperWidth() >= mComposition->paperHeight() )
-    {
-      mPrinter.setOrientation( QPrinter::Landscape );
-    }
-    else
-    {
-      mPrinter.setOrientation( QPrinter::Portrait );
-    }
-  }
-  mPrinter.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
+  //orientation and page size are already set to QPrinter in the page setup dialog
   QPrintDialog printDialog( &mPrinter, 0 );
   if ( printDialog.exec() != QDialog::Accepted )
   {
