@@ -64,7 +64,7 @@ if [ -n "$exclude" ]; then
 fi
 echo Updating python translations
 cd python
-pylupdate4 utils.py -ts python-i18n.ts
+pylupdate4 console.py utils.py -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..
