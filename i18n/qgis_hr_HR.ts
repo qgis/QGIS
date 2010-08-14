@@ -382,123 +382,123 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Nasumični odabir</translation>
+        <translation>Nasumični odabir</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation type="obsolete">Nije određena ulazna datoteka</translation>
+        <translation>Nije određena ulazna datoteka</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
-        <translation type="obsolete">Stvori matricu udaljenosti točaka</translation>
+        <translation>Stvori matricu udaljenosti točaka</translation>
     </message>
     <message>
         <source>Please specify input point layer</source>
-        <translation type="obsolete">Odredite ulazni sloj točaka</translation>
+        <translation>Odredite ulazni sloj točaka</translation>
     </message>
     <message>
         <source>Please specify output file</source>
-        <translation type="obsolete">Odredite izlaznu datoteku</translation>
+        <translation>Odredite izlaznu datoteku</translation>
     </message>
     <message>
         <source>Please specify target point layer</source>
-        <translation type="obsolete">Odredite ciljani sloj točaka</translation>
+        <translation>Odredite ciljani sloj točaka</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="obsolete">Odredite ulazno jedinstveno ID polje</translation>
+        <translation>Odredite ulazno jedinstveno ID polje</translation>
     </message>
     <message>
         <source>Please specify target unique ID field</source>
-        <translation type="obsolete">Odredite ciljano jedinstveno ID polje</translation>
+        <translation>Odredite ciljano jedinstveno ID polje</translation>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="obsolete">Nasumične točke</translation>
+        <translation>Nasumične točke</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="obsolete">Nije određen ulazni sloj</translation>
+        <translation>Nije određen ulazni sloj</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Odredite izlaznu shape datoteku</translation>
+        <translation>Odredite izlaznu shape datoteku</translation>
     </message>
     <message>
         <source>unstratified</source>
-        <translation type="obsolete">nestratificirano</translation>
+        <translation>nestratificirano</translation>
     </message>
     <message>
         <source>stratified</source>
-        <translation type="obsolete">stratificirano</translation>
+        <translation>stratificirano</translation>
     </message>
     <message>
         <source>density</source>
-        <translation type="obsolete">gustoća</translation>
+        <translation>gustoća</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="obsolete">polje</translation>
+        <translation>polje</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="obsolete">Nepoznat tip sloja...</translation>
+        <translation>Nepoznat tip sloja...</translation>
     </message>
     <message>
         <source>Created output point shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Stvorena izlazna shape datoteka točaka:
+        <translation>Stvorena izlazna shape datoteka točaka:
 %1
 
 Želite li dodati novi sloj na TS?</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Izvezi u novu projekciju</translation>
+        <translation>Izvezi u novu projekciju</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Definiraj trenutnu projekciju</translation>
+        <translation>Definiraj trenutnu projekciju</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="obsolete">Odredite prostorni referentni sustav</translation>
+        <translation>Odredite prostorni referentni sustav</translation>
     </message>
     <message>
         <source>Created projected shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Stvorena projicirana shape datoteka:
+        <translation>Stvorena projicirana shape datoteka:
 %1
 
 Želite li dodati novi sloj u TS?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="obsolete">Odaberite izlazni CRS:</translation>
+        <translation>Odaberite izlazni CRS:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="obsolete">Odaberite sustav projekcije kojega koristi izlazni sloj.</translation>
+        <translation>Odaberite sustav projekcije kojega koristi izlazni sloj.</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="obsolete">Izlazni će sloj biti projiciran iz trenutnog CRS-a u izlzni CRS.</translation>
+        <translation>Izlazni će sloj biti projiciran iz trenutnog CRS-a u izlzni CRS.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="obsolete">Nije odabran valjan CRS</translation>
+        <translation>Nije odabran valjan CRS</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="obsolete">Izlazni prostorni refrentni sustav nije valjan</translation>
+        <translation>Izlazni prostorni refrentni sustav nije valjan</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="obsolete">Odabran identičan prostorni referentni sustav</translation>
+        <translation>Odabran identičan prostorni referentni sustav</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
@@ -528,39 +528,39 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="obsolete">Srednje koordinate</translation>
+        <translation>Srednje koordinate</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="obsolete">Standardna udaljenost</translation>
+        <translation>Standardna udaljenost</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="obsolete">(Opcijsko) polje težina</translation>
+        <translation>(Opcijsko) polje težina</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="obsolete">(Opcijsko) polje jedinstvenog ID</translation>
+        <translation>(Opcijsko) polje jedinstvenog ID</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="obsolete">Koordinatne statistike</translation>
+        <translation>Koordinatne statistike</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="obsolete">Nije određen ulazni vektorski sloj</translation>
+        <translation>Nije određen ulazni vektorski sloj</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektorska mreža</translation>
+        <translation>Vektorska mreža</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation type="obsolete">Odredite valjane koordinate raspona</translation>
+        <translation>Odredite valjane koordinate raspona</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation type="obsolete">Unesene nevaljane koordinate raspona</translation>
+        <translation>Unesene nevaljane koordinate raspona</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
@@ -569,193 +569,197 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Razdijeli vektorski sloj</translation>
+        <translation>Razdijeli vektorski sloj</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation type="obsolete">Stvorena izlazna shape datoteka u mapi:
+        <translation>Stvorena izlazna shape datoteka u mapi:
 %1</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Nasumični odabir unutar podskupa</translation>
+        <translation>Nasumični odabir unutar podskupa</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Odredite ulazni vektorski sloj</translation>
+        <translation>Odredite ulazni vektorski sloj</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
-        <translation type="obsolete">Odredite ulazni sloj</translation>
+        <translation>Odredite ulazni sloj</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Spoji atribute po lokaciji</translation>
+        <translation>Spoji atribute po lokaciji</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="obsolete">Odredite ciljni vektorski sloj</translation>
+        <translation>Odredite ciljni vektorski sloj</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="obsolete">Odredite vektorski spoj za spajanje</translation>
+        <translation>Odredite vektorski spoj za spajanje</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
-        <translation type="obsolete">Odredite barem jednu sumarnu statistiku</translation>
+        <translation>Odredite barem jednu sumarnu statistiku</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Stvorena izlazna shape datoteka:
+        <translation>Stvorena izlazna shape datoteka:
 %1
 
 Želite li dodati novi sloj na TS?</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="obsolete">CRS upozorenje!</translation>
+        <translation>CRS upozorenje!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="obsolete">Upozorenje: Ulaznim slojevima s erazlikuju CRS-ovi.
+        <translation>Upozorenje: Ulaznim slojevima s erazlikuju CRS-ovi.
 Ovo može imati neočekivane rezultate.</translation>
     </message>
     <message>
         <source>Summary field</source>
-        <translation type="obsolete">Sumarno polje</translation>
+        <translation>Sumarno polje</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="obsolete">Netočni nazivi polja</translation>
+        <translation>Netočni nazivi polja</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="obsolete">Neće biti kreirani izlazni podaci.
+        <translation>Neće biti kreirani izlazni podaci.
 Slijedeći nazivi polja duži su od 10 znakova:
 %1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="obsolete">Greška pri brisanju Shape datoteke</translation>
+        <translation>Greška pri brisanju Shape datoteke</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="obsolete">Ne mogu brisati postojeću Shape datoteku
+        <translation>Ne mogu brisati postojeću Shape datoteku
 %1</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="obsolete">Broji točke u poligonu</translation>
+        <translation>Broji točke u poligonu</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="obsolete">Broji točke u poligonu</translation>
+        <translation>Broji točke u poligonu</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="obsolete">Odredite ulazni vektorski sloj</translation>
+        <translation>Odredite ulazni vektorski sloj</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation type="obsolete">Odredite ulazni vektorski sloj točaka</translation>
+        <translation>Odredite ulazni vektorski sloj točaka</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation type="obsolete">Odredite izlazno polje s brojačem</translation>
+        <translation>Odredite izlazno polje s brojačem</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="obsolete">polje s brojem točaka</translation>
+        <translation>polje s brojem točaka</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Spoji atribute</translation>
+        <translation>Spoji atribute</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
-        <translation type="obsolete">Odaberi ciljano polje spajanja</translation>
+        <translation>Odaberi ciljano polje spajanja</translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation type="obsolete">Odaberi polje spajanja</translation>
+        <translation>Odaberi polje spajanja</translation>
+    </message>
+    <message>
+        <source>Please specify input table</source>
+        <translation></translation>
     </message>
     <message>
         <source>Join Table</source>
-        <translation type="obsolete">Spoji tablice</translation>
+        <translation>Spoji tablice</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="obsolete">Ulazna tablica ne postoji</translation>
+        <translation>Ulazna tablica ne postoji</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="obsolete">spojena polja</translation>
+        <translation>spojena polja</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
-        <translation type="obsolete">Suma dužine linija u poligonima</translation>
+        <translation>Suma dužine linija u poligonima</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="obsolete">Odredite ulazni vektorski sloj linija</translation>
+        <translation>Odredite ulazni vektorski sloj linija</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation type="obsolete">Odredite izlazno polje dužine</translation>
+        <translation>Odredite izlazno polje dužine</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation type="obsolete">polje dužine</translation>
+        <translation>polje dužine</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Regularne točke</translation>
+        <translation>Regularne točke</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
-        <translation type="obsolete">Ispravno odredite koordinate raspona</translation>
+        <translation>Ispravno odredite koordinate raspona</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation type="obsolete">Ne mogu definirati projekciju za PostGIS podatke... Još!</translation>
+        <translation>Ne mogu definirati projekciju za PostGIS podatke... Još!</translation>
     </message>
     <message>
         <source>Defined Projection For:
 %1.shp</source>
-        <translation type="obsolete">Definirana projekcija za:
+        <translation>Definirana projekcija za:
 %1.shp</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="obsolete">Odaberite projekciju koja definira trenutni sloj.</translation>
+        <translation>Odaberite projekciju koja definira trenutni sloj.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="obsolete">CRS informacije sloja osvježit će se odabranim CRS-om.</translation>
+        <translation>CRS informacije sloja osvježit će se odabranim CRS-om.</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Presjeci linija</translation>
+        <translation>Presjeci linija</translation>
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="obsolete">Odredite ulazni sloj linija</translation>
+        <translation>Odredite ulazni sloj linija</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="obsolete">Odredite sloj presjeka linija</translation>
+        <translation>Odredite sloj presjeka linija</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="obsolete">Odaberite jedinstveno ID polje presjeka</translation>
+        <translation>Odaberite jedinstveno ID polje presjeka</translation>
     </message>
     <message>
         <source>
@@ -796,7 +800,7 @@ QGis developer and user communities
 Folks on #qgis at freenode.net
 All those who have reported bugs/fixes/suggestions/comments/etc.
 </source>
-        <translation type="obsolete">
+        <translation>
 The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
 
 fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to further facilitate and streamline GIS based research and analysis.
@@ -956,7 +960,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Suma dužina linija</translation>
+        <translation>Suma dužina linija</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="17"/>
@@ -1019,12 +1023,12 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Matrica dužine</translation>
+        <translation>Matrica dužine</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Kreirana izlazna matrica:</translation>
+        <translation>Kreirana izlazna matrica:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -1073,39 +1077,39 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">Kreiranje novog odabira</translation>
+        <translation>Kreiranje novog odabira</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">dodavanje u postojeći odabir</translation>
+        <translation>dodavanje u postojeći odabir</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">Pomicanje iz trenutačnog odabira</translation>
+        <translation>Pomicanje iz trenutačnog odabira</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Odaberi po lokaciji</translation>
+        <translation>Odaberi po lokaciji</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Odaberi elemente u:</translation>
+        <translation>Odaberi elemente u:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">koje presjecaju elemente u:</translation>
+        <translation>koje presjecaju elemente u:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Modificiaraj trenutni odabir s:</translation>
+        <translation>Modificiaraj trenutni odabir s:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Molim odredite ulazni sloj</translation>
+        <translation>Molim odredite ulazni sloj</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Molim odredite sloj odabira</translation>
+        <translation>Molim odredite sloj odabira</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="14"/>
@@ -1309,12 +1313,12 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">Pogreška pri učitavanju izlazne shape datoteke:
+        <translation>Pogreška pri učitavanju izlazne shape datoteke:
 %1</translation>
     </message>
     <message>
         <source>Unable to read input table!</source>
-        <translation type="obsolete">Nemoguće učitati ulaznu tablicu!</translation>
+        <translation>Nemoguće učitati ulaznu tablicu!</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
@@ -1333,37 +1337,37 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="obsolete">Odaberi mapu datoteka sa shape datotekam za spajanje</translation>
+        <translation>Odaberi mapu datoteka sa shape datotekam za spajanje</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="obsolete">Nisu pronađene Shape datoteke</translation>
+        <translation>Nisu pronađene Shape datoteke</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="obsolete">Ne postoje shape datoteke u ovoj mapi. Molim odaberite drugu.</translation>
+        <translation>Ne postoje shape datoteke u ovoj mapi. Molim odaberite drugu.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="obsolete">Greška brisanja</translation>
+        <translation>Greška brisanja</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="obsolete">Ne mogu brisati datoteku %1</translation>
+        <translation>Ne mogu brisati datoteku %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Prekid</translation>
+        <translation>Prekid</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="obsolete">Spajanje</translation>
+        <translation>Spajanje</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="obsolete">Odabran identični izlazni koordinatni referentni sustav
+        <translation>Odabran identični izlazni koordinatni referentni sustav
 
 Sigurno želite nastaviti?</translation>
     </message>
@@ -1430,188 +1434,188 @@ Sigurno želite nastaviti?</translation>
     <name>GdalTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Detektirana verzija Quantum GIS-a:</translation>
+        <translation>Detektirana verzija Quantum GIS-a:</translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Ova inačica Gdal alata zahtijeva najmanje QGIS 1.0.0. Dodatak neće biti omogućen.</translation>
+        <translation>Ova inačica Gdal alata zahtijeva najmanje QGIS 1.0.0. Dodatak neće biti omogućen.</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="obsolete">&amp;Raster</translation>
+        <translation>&amp;Raster</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation type="obsolete">Izgradi virtualni raster (katalog)</translation>
+        <translation>Izgradi virtualni raster (katalog)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="obsolete">Stvara VRT iz popisa izvora podataka</translation>
+        <translation>Stvara VRT iz popisa izvora podataka</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="obsolete">Slojnice</translation>
+        <translation>Slojnice</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="obsolete">Stvara vektorske slojnice iz DEM-a</translation>
+        <translation>Stvara vektorske slojnice iz DEM-a</translation>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="obsolete">Ratsterizacija</translation>
+        <translation>Ratsterizacija</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="obsolete">Stvara raster iz vektora</translation>
+        <translation>Stvara raster iz vektora</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="obsolete">Poligonizacija</translation>
+        <translation>Poligonizacija</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="obsolete">Stvara poligonski element iz rastera</translation>
+        <translation>Stvara poligonski element iz rastera</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="obsolete">Spoji</translation>
+        <translation>Spoji</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="obsolete">Izgrađuje brzi mozaik iz skupa slika</translation>
+        <translation>Izgrađuje brzi mozaik iz skupa slika</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation type="obsolete">Reži</translation>
+        <translation>Reži</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="obsolete">Uklanja male rastersle poligone</translation>
+        <translation>Uklanja male rastersle poligone</translation>
     </message>
     <message>
         <source>Proximity</source>
-        <translation type="obsolete">Bliskost</translation>
+        <translation>Bliskost</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation type="obsolete">Stvara rastersku mapu bliskosti</translation>
+        <translation>Stvara rastersku mapu bliskosti</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="obsolete">Skoro pa crno</translation>
+        <translation>Skoro pa crno</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="obsolete">Konvertira granice koje su gotovo crne/bijele na točne vrijednosti</translation>
+        <translation>Konvertira granice koje su gotovo crne/bijele na točne vrijednosti</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="obsolete">Transformacija</translation>
+        <translation>Transformacija</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="obsolete">Transformira sliku u novi koordinatni sustav</translation>
+        <translation>Transformira sliku u novi koordinatni sustav</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="obsolete">Mreža</translation>
+        <translation>Mreža</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="obsolete">Stvara raster iz razbacanih podataka</translation>
+        <translation>Stvara raster iz razbacanih podataka</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="obsolete">Prevođenje</translation>
+        <translation>Prevođenje</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="obsolete">Konvertira rasterske podatke između različitih oblika</translation>
+        <translation>Konvertira rasterske podatke između različitih oblika</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Informacija</translation>
+        <translation>Informacija</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="obsolete">Popis informacija o rasterskom skupu podataka</translation>
+        <translation>Popis informacija o rasterskom skupu podataka</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">Dodijeli projekciju</translation>
+        <translation>Dodijeli projekciju</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="obsolete">Dodaje rasteru podatke o projekciji</translation>
+        <translation>Dodaje rasteru podatke o projekciji</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation type="obsolete">Izgradi preglede</translation>
+        <translation>Izgradi preglede</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="obsolete">Izgrađuje ili ponovno izgrađuje pregled slika</translation>
+        <translation>Izgrađuje ili ponovno izgrađuje pregled slika</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="obsolete">Obrezivanje</translation>
+        <translation>Obrezivanje</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="obsolete">RGB u PCT</translation>
+        <translation>RGB u PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="obsolete">Konverzija 24 bitne RGB slike u 8 bitnu paletiranu</translation>
+        <translation>Konverzija 24 bitne RGB slike u 8 bitnu paletiranu</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="obsolete">PCT u RGB</translation>
+        <translation>PCT u RGB</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="obsolete">Konvertira 8 bitnu paletiranu sliku u 24 bitnu RGB</translation>
+        <translation>Konvertira 8 bitnu paletiranu sliku u 24 bitnu RGB</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="obsolete">Postavke Gdal alata</translation>
+        <translation>Postavke Gdal alata</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="obsolete">Razne postavke Gdal alata</translation>
+        <translation>Razne postavke Gdal alata</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="obsolete">O Gdal alatima</translation>
+        <translation>O Gdal alatima</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="obsolete">Prikazuje informacije o Gdal alatima</translation>
+        <translation>Prikazuje informacije o Gdal alatima</translation>
     </message>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="obsolete">&amp;Ulazna mapa datoteka:</translation>
+        <translation>&amp;Ulazna mapa datoteka:</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="obsolete">&amp;Izlazna mapa datoteka:</translation>
+        <translation>&amp;Izlazna mapa datoteka:</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="obsolete">Proces se nije pokrenuo. Ili nedostaje pozvani program, ili nemate dozvole za pokretanje programa.</translation>
+        <translation>Proces se nije pokrenuo. Ili nedostaje pozvani program, ili nemate dozvole za pokretanje programa.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="obsolete">Proces se srušio neko vrijeme nakon uspješnog pokretanja.</translation>
+        <translation>Proces se srušio neko vrijeme nakon uspješnog pokretanja.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="obsolete">Došlo je do nepoznate pogreške.</translation>
+        <translation>Došlo je do nepoznate pogreške.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation type="obsolete">Odabrana datoteka nije podržani OGR oblik</translation>
+        <translation>Odabrana datoteka nije podržani OGR oblik</translation>
     </message>
 </context>
 <context>
@@ -1657,28 +1661,51 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation type="obsolete">
+        <translation>
 (koristi GDAL v. %1)</translation>
+    </message>
+    <message>
+        <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
+
+The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
+Icons by Robert Szczepanek.
+Sponsorship by Silvio Grosso was much appreciated.
+
+Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
+
+DEVELOPERS:
+  Faunalia
+    Paolo Cavallini
+    Giuseppe Sucameli
+    Lorenzo Masini
+  GIS-lab
+    Maxim Dubinin
+    Alexander Bruy
+icons by Robert Szepanek
+
+HOMEPAGE:
+http://trac.faunalia.it/GdalTools-plugin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">Završeno</translation>
+        <translation>Završeno</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="obsolete">Završena operacija.</translation>
+        <translation>Završena operacija.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Upozorenje</translation>
+        <translation>Upozorenje</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="obsolete">Slijedeće datoteke nisu stvorene: 
+        <translation>Slijedeće datoteke nisu stvorene: 
 %1</translation>
     </message>
 </context>
@@ -1686,40 +1713,40 @@ p, li { white-space: pre-wrap; }
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Upozorenje</translation>
+        <translation>Upozorenje</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="obsolete">Naredba se još izvršava. 
+        <translation>Naredba se još izvršava. 
 Želite li je svejedno zaustaviti?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="obsolete">Nevaljani parametri.</translation>
+        <translation>Nevaljani parametri.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Upozorenje</translation>
+        <translation>Upozorenje</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="obsolete">Nije stvorena izlazna datoteka.</translation>
+        <translation>Nije stvorena izlazna datoteka.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">Završeno</translation>
+        <translation>Završeno</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
-        <translation type="obsolete">Završena elaboracija.</translation>
+        <translation>Završena elaboracija.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="obsolete">%1 nije stvoreno.</translation>
+        <translation>%1 nije stvoreno.</translation>
     </message>
 </context>
 <context>
@@ -1736,139 +1763,155 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
-        <translation type="obsolete">Konvertiraj paletiranu sliku u RGB</translation>
+        <translation>Konvertiraj paletiranu sliku u RGB</translation>
     </message>
     <message>
         <source>Band to convert:</source>
-        <translation type="obsolete">Band za konvertiranje:</translation>
+        <translation>Band za konvertiranje:</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="obsolete">Odaberi ulaznu datoteku za konvertiranje</translation>
+        <translation>Odaberi ulaznu datoteku za konvertiranje</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="obsolete">Odaberite rastersku datoteku u koju ćete spremiti rezultate</translation>
+        <translation>Odaberite rastersku datoteku u koju ćete spremiti rezultate</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
-        <translation type="obsolete">Odaberite ulaznu mapu datoteka s dateotekama za transformaciju</translation>
+        <translation>Odaberite ulaznu mapu datoteka s dateotekama za transformaciju</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
-        <translation type="obsolete">Odaberite izlaznu mapu datoteka za spremanje rezultata</translation>
+        <translation>Odaberite izlaznu mapu datoteka za spremanje rezultata</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Translaciju</translation>
+        <translation>Odaberite ulaznu datoteku za Translaciju</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="obsolete">Odaberite ulaznu mapu datoteka s datotekama za Translaciju</translation>
+        <translation>Odaberite ulaznu mapu datoteka s datotekama za Translaciju</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Blisko crnom</translation>
+        <translation>Odaberite ulaznu datoteku za Blisko crnom</translation>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="obsolete">Nema aktivnih rasterskih slojeva. Morate dodati barem jedan sloj za nastavak.</translation>
+        <translation>Nema aktivnih rasterskih slojeva. Morate dodati barem jedan sloj za nastavak.</translation>
     </message>
     <message>
         <source>Select the input file</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku</translation>
+        <translation>Odaberite ulaznu datoteku</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
-        <translation type="obsolete">Odaberite ulaznu mapu datoteka</translation>
+        <translation>Odaberite ulaznu mapu datoteka</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za transformaciju</translation>
+        <translation>Odaberite ulaznu datoteku za transformaciju</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="obsolete">Odaberite datoteke za VRT</translation>
+        <translation>Odaberite datoteke za VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="obsolete">Odaberite lokaciju spremanja VRT-a</translation>
+        <translation>Odaberite lokaciju spremanja VRT-a</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
-        <translation type="obsolete">VRT (*.vrt)</translation>
+        <translation>VRT (*.vrt)</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Rezanje</translation>
+        <translation>Odaberite ulaznu datoteku za Rezanje</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Poligonizaciju</translation>
+        <translation>Odaberite ulaznu datoteku za Poligonizaciju</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation type="obsolete">Odaberite lokaciju spremanja izlaza poligonizacije</translation>
+        <translation>Odaberite lokaciju spremanja izlaza poligonizacije</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="obsolete">Odaberite datoteke za Spajanje</translation>
+        <translation>Odaberite datoteke za Spajanje</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="obsolete">Odaberite lokaciju spremanja izlaza spajanja</translation>
+        <translation>Odaberite lokaciju spremanja izlaza spajanja</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="obsolete">Kopiraj</translation>
+        <translation>Kopiraj</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="obsolete">Kopiraj ˘sve</translation>
+        <translation>Kopiraj ˘sve</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="obsolete">Odaberite datoteku za analizu</translation>
+        <translation>Odaberite datoteku za analizu</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Mrežu</translation>
+        <translation>Odaberite ulaznu datoteku za Mrežu</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="obsolete">Odaberi ulaznu datoteku za Slojnice</translation>
+        <translation>Odaberi ulaznu datoteku za Slojnice</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="obsolete">Odaberite lokaciju spremanja izlaza izrade slojnica</translation>
+        <translation>Odaberite lokaciju spremanja izlaza izrade slojnica</translation>
+    </message>
+    <message>
+        <source>Translate - srcwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (pixels) must be integer numbers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate - prjwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (geographic) must be numbers.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Rasterizaciju</translation>
+        <translation>Odaberite ulaznu datoteku za Rasterizaciju</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation type="obsolete">Odaberite ulaznu datoteku za Bliskost</translation>
+        <translation>Odaberite ulaznu datoteku za Bliskost</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Upozorenje</translation>
+        <translation>Upozorenje</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation type="obsolete">Upozorenje: Svim rasterima u podmapama bit će prepisana CRS informacija. Jeste li sigurni?</translation>
+        <translation>Upozorenje: Svim rasterima u podmapama bit će prepisana CRS informacija. Jeste li sigurni?</translation>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
-        <translation type="obsolete">Odaberite ulaznu mapu datoteka s datotekama za Dodjelu projekcije</translation>
+        <translation>Odaberite ulaznu mapu datoteka s datotekama za Dodjelu projekcije</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">Dodijeli projekciju</translation>
+        <translation>Dodijeli projekciju</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="obsolete">Raster se već nalazi u prikazu mape</translation>
+        <translation>Raster se već nalazi u prikazu mape</translation>
     </message>
 </context>
 <context>
@@ -1931,7 +1974,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="obsolete">Odabeirte mapu s GDAL izvršnim datotekama</translation>
+        <translation>Odabeirte mapu s GDAL izvršnim datotekama</translation>
     </message>
 </context>
 <context>
@@ -2677,12 +2720,12 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <name>GeometryDialog</name>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Prekid</translation>
+        <translation>Prekid</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!
 Please choose larger tolerance...</source>
-        <translation type="obsolete">Pogreška u procesiranju određene tolerancije!
+        <translation>Pogreška u procesiranju određene tolerancije!
 Odaberite veću toleranciju...</translation>
     </message>
     <message>
@@ -2690,125 +2733,125 @@ Odaberite veću toleranciju...</translation>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Stvorena izlazna shape datoteka:
+        <translation>Stvorena izlazna shape datoteka:
 %1
 
 Želite li dodati novi sloj na TS?</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Spoji sve</translation>
+        <translation>Spoji sve</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="obsolete">Geometrija</translation>
+        <translation>Geometrija</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Odredite ulazni vektorski sloj</translation>
+        <translation>Odredite ulazni vektorski sloj</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Odredite izlaznu shape datoteku</translation>
+        <translation>Odredite izlaznu shape datoteku</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Odredite valjanu vrijednost tolerancije</translation>
+        <translation>Odredite valjanu vrijednost tolerancije</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Odredite valjano UID polje</translation>
+        <translation>Odredite valjano UID polje</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Jednodijelni u višedjelno</translation>
+        <translation>Jednodijelni u višedjelno</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Izlazna Shape datoteka</translation>
+        <translation>Izlazna Shape datoteka</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Višedjelno u jednodijelne</translation>
+        <translation>Višedjelno u jednodijelne</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Izvuci čvorove</translation>
+        <translation>Izvuci čvorove</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Poliogni u linije</translation>
+        <translation>Poliogni u linije</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Ulazni vektorski sloj poligona</translation>
+        <translation>Ulazni vektorski sloj poligona</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Izvoz/dodavanje geometrijskih kolona</translation>
+        <translation>Izvoz/dodavanje geometrijskih kolona</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Ulazni vektorski sloj</translation>
+        <translation>Ulazni vektorski sloj</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Pojednostavni geometrije</translation>
+        <translation>Pojednostavni geometrije</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Centroide poligona</translation>
+        <translation>Centroide poligona</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Izlazna Shape datoteka za točke</translation>
+        <translation>Izlazna Shape datoteka za točke</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay tringulacija</translation>
+        <translation>Delaunay tringulacija</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Ulazni vektorski sloj točaka</translation>
+        <translation>Ulazni vektorski sloj točaka</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Poligon iz opsega sloja</translation>
+        <translation>Poligon iz opsega sloja</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Ulazni sloj</translation>
+        <translation>Ulazni sloj</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Izlazna Shape datoteka poligona</translation>
+        <translation>Izlazna Shape datoteka poligona</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">Geoprocesiranje</translation>
+        <translation>Geoprocesiranje</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Ne mogu brisati postojeću Shape datoteku.</translation>
+        <translation>Ne mogu brisati postojeću Shape datoteku.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Nemoguće brisati nepotpune shape datoteke.</translation>
+        <translation>Nemoguće brisati nepotpune shape datoteke.</translation>
     </message>
     <message>
         <source>At least two features must have same attribute value!
 Please choose another field...</source>
-        <translation type="obsolete">Najmanje dva elementa moraju imati istu atributnu vrijednost!
+        <translation>Najmanje dva elementa moraju imati istu atributnu vrijednost!
 Molim odaberite drugo polje...</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Pogreška u zapisivnanju izlazne shape datoteke.</translation>
+        <translation>Pogreška u zapisivnanju izlazne shape datoteke.</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">Pogreška pri učitavanju izlazne shape datoteke:
+        <translation>Pogreška pri učitavanju izlazne shape datoteke:
 %1</translation>
     </message>
 </context>
@@ -2816,114 +2859,114 @@ Molim odaberite drugo polje...</translation>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">Rastoči (dissolve) sve</translation>
+        <translation>Rastoči (dissolve) sve</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">Geoprocesiranje</translation>
+        <translation>Geoprocesiranje</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Odredite ulazni sloj</translation>
+        <translation>Odredite ulazni sloj</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Odredite sloj za razliku/presjek/uniju</translation>
+        <translation>Odredite sloj za razliku/presjek/uniju</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Odredite valjanu vrijednost zaštite (buffer)</translation>
+        <translation>Odredite valjanu vrijednost zaštite (buffer)</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">Odredite polje za rastakanje (dissolve)</translation>
+        <translation>Odredite polje za rastakanje (dissolve)</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Odredite izlaznu shape datoteku</translation>
+        <translation>Odredite izlaznu shape datoteku</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Nema odabranih elemenata, odznačite &apos;Koristi odabrano&apos; ili napravite odabir</translation>
+        <translation>Nema odabranih elemenata, odznačite &apos;Koristi odabrano&apos; ili napravite odabir</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Zaštita (buffers)</translation>
+        <translation>Zaštita (buffers)</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Stvori jedinstvenu minimalnu konveksnu obvojnicu</translation>
+        <translation>Stvori jedinstvenu minimalnu konveksnu obvojnicu</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Stvori konveksnu obvojnicu zasnovanu na ulaznom polju</translation>
+        <translation>Stvori konveksnu obvojnicu zasnovanu na ulaznom polju</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Konveksne/e obvojnica/e</translation>
+        <translation>Konveksne/e obvojnica/e</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Rastoči (dissolve)</translation>
+        <translation>Rastoči (dissolve)</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Sloj razlike</translation>
+        <translation>Sloj razlike</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Razlika</translation>
+        <translation>Razlika</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Presječni sloj</translation>
+        <translation>Presječni sloj</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Presjek</translation>
+        <translation>Presjek</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Simetrična ralika</translation>
+        <translation>Simetrična ralika</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Obreži sloj</translation>
+        <translation>Obreži sloj</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Obreži</translation>
+        <translation>Obreži</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Sloj unije</translation>
+        <translation>Sloj unije</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Unija</translation>
+        <translation>Unija</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Ne može se obrisati postojeća shape datoteka.</translation>
+        <translation>Ne može se obrisati postojeća shape datoteka.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Prekid</translation>
+        <translation>Prekid</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">Zatvori</translation>
+        <translation>Zatvori</translation>
     </message>
     <message>
         <source>No output created. File creation error:
 %1</source>
-        <translation type="obsolete">Nisu stvoreni izlatni podaci. Greška u kreiranju datoteke:
+        <translation>Nisu stvoreni izlatni podaci. Greška u kreiranju datoteke:
 %1</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation>
 Upozorenja:</translation>
     </message>
     <message>
@@ -2931,7 +2974,7 @@ Upozorenja:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation>
 Neke izlazne geoemtrije mogu nedostajati ili su nevaljane.
 
 Želite li svejedno dodati novi sloj?</translation>
@@ -2940,46 +2983,46 @@ Neke izlazne geoemtrije mogu nedostajati ili su nevaljane.
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">
+        <translation>
 
 Želite li dodati novi sloj na TS?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation>
 Pogreška ulaznog CRS: Detektiran je različit ulazni koord. ref. sustav, rezultati mogu biti neočekivani.</translation>
     </message>
     <message>
         <source>
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation>
 Greška ulaznog CRS-a: Jedan ili više ulaznih slojeva nema informacije o CRS-u, rezultati možda neće biti prema očekivanjima.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">
+        <translation>
 Pogreška geometrije elementa: Jedan ili više izlaznih elemenata su ignorirani zbog nevaljane geometrije.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">
+        <translation>
 Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu geometriju.</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 %2%3</source>
-        <translation type="obsolete">Stvorena izlazna shape datoteka:
+        <translation>Stvorena izlazna shape datoteka:
 %1
 %2%3</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="obsolete">Pogreška pri učitavanju izlazne shape datoteke:
+        <translation>Pogreška pri učitavanju izlazne shape datoteke:
 %1</translation>
     </message>
 </context>
@@ -3195,7 +3238,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM informacije</translation>
+        <translation>OSM informacije</translation>
     </message>
 </context>
 <context>
@@ -3275,74 +3318,74 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSM preuzimanje</translation>
+        <translation>OSM preuzimanje</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Ne mogu spremiti datoteku %1: %2.</translation>
+        <translation>Ne mogu spremiti datoteku %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">Čekam OpenStreetMap poslužitelj ...</translation>
+        <translation>Čekam OpenStreetMap poslužitelj ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Proces preuzimanja nije uspio. Odgovor OpenStreetMap poslužitelja: %1 - %2</translation>
+        <translation>Proces preuzimanja nije uspio. Odgovor OpenStreetMap poslužitelja: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">Pogreška u preuzimanju s OSM-a</translation>
+        <translation>Pogreška u preuzimanju s OSM-a</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Preuzimanje neuspješno: %1.</translation>
+        <translation>Preuzimanje neuspješno: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Dohvaćanje podataka</translation>
+        <translation>Dohvaćanje podataka</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">OpenStreetMap poslužitel js kojegaskidate mape (~ api.openstreetmap.org) ima ograničenja u količini prenesenih podataka. Kako je napisano na &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; raspon geografske širine i dužine ne može biti veći od 0.25 stupnjeva. Obratite pažnju da vam QGIS dozvoljava postavljanje bilo kojeg raspona, no OpenStreetMap poslužitelj će odbiti sve zahtjeve koji nisu u skladu s ograničenjem skidanja.</translation>
+        <translation>OpenStreetMap poslužitel js kojegaskidate mape (~ api.openstreetmap.org) ima ograničenja u količini prenesenih podataka. Kako je napisano na &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; raspon geografske širine i dužine ne može biti veći od 0.25 stupnjeva. Obratite pažnju da vam QGIS dozvoljava postavljanje bilo kojeg raspona, no OpenStreetMap poslužitelj će odbiti sve zahtjeve koji nisu u skladu s ograničenjem skidanja.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">Oba opsega su prevelika!</translation>
+        <translation>Oba opsega su prevelika!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">Raspon geog. širine je prevelik!</translation>
+        <translation>Raspon geog. širine je prevelik!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">Raspon dužina je prevelik!</translation>
+        <translation>Raspon dužina je prevelik!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK! Poslužitelj će najvjerojatnije prihvatiti područje.</translation>
+        <translation>OK! Poslužitelj će najvjerojatnije prihvatiti područje.</translation>
     </message>
 </context>
 <context>
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSM dodatak</translation>
+        <translation>OSM dodatak</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">Dijalog &apos;Stvori OSM relaciju&apos; zatvoren je automatski jer je trenutna OSM baza podataka izmjenjena.</translation>
+        <translation>Dijalog &apos;Stvori OSM relaciju&apos; zatvoren je automatski jer je trenutna OSM baza podataka izmjenjena.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM Feature Dock Widget</translation>
+        <translation>OSM Feature Dock Widget</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Prvo odaberite OSM element.</translation>
+        <translation>Prvo odaberite OSM element.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Prvo odaberite ralaciju za uređivanje.</translation>
+        <translation>Prvo odaberite ralaciju za uređivanje.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
@@ -3616,31 +3659,31 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">Spremi OSM u datoteku</translation>
+        <translation>Spremi OSM u datoteku</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Ne mogu spremiti datoteku %1: %2.</translation>
+        <translation>Ne mogu spremiti datoteku %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Inicijaliziranje...</translation>
+        <translation>Inicijaliziranje...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Spremanje čvorova...</translation>
+        <translation>Spremanje čvorova...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Spremanje linija...</translation>
+        <translation>Spremanje linija...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Spremanje poligona...</translation>
+        <translation>Spremanje poligona...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Spremanje relacija...</translation>
+        <translation>Spremanje relacija...</translation>
     </message>
 </context>
 <context>
@@ -3683,11 +3726,11 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSM slanje</translation>
+        <translation>OSM slanje</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Slanje podataka...</translation>
+        <translation>Slanje podataka...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3759,43 +3802,57 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Došlo je do pogreške pri izvršavanju Python koda:</translation>
+        <translation>Došlo je do pogreške pri izvršavanju Python koda:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Python verzija:</translation>
+        <translation>Python verzija:</translation>
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="obsolete">GQIS inačica:</translation>
+        <translation>GQIS inačica:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Python putanja:</translation>
+        <translation>Python putanja:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Python pogreška</translation>
+        <translation>Python pogreška</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="obsolete">Ne mogu učitati dodatak &apos;%1&apos; iz [&apos;%2&apos;]</translation>
+        <translation>Ne mogu učitati dodatak &apos;%1&apos; iz [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Ne mogu učitati dodatak %1</translation>
+        <translation>Ne mogu učitati dodatak %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete">%1 zbog pogreške pri zvanju njegove classFactory() metode</translation>
+        <translation>%1 zbog pogreške pri zvanju njegove classFactory() metode</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1 zbog pogreške pri zvanju njegove initGui() metode</translation>
+        <translation>%1 zbog pogreške pri zvanju njegove initGui() metode</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Pogreška pri gašenju dodatka %1</translation>
+        <translation>Pogreška pri gašenju dodatka %1</translation>
+    </message>
+</context>
+<context>
+    <name>PythonConsole</name>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished">Python konzola</translation>
+    </message>
+    <message>
+        <source>To access Quantum GIS environment from this console
+use qgis.utils.iface object (instance of QgisInterface class).
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4106,7 +4163,6 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="61"/>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="35"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="23"/>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="40"/>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="28"/>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="41"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="33"/>
@@ -4974,8 +5030,9 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>CRS nije definiran - podrazumijeva se zadani CRS</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation type="obsolete">SQLite DB (*.sqlite *.db);;Sve datoteke (*)</translation>
+        <translation>SQLite DB (*.sqlite *.db);;Sve datoteke (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
@@ -5108,16 +5165,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="unfinished">Odabir se proteže izvan koordinatnog sustava sloja.</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="38"/>
-        <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="39"/>
-        <source>[plugindescription]</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8839,7 +8886,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="772"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>Choose a file name to save the map as</source>
         <translation>Odaberi naziv datoteke pod kojim će se spremiti mapa</translation>
     </message>
@@ -8849,17 +8896,17 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <translation>PDF oblik</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="568"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
         <source>Image too large</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="569"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="613"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="601"/>
         <source>Big image</source>
         <translation>Velika slika</translation>
     </message>
@@ -8868,109 +8915,109 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <translation type="obsolete">Za kreiranje slike %1 x %2 treba približno %3 MB memorije</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="614"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="643"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="631"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1 oblik (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="667"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Odaberite naziv datoteke za spremanje slike mape</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="714"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Image too big</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="753"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
         <source>SVG warning</source>
         <translation>SVG upozorenje</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="754"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1495"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="742"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1483"/>
         <source>Don&apos;t show this message again</source>
         <translation>Ne prikazuj više ovu poruku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="758"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="746"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;Funkcija za izvoz u SVG ima nekoliko problema zbog bugova i nedostataka u </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="748"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4 SVG kodu. Specifično, postoje problemi sa slojevima koji se ne obrezuju po okviru mape (bounding box).&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="763"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="751"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Ako vam je potrebna vektorska izlazna datoteka iz QGIS-a preporučuje se da probate s ispisom u PostScript ako vas SVG izlaz ne zadovoljava.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="773"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="761"/>
         <source>SVG Format</source>
         <translation>SVG oblik</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="899"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="887"/>
         <source>save template</source>
         <translation>spremi predložak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="925"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
         <source>Save error</source>
         <translation>Pogreška spremanja</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="925"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
         <source>Error, could not save file</source>
         <translation>Pogreška, nije moguće spremiti datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="933"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="921"/>
         <source>Load template</source>
         <translation>Učitaj predložak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
         <source>Read error</source>
         <translation>Pogreška čitanja</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
         <source>Error, could not read file</source>
         <translation>Pogreška, nije moguće pročitati datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
         <source>Content of template file is not valid</source>
         <translation>Sadržaj datoteke predloška nije valjan</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1166"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1154"/>
         <source>Composer</source>
         <translation>Kompozer</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1493"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1481"/>
         <source>Project contains WMS layers</source>
         <translation>Projekt sadrži WMS slojeve</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1494"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1482"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Neki WMS poslužitelji (npr. UMN mapserver) imaju limit za parametre ŠIRINA i VISINA. Ispisom slojeva s tih poslužitelja može se preći taj limit. Ako je tome slučaj, WMS slojevi neće biti ispisani</translation>
     </message>
@@ -20988,318 +21035,326 @@ geometriju.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Nema ništa za uklanjanje! Mapa dodatka ne postoji:</translation>
+        <translation>Nema ništa za uklanjanje! Mapa dodatka ne postoji:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Neuspješno uklanjanje mape:</translation>
+        <translation>Neuspješno uklanjanje mape:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Provjerite dozvole ili je uklonite ručno</translation>
+        <translation>Provjerite dozvole ili je uklonite ručno</translation>
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Ne mogu parsirati izlaz iz repozotorija</translation>
+        <translation>Ne mogu parsirati izlaz iz repozotorija</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Ne mogu otvoriti lokalnu mapu dodataka</translation>
+        <translation>Ne mogu otvoriti lokalnu mapu dodataka</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Dohvati Python dodatke...</translation>
+        <translation>Dohvati Python dodatke...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">Instaliraj više dodataka iz udaljenih repozitorija</translation>
+        <translation>Instaliraj više dodataka iz udaljenih repozitorija</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Traženje novih dodataka...</translation>
+        <translation>Traženje novih dodataka...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGIS dodatak konflikt:</translation>
+        <translation>QGIS dodatak konflikt:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">Instaler dodatka detektirao je zastarjeli dodatak koji maskira noviju inačicu koja se isporučuje s ovom inačicom QGIS-a. Ovo je vjerojatno zbog datoteka povezanih s prethodnom instalacijom QGIS-a. Uz pomoć Instalera dodataka uklonite stari dodatak kako bi se prikazala novija inačica isporučena s ovom kopijom QGIS-a.</translation>
+        <translation>Instaler dodatka detektirao je zastarjeli dodatak koji maskira noviju inačicu koja se isporučuje s ovom inačicom QGIS-a. Ovo je vjerojatno zbog datoteka povezanih s prethodnom instalacijom QGIS-a. Uz pomoć Instalera dodataka uklonite stari dodatak kako bi se prikazala novija inačica isporučena s ovom kopijom QGIS-a.</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">Dostupan je novi dodatak</translation>
+        <translation>Dostupan je novi dodatak</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Dostupno je osvježenje dodatka</translation>
+        <translation>Dostupno je osvježenje dodatka</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS PYthon instaler dodataka</translation>
+        <translation>QGIS PYthon instaler dodataka</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Pogreška pri čitanju repozitorija:</translation>
+        <translation>Pogreška pri čitanju repozitorija:</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS PYthon instaler dodataka</translation>
+        <translation>QGIS PYthon instaler dodataka</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Pogreška pri čitanju repozitorija:</translation>
+        <translation>Pogreška pri čitanju repozitorija:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">svi repozitoriji</translation>
+        <translation>svi repozitoriji</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">spojeno</translation>
+        <translation>spojeno</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Ovaj repozitorij je spojen</translation>
+        <translation>Ovaj repozitorij je spojen</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">nedostupno</translation>
+        <translation>nedostupno</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Ovaj repozitorij je omogućen, ali nije dostupan</translation>
+        <translation>Ovaj repozitorij je omogućen, ali nije dostupan</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">onemogućeno</translation>
+        <translation>onemogućeno</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">Ovaj je repozitorij onemogućen</translation>
+        <translation>Ovaj je repozitorij onemogućen</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">Ovaj je repozitorij blokiran zbog nekompatibilnosti s vašom verzijom QGIS-a</translation>
+        <translation>Ovaj je repozitorij blokiran zbog nekompatibilnosti s vašom verzijom QGIS-a</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">siročad</translation>
+        <translation>siročad</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">bilo koji status</translation>
+        <translation>bilo koji status</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">nije instalirano</translation>
+        <translation>nije instalirano</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">instalirano</translation>
+        <translation>instalirano</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">može se osvježiti i novosti</translation>
+        <translation>može se osvježiti i novosti</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Ovaj dodatak nije instaliran</translation>
+        <translation>Ovaj dodatak nije instaliran</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">Ovaj je dodatak instaliran</translation>
+        <translation>Ovaj je dodatak instaliran</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Ovaj je dodatak instaliran, ali je dostupna novija verzija</translation>
+        <translation>Ovaj je dodatak instaliran, ali je dostupna novija verzija</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Ovaj je dodatak instaliran, ali ga ne mogu pronaći niti u jednom od omogućenih repozitorija</translation>
+        <translation>Ovaj je dodatak instaliran, ali ga ne mogu pronaći niti u jednom od omogućenih repozitorija</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Ovaj dodatak nije instaliran i pregledava se prvi put</translation>
+        <translation>Ovaj dodatak nije instaliran i pregledava se prvi put</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Ovaj je dodatak instaliran i noviji je od verzije dostupne u repozitoriju</translation>
+        <translation>Ovaj je dodatak instaliran i noviji je od verzije dostupne u repozitoriju</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">Ovaj je dodatak nekompatibilan s vašom QGIS verzijom i vjerojatno neće raditi.</translation>
+        <translation>Ovaj je dodatak nekompatibilan s vašom QGIS verzijom i vjerojatno neće raditi.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">Zahtjevani Python modul nije instaliran.
+        <translation>Zahtjevani Python modul nije instaliran.
 Za više informacija posjetite njegovu web stranicu, ili QGIS wiki.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Ovaj dodatak izgleda pokvaren.
+        <translation>Ovaj dodatak izgleda pokvaren.
 Instaliran je ali se ne može učitati.
 Ovo je poruka o pogrešci:</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">dostupna novija verzija</translation>
+        <translation>dostupna novija verzija</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">novo!</translation>
+        <translation>novo!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">nevaljano</translation>
+        <translation>nevaljano</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Obratite pažnju da je to osnovni dodatak koji se ne može ukloniti</translation>
+        <translation>Obratite pažnju da je to osnovni dodatak koji se ne može ukloniti</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">instalirana verzija</translation>
+        <translation>instalirana verzija</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">dostupna verzija</translation>
+        <translation>dostupna verzija</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">Ovo je najnovija dostupna verzija</translation>
+        <translation>Ovo je najnovija dostupna verzija</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Nema dostupne verzije za skidanje</translation>
+        <translation>Nema dostupne verzije za skidanje</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">Dodatak je pokvaren</translation>
+        <translation>Dodatak je pokvaren</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">Ovaj dodatak zahtjeva noviju verziju Quantum GIS-a</translation>
+        <translation>Ovaj dodatak zahtjeva noviju verziju Quantum GIS-a</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">najmanje</translation>
+        <translation>najmanje</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">Ovaj dodatak zahtjeva modul koji nedostaje</translation>
+        <translation>Ovaj dodatak zahtjeva modul koji nedostaje</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">dostupno samo lokalno</translation>
+        <translation>dostupno samo lokalno</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">Instaliraj dodatak</translation>
+        <translation>Instaliraj dodatak</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Reinstaliraj dodatak</translation>
+        <translation>Reinstaliraj dodatak</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Nadogradi dodatak</translation>
+        <translation>Nadogradi dodatak</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Instaliraj/nadogradi dodatak</translation>
+        <translation>Instaliraj/nadogradi dodatak</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Skini dodatak na stariju verziju</translation>
+        <translation>Skini dodatak na stariju verziju</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Sigurno želite skinuti dodatak na poslednju dostupnu verziju? Instalirana verzija je novija!</translation>
+        <translation>Sigurno želite skinuti dodatak na poslednju dostupnu verziju? Instalirana verzija je novija!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Nije uspjela instalacija dodatka</translation>
+        <translation>Nije uspjela instalacija dodatka</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">Dodatak je nestao</translation>
+        <translation>Dodatak je nestao</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">Dodatak je izgleda bio instaliran, ali na nepoznatu lokaciju. Vjerojatno je paket sadržavao krivo imenovanu mapu.
+        <translation>Dodatak je izgleda bio instaliran, ali na nepoznatu lokaciju. Vjerojatno je paket sadržavao krivo imenovanu mapu.
 Pretražite popis instaliranih dodataka. Gotovo sam siguran da ćete tamo pronaći dodatak, samo ne mogu drediti koji je točno. Ovo također znači da ne mogu odrediti je li dodatak instaliran i informirati vas o dostupnim nadogradnjama. No, dodatak može raditi. Kontaktirajte autora dodatka i objasnite situaciju.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">Dodatak uspješno instaliran</translation>
+        <translation>Dodatak uspješno instaliran</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Python dodatak je instliran.
+        <translation>Python dodatak je instliran.
 Sada ga trebate uključiti u Upravljaču dodataka.</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">Dodatak je uspješno reinstaliran</translation>
+        <translation>Dodatak je uspješno reinstaliran</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Python dodatak je reinstaliran.
+        <translation>Python dodatak je reinstaliran.
 Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Dodatak je dizajniran za noviju verziju Quantum GIS-a. Minimalna potrebna verzija je:</translation>
+        <translation>Dodatak je dizajniran za noviju verziju Quantum GIS-a. Minimalna potrebna verzija je:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">Dodatak ovisi o nekim komponentama koje nedostaju na vašem sustavu. Morate instalirati slijedeće Python module kako biste ga omogućili:</translation>
+        <translation>Dodatak ovisi o nekim komponentama koje nedostaju na vašem sustavu. Morate instalirati slijedeće Python module kako biste ga omogućili:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">Dodatak je pokvaren. Python je rekao:</translation>
+        <translation>Dodatak je pokvaren. Python je rekao:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Neuspješna deinstalacija dodatka</translation>
+        <translation>Neuspješna deinstalacija dodatka</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Sigurno želite deinstalirati slijedeći dodatak?</translation>
+        <translation>Sigurno želite deinstalirati slijedeći dodatak?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Upozorenje: ovaj dodatak nije dostupan niti u jednom dostupnom repozitoriju!</translation>
+        <translation>Upozorenje: ovaj dodatak nije dostupan niti u jednom dostupnom repozitoriju!</translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">Dodatak je uspješno deinstaliran</translation>
+        <translation>Dodatak je uspješno deinstaliran</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Python dodatak je deinstaliran. Možda će te morati ponovno pokrenuti QGIS kako biste ga u potpunosti uklonili.</translation>
+        <translation>Python dodatak je deinstaliran. Možda će te morati ponovno pokrenuti QGIS kako biste ga u potpunosti uklonili.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Upravo dodajete nekoliko repozitorija dodataka koji nisu autorizirani niti podržani od QGIS tima. Autori dodataka se obično trude da je njihov uradak koristan i siguran, no mi ne možemo preuzeti odgovornost za njih.</translation>
+        <translation>Upravo dodajete nekoliko repozitorija dodataka koji nisu autorizirani niti podržani od QGIS tima. Autori dodataka se obično trude da je njihov uradak koristan i siguran, no mi ne možemo preuzeti odgovornost za njih.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Ne može se dodati drugi repozitorij s istim URL-om!</translation>
+        <translation>Ne može se dodati drugi repozitorij s istim URL-om!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Sigurno želite ukloniit slijedeći reopzitorij?</translation>
+        <translation>Sigurno želite ukloniit slijedeći reopzitorij?</translation>
     </message>
 </context>
 <context>
@@ -21600,35 +21655,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Uspjeh</translation>
+        <translation>Uspjeh</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Rješavam naziv domaćina...</translation>
+        <translation>Rješavam naziv domaćina...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Povezivanje...</translation>
+        <translation>Povezivanje...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Domaćin spojen. Šaljem zahtjev...</translation>
+        <translation>Domaćin spojen. Šaljem zahtjev...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Skidanje podataka...</translation>
+        <translation>Skidanje podataka...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Neaktivno</translation>
+        <translation>Neaktivno</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Zatvaranje veze...</translation>
+        <translation>Zatvaranje veze...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Pogreška</translation>
+        <translation>Pogreška</translation>
     </message>
 </context>
 <context>
@@ -21663,43 +21718,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Instaliranje...</translation>
+        <translation>Instaliranje...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Rješavanje naziva domaćina...</translation>
+        <translation>Rješavanje naziva domaćina...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Povezivanje...</translation>
+        <translation>Povezivanje...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Domaćin spojen. Šaljem zahtjev...</translation>
+        <translation>Domaćin spojen. Šaljem zahtjev...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Skidanje podataka...</translation>
+        <translation>Skidanje podataka...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Neaktivno</translation>
+        <translation>Neaktivno</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Zatvaranje veze...</translation>
+        <translation>Zatvaranje veze...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Pogreška</translation>
+        <translation>Pogreška</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Neuspješno raspakiravanje paketa dodatka. Vjerojatno je pokvaren ili nije u repozitoriju. Također, trebate imati dozvolu za pisanje po mapi datoteka dodatka:</translation>
+        <translation>Neuspješno raspakiravanje paketa dodatka. Vjerojatno je pokvaren ili nije u repozitoriju. Također, trebate imati dozvolu za pisanje po mapi datoteka dodatka:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Prekinuto od strane korisnika</translation>
+        <translation>Prekinuto od strane korisnika</translation>
     </message>
 </context>
 <context>
@@ -21757,7 +21812,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">nema poruke o pogrešci</translation>
+        <translation>nema poruke o pogrešci</translation>
     </message>
 </context>
 <context>
@@ -25298,86 +25353,119 @@ Pogreška je:
 <context>
     <name>QgsSpatiaLiteSourceSelect</name>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="44"/>
         <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Dodaj</translation>
+        <translation>&amp;Dodaj</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="51"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="102"/>
         <source>Wildcard</source>
-        <translation type="obsolete">Džoker</translation>
+        <translation>Džoker</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="52"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="106"/>
         <source>RegExp</source>
-        <translation type="obsolete">RegExp</translation>
+        <translation>RegExp</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="54"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="114"/>
         <source>All</source>
-        <translation type="obsolete">Sve</translation>
+        <translation>Sve</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="55"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="118"/>
         <source>Table</source>
-        <translation type="obsolete">Tablica</translation>
+        <translation>Tablica</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="56"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="122"/>
         <source>Type</source>
-        <translation type="obsolete">Tip</translation>
+        <translation>Tip</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="57"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="126"/>
         <source>Geometry column</source>
-        <translation type="obsolete">Geometrijska kolona</translation>
+        <translation>Geometrijska kolona</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="176"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="244"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="258"/>
         <source>SpatiaLite DB Open Error</source>
-        <translation type="obsolete">SpatiaLite DB greška pri otvaranju</translation>
+        <translation>SpatiaLite DB greška pri otvaranju</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="177"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="245"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="259"/>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="obsolete">Pogreška pri povezivanju na: %1
+        <translation>Pogreška pri povezivanju na: %1
 
 %2</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="243"/>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="obsolete">izgleda kao valjana SQLite DB, ali nije SpatiaLite-ova ...</translation>
+        <translation>izgleda kao valjana SQLite DB, ali nije SpatiaLite-ova ...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="252"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="582"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="740"/>
         <source>unknown error cause</source>
-        <translation type="obsolete">nepoznat uzrok pogreške</translation>
+        <translation>nepoznat uzrok pogreške</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="280"/>
         <source>@</source>
-        <translation type="obsolete">@</translation>
+        <translation>@</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="302"/>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
-        <translation type="obsolete">Odaberi SpatiaLite/SQLite DB za otvaranje</translation>
+        <translation>Odaberi SpatiaLite/SQLite DB za otvaranje</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="340"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="obsolete">Sigurno želite ukloniti %1 poveznicu i sve pridružene postavke?</translation>
+        <translation>Sigurno želite ukloniti %1 poveznicu i sve pridružene postavke?</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="342"/>
         <source>Confirm Delete</source>
-        <translation type="obsolete">Potvrda brisanja</translation>
+        <translation>Potvrda brisanja</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>Select Table</source>
-        <translation type="obsolete">Odabir tablice</translation>
+        <translation>Odabir tablice</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="obsolete">Morate odabrati tablicu  kako biste dodali sloj.</translation>
+        <translation>Morate odabrati tablicu  kako biste dodali sloj.</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="588"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="746"/>
         <source>SpatiaLite getTableInfo Error</source>
-        <translation type="obsolete">SpatiaLite getTableInfo pogreška</translation>
+        <translation>SpatiaLite getTableInfo pogreška</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="589"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="747"/>
         <source>Failure exploring tables from: %1
 
 %2</source>
-        <translation type="obsolete">Neuspješno istraživanje tablica iz: %1
+        <translation>Neuspješno istraživanje tablica iz: %1
 
 %2</translation>
     </message>
@@ -29153,67 +29241,67 @@ Response was:
     <name>VisualDialog</name>
     <message>
         <source>Error!</source>
-        <translation type="obsolete">Pogreška!</translation>
+        <translation>Pogreška!</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Prekid</translation>
+        <translation>Prekid</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="obsolete">Parametar</translation>
+        <translation>Parametar</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="obsolete">Vrijednost</translation>
+        <translation>Vrijednost</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Odredite ulazni vektorski sloj</translation>
+        <translation>Odredite ulazni vektorski sloj</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Odredite ulazno polje</translation>
+        <translation>Odredite ulazno polje</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Provjeri valjanost geometrije</translation>
+        <translation>Provjeri valjanost geometrije</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Pogreške geometrije</translation>
+        <translation>Pogreške geometrije</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Ukupno pogrešaka</translation>
+        <translation>Ukupno pogrešaka</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Ispiši jedinstvene vrijednosti</translation>
+        <translation>Ispiši jedinstvene vrijednosti</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Jedinstvene vrijednosti</translation>
+        <translation>Jedinstvene vrijednosti</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Ukupno jedinstvenih vrijednosti</translation>
+        <translation>Ukupno jedinstvenih vrijednosti</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Osnovna statistika</translation>
+        <translation>Osnovna statistika</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Izlaz statistike</translation>
+        <translation>Izlaz statistike</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Analiza najbližeg susjeda</translation>
+        <translation>Analiza najbližeg susjeda</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Statistika najbližeg susjeda</translation>
+        <translation>Statistika najbližeg susjeda</translation>
     </message>
 </context>
 <context>
@@ -30334,644 +30422,2287 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Detektirana verzija Quantum GIS-a:</translation>
+        <translation>Detektirana verzija Quantum GIS-a:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Ova verzija fTools zahtjeva QGIS barem verzije 1.0.0
+        <translation>Ova verzija fTools zahtjeva QGIS barem verzije 1.0.0
 Dodatak neće biti omogućen.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation type="obsolete">&amp;Vektor</translation>
+        <translation>&amp;Vektor</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">&amp;Alati analize</translation>
+        <translation>&amp;Alati analize</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Matrica dužine</translation>
+        <translation>Matrica dužine</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Suma dužina linija</translation>
+        <translation>Suma dužina linija</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Točaka u poligonu</translation>
+        <translation>Točaka u poligonu</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Osnovna statistika</translation>
+        <translation>Osnovna statistika</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Ispiši jedinstvene vrijednosti</translation>
+        <translation>Ispiši jedinstvene vrijednosti</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Analiza najbližeg susjeda</translation>
+        <translation>Analiza najbližeg susjeda</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Srednje/a koordinate</translation>
+        <translation>Srednje/a koordinate</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Presjek linija</translation>
+        <translation>Presjek linija</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">Alati ist&amp;raživanja</translation>
+        <translation>Alati ist&amp;raživanja</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Nasumični odabir</translation>
+        <translation>Nasumični odabir</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Nasumični odabir unutar podskupa</translation>
+        <translation>Nasumični odabir unutar podskupa</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Nasumične točke</translation>
+        <translation>Nasumične točke</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Regularne točke</translation>
+        <translation>Regularne točke</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektorska mreža</translation>
+        <translation>Vektorska mreža</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Odaberi po lokaciji</translation>
+        <translation>Odaberi po lokaciji</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Poligon iz opsega sloja</translation>
+        <translation>Poligon iz opsega sloja</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">Alati &amp;Geoprocesiranja</translation>
+        <translation>Alati &amp;Geoprocesiranja</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Konveksni trup(ovi)</translation>
+        <translation>Konveksni trup(ovi)</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Zaštita/e (buffer)</translation>
+        <translation>Zaštita/e (buffer)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Presjek</translation>
+        <translation>Presjek</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Unija</translation>
+        <translation>Unija</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Simetrična razlika</translation>
+        <translation>Simetrična razlika</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Obreži</translation>
+        <translation>Obreži</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Dissolve</translation>
+        <translation>Dissolve</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Razlika</translation>
+        <translation>Razlika</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">Alati G&amp;eometrije</translation>
+        <translation>Alati G&amp;eometrije</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Izvezi/dodaj geometrijske kolone</translation>
+        <translation>Izvezi/dodaj geometrijske kolone</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Provjeri valjanost geometrije</translation>
+        <translation>Provjeri valjanost geometrije</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Centroidi poligona</translation>
+        <translation>Centroidi poligona</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay triangulacija</translation>
+        <translation>Delaunay triangulacija</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Ekstraktiranje čvorova</translation>
+        <translation>Ekstraktiranje čvorova</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Pojednostavni geometrije</translation>
+        <translation>Pojednostavni geometrije</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Višedijelno u jednodijelne</translation>
+        <translation>Višedijelno u jednodijelne</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Jednodijelni u višedijelno</translation>
+        <translation>Jednodijelni u višedijelno</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Poligoni u linije</translation>
+        <translation>Poligoni u linije</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">Alati za upravljanje po&amp;dacima</translation>
+        <translation>Alati za upravljanje po&amp;dacima</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Izvezi u novu projekciju</translation>
+        <translation>Izvezi u novu projekciju</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Definiraj trenutnu projekciju</translation>
+        <translation>Definiraj trenutnu projekciju</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Spoji atribute</translation>
+        <translation>Spoji atribute</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Spoji atribute po lokaciji</translation>
+        <translation>Spoji atribute po lokaciji</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Razdijeli vektorski sloj</translation>
+        <translation>Razdijeli vektorski sloj</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="obsolete">Spoji shape datoteke u jednu</translation>
+        <translation>Spoji shape datoteke u jednu</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools informacije</translation>
+        <translation>fTools informacije</translation>
     </message>
 </context>
 <context>
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Spoji sve</translation>
+        <translation>Spoji sve</translation>
     </message>
     <message>
         <source>Polygon area</source>
-        <translation type="obsolete">Površina poligona</translation>
+        <translation>Površina poligona</translation>
     </message>
     <message>
         <source>Polygon perimeter</source>
-        <translation type="obsolete">Opseg poligona</translation>
+        <translation>Opseg poligona</translation>
     </message>
     <message>
         <source>Line length</source>
-        <translation type="obsolete">Dužian linije</translation>
+        <translation>Dužian linije</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
-        <translation type="obsolete">X koordinata točke</translation>
+        <translation>X koordinata točke</translation>
     </message>
     <message>
         <source>Point y coordinate</source>
-        <translation type="obsolete">Y koordinata točke</translation>
+        <translation>Y koordinata točke</translation>
     </message>
 </context>
 <context>
     <name>grasslabel</name>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
         <source>(1-256)</source>
-        <translation type="obsolete">(1-256)</translation>
+        <translation>(1-256)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>3D-Viewer (NVIZ)</source>
-        <translation type="obsolete">3D-Preglednik (NVIZ)</translation>
+        <translation>3D-Preglednik (NVIZ)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3d Visualization</source>
-        <translation type="obsolete">3d Vizualizacija</translation>
+        <translation>3d Vizualizacija</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>Add a value to the current category values</source>
-        <translation type="obsolete">Dodaj vrijednost u trenutnu kategoriju vrijednosti</translation>
+        <translation>Dodaj vrijednost u trenutnu kategoriju vrijednosti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="obsolete">Dodaj elemente u sloj (SVI elementni tipa odabranog sloja!)</translation>
+        <translation>Dodaj elemente u sloj (SVI elementni tipa odabranog sloja!)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add missing centroids to closed boundaries</source>
-        <translation type="obsolete">Dodaj centroide koje nedostaju zatvorenim granicama</translation>
+        <translation>Dodaj centroide koje nedostaju zatvorenim granicama</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
         <source>Add one or more columns to attribute table</source>
-        <translation type="obsolete">Dodaj jednu ili više kolona atributnoj tablici</translation>
+        <translation>Dodaj jednu ili više kolona atributnoj tablici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Allocate network</source>
-        <translation type="obsolete">Alociraj mrežu</translation>
+        <translation>Alociraj mrežu</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Assign constant value to column</source>
-        <translation type="obsolete">Pridruži konstantnu vrijednost koloni</translation>
+        <translation>Pridruži konstantnu vrijednost koloni</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
-        <translation type="obsolete">Pridruži novu konstantnu vrijednost koloni samo ako je rezultat upita ISTINA</translation>
+        <translation>Pridruži novu konstantnu vrijednost koloni samo ako je rezultat upita ISTINA</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="obsolete">Dodaj novu vrijednost kao rezultat operacija nad kolonama koloni u atributnoj tablici</translation>
+        <translation>Dodaj novu vrijednost kao rezultat operacija nad kolonama koloni u atributnoj tablici</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation type="obsolete">Pridruži novu vrijednost koloni kao rezultat operacija nad kolonama samo ako je rezultat upita ISTINA</translation>
+        <translation>Pridruži novu vrijednost koloni kao rezultat operacija nad kolonama samo ako je rezultat upita ISTINA</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Attribute field</source>
-        <translation type="obsolete">Polje atributa</translation>
+        <translation>Polje atributa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field (interpolated values)</source>
-        <translation type="obsolete">Polje atributa (interpolirane vrijednosti)</translation>
+        <translation>Polje atributa (interpolirane vrijednosti)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field to join</source>
-        <translation type="obsolete">Polje atributa za spajanje</translation>
+        <translation>Polje atributa za spajanje</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
-        <translation type="obsolete">Auto-balansiranje boja za LANDSAT-TM raster</translation>
+        <translation>Auto-balansiranje boja za LANDSAT-TM raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
-        <translation type="obsolete">Bikubična ili bilinearna spline interpolacija s Tykhonov regularizacijom</translation>
+        <translation>Bikubična ili bilinearna spline interpolacija s Tykhonov regularizacijom</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation type="obsolete">Pomoći alat za bilinearnu interpolaciju rasterskih mapa</translation>
+        <translation>Pomoći alat za bilinearnu interpolaciju rasterskih mapa</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
         <source>Blend color components for two rasters by given ratio</source>
-        <translation type="obsolete">Stopi komponente boja za dva rastera za dani odnos</translation>
+        <translation>Stopi komponente boja za dva rastera za dani odnos</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Blend red, green, raster layers to obtain one color raster</source>
-        <translation type="obsolete">Spoji crveno, zeleno, rasterske slojeve za dobivanje rastera jedne boje</translation>
+        <translation>Spoji crveno, zeleno, rasterske slojeve za dobivanje rastera jedne boje</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
-        <translation type="obsolete">Slomi (topološki čiste) poligone (uvezene iz netopoloških oblika, kao ShapeFile). Lome se granice na svakoj točki dijeljenoj izzmeđu 2 i više poligona gdje su kutevi segmenata različiti</translation>
+        <translation>Slomi (topološki čiste) poligone (uvezene iz netopoloških oblika, kao ShapeFile). Lome se granice na svakoj točki dijeljenoj izzmeđu 2 i više poligona gdje su kutevi segmenata različiti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
         <source>Break lines at each intersection of vector</source>
-        <translation type="obsolete">Slomi linije na svakom presjeku vektora</translation>
+        <translation>Slomi linije na svakom presjeku vektora</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation type="obsolete">Brovey transformacija za spajanje multispektralnih i pankromatskih kanala visoke rezolucije</translation>
+        <translation>Brovey transformacija za spajanje multispektralnih i pankromatskih kanala visoke rezolucije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
         <source>Buffer</source>
-        <translation type="obsolete">Zaštita (Buff)</translation>
+        <translation>Zaštita (Buff)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
         <source>Build polylines from lines</source>
-        <translation type="obsolete">Izgradi polilinije iz linija</translation>
+        <translation>Izgradi polilinije iz linija</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
+        <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
         <source>Calculate covariance/correlation matrix for user-defined rasters</source>
-        <translation type="obsolete">Izračunaj matricu kovarijance/korelacije za korisnički definirane rastere</translation>
+        <translation>Izračunaj matricu kovarijance/korelacije za korisnički definirane rastere</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
-        <translation type="obsolete">Izračunaj matricu pogreške i kapa parametar za procjenu točnosti rezultata klasifikacije</translation>
+        <translation>Izračunaj matricu pogreške i kapa parametar za procjenu točnosti rezultata klasifikacije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
         <source>Calculate geometry statistics for vectors</source>
-        <translation type="obsolete">Izračunaj statistiku geometrije za vektore</translation>
+        <translation>Izračunaj statistiku geometrije za vektore</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
         <source>Calculate linear regression from two rasters: y = a + b*x</source>
-        <translation type="obsolete">Izračunaj linearnu regresiju iz dva rastera: y = a + b*x</translation>
+        <translation>Izračunaj linearnu regresiju iz dva rastera: y = a + b*x</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
+        <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
+        <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
+        <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
         <source>Calculate raster surface area</source>
-        <translation type="obsolete">Izračunaj površinu rastera</translation>
+        <translation>Izračunaj površinu rastera</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
         <source>Calculate shadow maps from exact sun position</source>
-        <translation type="obsolete">Izračunaj mape sjena iz točne pozicije Sunca</translation>
+        <translation>Izračunaj mape sjena iz točne pozicije Sunca</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
         <source>Calculate shadow maps from sun position determinated by date/time</source>
-        <translation type="obsolete">Izračunaj mape sjena iz pozicije Sunca određene datumom/vremenom</translation>
+        <translation>Izračunaj mape sjena iz pozicije Sunca određene datumom/vremenom</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
         <source>Calculate statistics for raster</source>
-        <translation type="obsolete">Izračunaj statistiku rastera</translation>
+        <translation>Izračunaj statistiku rastera</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
+        <source>Calculate univariate statistics for numeric attributes in a data table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
+        <source>Calculate univariate statistics from raster based on vector objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
+        <source>Calculate univariate statistics from the non-null cells of raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
+        <source>Calculate univariate statistics of vector map features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
+        <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
+        <source>Category or object oriented statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
+        <source>Cats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
         <source>Change category values and labels</source>
-        <translation type="obsolete">Izmjeni vrijednosti i oznake kategorije</translation>
+        <translation>Izmjeni vrijednosti i oznake kategorije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
         <source>Change field</source>
-        <translation type="obsolete">Izmjeni polje</translation>
+        <translation>Izmjeni polje</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
         <source>Change layer number</source>
-        <translation type="obsolete">Izmjeni broj sloja</translation>
+        <translation>Izmjeni broj sloja</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
         <source>Change resolution</source>
-        <translation type="obsolete">Izmjeni rezoluciju</translation>
+        <translation>Izmjeni rezoluciju</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
+        <source>Change the type of boundary dangle to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
+        <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
         <source>Change the type of geometry elements</source>
-        <translation type="obsolete">Izmjeni tip elemenata geometrije</translation>
+        <translation>Izmjeni tip elemenata geometrije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
         <source>Choose appropriate format</source>
-        <translation type="obsolete">Odaberi odgovarajući oblik</translation>
+        <translation>Odaberi odgovarajući oblik</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
         <source>Columns management</source>
-        <translation type="obsolete">Upravljanje kolonama</translation>
+        <translation>Upravljanje kolonama</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
         <source>Compares bit patterns with raster</source>
-        <translation type="obsolete">Uspoređuje uzorke bitova s rasterom</translation>
+        <translation>Uspoređuje uzorke bitova s rasterom</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
         <source>Compress and decompress raster</source>
-        <translation type="obsolete">Kompresiranje i dekompresiranje rastera</translation>
+        <translation>Kompresiranje i dekompresiranje rastera</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
         <source>Compress raster</source>
-        <translation type="obsolete">Kompresiraj raster</translation>
+        <translation>Kompresiraj raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Computes a coordinate transformation based on the control points</source>
-        <translation type="obsolete">Izračunava transformaciju koordinata temeljenu na kontrolnim točkama</translation>
+        <translation>Izračunava transformaciju koordinata temeljenu na kontrolnim točkama</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
         <source>Concentric circles</source>
-        <translation type="obsolete">Koncentrične kružnice</translation>
+        <translation>Koncentrične kružnice</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
         <source>Config</source>
-        <translation type="obsolete">Konfig</translation>
+        <translation>Konfig</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
-        <translation type="obsolete">Spoji čvorove najkraćim putem (putujući trgovac)</translation>
+        <translation>Spoji čvorove najkraćim putem (putujući trgovac)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
-        <translation type="obsolete">Spoi odabrane čvorove najkraćim stablom (Steiner tree)</translation>
+        <translation>Spoi odabrane čvorove najkraćim stablom (Steiner tree)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Connect vector to database</source>
-        <translation type="obsolete">Spoji vektor na bazu podataka</translation>
+        <translation>Spoji vektor na bazu podataka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
         <source>Convert 2D vector to 3D by sampling raster</source>
-        <translation type="obsolete">Pretvori 2D vektor u 3D uzorkovanjem rastera</translation>
+        <translation>Pretvori 2D vektor u 3D uzorkovanjem rastera</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation type="obsolete">Konvertira 2D vektor u 3D vektor uzorkovanjem elevacijskog rastera. Podrazumijevana je metoda najbližeg susjeda</translation>
+        <translation>Konvertira 2D vektor u 3D vektor uzorkovanjem elevacijskog rastera. Podrazumijevana je metoda najbližeg susjeda</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
-        <translation type="obsolete">Pretvara GRASS binarni vektor u GRASS ASCII vektor</translation>
+        <translation>Pretvara GRASS binarni vektor u GRASS ASCII vektor</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert a raster to vector</source>
-        <translation type="obsolete">Konvertiraj raster u vektor</translation>
+        <translation>Konvertiraj raster u vektor</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert a vector to raster</source>
-        <translation type="obsolete">Konvertiraj vektor u raster</translation>
+        <translation>Konvertiraj vektor u raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
-        <translation type="obsolete">Konvertiraj smjerni kut i dužinu u koordinate i obrnuto</translation>
+        <translation>Konvertiraj smjerni kut i dužinu u koordinate i obrnuto</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert boundaries to lines</source>
-        <translation type="obsolete">Konvertiraj granice u linije</translation>
+        <translation>Konvertiraj granice u linije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
         <source>Convert centroids to points</source>
-        <translation type="obsolete">Konvertiraj centroide u točke</translation>
+        <translation>Konvertiraj centroide u točke</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
         <source>Convert coordinates</source>
-        <translation type="obsolete">Konvertiraj koordinate</translation>
+        <translation>Konvertiraj koordinate</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
-        <translation type="obsolete">Konvertiraj koordinate iz jedne projekcije u drugu (cs2cs sučelje)</translation>
+        <translation>Konvertiraj koordinate iz jedne projekcije u drugu (cs2cs sučelje)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
         <source>Convert lines to boundaries</source>
-        <translation type="obsolete">Konvertiraj linije u granice</translation>
+        <translation>Konvertiraj linije u granice</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
         <source>Convert points to centroids</source>
-        <translation type="obsolete">Konvertiraj točke u centroide</translation>
+        <translation>Konvertiraj točke u centroide</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
         <source>Convert raster to vector areas</source>
-        <translation type="obsolete">Konvertiraj raster u vektorske površine</translation>
+        <translation>Konvertiraj raster u vektorske površine</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
         <source>Convert raster to vector lines</source>
-        <translation type="obsolete">Konvertiraj raster u vektorske linije</translation>
+        <translation>Konvertiraj raster u vektorske linije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
         <source>Convert raster to vector points</source>
-        <translation type="obsolete">Konvertiraj raster u vektorske točke</translation>
+        <translation>Konvertiraj raster u vektorske točke</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
         <source>Convert vector to raster using attribute values</source>
-        <translation type="obsolete">Konveritraj vektor u raster korištenjem atributnih vrijednosti</translation>
+        <translation>Konveritraj vektor u raster korištenjem atributnih vrijednosti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
         <source>Convert vector to raster using constant</source>
-        <translation type="obsolete">Konveritraj vektor u raster korištenjem konstante</translation>
+        <translation>Konveritraj vektor u raster korištenjem konstante</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
         <source>Convex hull</source>
-        <translation type="obsolete">Konveksna obvojnica</translation>
+        <translation>Konveksna obvojnica</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
         <source>Copy a table</source>
-        <translation type="obsolete">Kopiraj tablicu</translation>
+        <translation>Kopiraj tablicu</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
         <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
-        <translation type="obsolete">Kopiraj također i atributnu tablicu (trenutačno je podržana samo tablica sloja 1)</translation>
+        <translation>Kopiraj također i atributnu tablicu (trenutačno je podržana samo tablica sloja 1)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
         <source>Count of neighbouring points</source>
-        <translation type="obsolete">Broj susjednih točaka</translation>
+        <translation>Broj susjednih točaka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
-        <translation type="obsolete">Stvori 3D mapu volumena temeljenu na 2D elevaciji i rasterima vrijednosti</translation>
+        <translation>Stvori 3D mapu volumena temeljenu na 2D elevaciji i rasterima vrijednosti</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Create a MASK for limiting raster operation</source>
-        <translation type="obsolete">Stvorite MASKU za ograničavanje rasterskih operacija</translation>
+        <translation>Stvorite MASKU za ograničavanje rasterskih operacija</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
         <source>Create a map containing concentric rings</source>
-        <translation type="obsolete">Stvori mapu koja sadržava koncentrične kružnice</translation>
+        <translation>Stvori mapu koja sadržava koncentrične kružnice</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
         <source>Create a raster plane</source>
-        <translation type="obsolete">Stvori ravninu rastera</translation>
+        <translation>Stvori ravninu rastera</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Create and add new table to vector</source>
-        <translation type="obsolete">Stvori i dodaj novu tablicu na vektor</translation>
+        <translation>Stvori i dodaj novu tablicu na vektor</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
         <source>Create and/or modify raster support files</source>
-        <translation type="obsolete">Stvori i/ili modificiraj rasterske datoteke podrške</translation>
+        <translation>Stvori i/ili modificiraj rasterske datoteke podrške</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
         <source>Create aspect raster from DEM (digital elevation model)</source>
-        <translation type="obsolete">Stvori raster aspekta iz DEM-a (digitalni elevacijski model)</translation>
+        <translation>Stvori raster aspekta iz DEM-a (digitalni elevacijski model)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
+        <source>Create cross product of category values from multiple rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
+        <source>Create fractal surface of given fractal dimension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
         <source>Create grid in current region</source>
-        <translation type="obsolete">Stvori mrežu u trenutnoj regiji</translation>
+        <translation>Stvori mrežu u trenutnoj regiji</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
-        <translation type="obsolete">Svori novi sloj s vrijednostima kategorije temeljenim na korisničkoj reklasifikaciji kategorija u postojećem rasteru</translation>
+        <translation>Svori novi sloj s vrijednostima kategorije temeljenim na korisničkoj reklasifikaciji kategorija u postojećem rasteru</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create new raster by combining other rasters</source>
-        <translation type="obsolete">Stvori novi raster kombinacijom drugih rastera</translation>
+        <translation>Stvori novi raster kombinacijom drugih rastera</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create new vector by combining other vectors</source>
-        <translation type="obsolete">Stvori novi vektor kombinacijom drugih vektora</translation>
+        <translation>Stvori novi vektor kombinacijom drugih vektora</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create new vector with current region extent</source>
-        <translation type="obsolete">Stvori novi vektor s trenutnim rasponom regije</translation>
+        <translation>Stvori novi vektor s trenutnim rasponom regije</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create nodes on network</source>
-        <translation type="obsolete">Stvori čvorove na mreži</translation>
+        <translation>Stvori čvorove na mreži</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create parallel line to input lines</source>
-        <translation type="obsolete">Stvori paralelnu liniju ulaznim linijama</translation>
+        <translation>Stvori paralelnu liniju ulaznim linijama</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
         <source>Create points</source>
-        <translation type="obsolete">Stvori točke</translation>
+        <translation>Stvori točke</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create points along input lines</source>
-        <translation type="obsolete">Stvori točku uzduž ulaznih linija</translation>
+        <translation>Stvori točku uzduž ulaznih linija</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
         <source>Create points/segments from input vector lines and positions</source>
-        <translation type="obsolete">Stvori točke/segmente iz ulaznih vektorskih linija i pozicija</translation>
+        <translation>Stvori točke/segmente iz ulaznih vektorskih linija i pozicija</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
         <source>Create quantization file for floating-point raster</source>
-        <translation type="obsolete">Stvori datoteku kvantizacije za raster s decimalnim vrijednostima</translation>
+        <translation>Stvori datoteku kvantizacije za raster s decimalnim vrijednostima</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
         <source>Create random 2D/3D vector points</source>
-        <translation type="obsolete">Stvori nasumične 2D/3D vektorske točke</translation>
+        <translation>Stvori nasumične 2D/3D vektorske točke</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
+        <source>Create random cell values with spatial dependence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
+        <source>Create random points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
+        <source>Create random vector point contained in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
+        <source>Create raster images with textural features from raster (first serie of indices)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
+        <source>Create raster of distance to features in input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
+        <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
+        <source>Create raster of uniform random deviates with user-defined range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
+        <source>Create raster with contiguous areas grown by one cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
+        <source>Create raster with textural features from raster (second serie of indices)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
+        <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
+        <source>Create shaded map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
+        <source>Create slope raster from DEM (digital elevation model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
+        <source>Create standard vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
+        <source>Create surface from rasterized contours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
+        <source>Create vector contour from raster at specified levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
+        <source>Create vector contour from raster at specified steps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
+        <source>Create watershed basin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
+        <source>Create watershed subbasins raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
+        <source>Cut network by cost isolines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
         <source>DXF vector layer</source>
-        <translation type="obsolete">DXF vektorski sloj</translation>
+        <translation>DXF vektorski sloj</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
         <source>Database</source>
-        <translation type="obsolete">Baza podataka</translation>
+        <translation>Baza podataka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Database connection</source>
-        <translation type="obsolete">Poveznica baze podataka</translation>
+        <translation>Poveznica baze podataka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Database file</source>
-        <translation type="obsolete">Datoteka baze podataka</translation>
+        <translation>Datoteka baze podataka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Database management</source>
-        <translation type="obsolete">Upravljanje bazom podataka</translation>
+        <translation>Upravljanje bazom podataka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
         <source>Database parameters</source>
-        <translation type="obsolete">Parametri baze podataka</translation>
+        <translation>Parametri baze podataka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
+        <source>Delaunay triangulation (areas)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
+        <source>Delaunay triangulation (lines)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
+        <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
+        <source>Delete category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
+        <source>Develop images and group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
+        <source>Develop map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
+        <source>Directory of rasters to be linked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
+        <source>Disconnect vector from database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
+        <source>Display general DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
+        <source>Display list of category values found in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
+        <source>Display projection information from PROJ.4 projection description file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
+        <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
+        <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
+        <source>Display projection information from georeferenced file (raster, vector or image)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
+        <source>Display projection information of the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
+        <source>Display raster category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
+        <source>Display results of SQL selection from database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
+        <source>Display the HTML manual pages of GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
+        <source>Display vector attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
+        <source>Display vector map attributes with SQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
+        <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
+        <source>Download and import data from WMS server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
+        <source>Drop column from attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
+        <source>E00 vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
+        <source>Execute any SQL statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
+        <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
+        <source>Export raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
+        <source>Export raster as non-georeferenced PNG image format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
+        <source>Export raster series to MPEG movie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
+        <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
+        <source>Export raster to ASCII text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
+        <source>Export raster to ESRI ARCGRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
+        <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
+        <source>Export raster to Geo TIFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
+        <source>Export raster to POVRAY height-field file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
+        <source>Export raster to PPM image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
+        <source>Export raster to VTK-ASCII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
+        <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
+        <source>Export raster to binary MAT-File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
+        <source>Export raster to binary array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
+        <source>Export raster to text file as x,y,z values based on cell centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
+        <source>Export raster to various formats (GDAL library)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
+        <source>Export vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
+        <source>Export vector table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
+        <source>Export vector to DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
+        <source>Export vector to GML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
+        <source>Export vector to Mapinfo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
+        <source>Export vector to POV-Ray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
+        <source>Export vector to PostGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
+        <source>Export vector to PostGIS (PostgreSQL) database table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
+        <source>Export vector to SVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
+        <source>Export vector to Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
+        <source>Export vector to VTK-ASCII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
+        <source>Export vector to various formats (OGR library)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
+        <source>Exports attribute tables into various format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
+        <source>Extract features from vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
+        <source>Extract selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
+        <source>Extracts terrain parameters from DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
+        <source>Fast fourier transform for image processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>File</source>
-        <translation type="obsolete">Datoteka</translation>
+        <translation>Datoteka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
+        <source>Fill lake from seed at given level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
+        <source>Fill lake from seed point at given level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
+        <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
+        <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
+        <source>Filter image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
+        <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
+        <source>Find shortest path on vector network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
+        <source>GDAL raster layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
+        <source>GRASS MODULES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
+        <source>GRASS shell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
+        <source>Gaussian kernel density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
+        <source>Generalization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
+        <source>Generate raster of cumulative cost of moving between locations based on cost input raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
+        <source>Generate surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
+        <source>Generate vector contour lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
+        <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
+        <source>Graphical raster map calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
         <source>Help</source>
-        <translation type="obsolete">Pomoć</translation>
+        <translation>Pomoć</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
+        <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
+        <source>Hydrologic modelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
+        <source>Imagery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
+        <source>Import ASCII raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
+        <source>Import DXF vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
+        <source>Import ESRI ARC/INFO ASCII GRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
+        <source>Import ESRI E00 vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
+        <source>Import GDAL supported raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
+        <source>Import GDAL supported raster and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
+        <source>Import GRIDATB.FOR (TOPMODEL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
+        <source>Import MapGen or MatLab vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
+        <source>Import OGR vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
+        <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
+        <source>Import OGR/PostGIS vector and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
+        <source>Import SPOT VGT NDVI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
+        <source>Import SRTM HGT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
+        <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
+        <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
+        <source>Import attribute tables in various formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
+        <source>Import binary MAT-File(v4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
+        <source>Import binary raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
+        <source>Import geonames.org country files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
+        <source>Import loaded raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
+        <source>Import loaded raster and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
+        <source>Import loaded vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
+        <source>Import loaded vector and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
+        <source>Import loaded vector selecting some features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
+        <source>Import only some layers of a DXF vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
+        <source>Import raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
+        <source>Import raster from ASCII polygon/line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
+        <source>Import raster from coordinates using univariate statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
+        <source>Import vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
+        <source>Import vector from gps using gpsbabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
+        <source>Import vector from gps using gpstrans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
+        <source>Import vector points from database table containing coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
+        <source>Input nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
+        <source>Input table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
+        <source>Interpolate surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
+        <source>Inverse distance squared weighting raster interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
+        <source>Inverse distance squared weighting raster interpolation based on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
+        <source>Inverse fast fourier transform for image processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
+        <source>Join table to existing vector table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
+        <source>Layers categories management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
+        <source>Line-of-sight raster analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
+        <source>Link GDAL supported raster layer to a binary raster map layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
+        <source>Link GDAL supported raster to binary raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
+        <source>Link all GDAL supported rasters in a directory to binary rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
+        <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
+        <source>Manage features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
+        <source>Manage image colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
+        <source>Manage map colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
+        <source>Manage raster cells value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
+        <source>Manage training dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
+        <source>Map algebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
+        <source>Map type conversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
+        <source>MapGen or MatLab vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
+        <source>Mask</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
+        <source>Metadata support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
+        <source>Mosaic up to 4 images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
+        <source>Name for new raster file (specify file extension)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
+        <source>Name for new vector file (specify file extension)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
+        <source>Name of the table to create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
+        <source>Neighborhood analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
+        <source>Network analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
+        <source>Network maintenance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
+        <source>OGR file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
+        <source>OGR vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
+        <source>Others</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
+        <source>Output GML file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Output Shapefile</source>
-        <translation type="obsolete">Izlazna Shape datoteka</translation>
+        <translation>Izlazna Shape datoteka</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
+        <source>Output layer name (used in GML file)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
+        <source>Output raster values along user-defined transect line(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
         <source>Overlay</source>
-        <translation type="obsolete">Preklop</translation>
+        <translation>Preklop</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
+        <source>Overlay maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
+        <source>Path to the OGR data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
+        <source>Percentage of first layer (0-99)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
+        <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
+        <source>Print projection information from a georeferenced file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
+        <source>Print projection information from a georeferenced file and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
+        <source>Print projection information of the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
+        <source>Projection conversion of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
+        <source>Projection management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
+        <source>Put geometry variables in database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
+        <source>Query rasters on their category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
+        <source>Random location perturbations of vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
+        <source>Randomly partition points into test/train sets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
         <source>Raster</source>
-        <translation type="obsolete">Raster</translation>
+        <translation type="unfinished">Raster</translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
+        <source>Raster buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
+        <source>Raster file matrix filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
+        <source>Raster neighbours analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
+        <source>Raster support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
+        <source>Re-project raster from a location to the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
+        <source>Rebuild topology of all vectors in mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
+        <source>Recategorize contiguous cells to unique categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
+        <source>Reclass category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
+        <source>Reclass category values using a column attribute (integer positive)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
+        <source>Reclass category values using a rules file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
+        <source>Reclass raster using reclassification rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
+        <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
+        <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
+        <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
+        <source>Recode categorical raster using reclassification rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
+        <source>Recode raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
+        <source>Reconnect vector to a new database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
+        <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
+        <source>Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
+        <source>Region settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
+        <source>Regularized spline with tension raster interpolation based on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
+        <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
+        <source>Remove all lines or boundaries of zero length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
+        <source>Remove bridges connecting area and island or 2 islands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
+        <source>Remove dangles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
+        <source>Remove duplicate area centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
+        <source>Remove duplicate lines (pay attention to categories!)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
+        <source>Remove existing attribute table of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
+        <source>Remove outliers from vector point data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
+        <source>Remove small angles between lines at nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
+        <source>Remove small areas, the longest boundary with adjacent area is removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
+        <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
+        <source>Rename column in attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
+        <source>Report and statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
+        <source>Reports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
+        <source>Reports and statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
+        <source>Reproject raster from another Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
+        <source>Reproject vector from another Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
+        <source>Resample raster using aggregation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
+        <source>Resample raster using interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
+        <source>Resample raster. Set new resolution first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
+        <source>Rescale the range of category values in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
+        <source>Sample raster at site locations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
+        <source>Save the current region as a named region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
+        <source>Select features by attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
+        <source>Select features overlapped by features in another map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
+        <source>Set PostgreSQL DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
+        <source>Set boundary definitions by edge (n-s-e-w)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
+        <source>Set boundary definitions for raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
+        <source>Set boundary definitions from raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
+        <source>Set boundary definitions from vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
+        <source>Set boundary definitions to current or default region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
+        <source>Set color rules based on stddev from a map&apos;s mean value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
+        <source>Set general DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
+        <source>Set general DB connection with a schema (PostgreSQL only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
+        <source>Set raster color table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
+        <source>Set raster color table from existing raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
+        <source>Set raster color table from setted tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
+        <source>Set raster color table from user-defined rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
+        <source>Set region to align to raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
+        <source>Set the region to match multiple rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
+        <source>Set the region to match multiple vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
+        <source>Set user/password for driver/database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
+        <source>Sets the boundary definitions for a raster map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
+        <source>Show database connection for vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
+        <source>Shrink current region until it meets non-NULL data from raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
+        <source>Simple map algebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
+        <source>Simplify vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
+        <source>Snap lines to vertex in threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
+        <source>Solar and irradiation model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
+        <source>Spatial analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
+        <source>Spatial models</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
+        <source>Split lines to shorter segments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
+        <source>Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
+        <source>Sum raster cell values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
+        <source>Surface management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
+        <source>Tables management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
+        <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
+        <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
+        <source>Tassled cap vegetation index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
+        <source>Terrain analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
+        <source>Tests of normality on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
+        <source>Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
+        <source>Thin no-zero cells that denote line features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
+        <source>Toolset for cleaning topology of vector map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
+        <source>Topology management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
+        <source>Trace a flow through an elevation model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
+        <source>Transform cells with value in null cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
+        <source>Transform features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
+        <source>Transform image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
+        <source>Transform null cells in value cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
+        <source>Transform value cells in null cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
+        <source>Type in map names separated by a comma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
+        <source>Update raster statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
+        <source>Update vector map metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
+        <source>Upload raster values at positions of vector points to the table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
+        <source>Upload vector values at positions of vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Vector</source>
-        <translation type="obsolete">Vektor</translation>
+        <translation>Vektor</translation>
     </message>
-</context>
-<context>
-    <name>pluginname</name>
     <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="73"/>
-        <source>[menuitemname]</source>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
+        <source>Vector buffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
-        <source>Replace this with a short description of what the plugin does</source>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
+        <source>Vector geometry analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/plugin_template/plugin.cpp" line="80"/>
-        <source>&amp;[menuname]</source>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
+        <source>Vector intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
+        <source>Vector non-intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
+        <source>Vector subtraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
+        <source>Vector union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
+        <source>Vector update by other maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
+        <source>Visibility graph construction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
+        <source>Voronoi diagram (area)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
+        <source>Voronoi diagram (lines)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
+        <source>Watershed Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
+        <source>Work with vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
+        <source>Write only features link to a record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
+        <source>Zero-crossing edge detection raster function for image processing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -30979,95 +32710,95 @@ Dodatak neće biti omogućen.</translation>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="obsolete">Max. dužina:</translation>
+        <translation>Max. dužina:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="obsolete">Min. dužina:</translation>
+        <translation>Min. dužina:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="obsolete">Srednja dužina:</translation>
+        <translation>Srednja dužina:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="obsolete">Ispunjeno:</translation>
+        <translation>Ispunjeno:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="obsolete">Prazno:</translation>
+        <translation>Prazno:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="obsolete">N:</translation>
+        <translation>N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="obsolete">Srednje:</translation>
+        <translation>Srednje:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="obsolete">StdDev:</translation>
+        <translation>StdDev:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="obsolete">Sum:</translation>
+        <translation>Sum:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="obsolete">Min:</translation>
+        <translation>Min:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="obsolete">Max:</translation>
+        <translation>Max:</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="obsolete">CV:</translation>
+        <translation>CV:</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="obsolete">Broj jedinstvenih vrijednosti:</translation>
+        <translation>Broj jedinstvenih vrijednosti:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="obsolete">Opseg:</translation>
+        <translation>Opseg:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="obsolete">Sredina:</translation>
+        <translation>Sredina:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="obsolete">Opažana srednja dužina:</translation>
+        <translation>Opažana srednja dužina:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="obsolete">Očekivana srednja dužina:</translation>
+        <translation>Očekivana srednja dužina:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="obsolete">Indeks najbližeg susjeda:</translation>
+        <translation>Indeks najbližeg susjeda:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="obsolete">Z-Score:</translation>
+        <translation>Z-Score:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">Element %1 sadržava neugniježđenu rupu</translation>
+        <translation>Element %1 sadržava neugniježđenu rupu</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">Element %1 nije zatvoren</translation>
+        <translation>Element %1 nije zatvoren</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">Element %1 presjeca sam sebe</translation>
+        <translation>Element %1 presjeca sam sebe</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">Element %1 ima netočan redoslijed čvorova</translation>
+        <translation>Element %1 ima netočan redoslijed čvorova</translation>
     </message>
 </context>
 </TS>

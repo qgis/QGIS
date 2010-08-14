@@ -485,35 +485,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Nejauša izvēle</translation>
+        <translation>Nejauša izvēle</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Eksportēt uz citu projekciju</translation>
+        <translation>Eksportēt uz citu projekciju</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Definēt pašreizējo projekciju</translation>
+        <translation>Definēt pašreizējo projekciju</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektoru tīkls</translation>
+        <translation>Vektoru tīkls</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Sadalīt vektoru slāni</translation>
+        <translation>Sadalīt vektoru slāni</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Nejauša izvēle apakškopās</translation>
+        <translation>Nejauša izvēle apakškopās</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Lūdzu precizējiet ievades vektordatu slāni</translation>
+        <translation>Lūdzu precizējiet ievades vektordatu slāni</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Apvienot atribūtus pēc atrašanās vietas</translation>
+        <translation>Apvienot atribūtus pēc atrašanās vietas</translation>
     </message>
     <message>
         <source>Spatial Join</source>
@@ -521,11 +521,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Apvienot atribūtus</translation>
+        <translation>Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Regulāri punkti</translation>
+        <translation>Regulāri punkti</translation>
     </message>
     <message>
         <source>Attribute Summary</source>
@@ -561,7 +561,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Līniju krustpunkti</translation>
+        <translation>Līniju krustpunkti</translation>
     </message>
     <message>
         <source>Random Selection From Within Subsets</source>
@@ -653,52 +653,52 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">veido jaunu izvēli</translation>
+        <translation>veido jaunu izvēli</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">pievieno esošajai izvēlei</translation>
+        <translation>pievieno esošajai izvēlei</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">noņem no esošās izvēles</translation>
+        <translation>noņem no esošās izvēles</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Izvēlēties pēc atrašanās vietas</translation>
+        <translation>Izvēlēties pēc atrašanās vietas</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Izvēlēties objektus no:</translation>
+        <translation>Izvēlēties objektus no:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">kas pārklājas ar objektiem iekš:</translation>
+        <translation>kas pārklājas ar objektiem iekš:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Mainīt pašreizējo izvēli pēc:</translation>
+        <translation>Mainīt pašreizējo izvēli pēc:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Norādiet ievades slāni</translation>
+        <translation>Norādiet ievades slāni</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Norādiet izvēles slāni</translation>
+        <translation>Norādiet izvēles slāni</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Attāluma matrica</translation>
+        <translation>Attāluma matrica</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Izveidotā izvades matrica:</translation>
+        <translation>Izveidotā izvades matrica:</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Summē līniju garumus</translation>
+        <translation>Summē līniju garumus</translation>
     </message>
     <message>
         <source>OGR Layer Converter</source>
@@ -706,18 +706,381 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="obsolete">Lūdzu norādiet ievades līniju slāni</translation>
+        <translation>Lūdzu norādiet ievades līniju slāni</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Lūdzu norādiet izvades shapefile</translation>
+        <translation>Lūdzu norādiet izvades shapefile</translation>
+    </message>
+    <message>
+        <source>Please specify line intersect layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify intersect unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output point shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No input layer specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify spatial reference system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created projected shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose output CRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select the projection system to be used by the output layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Valid CRS selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output spatial reference system is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identical output spatial reference system chosen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify target vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify join vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Incorrect field names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No output will be created.
+Following field names are longer than 10 characters:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error deleting shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t delete existing shapefile
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify target join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select directory with shapefiles to merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No shapefiles found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There are no shapefiles in this directory. Please select another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t delete file %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Atcelt</translation>
+        <translation type="unfinished">Atcelt</translation>
+    </message>
+    <message>
+        <source>Merging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
+
+fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to further facilitate and streamline GIS based research and analysis.
+
+If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
+
+LICENSING INFORMATION:
+fTools is copyright (C) 2009  Carson J.Q. Farmer
+Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
+(C) 2008 by Dr. Horst Duester, Stefan Ziegler
+
+licensed under the terms of GNU GPL 2
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+fTools DEVELOPERS:
+Carson J. Q. Farmer
+Alexander Bruy
+**If you have contributed code to fTools and I haven&apos;t mentioned your name here, please contact me and I will add your name.
+
+ACKNOWLEDGEMENTS:
+The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jurgen E. Fischer
+QGis developer and user communities
+Folks on #qgis at freenode.net
+All those who have reported bugs/fixes/suggestions/comments/etc.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input table does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>joined fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Optional) Weight field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Optional) Unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No input vector layer specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify at least one summary statistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS warning!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Input layers have non-matching CRS.
+This may cause unexpected results.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Summary field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify valid extent coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid extent coordinates entered</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Generate Vector Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No input shapefile specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot define projection for PostGIS data...yet!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identical output spatial reference system chosen
+
+Are you sure you want to proceed?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Defined Projection For:
+%1.shp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select the projection system that defines the current layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer CRS information will be updated to the selected CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefiles in folder:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum Line Lengths In Polyons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input polygon vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input line vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output length field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>length field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify an input field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unstratified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>stratified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown layer type...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please properly specify extent coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count Points in Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count Points In Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input point vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output count field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>point count field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Point Distance Matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input point layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify target point layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify target unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading output shapefile:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to read input table!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -788,99 +1151,188 @@ p, li { white-space: pre-wrap; }
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="obsolete">&amp;Ievades mape:</translation>
+        <translation>&amp;Ievades mape:</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="obsolete">&amp;Izvades mape:</translation>
+        <translation>&amp;Izvades mape:</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="obsolete">Procesa uzsākšana izgāzās. Darbinamā programma nav uzstādīta vai ir nepieteikamas tiesības tās izpildei.</translation>
+        <translation>Procesa uzsākšana izgāzās. Darbinamā programma nav uzstādīta vai ir nepieteikamas tiesības tās izpildei.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="obsolete">Process apstājās kādu laiku pēc veiksmīgas darba uzsākšanas.</translation>
+        <translation>Process apstājās kādu laiku pēc veiksmīgas darba uzsākšanas.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="obsolete">Konstatēta neatpazīta kļūda.</translation>
+        <translation>Konstatēta neatpazīta kļūda.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation type="obsolete">Izvēlētais fails ir netabalstīts OGR formāts</translation>
+        <translation>Izvēlētais fails ir netabalstīts OGR formāts</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Detektētā Quantum GIS versija: </translation>
+        <translation>Detektētā Quantum GIS versija: </translation>
+    </message>
+    <message>
+        <source>This version of Gdal Tools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="obsolete">&amp;Ratsrs</translation>
+        <translation>&amp;Ratsrs</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation type="obsolete">Veidot virtuālo ratstru (katalogu)</translation>
+        <translation>Veidot virtuālo ratstru (katalogu)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="obsolete">Veido VRT no datu kopu sarakstra</translation>
+        <translation>Veido VRT no datu kopu sarakstra</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="obsolete">Kontūra</translation>
+        <translation>Kontūra</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="obsolete">Veido vektoru kontūrlīnijas no DEM</translation>
+        <translation>Veido vektoru kontūrlīnijas no DEM</translation>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="obsolete">Iededzināt</translation>
+        <translation>Iededzināt</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="obsolete">Iededzina vektorslāņa ģeometrijas rastra slānī</translation>
+        <translation>Iededzina vektorslāņa ģeometrijas rastra slānī</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="obsolete">Veidot poligonus</translation>
+        <translation>Veidot poligonus</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="obsolete">Veido laukumu vektorslāni no rastra</translation>
+        <translation>Veido laukumu vektorslāni no rastra</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="obsolete">Apvienot</translation>
+        <translation>Apvienot</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="obsolete">Veido ātru mozaīku no attēlu saraksta</translation>
+        <translation>Veido ātru mozaīku no attēlu saraksta</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation type="obsolete">Attīrīt</translation>
+        <translation>Attīrīt</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="obsolete">Dzēš mazus rastra laukumus</translation>
+        <translation>Dzēš mazus rastra laukumus</translation>
+    </message>
+    <message>
+        <source>Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Produces a raster proximity map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Near black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert nearly black/white borders to exact value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp an image into a new coordinate system</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="obsolete">Tīkls</translation>
+        <translation>Tīkls</translation>
+    </message>
+    <message>
+        <source>Create raster from the scattered data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converts raster data between different formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lists information about raster dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add projection info to the raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build overviews</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds or rebuilds overview images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a 24bit RGB image to 8bit paletted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert an 8bit paletted image to 24bit RGB</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="obsolete">GdalTools iestatījumi</translation>
+        <translation>GdalTools iestatījumi</translation>
+    </message>
+    <message>
+        <source>Various settings for Gdal Tools</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="obsolete">Par GdalTools</translation>
+        <translation>Par GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="obsolete">Parāda informāciju par GdalTools</translation>
+        <translation>Parāda informāciju par GdalTools</translation>
     </message>
 </context>
 <context>
@@ -916,28 +1368,51 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation type="obsolete">
+        <translation>
 (lieto GDAL v. %1)</translation>
+    </message>
+    <message>
+        <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
+
+The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
+Icons by Robert Szczepanek.
+Sponsorship by Silvio Grosso was much appreciated.
+
+Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
+
+DEVELOPERS:
+  Faunalia
+    Paolo Cavallini
+    Giuseppe Sucameli
+    Lorenzo Masini
+  GIS-lab
+    Maxim Dubinin
+    Alexander Bruy
+icons by Robert Szepanek
+
+HOMEPAGE:
+http://trac.faunalia.it/GdalTools-plugin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">Pabeigts</translation>
+        <translation>Pabeigts</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="obsolete">Darbība pabeigta.</translation>
+        <translation>Darbība pabeigta.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Brīdinājums</translation>
+        <translation>Brīdinājums</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="obsolete">Uzskaitītie faili netika izveidoti:
+        <translation>Uzskaitītie faili netika izveidoti:
 %1</translation>
     </message>
 </context>
@@ -945,40 +1420,40 @@ p, li { white-space: pre-wrap; }
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Brīdinājums</translation>
+        <translation>Brīdinājums</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="obsolete">Komanda joprojām darbojas.
+        <translation>Komanda joprojām darbojas.
 Vai vēlies to apturēt?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="obsolete">Nederīgi parametri.</translation>
+        <translation>Nederīgi parametri.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Brīdinājums</translation>
+        <translation>Brīdinājums</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="obsolete">Nav izveidots izvades fails.</translation>
+        <translation>Nav izveidots izvades fails.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="obsolete">Pabeigts</translation>
+        <translation>Pabeigts</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
-        <translation type="obsolete">Pārveidošana pabeigta.</translation>
+        <translation>Pārveidošana pabeigta.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="obsolete">%1 nav izveidots.</translation>
+        <translation>%1 nav izveidots.</translation>
     </message>
 </context>
 <context>
@@ -992,16 +1467,156 @@ Vai vēlies to apturēt?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Select the input file for Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the raster file to save the results to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Near Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Warning</source>
-        <translation type="obsolete">Brīdinājums</translation>
+        <translation>Brīdinājums</translation>
+    </message>
+    <message>
+        <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the file to analyse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This raster already found in map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files for VRT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the VRT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VRT (*.vrt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the output directory to save the results to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files to Merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Merge output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Polygonize output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Contour output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active raster layers. You must add almost one raster layer to continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert paletted image to RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band to convert:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Rasterize</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="obsolete">Kopēt</translation>
+        <translation>Kopēt</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="obsolete">Kopēt visu</translation>
+        <translation>Kopēt visu</translation>
+    </message>
+    <message>
+        <source>Select the input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate - srcwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (pixels) must be integer numbers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate - prjwin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image coordinates (geographic) must be numbers.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1051,7 +1666,7 @@ Vai vēlies to apturēt?</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="obsolete">Izvēlieties mapi, kurā atrodas GDAL izpildāmie faili</translation>
+        <translation>Izvēlieties mapi, kurā atrodas GDAL izpildāmie faili</translation>
     </message>
 </context>
 <context>
@@ -1585,254 +2200,297 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Apvienot visu</translation>
+        <translation type="unfinished">Apvienot visu</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Lūdzu precizējiet ievades vektordatu slāni</translation>
+        <translation type="unfinished">Lūdzu precizējiet ievades vektordatu slāni</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Lūdzu precizējiet izvades shapefile</translation>
+        <translation type="unfinished">Lūdzu precizējiet izvades shapefile</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Lūdzu precizējiet derīgu pielaides vērtību</translation>
+        <translation type="unfinished">Lūdzu precizējiet derīgu pielaides vērtību</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Lūdzu precizējiet derīgu UID lauku</translation>
+        <translation type="unfinished">Lūdzu precizējiet derīgu UID lauku</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Izvades shapefile</translation>
+        <translation type="unfinished">Izvades shapefile</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Izvilkt mezglus</translation>
+        <translation type="unfinished">Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Pārveidot poligonus līnijās</translation>
+        <translation type="unfinished">Pārveidot poligonus līnijās</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Ievades poligonu vektoru slānis</translation>
+        <translation type="unfinished">Ievades poligonu vektoru slānis</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation type="unfinished">Eksportēt/pievienot ģeometrijas kolonnas</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Ievades vektordatu slānis</translation>
+        <translation type="unfinished">Ievades vektordatu slānis</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Vienkāršot ģeometriju</translation>
+        <translation type="unfinished">Vienkāršot ģeometriju</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Poligona centroīdi</translation>
+        <translation type="unfinished">Poligona centroīdi</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Punktu izvades shapefile</translation>
+        <translation type="unfinished">Punktu izvades shapefile</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Izveidot poligonu no slāņa apjoma</translation>
+        <translation type="unfinished">Izveidot poligonu no slāņa apjoma</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Ievades slānis</translation>
+        <translation type="unfinished">Ievades slānis</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Poligonu izvades Shapefile</translation>
+        <translation type="unfinished">Poligonu izvades Shapefile</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Nebija iespējams dzēst eksistējošo Shapefile.</translation>
+        <translation type="unfinished">Nebija iespējams dzēst eksistējošo Shapefile.</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Ievades punktu vektoru slānis</translation>
+        <translation type="unfinished">Ievades punktu vektoru slānis</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Nebija iespējams dzēst nepabeigtu Shapefile.</translation>
+        <translation type="unfinished">Nebija iespējams dzēst nepabeigtu Shapefile.</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Kļūda rakstot izvades Shapefile.</translation>
+        <translation type="unfinished">Kļūda rakstot izvades Shapefile.</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Pārveidot viendaļīgu par daudzdaļīgu</translation>
+        <translation type="unfinished">Pārveidot viendaļīgu par daudzdaļīgu</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Pārveidot daudzdaļīgu par viendaļīgu</translation>
+        <translation type="unfinished">Pārveidot daudzdaļīgu par viendaļīgu</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay triangulācija</translation>
+        <translation type="unfinished">Delaunay triangulācija</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="obsolete">Ģeometrija</translation>
+        <translation type="unfinished">Ģeometrija</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">Ģeoapstrāde</translation>
+        <translation type="unfinished">Ģeoapstrāde</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Atcelt</translation>
+        <translation type="unfinished">Atcelt</translation>
+    </message>
+    <message>
+        <source>Error processing specified tolerance!
+Please choose larger tolerance...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>At least two features must have same attribute value!
+Please choose another field...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading output shapefile:
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Nav iespējams dzēst esošo Shapefile.</translation>
+        <translation type="unfinished">Nav iespējams dzēst esošo Shapefile.</translation>
+    </message>
+    <message>
+        <source>No output created. File creation error:
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Brīdinājumi:</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Ievades CRS kļūda: Ir detektētas dažādas koordinātu sistēmas. Rezultāti var nebūt tādi, kādus jūs gaidījāt.</translation>
     </message>
     <message>
         <source>
+Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Objekta ģeometrijas kļūda: viens vai vairāki objekti tika ignorēti, jo tiem bija nederīga ģeometrija.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 GEOS ģeoprocesēšanas kļūda: vienam vai vairākiem ievades objektiem ir nederīga ģeometrija.</translation>
     </message>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">Izšķīdināt visu</translation>
+        <translation type="unfinished">Izšķīdināt visu</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Lūdzu precizējiet ievades slāni</translation>
+        <translation type="unfinished">Lūdzu precizējiet ievades slāni</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Lūdzu precizējiet starpības/pārklājošo/apvienošanas slāni</translation>
+        <translation type="unfinished">Lūdzu precizējiet starpības/pārklājošo/apvienošanas slāni</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Lūdzu precizējiet derīgu bufera vērtību</translation>
+        <translation type="unfinished">Lūdzu precizējiet derīgu bufera vērtību</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">Lūdzu precizējiet izšķīdināšanas lauku</translation>
+        <translation type="unfinished">Lūdzu precizējiet izšķīdināšanas lauku</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Lūdzu precizējiet izvades Shapefile</translation>
+        <translation type="unfinished">Lūdzu precizējiet izvades Shapefile</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Buferis(i)</translation>
+        <translation type="unfinished">Buferis(i)</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Šķirt</translation>
+        <translation type="unfinished">Šķirt</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Starpība</translation>
+        <translation type="unfinished">Starpība</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Pārklāt slāni</translation>
+        <translation type="unfinished">Pārklāt slāni</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Pārklāt</translation>
+        <translation type="unfinished">Pārklāt</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Starpības slānis</translation>
+        <translation type="unfinished">Starpības slānis</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Objekti nav izvēlēti. Noņemiet atzīmi no &quot;Lietot izvēli&quot; vai arī izvēlieties objektus</translation>
+        <translation type="unfinished">Objekti nav izvēlēti. Noņemiet atzīmi no &quot;Lietot izvēli&quot; vai arī izvēlieties objektus</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Simetriskā starpība</translation>
+        <translation type="unfinished">Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Izgriešanas slānis</translation>
+        <translation type="unfinished">Izgriešanas slānis</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Izgriezt</translation>
+        <translation type="unfinished">Izgriezt</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Apvienošanas slānis</translation>
+        <translation type="unfinished">Apvienošanas slānis</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Apvienot</translation>
+        <translation type="unfinished">Apvienot</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Izveidot mazāko pārklāto laukumu</translation>
+        <translation type="unfinished">Izveidot mazāko pārklāto laukumu</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Izveidot pārklāto laukumu, balstoties uz ievades lauku</translation>
+        <translation type="unfinished">Izveidot pārklāto laukumu, balstoties uz ievades lauku</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Pārklājuma laukums(-i)</translation>
+        <translation type="unfinished">Pārklājuma laukums(-i)</translation>
     </message>
     <message>
         <source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 </translation>
     </message>
     <message>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 
 Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="obsolete">Ģeoapstrāde</translation>
+        <translation type="unfinished">Ģeoapstrāde</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Atcelt</translation>
+        <translation type="unfinished">Atcelt</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">Aizvērt</translation>
+        <translation type="unfinished">Aizvērt</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+%2%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading output shapefile:
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1956,7 +2614,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM informācija</translation>
+        <translation type="unfinished">OSM informācija</translation>
     </message>
     <message>
         <source>Show type description</source>
@@ -2003,43 +2661,43 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSM lejupielāde</translation>
+        <translation type="unfinished">OSM lejupielāde</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">Gaida uz OpenStreetMap serveri...</translation>
+        <translation type="unfinished">Gaida uz OpenStreetMap serveri...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Lejupielādes process bija nesekmīgs. OpenStreetMap servera atbilde: %1 - %2</translation>
+        <translation type="unfinished">Lejupielādes process bija nesekmīgs. OpenStreetMap servera atbilde: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">OSM lejupielādes kļūda</translation>
+        <translation type="unfinished">OSM lejupielādes kļūda</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Lejupielāde neizdevās: %1.</translation>
+        <translation type="unfinished">Lejupielāde neizdevās: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Saņem datus</translation>
+        <translation type="unfinished">Saņem datus</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">Abi apjomi ir par lielu!</translation>
+        <translation type="unfinished">Abi apjomi ir par lielu!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">Platuma apjoms ir par lielu!</translation>
+        <translation type="unfinished">Platuma apjoms ir par lielu!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">Garuma apjoms ir par lielu!</translation>
+        <translation type="unfinished">Garuma apjoms ir par lielu!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">Labi. Iespējams, ka šāda platība serverim derēs.</translation>
+        <translation type="unfinished">Labi. Iespējams, ka šāda platība serverim derēs.</translation>
     </message>
     <message>
         <source>Download OSM data</source>
@@ -2099,11 +2757,19 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Nav iespejams saglabāt failu %1: %2</translation>
+        <translation type="unfinished">Nav iespejams saglabāt failu %1: %2</translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OsmFeatureDW</name>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>OSM Feature</source>
         <translation>OSM objekts</translation>
@@ -2198,19 +2864,19 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSM spraudnis</translation>
+        <translation type="unfinished">OSM spraudnis</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">&apos;Izveidot OSM relāciju&apos; dialogs tika aizvērts automātiski, jo OSM datubāze ir mainījusies.</translation>
+        <translation type="unfinished">&apos;Izveidot OSM relāciju&apos; dialogs tika aizvērts automātiski, jo OSM datubāze ir mainījusies.</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Vispirms izvēlieties OSM objektu.</translation>
+        <translation type="unfinished">Vispirms izvēlieties OSM objektu.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Vispirms izvēlieties rediģējamo relāciju.</translation>
+        <translation type="unfinished">Vispirms izvēlieties rediģējamo relāciju.</translation>
     </message>
     <message>
         <source>Identify feature</source>
@@ -2275,27 +2941,27 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">Saglabāt OSM failā</translation>
+        <translation type="unfinished">Saglabāt OSM failā</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Inicializē...</translation>
+        <translation type="unfinished">Inicializē...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Saglabā mezglus...</translation>
+        <translation type="unfinished">Saglabā mezglus...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Saglabā līnijas...</translation>
+        <translation type="unfinished">Saglabā līnijas...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Saglabā poligonus...</translation>
+        <translation type="unfinished">Saglabā poligonus...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Saglabā relācijas...</translation>
+        <translation type="unfinished">Saglabā relācijas...</translation>
     </message>
     <message>
         <source>Save OSM</source>
@@ -2335,7 +3001,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Nav iespējams saglabāt failu %1: %2</translation>
+        <translation type="unfinished">Nav iespējams saglabāt failu %1: %2</translation>
     </message>
 </context>
 <context>
@@ -2417,54 +3083,68 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSM augšupielāde</translation>
+        <translation type="unfinished">OSM augšupielāde</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Augšuplādēju datus...</translation>
+        <translation type="unfinished">Augšuplādēju datus...</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Darbinot Python kodu konstatēta kļūda:</translation>
+        <translation>Darbinot Python kodu konstatēta kļūda:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Python versija:</translation>
+        <translation>Python versija:</translation>
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="obsolete">QGIS versija:</translation>
+        <translation>QGIS versija:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Python ceļš:</translation>
+        <translation>Python ceļš:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Python kļūda</translation>
+        <translation>Python kļūda</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Nevar pievienot spraudni %1</translation>
+        <translation>Nevar pievienot spraudni %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete"> %1 dēļ kļūdas izsaucot tā classFactory() metodi</translation>
+        <translation> %1 dēļ kļūdas izsaucot tā classFactory() metodi</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1 dēļ kļūdas izsaucot tā initGui() metodi</translation>
+        <translation>%1 dēļ kļūdas izsaucot tā initGui() metodi</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Kļūda spraudņa atslēgšanā %1</translation>
+        <translation>Kļūda spraudņa atslēgšanā %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="obsolete">Nevarēja ielādēt spraudni &apos;%1&apos; no [&apos;%2&apos;]</translation>
+        <translation>Nevarēja ielādēt spraudni &apos;%1&apos; no [&apos;%2&apos;]</translation>
+    </message>
+</context>
+<context>
+    <name>PythonConsole</name>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished">Python konsole</translation>
+    </message>
+    <message>
+        <source>To access Quantum GIS environment from this console
+use qgis.utils.iface object (instance of QgisInterface class).
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3343,7 +4023,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation type="obsolete">SQLite DB (*.sqlite,*db);;Visi faili(*)</translation>
+        <translation>SQLite DB (*.sqlite,*db);;Visi faili(*)</translation>
     </message>
     <message>
         <source>QGIS rocks!</source>
@@ -3473,14 +4153,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>[plugindescription]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15873,308 +16545,325 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     <name>QgsPluginInstaller</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python spraudņu instalators</translation>
+        <translation type="unfinished">QGIS Python spraudņu instalators</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Nav ko noņemt. Spraudņu mape neeksistē:</translation>
+        <translation type="unfinished">Nav ko noņemt. Spraudņu mape neeksistē:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Neizdevās noņemt mapi:</translation>
+        <translation type="unfinished">Neizdevās noņemt mapi:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Pārbaudiet tiesības vai noņemiet to manuāli</translation>
+        <translation type="unfinished">Pārbaudiet tiesības vai noņemiet to manuāli</translation>
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Nebija iespējams parsēt repozitorija izvadi</translation>
+        <translation type="unfinished">Nebija iespējams parsēt repozitorija izvadi</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Nebija iespējams atvērt lokālo spraudņu mapi</translation>
+        <translation type="unfinished">Nebija iespējams atvērt lokālo spraudņu mapi</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Saņemt Python spraudņus...</translation>
+        <translation type="unfinished">Saņemt Python spraudņus...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">Instalēt papildus spraudņus no attālinātajiem repozitorijiem</translation>
+        <translation type="unfinished">Instalēt papildus spraudņus no attālinātajiem repozitorijiem</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Meklē jaunus spraudņus...</translation>
+        <translation type="unfinished">Meklē jaunus spraudņus...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGIS spraudņu konflikts:</translation>
+        <translation type="unfinished">QGIS spraudņu konflikts:</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">Ir pieejams jauns spraudnis</translation>
+        <translation type="unfinished">Ir pieejams jauns spraudnis</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Ir pieejams spraudņa atjauninājums</translation>
+        <translation type="unfinished">Ir pieejams spraudņa atjauninājums</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Kļūda nolasot repozitoriju:</translation>
+        <translation type="unfinished">Kļūda nolasot repozitoriju:</translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python spraudņu instalators</translation>
+        <translation type="unfinished">QGIS Python spraudņu instalators</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">visi repozitoriji</translation>
+        <translation type="unfinished">visi repozitoriji</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Instalēt/atjaunot spraudni</translation>
+        <translation type="unfinished">Instalēt/atjaunot spraudni</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Kļūda nolasot repozitoriju:</translation>
+        <translation type="unfinished">Kļūda nolasot repozitoriju:</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">pieslēgts</translation>
+        <translation type="unfinished">pieslēgts</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Šis repozitorijs ir pieslēgts</translation>
+        <translation type="unfinished">Šis repozitorijs ir pieslēgts</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">nepieejams</translation>
+        <translation type="unfinished">nepieejams</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Šis repozitorijs ir aktivizēts, taču tas nav pieejams</translation>
+        <translation type="unfinished">Šis repozitorijs ir aktivizēts, taču tas nav pieejams</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">atslēgts</translation>
+        <translation type="unfinished">atslēgts</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">Šis repozitorijs ir atslēgts</translation>
+        <translation type="unfinished">Šis repozitorijs ir atslēgts</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">Šis repozitorijs ir atslēgts, jo tas nav savietojams ar jūsu izmantoto Quantum GIS versiju</translation>
+        <translation type="unfinished">Šis repozitorijs ir atslēgts, jo tas nav savietojams ar jūsu izmantoto Quantum GIS versiju</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">bāreņi</translation>
+        <translation type="unfinished">bāreņi</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">jebkāds statuss</translation>
+        <translation type="unfinished">jebkāds statuss</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">nav instalēts</translation>
+        <translation type="unfinished">nav instalēts</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">instalēts</translation>
+        <translation type="unfinished">instalēts</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">atjaunojami un jaunumi</translation>
+        <translation type="unfinished">atjaunojami un jaunumi</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Šis spraudnis nav instalēts</translation>
+        <translation type="unfinished">Šis spraudnis nav instalēts</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">Šis spraudnis ir instalēts</translation>
+        <translation type="unfinished">Šis spraudnis ir instalēts</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Šis spraudnis ir instalēts un tam ir pieejama jaunāka versija</translation>
+        <translation type="unfinished">Šis spraudnis ir instalēts un tam ir pieejama jaunāka versija</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Šis spraudnis ir instalēts, taču nav iespējams to atrast nevienā no aktivizētajiem repozitorijiem</translation>
+        <translation type="unfinished">Šis spraudnis ir instalēts, taču nav iespējams to atrast nevienā no aktivizētajiem repozitorijiem</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Šis spraudnis nav instalēts un tas iepriekš nav redzēts</translation>
+        <translation type="unfinished">Šis spraudnis nav instalēts un tas iepriekš nav redzēts</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Šis spraudnis ir instalēts un ir jaunāks nekā repozitorijā pieejamā versija</translation>
+        <translation type="unfinished">Šis spraudnis ir instalēts un ir jaunāks nekā repozitorijā pieejamā versija</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">Šis spraudnis nav savietojams ar jūsu Quantum GIS versiju un visticamāk nestrādās.</translation>
+        <translation type="unfinished">Šis spraudnis nav savietojams ar jūsu Quantum GIS versiju un visticamāk nestrādās.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">Nepieciešamais Python modulis nav instalēts.
+        <translation type="unfinished">Nepieciešamais Python modulis nav instalēts.
 Lai iegūtu sīkāku informāciju, apmeklējiet tā mājaslapu un Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Šis spraudnis izskātās, ka ir bojāts.
+        <translation type="unfinished">Šis spraudnis izskātās, ka ir bojāts.
 Tas ir instalēts, bet to nevar ielādēt.
 Te būs kļūdas paziņojums:</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">atjaunināms</translation>
+        <translation type="unfinished">atjaunināms</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">jauns!</translation>
+        <translation type="unfinished">jauns!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">nederīgs</translation>
+        <translation type="unfinished">nederīgs</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Šis ir neatinstalējams kodola spraudnis</translation>
+        <translation type="unfinished">Šis ir neatinstalējams kodola spraudnis</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">instalētā versija</translation>
+        <translation type="unfinished">instalētā versija</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">pieejamā versija</translation>
+        <translation type="unfinished">pieejamā versija</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">Šī ir pati jaunākā pieejamā versija</translation>
+        <translation type="unfinished">Šī ir pati jaunākā pieejamā versija</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Nav versijas lejupielādei</translation>
+        <translation type="unfinished">Nav versijas lejupielādei</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">Šis spraudnis ir bojāts</translation>
+        <translation type="unfinished">Šis spraudnis ir bojāts</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">Šim spraudnim ir nepieciešama jaunāka Quantum GIS versija</translation>
+        <translation type="unfinished">Šim spraudnim ir nepieciešama jaunāka Quantum GIS versija</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">vismaz</translation>
+        <translation type="unfinished">vismaz</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">Šim spraudnim ir nepieciešams iztrūkstošs modulis</translation>
+        <translation type="unfinished">Šim spraudnim ir nepieciešams iztrūkstošs modulis</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">pieejams tikai lokāli</translation>
+        <translation type="unfinished">pieejams tikai lokāli</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">Instalēt spraudni</translation>
+        <translation type="unfinished">Instalēt spraudni</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Pārinstalēt spraudni</translation>
+        <translation type="unfinished">Pārinstalēt spraudni</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Atjaunināt spraudni</translation>
+        <translation type="unfinished">Atjaunināt spraudni</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Pazemināt spraudņa versiju</translation>
+        <translation type="unfinished">Pazemināt spraudņa versiju</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Vai tiešām vēlaties pazemināt spraudņa versiju uz jaunāko pieejamo versiju? Šobrīd ir instalēta jaunāka versija!</translation>
+        <translation type="unfinished">Vai tiešām vēlaties pazemināt spraudņa versiju uz jaunāko pieejamo versiju? Šobrīd ir instalēta jaunāka versija!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Spraudņa instalēšana neizdevās</translation>
+        <translation type="unfinished">Spraudņa instalēšana neizdevās</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">Spraudnis ir pazudis</translation>
+        <translation type="unfinished">Spraudnis ir pazudis</translation>
+    </message>
+    <message>
+        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
+Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">Spraudnis ir sekmīgi instalēts</translation>
+        <translation type="unfinished">Spraudnis ir sekmīgi instalēts</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Python spraudnis ir instalēts.
+        <translation type="unfinished">Python spraudnis ir instalēts.
 Tagad ir nepieciešams to aktivizēt iekš Spraudņu pārvaldnieka.</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">Spraudnis ir sekmīgi pārinstalēts</translation>
+        <translation type="unfinished">Spraudnis ir sekmīgi pārinstalēts</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Python spraudnis ir pārinstalēts.
+        <translation type="unfinished">Python spraudnis ir pārinstalēts.
 Jums ir nepieciešams pārstartēt Quantum GIS, lai varētu sākt izmantot šo spraudni.</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Šis spraudnis ir veidots priekš jaunākas Quantum GIS versijas. Minimālā versija ir:</translation>
+        <translation type="unfinished">Šis spraudnis ir veidots priekš jaunākas Quantum GIS versijas. Minimālā versija ir:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">Šim spraudnim ir nepieciešami komponenti, kuri nav pieejami jūsu sistēmā. Jums ir nepieciešams instalēt sekojošus Python moduļus, lai aktivizētu šo spraudni:</translation>
+        <translation type="unfinished">Šim spraudnim ir nepieciešami komponenti, kuri nav pieejami jūsu sistēmā. Jums ir nepieciešams instalēt sekojošus Python moduļus, lai aktivizētu šo spraudni:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">Spraudnis ir bojāts. Python kļūda:</translation>
+        <translation type="unfinished">Spraudnis ir bojāts. Python kļūda:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Neizdevās atintstalēt spraudni</translation>
+        <translation type="unfinished">Neizdevās atintstalēt spraudni</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Vai tiešām vēlaties atinstalēt šo spraudni?</translation>
+        <translation type="unfinished">Vai tiešām vēlaties atinstalēt šo spraudni?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Brīdinājums: šis spraudnis nav pieejams nevienā pieejamajā repozitorijā!</translation>
+        <translation type="unfinished">Brīdinājums: šis spraudnis nav pieejams nevienā pieejamajā repozitorijā!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">Spraudņa atinstalēšana bija sekmīga</translation>
+        <translation type="unfinished">Spraudņa atinstalēšana bija sekmīga</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Python spraudnis ir atinstalēts. Ievērojiet, ka jums ir nepieciešams pārstartēt Quantum GIS, lai to pilnībā aizvāktu.</translation>
+        <translation type="unfinished">Python spraudnis ir atinstalēts. Ievērojiet, ka jums ir nepieciešams pārstartēt Quantum GIS, lai to pilnībā aizvāktu.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Jūs plānojat pievienot spraudņu repozitoriju, kuru neatbalsta un nav autorizējuši Quantum GIS izstrādātāji. Parasti spraudņu autori cenšas veidot savus spraudņus drošus un noderīgus, taču Quantum GIS izstrādātāji nevar uzņemties atbildību par to.</translation>
+        <translation type="unfinished">Jūs plānojat pievienot spraudņu repozitoriju, kuru neatbalsta un nav autorizējuši Quantum GIS izstrādātāji. Parasti spraudņu autori cenšas veidot savus spraudņus drošus un noderīgus, taču Quantum GIS izstrādātāji nevar uzņemties atbildību par to.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Nav iespējams pievienot repozitoriju ar tādu pašu URL!</translation>
+        <translation type="unfinished">Nav iespējams pievienot repozitoriju ar tādu pašu URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Vai tiešām vēlaties noņemt sekojošu repozitoriju?</translation>
+        <translation type="unfinished">Vai tiešām vēlaties noņemt sekojošu repozitoriju?</translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16400,35 +17089,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Sekmīgi</translation>
+        <translation type="unfinished">Sekmīgi</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Noskaidro resursdatora nosaukumu...</translation>
+        <translation type="unfinished">Noskaidro resursdatora nosaukumu...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Pieslēdzas...</translation>
+        <translation type="unfinished">Pieslēdzas...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
+        <translation type="unfinished">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Lejuplādē datus...</translation>
+        <translation type="unfinished">Lejuplādē datus...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Dīkstāve</translation>
+        <translation type="unfinished">Dīkstāve</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Slēdz savienojumu...</translation>
+        <translation type="unfinished">Slēdz savienojumu...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Kļūda</translation>
+        <translation type="unfinished">Kļūda</translation>
     </message>
 </context>
 <context>
@@ -16458,43 +17147,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Instalē...</translation>
+        <translation type="unfinished">Instalē...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Noskaidro resursdatora nosaukumu...</translation>
+        <translation type="unfinished">Noskaidro resursdatora nosaukumu...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Pieslēdzas...</translation>
+        <translation type="unfinished">Pieslēdzas...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
+        <translation type="unfinished">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Lejuplādē datus...</translation>
+        <translation type="unfinished">Lejuplādē datus...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Dīkstāve</translation>
+        <translation type="unfinished">Dīkstāve</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Aizver savienojumu...</translation>
+        <translation type="unfinished">Aizver savienojumu...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Kļūda</translation>
+        <translation type="unfinished">Kļūda</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Neizdevās atpakot spraudņa paku. Iespējams, ka tā ir bojāta, vai nav pieejama repozitorijā. Rekomendējam arī pārbaudīt vai jums ir rakstīšanas tiesības spraudņu mapei:</translation>
+        <translation type="unfinished">Neizdevās atpakot spraudņa paku. Iespējams, ka tā ir bojāta, vai nav pieejama repozitorijā. Rekomendējam arī pārbaudīt vai jums ir rakstīšanas tiesības spraudņu mapei:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Lietotājs ir pārtraucis</translation>
+        <translation type="unfinished">Lietotājs ir pārtraucis</translation>
     </message>
 </context>
 <context>
@@ -16543,7 +17232,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">kļūdas ziņojums nav saņemts</translation>
+        <translation type="unfinished">kļūdas ziņojums nav saņemts</translation>
     </message>
 </context>
 <context>
@@ -19261,75 +19950,87 @@ Kļūda bija:
     <name>QgsSpatiaLiteSourceSelect</name>
     <message>
         <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Pievienot</translation>
+        <translation>&amp;Pievienot</translation>
     </message>
     <message>
         <source>Wildcard</source>
-        <translation type="obsolete">Aizstājējzīme</translation>
+        <translation>Aizstājējzīme</translation>
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="obsolete">Regulāra izteiksme</translation>
+        <translation>Regulāra izteiksme</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="obsolete">Viss</translation>
+        <translation>Viss</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="obsolete">Tabula</translation>
+        <translation>Tabula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="obsolete">Tips</translation>
+        <translation>Tips</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="obsolete">Ģeometrijas kolonna</translation>
+        <translation>Ģeometrijas kolonna</translation>
     </message>
     <message>
         <source>SpatiaLite DB Open Error</source>
-        <translation type="obsolete">SpatiaLite DB atvēršanas kļūda</translation>
+        <translation>SpatiaLite DB atvēršanas kļūda</translation>
     </message>
     <message>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="obsolete">Kļūda pieslēdzoties: %1
+        <translation>Kļūda pieslēdzoties: %1
 
 %2</translation>
     </message>
     <message>
+        <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>unknown error cause</source>
-        <translation type="obsolete">nezināms kļūdas cēlonis</translation>
+        <translation>nezināms kļūdas cēlonis</translation>
     </message>
     <message>
         <source>@</source>
-        <translation type="obsolete">@</translation>
+        <translation>@</translation>
+    </message>
+    <message>
+        <source>Choose a SpatiaLite/SQLite DB to open</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="obsolete">Apstiprināt dzēšanu</translation>
+        <translation>Apstiprināt dzēšanu</translation>
     </message>
     <message>
         <source>Select Table</source>
-        <translation type="obsolete">Izvēlieties tabulu</translation>
+        <translation>Izvēlieties tabulu</translation>
     </message>
     <message>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="obsolete">Jums ir jāizvēlas tabula, lai varētu pievienot slāni.</translation>
+        <translation>Jums ir jāizvēlas tabula, lai varētu pievienot slāni.</translation>
+    </message>
+    <message>
+        <source>SpatiaLite getTableInfo Error</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failure exploring tables from: %1
 
 %2</source>
-        <translation type="obsolete">Neizdevās pārlūkot tabulas no: %1
+        <translation>Neizdevās pārlūkot tabulas no: %1
 
 %2</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="obsolete">Vai tiešām vēlies dzēst %1 pieslēgumu un visus saistītos iestatījumus?</translation>
+        <translation>Vai tiešām vēlies dzēst %1 pieslēgumu un visus saistītos iestatījumus?</translation>
     </message>
 </context>
 <context>
@@ -22309,67 +23010,67 @@ Response was:
     <name>VisualDialog</name>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Lūdzu norādiet ievades lauku</translation>
+        <translation>Lūdzu norādiet ievades lauku</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Pārbaudīt ģeometrijas derīgumu</translation>
+        <translation>Pārbaudīt ģeometrijas derīgumu</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Ģeometrijas kļūdas</translation>
+        <translation>Ģeometrijas kļūdas</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Visas sastaptās kļudas</translation>
+        <translation>Visas sastaptās kļudas</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Parādīt unikālās vērtības</translation>
+        <translation>Parādīt unikālās vērtības</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Unikālās vērtības</translation>
+        <translation>Unikālās vērtības</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Kopā unikālās vērtības</translation>
+        <translation>Kopā unikālās vērtības</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Vienkāršā statistika</translation>
+        <translation>Vienkāršā statistika</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Statistikas izvade</translation>
+        <translation>Statistikas izvade</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Tuvākā kaimiņa analīze</translation>
+        <translation>Tuvākā kaimiņa analīze</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Tuvākā kaimiņa statistika</translation>
+        <translation>Tuvākā kaimiņa statistika</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Lūdzu precizējiet ievades vektordatu slāni</translation>
+        <translation>Lūdzu precizējiet ievades vektordatu slāni</translation>
     </message>
     <message>
         <source>Error!</source>
-        <translation type="obsolete">Kļūda!</translation>
+        <translation>Kļūda!</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Atcelt</translation>
+        <translation>Atcelt</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="obsolete">Vērtība</translation>
+        <translation>Vērtība</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="obsolete">Parametrs</translation>
+        <translation>Parametrs</translation>
     </message>
 </context>
 <context>
@@ -23248,269 +23949,1874 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Detektētā Quantum GIS versija: </translation>
+        <translation>Detektētā Quantum GIS versija: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Šai fTools versijai ir nepieciešama QGIS versija 1.0.0 vai jaunāka.
+        <translation>Šai fTools versijai ir nepieciešama QGIS versija 1.0.0 vai jaunāka.
 Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">&amp;Analīzes rīki</translation>
+        <translation>&amp;Analīzes rīki</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Attālumu matrica</translation>
+        <translation>Attālumu matrica</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Summēt līniju garumus</translation>
+        <translation>Summēt līniju garumus</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Punkti poligonā</translation>
+        <translation>Punkti poligonā</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Pamata statistika</translation>
+        <translation>Pamata statistika</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Parādīt unikālās vērtības</translation>
+        <translation>Parādīt unikālās vērtības</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Tuvākā kaimiņa analīze</translation>
+        <translation>Tuvākā kaimiņa analīze</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Vidējās koordiātes</translation>
+        <translation>Vidējās koordiātes</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Līniju krustpunkti</translation>
+        <translation>Līniju krustpunkti</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">&amp;Pētniecības rīki</translation>
+        <translation>&amp;Pētniecības rīki</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Nejauša izvēle</translation>
+        <translation>Nejauša izvēle</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Nejauša izvēle apakškopās</translation>
+        <translation>Nejauša izvēle apakškopās</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Nejauši punkti</translation>
+        <translation>Nejauši punkti</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Regulāri punkti</translation>
+        <translation>Regulāri punkti</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektoru tīkls</translation>
+        <translation>Vektoru tīkls</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Izvēle pēc vietas</translation>
+        <translation>Izvēle pēc vietas</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Poligons no slāņa apjoma</translation>
+        <translation>Poligons no slāņa apjoma</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">Ģe&amp;oprocesēšanas rīki</translation>
+        <translation>Ģe&amp;oprocesēšanas rīki</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">&amp;Datu pārvaldības rīki</translation>
+        <translation>&amp;Datu pārvaldības rīki</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Eksportēt uz citu projekciju</translation>
+        <translation>Eksportēt uz citu projekciju</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Definēt pašreizējo projekciju</translation>
+        <translation>Definēt pašreizējo projekciju</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Apvienot atribūtus</translation>
+        <translation>Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Apvienot atribūtus pēc atrašanās vietas</translation>
+        <translation>Apvienot atribūtus pēc atrašanās vietas</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Sadalīt vektoru slāni</translation>
+        <translation>Sadalīt vektoru slāni</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="obsolete">Apvienot vairākus Shapefile vienā</translation>
+        <translation>Apvienot vairākus Shapefile vienā</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools informācija</translation>
+        <translation>fTools informācija</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Buferis</translation>
+        <translation>Buferis</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Pārklāt</translation>
+        <translation>Pārklāt</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Apvienot</translation>
+        <translation>Apvienot</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Simetriskā starpība</translation>
+        <translation>Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Izgriezt</translation>
+        <translation>Izgriezt</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Izšķīdināt</translation>
+        <translation>Izšķīdināt</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Starpība</translation>
+        <translation>Starpība</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">Ģ&amp;eometrijas rīki</translation>
+        <translation>Ģ&amp;eometrijas rīki</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation>Eksportēt/pievienot ģeometrijas kolonnas</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Pārbaudīt ģeometrijas korektumu</translation>
+        <translation>Pārbaudīt ģeometrijas korektumu</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Poligona centroīdi</translation>
+        <translation>Poligona centroīdi</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Izvilkt mezglus</translation>
+        <translation>Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Vienkāršot ģeometriju</translation>
+        <translation>Vienkāršot ģeometriju</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Pārveidot poligonus līnijās</translation>
+        <translation>Pārveidot poligonus līnijās</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation type="obsolete">&amp;Vektors</translation>
+        <translation>&amp;Vektors</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Pārklājuma laukums(-i)</translation>
+        <translation>Pārklājuma laukums(-i)</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delonē triangulācija</translation>
+        <translation>Delonē triangulācija</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Vairākas daļas apvienot vienā</translation>
+        <translation>Vairākas daļas apvienot vienā</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Vienu daļu sadalīt vairākās</translation>
+        <translation>Vienu daļu sadalīt vairākās</translation>
     </message>
 </context>
 <context>
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Apvienot visu</translation>
+        <translation>Apvienot visu</translation>
     </message>
     <message>
         <source>Polygon area</source>
-        <translation type="obsolete">Poligona platība</translation>
+        <translation>Poligona platība</translation>
     </message>
     <message>
         <source>Polygon perimeter</source>
-        <translation type="obsolete">Poligona perimetrs</translation>
+        <translation>Poligona perimetrs</translation>
     </message>
     <message>
         <source>Line length</source>
-        <translation type="obsolete">Līnijas garums</translation>
+        <translation>Līnijas garums</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
-        <translation type="obsolete">Punkta X koordināta</translation>
+        <translation>Punkta X koordināta</translation>
     </message>
     <message>
         <source>Point y coordinate</source>
-        <translation type="obsolete">Punkta Y koordināta</translation>
+        <translation>Punkta Y koordināta</translation>
     </message>
 </context>
 <context>
     <name>grasslabel</name>
     <message>
+        <source>(1-256)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3D-Viewer (NVIZ)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3d Visualization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a value to the current category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add elements to layer (ALL elements of the selected layer type!)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add missing centroids to closed boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add one or more columns to attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allocate network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign constant value to column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign new constant value to column only if the result of query is TRUE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign new value as result of operation on columns to column in attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Attribute field</source>
-        <translation type="obsolete">Atribūta lauks</translation>
+        <translation type="unfinished">Atribūta lauks</translation>
+    </message>
+    <message>
+        <source>Attribute field (interpolated values)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute field to join</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto-balancing of colors for LANDSAT-TM raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bilinear interpolation utility for raster maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend color components for two rasters by given ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend red, green, raster layers to obtain one color raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Break lines at each intersection of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Buffer</source>
-        <translation type="obsolete">Buferis</translation>
+        <translation type="unfinished">Buferis</translation>
+    </message>
+    <message>
+        <source>Build polylines from lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate covariance/correlation matrix for user-defined rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate geometry statistics for vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate linear regression from two rasters: y = a + b*x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate raster surface area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate shadow maps from exact sun position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate shadow maps from sun position determinated by date/time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate statistics for raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate univariate statistics for numeric attributes in a data table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate univariate statistics from raster based on vector objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate univariate statistics from the non-null cells of raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate univariate statistics of vector map features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Category or object oriented statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change layer number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change the type of boundary dangle to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change the type of geometry elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose appropriate format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compares bit patterns with raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compress and decompress raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compress raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Computes a coordinate transformation based on the control points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Concentric circles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect nodes by shortest route (traveling salesman)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect selected nodes by shortest tree (Steiner tree)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect vector to database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert 2D vector to 3D by sampling raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert GRASS binary vector to GRASS ASCII vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a raster to vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a vector to raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert bearing and distance measurements to coordinates and vice versa</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert boundaries to lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert centroids to points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert lines to boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert points to centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert raster to vector areas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert raster to vector lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert raster to vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert vector to raster using attribute values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert vector to raster using constant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convex hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy a table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count of neighbouring points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create 3D volume map based on 2D elevation and value rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a MASK for limiting raster operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a map containing concentric rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a raster plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create and add new table to vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create and/or modify raster support files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create aspect raster from DEM (digital elevation model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create cross product of category values from multiple rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create fractal surface of given fractal dimension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create grid in current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new raster by combining other rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new vector by combining other vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new vector with current region extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create nodes on network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create parallel line to input lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create points along input lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create points/segments from input vector lines and positions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create quantization file for floating-point raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create random 2D/3D vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create random cell values with spatial dependence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create random points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create random vector point contained in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster images with textural features from raster (first serie of indices)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster of distance to features in input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster of uniform random deviates with user-defined range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster with contiguous areas grown by one cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster with textural features from raster (second serie of indices)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create shaded map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create slope raster from DEM (digital elevation model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create standard vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create surface from rasterized contours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create vector contour from raster at specified levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create vector contour from raster at specified steps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create watershed basin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create watershed subbasins raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut network by cost isolines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DXF vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation (areas)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation (lines)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Develop images and group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Develop map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory of rasters to be linked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disconnect vector from database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display general DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display list of category values found in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information from PROJ.4 projection description file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information from georeferenced file (raster, vector or image)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display projection information of the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display raster category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display results of SQL selection from database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display the HTML manual pages of GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display vector attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display vector map attributes with SQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download and import data from WMS server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop column from attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E00 vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Execute any SQL statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster as non-georeferenced PNG image format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster series to MPEG movie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to ASCII text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to ESRI ARCGRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to Geo TIFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to POVRAY height-field file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to PPM image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to VTK-ASCII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to binary MAT-File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to binary array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to text file as x,y,z values based on cell centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster to various formats (GDAL library)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to GML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to Mapinfo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to POV-Ray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to PostGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to PostGIS (PostgreSQL) database table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to SVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to VTK-ASCII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector to various formats (OGR library)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exports attribute tables into various format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract features from vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracts terrain parameters from DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fast fourier transform for image processing</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="obsolete">Fails</translation>
+        <translation type="unfinished">Fails</translation>
+    </message>
+    <message>
+        <source>Fill lake from seed at given level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill lake from seed point at given level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find shortest path on vector network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL raster layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS MODULES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS shell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gaussian kernel density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generalization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate raster of cumulative cost of moving between locations based on cost input raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate vector contour lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphical raster map calculator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="obsolete">Palīdzība</translation>
+        <translation type="unfinished">Palīdzība</translation>
+    </message>
+    <message>
+        <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hydrologic modelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imagery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import ASCII raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import DXF vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import ESRI ARC/INFO ASCII GRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import ESRI E00 vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import GDAL supported raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import GDAL supported raster and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import GRIDATB.FOR (TOPMODEL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import MapGen or MatLab vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OGR vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OGR/PostGIS vector and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import SPOT VGT NDVI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import SRTM HGT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import attribute tables in various formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import binary MAT-File(v4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import binary raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import geonames.org country files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import loaded raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import loaded raster and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import loaded vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import loaded vector and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import loaded vector selecting some features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import only some layers of a DXF vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import raster from ASCII polygon/line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import raster from coordinates using univariate statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector from gps using gpsbabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector from gps using gpstrans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector points from database table containing coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolate surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inverse distance squared weighting raster interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inverse distance squared weighting raster interpolation based on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inverse fast fourier transform for image processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join table to existing vector table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers categories management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line-of-sight raster analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link GDAL supported raster layer to a binary raster map layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link GDAL supported raster to binary raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link all GDAL supported rasters in a directory to binary rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage image colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage map colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage raster cells value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage training dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map algebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map type conversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapGen or MatLab vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Metadata support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mosaic up to 4 images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name for new raster file (specify file extension)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name for new vector file (specify file extension)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the table to create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Neighborhood analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network maintenance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Others</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output GML file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Output Shapefile</source>
-        <translation type="obsolete">Izejošais shapefile</translation>
+        <translation type="unfinished">Izejošais shapefile</translation>
+    </message>
+    <message>
+        <source>Output layer name (used in GML file)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster values along user-defined transect line(s)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="obsolete">Pārklāt</translation>
+        <translation type="unfinished">Pārklāt</translation>
+    </message>
+    <message>
+        <source>Overlay maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to the OGR data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Percentage of first layer (0-99)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print projection information from a georeferenced file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print projection information from a georeferenced file and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print projection information of the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projection conversion of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projection management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Put geometry variables in database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query rasters on their category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random location perturbations of vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Randomly partition points into test/train sets</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="obsolete">Rastrs</translation>
+        <translation type="unfinished">Rastrs</translation>
+    </message>
+    <message>
+        <source>Raster buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster file matrix filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster neighbours analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Re-project raster from a location to the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rebuild topology of all vectors in mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recategorize contiguous cells to unique categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclass category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclass category values using a column attribute (integer positive)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclass category values using a rules file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclass raster using reclassification rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recode categorical raster using reclassification rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recode raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reconnect vector to a new database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Region settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regularized spline with tension raster interpolation based on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove all lines or boundaries of zero length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove bridges connecting area and island or 2 islands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove dangles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove duplicate area centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove duplicate lines (pay attention to categories!)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove existing attribute table of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove outliers from vector point data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove small angles between lines at nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove small areas, the longest boundary with adjacent area is removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename column in attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Report and statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports and statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reproject raster from another Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reproject vector from another Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resample raster using aggregation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resample raster using interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resample raster. Set new resolution first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rescale the range of category values in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sample raster at site locations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the current region as a named region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features by attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features overlapped by features in another map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set PostgreSQL DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set boundary definitions by edge (n-s-e-w)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set boundary definitions for raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set boundary definitions from raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set boundary definitions from vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set boundary definitions to current or default region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set color rules based on stddev from a map&apos;s mean value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set general DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set general DB connection with a schema (PostgreSQL only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set raster color table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set raster color table from existing raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set raster color table from setted tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set raster color table from user-defined rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set region to align to raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the region to match multiple rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the region to match multiple vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set user/password for driver/database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the boundary definitions for a raster map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show database connection for vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shrink current region until it meets non-NULL data from raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simple map algebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Snap lines to vertex in threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Solar and irradiation model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial models</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Split lines to shorter segments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum raster cell values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Surface management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tables management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tassled cap vegetation index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Terrain analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tests of normality on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Thin no-zero cells that denote line features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toolset for cleaning topology of vector map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trace a flow through an elevation model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform cells with value in null cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform null cells in value cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform value cells in null cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type in map names separated by a comma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update raster statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update vector map metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload raster values at positions of vector points to the table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload vector values at positions of vector points</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="obsolete">Vektors</translation>
+        <translation type="unfinished">Vektors</translation>
     </message>
-</context>
-<context>
-    <name>pluginname</name>
     <message>
-        <source>[menuitemname]</source>
+        <source>Vector buffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Replace this with a short description of what the plugin does</source>
+        <source>Vector geometry analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;[menuname]</source>
+        <source>Vector intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector non-intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector subtraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector update by other maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visibility graph construction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voronoi diagram (area)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voronoi diagram (lines)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Watershed Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work with vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write only features link to a record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero-crossing edge detection raster function for image processing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23518,87 +25824,95 @@ Spraudnis netiks ieslēgts.</translation>
     <name>visualThread</name>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">Objekts %1 nav noslēgts</translation>
+        <translation>Objekts %1 nav noslēgts</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">Objekts %1 krustojas pats ar sevi</translation>
+        <translation>Objekts %1 krustojas pats ar sevi</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">Objektam %1 ir nekorekta mezglu kārtība</translation>
+        <translation>Objektam %1 ir nekorekta mezglu kārtība</translation>
     </message>
     <message>
         <source>Max. len:</source>
-        <translation type="obsolete">Maks. garums:</translation>
+        <translation>Maks. garums:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="obsolete">Min. garums:</translation>
+        <translation>Min. garums:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="obsolete">Vidējais garums:</translation>
+        <translation>Vidējais garums:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="obsolete">Piepildīts:</translation>
+        <translation>Piepildīts:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="obsolete">Tukšs:</translation>
+        <translation>Tukšs:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="obsolete">Z:</translation>
+        <translation>Z:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="obsolete">Vidējā vērtība:</translation>
+        <translation>Vidējā vērtība:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="obsolete">Standartnovirze:</translation>
+        <translation>Standartnovirze:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="obsolete">Summa:</translation>
+        <translation>Summa:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="obsolete">Min:</translation>
+        <translation>Min:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="obsolete">Maks:</translation>
+        <translation>Maks:</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="obsolete">CV:</translation>
+        <translation>CV:</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="obsolete">Unikālo vērtību skaits:</translation>
+        <translation>Unikālo vērtību skaits:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="obsolete">Diapazons:</translation>
+        <translation>Diapazons:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="obsolete">Vidējais:</translation>
+        <translation>Vidējais:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="obsolete">Novērotā vidējā distance:</translation>
+        <translation>Novērotā vidējā distance:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="obsolete">Gaidāmā vidējā distance:</translation>
+        <translation>Gaidāmā vidējā distance:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="obsolete">Tuvākā kaimiņa indekss:</translation>
+        <translation>Tuvākā kaimiņa indekss:</translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
