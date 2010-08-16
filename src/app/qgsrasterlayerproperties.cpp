@@ -17,6 +17,8 @@
 
 #include <limits>
 
+#include "qgsmaptopixel.h"
+#include "qgsmapcanvas.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -46,19 +48,19 @@
 #include <QColorDialog>
 #include <QList>
 #include <QSettings>
+#include <QMouseEvent>
 #include "qgslogger.h"
 
 
 const char * const ident =
   "$Id$";
 
-QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *parent, Qt::WFlags fl )
+QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
     mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
 {
-
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -271,6 +273,19 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   pbtnExportColorMapToFile->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnLoadColorMapFromFile->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
 
+  mMapCanvas = theCanvas;
+  mPixelSelectorTool = 0;
+  if( mMapCanvas )
+  {
+    mPixelSelectorTool = new QgsPixelSelectorTool( theCanvas );
+    connect( mPixelSelectorTool, SIGNAL( pixelSelected( int, int ) ), this, SLOT( pixelSelected( int, int ) ) );
+  }
+  else
+  {
+    pbnAddValuesFromDisplay->setEnabled( false );
+  }
+
+
   // Only do pyramids if dealing directly with GDAL.
   if ( mRasterLayerIsGdal )
   {
@@ -335,6 +350,10 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
   QSettings settings;
   settings.setValue( "/Windows/RasterLayerProperties/geometry", saveGeometry() );
   settings.setValue( "/Windows/RasterLayerProperties/row", listWidget->currentRow() );
+  if( mPixelSelectorTool )
+  {
+    delete mPixelSelectorTool;
+  }
 }
 
 /*
@@ -1700,7 +1719,13 @@ void QgsRasterLayerProperties::on_cboRed_currentIndexChanged( const QString& the
 
 void QgsRasterLayerProperties::on_pbnAddValuesFromDisplay_clicked()
 {
-  QMessageBox::warning( this, "Function Not Available", "This functionality will be added soon" );
+  if( mMapCanvas && mPixelSelectorTool )
+  {
+    mMapCanvas->setMapTool( mPixelSelectorTool );
+    //Need to work around the modality of the dialog but can not just hide() it.
+    setModal( false );
+    lower();
+  }
 }
 
 void QgsRasterLayerProperties::on_pbnAddValuesManually_clicked()
@@ -2559,6 +2584,45 @@ void QgsRasterLayerProperties::on_rbtnThreeBandStdDev_toggled( bool theState )
   sboxThreeBandStdDev->setEnabled( theState );
 }
 
+void QgsRasterLayerProperties::pixelSelected( int x, int y )
+{
+  //PixelSelectorTool has registered a mouse click on the canvas, so bring the dialog back to the front
+  raise();
+  setModal( true );
+  activateWindow();
+
+  //Get the pixel values and add a new entry to the transparency table
+  if( mMapCanvas && mPixelSelectorTool )
+  {
+    QMap< QString, QString > myPixelMap;
+    mMapCanvas->unsetMapTool( mPixelSelectorTool );
+    mRasterLayer->identify( mMapCanvas->getCoordinateTransform( )->toMapCoordinates( x, y ), myPixelMap );
+    if( tableTransparency->columnCount() == 2 )
+    {
+      QString myValue = myPixelMap[ mRasterLayer->grayBandName() ];
+      if( myValue != tr( "out of extent" ) )
+      {
+        tableTransparency->insertRow( tableTransparency->rowCount() );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
+      }
+    }
+    else
+    {
+      QString myValue = myPixelMap[ mRasterLayer->redBandName() ];
+      if( myValue != tr( "out of extent" ) )
+      {
+        tableTransparency->insertRow( tableTransparency->rowCount() );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, 1, new QTableWidgetItem( myPixelMap[ mRasterLayer->greenBandName() ] ) );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, 2, new QTableWidgetItem( myPixelMap[ mRasterLayer->blueBandName() ] ) );
+      }
+    }
+  }
+
+}
+
 void QgsRasterLayerProperties::sboxSingleBandStdDev_valueChanged( double theValue )
 {
   if ( !ignoreSpinBoxEvent )
@@ -3288,4 +3352,18 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
     }
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
   }
+}
+
+QgsPixelSelectorTool::QgsPixelSelectorTool( QgsMapCanvas* theCanvas ) : QgsMapTool( theCanvas )
+{
+  mMapCanvas = theCanvas;
+}
+
+QgsPixelSelectorTool::~QgsPixelSelectorTool()
+{
+}
+
+void QgsPixelSelectorTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
+{
+  emit pixelSelected( theMouseEvent->x( ), theMouseEvent->y( ) );
 }

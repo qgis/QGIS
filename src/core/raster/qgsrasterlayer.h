@@ -59,7 +59,6 @@ class QgsMapToPixel;
 class QgsRectangle;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
-class QgsRasterLayerProperties;
 class QImage;
 class QPixmap;
 class QSlider;

@@ -22,11 +22,15 @@
 
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
+#include "qgsmaptool.h"
 #include "qgscolorrampshader.h"
 #include "qgscontexthelp.h"
 
+
 class QgsMapLayer;
+class QgsMapCanvas;
 class QgsRasterLayer;
+class QgsPixelSelectorTool;
 
 
 /**Property sheet for a raster map layer
@@ -41,7 +45,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *parent = 0, Qt::WFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = 0, Qt::WFlags = QgisGui::ModalDialogFlags );
     /** \brief Destructor */
     ~QgsRasterLayerProperties();
 
@@ -82,6 +86,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_rbtnThreeBandMinMax_toggled( bool );
     /** \brief slot executed when the three band standard deviation radio button is pressed. */
     void on_rbtnThreeBandStdDev_toggled( bool );
+
+    void pixelSelected( int x, int y);
     /** \brief this slot clears min max values from gui */
     void sboxSingleBandStdDev_valueChanged( double );
     /** \brief this slot clears min max values from gui */
@@ -208,6 +214,31 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QLinearGradient highlightGradient();
     qreal mGradientHeight;
     qreal mGradientWidth;
+
+    QgsMapCanvas* mMapCanvas;
+    QgsPixelSelectorTool* mPixelSelectorTool;
+};
+
+/**
+  *Simple map tool for selecting pixels, specific to QgsRasterLayerProperties
+  */
+class QgsPixelSelectorTool: public QgsMapTool
+{
+  Q_OBJECT
+
+  public:
+    QgsPixelSelectorTool( QgsMapCanvas* );
+    ~QgsPixelSelectorTool( );
+
+    /** \brief Method to handle mouse release, i.e., select, event */
+    void canvasReleaseEvent( QMouseEvent* theMouseEvent );
+
+  signals:
+    /** \brief Alter the listener ( raster properties dialog ) that a mouse click was registered */
+    void pixelSelected( int x, int y);
+
+  private:
+    QgsMapCanvas * mMapCanvas;
 };
 
 #endif

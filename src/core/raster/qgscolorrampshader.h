@@ -74,7 +74,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     int maximumColorCacheSize() { return mMaximumColorCacheSize; }
 
     /** \brief Set custom colormap */
-    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ) { mColorRampItemList = theList; } //TODO: sort on set
+    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
     /** \brief Set the color ramp type*/
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
