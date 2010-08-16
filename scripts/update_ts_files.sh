@@ -59,7 +59,7 @@ while (( $# > 0 )); do
     arg=$1
     shift
     if [ -f "i18n/qgis_$arg.ts" ]; then
-      echo "cannot add existing tranlation $arg"
+      echo "cannot add existing translation $arg"
       exit 1
     else
       add="$add $arg"
