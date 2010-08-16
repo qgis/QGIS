@@ -18,13 +18,13 @@ chdir "packages";
 
 my $root = "http://download.osgeo.org/osgeo4w";
 
-system "wget -q -c http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
-system "wget -q -c http://www.nirsoft.net/utils/nircmd.zip" unless -f "nircmd.zip";
+system "wget -q -Nc http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
+system "wget -q -Nc http://www.nirsoft.net/utils/nircmd.zip" unless -f "nircmd.zip";
 
 my %dep;
 my %file;
 
-system "wget -q -c $root/setup.ini";
+system "wget -q -Nc $root/setup.ini";
 open F, "setup.ini" || die "setup.ini not found";
 while(<F>) {
 	chop;
@@ -64,16 +64,24 @@ if(-f "../addons/bin/lti_dsdk_dll.dll") {
 	getDeps("gdal16-mrsid")
 }
 
+my %referenced;
 foreach my $p ( keys %pkgs ) {
 	$f = "$root/$file{$p}";
 	$f =~ s/\/\.\//\//g;
 
 	my($file) = $f =~ /([^\/]+)$/;
+	$referenced{$file} = 1;
 
 	next if -f $file;
 	
 	print "Downloading $file [$f]...\n";
-	system "wget -q -c $f";
+	system "wget -q -Nc $f";
+}
+
+for my $p (<*.tar.bz2>) {
+	next if exists $referenced{$p};
+	print "Removing package $p...\n";
+	unlink $p;
 }
 
 chdir "..";
@@ -83,7 +91,6 @@ chdir "..";
 # Add nircmd
 # Add addons
 #
-
 
 system "rm -rf unpacked" if -d "unpacked" && !grep(/^-k$/, @ARGV);
 
@@ -202,7 +209,7 @@ $cmd .= " -DVERSION_NAME='$release'";
 $cmd .= " -DSVN_REVISION='$revision'";
 $cmd .= " -DQGIS_BASE='Quantum GIS $release'";
 $cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$major.$minor.$patch-$revision-Setup.exe'";
-$cmd .= " -DDISPLAYED_NAME='Quantum GIS OSGeo4W ($release)'";
+$cmd .= " -DDISPLAYED_NAME='Quantum GIS \'$release\' ($major.$minor.$patch)'";
 $cmd .= " -DBINARY_REVISION=1";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/unpacked";

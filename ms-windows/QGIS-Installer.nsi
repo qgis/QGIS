@@ -304,6 +304,19 @@ FunctionEnd
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "German"
+!insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "Russian"
+!insertmacro MUI_LANGUAGE "Japanese"
+!insertmacro MUI_LANGUAGE "Italian"
+!insertmacro MUI_LANGUAGE "Polish"
+!insertmacro MUI_LANGUAGE "Spanish"
+!insertmacro MUI_LANGUAGE "PortugueseBR"
+!insertmacro MUI_LANGUAGE "Portuguese"
+!insertmacro MUI_LANGUAGE "Czech"
+!insertmacro MUI_LANGUAGE "Croatian"
+!insertmacro MUI_LANGUAGE "Thai"
+!insertmacro MUI_LANGUAGE "Dutch"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 	
@@ -402,26 +415,10 @@ Section "Quantum GIS" SecQGIS
 	;Create the Desktop Shortcut
 	SetShellVarContext current
 	
-!if ${INSTALLER_TYPE} == "OSGeo4W"
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!else
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!endif
- 
 	;Create the Windows Start Menu Shortcuts
 	SetShellVarContext all
 	
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
-	
-!if ${INSTALLER_TYPE} == "OSGeo4W"
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!else
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!endif
 	
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Web Site.lnk" "$INSTALL_DIR\QGIS-WebSite.url" ""\
 	"$INSTALL_DIR\icons\QGIS_Web.ico" "" SW_SHOWNORMAL "" "Visit the Quantum GIS Web Site"
@@ -435,6 +432,26 @@ Section "Quantum GIS" SecQGIS
 
 	ReadEnvStr $0 COMSPEC
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
+
+!if ${INSTALLER_TYPE} == "OSGeo4W"
+	; Overwrite the shortcuts created by qgis' postinstall
+	; "%OSGEO4W_STARTMENU%\Quantum GIS (1.5.0).lnk"
+	; "%ALLUSERSPROFILE%\Desktop\Quantum GIS (1.5.0).lnk"
+
+	Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
+	CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
+	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+	Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
+	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!else
+	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
+	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
+	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!endif
+ 
 SectionEnd
 
 Function DownloadDataSet
@@ -565,6 +582,9 @@ Section "Uninstall"
 	Delete "$INSTDIR\preremove.bat"
 	Delete "$INSTDIR\preremove.log"
 
+	Delete "$INSTDIR\QGIS-WebSite.url"
+	Delete "$INSTDIR\*.txt"
+
 	RMDir /r "$INSTDIR\bin"
 	RMDir /r "$INSTDIR\apps"
 	RMDir /r "$INSTDIR\etc"
@@ -572,6 +592,7 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\lib"
 	RMDir /r "$INSTDIR\share"
 	RMDir /r "$INSTDIR\icons"
+
 !else
 	;remove files
 	Delete "$INSTDIR\Uninstall-QGIS.exe"
