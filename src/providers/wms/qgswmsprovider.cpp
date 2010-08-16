@@ -1577,20 +1577,13 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
       {
         parseKeywordList( e1, layerProperty.keywordList );
       }
-      else if ( e1.tagName() == "SRS" )
-      {
-        layerProperty.crs.push_back( e1.text() );
-      }
-      else if ( e1.tagName() == "CRS" )      // legacy from earlier versions of WMS
+      else if ( e1.tagName() == "SRS" || e1.tagName() == "CRS" )
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        QStringList srsList = e1.text().split( QRegExp( "\\s+" ) );
-
-        QStringList::const_iterator i;
-        for ( i = srsList.constBegin(); i != srsList.constEnd(); ++i )
+        foreach( QString srs, e1.text().split( QRegExp( "\\s+" ) ) )
         {
-          layerProperty.crs.push_back( *i );
+          layerProperty.crs.push_back( srs );
         }
       }
       else if ( e1.tagName() == "LatLonBoundingBox" )      // legacy from earlier versions of WMS
