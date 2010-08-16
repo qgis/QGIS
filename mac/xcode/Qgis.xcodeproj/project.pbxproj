@@ -800,6 +800,15 @@
 		7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4F10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.h */; };
 		7225EFF710B236C400D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */; };
 		7225EFF810B2375300D23EA2 /* qgsbrushstylecombobox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */; };
+		7233D9811218E6A200C34505 /* qgsmaptoolselectfreehand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7233D9771218E66500C34505 /* qgsmaptoolselectfreehand.cpp */; };
+		7233D9821218E6A200C34505 /* qgsmaptoolselectfreehand.h in Sources */ = {isa = PBXBuildFile; fileRef = 7233D9781218E66500C34505 /* qgsmaptoolselectfreehand.h */; };
+		7233D9831218E6A200C34505 /* qgsmaptoolselectpolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7233D9791218E66500C34505 /* qgsmaptoolselectpolygon.cpp */; };
+		7233D9841218E6A200C34505 /* qgsmaptoolselectpolygon.h in Sources */ = {isa = PBXBuildFile; fileRef = 7233D97A1218E66500C34505 /* qgsmaptoolselectpolygon.h */; };
+		7233D9851218E6A200C34505 /* qgsmaptoolselectradius.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7233D97B1218E66500C34505 /* qgsmaptoolselectradius.cpp */; };
+		7233D9861218E6A200C34505 /* qgsmaptoolselectradius.h in Sources */ = {isa = PBXBuildFile; fileRef = 7233D97C1218E66500C34505 /* qgsmaptoolselectradius.h */; };
+		7233D9871218E6A200C34505 /* qgsmaptoolselectrectangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7233D97D1218E66500C34505 /* qgsmaptoolselectrectangle.cpp */; };
+		7233D9881218E6A200C34505 /* qgsmaptoolselectrectangle.h in Sources */ = {isa = PBXBuildFile; fileRef = 7233D97E1218E66500C34505 /* qgsmaptoolselectrectangle.h */; };
+		7233D9891218E6A200C34505 /* qgsmaptoolselectutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7233D97F1218E66500C34505 /* qgsmaptoolselectutils.cpp */; };
 		7237F48111DE3DA000128BAC /* eVisDatabaseConnectionGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47711DE3D9100128BAC /* eVisDatabaseConnectionGui-pt_BR */; };
 		7237F48211DE3DA000128BAC /* MapServerExport-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47811DE3D9100128BAC /* MapServerExport-pt_BR */; };
 		7237F48311DE3DA000128BAC /* QgsCustomProjectionDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7237F47911DE3D9100128BAC /* QgsCustomProjectionDialog-pt_BR */; };
@@ -5978,6 +5987,22 @@
 		72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayobject.sip; path = ../../python/core/qgsoverlayobject.sip; sourceTree = SOURCE_ROOT; };
 		72331DFC0F8E2A5D00398D2B /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = ../../src/core/spatialite/sqlite3.c; sourceTree = SOURCE_ROOT; };
 		72331DFD0F8E2A5D00398D2B /* spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spatialite.c; path = ../../src/core/spatialite/spatialite.c; sourceTree = SOURCE_ROOT; };
+		7233D9701218E53800C34505 /* mActionSelectFreehand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectFreehand.png; path = ../../images/themes/default/mActionSelectFreehand.png; sourceTree = SOURCE_ROOT; };
+		7233D9711218E53800C34505 /* mActionSelectPolygon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectPolygon.png; path = ../../images/themes/default/mActionSelectPolygon.png; sourceTree = SOURCE_ROOT; };
+		7233D9721218E53800C34505 /* mActionSelectRadius.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectRadius.png; path = ../../images/themes/default/mActionSelectRadius.png; sourceTree = SOURCE_ROOT; };
+		7233D9731218E53800C34505 /* mActionSelectRectangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectRectangle.png; path = ../../images/themes/default/mActionSelectRectangle.png; sourceTree = SOURCE_ROOT; };
+		7233D9741218E54900C34505 /* selectTools.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = selectTools.svg; path = ../../images/themes/default/selectTools.svg; sourceTree = SOURCE_ROOT; };
+		7233D9761218E5AE00C34505 /* qgis_pt_PT.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_pt_PT.ts; path = ../../i18n/qgis_pt_PT.ts; sourceTree = SOURCE_ROOT; };
+		7233D9771218E66500C34505 /* qgsmaptoolselectfreehand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolselectfreehand.cpp; path = ../../src/app/qgsmaptoolselectfreehand.cpp; sourceTree = SOURCE_ROOT; };
+		7233D9781218E66500C34505 /* qgsmaptoolselectfreehand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolselectfreehand.h; path = ../../src/app/qgsmaptoolselectfreehand.h; sourceTree = SOURCE_ROOT; };
+		7233D9791218E66500C34505 /* qgsmaptoolselectpolygon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolselectpolygon.cpp; path = ../../src/app/qgsmaptoolselectpolygon.cpp; sourceTree = SOURCE_ROOT; };
+		7233D97A1218E66500C34505 /* qgsmaptoolselectpolygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolselectpolygon.h; path = ../../src/app/qgsmaptoolselectpolygon.h; sourceTree = SOURCE_ROOT; };
+		7233D97B1218E66500C34505 /* qgsmaptoolselectradius.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolselectradius.cpp; path = ../../src/app/qgsmaptoolselectradius.cpp; sourceTree = SOURCE_ROOT; };
+		7233D97C1218E66500C34505 /* qgsmaptoolselectradius.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolselectradius.h; path = ../../src/app/qgsmaptoolselectradius.h; sourceTree = SOURCE_ROOT; };
+		7233D97D1218E66500C34505 /* qgsmaptoolselectrectangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolselectrectangle.cpp; path = ../../src/app/qgsmaptoolselectrectangle.cpp; sourceTree = SOURCE_ROOT; };
+		7233D97E1218E66500C34505 /* qgsmaptoolselectrectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolselectrectangle.h; path = ../../src/app/qgsmaptoolselectrectangle.h; sourceTree = SOURCE_ROOT; };
+		7233D97F1218E66500C34505 /* qgsmaptoolselectutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolselectutils.cpp; path = ../../src/app/qgsmaptoolselectutils.cpp; sourceTree = SOURCE_ROOT; };
+		7233D9801218E66500C34505 /* qgsmaptoolselectutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolselectutils.h; path = ../../src/app/qgsmaptoolselectutils.h; sourceTree = SOURCE_ROOT; };
 		7237F47711DE3D9100128BAC /* eVisDatabaseConnectionGui-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "eVisDatabaseConnectionGui-pt_BR"; path = "../../resources/context_help/eVisDatabaseConnectionGui-pt_BR"; sourceTree = SOURCE_ROOT; };
 		7237F47811DE3D9100128BAC /* MapServerExport-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "MapServerExport-pt_BR"; path = "../../resources/context_help/MapServerExport-pt_BR"; sourceTree = SOURCE_ROOT; };
 		7237F47911DE3D9100128BAC /* QgsCustomProjectionDialog-pt_BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCustomProjectionDialog-pt_BR"; path = "../../resources/context_help/QgsCustomProjectionDialog-pt_BR"; sourceTree = SOURCE_ROOT; };
@@ -8686,6 +8711,16 @@
 				72D84C1E1044BBFD009F8F39 /* qgsmaptoolreshape.h */,
 				7209E62F0F39E57A003DC336 /* qgsmaptoolselect.cpp */,
 				7209E6300F39E57A003DC336 /* qgsmaptoolselect.h */,
+				7233D9771218E66500C34505 /* qgsmaptoolselectfreehand.cpp */,
+				7233D9781218E66500C34505 /* qgsmaptoolselectfreehand.h */,
+				7233D9791218E66500C34505 /* qgsmaptoolselectpolygon.cpp */,
+				7233D97A1218E66500C34505 /* qgsmaptoolselectpolygon.h */,
+				7233D97B1218E66500C34505 /* qgsmaptoolselectradius.cpp */,
+				7233D97C1218E66500C34505 /* qgsmaptoolselectradius.h */,
+				7233D97D1218E66500C34505 /* qgsmaptoolselectrectangle.cpp */,
+				7233D97E1218E66500C34505 /* qgsmaptoolselectrectangle.h */,
+				7233D97F1218E66500C34505 /* qgsmaptoolselectutils.cpp */,
+				7233D9801218E66500C34505 /* qgsmaptoolselectutils.h */,
 				7209E6310F39E57A003DC336 /* qgsmaptoolsplitfeatures.cpp */,
 				7209E6320F39E57A003DC336 /* qgsmaptoolsplitfeatures.h */,
 				7209E6330F39E57A003DC336 /* qgsmaptoolvertexedit.cpp */,
@@ -11114,6 +11149,10 @@
 				7209EF360F39E5D9003DC336 /* mActionSelect.png */,
 				7209EF370F39E5D9003DC336 /* mActionSelectedToTop.png */,
 				7209EF380F39E5D9003DC336 /* mActionSelectPan.png */,
+				7233D9701218E53800C34505 /* mActionSelectFreehand.png */,
+				7233D9711218E53800C34505 /* mActionSelectPolygon.png */,
+				7233D9721218E53800C34505 /* mActionSelectRadius.png */,
+				7233D9731218E53800C34505 /* mActionSelectRectangle.png */,
 				7209EF390F39E5D9003DC336 /* mActionShowAllLayers.png */,
 				7209EF3A0F39E5D9003DC336 /* mActionShowBookmarks.png */,
 				7209EF3B0F39E5D9003DC336 /* mActionShowPluginManager.png */,
@@ -11164,6 +11203,7 @@
 				7209EF600F39E5D9003DC336 /* user.png */,
 				7209EF610F39E5D9003DC336 /* user.svg */,
 				7209EF620F39E5D9003DC336 /* zoomMaster.svg */,
+				7233D9741218E54900C34505 /* selectTools.svg */,
 				7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */,
 				727CEC210FBAFF6000F5B88C /* mIconLock.png */,
 				72779E9D1040614100CA9DE5 /* mActionAddMap.png */,
@@ -11401,6 +11441,7 @@
 				7209EFE80F39E5D9003DC336 /* qgis_nl.ts */,
 				7209EFE90F39E5D9003DC336 /* qgis_pl_PL.ts */,
 				7209EFEA0F39E5D9003DC336 /* qgis_pt_BR.ts */,
+				7233D9761218E5AE00C34505 /* qgis_pt_PT.ts */,
 				7209EFEB0F39E5D9003DC336 /* qgis_ro.ts */,
 				7209EFEC0F39E5D9003DC336 /* qgis_ru.ts */,
 				7209EFED0F39E5D9003DC336 /* qgis_sk.ts */,
@@ -16842,6 +16883,15 @@
 				72A93DE011B5E4C9007E8AE7 /* qgslabelinggui.cpp in Sources */,
 				72A93DE111B5E4C9007E8AE7 /* qgslabelinggui.h in Sources */,
 				72A93DE211B5E4C9007E8AE7 /* qgslabelpreview.cpp in Sources */,
+				7233D9811218E6A200C34505 /* qgsmaptoolselectfreehand.cpp in Sources */,
+				7233D9821218E6A200C34505 /* qgsmaptoolselectfreehand.h in Sources */,
+				7233D9831218E6A200C34505 /* qgsmaptoolselectpolygon.cpp in Sources */,
+				7233D9841218E6A200C34505 /* qgsmaptoolselectpolygon.h in Sources */,
+				7233D9851218E6A200C34505 /* qgsmaptoolselectradius.cpp in Sources */,
+				7233D9861218E6A200C34505 /* qgsmaptoolselectradius.h in Sources */,
+				7233D9871218E6A200C34505 /* qgsmaptoolselectrectangle.cpp in Sources */,
+				7233D9881218E6A200C34505 /* qgsmaptoolselectrectangle.h in Sources */,
+				7233D9891218E6A200C34505 /* qgsmaptoolselectutils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19060,6 +19110,7 @@
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(GSL_INC)",
 					"$(GDAL_INC)",
+					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -19100,6 +19151,7 @@
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(GSL_INC)",
 					"$(GDAL_INC)",
+					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -19758,6 +19810,7 @@
 					../../src/core/symbology,
 					../../src/gui,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -19793,6 +19846,7 @@
 					../../src/core/symbology,
 					../../src/gui,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
