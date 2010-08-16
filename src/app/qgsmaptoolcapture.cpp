@@ -74,7 +74,8 @@ void QgsMapToolCapture::renderComplete()
 
 void QgsMapToolCapture::deactivate()
 {
-  stopCapturing();
+  // don't stopCapturing() here, because the user might just want to
+  // pan or zoom and then continue digitizing.
   QgsMapTool::deactivate();
 }
 
