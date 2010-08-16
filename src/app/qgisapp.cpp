@@ -6815,7 +6815,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
     else
     {
-      rlp = new QgsRasterLayerProperties( ml );
+      rlp = new QgsRasterLayerProperties( ml, mMapCanvas );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
     rlp->exec();
