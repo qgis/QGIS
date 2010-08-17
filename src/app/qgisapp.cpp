@@ -879,7 +879,7 @@ void QgisApp::createActions()
   mActionZoomOut->setStatusTip( tr( "Zoom Out" ) );
   connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
 
-  mActionSelect = new QAction( getThemeIcon( "mActionSelect.png" ), tr( "Select Features" ), this );
+  mActionSelect = new QAction( getThemeIcon( "mActionSelect.png" ), tr( "Select Features" ) , this );
   shortcuts->registerAction( mActionSelect );
   mActionSelect->setStatusTip( tr( "Select Features" ) );
   connect( mActionSelect, SIGNAL( triggered() ), this, SLOT( select() ) );
@@ -1460,17 +1460,22 @@ void QgisApp::createMenus()
   mViewMenu->addAction( mActionZoomIn );
   mViewMenu->addAction( mActionZoomOut );
   mActionViewSeparator1 = mViewMenu->addSeparator();
-  mViewMenu->addAction( mActionSelect );
-  mViewMenu->addAction( mActionSelectRectangle );
-  mViewMenu->addAction( mActionSelectPolygon );
-  mViewMenu->addAction( mActionSelectFreehand );
-  mViewMenu->addAction( mActionSelectRadius );
-  mViewMenu->addAction( mActionDeselectAll );
-  mActionViewSeparator2 = mViewMenu->addSeparator();
+
+  QMenu *menu = mViewMenu->addMenu( tr( "Select" ) );
+  menu->addAction( mActionSelect );
+  menu->addAction( mActionSelectRectangle );
+  menu->addAction( mActionSelectPolygon );
+  menu->addAction( mActionSelectFreehand );
+  menu->addAction( mActionSelectRadius );
+  menu->addAction( mActionDeselectAll );
+
   mViewMenu->addAction( mActionIdentify );
-  mViewMenu->addAction( mActionMeasure );
-  mViewMenu->addAction( mActionMeasureArea );
-  mViewMenu->addAction( mActionMeasureAngle );
+
+  menu = mViewMenu->addMenu( tr( "Measure" ) );
+  menu->addAction( mActionMeasure );
+  menu->addAction( mActionMeasureArea );
+  menu->addAction( mActionMeasureAngle );
+
   mActionViewSeparator3 = mViewMenu->addSeparator();
 
   mViewMenu->addAction( mActionZoomFullExtent );
@@ -1698,31 +1703,42 @@ void QgisApp::createToolBars()
   mToolbarMenu->addAction( mMapNavToolBar->toggleViewAction() );
 
   //
-  // Feature Select Toolbar
-  mFeatureSelectToolBar = addToolBar( tr( "Select Tools" ) );
-  mFeatureSelectToolBar->setIconSize( myIconSize );
-  mFeatureSelectToolBar->setObjectName( "Select Tools" );
-  mFeatureSelectToolBar->addAction( mActionIdentify );
-  mFeatureSelectToolBar->addAction( mActionSelect );
-  mFeatureSelectToolBar->addAction( mActionSelectRectangle );
-  mFeatureSelectToolBar->addAction( mActionSelectPolygon );
-  mFeatureSelectToolBar->addAction( mActionSelectFreehand );
-  mFeatureSelectToolBar->addAction( mActionSelectRadius );
-  mFeatureSelectToolBar->addAction( mActionDeselectAll );
-
-  //
   // Attributes Toolbar
   mAttributesToolBar = addToolBar( tr( "Attributes" ) );
   mAttributesToolBar->setIconSize( myIconSize );
   mAttributesToolBar->setObjectName( "Attributes" );
+  mAttributesToolBar->addAction( mActionIdentify );
+
+  QToolButton *bt = new QToolButton( mAttributesToolBar );
+  QMenu *menu = new QMenu( bt );
+  bt->setMenu( menu );
+  bt->setPopupMode( QToolButton::InstantPopup );
+  menu->addAction( mActionSelect );
+  menu->addAction( mActionSelectRectangle );
+  menu->addAction( mActionSelectPolygon );
+  menu->addAction( mActionSelectFreehand );
+  menu->addAction( mActionSelectRadius );
+  bt->setDefaultAction( mActionSelect );
+  mAttributesToolBar->addWidget( bt );
+
+  mAttributesToolBar->addAction( mActionDeselectAll );
   mAttributesToolBar->addAction( mActionOpenTable );
-  mAttributesToolBar->addAction( mActionMeasure );
-  mAttributesToolBar->addAction( mActionMeasureArea );
-  mAttributesToolBar->addAction( mActionMeasureAngle );
+
+  bt = new QToolButton( mAttributesToolBar );
+  menu = new QMenu( bt );
+  bt->setMenu( menu );
+  bt->setPopupMode( QToolButton::InstantPopup );
+  menu->addAction( mActionMeasure );
+  menu->addAction( mActionMeasureArea );
+  menu->addAction( mActionMeasureAngle );
+  bt->setDefaultAction( mActionMeasure );
+  mAttributesToolBar->addWidget( bt );
+
   mAttributesToolBar->addAction( mActionMapTips );
   mAttributesToolBar->addAction( mActionShowBookmarks );
   mAttributesToolBar->addAction( mActionNewBookmark );
   mAttributesToolBar->addAction( mActionLabeling );
+
   // Annotation tools
   QToolButton *annotationToolButton = new QToolButton();
   annotationToolButton->setPopupMode( QToolButton::InstantPopup );

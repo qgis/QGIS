@@ -844,7 +844,6 @@ class QgisApp : public QMainWindow
     QToolBar *mDigitizeToolBar;
     QToolBar *mAdvancedDigitizeToolBar;
     QToolBar *mAttributesToolBar;
-    QToolBar *mFeatureSelectToolBar;
     QToolBar *mPluginToolBar;
     QToolBar *mHelpToolBar;
 
