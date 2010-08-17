@@ -4,9 +4,9 @@ qgis (1.6.0) UNRELEASED; urgency=low
   * qgis-plugin-grass-common breaks earlier versions of qgis-common: add
     control fields.
   * include displacementplugin plugin
-  * add svnversion as build dependency for trunk
+  * add subversion as build dependency for trunk
  
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 16 Aug 2010 09:11:29 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 17 Aug 2010 07:18:01 +0200
 
 qgis (1.5.0) UNRELEASED; urgency=low
 
