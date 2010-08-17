@@ -437,6 +437,9 @@ class QgisApp : public QMainWindow
     void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
 
+    //! update default action of toolbutton
+    void toolButtonActionTriggered( QAction * );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)

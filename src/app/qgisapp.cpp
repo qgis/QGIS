@@ -1720,6 +1720,7 @@ void QgisApp::createToolBars()
   menu->addAction( mActionSelectRadius );
   bt->setDefaultAction( mActionSelect );
   mAttributesToolBar->addWidget( bt );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   mAttributesToolBar->addAction( mActionDeselectAll );
   mAttributesToolBar->addAction( mActionOpenTable );
@@ -1733,6 +1734,7 @@ void QgisApp::createToolBars()
   menu->addAction( mActionMeasureAngle );
   bt->setDefaultAction( mActionMeasure );
   mAttributesToolBar->addWidget( bt );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   mAttributesToolBar->addAction( mActionMapTips );
   mAttributesToolBar->addAction( mActionShowBookmarks );
@@ -7025,4 +7027,13 @@ void QgisApp::namUpdate()
 void QgisApp::completeInitialization()
 {
   emit initializationCompleted();
+}
+
+void QgisApp::toolButtonActionTriggered( QAction *action )
+{
+  QToolButton *bt = qobject_cast<QToolButton *>( sender() );
+  if ( !bt )
+    return;
+
+  bt->setDefaultAction( action );
 }
