@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>376</width>
-    <height>205</height>
+    <height>323</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -120,9 +120,108 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="cleanCheck">
+     <property name="toolTip">
+      <string>Remove all overviews.</string>
+     </property>
+     <property name="text">
+      <string>Clean</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="roModeCheck">
+     <property name="toolTip">
+      <string>In order to generate external overview (for GeoTIFF especially).</string>
+     </property>
      <property name="text">
       <string>Open in read-only mode</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="tiffjpegCheck">
+     <property name="toolTip">
+      <string>Create external overviews in TIFF format, compressed using JPEG.</string>
+     </property>
+     <property name="text">
+      <string>Overviews in TIFF format with JPEG compression</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="jpegQualityContainer">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="leftMargin">
+       <number>24</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="jpegQualityLabel">
+        <property name="toolTip">
+         <string>For JPEG compressed external overviews, 
+the JPEG quality can be set.</string>
+        </property>
+        <property name="text">
+         <string>JPEG Quality (1-100):</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="jpegQualitySpin">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>For JPEG compressed external overviews, 
+the JPEG quality can be set.</string>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>80</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="rrdCheck">
+     <property name="toolTip">
+      <string>Alternate overview format using Erdas Imagine format, 
+placing the overviews in an associated .aux file 
+suitable for direct use with Imagine,ArcGIS, GDAL.</string>
+     </property>
+     <property name="text">
+      <string>Use Imagine format (.aux file)</string>
      </property>
     </widget>
    </item>

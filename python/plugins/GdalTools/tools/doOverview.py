@@ -32,7 +32,12 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
           (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
           ( self.algorithmCombo, SIGNAL( "currentIndexChanged( int )" ), self.algorithmCheck ),
           ( self.levelsEdit, SIGNAL( "textChanged( const QString & )" ) ),
-          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ) )
+          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ) ),
+          ( self.rrdCheck, SIGNAL( "stateChanged(int)" ) ),
+          ( self.jpegQualitySpin, SIGNAL( "valueChanged (int)" ) ),
+          ( self.jpegQualityContainer, None, self.tiffjpegCheck),
+          ( self.jpegQualityContainer, None, None, "1.7.0"),          #only show for GDAL >=1.7.0
+          ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, "1.7.0" )         #only show for GDAL >=1.7.0
         ]
       )
 
@@ -96,6 +101,14 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         arguments << self.resampling_method[self.algorithmCombo.currentIndex()]
       if self.roModeCheck.isChecked():
         arguments << "-ro"
+      if self.rrdCheck.isChecked():
+        arguments << "--config" << "USE_RRD" << "YES"
+      if self.tiffjpegCheck.isChecked():
+        arguments << "--config" << "COMPRESS_OVERVIEW" << "JPEG" << "--config" << "PHOTOMETRIC_OVERVIEW" << "YCBCR" << "--config" << "INTERLEAVE_OVERVIEW" << "PIXEL"
+        if self.jpegQualityContainer.isVisible():
+            arguments << "--config" << "JPEG_QUALITY_OVERVIEW" << self.jpegQualitySpin.cleanText()
+      if self.cleanCheck.isChecked():
+          arguments << "-clean"
       if self.isBatchEnabled():
         return arguments
 
