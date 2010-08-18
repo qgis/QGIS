@@ -4798,17 +4798,6 @@ void QgsVectorLayer::addJoin( QgsVectorJoinInfo joinInfo, bool cacheInMemory )
   if( cacheInMemory )
   {
     cacheJoinLayer( mVectorJoins.last() );
-    /*QgsVectorLayer* cacheLayer = dynamic_cast<QgsVectorLayer*>(QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
-    if( cacheLayer )
-    {
-      cacheLayer->select( cacheLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
-      QgsFeature f;
-      while( cacheLayer->nextFeature( f ) )
-      {
-        const QgsAttributeMap& map = f.attributeMap();
-        mVectorJoins.last().cachedAttributes.insert( map.value( joinInfo.joinField).toString(), map );
-      }
-    }*/
   }
 
   updateFieldMap();
