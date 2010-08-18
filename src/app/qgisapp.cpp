@@ -1712,7 +1712,6 @@ void QgisApp::createToolBars()
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   QMenu *menu = new QMenu( bt );
   bt->setMenu( menu );
-  bt->setPopupMode( QToolButton::InstantPopup );
   menu->addAction( mActionSelect );
   menu->addAction( mActionSelectRectangle );
   menu->addAction( mActionSelectPolygon );
@@ -1728,7 +1727,6 @@ void QgisApp::createToolBars()
   bt = new QToolButton( mAttributesToolBar );
   menu = new QMenu( bt );
   bt->setMenu( menu );
-  bt->setPopupMode( QToolButton::InstantPopup );
   menu->addAction( mActionMeasure );
   menu->addAction( mActionMeasureArea );
   menu->addAction( mActionMeasureAngle );
