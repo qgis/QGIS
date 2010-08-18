@@ -62,11 +62,15 @@ struct QgsVectorJoinInfo
   QString joinLayerId;
   /**Join field in the source layer*/
   int joinField;
+  /**True if the join is cached in virtual memory*/
+  bool memoryCache;
+  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)*/
+  QHash< QString, QgsAttributeMap> cachedAttributes;
 };
 
 struct QgsFetchJoinInfo
 {
-  QgsVectorJoinInfo joinInfo;
+  const QgsVectorJoinInfo* joinInfo;
   QgsAttributeList attributes; //attributes to fetch
   int indexOffset; //index offset between this layer and join layer
 };
@@ -144,8 +148,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Setup the coordinate system tranformation for the layer */
     void setCoordinateSystem();
 
-    /**Joins another vector layer to this layer*/
-    void addJoin( QgsVectorJoinInfo joinInfo );
+    /**Joins another vector layer to this layer
+      @param joinInfo join object containing join layer id, target and source field
+      @param cacheInMemory if true: caches the content of the join layer in virtual memory*/
+    void addJoin( QgsVectorJoinInfo joinInfo, bool cacheInMemory = false );
 
     /**Removes  a vector layer join*/
     void removeJoin( const QString& joinLayerId );
@@ -585,6 +591,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.6*/
     void updateFieldMap();
 
+    /**Caches joined attributes if required (and not already done)*/
+    void createJoinCaches();
 
 
   public slots:
@@ -686,8 +694,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Reads vertex marker size from settings*/
     static int currentVertexMarkerSize();
 
-    /**Update feature with uncommited attribute updates*/
+    /**Update feature with uncommited attribute updates and joined attributes*/
     void updateFeatureAttributes( QgsFeature &f, bool all = false );
+
+    /**Adds joined attributes to a feature
+      @param f the feature to add the attributes
+      @param joinInfo vector join
+      @param joinFieldName name of the (source) join Field
+      @param joinValue lookup value for join
+      @param attributes (join layer) attribute indices to add
+      @param attributeOffset index offset to get from join layer attribute index to layer index*/
+    void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
+                                     const QgsAttributeList& attributes, int attributeIndexOffset );
 
     /**Update feature with uncommited geometry updates*/
     void updateFeatureGeometry( QgsFeature &f );
@@ -715,12 +733,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
 
     /**Finds the vector join for a layer field index.
-      @param attribute index
-      @param info out: join info for the attribute
+      @param index this layers attribute index
       @param indexOffset out: offset between layer index and original provider index
-       @return true if the index belongs to a joined field, otherwise false (possibily provider field or added field)*/
-    bool joinForFieldIndex( int index, QgsVectorJoinInfo& info, int& indexOffset ) const;
+       @return pointer to the join if the index belongs to a joined field, otherwise 0 (possibily provider field or added field)*/
+    const QgsVectorJoinInfo* joinForFieldIndex( int index, int& indexOffset ) const;
 
+    /**Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)*/
+    void cacheJoinLayer( QgsVectorJoinInfo& joinInfo );
 
   private:                       // Private attributes
 

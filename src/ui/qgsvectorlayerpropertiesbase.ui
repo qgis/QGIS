@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>589</width>
+    <width>591</width>
     <height>426</height>
    </rect>
   </property>
@@ -302,8 +302,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>439</width>
-            <height>419</height>
+            <width>383</width>
+            <height>401</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -787,6 +787,10 @@
      <item>
       <property name="text">
        <string>Joins</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
       </property>
      </item>
      <item>

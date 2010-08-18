@@ -58,6 +58,8 @@ QgsAddJoinDialog::QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt:
   {
     mTargetFieldComboBox->addItem(fieldIt.value().name(), fieldIt.key() );
   }
+
+  mCacheInMemoryCheckBox->setChecked( true );
 }
 
 QgsAddJoinDialog::~QgsAddJoinDialog()
@@ -87,6 +89,11 @@ int QgsAddJoinDialog::targetField() const
 QString QgsAddJoinDialog::targetFieldName() const
 {
    return mTargetFieldComboBox->itemText( mTargetFieldComboBox->currentIndex() );
+}
+
+bool QgsAddJoinDialog::cacheInMemory() const
+{
+  return mCacheInMemoryCheckBox->isChecked();
 }
 
 bool QgsAddJoinDialog::createAttributeIndex() const
@@ -121,7 +128,6 @@ void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged ( int index )
   if( dp && (dp->capabilities() & QgsVectorDataProvider::CreateAttributeIndex) )
   {
     mCreateIndexCheckBox->setEnabled( true );
-    mCreateIndexCheckBox->setChecked( true );
   }
   else
   {

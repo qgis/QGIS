@@ -736,13 +736,14 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     emit layerLoaded( i + 1, nl.count() );
   }
 
-  //Update field map of layers with joins.
+  //Update field map of layers with joins and create join caches if necessary
   //Needs to be done here once all dependent layers are loaded
   QList<QgsVectorLayer*>::iterator vIt = vLayerList.begin();
   for(; vIt != vLayerList.end(); ++vIt )
   {
     if( (*vIt)->vectorJoins().size() > 0 )
     {
+      (*vIt)->createJoinCaches();
       (*vIt)->updateFieldMap();
     }
   }

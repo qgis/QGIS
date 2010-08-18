@@ -1802,7 +1802,14 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 
 void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
 {
-  QgsField fld = mAttributeFields[index];
+  uniqueValues.clear();
+
+  QgsField fld = mAttributeFields.value( index );
+  if( fld.name().isNull() )
+  {
+    return; //not a provider field
+  }
+
   QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
@@ -1815,8 +1822,6 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   sql += QString( " ORDER BY %1" ).arg( fld.name() );
-
-  uniqueValues.clear();
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );

@@ -40,6 +40,8 @@ class QgsAddJoinDialog: public QDialog, private Ui::QgsAddJoinDialogBase
     int targetField() const;
     /**Returns the name of the target field (join-to field)*/
     QString targetFieldName() const;
+    /**True if joined layer should be cached in virtual memory*/
+    bool cacheInMemory() const;
     /**Returns true if user wants to create an attribute index on the join field*/
     bool createAttributeIndex() const;
 

@@ -1190,7 +1190,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
         }
       }
 
-      layer->addJoin( info );
+      layer->addJoin( info, d.cacheInMemory() );
       loadRows(); //update attribute tab
       addJoinToTreeWidget( info );
     }
