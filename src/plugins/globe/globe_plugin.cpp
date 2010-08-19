@@ -106,10 +106,6 @@ void GlobePlugin::initGui()
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQDockWidget.setWidget(&viewer);
 
-  connect(mQGisIface->mapCanvas(), SIGNAL(renderStarting()),
-          this, SLOT( renderStarting() ) );
-  connect(mQGisIface->mapCanvas(), SIGNAL(renderComplete( QPainter * )),
-          this, SLOT( renderComplete( QPainter * ) ) );
   connect(mQGisIface->mapCanvas() , SIGNAL(extentsChanged()),
           this, SLOT( extentsChanged() ) );
   connect(mQGisIface->mapCanvas(), SIGNAL(layersChanged()),
@@ -128,7 +124,7 @@ void GlobePlugin::run()
 
   // read base layers from earth file
   EarthFile earthFile;
-  if ( !earthFile.readXML( "/home/pi/devel/gis/qgis/qgis/src/plugins/globe/globe.earth" ) )
+  if ( !earthFile.readXML( "/home/pi/devel/gis/qgis/src/plugins/globe/globe.earth" ) )
   {
     return;
   }
@@ -168,36 +164,16 @@ void GlobePlugin::extentsChanged()
     QgsDebugMsg(">>>>>>>>>> extentsChanged: " + mQGisIface->mapCanvas()->extent().toString());
 }
 
-void GlobePlugin::renderStarting()
-{
-    if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1 ) { mTileSource->getRenderMutex().writeLock(); }
-    QgsDebugMsg(">>>>>>>>>> renderStarting");
-}
-
-void GlobePlugin::renderComplete( QPainter * )
-{
-    if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1) { mTileSource->getRenderMutex().writeUnlock(); }
-    QgsDebugMsg(">>>>>>>>>> renderComplete");
-}
-
 void GlobePlugin::layersChanged()
 {
     QgsDebugMsg(">>>>>>>>>> layersChanged");
     if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1)
     {
-        {
-            Threading::ScopedReadLock lock(mTileSource->getRenderMutex());
-            viewer.getDatabasePager()->clear();
-        }
+        viewer.getDatabasePager()->clear();
         QgsDebugMsg(">>>>>>>>>> removeMapLayer");
         QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
         mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
         QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
-        //QgsDebugMsg(">>>>>>>>>> addMapLayer");
-        //mMapNode->getMap()->addMapLayer( mQgisMapLayer );
-        //QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
-    } else if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() == 1)
-    {
         QgsDebugMsg(">>>>>>>>>> addMapLayer");
         mTileSource = new QgsOsgEarthTileSource(mQGisIface);
         mTileSource->initialize("", 0);

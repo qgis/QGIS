@@ -89,10 +89,7 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey* key,
 
         QPainter thePainter(qImage);
         //thePainter.setRenderHint(QPainter::Antialiasing); //make it look nicer
-        {
-            Threading::ScopedReadLock lock(mRenderMutex);
-            mMapRenderer->render(&thePainter);
-        }
+        mMapRenderer->render(&thePainter);
 
         unsigned char* data = qImage->bits();
 

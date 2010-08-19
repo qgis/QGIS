@@ -9,7 +9,6 @@ class QgisInterface;
 
 #include <osgEarth/Common>
 #include <osgEarth/TileSource>
-#include <osgEarth/ThreadingUtils>
 
 using namespace osgEarth;
 
@@ -44,8 +43,6 @@ namespace osgEarth { namespace Drivers
             return false;
         }
 
-        Threading::ReadWriteMutex& getRenderMutex() { return mRenderMutex; }
-
 private:
 
     int configureMapRender( const QPaintDevice* paintDevice ) const;
@@ -55,8 +52,6 @@ private:
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     QgsMapRenderer* mMapRenderer;
-    //! Canvas render Mutex
-    Threading::ReadWriteMutex mRenderMutex;
 
     };
 } } // namespace osgEarth::Drivers
