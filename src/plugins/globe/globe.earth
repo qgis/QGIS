@@ -1,0 +1,29 @@
+<map name="QGIS Map" type="geocentric">
+
+    <image name="world" driver="gdal">
+        <url>/home/pi/devel/gis/osgearth/data/world.tif</url>
+    </image>
+
+    <!--
+    <image name="tileservice" driver="tileservice">
+        <url>http://s0.tileservice.worldwindcentral.com/getTile?</url>
+        <dataset>bmng.topo.bathy.200401</dataset>
+        <format>jpg</format>
+            <max_level>7</max_level>
+    </image>
+    -->
+
+    <heightfield name="pelican srtm" driver="tms">
+      <url>http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml</url>
+    </heightfield>
+    <!--
+    <heightfield name="WorldWind bil" driver="worldwind">
+      <worldwind_cache>worldwind_SRTM</worldwind_cache>
+    </heightfield>
+    -->
+
+    <vertical_scale>2</vertical_scale>
+    <!--
+    <sample_ratio>0.25</sample_ratio>
+    -->
+</map>
