@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgshttprequesthandler.cpp    
+                              qgshttprequesthandler.cpp
                               -------------------------
   begin                : June 29, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -33,26 +33,26 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
 
 }
 
-void QgsHttpRequestHandler::sendHttpResponse(QByteArray* ba, const QString& format) const
+void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& format ) const
 {
-  if(!ba)
-    {
-      return;
-    }
+  if ( !ba )
+  {
+    return;
+  }
 
-  if(ba->size() < 1)
-    {
-      return;
-    }
+  if ( ba->size() < 1 )
+  {
+    return;
+  }
 
-  printf("Content-Type: ");
-  printf(format.toLocal8Bit());
-  printf("\n");
-  printf("Content-Length: %d\n", ba->size());
-  printf("\n");
+  printf( "Content-Type: " );
+  printf( format.toLocal8Bit() );
+  printf( "\n" );
+  printf( "Content-Length: %d\n", ba->size() );
+  printf( "\n" );
 #ifdef WIN32
-  fwrite(ba->data(), ba->size(), 1, stdout);
+  fwrite( ba->data(), ba->size(), 1, stdout );
 #else
-  fwrite(ba->data(), ba->size(), 1, FCGI_stdout);
+  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
 #endif //WIN32
 }

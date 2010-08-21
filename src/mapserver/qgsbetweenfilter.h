@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsbetweenfilter.h    
+                              qgsbetweenfilter.h
                               -------------------
   begin                : Feb 07, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -36,24 +36,24 @@ Sample xml fragment:
 */
 class QgsBetweenFilter: public QgsFilter
 {
- public:
-  QgsBetweenFilter();
-  QgsBetweenFilter(int attributeIndex, const QString& lowerValue, const QString& upperValue);
-  ~QgsBetweenFilter();
-   
-  /**Evaluates a feature against the filter.
-   @return true if the filter applies for the feature*/
-  bool evaluate(const QgsFeature& f) const;
-  QString lowerValue() const {return mLowerValue;}
-  QString upperValue() const {return mUpperValue;}
-  void setLowerValue(const QString& lv){mLowerValue = lv;}
-  void setUpperValue(const QString& uv){mUpperValue = uv;}
+  public:
+    QgsBetweenFilter();
+    QgsBetweenFilter( int attributeIndex, const QString& lowerValue, const QString& upperValue );
+    ~QgsBetweenFilter();
 
- private:
-  /**Lower boundary*/
-  QString mLowerValue;
-  /**Upper boundary*/
-  QString mUpperValue;
+    /**Evaluates a feature against the filter.
+     @return true if the filter applies for the feature*/
+    bool evaluate( const QgsFeature& f ) const;
+    QString lowerValue() const {return mLowerValue;}
+    QString upperValue() const {return mUpperValue;}
+    void setLowerValue( const QString& lv ) {mLowerValue = lv;}
+    void setUpperValue( const QString& uv ) {mUpperValue = uv;}
+
+  private:
+    /**Lower boundary*/
+    QString mLowerValue;
+    /**Upper boundary*/
+    QString mUpperValue;
 };
 
 #endif //QGSBETWEENFILTER_H

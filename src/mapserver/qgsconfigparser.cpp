@@ -22,7 +22,7 @@
 #include <sqlite3.h>
 
 
-QgsConfigParser::QgsConfigParser(): mFallbackParser(0), mScaleDenominator(0), mOutputUnits( QgsMapRenderer::Millimeters )
+QgsConfigParser::QgsConfigParser(): mFallbackParser( 0 ), mScaleDenominator( 0 ), mOutputUnits( QgsMapRenderer::Millimeters )
 {
   setDefaultLegendSettings();
 }
@@ -30,7 +30,7 @@ QgsConfigParser::QgsConfigParser(): mFallbackParser(0), mScaleDenominator(0), mO
 QgsConfigParser::~QgsConfigParser()
 {
   //remove the external GML datasets
-  for(QMap<QString, QDomDocument*>::iterator it = mExternalGMLDatasets.begin(); it != mExternalGMLDatasets.end(); ++it)
+  for ( QMap<QString, QDomDocument*>::iterator it = mExternalGMLDatasets.begin(); it != mExternalGMLDatasets.end(); ++it )
   {
     delete it.value();
   }
@@ -48,7 +48,7 @@ void QgsConfigParser::setDefaultLegendSettings()
 
 void QgsConfigParser::setFallbackParser( QgsConfigParser* p )
 {
-  if( !p )
+  if ( !p )
   {
     return;
   }
@@ -56,109 +56,109 @@ void QgsConfigParser::setFallbackParser( QgsConfigParser* p )
   mFallbackParser = p;
 }
 
-void QgsConfigParser::addExternalGMLData(const QString& layerName, QDomDocument* gmlDoc)
+void QgsConfigParser::addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc )
 {
-  mExternalGMLDatasets.insert(layerName, gmlDoc);
+  mExternalGMLDatasets.insert( layerName, gmlDoc );
 }
 
 void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const
 {
-  if( layerElem.isNull() )
+  if ( layerElem.isNull() )
   {
     return;
   }
 
   QgsCoordinateReferenceSystem wgs84;
-  wgs84.createFromEpsg(4326);
+  wgs84.createFromEpsg( 4326 );
 
   //Ex_GeographicBoundingBox
   //transform the layers native CRS into WGS84
-  QgsCoordinateTransform exGeoTransform(layerCRS, wgs84);
-  QgsRectangle wgs84BoundingRect = exGeoTransform.transformBoundingBox(layerExtent);
+  QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
+  QgsRectangle wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
 
-  QDomElement ExGeoBBoxElement = doc.createElement("EX_GeographicBoundingBox");
-  QDomElement wBoundLongitudeElement = doc.createElement("westBoundLongitude");
-  QDomText wBoundLongitudeText = doc.createTextNode(QString::number(wgs84BoundingRect.xMinimum()));
-  wBoundLongitudeElement.appendChild(wBoundLongitudeText);
-  ExGeoBBoxElement.appendChild(wBoundLongitudeElement);
-  QDomElement eBoundLongitudeElement = doc.createElement("eastBoundLongitude");
-  QDomText eBoundLongitudeText = doc.createTextNode(QString::number(wgs84BoundingRect.xMaximum()));
-  eBoundLongitudeElement.appendChild(eBoundLongitudeText);
-  ExGeoBBoxElement.appendChild(eBoundLongitudeElement);
-  QDomElement sBoundLatitudeElement = doc.createElement("southBoundLatitude");
-  QDomText sBoundLatitudeText = doc.createTextNode(QString::number(wgs84BoundingRect.yMinimum()));
-  sBoundLatitudeElement.appendChild(sBoundLatitudeText);
-  ExGeoBBoxElement.appendChild(sBoundLatitudeElement);
-  QDomElement nBoundLatitudeElement = doc.createElement("northBoundLatitude");
-  QDomText nBoundLatitudeText = doc.createTextNode(QString::number(wgs84BoundingRect.yMaximum()));
-  nBoundLatitudeElement.appendChild(nBoundLatitudeText);
-  ExGeoBBoxElement.appendChild(nBoundLatitudeElement);
-  layerElem.appendChild(ExGeoBBoxElement);
+  QDomElement ExGeoBBoxElement = doc.createElement( "EX_GeographicBoundingBox" );
+  QDomElement wBoundLongitudeElement = doc.createElement( "westBoundLongitude" );
+  QDomText wBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) );
+  wBoundLongitudeElement.appendChild( wBoundLongitudeText );
+  ExGeoBBoxElement.appendChild( wBoundLongitudeElement );
+  QDomElement eBoundLongitudeElement = doc.createElement( "eastBoundLongitude" );
+  QDomText eBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) );
+  eBoundLongitudeElement.appendChild( eBoundLongitudeText );
+  ExGeoBBoxElement.appendChild( eBoundLongitudeElement );
+  QDomElement sBoundLatitudeElement = doc.createElement( "southBoundLatitude" );
+  QDomText sBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMinimum() ) );
+  sBoundLatitudeElement.appendChild( sBoundLatitudeText );
+  ExGeoBBoxElement.appendChild( sBoundLatitudeElement );
+  QDomElement nBoundLatitudeElement = doc.createElement( "northBoundLatitude" );
+  QDomText nBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMaximum() ) );
+  nBoundLatitudeElement.appendChild( nBoundLatitudeText );
+  ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
+  layerElem.appendChild( ExGeoBBoxElement );
 
   //BoundingBox element
-  QDomElement bBoxElement = doc.createElement("BoundingBox");
-  if(layerCRS.isValid())
-    {
-      bBoxElement.setAttribute("CRS","EPSG:"+QString::number(layerCRS.epsg()));
-    }
+  QDomElement bBoxElement = doc.createElement( "BoundingBox" );
+  if ( layerCRS.isValid() )
+  {
+    bBoxElement.setAttribute( "CRS", "EPSG:" + QString::number( layerCRS.epsg() ) );
+  }
 
-  bBoxElement.setAttribute("minx", QString::number(layerExtent.xMinimum()));
-  bBoxElement.setAttribute("miny", QString::number(layerExtent.yMinimum()));
-  bBoxElement.setAttribute("maxx", QString::number(layerExtent.xMaximum()));
-  bBoxElement.setAttribute("maxy", QString::number(layerExtent.yMaximum()));
-  layerElem.appendChild(bBoxElement);
+  bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
+  bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
+  bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
+  bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
+  layerElem.appendChild( bBoxElement );
 }
 
-QList<int> QgsConfigParser::createCRSListForLayer(QgsMapLayer* theMapLayer) const
+QList<int> QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) const
 {
   QList<int> epsgNumbers;
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theMapLayer);
+  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
 
-  if(theVectorLayer) //append the source SRS. In future, all systems supported by proj4 should be appended
+  if ( theVectorLayer ) //append the source SRS. In future, all systems supported by proj4 should be appended
+  {
+    QString myDatabaseFileName = QgsApplication::srsDbFilePath();
+    sqlite3      *myDatabase;
+    const char   *myTail;
+    sqlite3_stmt *myPreparedStatement;
+    int           myResult;
+
+    //check the db is available
+    myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
+    if ( myResult )
     {
-      QString myDatabaseFileName = QgsApplication::srsDbFilePath();
-      sqlite3      *myDatabase;
-      const char   *myTail;
-      sqlite3_stmt *myPreparedStatement;
-      int           myResult;
-
-      //check the db is available
-      myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
-      if(myResult)
-        {
-          //if the database cannot be opened, add at least the epsg number of the source coordinate system
-          epsgNumbers.push_back(theMapLayer->srs().epsg());
-          return epsgNumbers;
-        };
-      QString mySql = "select auth_id from tbl_srs where auth_name='EPSG' ";
-      myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
-      if(myResult == SQLITE_OK)
-        {
-          while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
-            {
-              epsgNumbers.push_back(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)).toLong());
-            }
-        }
-      sqlite3_finalize(myPreparedStatement);
-      sqlite3_close(myDatabase);
+      //if the database cannot be opened, add at least the epsg number of the source coordinate system
+      epsgNumbers.push_back( theMapLayer->srs().epsg() );
+      return epsgNumbers;
+    };
+    QString mySql = "select auth_id from tbl_srs where auth_name='EPSG' ";
+    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+    if ( myResult == SQLITE_OK )
+    {
+      while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+      {
+        epsgNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ).toLong() );
+      }
     }
+    sqlite3_finalize( myPreparedStatement );
+    sqlite3_close( myDatabase );
+  }
   else //rasters cannot be reprojected. Use the epsg number of the layers native CRS
-    {
-      int rasterEpsg = theMapLayer->srs().epsg();
-      epsgNumbers.push_back(rasterEpsg);
-    }
+  {
+    int rasterEpsg = theMapLayer->srs().epsg();
+    epsgNumbers.push_back( rasterEpsg );
+  }
   return epsgNumbers;
 }
 
 bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const
 {
-  if( layerElement.isNull() )
+  if ( layerElement.isNull() )
   {
     return false;
   }
 
-  QDomElement exGeogElem = layerElement.firstChildElement( "EX_GeographicBoundingBox");
-  if( exGeogElem.isNull() )
+  QDomElement exGeogElem = layerElement.firstChildElement( "EX_GeographicBoundingBox" );
+  if ( exGeogElem.isNull() )
   {
     return false;
   }
@@ -166,45 +166,45 @@ bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, 
   bool ok = true;
   //minx
   QDomElement westBoundElem = exGeogElem.firstChildElement( "westBoundLongitude" );
-  if( westBoundElem.isNull() )
+  if ( westBoundElem.isNull() )
   {
     return false;
   }
   double minx = westBoundElem.text().toDouble( &ok );
-  if( !ok )
+  if ( !ok )
   {
     return false;
   }
   //maxx
   QDomElement eastBoundElem = exGeogElem.firstChildElement( "eastBoundLongitude" );
-  if( eastBoundElem.isNull() )
+  if ( eastBoundElem.isNull() )
   {
     return false;
   }
   double maxx = eastBoundElem.text().toDouble( &ok );
-  if( !ok )
+  if ( !ok )
   {
     return false;
   }
   //miny
-  QDomElement southBoundElem = exGeogElem.firstChildElement("southBoundLatitude");
-  if( southBoundElem.isNull() )
+  QDomElement southBoundElem = exGeogElem.firstChildElement( "southBoundLatitude" );
+  if ( southBoundElem.isNull() )
   {
     return false;
   }
   double miny = southBoundElem.text().toDouble( &ok );
-  if( !ok )
+  if ( !ok )
   {
     return false;
   }
   //maxy
-  QDomElement northBoundElem = exGeogElem.firstChildElement("northBoundLatitude");
-  if( northBoundElem.isNull() )
+  QDomElement northBoundElem = exGeogElem.firstChildElement( "northBoundLatitude" );
+  if ( northBoundElem.isNull() )
   {
     return false;
   }
   double maxy = northBoundElem.text().toDouble( &ok );
-  if( !ok )
+  if ( !ok )
   {
     return false;
   }
@@ -219,7 +219,7 @@ bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, 
 
 bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<int>& crsSet ) const
 {
-  if( layerElement.isNull() )
+  if ( layerElement.isNull() )
   {
     return false;
   }
@@ -227,14 +227,14 @@ bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<int>
   crsSet.clear();
   bool intConversionOk;
 
-  QDomNodeList crsNodeList = layerElement.elementsByTagName("CRS");
-  for( int i = 0; i < crsNodeList.size(); ++i )
+  QDomNodeList crsNodeList = layerElement.elementsByTagName( "CRS" );
+  for ( int i = 0; i < crsNodeList.size(); ++i )
   {
-     int epsg = crsNodeList.at( i ).toElement().text().remove(0, 5).toInt( &intConversionOk );
-     if( intConversionOk )
-     {
-        crsSet.insert( epsg );
-     }
+    int epsg = crsNodeList.at( i ).toElement().text().remove( 0, 5 ).toInt( &intConversionOk );
+    if ( intConversionOk )
+    {
+      crsSet.insert( epsg );
+    }
   }
 
   return true;
@@ -242,7 +242,7 @@ bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<int>
 
 void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QList<int>& crsList ) const
 {
-  if( layerElement.isNull() )
+  if ( layerElement.isNull() )
   {
     return;
   }
@@ -251,15 +251,15 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
   QSet<int> epsgSet = supportedOutputCrsSet();
 
   QList<int>::const_iterator crsIt = crsList.constBegin();
-  for(; crsIt != crsList.constEnd(); ++crsIt)
+  for ( ; crsIt != crsList.constEnd(); ++crsIt )
   {
-    if( !epsgSet.isEmpty() && !epsgSet.contains( *crsIt ) ) //consider epsg output constraint
+    if ( !epsgSet.isEmpty() && !epsgSet.contains( *crsIt ) ) //consider epsg output constraint
     {
       continue;
     }
-    QDomElement crsElement = doc.createElement("CRS");
-    QDomText epsgText = doc.createTextNode("EPSG:" + QString::number(*crsIt));
-    crsElement.appendChild(epsgText);
-    layerElement.appendChild(crsElement);
+    QDomElement crsElement = doc.createElement( "CRS" );
+    QDomText epsgText = doc.createTextNode( "EPSG:" + QString::number( *crsIt ) );
+    crsElement.appendChild( epsgText );
+    layerElement.appendChild( crsElement );
   }
 }

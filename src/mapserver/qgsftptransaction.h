@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsftptransaction.h    
+                              qgsftptransaction.h
                               -------------------
   begin                : May 16, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -20,22 +20,22 @@
 /**A class for synchronous ftp access (using QFtp in background)*/
 class QgsFtpTransaction: public QObject
 {
-  Q_OBJECT
- public:
-  QgsFtpTransaction();
-  ~QgsFtpTransaction();
-  
-  /**Transfers the file with the given Url and stores it into ba
-     @param ftpUrl url of the file to access
-     @param pointer to buffer to store file contents
-     @return 0 in case of success*/
-  int get(const QString& ftpUrl, QByteArray& ba);
+    Q_OBJECT
+  public:
+    QgsFtpTransaction();
+    ~QgsFtpTransaction();
+
+    /**Transfers the file with the given Url and stores it into ba
+       @param ftpUrl url of the file to access
+       @param pointer to buffer to store file contents
+       @return 0 in case of success*/
+    int get( const QString& ftpUrl, QByteArray& ba );
 
   public slots:
-  void setFinishedFlag(bool error);
- 
- private:
-  QFtp* mFtp;
-  bool mRequestFinished;
-  bool mErrorFlag;
+    void setFinishedFlag( bool error );
+
+  private:
+    QFtp* mFtp;
+    bool mRequestFinished;
+    bool mErrorFlag;
 };

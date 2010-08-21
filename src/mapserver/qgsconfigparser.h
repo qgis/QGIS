@@ -35,31 +35,31 @@ class QgsConfigParser
     virtual ~QgsConfigParser();
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    virtual void layersAndStylesCapabilities(QDomElement& parentElement, QDomDocument& doc) const = 0;
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned*/
-    virtual QList<QgsMapLayer*> mapLayerFromStyle(const QString& layerName, const QString& styleName, bool allowCaching = true) const = 0;
+    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool allowCaching = true ) const = 0;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
-    virtual int layersAndStyles(QStringList& layers, QStringList& styles) const = 0;
+    virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const = 0;
 
     /**Returns the xml fragment of a style*/
-    virtual QDomDocument getStyle(const QString& styleName, const QString& layerName) const = 0;
+    virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
-    virtual void setParameterMap( const std::map<QString, QString>& parameterMap ){}
+    virtual void setParameterMap( const std::map<QString, QString>& parameterMap ) {}
 
     /**Returns if output are MM or PIXEL*/
     QgsMapRenderer::OutputUnits outputUnits() const { return mOutputUnits; }
-    void setOutputUnits( QgsMapRenderer::OutputUnits u ){ mOutputUnits = u; }
+    void setOutputUnits( QgsMapRenderer::OutputUnits u ) { mOutputUnits = u; }
 
     /**Sets fallback parser (does not take ownership)*/
     void setFallbackParser( QgsConfigParser* p );
 
-    void setScaleDenominator(double denom) {mScaleDenominator = denom;}
+    void setScaleDenominator( double denom ) {mScaleDenominator = denom;}
 
-    void addExternalGMLData(const QString& layerName, QDomDocument* gmlDoc);
+    void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc );
 
     void setLegendLayerFont( const QFont& f ) { mLegendLayerFont = f; }
     const QFont& legendLayerFont() const { return mLegendLayerFont; }
@@ -88,7 +88,7 @@ class QgsConfigParser
     /**Returns information about vector attributes with hidden edit type. Key is layer id, value is a set containing the names of the hidden attributes*/
     virtual QMap< QString, QSet<QString> > hiddenAttributes() const { return QMap< QString, QSet<QString> >(); }
 
-protected:
+  protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;
     /**Indicates the current scale and is used for scale dependent symbology. Defaults to 0 (means that the scale is
@@ -123,7 +123,7 @@ protected:
     bool exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const;
 
     /**Returns a list of supported EPSG coordinate system numbers from a layer*/
-    QList<int> createCRSListForLayer(QgsMapLayer* theMapLayer) const;
+    QList<int> createCRSListForLayer( QgsMapLayer* theMapLayer ) const;
     /**Reads all the epsg numbers from a capabilities layer
     @param layerElement <Layer> element in capabilities
     @param crsSet out: set containing the epsg numbers on successfull completion

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgshttprequesthandler.h    
+                              qgshttprequesthandler.h
                               -----------------------
   begin                : June 29, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -24,12 +24,12 @@
 It provides a method to send data to the client*/
 class QgsHttpRequestHandler: public QgsRequestHandler
 {
- public:
-  QgsHttpRequestHandler();
-  ~QgsHttpRequestHandler();
+  public:
+    QgsHttpRequestHandler();
+    ~QgsHttpRequestHandler();
 
- protected:
-  void sendHttpResponse(QByteArray* ba, const QString& format) const;
+  protected:
+    void sendHttpResponse( QByteArray* ba, const QString& format ) const;
 };
 
 #endif

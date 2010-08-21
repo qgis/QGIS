@@ -21,7 +21,7 @@ QgsEPSGCache* QgsEPSGCache::mInstance = 0;
 
 QgsEPSGCache* QgsEPSGCache::instance()
 {
-  if( !mInstance )
+  if ( !mInstance )
   {
     mInstance = new QgsEPSGCache();
   }
@@ -39,11 +39,11 @@ QgsEPSGCache::~QgsEPSGCache()
 
 const QgsCoordinateReferenceSystem& QgsEPSGCache::searchCRS( long epsg )
 {
-  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find ( epsg );
-  if( crsIt == mCRS.constEnd() )
+  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( epsg );
+  if ( crsIt == mCRS.constEnd() )
   {
     QgsCoordinateReferenceSystem s;
-    if( ! s.createFromEpsg( epsg ) )
+    if ( ! s.createFromEpsg( epsg ) )
     {
       return mInvalidCRS;
     }

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgssldrenderer.cpp    
+                              qgssldrenderer.cpp
                  A renderer flexible enough for sld specified symbolisation
                               -------------------
   begin                : May 12, 2006
@@ -26,7 +26,7 @@
 #include <QPixmap>
 #include <QSet>
 
-QgsSLDRenderer::QgsSLDRenderer(QGis::GeometryType type): QgsRenderer(), mScaleDenominator(0), mUseTransparencyOnClassLevel(false)
+QgsSLDRenderer::QgsSLDRenderer( QGis::GeometryType type ): QgsRenderer(), mScaleDenominator( 0 ), mUseTransparencyOnClassLevel( false )
 {
   mGeometryType = type;
 }
@@ -34,37 +34,37 @@ QgsSLDRenderer::QgsSLDRenderer(QGis::GeometryType type): QgsRenderer(), mScaleDe
 QgsSLDRenderer::~QgsSLDRenderer()
 {
   //free all the pending rules
-  for(QList<QgsSLDRule*>::iterator it = mRules.begin(); it != mRules.end(); ++it)
-    {
-      delete (*it);
-    }
+  for ( QList<QgsSLDRule*>::iterator it = mRules.begin(); it != mRules.end(); ++it )
+  {
+    delete( *it );
+  }
 }
 
-void QgsSLDRenderer::addRule(QgsSLDRule* rule)
+void QgsSLDRenderer::addRule( QgsSLDRule* rule )
 {
-  mRules.push_back(rule);
+  mRules.push_back( rule );
 }
 
 void QgsSLDRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity )
 {
   //find a rule that matches the feature
   QList<QgsSLDRule*>::const_iterator rule_it = mRules.constBegin();
-  for(; rule_it != mRules.constEnd(); ++rule_it)
+  for ( ; rule_it != mRules.constEnd(); ++rule_it )
+  {
+    if (( *rule_it )->evaluate( f, mScaleDenominator ) )
     {
-      if((*rule_it)->evaluate(f, mScaleDenominator))
-        {
-          //we found a matching rule to apply symbology
-          if((*rule_it)->applySymbology(renderContext.painter(), f, pic, selected, renderContext.scaleFactor(), renderContext.rasterScaleFactor(), mGeometryType, mSelectionColor) == 0)
-            {
-              return;
-            }
-        }
+      //we found a matching rule to apply symbology
+      if (( *rule_it )->applySymbology( renderContext.painter(), f, pic, selected, renderContext.scaleFactor(), renderContext.rasterScaleFactor(), mGeometryType, mSelectionColor ) == 0 )
+      {
+        return;
+      }
     }
+  }
 
   //no rule applies. Set Qt::NoBrush, Qt::NoPen and a transparent pixmap
-  renderContext.painter()->setPen(QPen(Qt::NoPen));
-  renderContext.painter()->setBrush(QBrush(Qt::NoBrush));
-  pic->fill(0);
+  renderContext.painter()->setPen( QPen( Qt::NoPen ) );
+  renderContext.painter()->setBrush( QBrush( Qt::NoBrush ) );
+  pic->fill( 0 );
 }
 
 bool QgsSLDRenderer::needsAttributes() const
@@ -78,23 +78,23 @@ QgsAttributeList QgsSLDRenderer::classificationAttributes() const
   QSet<int> attributeSet;
 
   QList<QgsSLDRule*>::const_iterator rule_it = mRules.constBegin();
-  for(; rule_it != mRules.constEnd(); ++rule_it)
+  for ( ; rule_it != mRules.constEnd(); ++rule_it )
+  {
+    QSet<int> ruleAttributes = ( *rule_it )->attributeIndices();
+    QSet<int>::const_iterator att_it = ruleAttributes.constBegin();
+    for ( ; att_it != ruleAttributes.constEnd(); ++att_it )
     {
-      QSet<int> ruleAttributes = (*rule_it)->attributeIndices();
-      QSet<int>::const_iterator att_it = ruleAttributes.constBegin();
-      for(; att_it != ruleAttributes.constEnd(); ++att_it)
-	    {
-          attributeSet.insert(*att_it);
-	    }
+      attributeSet.insert( *att_it );
     }
+  }
 
   QgsAttributeList attributeList;
 
   QSet<int>::const_iterator setIt = attributeSet.constBegin();
-  for(; setIt != attributeSet.constEnd(); ++setIt)
-    {
-      attributeList.push_back(*setIt);
-    }
+  for ( ; setIt != attributeSet.constEnd(); ++setIt )
+  {
+    attributeList.push_back( *setIt );
+  }
   return attributeList;
 }
 
@@ -106,7 +106,7 @@ const QList<QgsSymbol*> QgsSLDRenderer::symbols() const
 #endif //0
 }
 
-void QgsSLDRenderer::refreshLegend(std::list< std::pair<QString, QPixmap> >* symbologyList) const
+void QgsSLDRenderer::refreshLegend( std::list< std::pair<QString, QPixmap> >* symbologyList ) const
 {
   //soon...
 }

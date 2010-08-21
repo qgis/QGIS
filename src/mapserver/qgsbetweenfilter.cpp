@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsbetweenfilter.cpp    
+                              qgsbetweenfilter.cpp
                               --------------------
   begin                : Feb 07, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -17,35 +17,35 @@
 
 #include "qgsbetweenfilter.h"
 
-QgsBetweenFilter::QgsBetweenFilter(): QgsFilter(-1)
+QgsBetweenFilter::QgsBetweenFilter(): QgsFilter( -1 )
 {
 }
-  
-QgsBetweenFilter::QgsBetweenFilter(int attributeIndex, const QString& lowerValue, const QString& upperValue): QgsFilter(attributeIndex), mLowerValue(lowerValue), mUpperValue(upperValue)
+
+QgsBetweenFilter::QgsBetweenFilter( int attributeIndex, const QString& lowerValue, const QString& upperValue ): QgsFilter( attributeIndex ), mLowerValue( lowerValue ), mUpperValue( upperValue )
 {
 }
-  
+
 QgsBetweenFilter::~QgsBetweenFilter()
 {
 }
 
-bool QgsBetweenFilter::evaluate(const QgsFeature& f) const
+bool QgsBetweenFilter::evaluate( const QgsFeature& f ) const
 {
-  QVariant propertyValue = propertyIndexValue(f);
-  
+  QVariant propertyValue = propertyIndexValue( f );
+
   //numeric or alphanumeric?
   bool numeric = true;
-  if (propertyValue.type() == QVariant::String)
-    {
-      numeric = false;
-    }
-  
-  if(numeric)
-    {
-      return (propertyValue.toDouble() >= mLowerValue.toDouble() && propertyValue.toDouble() <= mUpperValue.toDouble());
-    }
+  if ( propertyValue.type() == QVariant::String )
+  {
+    numeric = false;
+  }
+
+  if ( numeric )
+  {
+    return ( propertyValue.toDouble() >= mLowerValue.toDouble() && propertyValue.toDouble() <= mUpperValue.toDouble() );
+  }
   else
-    {
-      return (propertyValue.toString() >= mLowerValue && propertyValue.toString() <= mUpperValue);
-    }
+  {
+    return ( propertyValue.toString() >= mLowerValue && propertyValue.toString() <= mUpperValue );
+  }
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgscomparisonfilter.h    
+                              qgscomparisonfilter.h
                               ---------------------
   begin                : Jan 31, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -20,7 +20,7 @@
 
 #include <qgsfilter.h>
 
-/**A filter for the comparison operators <,<=,>,>=,!=,= 
+/**A filter for the comparison operators <,<=,>,>=,!=,=
 Sample xml fragment:
 <Filter xmlns="http://www.opengis.net/ogc">
 <PropertyIsLessThan>
@@ -31,8 +31,8 @@ Sample xml fragment:
 */
 class QgsComparisonFilter: public QgsFilter
 {
- public:
-  enum COMPARISON_TYPE
+  public:
+    enum COMPARISON_TYPE
     {
       EQUAL,
       NOT_EQUAL,
@@ -42,24 +42,24 @@ class QgsComparisonFilter: public QgsFilter
       GREATER_OR_EQUAL,
       UNKNOWN
     };
-  
-  QgsComparisonFilter();
-  /**Constructor that takes index of the feature attribute, type of comparison \
-   and reference value to compare against*/
-  QgsComparisonFilter(int propertyIndex, COMPARISON_TYPE ct, QString value);
-  ~QgsComparisonFilter();
 
-  /**Evaluates a feature against the filter.
-   @return true if the filter applies for the feature*/
-  bool evaluate(const QgsFeature& f) const;
-  
-  //setters and getters
-  COMPARISON_TYPE comparisonType() const {return mComparisonType;}
-  void setComparisonType(COMPARISON_TYPE t){mComparisonType = t;}
+    QgsComparisonFilter();
+    /**Constructor that takes index of the feature attribute, type of comparison \
+     and reference value to compare against*/
+    QgsComparisonFilter( int propertyIndex, COMPARISON_TYPE ct, QString value );
+    ~QgsComparisonFilter();
 
- private:
-  COMPARISON_TYPE mComparisonType;
-  QString mComparisonValue;
+    /**Evaluates a feature against the filter.
+     @return true if the filter applies for the feature*/
+    bool evaluate( const QgsFeature& f ) const;
+
+    //setters and getters
+    COMPARISON_TYPE comparisonType() const {return mComparisonType;}
+    void setComparisonType( COMPARISON_TYPE t ) {mComparisonType = t;}
+
+  private:
+    COMPARISON_TYPE mComparisonType;
+    QString mComparisonValue;
 };
 
 #endif //QGSCOMPARISONFILTER_H

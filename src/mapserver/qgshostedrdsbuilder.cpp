@@ -1,6 +1,6 @@
 
 /***************************************************************************
-                              qgshostedrdsbuilder.cpp    
+                              qgshostedrdsbuilder.cpp
                               -----------------------
   begin                : July, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -32,64 +32,64 @@ QgsHostedRDSBuilder::~QgsHostedRDSBuilder()
 {
 
 }
- 
-QgsMapLayer* QgsHostedRDSBuilder::createMapLayer(const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching) const
+
+QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg("Entering QgsHostedRDSBuilder::rasterLayerFromHostedRDS")
+  QgsMSDebugMsg( "Entering QgsHostedRDSBuilder::rasterLayerFromHostedRDS" )
 
-  if(elem.isNull())
-    {
-      return 0;
-    }
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
 
-  QString uri = elem.attribute("uri", "not found");
-  if(uri == "not found")
-    {
-      QgsMSDebugMsg("Uri not found")
-	return 0;
-    }
+  QString uri = elem.attribute( "uri", "not found" );
+  if ( uri == "not found" )
+  {
+    QgsMSDebugMsg( "Uri not found" )
+    return 0;
+  }
   else
+  {
+    QgsMSDebugMsg( "Trying to get hostedrds layer from cache with uri: " + uri )
+    QgsRasterLayer* rl = 0;
+    if ( allowCaching )
     {
-      QgsMSDebugMsg("Trying to get hostedrds layer from cache with uri: " + uri)
-      QgsRasterLayer* rl = 0;
-      if(allowCaching)
-      {
-        rl = dynamic_cast<QgsRasterLayer*>(QgsMSLayerCache::instance()->searchLayer(uri, layerName));
-      }
-      if(!rl)
-	{
-      QgsMSDebugMsg("hostedrds layer not in cache, so create and insert it")
-          rl = new QgsRasterLayer(uri, layerNameFromUri(uri));
-          if(allowCaching)
-          {
-            QgsMSLayerCache::instance()->insertLayer(uri, layerName, rl);
-          }
-          else
-          {
-            layersToRemove.push_back(rl);
-          }
-	}
-      
-      clearRasterSymbology(rl);
-
-      //projection
-      if(rl)
-	{
-	  QString epsg = elem.attribute("epsg");
-	  if(!epsg.isEmpty())
-	    {
-	      bool conversionOk;
-	      int epsgnr = epsg.toInt(&conversionOk);
-	      if(conversionOk)
-		{
-		  //set spatial ref sys
-                  QgsCoordinateReferenceSystem srs;
-		  srs.createFromEpsg(epsgnr);
-                  rl->setCrs(srs);
-		}	  
-	    }
-	}
-      
-      return rl;
+      rl = dynamic_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
     }
+    if ( !rl )
+    {
+      QgsMSDebugMsg( "hostedrds layer not in cache, so create and insert it" )
+      rl = new QgsRasterLayer( uri, layerNameFromUri( uri ) );
+      if ( allowCaching )
+      {
+        QgsMSLayerCache::instance()->insertLayer( uri, layerName, rl );
+      }
+      else
+      {
+        layersToRemove.push_back( rl );
+      }
+    }
+
+    clearRasterSymbology( rl );
+
+    //projection
+    if ( rl )
+    {
+      QString epsg = elem.attribute( "epsg" );
+      if ( !epsg.isEmpty() )
+      {
+        bool conversionOk;
+        int epsgnr = epsg.toInt( &conversionOk );
+        if ( conversionOk )
+        {
+          //set spatial ref sys
+          QgsCoordinateReferenceSystem srs;
+          srs.createFromEpsg( epsgnr );
+          rl->setCrs( srs );
+        }
+      }
+    }
+
+    return rl;
+  }
 }

@@ -27,7 +27,7 @@ QgsConfigCache::QgsConfigCache()
 QgsConfigCache::~QgsConfigCache()
 {
   QMap<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-  for( ; configIt != mCachedConfigurations.end(); ++configIt )
+  for ( ; configIt != mCachedConfigurations.end(); ++configIt )
   {
     delete configIt.value();
   }
@@ -36,33 +36,33 @@ QgsConfigCache::~QgsConfigCache()
 QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
 {
   QMap<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
-  if( configIt == mCachedConfigurations.constEnd() )
+  if ( configIt == mCachedConfigurations.constEnd() )
   {
-    QgsMSDebugMsg("Create new configuration")
+    QgsMSDebugMsg( "Create new configuration" )
     return insertConfiguration( filePath );
   }
   else
   {
-    QgsMSDebugMsg("Return configuration from cash")
+    QgsMSDebugMsg( "Return configuration from cash" )
     return configIt.value();
   }
 }
 
 QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
 {
-  if( mCachedConfigurations.size() > 40 )
+  if ( mCachedConfigurations.size() > 40 )
   {
-      //remove 10 elements to avoid memory problems
-      QMap<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-      for( int i = 0; i < 10; ++i )
-      {
-        configIt = mCachedConfigurations.erase( configIt );
-      }
+    //remove 10 elements to avoid memory problems
+    QMap<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
+    for ( int i = 0; i < 10; ++i )
+    {
+      configIt = mCachedConfigurations.erase( configIt );
+    }
   }
 
   //first open file
   QFile* configFile = new QFile( filePath );
-  if( !configFile->exists() || !configFile->open( QIODevice::ReadOnly ) )
+  if ( !configFile->exists() || !configFile->open( QIODevice::ReadOnly ) )
   {
     delete configFile;
     return 0;
@@ -70,7 +70,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
 
   //then create xml document
   QDomDocument* configDoc = new QDomDocument();
-  if( !configDoc->setContent( configFile, true ) )
+  if ( !configDoc->setContent( configFile, true ) )
   {
     delete configFile;
     delete configDoc;
@@ -80,11 +80,11 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   //is it an sld document or a qgis project file?
   QDomElement documentElem = configDoc->documentElement();
   QgsConfigParser* configParser = 0;
-  if( documentElem.tagName() == "StyledLayerDescriptor" )
+  if ( documentElem.tagName() == "StyledLayerDescriptor" )
   {
     configParser = new QgsSLDParser( configDoc );
   }
-  else if( documentElem.tagName() == "qgis" )
+  else if ( documentElem.tagName() == "qgis" )
   {
     configParser = new QgsProjectParser( configDoc );
   }

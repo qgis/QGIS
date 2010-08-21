@@ -36,22 +36,22 @@ class QgsProjectParser: public QgsConfigParser
     virtual ~QgsProjectParser();
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    virtual void layersAndStylesCapabilities(QDomElement& parentElement, QDomDocument& doc) const;
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
-    virtual QList<QgsMapLayer*> mapLayerFromStyle(const QString& lName, const QString& styleName, bool allowCaching = true) const;
+    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching = true ) const;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
-    virtual int layersAndStyles(QStringList& layers, QStringList& styles) const;
+    virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const;
 
     /**Returns the xml fragment of a style*/
-    virtual QDomDocument getStyle(const QString& styleName, const QString& layerName) const;
+    virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
 
     /**Returns if output are MM or PIXEL*/
     virtual QgsMapRenderer::OutputUnits outputUnits() const;
 
     /**Adds an external GML dataset. The class takes ownership and deletes all the documents in the destructor*/
-    void addExternalGMLData(const QString& layerName, QDomDocument* gmlDoc);
+    void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc );
 
     /**Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file*/
     virtual QStringList identifyDisabledLayers() const;
@@ -85,7 +85,7 @@ class QgsProjectParser: public QgsConfigParser
     /**Return project title*/
     QString projectTitle() const;
 
-private:
+  private:
     /**Content of project file*/
     QDomDocument* mXMLDoc;
 
@@ -97,7 +97,7 @@ private:
     QMap< QString, QDomElement > projectLayerElementsByName() const;
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
-    QgsMapLayer* createLayerFromElement( const QDomElement& elem) const;
+    QgsMapLayer* createLayerFromElement( const QDomElement& elem ) const;
     /**Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
     QString layerId( const QDomElement& layerElem ) const;

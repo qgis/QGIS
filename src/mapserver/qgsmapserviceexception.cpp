@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsmapserviceexception.h    
+                              qgsmapserviceexception.h
                               -------------------
   begin                : June 13, 2006
   copyright            : (C) 2006 by Marco Hugentobler
@@ -17,7 +17,7 @@
 
 #include "qgsmapserviceexception.h"
 
-QgsMapServiceException::QgsMapServiceException(const QString& code, const QString& message): mCode(code), mMessage(message)
+QgsMapServiceException::QgsMapServiceException( const QString& code, const QString& message ): mCode( code ), mMessage( message )
 {
-  
+
 }

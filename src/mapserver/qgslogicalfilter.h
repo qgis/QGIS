@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgslogicalfilter.h    
+                              qgslogicalfilter.h
                               -------------------
   begin                : Feb 07, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -24,8 +24,8 @@
  The class uses two filterobjects for evaluation. It is also possible to nest logical filters*/
 class QgsLogicalFilter: public QgsFilter
 {
- public:
-  enum FILTER_TYPE
+  public:
+    enum FILTER_TYPE
     {
       AND,
       OR,
@@ -33,26 +33,26 @@ class QgsLogicalFilter: public QgsFilter
       UNKNOWN
     };
 
-  QgsLogicalFilter();
-  QgsLogicalFilter(FILTER_TYPE t, QgsFilter* filter1, QgsFilter* filter2);
-  ~QgsLogicalFilter();
+    QgsLogicalFilter();
+    QgsLogicalFilter( FILTER_TYPE t, QgsFilter* filter1, QgsFilter* filter2 );
+    ~QgsLogicalFilter();
 
-  /**Adds first sub-filter. This class takes ownership of the passed object*/
-  void addFilter1(QgsFilter* filter);
-  /**Adds second sub-filter. This class takes ownership of the passed object*/
-  void addFilter2(QgsFilter* filter);
+    /**Adds first sub-filter. This class takes ownership of the passed object*/
+    void addFilter1( QgsFilter* filter );
+    /**Adds second sub-filter. This class takes ownership of the passed object*/
+    void addFilter2( QgsFilter* filter );
 
-  /**Evaluates a feature against the filter.
-   @return true if the filter applies for the feature*/
-  bool evaluate(const QgsFeature& f) const;
+    /**Evaluates a feature against the filter.
+     @return true if the filter applies for the feature*/
+    bool evaluate( const QgsFeature& f ) const;
 
-  /**Returns the attribute indices needed for the filter*/
-  QList<int> attributeIndices() const;
+    /**Returns the attribute indices needed for the filter*/
+    QList<int> attributeIndices() const;
 
- private:
-  const QgsFilter* mFilter1;
-  const QgsFilter* mFilter2;
-  FILTER_TYPE mFilterType; 
+  private:
+    const QgsFilter* mFilter1;
+    const QgsFilter* mFilter2;
+    FILTER_TYPE mFilterType;
 };
 
 #endif //QGSLOGICALFILTER_H
