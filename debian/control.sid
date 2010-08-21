@@ -16,7 +16,7 @@ Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-common (= ${source:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
 Recommends: qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -113,4 +113,24 @@ Description: Python bindings to Quantum GIS - architecture-independent files
  .
  This package contains architecture-independent files for the Quantum GIS
  Python bindings.
+
+Package: qgis-providers
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: qgis (<= 1.6)
+Breaks: qgis (<= 1.6)
+Description: collection of data providers to Quantum GIS
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the provider plugins for Quantum GIS.
+
+Package: qgis-mapserver
+Architecture: any
+Depends: qgis-providers (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Quantum GIS mapserver
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the Quantum GIS mapserver.
 

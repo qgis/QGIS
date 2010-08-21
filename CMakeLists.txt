@@ -49,6 +49,9 @@ IF (WITH_GRASS)
   SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
 ENDIF (WITH_GRASS)
 
+# try to configure and build mapserver by default
+SET (WITH_MAPSERVER TRUE CACHE BOOL "Determines whether QGIS mapserver should be built")
+
 # try to configure and build POSTGRESQL support
 SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
 IF (WITH_POSTGRESQL)
@@ -239,6 +242,7 @@ IF (WIN32)
   
   IF (MSVC)
     SET (DEFAULT_BIN_SUBDIR bin)
+    SET (DEFAULT_CGIBIN_SUBDIR bin)
     # put all the build products into a single directory
     # under build (doesnt affect install target) to make for
     # easier debugging.
@@ -262,6 +266,7 @@ IF (WIN32)
     ENDIF (INSTALL_DEPS)
   ELSE(MSVC)
     SET (DEFAULT_BIN_SUBDIR .)
+    SET (DEFAULT_CGIBIN_SUBDIR .)
   ENDIF(MSVC)
 ELSE (WIN32)
 
@@ -276,6 +281,7 @@ ELSE (WIN32)
 
   # common for MAC and UNIX
   SET (DEFAULT_BIN_SUBDIR     bin)
+  SET (DEFAULT_CGIBIN_SUBDIR  bin)
   SET (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
   SET (DEFAULT_DATA_SUBDIR    share/qgis)
   SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
@@ -285,7 +291,7 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 
-#assume we have excaped compiler directives
+#assume we have escaped compiler directives
 #eventually we want to change this to new
 #since we don't need to jump through so many 
 #hoops to escape compiler directives then
@@ -323,6 +329,7 @@ ENDIF (WIN32)
 # (default values are platform-specific)
 
 SET (QGIS_BIN_SUBDIR     ${DEFAULT_BIN_SUBDIR}     CACHE STRING "Subdirectory where executables will be installed")
+SET (QGIS_CGIBIN_SUBDIR  ${DEFAULT_CGIBIN_SUBDIR}  CACHE STRING "Subdirectory where CGI executables will be installed")
 SET (QGIS_LIB_SUBDIR     ${DEFAULT_LIB_SUBDIR}     CACHE STRING "Subdirectory where libraries will be installed")
 SET (QGIS_LIBEXEC_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR} CACHE STRING "Subdirectory where private executables will be installed")
 SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where QGIS data will be installed")
@@ -335,6 +342,7 @@ MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_
 
 # full paths for the installation
 SET (QGIS_BIN_DIR     ${QGIS_BIN_SUBDIR})
+SET (QGIS_CGIBIN_DIR  ${QGIS_CGIBIN_SUBDIR})
 SET (QGIS_LIB_DIR     ${QGIS_LIB_SUBDIR})
 SET (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
 SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
