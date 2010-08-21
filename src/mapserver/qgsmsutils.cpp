@@ -1,7 +1,7 @@
 #include "qgsmsutils.h"
 #include "qgsmapserverlogger.h"
 #include <stdlib.h>
-#include <sys/time.h>
+#include <time.h>
 #include <QDir>
 #include <QFileInfo>
 #include <QTextStream>
