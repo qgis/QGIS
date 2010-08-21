@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev,
  flex, bison, python-dev, cmake (>=2.4.3), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
  sip4 (>= 4.5), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
  libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, subversion
+ python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, fcgi-dev, subversion
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.0
 XS-Python-Version: current
@@ -15,7 +15,7 @@ Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-common (= ${source:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
 Recommends: qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -113,4 +113,35 @@ Description: Python bindings to Quantum GIS - architecture-independent files
  .
  This package contains architecture-independent files for the Quantum GIS
  Python bindings.
+
+Package: qgis-providers
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: qgis (<= 1.6)
+Breaks: qgis (<= 1.6)
+Description: collection of data providers to Quantum GIS
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the provider plugins for Quantum GIS.
+
+Package: qgis-providers-common
+Architecture: any
+Replaces: qgis-common (<= 1.6)
+Breaks: qgis-common (<= 1.6)
+Description: collection of data providers to Quantum GIS - architecture-independent files
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains architecture-independent files for the Quantum GIS
+ providers.
+
+Package: qgis-mapserver
+Architecture: any
+Depends: qgis-providers (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Quantum GIS mapserver
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the Quantum GIS mapserver.
 

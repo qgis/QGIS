@@ -1,0 +1,9 @@
+usr/lib/qgis/plugins/libdelimitedtextprovider.so
+usr/lib/qgis/plugins/libgpxprovider.so
+usr/lib/qgis/plugins/libogrprovider.so
+usr/lib/qgis/plugins/libpostgresprovider.so
+usr/lib/qgis/plugins/libwfsprovider.so
+usr/lib/qgis/plugins/libwmsprovider.so
+usr/lib/qgis/plugins/libmemoryprovider.so
+usr/lib/qgis/plugins/libspatialiteprovider.so
+usr/lib/qgis/plugins/libosmprovider.so 
