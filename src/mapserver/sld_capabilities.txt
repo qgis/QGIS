@@ -1,0 +1,26 @@
+This document describes what qgis_wms supports/ does not support
+
+LineSymbolizer:
+Geometry					No, use feature geometry
+Stroke: GraphicFill				   No (let's say not yet)
+Stroke: GraphicStroke				   No
+Stroke (CssParameter): stroke			   Yes (RGB)
+Stroke (CssParameter): width			   Yes
+Stroke (CssParameter): opacity			   Yes (note: UMN mapserver does not support this)
+Stroke (CssParameter): linejoin and linecap	   Yes (note: UMN mapserver does not support this)
+Stroke (CssParameter): stroke-miterlimit	   Yes (note: UMN mapserver does not support this)
+Stroke (CssParameter): dasharray		   Yes
+Stroke (CssParameter): dashoffset		   No
+
+PolygonSymbolizer:
+GraphicFill					not yet
+Fill (CssParameter): fill			yes
+Fill (CssParameter): fill-opacity		yes
+
+Point Symbolizer:
+Mark symbol		only square, circle, cross and x (star is not supported)
+External symbol		not yet
+Size			yes
+Opacity			yes
+Rotation		no
+
