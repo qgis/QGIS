@@ -16,7 +16,7 @@ Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-common (= ${source:Version}), qgis-providers (= ${binary:Version})
 Recommends: qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -124,6 +124,17 @@ Description: collection of data providers to Quantum GIS
  and display databases of geographic information.
  .
  This package contains the provider plugins for Quantum GIS.
+
+Package: qgis-providers-common
+Architecture: any
+Replaces: qgis-common (<= 1.6)
+Breaks: qgis-common (<= 1.6)
+Description: collection of data providers to Quantum GIS - architecture-independent files
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains architecture-independent files for the Quantum GIS
+ providers.
 
 Package: qgis-mapserver
 Architecture: any
