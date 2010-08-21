@@ -36,55 +36,51 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
   QStringList elements = queryString.split( "&" );
 
   QString element, key, value;
-  int separator = -1;
 
   //insert key and value into the map
   for ( QStringList::const_iterator it = elements.begin(); it != elements.end(); ++it )
   {
     element = *it;
-    if ( separator != -1 )
+    int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
+
+    key = element.left( sepidx );
+    value = element.mid( sepidx + 1 );
+    value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
+
+
+    if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
     {
-      int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
-
-      key = element.left( sepidx );
-      value = element.mid( sepidx + 1 );
-      value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
-
-
-      if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
+      key = "SLD";
+    }
+    else if ( key.compare( "SLD", Qt::CaseInsensitive ) == 0 )
+    {
+      QByteArray fileContents;
+      if ( value.startsWith( "http", Qt::CaseInsensitive ) )
       {
-        key = "SLD";
+        QgsHttpTransaction http( value );
+        if ( !http.getSynchronously( fileContents ) )
+        {
+          continue;
+        }
       }
-      else if ( key.compare( "SLD", Qt::CaseInsensitive ) == 0 )
+      else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
       {
-        QByteArray fileContents;
-        if ( value.startsWith( "http", Qt::CaseInsensitive ) )
+        QgsFtpTransaction ftp;
+        if ( !ftp.get( value, fileContents ) )
         {
-          QgsHttpTransaction http( value );
-          if ( !http.getSynchronously( fileContents ) )
-          {
-            continue;
-          }
-        }
-        else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
-        {
-          QgsFtpTransaction ftp;
-          if ( !ftp.get( value, fileContents ) )
-          {
-            continue;
-          }
-          value = QUrl::fromPercentEncoding( fileContents );
-        }
-        else
-        {
-          continue; //only http and ftp supported at the moment
+          continue;
         }
         value = QUrl::fromPercentEncoding( fileContents );
-
       }
-      parameters.insert( std::make_pair( key.toUpper(), value ) );
-      QgsMSDebugMsg( "qgsgetrequesthandler.cpp: inserting pair " + key.toUpper() + " // " + value + " into the parameter map" )
+      else
+      {
+        continue; //only http and ftp supported at the moment
+      }
+      value = QUrl::fromPercentEncoding( fileContents );
+
     }
+    parameters.insert( std::make_pair( key.toUpper(), value ) );
+    QgsMSDebugMsg( "qgsgetrequesthandler.cpp: inserting pair " + key.toUpper() + " // " + value + " into the parameter map" )
   }
 
   //feature info format?
