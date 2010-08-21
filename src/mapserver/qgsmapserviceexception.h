@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsmapserviceexception.h    
+                              qgsmapserviceexception.h
                               ------------------------
   begin                : June 13, 2006
   copyright            : (C) 2006 by Marco Hugentobler
@@ -28,13 +28,13 @@
 
 class QgsMapServiceException
 {
- public:
-  QgsMapServiceException(const QString& code, const QString& message);
-  QString code() const {return mCode;}
-  QString message() const {return mMessage;}
- private:
-  QString mCode;
-  QString mMessage;
+  public:
+    QgsMapServiceException( const QString& code, const QString& message );
+    QString code() const {return mCode;}
+    QString message() const {return mMessage;}
+  private:
+    QString mCode;
+    QString mMessage;
 };
 
 #endif

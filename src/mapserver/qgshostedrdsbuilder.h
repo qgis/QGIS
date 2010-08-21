@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgshostedrdsbuilder.h    
+                              qgshostedrdsbuilder.h
                               ---------------------
   begin                : July, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -22,11 +22,11 @@
 
 class QgsHostedRDSBuilder: public QgsMSLayerBuilder
 {
- public:
-  QgsHostedRDSBuilder();
-  ~QgsHostedRDSBuilder();
- 
-  QgsMapLayer* createMapLayer(const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true) const;
+  public:
+    QgsHostedRDSBuilder();
+    ~QgsHostedRDSBuilder();
+
+    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
 };
 
-#endif 
+#endif

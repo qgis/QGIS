@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgshostedvdsbuilder.cpp   
+                              qgshostedvdsbuilder.cpp
                               -----------------------
   begin                : July, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -32,69 +32,69 @@ QgsHostedVDSBuilder::~QgsHostedVDSBuilder()
 
 }
 
-QgsMapLayer* QgsHostedVDSBuilder::createMapLayer(const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching) const
+QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  if(elem.isNull())
-    {
-      return 0;
-    }
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
 
-  QString providerType = elem.attribute("providerType", "not found");
-  QString uri = elem.attribute("uri", "not found");
-	  
-  if(providerType == "not found" || uri == "not found")
-    {
-      QgsMSDebugMsg("QgsHostedVDSBuilder::createMapLayer: error, provider type not found")
-      return 0;
-    }
+  QString providerType = elem.attribute( "providerType", "not found" );
+  QString uri = elem.attribute( "uri", "not found" );
+
+  if ( providerType == "not found" || uri == "not found" )
+  {
+    QgsMSDebugMsg( "QgsHostedVDSBuilder::createMapLayer: error, provider type not found" )
+    return 0;
+  }
 
   QgsMapLayer* ml = 0;
 
-  if(allowCaching) //take layer from cache if allowed
+  if ( allowCaching ) //take layer from cache if allowed
   {
-    QgsMSDebugMsg("Taking hostedvds layer from cash");
-    ml = QgsMSLayerCache::instance()->searchLayer(uri, layerName);
+    QgsMSDebugMsg( "Taking hostedvds layer from cash" );
+    ml = QgsMSLayerCache::instance()->searchLayer( uri, layerName );
   }
 
-    if(!ml)
+  if ( !ml )
+  {
+    QgsMSDebugMsg( "hostedvds layer not in cash, so create and insert it" )
+    ml = new QgsVectorLayer( uri, layerNameFromUri( uri ), providerType );
+
+    if ( !ml || !ml->isValid() )
     {
-      QgsMSDebugMsg("hostedvds layer not in cash, so create and insert it")
-      ml = new QgsVectorLayer(uri, layerNameFromUri(uri), providerType);
-
-      if(!ml || !ml->isValid())
-	{
-	  QgsMSDebugMsg("QgsHostedVDSBuilder::createMapLayer: error, VectorLayer is 0 or invalid")
-	  delete ml;
-	  return 0;
-	}
-
-      if(allowCaching)
-      {
-        QgsMSLayerCache::instance()->insertLayer(uri, layerName, ml);
-      }
-      else
-      {
-        layersToRemove.push_back(ml);
-      }
+      QgsMSDebugMsg( "QgsHostedVDSBuilder::createMapLayer: error, VectorLayer is 0 or invalid" )
+      delete ml;
+      return 0;
     }
+
+    if ( allowCaching )
+    {
+      QgsMSLayerCache::instance()->insertLayer( uri, layerName, ml );
+    }
+    else
+    {
+      layersToRemove.push_back( ml );
+    }
+  }
 
   //projection
-  if(ml)
+  if ( ml )
+  {
+    QString epsg = elem.attribute( "epsg" );
+    if ( !epsg.isEmpty() )
     {
-      QString epsg = elem.attribute("epsg");
-      if(!epsg.isEmpty())
-	{
-	  bool conversionOk;
-	  int epsgnr = epsg.toInt(&conversionOk);
-	  if(conversionOk)
-	    {
-	      //set spatial ref sys
-              QgsCoordinateReferenceSystem srs;
-	      srs.createFromEpsg(epsgnr);
-              ml->setCrs(srs);
-	    }	  
-	}
+      bool conversionOk;
+      int epsgnr = epsg.toInt( &conversionOk );
+      if ( conversionOk )
+      {
+        //set spatial ref sys
+        QgsCoordinateReferenceSystem srs;
+        srs.createFromEpsg( epsgnr );
+        ml->setCrs( srs );
+      }
     }
+  }
 
   return ml;
 }

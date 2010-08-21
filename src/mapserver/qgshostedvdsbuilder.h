@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgshostedvdsbuilder.h    
+                              qgshostedvdsbuilder.h
                               -------------------
   begin                : July, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -22,10 +22,10 @@
 
 class QgsHostedVDSBuilder: public QgsMSLayerBuilder
 {
- public:
-  QgsHostedVDSBuilder();
-  ~QgsHostedVDSBuilder();
-  QgsMapLayer* createMapLayer(const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true) const;
+  public:
+    QgsHostedVDSBuilder();
+    ~QgsHostedVDSBuilder();
+    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
 };
 
 #endif

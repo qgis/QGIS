@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsfilter.h    
+                              qgsfilter.h
                               -----------
   begin                : Jan 31, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #ifndef QGSFILTER_H
-#define QGSFILTER_H 
+#define QGSFILTER_H
 
 #include <qgsfeature.h>
 #include <QList>
@@ -26,29 +26,29 @@ class QgsVectorLayer;
 /**Abstraction of an OGC filter for features*/
 class QgsFilter
 {
- public:
-  QgsFilter();
-  QgsFilter(int propertyIndex);
-  virtual ~QgsFilter();
-  /**Evaluates a feature against the filter.
-   @return true if the filter applies for the feature*/
-  virtual bool evaluate(const QgsFeature& f) const = 0;
+  public:
+    QgsFilter();
+    QgsFilter( int propertyIndex );
+    virtual ~QgsFilter();
+    /**Evaluates a feature against the filter.
+     @return true if the filter applies for the feature*/
+    virtual bool evaluate( const QgsFeature& f ) const = 0;
 
-  /**Creates a filter instance from xml.
-     The calling function takes ownership of the created filter.
-     @param filterElem the element containing the filter name (that is the first child below the <Filter> element)
-     @return the filter or 0 in case of failure*/
-  static QgsFilter* createFilterFromXml(const QDomElement& filterElem, QgsVectorLayer* vl);
+    /**Creates a filter instance from xml.
+       The calling function takes ownership of the created filter.
+       @param filterElem the element containing the filter name (that is the first child below the <Filter> element)
+       @return the filter or 0 in case of failure*/
+    static QgsFilter* createFilterFromXml( const QDomElement& filterElem, QgsVectorLayer* vl );
 
-  /**Returns the attribute indices needed for the filter*/
-  virtual QList<int> attributeIndices() const;
+    /**Returns the attribute indices needed for the filter*/
+    virtual QList<int> attributeIndices() const;
 
- protected:
-  /**Returns the QVariant on mPropertyIndex position*/
-  QVariant propertyIndexValue(const QgsFeature& f) const;
-  
-  /**Index of the property (attribute) to evaluate*/
-  int mPropertyIndex;
+  protected:
+    /**Returns the QVariant on mPropertyIndex position*/
+    QVariant propertyIndexValue( const QgsFeature& f ) const;
+
+    /**Index of the property (attribute) to evaluate*/
+    int mPropertyIndex;
 };
 
 #endif //QGSFILTER_H

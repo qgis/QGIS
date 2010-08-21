@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgssldrenderer.h    
+                              qgssldrenderer.h
                  A renderer flexible enough for sld specified symbolisation
                               -------------------
   begin                : May 12, 2006
@@ -27,41 +27,41 @@ also the parsing of the filters from a <Rule> sld element and maps them to */
 
 class QgsSLDRenderer: public QgsRenderer
 {
- public:
-  QgsSLDRenderer(QGis::GeometryType type);
-  virtual ~QgsSLDRenderer();
+  public:
+    QgsSLDRenderer( QGis::GeometryType type );
+    virtual ~QgsSLDRenderer();
 
-  /**Adds a new classification rule*/
-  void addRule(QgsSLDRule* rule);
-  /**Traverses the rule list until a suitable entry is found. If no rule matches, Qt::NoPen and Qt::NoBrush are set*/
-  void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity);
-  /**This method is not needed because QgsSLDRenderer is not meant to provide reading from/ storing to project file*/
-  int readXML(const QDomNode& rnode, QgsVectorLayer& vl){return 1;}
-  /**This method is not needed because QgsSLDRenderer is not meant to provide reading from/ storing to project file*/
-  bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const {return false;}
-  /**Has to be decided at runtime depending upon mComparisonOperators and mClassificationFields*/
-  bool needsAttributes() const;
-  QgsAttributeList classificationAttributes() const;
-  const QList<QgsSymbol*> symbols() const;
-  /**This method is needed for the getLegendGraphics call*/
-  void refreshLegend(std::list< std::pair<QString, QPixmap> >* symbologyList) const;
-  QgsRenderer* clone() const;
-  bool containsPixmap() const;
-  /**True if the renderer uses transparency on class level*/
-  bool usesTransparency() const; 
-  QString name() const {return "SLD";}
-  void setScaleDenominator(double denom) {mScaleDenominator = denom;}
+    /**Adds a new classification rule*/
+    void addRule( QgsSLDRule* rule );
+    /**Traverses the rule list until a suitable entry is found. If no rule matches, Qt::NoPen and Qt::NoBrush are set*/
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity );
+    /**This method is not needed because QgsSLDRenderer is not meant to provide reading from/ storing to project file*/
+    int readXML( const QDomNode& rnode, QgsVectorLayer& vl ) {return 1;}
+    /**This method is not needed because QgsSLDRenderer is not meant to provide reading from/ storing to project file*/
+    bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const {return false;}
+    /**Has to be decided at runtime depending upon mComparisonOperators and mClassificationFields*/
+    bool needsAttributes() const;
+    QgsAttributeList classificationAttributes() const;
+    const QList<QgsSymbol*> symbols() const;
+    /**This method is needed for the getLegendGraphics call*/
+    void refreshLegend( std::list< std::pair<QString, QPixmap> >* symbologyList ) const;
+    QgsRenderer* clone() const;
+    bool containsPixmap() const;
+    /**True if the renderer uses transparency on class level*/
+    bool usesTransparency() const;
+    QString name() const {return "SLD";}
+    void setScaleDenominator( double denom ) {mScaleDenominator = denom;}
 
-  //testing class is a friend
-  friend class TestQgsSLDRenderer;  
-  
- private:
+    //testing class is a friend
+    friend class TestQgsSLDRenderer;
 
-  /**List of SLD Rules in this SLD*/
-  QList<QgsSLDRule*> mRules;
-  /**The current scale denominator is used for rules with <minScaleDenominator> and/or <maxScaleDenominator> elements.
-   This value has to be set by other classes (usually QgsWMSServer). If it is not set, the scale elements are ignored*/
-  double mScaleDenominator;
-  /**Normally false. Changes to true if QgsSymbols with alpha transparency are inserted*/
-  bool mUseTransparencyOnClassLevel;
+  private:
+
+    /**List of SLD Rules in this SLD*/
+    QList<QgsSLDRule*> mRules;
+    /**The current scale denominator is used for rules with <minScaleDenominator> and/or <maxScaleDenominator> elements.
+     This value has to be set by other classes (usually QgsWMSServer). If it is not set, the scale elements are ignored*/
+    double mScaleDenominator;
+    /**Normally false. Changes to true if QgsSymbols with alpha transparency are inserted*/
+    bool mUseTransparencyOnClassLevel;
 };

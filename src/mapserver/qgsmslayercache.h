@@ -38,38 +38,38 @@ struct QgsMSLayerCacheEntry
 QGIS mapserver*/
 class QgsMSLayerCache
 {
- public:
-  static QgsMSLayerCache* instance();
-  ~QgsMSLayerCache();
+  public:
+    static QgsMSLayerCache* instance();
+    ~QgsMSLayerCache();
 
-  /**Inserts a new layer into the cash
-  @param url the layer datasource
-  @param layerName the layer name (to distinguish between different layers in a request using the same datasource
-  @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
-  void insertLayer(const QString& url, const QString& layerName, QgsMapLayer* layer, const QList<QString>& tempFiles = QList<QString>());
-  /**Searches for the layer with the given url. 
-   @return a pointer to the layer or 0 if no such layer*/
-  QgsMapLayer* searchLayer(const QString& url, const QString& layerName);
- 
- protected:
-  /**Protected singleton constructor*/
-  QgsMSLayerCache();
-  /**Goes through the list and removes entries and layers 
-   depending on their time stamps and the number of other 
-  layers*/
-  void updateEntries();
-  /**Removes the cash entry with the lowest 'lastUsedTime'*/
-  void removeLeastUsedEntry();
-  /**Frees memory and removes temporary files of an entry*/
-  void freeEntryRessources(QgsMSLayerCacheEntry& entry);
- 
- private:
-  static QgsMSLayerCache* mInstance;
+    /**Inserts a new layer into the cash
+    @param url the layer datasource
+    @param layerName the layer name (to distinguish between different layers in a request using the same datasource
+    @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
+    void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QList<QString>& tempFiles = QList<QString>() );
+    /**Searches for the layer with the given url.
+     @return a pointer to the layer or 0 if no such layer*/
+    QgsMapLayer* searchLayer( const QString& url, const QString& layerName );
 
-  /**Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
-    url is used several time in a request. It ensures that different layer instances are created for different
-    layer names*/
-  QMap<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
+  protected:
+    /**Protected singleton constructor*/
+    QgsMSLayerCache();
+    /**Goes through the list and removes entries and layers
+     depending on their time stamps and the number of other
+    layers*/
+    void updateEntries();
+    /**Removes the cash entry with the lowest 'lastUsedTime'*/
+    void removeLeastUsedEntry();
+    /**Frees memory and removes temporary files of an entry*/
+    void freeEntryRessources( QgsMSLayerCacheEntry& entry );
+
+  private:
+    static QgsMSLayerCache* mInstance;
+
+    /**Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
+      url is used several time in a request. It ensures that different layer instances are created for different
+      layer names*/
+    QMap<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
 };
 
 #endif
