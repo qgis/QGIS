@@ -14291,7 +14291,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="250"/>
         <source>Marker size</source>
-        <translation>Markergröße</translation>
+        <translation>Markierungsgröße</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="107"/>
@@ -20252,17 +20252,17 @@ Primärschlüssel erzeugen</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1111"/>
         <source>Show markers only for selected features</source>
-        <translation>Markierungen nur für gewähltes Objekt anzeigen</translation>
+        <translation>Markierungen nur für gewählte Objekte anzeigen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1118"/>
         <source>Marker style</source>
-        <translation>Markenstil</translation>
+        <translation>Markierungsstil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1161"/>
         <source>Marker size</source>
-        <translation>Markergröße</translation>
+        <translation>Markierungsgröße</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1229"/>
@@ -25168,7 +25168,7 @@ Der Fehler war:
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="63"/>
         <source>Refresh markers</source>
-        <translation>Marker aktualisieren</translation>
+        <translation>Markierungen aktualisieren</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="164"/>
@@ -29308,12 +29308,12 @@ Antwort war:
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="22"/>
         <source>Marker</source>
-        <translation>Marker</translation>
+        <translation>Markierung</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
         <source>Marker interval</source>
-        <translation>Markerintervall</translation>
+        <translation>Markierungsintervall</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
@@ -29328,7 +29328,7 @@ Antwort war:
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
         <source>Rotate marker</source>
-        <translation>Marker rotieren</translation>
+        <translation>Markierung rotieren</translation>
     </message>
 </context>
 <context>
