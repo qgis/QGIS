@@ -3,11 +3,13 @@ Section: science
 Priority: extra
 Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev, 
- libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, 
- flex, bison, python-dev, cmake (>=2.4.3), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
- sip4 (>= 4.5), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
+ libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj,
+ libexpat1-dev, flex, bison, python-dev, cmake (>=2.4.3),
+ python-sip4 (>= 4.5.0), python-central (>=0.5), python, sip4 (>= 4.5),
+ libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
  libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev, libfcgi-dev, subversion
+ python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev, libfcgi-dev,
+ subversion
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.0
 XS-Python-Version: current
@@ -15,7 +17,7 @@ Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-common (= ${source:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
 Recommends: qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -59,7 +61,7 @@ Depends: libqgis{QGIS_ABI} (= ${binary:Version}), libgdal1-dev,
  libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
  qt4-designer (>=4.2.0)
 Provides: qgis-dev
-Replaces: libqgis-dev, qgis-dev, libqgis1-dev
+Replaces: qgis-dev, libqgis1-dev
 Description: Quantum GIS - development files
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
