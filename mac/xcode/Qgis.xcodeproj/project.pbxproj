@@ -86,20 +86,14 @@
 			);
 			dependencies = (
 				7256F1A60F411B480022BE1F /* PBXTargetDependency */,
-				7256F1A20F411B480022BE1F /* PBXTargetDependency */,
-				7256F1A00F411B480022BE1F /* PBXTargetDependency */,
-				7230E4AB111D385900F256EB /* PBXTargetDependency */,
-				7230E4A9111D385900F256EB /* PBXTargetDependency */,
-				7230E4A7111D385900F256EB /* PBXTargetDependency */,
 				72F07FEA0F5112D8008D3148 /* PBXTargetDependency */,
 				727E6B7B0FEACF5100DF6F64 /* PBXTargetDependency */,
 				7256F1A40F411B480022BE1F /* PBXTargetDependency */,
 				7256F1B70F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1BB0F411C4B0022BE1F /* PBXTargetDependency */,
-				7256F1B50F411C4B0022BE1F /* PBXTargetDependency */,
-				72F3DAB711D70A6F00FFA738 /* PBXTargetDependency */,
 				7256F1BD0F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1B90F411C4B0022BE1F /* PBXTargetDependency */,
+				7287B6D81221B0E000747062 /* PBXTargetDependency */,
 			);
 			name = "Optional Plugins";
 			productName = "Optional Plugins";
@@ -117,6 +111,23 @@
 			);
 			name = "Base Qgis";
 			productName = "Base Qgis";
+		};
+		7287B6C61221B09E00747062 /* grass */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 7287B6DA1221B0EA00747062 /* Build configuration list for PBXAggregateTarget "grass" */;
+			buildPhases = (
+			);
+			dependencies = (
+				7287B6D61221B0B600747062 /* PBXTargetDependency */,
+				7287B6D41221B0B600747062 /* PBXTargetDependency */,
+				7287B6D21221B0B600747062 /* PBXTargetDependency */,
+				7287B6D01221B0B600747062 /* PBXTargetDependency */,
+				7287B6CE1221B0B600747062 /* PBXTargetDependency */,
+				7287B6CC1221B0B600747062 /* PBXTargetDependency */,
+				7287B6CA1221B0B600747062 /* PBXTargetDependency */,
+			);
+			name = grass;
+			productName = grass;
 		};
 		729BBE720F4075D1001BCB63 /* All Plugins */ = {
 			isa = PBXAggregateTarget;
@@ -2672,27 +2683,6 @@
 			remoteGlobalIDString = 7223B77E0F96A96500D905B4;
 			remoteInfo = oracleplugin;
 		};
-		7230E4A6111D385900F256EB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72FEE3C1111D378800D28C1A;
-			remoteInfo = qgis.g.info;
-		};
-		7230E4A8111D385900F256EB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72FEE3A6111D353300D28C1A;
-			remoteInfo = qgis.d.rast;
-		};
-		7230E4AA111D385900F256EB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72FEE385111D31AC00D28C1A;
-			remoteInfo = grassrasterprovider;
-		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
@@ -2734,20 +2724,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 7256F1880F411AC90022BE1F;
 			remoteInfo = "Optional Plugins";
-		};
-		7256F19F0F411B480022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72A07DAC0F3BDFA4004FC2A4;
-			remoteInfo = grassprovider;
-		};
-		7256F1A10F411B480022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72A07E090F3BEE16004FC2A4;
-			remoteInfo = qgisgrass;
 		};
 		7256F1A30F411B480022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2797,13 +2773,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72A07E570F3BF35F004FC2A4;
 			remoteInfo = copyrightlabelplugin;
-		};
-		7256F1B40F411C4B0022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72A56B580F3C823800BA32A1;
-			remoteInfo = grassplugin;
 		};
 		7256F1B60F411C4B0022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2938,6 +2907,62 @@
 			remoteGlobalIDString = 7262ED920F7A770300498385;
 			remoteInfo = spatialiteprovider;
 		};
+		7287B6C91221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72463E3E1122FEF200BE5F17;
+			remoteInfo = qgis.g.browser;
+		};
+		7287B6CB1221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72A56B580F3C823800BA32A1;
+			remoteInfo = grassplugin;
+		};
+		7287B6CD1221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72FEE3C1111D378800D28C1A;
+			remoteInfo = qgis.g.info;
+		};
+		7287B6CF1221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72FEE3A6111D353300D28C1A;
+			remoteInfo = qgis.d.rast;
+		};
+		7287B6D11221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72FEE385111D31AC00D28C1A;
+			remoteInfo = grassrasterprovider;
+		};
+		7287B6D31221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72A07DAC0F3BDFA4004FC2A4;
+			remoteInfo = grassprovider;
+		};
+		7287B6D51221B0B600747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72A07E090F3BEE16004FC2A4;
+			remoteInfo = qgisgrass;
+		};
+		7287B6D71221B0E000747062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7287B6C61221B09E00747062;
+			remoteInfo = grass;
+		};
 		72A07E520F3BF191004FC2A4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
@@ -3049,13 +3074,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72A07D880F3BDF9C004FC2A4;
 			remoteInfo = postgresprovider;
-		};
-		72F3DAB611D70A6F00FFA738 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72463E3E1122FEF200BE5F17;
-			remoteInfo = qgis.g.browser;
 		};
 		72FB0B6C0FFD6B8F0052360B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -15326,6 +15344,7 @@
 				72A07D880F3BDF9C004FC2A4 /* postgresprovider */,
 				72A07D940F3BDF9F004FC2A4 /* gpxprovider */,
 				72A07DA00F3BDFA3004FC2A4 /* wfsprovider */,
+				7287B6C61221B09E00747062 /* grass */,
 				72A07E090F3BEE16004FC2A4 /* qgisgrass */,
 				72A07DAC0F3BDFA4004FC2A4 /* grassprovider */,
 				72FEE385111D31AC00D28C1A /* grassrasterprovider */,
@@ -15882,7 +15901,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# for external bundled tools that link to qt and other bundled frameworks\nln -sfh ../Frameworks \"$QGIS_BUILD_PATH/MacOS/\"\n\n# copy Qt frameworks\necho \"Copying Qt frameworks...\"\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] && [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto -X $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\nmkdir -p \"$APPDIRC/PlugIns/codecs\"\nfor c in cn jp kr tw\ndo\n\tif [ ! -f \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$QT_PLUGINS_DIR/codecs/libq$c\"\"codecs.dylib\" \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\tfi\ndone\n\n# Qwt\n\necho \"Copying Qwt and updating library paths...\"\nQWTROOT=\"$QWT_PREFIX/lib\"\nif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\tditto -X $QARCHS \"$QWTROOT/libqwt.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\tqlib=`otool -L \"$QWTROOT/libqwt.dylib\" | grep -E -m 1 \"libqwt.+ \\(compatibility\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tQWT_CHG=\"-change $qlib @executable_path/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\techo \"install_name_tool $QWT_CHG \\\"$APPDIR/Qgis\\\"\"\n\tinstall_name_tool $QWT_CHG \"$APPDIR/Qgis\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\techo \"Copying PyQt...\"\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto -X $QARCHS \"$PYSITE/sip.so\" \"$QGISPYDIR/\"\n\t\tcp -fp \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t# utilities\n\tditto -X $QARCHS \"$PYTHON_USRBIN/pylupdate4\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/\"\n\tditto -X $QARCHS \"$PYTHON_USRBIN/pyrcc4\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/\"\n\tsed -E \"s, /.*/PyQt4/uic/pyuic.py, $QGIS_INSTALL_PATH/MacOS/$QGIS_DATA_SUBDIR/python/PyQt4/uic/pyuic.py,\" \\\n\t\t\"$PYTHON_USRBIN/pyuic4\" > \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/pyuic4\"\n\tchmod +x \"$QGIS_BUILD_PATH/MacOS/pyuic4\"\n\t# PyQwt\n\tif [ -d \"$PYSITE/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\techo \"Copying PyQwt and updating library paths...\"\n\t\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/_iqt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/Qwt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/Qwt5/\"*.py  \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -Rfp \"$PYSITE/PyQt$QT_FWVER/uic\" \"$QGISPYDIR/PyQt$QT_FWVER\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqt.so\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\"\n\tfi\nfi\n\n# GRASS plugin libexec stuff may link Qt\nif [ -d \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin\" ] ; then\n\tln -sfh ../$QGIS_LIBEXEC_SUBDIR_REV/$QGIS_FW_SUBDIR \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/Frameworks\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls libqgis*.dylib`\nif [ \"$PYSITE\" ] ; then\n\tcd \"$QGISPYDIR/qgis\"\n\tqgpylist=`ls *.so`\nfi\n\n# main Qt framework loop\n\necho \"Updating Qt library paths...\"\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tif [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\tqq=`otool -L \"$QT_PREFIX_FW/$q.framework/$q\" | grep -E -m 1 \"$q.framework.*\\(compatibility\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tq_chg=\"-change $qq @executable_path/$QGIS_FW_SUBDIR/$q.framework/$q\"\n\t\t# app\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/Qgis\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/Qgis\"\n\t\t# qgis_help qt linking done with symlinks\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_CGIBIN_SUBDIR/qgis_mapserv.fcgi\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_CGIBIN_SUBDIR/qgis_mapserv.fcgi\"\n\t\t# libs\n\t\tfor ql in $qgliblist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIB_SUBDIR/$ql\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\t\tdone\n\t\t# GRASS libexec stuff\n\t\tif [ -f \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\"\n\t\tfi\n\t\t# plugins\n\t\tfor qp in $pluglist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\t\tdone\n\t\t# qt fw\n\t\tfor qf in $QTLISTQG\n\t\tdo\n\t\t\tif [ -d \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework\" ] ; then\n\t\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\t\t\tfi\n\t\tdone\n\t\t# qt plugs\n\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t\tfor c in cn jp kr tw\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/codecs/libq$c\\\"\\\"codecs.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\t\tdone\n\t\t# Qwt\n\t\tif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\t\tfi\n\t\t# PyQt\n\t\tif [ \"$PYSITE\" ] ; then\n\t\t\tfor pq in $PYQTLIST\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\t\tdone\n\t\t\tfor pg in $qgpylist\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/qgis/$pg\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/qgis/$pg\"\n\t\t\tdone\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/pylupdate4\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/pylupdate4\"\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/pyrcc4\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/pyrcc4\"\n\t\t\tif [ -d \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\t\t\tfor pw in _iqt Qwt\n\t\t\t\tdo\n\t\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\\\"\"\n\t\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\"\n\t\t\t\tdone\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n";
+			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# for external bundled tools that link to qt and other bundled frameworks\nln -sfh ../Frameworks \"$QGIS_BUILD_PATH/MacOS/\"\n\n# copy Qt frameworks\necho \"Copying Qt frameworks...\"\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] && [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto -X $QARCHS \"$QT_PREFIX_FW/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto -X $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\nmkdir -p \"$APPDIRC/PlugIns/codecs\"\nfor c in cn jp kr tw\ndo\n\tif [ ! -f \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\" ] ; then\n\t\tditto -X $QARCHS \"$QT_PLUGINS_DIR/codecs/libq$c\"\"codecs.dylib\" \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\tfi\ndone\n\n# Qwt\n\necho \"Copying Qwt and updating library paths...\"\nQWTROOT=\"$QWT_PREFIX/lib\"\nif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\tditto -X $QARCHS \"$QWTROOT/libqwt.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\tqlib=`otool -L \"$QWTROOT/libqwt.dylib\" | grep -E -m 1 \"libqwt.+ \\(compatibility\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tQWT_CHG=\"-change $qlib @executable_path/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\techo \"install_name_tool $QWT_CHG \\\"$APPDIR/Qgis\\\"\"\n\tinstall_name_tool $QWT_CHG \"$APPDIR/Qgis\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\techo \"Copying PyQt...\"\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto -X $QARCHS \"$PYSITE/sip.so\" \"$QGISPYDIR/\"\n\t\tcp -fp \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t# utilities\n\tditto -X $QARCHS \"$PYTHON_USRBIN/pylupdate4\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/\"\n\tditto -X $QARCHS \"$PYTHON_USRBIN/pyrcc4\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/\"\n\tsed -E \"s, /.*/PyQt4/uic/pyuic.py, $QGIS_INSTALL_PATH/MacOS/$QGIS_DATA_SUBDIR/python/PyQt4/uic/pyuic.py,\" \\\n\t\t\"$PYTHON_USRBIN/pyuic4\" > \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/pyuic4\"\n\tchmod +x \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR/pyuic4\"\n\t# PyQwt\n\tif [ -d \"$PYSITE/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\techo \"Copying PyQwt and updating library paths...\"\n\t\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/_iqt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tditto -X $QARCHS \"$PYSITE/PyQt$QT_FWVER/Qwt5/Qwt.so\" \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/Qwt5/\"*.py  \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/\"\n\t\tcp -Rfp \"$PYSITE/PyQt$QT_FWVER/uic\" \"$QGISPYDIR/PyQt$QT_FWVER\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/_iqt.so\"\n\t\techo \"install_name_tool $QWT_CHG \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\\\"\"\n\t\tinstall_name_tool $QWT_CHG \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/Qwt.so\"\n\tfi\nfi\n\n# GRASS plugin libexec stuff may link Qt\nif [ -d \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin\" ] ; then\n\tln -sfh ../$QGIS_LIBEXEC_SUBDIR_REV/$QGIS_FW_SUBDIR \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/Frameworks\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls libqgis*.dylib`\nif [ \"$PYSITE\" ] ; then\n\tcd \"$QGISPYDIR/qgis\"\n\tqgpylist=`ls *.so`\nfi\n\n# main Qt framework loop\n\necho \"Updating Qt library paths...\"\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tif [ -d \"$QT_PREFIX_FW/$q.framework\" ] ; then\n\t\tqq=`otool -L \"$QT_PREFIX_FW/$q.framework/$q\" | grep -E -m 1 \"$q.framework.*\\(compatibility\" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tq_chg=\"-change $qq @executable_path/$QGIS_FW_SUBDIR/$q.framework/$q\"\n\t\t# app\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/Qgis\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/Qgis\"\n\t\t# qgis_help qt linking done with symlinks\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_CGIBIN_SUBDIR/qgis_mapserv.fcgi\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_CGIBIN_SUBDIR/qgis_mapserv.fcgi\"\n\t\t# libs\n\t\tfor ql in $qgliblist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIB_SUBDIR/$ql\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\t\tdone\n\t\t# GRASS libexec stuff\n\t\tif [ -f \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_LIBEXEC_SUBDIR/grass/bin/qgis.g.browser\"\n\t\tfi\n\t\t# plugins\n\t\tfor qp in $pluglist\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\t\tdone\n\t\t# qt fw\n\t\tfor qf in $QTLISTQG\n\t\tdo\n\t\t\tif [ -d \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework\" ] ; then\n\t\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\t\t\tfi\n\t\tdone\n\t\t# qt plugs\n\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\\\"\"\n\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t\tfor c in cn jp kr tw\n\t\tdo\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIRC/PlugIns/codecs/libq$c\\\"\\\"codecs.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIRC/PlugIns/codecs/libq$c\"\"codecs.dylib\"\n\t\tdone\n\t\t# Qwt\n\t\tif [ -f \"$QWTROOT/libqwt.dylib\" ] ; then\n\t\t\techo \"install_name_tool $q_chg \\\"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqwt.dylib\"\n\t\tfi\n\t\t# PyQt\n\t\tif [ \"$PYSITE\" ] ; then\n\t\t\tfor pq in $PYQTLIST\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\t\tdone\n\t\t\tfor pg in $qgpylist\n\t\t\tdo\n\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/qgis/$pg\\\"\"\n\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/qgis/$pg\"\n\t\t\tdone\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/pylupdate4\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/pylupdate4\"\n\t\t\techo \"install_name_tool $q_chg \\\"$APPDIR/$QGIS_BIN_SUBDIR/pyrcc4\\\"\"\n\t\t\tinstall_name_tool $q_chg \"$APPDIR/$QGIS_BIN_SUBDIR/pyrcc4\"\n\t\t\tif [ -d \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5\" ] ; then\n\t\t\t\tfor pw in _iqt Qwt\n\t\t\t\tdo\n\t\t\t\t\techo \"install_name_tool $q_chg \\\"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\\\"\"\n\t\t\t\t\tinstall_name_tool $q_chg \"$QGISPYDIR/PyQt$QT_FWVER/Qwt5/$pw.so\"\n\t\t\t\tdone\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 		72E25B2412070FFB00E2895A /* Script - bundle extras */ = {
@@ -17168,21 +17187,6 @@
 			target = 7223B77E0F96A96500D905B4 /* oracleplugin */;
 			targetProxy = 7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */;
 		};
-		7230E4A7111D385900F256EB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72FEE3C1111D378800D28C1A /* qgis.g.info */;
-			targetProxy = 7230E4A6111D385900F256EB /* PBXContainerItemProxy */;
-		};
-		7230E4A9111D385900F256EB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72FEE3A6111D353300D28C1A /* qgis.d.rast */;
-			targetProxy = 7230E4A8111D385900F256EB /* PBXContainerItemProxy */;
-		};
-		7230E4AB111D385900F256EB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72FEE385111D31AC00D28C1A /* grassrasterprovider */;
-			targetProxy = 7230E4AA111D385900F256EB /* PBXContainerItemProxy */;
-		};
 		7256F1900F411B110022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 72A07D140F3BD625004FC2A4 /* delimitedtextprovider */;
@@ -17212,16 +17216,6 @@
 			isa = PBXTargetDependency;
 			target = 7256F1880F411AC90022BE1F /* Optional Plugins */;
 			targetProxy = 7256F1990F411B210022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F1A00F411B480022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72A07DAC0F3BDFA4004FC2A4 /* grassprovider */;
-			targetProxy = 7256F19F0F411B480022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F1A20F411B480022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72A07E090F3BEE16004FC2A4 /* qgisgrass */;
-			targetProxy = 7256F1A10F411B480022BE1F /* PBXContainerItemProxy */;
 		};
 		7256F1A40F411B480022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -17257,11 +17251,6 @@
 			isa = PBXTargetDependency;
 			target = 72A07E570F3BF35F004FC2A4 /* copyrightlabelplugin */;
 			targetProxy = 7256F1B20F411C120022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F1B50F411C4B0022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72A56B580F3C823800BA32A1 /* grassplugin */;
-			targetProxy = 7256F1B40F411C4B0022BE1F /* PBXContainerItemProxy */;
 		};
 		7256F1B70F411C4B0022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -17358,6 +17347,46 @@
 			target = 7262ED920F7A770300498385 /* spatialiteprovider */;
 			targetProxy = 727E6B7A0FEACF5100DF6F64 /* PBXContainerItemProxy */;
 		};
+		7287B6CA1221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72463E3E1122FEF200BE5F17 /* qgis.g.browser */;
+			targetProxy = 7287B6C91221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6CC1221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72A56B580F3C823800BA32A1 /* grassplugin */;
+			targetProxy = 7287B6CB1221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6CE1221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72FEE3C1111D378800D28C1A /* qgis.g.info */;
+			targetProxy = 7287B6CD1221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6D01221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72FEE3A6111D353300D28C1A /* qgis.d.rast */;
+			targetProxy = 7287B6CF1221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6D21221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72FEE385111D31AC00D28C1A /* grassrasterprovider */;
+			targetProxy = 7287B6D11221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6D41221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72A07DAC0F3BDFA4004FC2A4 /* grassprovider */;
+			targetProxy = 7287B6D31221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6D61221B0B600747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72A07E090F3BEE16004FC2A4 /* qgisgrass */;
+			targetProxy = 7287B6D51221B0B600747062 /* PBXContainerItemProxy */;
+		};
+		7287B6D81221B0E000747062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7287B6C61221B09E00747062 /* grass */;
+			targetProxy = 7287B6D71221B0E000747062 /* PBXContainerItemProxy */;
+		};
 		72A07E530F3BF191004FC2A4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 72A07E090F3BEE16004FC2A4 /* qgisgrass */;
@@ -17437,11 +17466,6 @@
 			isa = PBXTargetDependency;
 			target = 72A07D880F3BDF9C004FC2A4 /* postgresprovider */;
 			targetProxy = 72F07FE90F5112D8008D3148 /* PBXContainerItemProxy */;
-		};
-		72F3DAB711D70A6F00FFA738 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72463E3E1122FEF200BE5F17 /* qgis.g.browser */;
-			targetProxy = 72F3DAB611D70A6F00FFA738 /* PBXContainerItemProxy */;
 		};
 		72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -17867,7 +17891,11 @@
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/bin";
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins/grass,
@@ -17889,7 +17917,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/bin";
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins/grass,
@@ -18442,6 +18474,27 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = "Base Qgis";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7287B6C71221B09F00747062 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = grass;
+			};
+			name = Debug;
+		};
+		7287B6C81221B09F00747062 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = grass;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -19017,7 +19070,7 @@
 					"GRASS_EXPORT=",
 					grassprovider_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -19050,7 +19103,7 @@
 					"GRASS_EXPORT=",
 					grassprovider_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -19136,7 +19189,7 @@
 					"GRASS_EXPORT=",
 					qgisgrass_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -19177,7 +19230,7 @@
 					"GRASS_EXPORT=",
 					qgisgrass_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -19512,7 +19565,7 @@
 					"HAVE_OPENPTY=$(HAVE_OPENPTY)",
 					grassplugin_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -19569,7 +19622,7 @@
 					"HAVE_OPENPTY=$(HAVE_OPENPTY)",
 					grassplugin_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -20811,7 +20864,7 @@
 					"GRASS_EXPORT=",
 					grassrasterprovider_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -20845,7 +20898,7 @@
 					"GRASS_EXPORT=",
 					grassrasterprovider_EXPORTS,
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -20872,7 +20925,11 @@
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -20900,7 +20957,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -20929,7 +20990,11 @@
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -20958,7 +21023,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIBEXEC_SUBDIR)/grass/modules";
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_BASE)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/grass,
@@ -21292,6 +21361,15 @@
 			buildConfigurations = (
 				727E6B490FEABF2C00DF6F64 /* Debug */,
 				727E6B4A0FEABF2C00DF6F64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7287B6DA1221B0EA00747062 /* Build configuration list for PBXAggregateTarget "grass" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7287B6C71221B09F00747062 /* Debug */,
+				7287B6C81221B09F00747062 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
