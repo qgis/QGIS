@@ -1252,7 +1252,7 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   offset = contourSymbolizerElem.attribute( "offset" ).toDouble();
   propertyName = contourSymbolizerElem.attribute( "propertyName" );
 
-  if ( !equidistance > 0.0 )
+  if ( equidistance <= 0.0 )
   {
     return 0;
   }
@@ -1301,7 +1301,7 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
     }
   }
 
-  double adfFixedLevels[numberOfLevels];
+  double *adfFixedLevels = new double[numberOfLevels];
   int    nFixedLevelCount = numberOfLevels;
   currentLevel = ( int )(( minValue - offset ) / equidistance + 0.5 ) * equidistance + offset;
   for ( int i = 0; i < numberOfLevels; ++i )
@@ -1390,6 +1390,8 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
                               bNoDataSet, dfNoData,
                               hLayer, 0, nElevField,
                               GDALTermProgress, NULL );
+
+  delete adfFixedLevels;
 
   OGR_DS_Destroy( hDS );
   GDALClose( hSrcDS );
