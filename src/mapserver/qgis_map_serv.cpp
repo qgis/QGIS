@@ -34,6 +34,9 @@ map service syntax for SOAP/HTTP POST
 #include <iostream>
 #include <stdlib.h>
 
+//for CMAKE_INSTALL_PREFIX
+#include "qgsconfig.h"
+
 
 #ifdef WIN32
 #include <fcntl.h>
@@ -122,13 +125,8 @@ int main( int argc, char * argv[] )
 
   QgsApplication qgsapp( argc, argv, false );
 
-  QString myQGisDir( QGIS_LIB_DIR ); //defined in CmakeLists.txt
-  myQGisDir += QDir::separator();
-#ifdef Q_OS_LINUX
-  myQGisDir += "/../";
-#endif
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath( myQGisDir, TRUE );
+  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
