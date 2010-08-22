@@ -60,7 +60,12 @@ See the Qgis {\field{\*\fldinst{HYPERLINK "http://wiki.qgis.org/qgiswiki/Buildin
 \ul Spatialite library\ulnone  - Spatialite is included in the SQLite framework starting with 3.6.11.  Or usethe internal copy (tied to the internal SQLite).\
 \
 \ul Expat library\ulnone  - Leopard and above includes expat.  The one in X11 should work on Tiger, but I prefer to avoid X11 dependencies.\
-\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \ul \ulc0 Fcgi library\ulnone  - Leopard and above includes fcgi.  Must be compiled from source for earlier systems.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
 \ul Bison\ulnone  - Leopard and above includes bison.  Tiger has an old bison that won't work for QGIS.  See the QGIS install instructions for info about how to compile and install this on Tiger.\
 \
 \ul gpsbabel\ulnone  (optional) - for the GPS Import plugin.  A universal gpsbabel is available from gpsbabel.org.\
@@ -96,7 +101,7 @@ The xcconfig file is a simple text file with environment variables and values, a
 \ulnone \
 The default configuration is for a universal build, with the Leopard (10.5) SDK.\
 \
-GDAL, PROJ, GEOS, GSL and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Postgres is expected in default /usr/local builds.  Expat is from the system on Leopard and above, and is expected in /usr/local on Tiger.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used on Tiger, and the system Python is used on Leopard and above.\
+GDAL, PROJ, GEOS, GSL and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Postgres is expected in default /usr/local builds.  Expat and fcgi are from the system on Leopard and above, and are expected in /usr/local on Tiger.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used on Tiger, and the system Python is used on Leopard and above.\
 \
 By default, Qt and the Postgres client library are bundled in the Qgis application.\
 \

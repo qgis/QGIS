@@ -68,6 +68,7 @@
 
 //GSL_FORM = fw // fw, static or shared
 //PGSQL_FORM = shared // static or shared
+//FCGI_FORM = system // system (only Leo+), static or shared
 
 // system expat only on Leopard+
 //EXPAT_FORM = $(EXPAT_FORM_$(SDKSYS)) // static, shared or system
@@ -92,6 +93,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //BUNDLE_PGSQL = YES
+//BUNDLE_FCGI = YES
 //BUNDLE_GPSBABEL = YES
 
 // frameworks not bundled
@@ -115,12 +117,11 @@
 // shared and static use same prefix
 //////////////////////////////////////////////////////////////////////
 
-//GDAL_PREFIX_shared = /usr/local
-//PROJ_PREFIX_shared = /usr/local
-//GEOS_PREFIX_shared = /usr/local
+//GDAL_PREFIX = /usr/local
+//PROJ_PREFIX = /usr/local
+//GEOS_PREFIX = /usr/local
 
-//GSL_PREFIX_shared = /usr/local
-//GSL_PREFIX_static = /usr/local
+//GSL_PREFIX = /usr/local
 
 // This must match exactly how GRASS was built and installed.
 // If it was moved or renamed, qgis GRASS plugin will not work.
@@ -132,14 +133,15 @@
 
 //EXPAT_PREFIX = /usr/local // not used for system expat
 
-//SQLITE_PREFIX_shared = /usr/local
+//SQLITE_PREFIX = /usr/local
 
 //PGSQL_PREFIX = /usr/local/pgsql
 // used to link static libs, defaults based on kyngchaos dist
 //PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lz
 
-//QWT_PREFIX_shared = /usr/local/qwt-$(QWT_VERSION)
-//QWT_PREFIX_static = $(QWT_PREFIX_shared)
+//FCGI_PREFIX = /usr/local
+
+//QWT_PREFIX = /usr/local/qwt-$(QWT_VERSION)
 
 //PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM)) // User-installed executables
 
@@ -170,6 +172,10 @@
 
 //PGSQL_INC = $(PGSQL_PREFIX)/include
 //PGSQL_LIB = $(PGSQL_LIB_$(PGSQL_FORM))
+
+//FCGI_INC = $(FCGI_INC_$(FCGI_FORM))
+//FCGI_LIB = $(FCGI_LIB_$(FCGI_FORM))
+//FCGI_DEFS = $(FCGI_DEFS_$(CONFIGURATION))
 
 //SQLITE_INC = $(SQLITE_INC_$(SQLITE_FORM))
 //SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
