@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="580"
+   height="580"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="view_point.svg"
+   sodipodi:docbase="s:\Data\FacilityIcons"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <metadata
+     id="metadata2975">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+			  <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:window-height="1005"
+     inkscape:window-width="1280"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="0.65172414"
+     inkscape:cx="280.8225"
+     inkscape:cy="535.80126"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:current-layer="svg2"
+     showgrid="false" />
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 290 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="580 : 290 : 1"
+       inkscape:persp3d-origin="290 : 193.33333 : 1"
+       id="perspective3579" />
+  </defs>
+  <g
+     id="g1327">
+    <path
+       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z "
+       style="fill:#111;stroke:#eee;stroke-width:3.40799999"
+       id="path1329" />
+  </g>
+  <path
+     style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:14;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round"
+     d="M 430.21598,-99.780267 C 429.63845,-99.13713 409.23804,-153.72282 393.21799,-219.91851 C 389.56622,-235.0078 363.06833,-312.81613 428.92263,-312.77998 C 496.31132,-312.74299 469.60677,-233.99105 464.59087,-216.0945 C 446.91246,-153.01857 430.79351,-100.4234 430.21598,-99.780267 z"
+     id="path6015"
+     sodipodi:nodetypes="cszss" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#path6015"
+     id="use6027"
+     transform="matrix(0.8077858,-0.4663754,0.4663754,0.8077858,-36.482068,516.74249)"
+     width="580"
+     height="580" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#use6027"
+     id="use6029"
+     transform="matrix(0.5,-0.8660254,0.8660254,0.5,-99.608513,395.17405)"
+     width="580"
+     height="580" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#use6029"
+     id="use6031"
+     transform="matrix(0.5,-0.8660254,0.8660254,0.5,-100.02947,397.18544)"
+     width="580"
+     height="580" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#use6031"
+     id="use6033"
+     transform="matrix(0.5,-0.8660254,0.8660254,0.5,-100.38597,396.46523)"
+     width="580"
+     height="580" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#use6033"
+     id="use6035"
+     transform="matrix(0.5,-0.8660254,0.8660254,0.5,-102.40499,396.28914)"
+     width="580"
+     height="580" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#path6015"
+     id="use6037"
+     transform="matrix(0.8660254,-0.5,0.5,0.8660254,456.89843,297.20022)"
+     width="580"
+     height="580" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#path6015"
+     id="use6039"
+     transform="matrix(0.8077858,0.4663754,-0.4663754,0.8077858,-70.868724,113.90104)"
+     width="580"
+     height="580" />
+</svg>

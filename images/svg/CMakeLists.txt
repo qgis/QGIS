@@ -1,17 +1,27 @@
 
 SET (SVG_DIRS 
-  biology  
-  emergency  
-  entertainment  
-  geometric  
-  gpsicons    
-  icon  
-  landmark  
-  north_arrows  
-  services  
-  sport  
-  symbol  
-  transport)
+ accommodation
+ amenity
+ biology
+ biology  
+ emergency
+ entertainment
+ food
+ geometric
+ gpsicons
+ health
+ icon
+ landmark
+ money
+ north_arrows
+ religion
+ services
+ shopping
+ sport
+ symbol
+ tourist
+ transport
+)
   
 
 FOREACH (SVG_DIR ${SVG_DIRS})
