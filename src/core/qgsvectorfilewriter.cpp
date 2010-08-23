@@ -32,6 +32,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QSet>
+#include <QMetaType>
 
 #include <cassert>
 #include <cstdlib> // size_t
@@ -341,7 +342,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
       default:
-        QgsDebugMsg( "Invalid variant type for field " + QString::number( ogrField ) + ": " + QString::number( attrValue.type() ) );
+        QgsDebugMsg( "Invalid variant type for field " + QString( fldIt.value().name() ) + " " 
+            + QString::number( ogrField ) + ": Received Type " + QMetaType::typeName (  attrValue.type() )
+            + " : With Value : " +  attrValue.toString() 
+            );
         return false;
     }
   }
