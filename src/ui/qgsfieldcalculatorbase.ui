@@ -276,6 +276,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="6">
+       <widget class="QPushButton" name="mConcatButton">
+        <property name="text">
+         <string>||</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

@@ -54,6 +54,7 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void on_mLengthButton_clicked();
     void on_mAreaButton_clicked();
     void on_mRowNumButton_clicked();
+    void on_mConcatButton_clicked();
     void on_mSamplePushButton_clicked();
     void on_mAllPushButton_clicked();
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
