@@ -397,6 +397,11 @@ void QgsFieldCalculator::on_mRowNumButton_clicked()
   mExpressionTextEdit->insertPlainText( "$rownum" );
 }
 
+void QgsFieldCalculator::on_mConcatButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( "||" );
+}
+
 void QgsFieldCalculator::on_mSamplePushButton_clicked()
 {
   getFieldValues( 25 );
