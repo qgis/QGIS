@@ -411,7 +411,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   showInOverviewAction->blockSignals( false );
 
   // remove from canvas
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   theMenu.addSeparator();
 
