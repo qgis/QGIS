@@ -454,7 +454,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
-      theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ),
+      theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ),
                          tr( "&Remove" ), this, SLOT( legendGroupRemove() ) );
     }
 
