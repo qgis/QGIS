@@ -45,6 +45,11 @@
 #  endif
 #endif
 
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#define HAVE_LOGIN
+#define HAVE_LIBUTIL_H
+#endif
+
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
