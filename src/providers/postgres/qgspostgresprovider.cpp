@@ -2839,7 +2839,18 @@ QgsRectangle QgsPostgresProvider::extent()
                 .arg( quotedValue( geometryColumn ) );
           result = connectionRO->PQexec( sql );
           if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
+          {
             ext = PQgetvalue( result, 0, 0 );
+
+            // fix for what might be a postgis bug: when the extent crosses the
+            // dateline extent() returns -180 to 180 (which appears right), but
+            // estimated_extent() returns eastern bound of data (>-180) and
+            // 180 degrees.
+            if ( ext.contains( ",180 " ) )
+            {
+              ext.clear();
+            }
+          }
         }
       }
       else
