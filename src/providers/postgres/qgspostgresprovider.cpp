@@ -2846,7 +2846,7 @@ QgsRectangle QgsPostgresProvider::extent()
             // dateline extent() returns -180 to 180 (which appears right), but
             // estimated_extent() returns eastern bound of data (>-180) and
             // 180 degrees.
-            if ( ext.contains( ",180 " ) )
+            if ( !ext.startsWith( "180 ") && ext.contains( ",180 " ) )
             {
               ext.clear();
             }
