@@ -30,7 +30,6 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
-Depends: qgis (>= ${binary:Version})
 Description: Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -115,7 +114,7 @@ Description: Python bindings to Quantum GIS - architecture-independent files
 
 Package: qgis-providers
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: qgis-providers-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
 Replaces: qgis (<= 1.6)
 Breaks: qgis (<= 1.6)
 Description: collection of data providers to Quantum GIS
