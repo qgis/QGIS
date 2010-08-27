@@ -1470,7 +1470,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation>Mozajkuj</translation>
+        <translation>Złącz rastry</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
@@ -2528,7 +2528,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate</source>
-        <translation>Konwertuj układ</translation>
+        <translation>Konwertuj raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
