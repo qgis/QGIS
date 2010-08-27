@@ -64,6 +64,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %token <op> FUNCTION
 %token CONCAT
 %token IS
+%token IN
 %token ROWNUM
 %token AREA
 %token LENGTH
@@ -83,6 +84,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %type <node> predicate
 %type <node> comp_predicate
 %type <node> scalar_exp
+%type <node> scalar_exp_list
 
 // debugging
 //%error-verbose
@@ -130,9 +132,14 @@ comp_predicate:
     | scalar_exp COMPARISON scalar_exp  { $$ = new QgsSearchTreeNode($2, $1, $3); joinTmpNodes($$,$1,$3); }
     ;
 
+scalar_exp_list:
+    | scalar_exp_list ',' scalar_exp { $$ = $1; $1->append($3); joinTmpNodes($1,$1,$3); }
+    | scalar_exp                     { $$ = new QgsSearchTreeNode( QgsSearchTreeNode::tNodeList ); $$->append($1); joinTmpNodes($$,$$,$1); }
+    ;
+
 scalar_exp:
       FUNCTION '(' scalar_exp ')' { $$ = new QgsSearchTreeNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
-    | scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW, $1, $3); joinTmpNodes($$, $1, $3); }
+    | scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '*' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMUL,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '/' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opDIV,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '+' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPLUS, $1, $3); joinTmpNodes($$,$1,$3); }
@@ -147,6 +154,8 @@ scalar_exp:
     | NUMBER                      { $$ = new QgsSearchTreeNode($1); addToTmpNodes($$); }
     | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }
     | COLUMN_REF                  { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 1); addToTmpNodes($$); }
+    | scalar_exp IN '(' scalar_exp_list ')' { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opIN, $1, $4); joinTmpNodes($$,$1,$4); }
+    | scalar_exp NOT IN '(' scalar_exp_list ')' { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opNOTIN, $1, $5); joinTmpNodes($$,$1,$5); }
 ;
 
 %%

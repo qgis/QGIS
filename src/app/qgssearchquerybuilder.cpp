@@ -60,14 +60,6 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
   pbn->setToolTip( tr( "Load query from xml file" ) );
   connect( pbn, SIGNAL( clicked() ), this, SLOT( loadQuery() ) );
 
-  // disable unsupported operators
-  btnIn->setHidden( true );
-  btnNotIn->setHidden( true );
-  btnPct->setHidden( true );
-
-  // change to ~
-  btnILike->setText( "~" );
-
   lblDataUri->setText( layer->name() );
   populateFields();
 }
@@ -281,6 +273,21 @@ void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
   txtSQL->insertPlainText( " > " );
 }
 
+void QgsSearchQueryBuilder::on_btnPct_clicked()
+{
+  txtSQL->insertPlainText( "%" );
+}
+
+void QgsSearchQueryBuilder::on_btnIn_clicked()
+{
+  txtSQL->insertPlainText( " IN " );
+}
+
+void QgsSearchQueryBuilder::on_btnNotIn_clicked()
+{
+  txtSQL->insertPlainText( " NOT IN " );
+}
+
 void QgsSearchQueryBuilder::on_btnLike_clicked()
 {
   txtSQL->insertPlainText( " LIKE " );
@@ -343,8 +350,7 @@ void QgsSearchQueryBuilder::on_btnClear_clicked()
 
 void QgsSearchQueryBuilder::on_btnILike_clicked()
 {
-  //txtSQL->insertPlainText(" ILIKE ");
-  txtSQL->insertPlainText( " ~ " );
+  txtSQL->insertPlainText( " ILIKE " );
 }
 
 void QgsSearchQueryBuilder::saveQuery()

@@ -112,6 +112,7 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
      */
     void on_btnSampleValues_clicked();
     void setDatasourceDescription( QString uri );
+
   private:
     /*!
      * Populate the field list for the selected table
