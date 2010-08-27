@@ -98,8 +98,8 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %left NOT
 
 %left COMPARISON
-
 %left CONCAT
+%left IN
 
 %left '+' '-'
 %left '*' '/'
@@ -133,8 +133,8 @@ comp_predicate:
     ;
 
 scalar_exp_list:
-    | scalar_exp_list ',' scalar_exp { $$ = $1; $1->append($3); joinTmpNodes($1,$1,$3); }
-    | scalar_exp                     { $$ = new QgsSearchTreeNode( QgsSearchTreeNode::tNodeList ); $$->append($1); joinTmpNodes($$,$$,$1); }
+      scalar_exp_list ',' scalar_exp { $$ = $1; $1->append($3); joinTmpNodes($1,$1,$3); }
+    | scalar_exp                     { $$ = new QgsSearchTreeNode( QgsSearchTreeNode::tNodeList ); $$->append($1); joinTmpNodes($$,$1,0); }
     ;
 
 scalar_exp:
