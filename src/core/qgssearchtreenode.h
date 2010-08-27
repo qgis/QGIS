@@ -96,6 +96,8 @@ class CORE_EXPORT QgsSearchTreeNode
 
       // string handling
       opCONCAT,
+      opLOWER,
+      opUPPER,
 
       opROWNUM
     };

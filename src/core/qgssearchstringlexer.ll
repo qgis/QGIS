@@ -91,6 +91,8 @@ string      "'"{str_char}*"'"
 "to int" { yylval.op = QgsSearchTreeNode::opTOINT; return FUNCTION;}
 "to real" { yylval.op = QgsSearchTreeNode::opTOREAL; return FUNCTION;}
 "to string" { yylval.op = QgsSearchTreeNode::opTOSTRING; return FUNCTION;}
+"lower" { yylval.op = QgsSearchTreeNode::opLOWER; return FUNCTION;}
+"upper" { yylval.op = QgsSearchTreeNode::opUPPER; return FUNCTION;}
 
 "||"   { return CONCAT; }
 

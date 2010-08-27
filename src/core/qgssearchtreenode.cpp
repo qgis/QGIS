@@ -192,7 +192,8 @@ QString QgsSearchTreeNode::makeSearchString()
   {
     if ( mOp == opSQRT || mOp == opSIN || mOp == opCOS || mOp == opTAN ||
          mOp == opASIN || mOp == opACOS || mOp == opATAN ||
-         mOp == opTOINT || mOp == opTOREAL || mOp == opTOSTRING )
+         mOp == opTOINT || mOp == opTOREAL || mOp == opTOSTRING ||
+         mOp == opLOWER || mOp == opUPPER )
     {
       // functions
       switch ( mOp )
@@ -207,6 +208,8 @@ QString QgsSearchTreeNode::makeSearchString()
         case opTOINT: str += "to int"; break;
         case opTOREAL: str += "to real"; break;
         case opTOSTRING: str += "to string"; break;
+        case opLOWER: str += "lower"; break;
+        case opUPPER: str += "upper"; break;
         default: str += "?";
       }
       // currently all functions take one parameter
@@ -672,6 +675,10 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
           return QgsSearchTreeValue( val1 );
         case opTOSTRING:
           return QgsSearchTreeValue( QString::number( val1 ) );
+        case opLOWER:
+          return QgsSearchTreeValue( value1.string().toLower() );
+        case opUPPER:
+          return QgsSearchTreeValue( value1.string().toUpper() );
       }
     }
 
