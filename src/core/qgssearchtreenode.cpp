@@ -38,6 +38,16 @@
 
 #define EVAL_STR(x) (x.length() ? x : "(empty)")
 
+QgsSearchTreeNode::QgsSearchTreeNode( QgsSearchTreeNode::Type t )
+{
+  Q_ASSERT( t == tNodeList );
+  mType  = t;
+  mLeft  = NULL;
+  mRight = NULL;
+
+  init();
+}
+
 QgsSearchTreeNode::QgsSearchTreeNode( double number )
 {
   mType   = tNumber;
@@ -49,7 +59,8 @@ QgsSearchTreeNode::QgsSearchTreeNode( double number )
 }
 
 
-QgsSearchTreeNode::QgsSearchTreeNode( Operator op, QgsSearchTreeNode* left,
+QgsSearchTreeNode::QgsSearchTreeNode( Operator op,
+                                      QgsSearchTreeNode* left,
                                       QgsSearchTreeNode* right )
 {
   mType  = tOperator;
@@ -86,7 +97,6 @@ QgsSearchTreeNode::QgsSearchTreeNode( QString text, bool isColumnRef )
   init();
 }
 
-
 QgsSearchTreeNode::QgsSearchTreeNode( const QgsSearchTreeNode& node )
 {
   mType = node.mType;
@@ -105,6 +115,9 @@ QgsSearchTreeNode::QgsSearchTreeNode( const QgsSearchTreeNode& node )
   else
     mRight = NULL;
 
+  foreach( QgsSearchTreeNode *lnode, node.mNodeList )
+  mNodeList.append( new QgsSearchTreeNode( *lnode ) );
+
   init();
 }
 
@@ -118,6 +131,9 @@ QgsSearchTreeNode::~QgsSearchTreeNode()
 
   if ( mRight )
     delete mRight;
+
+  while ( !mNodeList.isEmpty() )
+    delete mNodeList.takeFirst();
 
   delete mCalc;
 }
@@ -262,6 +278,9 @@ QString QgsSearchTreeNode::makeSearchString()
 
         case opRegexp: str += " ~ "; break;
         case opLike: str += " LIKE "; break;
+        case opILike: str += " ILIKE "; break;
+        case opIN: str += " IN "; break;
+        case opNOTIN: str += " NOT IN "; break;
 
         case opCONCAT: str += " || "; break;
 
@@ -282,6 +301,16 @@ QString QgsSearchTreeNode::makeSearchString()
   else if ( mType == tString || mType == tColumnRef )
   {
     str += mText;
+  }
+  else if ( mType == tNodeList )
+  {
+    QStringList items;
+    foreach( QgsSearchTreeNode *node, mNodeList )
+    {
+      items << node->makeSearchString();
+    }
+
+    str += "(" + items.join( "," ) + ")";
   }
   else // unknown type
   {
@@ -422,8 +451,39 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
           return false;
       }
 
+    case opIN:
+    case opNOTIN:
+    {
+      if ( !getValue( value1, mLeft, fields, attributes, geom ) ||
+           !mRight || mRight->type() != tNodeList )
+      {
+        return false;
+      }
+
+      foreach( QgsSearchTreeNode *node, mRight->mNodeList )
+      {
+        if ( !getValue( value2, node, fields, attributes, geom ) )
+        {
+          mError = QObject::tr( "Could not retrieve value of list value" );
+          return false;
+        }
+
+        res = QgsSearchTreeValue::compare( value1, value2 );
+
+        if ( res == 0 )
+        {
+          // found
+          return mOp == opIN;
+        }
+      }
+
+      return mOp == opNOTIN;
+    }
+    break;
+
     case opRegexp:
     case opLike:
+    case opILike:
     {
       if ( !getValue( value1, mLeft, fields, attributes, geom ) ||
            !getValue( value2, mRight, fields, attributes, geom ) )
@@ -443,12 +503,12 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
       // TODO: reuse QRegExp
 
       QString str = value2.string();
-      if ( mOp == opLike ) // change from LIKE syntax to regexp
+      if ( mOp == opLike || mOp == opILike ) // change from LIKE syntax to regexp
       {
         // XXX escape % and _  ???
         str.replace( "%", ".*" );
         str.replace( "_", "." );
-        return QRegExp( str ).exactMatch( value1.string() );
+        return QRegExp( str, mOp == opLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( value1.string() );
       }
       else
       {
@@ -705,7 +765,17 @@ void QgsSearchTreeNode::setCurrentRowNumber( int rownum )
   }
 }
 
+void QgsSearchTreeNode::append( QgsSearchTreeNode *node )
+{
+  Q_ASSERT( mType == tNodeList );
+  mNodeList.append( node );
+}
 
+void QgsSearchTreeNode::append( QList<QgsSearchTreeNode *> nodes )
+{
+  foreach( QgsSearchTreeNode *node, nodes )
+  mNodeList.append( node );
+}
 
 int QgsSearchTreeValue::compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2, Qt::CaseSensitivity cs )
 {

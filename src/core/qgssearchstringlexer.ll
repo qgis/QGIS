@@ -70,6 +70,7 @@ string      "'"{str_char}*"'"
 "NULL"	{ return NULLVALUE; }
 
 "IS"  {  return IS; }
+"IN"  {  return IN; }
 
 "="   {  yylval.op = QgsSearchTreeNode::opEQ; return COMPARISON; }
 "!="  {  yylval.op = QgsSearchTreeNode::opNE; return COMPARISON; }
@@ -80,6 +81,7 @@ string      "'"{str_char}*"'"
 ">"   {  yylval.op = QgsSearchTreeNode::opGT; return COMPARISON; }
 "~"   {  yylval.op = QgsSearchTreeNode::opRegexp; return COMPARISON; }
 "LIKE" { yylval.op = QgsSearchTreeNode::opLike; return COMPARISON; }
+"ILIKE" { yylval.op = QgsSearchTreeNode::opILike; return COMPARISON; }
 
 "sqrt" { yylval.op = QgsSearchTreeNode::opSQRT; return FUNCTION;}
 "sin"  { yylval.op = QgsSearchTreeNode::opSIN; return FUNCTION;}

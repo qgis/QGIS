@@ -24,6 +24,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+#include <QList>
 
 #include <qgsfield.h>
 #include <qgsfeature.h>
@@ -48,7 +49,8 @@ class CORE_EXPORT QgsSearchTreeNode
       tOperator = 1,
       tNumber,
       tColumnRef,
-      tString
+      tString,
+      tNodeList,
     };
 
     //! possible operators
@@ -83,16 +85,19 @@ class CORE_EXPORT QgsSearchTreeNode
       opAREA,
 
       // comparison
-      opISNULL,  // IS NULL
+      opISNULL,     // IS NULL
       opISNOTNULL,  // IS NOT NULL
-      opEQ,   // =
-      opNE,   // != resp. <>
-      opGT,   // >
-      opLT,   // <
-      opGE,   // >=
-      opLE,   // <=
-      opRegexp, // ~
-      opLike,  // LIKE
+      opEQ,         // =
+      opNE,         // != resp. <>
+      opGT,         // >
+      opLT,         // <
+      opGE,         // >=
+      opLE,         // <=
+      opRegexp,     // ~
+      opLike,       // LIKE
+      opILike,      // ILIKE
+      opIN,         // IN
+      opNOTIN,      // NOT IN
 
       // string handling
       opCONCAT,
@@ -103,6 +108,7 @@ class CORE_EXPORT QgsSearchTreeNode
     };
 
     //! constructors
+    QgsSearchTreeNode( Type type );
     QgsSearchTreeNode( double number );
     QgsSearchTreeNode( Operator op, QgsSearchTreeNode* left, QgsSearchTreeNode* right );
     QgsSearchTreeNode( QString text, bool isColumnRef );
@@ -173,6 +179,14 @@ class CORE_EXPORT QgsSearchTreeNode
     //! @note added in 1.6
     void setCurrentRowNumber( int rownum );
 
+    //! append a node to the list
+    //! @note added in 1.6
+    void append( QgsSearchTreeNode * );
+
+    //! append nodelist to the list
+    //! @note added in 1.6
+    void append( QList<QgsSearchTreeNode*> );
+
   protected:
 
 
@@ -197,6 +211,7 @@ class CORE_EXPORT QgsSearchTreeNode
     Operator mOp;
     double mNumber;
     QString mText;
+    QList<QgsSearchTreeNode *> mNodeList;
 
     QString mError;
 
