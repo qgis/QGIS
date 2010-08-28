@@ -1072,9 +1072,9 @@ void QgisApp::createActions()
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   mActionLayerSelectionSaveAs->setEnabled( false );
 
-  mActionRemoveLayer = new QAction( getThemeIcon( "mActionRemoveLayer.png" ), tr( "Remove Layer" ), this );
-  shortcuts->registerAction( mActionRemoveLayer, tr( "Ctrl+D", "Remove a Layer" ) );
-  mActionRemoveLayer->setStatusTip( tr( "Remove a Layer" ) );
+  mActionRemoveLayer = new QAction( getThemeIcon( "mActionRemoveLayer.png" ), tr( "Remove Layer(s)" ), this );
+  shortcuts->registerAction( mActionRemoveLayer, tr( "Ctrl+D", "Remove Layer(s)" ) );
+  mActionRemoveLayer->setStatusTip( tr( "Remove Layer(s)" ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   mActionRemoveLayer->setEnabled( false );
 
@@ -3964,7 +3964,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
   if ( !mMapLegend )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() ); // FIXME: output of multiple layers at once?
   if ( !vlayer )
     return;
 
@@ -4741,7 +4741,7 @@ void QgisApp::saveEdits()
   if ( mMapCanvas && mMapCanvas->isDrawing() )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() ); // FIXME: save edits of all selected layers
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
     return;
 
@@ -4989,18 +4989,20 @@ void QgisApp::removeLayer()
     return;
   }
 
-  QgsMapLayer *layer = activeLayer();
-
-  if ( !layer )
+  if ( !mMapLegend )
   {
     return;
   }
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
-  if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
-    return;
+  foreach( QgsMapLayer *layer, mMapLegend->selectedLayers() )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
+    if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
+      return;
+  }
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( layer->getLayerID() );
+  mMapLegend->removeSelectedLayers();
+
   mMapCanvas->refresh();
 }
 
@@ -5903,6 +5905,8 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 {
+  mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedItems().size() > 0 );
+
   if ( !layer )
   {
     mActionSelect->setEnabled( false );
@@ -5917,7 +5921,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSaveEdits->setEnabled( false );
     mActionLayerSaveAs->setEnabled( false );
     mActionLayerSelectionSaveAs->setEnabled( false );
-    mActionRemoveLayer->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
     mActionLayerSubsetString->setEnabled( false );
     mActionAddToOverview->setEnabled( false );
@@ -5951,7 +5954,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     return;
   }
 
-  mActionRemoveLayer->setEnabled( true );
   mActionLayerProperties->setEnabled( true );
   mActionAddToOverview->setEnabled( true );
 

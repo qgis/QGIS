@@ -93,6 +93,7 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
   mInsertionLine->setPalette( pal );
 
   setSortingEnabled( false );
+  setSelectionMode( QAbstractItemView::ExtendedSelection );
   setDragEnabled( false );
   setAutoScroll( true );
   QFont f( "Arial", 10, QFont::Normal );
@@ -598,6 +599,20 @@ QgsMapLayer* QgsLegend::currentLayer()
   {
     return 0;
   }
+}
+
+QList<QgsMapLayer *> QgsLegend::selectedLayers()
+{
+  QList<QgsMapLayer *> layers;
+
+  foreach( QTreeWidgetItem *item, selectedItems() )
+  {
+    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+    if ( ll )
+      layers << ll->layer();
+  }
+
+  return layers;
 }
 
 bool QgsLegend::setCurrentLayer( QgsMapLayer *layer )
@@ -1746,3 +1761,29 @@ void QgsLegend::refreshCheckStates()
   }
 }
 
+void QgsLegend::removeSelectedLayers()
+{
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  mMapCanvas->setRenderFlag( false );
+
+  foreach( QTreeWidgetItem *item, selectedItems() )
+  {
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
+    if ( lg )
+    {
+      removeGroup( lg );
+      continue;
+    }
+
+    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+    if ( ll && ll->layer() )
+    {
+      QgsMapLayerRegistry::instance()->removeMapLayer( ll->layer()->getLayerID() );
+      continue;
+    }
+  }
+
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->setRenderFlag( renderFlagState );
+}
