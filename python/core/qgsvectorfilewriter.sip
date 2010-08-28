@@ -29,7 +29,10 @@ public:
                                         const QString& shapefileName,
                                         const QString& fileEncoding,
                                         const QgsCoordinateReferenceSystem*,
-                                        bool onlySelected = FALSE);
+                                        bool onlySelected = FALSE,
+					QString *errorMessage = 0,
+					const QStringList &datasourceOptions = QStringList(),
+					const QStringList &layerOptions = QStringList() );
 
     /** Write contents of vector layer to an (OGR supported) vector formt
         @note: this method was added in version 1.5*/
@@ -39,7 +42,9 @@ public:
                                             const QgsCoordinateReferenceSystem *destCRS,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = FALSE,
-                                            QString *errorMessage = 0 );
+                                            QString *errorMessage = 0,
+					    const QStringList &datasourceOptions = QStringList(),
+					    const QStringList &layerOptions = QStringList() );
 
     /** create shapefile and initialize it */
     QgsVectorFileWriter(const QString& vectorFileName,
@@ -47,7 +52,9 @@ public:
                         const QMap<int, QgsField>& fields,
                         QGis::WkbType geometryType,
                         const QgsCoordinateReferenceSystem* srs,
-			const QString& driverName = "ESRI Shapefile" );
+			const QString& driverName = "ESRI Shapefile",
+			const QStringList &datasourceOptions = QStringList(),
+			const QStringList &layerOptions = QStringList() );
 
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();

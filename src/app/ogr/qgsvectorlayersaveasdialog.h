@@ -37,6 +37,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QString format() const;
     QString encoding() const;
     QString filename() const;
+    QStringList datasourceOptions() const;
+    QStringList layerOptions() const;
     long crs() const;
 
   private slots:

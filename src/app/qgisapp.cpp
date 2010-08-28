@@ -4000,7 +4000,11 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
 
     QgsVectorFileWriter::WriterError error;
     QString errorMessage;
-    error = QgsVectorFileWriter::writeAsVectorFormat( vlayer, vectorFilename, encoding, &destCRS, format, saveOnlySelection, &errorMessage );
+    error = QgsVectorFileWriter::writeAsVectorFormat(
+              vlayer, vectorFilename, encoding, &destCRS, format,
+              saveOnlySelection,
+              &errorMessage,
+              dialog->datasourceOptions(), dialog->layerOptions() );
 
     QApplication::restoreOverrideCursor();
 
@@ -4010,7 +4014,10 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     }
     else
     {
-      QMessageBox::warning( 0, tr( "Save error" ), tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+      QgsMessageViewer *m = new QgsMessageViewer( 0 );
+      m->setWindowTitle( tr( "Save error" ) );
+      m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+      m->exec();
     }
   }
 
