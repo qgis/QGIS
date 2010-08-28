@@ -109,6 +109,10 @@ class QgsLegend : public QTreeWidget
     Else, 0 is returned.*/
     QgsMapLayer* currentLayer();
 
+    /*!Returns the currently selected layer QgsLegendLayers.
+    Else, an empty list is returned.*/
+    QList<QgsMapLayer *> selectedLayers();
+
     /*!set the current layer
     returns true if the layer exists, false otherwise*/
     bool setCurrentLayer( QgsMapLayer *layer );
@@ -263,6 +267,9 @@ class QgsLegend : public QTreeWidget
 
     /**Updates check states when the map canvas layer set is changed */
     void refreshCheckStates();
+
+    /** Remove selected layers */
+    void removeSelectedLayers();
   protected:
 
     /*!Event handler for mouse movements.
