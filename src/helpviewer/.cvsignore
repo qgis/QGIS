@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-qgis_help
-*.moc.cpp
-*base.h
-*base.cpp
-
