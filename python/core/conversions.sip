@@ -1035,3 +1035,88 @@ template<double, TYPE2>
     return sipGetState(sipTransferObj);
 %End
 };
+
+%MappedType QList < QPair< QString, QList<QString> > >
+{
+%TypeHeaderCode
+#include <QPair>
+#include <QList>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#endif
+%End
+
+%ConvertFromTypeCode
+//convert map to a python dictionary
+    PyObject *d;
+
+    if ((d = PyList_New( sipCpp->size() )) == NULL)
+      return NULL;
+
+    for ( int i = 0; i<sipCpp->size(); i++ )
+    {
+      PyObject *p;
+      if ((p = PyList_New(2) ) == NULL)
+      {
+	Py_DECREF(d);
+	return NULL;
+      }
+
+      PyObject *l;
+      if ((l = PyList_New( sipCpp->at(i).second.size() )) == NULL)
+      {
+	Py_DECREF(d);
+	Py_DECREF(p);
+	return NULL;
+      }
+
+      for( int j = 0; j<sipCpp->at(i).second.size(); j++ )
+      {
+        PyObject *t1obj = sipConvertFromNewInstance(new QString(sipCpp->at(i).second.at(j)), sipClass_QString, sipTransferObj);
+        PyList_SetItem( l, j, t1obj);
+      }
+
+      PyObject *t1obj = sipConvertFromNewInstance(new QString(sipCpp->at(i).first), sipClass_QString, sipTransferObj);
+      PyList_SetItem( p, 0, t1obj );
+      PyList_SetItem( p, 1, l);
+
+      PyList_SetItem( d, i, p );
+    }
+
+    return d;
+%End
+%ConvertToTypeCode
+#if PY_VERSION_HEX >= 0x02050000
+    Py_ssize_t i = 0;
+#else
+    int i = 0;
+#endif
+    QList < QPair< QString, QList<QString> > > *qm = new QList < QPair< QString, QList<QString> > >;
+
+    for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
+    {
+      PyObject *sipPair = PyList_GetItem( sipPy, i );
+      PyObject *sipKey  = PyList_GetItem( sipPair, 0 );
+      PyObject *sipList = PyList_GetItem( sipPair, 1 );
+
+      QList< QString > l;
+      int state;
+      int j;
+      for ( j = 0; j < PyList_GET_SIZE( sipList ); j++ )
+      {
+        PyObject *sipString = PyList_GetItem( sipList, j );
+        QString *t1 = reinterpret_cast<QString *>(sipConvertToInstance(sipString, sipClass_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+	l << *t1;
+        sipReleaseInstance(t1, sipClass_QString, state);
+      }
+
+      QString *t1 = reinterpret_cast<QString *>(sipConvertToInstance(sipKey, sipClass_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      qm->append( qMakePair( *t1, l ) );
+      sipReleaseInstance(t1, sipClass_QString, state);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
