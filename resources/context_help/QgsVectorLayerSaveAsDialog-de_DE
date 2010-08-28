@@ -1,0 +1,13 @@
+<h3>Vektorlayer speichern als...</h3>
+
+<p>Dieser Dialog erlaubt Ihnen Vektordaten mit Hilfe von GDAL/OGR in vielfältigen Formaten zu speichern.
+
+<ul>
+<li>Aus der <label>Format</label>-Liste können Sie ein von OGR angebotenes Zielformat wählen.
+<li>Bei <label>Speichern unter</label> können Sie eine Zieldateinamen eingeben oder mit dem Knopf <label>Durchsuchen</label> einen wählen.
+<li>Aus der <label>Kodierung</label>-sliste könnten Sie die Kodierung wählen in der die Daten gespeichert werden sollen.
+<li>Mit dem Knopf <label>KBS</label> können Sie das KBS festlegen in das die zu speichernden Daten projiiziert werden sollen.
+<li>OGR bietet außerdem eine Vielzahl von Optionen für unterschiedlichen die es unterstützt.  Nutzen Sie das Feld <label>Datenquelle</label> um Erzeugungsoptionen für die Datenquelle und das Feld <label>Layer</label> um Erzeugungsoptionen für den Layer festzulegen. Geben Sie jede Option in einer Zeile an (z.B. <code>SPATIALITE=yes</code> im Feld <label>Datenquelle</label> um ein SpatiaLite-Datenbank mit dem SQLite-Treiber zu erzeugen).
+</ul>
+
+Ein Liste der unterstützten Formate und deren Optionen finden Sie unter <a href="http://gdal.org/ogr/ogr_formats.html">OGR Vector formats</a> (Englisch).
