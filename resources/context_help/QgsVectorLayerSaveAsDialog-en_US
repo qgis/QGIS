@@ -1,0 +1,13 @@
+<h3>Save vector layer as...</h3>
+
+<p>This dialog allows you to save vector data in various formats using GDAL/OGR.
+
+<ul>
+<li>From the <label>Format</label> list you can select the destination format (as advertised by OGR).
+<li>At <label>Save as</label> you can enter a destination files name or select one using the <label>Browse</label> button.
+<li>In the <label>Encoding</label> list you can define in which encoding the data should be saved.
+<li>Using the <label>CRS</label> you can select a CRS into which the data about to be saved should be reprojected.
+<li>OGR also has various options for the different formats it supports.  Use the <label>datasource</label> creation field to set the datasource options and the <label>layer</label> creation options. Enter one options per line (e.g. <code>SPATIALITE=yes</code> in the <label>datasource</label> to create a spatialite database using the SQLite driver).
+</ul>
+
+See <a href="http://gdal.org/ogr/ogr_formats.html">OGR Vector formats</a> for a list of supported formats and the available options.

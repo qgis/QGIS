@@ -137,3 +137,13 @@ long QgsVectorLayerSaveAsDialog::crs() const
 {
   return mCRS;
 }
+
+QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
+{
+  return mOgrDatasourceOptions->toPlainText().split( "\n" );
+}
+
+QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
+{
+  return mOgrLayerOptions->toPlainText().split( "\n" );
+}

@@ -52,7 +52,8 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrCreateLayer,
       ErrAttributeTypeUnsupported,
       ErrAttributeCreationFailed,
-      ErrProjection // added in 1.5
+      ErrProjection,  // added in 1.5
+      ErrFeatureWriteFailed, // added in 1.6
     };
 
     /** Write contents of vector layer to a shapefile
@@ -62,7 +63,10 @@ class CORE_EXPORT QgsVectorFileWriter
                                          const QString& fileEncoding,
                                          const QgsCoordinateReferenceSystem *destCRS,
                                          bool onlySelected = false,
-                                         QString *errorMessage = 0 );
+                                         QString *errorMessage = 0,
+                                         const QStringList &datasourceOptions = QStringList(), // added in 1.6
+                                         const QStringList &layerOptions = QStringList() // added in 1.6
+                                       );
 
     /** Write contents of vector layer to an (OGR supported) vector formt
         @note: this method was added in version 1.5*/
@@ -72,7 +76,10 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QgsCoordinateReferenceSystem *destCRS,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
-                                            QString *errorMessage = 0 );
+                                            QString *errorMessage = 0,
+                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
+                                            const QStringList &layerOptions = QStringList()  // added in 1.6
+                                          );
 
     /** create shapefile and initialize it */
     QgsVectorFileWriter( const QString& vectorFileName,
@@ -80,7 +87,10 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QgsFieldMap& fields,
                          QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs,
-                         const QString& driverName = "ESRI Shapefile" );
+                         const QString& driverName = "ESRI Shapefile",
+                         const QStringList &datasourceOptions = QStringList(), // added in 1.6
+                         const QStringList &layerOptions = QStringList() // added in 1.6
+                       );
 
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();

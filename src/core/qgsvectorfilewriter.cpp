@@ -40,6 +40,7 @@
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
+#include <cpl_conv.h>
 
 
 QgsVectorFileWriter::QgsVectorFileWriter(
@@ -48,7 +49,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QgsFieldMap& fields,
   QGis::WkbType geometryType,
   const QgsCoordinateReferenceSystem* srs,
-  const QString& driverName )
+  const QString& driverName,
+  const QStringList &datasourceOptions,
+  const QStringList &layerOptions
+)
     : mDS( NULL )
     , mLayer( NULL )
     , mGeom( NULL )
@@ -116,8 +120,26 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     QFile::remove( vectorFileName );
   }
 
+  char **options = NULL;
+  if ( !datasourceOptions.isEmpty() )
+  {
+    options = new char *[ datasourceOptions.size()+1 ];
+    for ( int i = 0; i < datasourceOptions.size(); i++ )
+    {
+      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().data() );
+    }
+    options[ datasourceOptions.size()] = NULL;
+  }
+
   // create the data source
-  mDS = OGR_Dr_CreateDataSource( poDriver, vectorFileName.toLocal8Bit().data(), NULL );
+  mDS = OGR_Dr_CreateDataSource( poDriver, vectorFileName.toLocal8Bit().data(), options );
+
+  if ( options )
+  {
+    for ( int i = 0; i < datasourceOptions.size(); i++ )
+      CPLFree( options[i] );
+  }
+
   if ( mDS == NULL )
   {
     mError = ErrCreateDataSource;
@@ -155,7 +177,24 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   // datasource created, now create the output layer
   QString layerName = QFileInfo( vectorFileName ).baseName();
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
-  mLayer = OGR_DS_CreateLayer( mDS, QFile::encodeName( layerName ).data(), ogrRef, wkbType, NULL );
+
+  if ( !layerOptions.isEmpty() )
+  {
+    options = new char *[ layerOptions.size()+1 ];
+    for ( int i = 0; i < layerOptions.size(); i++ )
+    {
+      options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().data() );
+    }
+    options[ layerOptions.size()] = NULL;
+  }
+
+  mLayer = OGR_DS_CreateLayer( mDS, QFile::encodeName( layerName ).data(), ogrRef, wkbType, options );
+
+  if ( options )
+  {
+    for ( int i = 0; i < layerOptions.size(); i++ )
+      CPLFree( options[i] );
+  }
 
   if ( srs )
   {
@@ -302,9 +341,6 @@ QString QgsVectorFileWriter::errorMessage()
 
 bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 {
-  if ( hasError() != NoError )
-    return false;
-
   QgsAttributeMap::const_iterator it;
 
   // create the feature
@@ -342,10 +378,13 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
       default:
-        QgsDebugMsg( "Invalid variant type for field " + QString( fldIt.value().name() ) + " " 
-            + QString::number( ogrField ) + ": Received Type " + QMetaType::typeName (  attrValue.type() )
-            + " : With Value : " +  attrValue.toString() 
-            );
+        mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
+                        .arg( fldIt.value().name() )
+                        .arg( ogrField )
+                        .arg( QMetaType::typeName( attrValue.type() ) )
+                        .arg( attrValue.toString() );
+        QgsDebugMsg( mErrorMessage );
+        mError = ErrFeatureWriteFailed;
         return false;
     }
   }
@@ -355,6 +394,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   if ( !geom )
   {
     QgsDebugMsg( "invalid geometry" );
+    mErrorMessage = QObject::tr( "Invalid feature geometry" );
+    mError = ErrFeatureWriteFailed;
     OGR_F_Destroy( poFeature );
     return false;
   }
@@ -375,7 +416,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
     if ( err != OGRERR_NONE )
     {
-      QgsDebugMsg( "Failed to import geometry from WKB: " + QString::number( err ) );
+      QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
+      mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      mError = ErrFeatureWriteFailed;
       OGR_F_Destroy( poFeature );
       return false;
     }
@@ -388,7 +432,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     OGRErr err = OGR_G_ImportFromWkb( mGeom, geom->asWkb(), geom->wkbSize() );
     if ( err != OGRERR_NONE )
     {
-      QgsDebugMsg( "Failed to import geometry from WKB: " + QString::number( err ) );
+      QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
+      mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      mError = ErrFeatureWriteFailed;
       OGR_F_Destroy( poFeature );
       return false;
     }
@@ -400,7 +447,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   // put the created feature to layer
   if ( OGR_L_CreateFeature( mLayer, poFeature ) != OGRERR_NONE )
   {
-    QgsDebugMsg( "Failed to create feature in shapefile" );
+    mErrorMessage = QObject::tr( "Feature creation error (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    mError = ErrFeatureWriteFailed;
+
+    QgsDebugMsg( mErrorMessage );
     OGR_F_Destroy( poFeature );
     return false;
   }
@@ -432,9 +482,11 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
                                        const QString& fileEncoding,
                                        const QgsCoordinateReferenceSystem* destCRS,
                                        bool onlySelected,
-                                       QString *errorMessage )
+                                       QString *errorMessage,
+                                       const QStringList &datasourceOptions,
+                                       const QStringList &layerOptions )
 {
-  return writeAsVectorFormat( layer, shapefileName, fileEncoding, destCRS, "ESRI Shapefile", onlySelected, errorMessage );
+  return writeAsVectorFormat( layer, shapefileName, fileEncoding, destCRS, "ESRI Shapefile", onlySelected, errorMessage, datasourceOptions, layerOptions );
 }
 
 QgsVectorFileWriter::WriterError
@@ -444,7 +496,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QgsCoordinateReferenceSystem *destCRS,
     const QString& driverName,
     bool onlySelected,
-    QString *errorMessage )
+    QString *errorMessage,
+    const QStringList &datasourceOptions,
+    const QStringList &layerOptions )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
@@ -462,7 +516,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     outputCRS = &layer->srs();
   }
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, layer->pendingFields(), layer->wkbType(), outputCRS, driverName );
+    new QgsVectorFileWriter( fileName, fileEncoding, layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();
@@ -472,6 +526,11 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       *errorMessage = writer->errorMessage();
     delete writer;
     return err;
+  }
+
+  if ( errorMessage )
+  {
+    errorMessage->clear();
   }
 
   QgsAttributeList allAttr = layer->pendingAllAttributesList();
@@ -492,6 +551,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   {
     shallTransform = false;
   }
+
+  int n = 0, errors = 0;
 
   // write all features
   while ( layer->nextFeature( fet ) )
@@ -519,7 +580,31 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
         return ErrProjection;
       }
     }
-    writer->addFeature( fet );
+    if ( !writer->addFeature( fet ) )
+    {
+      WriterError err = writer->hasError();
+      if ( err != NoError && errorMessage )
+      {
+        if ( errorMessage->isEmpty() )
+        {
+          *errorMessage = QObject::tr( "Feature write errors:" );
+        }
+        *errorMessage += "\n" + writer->errorMessage();
+      }
+      errors++;
+
+      if ( errors > 1000 )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage += QObject::tr( "Stopping after %1 errors" ).arg( errors );
+        }
+
+        n = -1;
+        break;
+      }
+    }
+    n++;
   }
 
   delete writer;
@@ -529,7 +614,12 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     delete ct;
   }
 
-  return NoError;
+  if ( errors > 0 && errorMessage && n > 0 )
+  {
+    *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( n - errors ).arg( n );
+  }
+
+  return errors == 0 ? NoError : ErrFeatureWriteFailed;
 }
 
 
