@@ -290,6 +290,8 @@
 		720383810F8BA8C50083B883 /* problem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382F90F8B8B540083B883 /* problem.cpp */; };
 		720383820F8BA8C50083B883 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382FD0F8B8B540083B883 /* util.cpp */; };
 		72038CA310893F3100439C44 /* qgscomposition.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6730F39E57A003DC336 /* qgscomposition.h */; };
+		7208FB70122A137B00E812BB /* QgsVectorLayerSaveAsDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7208FB6E122A136700E812BB /* QgsVectorLayerSaveAsDialog-de_DE */; };
+		7208FB71122A137B00E812BB /* QgsVectorLayerSaveAsDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7208FB6F122A136700E812BB /* QgsVectorLayerSaveAsDialog-en_US */; };
 		72095D7A115E53CF000AE45E /* qgsvectorlayersaveasdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72095D78115E5385000AE45E /* qgsvectorlayersaveasdialog.cpp */; };
 		72095D7B115E53CF000AE45E /* qgsvectorlayersaveasdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72095D79115E5385000AE45E /* qgsvectorlayersaveasdialog.h */; };
 		7209F03B0F39E6A1003DC336 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F03A0F39E6A1003DC336 /* ApplicationServices.framework */; };
@@ -3836,6 +3838,8 @@
 				7237F48811DE3DA000128BAC /* QgsScaleBarPluginGui-pt_BR in Copy - context_help */,
 				7237F48911DE3DA000128BAC /* QgsSpatiaLiteSourceSelect-pt_BR in Copy - context_help */,
 				7237F48A11DE3DA000128BAC /* QgsStyleV2ManagerDialog-pt_BR in Copy - context_help */,
+				7208FB70122A137B00E812BB /* QgsVectorLayerSaveAsDialog-de_DE in Copy - context_help */,
+				7208FB71122A137B00E812BB /* QgsVectorLayerSaveAsDialog-en_US in Copy - context_help */,
 			);
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4679,6 +4683,8 @@
 		7203835A0F8B90B50083B883 /* qgsapplydialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsapplydialog.h; path = ../../src/plugins/qgsapplydialog.h; sourceTree = SOURCE_ROOT; };
 		7203835B0F8B90B50083B883 /* qgsvectoroverlayplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectoroverlayplugin.h; path = ../../src/plugins/qgsvectoroverlayplugin.h; sourceTree = SOURCE_ROOT; };
 		72038CA210893EA900439C44 /* testqgscoordinatereferencesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testqgscoordinatereferencesystem.cpp; path = ../../tests/src/core/testqgscoordinatereferencesystem.cpp; sourceTree = SOURCE_ROOT; };
+		7208FB6E122A136700E812BB /* QgsVectorLayerSaveAsDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerSaveAsDialog-de_DE"; path = "../../resources/context_help/QgsVectorLayerSaveAsDialog-de_DE"; sourceTree = SOURCE_ROOT; };
+		7208FB6F122A136700E812BB /* QgsVectorLayerSaveAsDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerSaveAsDialog-en_US"; path = "../../resources/context_help/QgsVectorLayerSaveAsDialog-en_US"; sourceTree = SOURCE_ROOT; };
 		72095D78115E5385000AE45E /* qgsvectorlayersaveasdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorlayersaveasdialog.cpp; path = ../../src/app/ogr/qgsvectorlayersaveasdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72095D79115E5385000AE45E /* qgsvectorlayersaveasdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorlayersaveasdialog.h; path = ../../src/app/ogr/qgsvectorlayersaveasdialog.h; sourceTree = SOURCE_ROOT; };
 		72095D7C115E540C000AE45E /* qgsvectorlayersaveasdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsvectorlayersaveasdialogbase.ui; path = ../../src/ui/qgsvectorlayersaveasdialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -6840,7 +6846,6 @@
 		725806B71225F138006B150F /* amenity_toilets_men.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = amenity_toilets_men.svg; path = ../../images/svg/amenity/amenity_toilets_men.svg; sourceTree = SOURCE_ROOT; };
 		725806B81225F138006B150F /* amenity_toilets_women.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = amenity_toilets_women.svg; path = ../../images/svg/amenity/amenity_toilets_women.svg; sourceTree = SOURCE_ROOT; };
 		725806B91225F138006B150F /* amenity_waste_bin.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = amenity_waste_bin.svg; path = ../../images/svg/amenity/amenity_waste_bin.svg; sourceTree = SOURCE_ROOT; };
-		725806BB1225F138006B150F /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .cvsignore; path = ../../images/svg/biology/.cvsignore; sourceTree = SOURCE_ROOT; };
 		725806BC1225F138006B150F /* Coniferous.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Coniferous.svg; path = ../../images/svg/biology/Coniferous.svg; sourceTree = SOURCE_ROOT; };
 		725806BD1225F138006B150F /* Deciduous.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Deciduous.svg; path = ../../images/svg/biology/Deciduous.svg; sourceTree = SOURCE_ROOT; };
 		725806BE1225F138006B150F /* Flower.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Flower.svg; path = ../../images/svg/biology/Flower.svg; sourceTree = SOURCE_ROOT; };
@@ -6861,11 +6866,9 @@
 		725806D01225F138006B150F /* food_fastfood2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = food_fastfood2.svg; path = ../../images/svg/food/food_fastfood2.svg; sourceTree = SOURCE_ROOT; };
 		725806D11225F138006B150F /* food_pub.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = food_pub.svg; path = ../../images/svg/food/food_pub.svg; sourceTree = SOURCE_ROOT; };
 		725806D21225F138006B150F /* food_restaurant.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = food_restaurant.svg; path = ../../images/svg/food/food_restaurant.svg; sourceTree = SOURCE_ROOT; };
-		725806D41225F138006B150F /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .cvsignore; path = ../../images/svg/geometric/.cvsignore; sourceTree = SOURCE_ROOT; };
 		725806D51225F138006B150F /* Square1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Square1.svg; path = ../../images/svg/geometric/Square1.svg; sourceTree = SOURCE_ROOT; };
 		725806D61225F138006B150F /* Square2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Square2.svg; path = ../../images/svg/geometric/Square2.svg; sourceTree = SOURCE_ROOT; };
 		725806D71225F138006B150F /* Triangle1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Triangle1.svg; path = ../../images/svg/geometric/Triangle1.svg; sourceTree = SOURCE_ROOT; };
-		725806D91225F138006B150F /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .cvsignore; path = ../../images/svg/gpsicons/.cvsignore; sourceTree = SOURCE_ROOT; };
 		725806DA1225F138006B150F /* anchor.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = anchor.svg; path = ../../images/svg/gpsicons/anchor.svg; sourceTree = SOURCE_ROOT; };
 		725806DB1225F138006B150F /* bank.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = bank.svg; path = ../../images/svg/gpsicons/bank.svg; sourceTree = SOURCE_ROOT; };
 		725806DC1225F138006B150F /* boat.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = boat.svg; path = ../../images/svg/gpsicons/boat.svg; sourceTree = SOURCE_ROOT; };
@@ -6912,7 +6915,6 @@
 		725807061225F139006B150F /* health_pharmacy.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = health_pharmacy.svg; path = ../../images/svg/health/health_pharmacy.svg; sourceTree = SOURCE_ROOT; };
 		725807071225F139006B150F /* health_pharmacy_dispencing.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = health_pharmacy_dispencing.svg; path = ../../images/svg/health/health_pharmacy_dispencing.svg; sourceTree = SOURCE_ROOT; };
 		725807081225F139006B150F /* health_veterinary.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = health_veterinary.svg; path = ../../images/svg/health/health_veterinary.svg; sourceTree = SOURCE_ROOT; };
-		7258070A1225F139006B150F /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .cvsignore; path = ../../images/svg/icon/.cvsignore; sourceTree = SOURCE_ROOT; };
 		7258070B1225F139006B150F /* cameraangle.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = cameraangle.svg; path = ../../images/svg/icon/cameraangle.svg; sourceTree = SOURCE_ROOT; };
 		7258070C1225F139006B150F /* golfcourse.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = golfcourse.svg; path = ../../images/svg/icon/golfcourse.svg; sourceTree = SOURCE_ROOT; };
 		7258070E1225F139006B150F /* amenity=place_of_worship.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "amenity=place_of_worship.svg"; path = "../../images/svg/landmark/amenity=place_of_worship.svg"; sourceTree = SOURCE_ROOT; };
@@ -6930,7 +6932,6 @@
 		7258071B1225F139006B150F /* money_bank.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = money_bank.svg; path = ../../images/svg/money/money_bank.svg; sourceTree = SOURCE_ROOT; };
 		7258071C1225F139006B150F /* money_bank2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = money_bank2.svg; path = ../../images/svg/money/money_bank2.svg; sourceTree = SOURCE_ROOT; };
 		7258071D1225F139006B150F /* money_currency_exchange.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = money_currency_exchange.svg; path = ../../images/svg/money/money_currency_exchange.svg; sourceTree = SOURCE_ROOT; };
-		7258071F1225F139006B150F /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .cvsignore; path = ../../images/svg/north_arrows/.cvsignore; sourceTree = SOURCE_ROOT; };
 		725807201225F139006B150F /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = default.png; path = ../../images/svg/north_arrows/default.png; sourceTree = SOURCE_ROOT; };
 		725807211225F139006B150F /* default.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.svg; path = ../../images/svg/north_arrows/default.svg; sourceTree = SOURCE_ROOT; };
 		725807221225F139006B150F /* north-arrow_10_with_map_layers.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "north-arrow_10_with_map_layers.svg"; path = "../../images/svg/north_arrows/north-arrow_10_with_map_layers.svg"; sourceTree = SOURCE_ROOT; };
@@ -7054,7 +7055,6 @@
 		7258079C1225F139006B150F /* sport_swimming_outdoor.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = sport_swimming_outdoor.svg; path = ../../images/svg/sport/sport_swimming_outdoor.svg; sourceTree = SOURCE_ROOT; };
 		7258079D1225F139006B150F /* sport_tennis.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = sport_tennis.svg; path = ../../images/svg/sport/sport_tennis.svg; sourceTree = SOURCE_ROOT; };
 		7258079E1225F139006B150F /* sport_windsurfing.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = sport_windsurfing.svg; path = ../../images/svg/sport/sport_windsurfing.svg; sourceTree = SOURCE_ROOT; };
-		725807A01225F139006B150F /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .cvsignore; path = ../../images/svg/symbol/.cvsignore; sourceTree = SOURCE_ROOT; };
 		725807A11225F139006B150F /* blank.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = blank.svg; path = ../../images/svg/symbol/blank.svg; sourceTree = SOURCE_ROOT; };
 		725807A21225F139006B150F /* blank_font.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = blank_font.svg; path = ../../images/svg/symbol/blank_font.svg; sourceTree = SOURCE_ROOT; };
 		725807A31225F139006B150F /* Cross1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Cross1.svg; path = ../../images/svg/symbol/Cross1.svg; sourceTree = SOURCE_ROOT; };
@@ -12983,7 +12983,6 @@
 		725806BA1225F138006B150F /* biology */ = {
 			isa = PBXGroup;
 			children = (
-				725806BB1225F138006B150F /* .cvsignore */,
 				725806BC1225F138006B150F /* Coniferous.svg */,
 				725806BD1225F138006B150F /* Deciduous.svg */,
 				725806BE1225F138006B150F /* Flower.svg */,
@@ -13036,7 +13035,6 @@
 		725806D31225F138006B150F /* geometric */ = {
 			isa = PBXGroup;
 			children = (
-				725806D41225F138006B150F /* .cvsignore */,
 				725806D51225F138006B150F /* Square1.svg */,
 				725806D61225F138006B150F /* Square2.svg */,
 				725806D71225F138006B150F /* Triangle1.svg */,
@@ -13048,7 +13046,6 @@
 		725806D81225F138006B150F /* gpsicons */ = {
 			isa = PBXGroup;
 			children = (
-				725806D91225F138006B150F /* .cvsignore */,
 				725806DA1225F138006B150F /* anchor.svg */,
 				725806DB1225F138006B150F /* bank.svg */,
 				725806DC1225F138006B150F /* boat.svg */,
@@ -13111,7 +13108,6 @@
 		725807091225F139006B150F /* icon */ = {
 			isa = PBXGroup;
 			children = (
-				7258070A1225F139006B150F /* .cvsignore */,
 				7258070B1225F139006B150F /* cameraangle.svg */,
 				7258070C1225F139006B150F /* golfcourse.svg */,
 			);
@@ -13153,7 +13149,6 @@
 		7258071E1225F139006B150F /* north_arrows */ = {
 			isa = PBXGroup;
 			children = (
-				7258071F1225F139006B150F /* .cvsignore */,
 				725807201225F139006B150F /* default.png */,
 				725807211225F139006B150F /* default.svg */,
 				725807221225F139006B150F /* north-arrow_10_with_map_layers.svg */,
@@ -13317,7 +13312,6 @@
 		7258079F1225F139006B150F /* symbol */ = {
 			isa = PBXGroup;
 			children = (
-				725807A01225F139006B150F /* .cvsignore */,
 				725807A11225F139006B150F /* blank.svg */,
 				725807A21225F139006B150F /* blank_font.svg */,
 				725807A31225F139006B150F /* Cross1.svg */,
@@ -13777,6 +13771,8 @@
 				721D944411CE90DF00714113 /* QgsVectorLayerProperties-pt_BR */,
 				721D944511CE90DF00714113 /* QgsVectorLayerProperties-ru_RU */,
 				721D944611CE90DF00714113 /* QgsVectorLayerProperties-sk_SK */,
+				7208FB6E122A136700E812BB /* QgsVectorLayerSaveAsDialog-de_DE */,
+				7208FB6F122A136700E812BB /* QgsVectorLayerSaveAsDialog-en_US */,
 				721D944711CE90DF00714113 /* QgsWMSSourceSelect-de_DE */,
 				721D944811CE90DF00714113 /* QgsWMSSourceSelect-en_US */,
 				721D944911CE90DF00714113 /* QgsWMSSourceSelect-it_IT */,
