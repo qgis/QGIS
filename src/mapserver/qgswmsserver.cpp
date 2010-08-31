@@ -899,7 +899,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPo
   //we need a selection rect (0.01 of map width)
   QgsRectangle mapRect = mapRender->extent();
   QgsRectangle layerRect = mapRender->mapToLayerCoordinates( layer, mapRect );
-  double searchRadius = ( layerRect.xMaximum() - layerRect.xMinimum() ) / 100;
+  double searchRadius = ( layerRect.xMaximum() - layerRect.xMinimum() ) / 200;
   QgsRectangle searchRect( infoPoint.x() - searchRadius, infoPoint.y() - searchRadius, \
                            infoPoint.x() + searchRadius, infoPoint.y() + searchRadius );
 
