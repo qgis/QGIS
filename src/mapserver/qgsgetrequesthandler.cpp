@@ -204,7 +204,7 @@ void QgsGetRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoD
       }
 
       //feature loop (for vector layers)
-      QDomNodeList featureNodeList = infoDoc.elementsByTagName( "Feature" );
+      QDomNodeList featureNodeList = layerElem.elementsByTagName( "Feature" );
       QDomElement currentFeatureElement;
 
       if ( featureNodeList.size() < 1 ) //raster layer?
@@ -229,7 +229,6 @@ void QgsGetRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoD
       {
         for ( int j = 0; j < featureNodeList.size(); ++j )
         {
-          featureInfoString.append( "<TABLE border=1 width=100%>\n" );
           QDomElement featureElement = featureNodeList.at( j ).toElement();
           if ( infoFormat == "text/plain" )
           {
@@ -237,6 +236,7 @@ void QgsGetRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoD
           }
           else if ( infoFormat == "text/html" )
           {
+            featureInfoString.append( "<TABLE border=1 width=100%>\n" );
             featureInfoString.append( "<TR><TH>Feature</TH><TD>" + featureElement.attribute( "id" ) + "</TD></TR>\n" );
           }
           //attribute loop
@@ -254,7 +254,11 @@ void QgsGetRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoD
               featureInfoString.append( "<TR><TH>" + attributeElement.attribute( "name" ) + "</TH><TD>" + attributeElement.attribute( "value" ) + "</TD></TR>\n" );
             }
           }
-          featureInfoString.append( "</TABLE>\n</BR>\n" );
+
+          if ( infoFormat == "text/html" )
+          {
+            featureInfoString.append( "</TABLE>\n</BR>\n" );
+          }
         }
       }
       if ( infoFormat == "text/plain" )
