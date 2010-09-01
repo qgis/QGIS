@@ -168,6 +168,11 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
           cmbXField->addItem( field );
           cmbYField->addItem( field );
         }
+
+        //x/y fields might be missing
+        cmbXField->addItem( "" );
+        cmbYField->addItem( "" );
+
         // Have a go at setting the selected items in the X and Y
         // combo boxes to something sensible.
         int indexX = cmbXField->findText( "lon", Qt::MatchContains );
@@ -181,11 +186,17 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
         {
           indexX = cmbXField->findText( "x", Qt::MatchContains );
           indexY = cmbXField->findText( "y", Qt::MatchContains );
-          if ( indexX != -1 && indexY != -1 )
+          //leave x- and y-field empty by default if no match found
+          if ( indexX == -1 )
           {
-            cmbXField->setCurrentIndex( indexX );
-            cmbYField->setCurrentIndex( indexY );
+            indexX = cmbXField->findText( "" );
           }
+          if ( indexY == -1 )
+          {
+            indexY = cmbYField->findText( "" );
+          }
+          cmbXField->setCurrentIndex( indexX );
+          cmbYField->setCurrentIndex( indexY );
         }
         // enable the buttons
         enableButtons();

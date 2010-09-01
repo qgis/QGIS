@@ -46,26 +46,28 @@ class CORE_EXPORT QGis
     // Feature types
     enum WkbType
     {
+      WKBUnknown = 0,
       WKBPoint = 1,
       WKBLineString,
       WKBPolygon,
       WKBMultiPoint,
       WKBMultiLineString,
       WKBMultiPolygon,
-      WKBUnknown,
+      WKBNoGeometry = 100, //attributes only
       WKBPoint25D = 0x80000001,
       WKBLineString25D,
       WKBPolygon25D,
       WKBMultiPoint25D,
       WKBMultiLineString25D,
-      WKBMultiPolygon25D
+      WKBMultiPolygon25D,
     };
     enum GeometryType
     {
       Point,
       Line,
       Polygon,
-      UnknownGeometry
+      UnknownGeometry,
+      NoGeometry
     };
 
     // String representation of geometry types (set in qgis.cpp)
