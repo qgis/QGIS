@@ -209,72 +209,82 @@ void QgsLegendLayer::changeSymbologySettings( const QgsMapLayer* theMapLayer,
 
 void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double widthScale )
 {
-  SymbologyList itemList;
-
-  //add the new items
-  QString lw, uv, label;
-  const QgsRenderer* renderer = layer->renderer();
-  const QList<QgsSymbol*> sym = renderer->symbols();
-
-  //create an item for each classification field (only one for most renderers)
-  QSettings settings;
-  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
+  if ( !layer )
   {
-    if ( renderer->needsAttributes() )
+    return;
+  }
+
+  SymbologyList itemList;
+  if ( layer->geometryType() != QGis::NoGeometry )
+  {
+    //add the new items
+    QString lw, uv, label;
+    const QgsRenderer* renderer = layer->renderer();
+    const QList<QgsSymbol*> sym = renderer->symbols();
+
+    //create an item for each classification field (only one for most renderers)
+    QSettings settings;
+    if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
     {
-      QgsAttributeList classfieldlist = renderer->classificationAttributes();
-      const QgsFieldMap& fields = layer->pendingFields();
-      for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
+      if ( renderer->needsAttributes() )
       {
-        QString classfieldname = layer->attributeAlias( *it );
-        if ( classfieldname.isEmpty() )
+        QgsAttributeList classfieldlist = renderer->classificationAttributes();
+        const QgsFieldMap& fields = layer->pendingFields();
+        for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
         {
-          classfieldname = fields[*it].name();
+          QString classfieldname = layer->attributeAlias( *it );
+          if ( classfieldname.isEmpty() )
+          {
+            classfieldname = fields[*it].name();
+          }
+          itemList.append( qMakePair( classfieldname, QPixmap() ) );
         }
-        itemList.append( qMakePair( classfieldname, QPixmap() ) );
       }
     }
+
+    for ( QList<QgsSymbol*>::const_iterator it = sym.begin(); it != sym.end(); ++it )
+    {
+      QImage img;
+      if (( *it )->type() == QGis::Point )
+      {
+        img = ( *it )->getPointSymbolAsImage( widthScale );
+      }
+      else if (( *it )->type() == QGis::Line )
+      {
+        img = ( *it )->getLineSymbolAsImage();
+      }
+      else  if (( *it )->type() == QGis::Line )//polygon
+      {
+        img = ( *it )->getPolygonSymbolAsImage();
+      }
+      else //must be a layer without geometry then
+      {
+
+      }
+
+      QString values;
+      lw = ( *it )->lowerValue();
+      if ( !lw.isEmpty() )
+      {
+        values += lw;
+      }
+      uv = ( *it )->upperValue();
+      if ( !uv.isEmpty() && lw != uv )
+      {
+        values += " - ";
+        values += uv;
+      }
+      label = ( *it )->label();
+      if ( !label.isEmpty() )
+      {
+        values += " ";
+        values += label;
+      }
+
+      QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
+      itemList.append( qMakePair( values, pix ) );
+    }
   }
-
-  for ( QList<QgsSymbol*>::const_iterator it = sym.begin(); it != sym.end(); ++it )
-  {
-    QImage img;
-    if (( *it )->type() == QGis::Point )
-    {
-      img = ( *it )->getPointSymbolAsImage( widthScale );
-    }
-    else if (( *it )->type() == QGis::Line )
-    {
-      img = ( *it )->getLineSymbolAsImage();
-    }
-    else //polygon
-    {
-      img = ( *it )->getPolygonSymbolAsImage();
-    }
-
-    QString values;
-    lw = ( *it )->lowerValue();
-    if ( !lw.isEmpty() )
-    {
-      values += lw;
-    }
-    uv = ( *it )->upperValue();
-    if ( !uv.isEmpty() && lw != uv )
-    {
-      values += " - ";
-      values += uv;
-    }
-    label = ( *it )->label();
-    if ( !label.isEmpty() )
-    {
-      values += " ";
-      values += label;
-    }
-
-    QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
-    itemList.append( qMakePair( values, pix ) );
-  }
-
   changeSymbologySettings( layer, itemList );
 }
 
@@ -359,6 +369,8 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
         case QGis::Polygon:
           return QgisApp::getThemePixmap( "/mIconPolygonLayer.png" );
           break;
+        case QGis::NoGeometry:
+          return QgisApp::getThemePixmap( "mActionOpenTable.png" );
         default:
           return QgisApp::getThemePixmap( "/mIconLayer.png" );
       }
@@ -366,7 +378,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
     else if ( theLayer->type() == QgsMapLayer::RasterLayer )
     {
       QSettings s;
-      if( s.value( "/qgis/createRasterLegendIcons", true ).toBool() )
+      if ( s.value( "/qgis/createRasterLegendIcons", true ).toBool() )
       {
         QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theLayer );
         QPixmap myPixmap( 32, 32 );
@@ -397,7 +409,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     theMenu.addAction( tr( "&Zoom to best scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
 
     QgsRasterLayer *rasterLayer =  qobject_cast<QgsRasterLayer *>( lyr );
-    if( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+    if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
     {
       theMenu.addAction( tr( "&Stretch using current extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
     }

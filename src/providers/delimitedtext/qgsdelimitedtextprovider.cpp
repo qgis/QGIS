@@ -108,7 +108,7 @@ QStringList QgsDelimitedTextProvider::splitLine( QString line )
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri ),
     mXFieldIndex( -1 ), mYFieldIndex( -1 ),
-    mShowInvalidLines( true )
+    mShowInvalidLines( true ), mWkbType( QGis::WKBPoint )
 {
   // Get the file name and mDelimiter out of the uri
   mFileName = uri.left( uri.indexOf( "?" ) );
@@ -150,7 +150,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   mSelectionRectangle = QgsRectangle();
   // assume the layer is invalid until proven otherwise
   mValid = false;
-  if ( mFileName.isEmpty() || mDelimiter.isEmpty() || xField.isEmpty() || yField.isEmpty() )
+  if ( mFileName.isEmpty() || mDelimiter.isEmpty() )
   {
     // uri is invalid so the layer must be too...
     QString( "Data source is invalid" );
@@ -233,7 +233,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       QgsDebugMsg( "Field count for the delimited text file is " + QString::number( attributeFields.size() ) );
       hasFields = true;
     }
-    else if ( mXFieldIndex != -1 && mYFieldIndex != -1 )
+    else //field names already read
     {
       mNumberFeatures++;
 
@@ -248,8 +248,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
       // Get the x and y values, first checking to make sure they
       // aren't null.
-      QString sX = parts[mXFieldIndex];
-      QString sY = parts[mYFieldIndex];
+      QString sX, sY;
+      if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+      {
+        sX = parts[mXFieldIndex];
+        sY = parts[mYFieldIndex];
+      }
 
       bool xOk = true;
       bool yOk = true;
@@ -285,6 +289,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     }
   }
 
+  if ( mXFieldIndex < 0 || mYFieldIndex < 0 )
+  {
+    mWkbType = QGis::WKBNoGeometry;
+  }
+
   // now it's time to decide the types for the fields
   for ( QgsFieldMap::iterator it = attributeFields.begin(); it != attributeFields.end(); ++it )
   {
@@ -300,20 +309,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     }
   }
 
-  if ( mXFieldIndex != -1 && mYFieldIndex != -1 )
-  {
-    QgsDebugMsg( "Data store is valid" );
-    QgsDebugMsg( "Number of features " + QString::number( mNumberFeatures ) );
-    QgsDebugMsg( "Extents " + mExtent.toString() );
-
-    mValid = true;
-  }
-  else
-  {
-    QgsDebugMsg( "Data store is invalid. Specified x,y fields do not match those in the database" );
-  }
-  QgsDebugMsg( "Done checking validity" );
-
+  mValid = true;
 }
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
@@ -346,24 +342,18 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
 
     bool xOk = false;
     bool yOk = false;
+    bool geometryOk = false;
 
     // Skip indexing malformed lines.
-    if ( attributeFields.size() == tokens.size() )
+    if ( mXFieldIndex < 0 || mYFieldIndex < 0 )
+    {
+      geometryOk = false;
+    }
+    else if ( attributeFields.size() == tokens.size() )
     {
       x = tokens[mXFieldIndex].toDouble( &xOk );
       y = tokens[mYFieldIndex].toDouble( &yOk );
-    }
-
-    if ( !( xOk && yOk ) )
-    {
-      // Accumulate any lines that weren't ok, to report on them
-      // later, and look at the next line in the file, but only if
-      // we need to.
-      QgsDebugMsg( "Malformed line : " + line );
-      if ( mShowInvalidLines )
-        mInvalidLines << line;
-
-      continue;
+      geometryOk = ( xOk && yOk );
     }
 
     // Give every valid line in the file an id, even if it's not
@@ -405,10 +395,17 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     s << x;
     s << y;
 
-    unsigned char* geometry = new unsigned char[buffer.size()];
-    memcpy( geometry, buffer.data(), buffer.size() );
-
-    feature.setGeometryAndOwnership( geometry, sizeof( wkbPoint ) );
+    unsigned char* geometry = 0;
+    if ( geometryOk )
+    {
+      geometry = new unsigned char[buffer.size()];
+      memcpy( geometry, buffer.data(), buffer.size() );
+      feature.setGeometryAndOwnership( geometry, sizeof( wkbPoint ) );
+    }
+    else
+    {
+      feature.setGeometryAndOwnership( 0, 0 );
+    }
 
     for ( QgsAttributeList::const_iterator i = mAttributesToFetch.begin();
           i != mAttributesToFetch.end();
@@ -502,7 +499,7 @@ QgsRectangle QgsDelimitedTextProvider::extent()
  */
 QGis::WkbType QgsDelimitedTextProvider::geometryType() const
 {
-  return QGis::WKBPoint;
+  return mWkbType;
 }
 
 /**
@@ -547,8 +544,8 @@ bool QgsDelimitedTextProvider::isValid()
  */
 bool QgsDelimitedTextProvider::boundsCheck( double x, double y )
 {
-  // no selection rectangle => always in the bounds
-  if ( mSelectionRectangle.isEmpty() )
+  // no selection rectangle or geometry => always in the bounds
+  if ( mSelectionRectangle.isEmpty() || !mFetchGeom )
     return true;
 
   return ( x <= mSelectionRectangle.xMaximum() ) && ( x >= mSelectionRectangle.xMinimum() ) &&
