@@ -138,6 +138,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   {
     for ( int i = 0; i < datasourceOptions.size(); i++ )
       CPLFree( options[i] );
+    delete [] options;
+    options = NULL;
   }
 
   if ( mDS == NULL )
@@ -194,6 +196,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   {
     for ( int i = 0; i < layerOptions.size(); i++ )
       CPLFree( options[i] );
+    delete [] options;
+    options = NULL;
   }
 
   if ( srs )
