@@ -869,7 +869,10 @@ namespace pal
     }
 
     if ( total_distance == 0 )
+    {
+      delete[] path_distances;
       return 0;
+    }
 
     LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
     double delta = max( f->labelInfo->label_height, total_distance / 10.0 );
@@ -941,6 +944,7 @@ namespace pal
       ( *lPos )[i] = positions->pop_front();
     }
     delete positions;
+    delete[] path_distances;
 
     return nbp;
   }
