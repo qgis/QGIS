@@ -654,7 +654,6 @@ namespace pal
 
     if ( index <= 1 && distance < 0 ) // We've gone off the start, fail out
     {
-      std::cerr << "err1" << std::endl;
       return NULL;
     }
 
@@ -666,7 +665,6 @@ namespace pal
     }
     if ( index >= path_positions->nbPoints )
     {
-      std::cerr << "err2" << std::endl;
       return NULL;
     }
 
@@ -688,7 +686,6 @@ namespace pal
     if ( segment_length == 0 )
     {
       // Not allowed to place across on 0 length segments or discontinuities
-      std::cerr << "err3" << std::endl;
       return NULL;
     }
 
@@ -714,7 +711,7 @@ namespace pal
       if ( segment_length == 0 )
       {
         // Not allowed to place across on 0 length segments or discontinuities
-        std::cerr << "err4" << std::endl;
+        delete slp;
         return NULL;
       }
 
@@ -743,7 +740,7 @@ namespace pal
           index++;
           if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
           {
-            //std::cerr << "err5" << std::endl;
+            delete slp;
             return NULL;
           }
           new_x = path_positions->x[index];
@@ -777,7 +774,7 @@ namespace pal
       while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
       if ( f->labelInfo->max_char_angle_delta > 0 && fabs( angle_delta ) > f->labelInfo->max_char_angle_delta*( M_PI / 180 ) )
       {
-        std::cerr << "err6" << std::endl;
+        delete slp;
         return NULL;
       }
 
@@ -826,12 +823,14 @@ namespace pal
       if ( !orientation_forced )
       {
         orientation = -orientation;
+        delete slp;
+        slp = NULL;
         slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance );
       }
       else
       {
         // Otherwise we have failed to find a placement
-        //std::cerr << "err7" << std::endl;
+        delete slp;
         return NULL;
       }
     }
