@@ -156,7 +156,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         mypLabel->setText( myFieldName + tr( " (txt)" ) );
       }
 
-      myWidget->setEnabled( vl->isEditable() );
+      if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+      {
+        myWidget->setEnabled( vl->isEditable() );
+      }
 
       mypInnerLayout->addWidget( myWidget, index, 1 );
       mpIndizes << it.key();
@@ -181,7 +184,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, it.key(), it.value() );
 
-      myWidget->setEnabled( vl->isEditable() );
+      if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+      {
+        myWidget->setEnabled( vl->isEditable() );
+      }
 
       mpIndizes << it.key();
       mpWidgets << myWidget;
