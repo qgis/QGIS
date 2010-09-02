@@ -31,11 +31,12 @@
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-#include <osg/Notify>
 #include <osgGA/StateSetManipulator>
 #include <osgGA/GUIEventHandler>
+
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
+#include <osgEarth/Notify>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarthUtil/EarthManipulator>
@@ -114,6 +115,10 @@ void GlobePlugin::initGui()
 
 void GlobePlugin::run()
 {
+#ifdef QGISDEBUG
+  if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel(osg::DEBUG_INFO);
+#endif
+
   mQGisIface->addDockWidget(Qt::RightDockWidgetArea, &mQDockWidget );
 
   viewer.show();
@@ -164,12 +169,24 @@ void GlobePlugin::extentsChanged()
     QgsDebugMsg(">>>>>>>>>> extentsChanged: " + mQGisIface->mapCanvas()->extent().toString());
 }
 
+typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
+
 void GlobePlugin::layersChanged()
 {
     QgsDebugMsg(">>>>>>>>>> layersChanged");
-    if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1)
+    if (mTileSource) {
+        //viewer.getDatabasePager()->clear();
+        mMapNode->getTerrain()->incrementRevision();
+        /*
+        TileList tiles;
+        mMapNode->getTerrain()->getVersionedTiles( tiles );
+        for( TileList::iterator i = tiles.begin(); i != tiles.end(); i++ )
+          i->get()->markTileForRegeneration(); //updateImagery( mQgisMapLayer->getId(), mMapNode->getMap(), mMapNode->getEngine() );
+        */
+    }
+   if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1)
     {
-        viewer.getDatabasePager()->clear();
+         /*
         QgsDebugMsg(">>>>>>>>>> removeMapLayer");
         QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
         mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
@@ -180,6 +197,7 @@ void GlobePlugin::layersChanged()
         mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
         mMapNode->getMap()->addMapLayer( mQgisMapLayer );
         QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
+        */
     }
 }
 
