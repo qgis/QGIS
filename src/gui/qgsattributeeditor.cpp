@@ -318,6 +318,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UniqueValuesEditable:
+    case QgsVectorLayer::Immutable:
     {
       QLineEdit *le = NULL;
       QTextEdit *te = NULL;
@@ -381,6 +382,11 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       {
         myWidget = pte;
       }
+
+      if ( myWidget )
+      {
+        myWidget->setDisabled( editType == QgsVectorLayer::Immutable );
+      }
     }
     break;
 
@@ -428,9 +434,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       }
     }
     break;
-
-    case QgsVectorLayer::Immutable:
-      return NULL;
   }
 
   setValue( myWidget, vl, idx, value );
