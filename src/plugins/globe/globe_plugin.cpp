@@ -175,18 +175,19 @@ void GlobePlugin::layersChanged()
 {
     QgsDebugMsg(">>>>>>>>>> layersChanged");
     if (mTileSource) {
+      /*
         //viewer.getDatabasePager()->clear();
-        mMapNode->getTerrain()->incrementRevision();
-        /*
+        //mMapNode->getTerrain()->incrementRevision();
         TileList tiles;
         mMapNode->getTerrain()->getVersionedTiles( tiles );
-        for( TileList::iterator i = tiles.begin(); i != tiles.end(); i++ )
-          i->get()->markTileForRegeneration(); //updateImagery( mQgisMapLayer->getId(), mMapNode->getMap(), mMapNode->getEngine() );
+        for( TileList::iterator i = tiles.begin(); i != tiles.end(); i++ ) {
+          //i->get()->markTileForRegeneration();
+          i->get()->updateImagery( mQgisMapLayer->getId(), mMapNode->getMap(), mMapNode->getEngine() );
+        }
         */
     }
    if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1)
     {
-         /*
         QgsDebugMsg(">>>>>>>>>> removeMapLayer");
         QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
         mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
@@ -197,7 +198,6 @@ void GlobePlugin::layersChanged()
         mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
         mMapNode->getMap()->addMapLayer( mQgisMapLayer );
         QgsDebugMsg(QString(">>>>>>>>>> getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
-        */
     }
 }
 

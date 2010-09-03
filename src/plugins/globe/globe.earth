@@ -1,6 +1,8 @@
 <map name="QGIS Map" type="geocentric">
 
+    <!--
     <loading_policy mode="preemptive"/>
+    -->
 
     <image name="world" driver="gdal">
         <url>/usr/share/osgearth/data/world.tif</url>

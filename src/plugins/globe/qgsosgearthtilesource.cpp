@@ -26,8 +26,6 @@
 #include <QFile>
 #include <QPainter>
 
-#define QGIS_SCOPED_LOCK GDAL_SCOPED_LOCK
-
 using namespace osgEarth;
 using namespace osgEarth::Drivers;
 
@@ -39,15 +37,11 @@ QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface ) 
 void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const Profile* overrideProfile)
 {
     setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
-    // the top LOD is a 2x2 tile set.
-    //setProfile( Profile::create( "spherical-mercator", "", 2, 2 ) );
 }
 
 osg::Image* QgsOsgEarthTileSource::createImage( const TileKey* key,
                           ProgressCallback* progress )
 {
-    QGIS_SCOPED_LOCK;
-
     osg::ref_ptr<osg::Image> image;
     if (intersects(key))
     {
@@ -124,8 +118,6 @@ int QgsOsgEarthTileSource::configureMapRender( const QPaintDevice* paintDevice )
 
     QgsCoordinateReferenceSystem outputCRS;
 
-    //wms spec says that CRS parameter is mandatory.
-    //we don't rejeict the request if it is not there but disable reprojection on the fly
     if(true) //TODO
     {
         //disable on the fly projection
@@ -200,7 +192,6 @@ bool QgsOsgEarthTileSource::intersects(const TileKey* key)
     //Get the native extents of the tile
     double xmin, ymin, xmax, ymax;
     key->getGeoExtent().getBounds(xmin, ymin, xmax, ymax);
-
-    //TODO: return ! ( xmin >= _extentsMax.x() || xmax <= _extentsMin.x() || ymin >= _extentsMax.y() || ymax <= _extentsMin.y() );
-    return true;
+    QgsRectangle extent = mQGisIface->mapCanvas()->fullExtent();
+    return ! ( xmin >= extent.xMaximum() || xmax <= extent.xMinimum() || ymin >= extent.yMaximum() || ymax <= extent.yMinimum() );
 }
