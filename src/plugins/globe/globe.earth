@@ -1,7 +1,9 @@
 <map name="QGIS Map" type="geocentric">
 
+    <loading_policy mode="preemptive"/>
+
     <image name="world" driver="gdal">
-        <url>/home/pi/devel/gis/osgearth/data/world.tif</url>
+        <url>/usr/share/osgearth/data/world.tif</url>
     </image>
 
     <!--
@@ -13,17 +15,22 @@
     </image>
     -->
 
+    <!--
     <heightfield name="pelican srtm" driver="tms">
       <url>http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml</url>
     </heightfield>
+    -->
     <!--
     <heightfield name="WorldWind bil" driver="worldwind">
       <worldwind_cache>worldwind_SRTM</worldwind_cache>
     </heightfield>
     -->
+    <heightfield name="aster_dem" driver="gdal">
+      <url>/home/pi/data/geodata/Lech/ASTGTM_N47E010/ASTGTM_N47E010_dem.tif</url>
+    </heightfield>
 
-    <vertical_scale>2</vertical_scale>
     <!--
+    <vertical_scale>2</vertical_scale>
     <sample_ratio>0.25</sample_ratio>
     -->
 </map>
