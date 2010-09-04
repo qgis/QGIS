@@ -51,6 +51,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
 
   //mTable->setHeaderLabels(QStringList() << tr("Segments (in meters)") << tr("Total") << tr("Azimuth") );
 
+  QSettings settings;
+
+
   updateUi();
 }
 
@@ -85,6 +88,9 @@ void QgsMeasureDialog::mousePress( QgsPoint &point )
 
 void QgsMeasureDialog::mouseMove( QgsPoint &point )
 {
+  QSettings settings;
+  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
@@ -93,29 +99,32 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
     double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( tmpPoints );
-    editTotal->setText( formatArea( area ) );
+    editTotal->setText( formatArea( area, decimalPlaces ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
   {
     QgsPoint p1( mTool->points().last() ), p2( point );
 
     double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
-    editTotal->setText( formatDistance( mTotal + d ) );
+    editTotal->setText( formatDistance( mTotal + d, decimalPlaces ) );
     QGis::UnitType myDisplayUnits;
     // Ignore units
     convertMeasurement( d, myDisplayUnits, false );
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-    item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
+    item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
   }
 }
 
 void QgsMeasureDialog::addPoint( QgsPoint &point )
 {
+  QSettings settings;
+  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
     double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( mTool->points() );
-    editTotal->setText( formatArea( area ) );
+    editTotal->setText( formatArea( area, decimalPlaces ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
   {
@@ -126,16 +135,16 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
     double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
 
     mTotal += d;
-    editTotal->setText( formatDistance( mTotal ) );
+    editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
 
     QGis::UnitType myDisplayUnits;
     // Ignore units
     convertMeasurement( d, myDisplayUnits, false );
 
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-    item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
+    item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
 
-    item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', 2 ) ) );
+    item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', decimalPlaces ) ) );
     item->setTextAlignment( 0, Qt::AlignRight );
     mTable->addTopLevelItem( item );
     mTable->scrollToItem( item );
@@ -175,22 +184,31 @@ void QgsMeasureDialog::saveWindowLocation()
   settings.setValue( key, height() );
 }
 
-QString QgsMeasureDialog::formatDistance( double distance )
+QString QgsMeasureDialog::formatDistance( double distance, int decimalPlaces )
 {
+  QSettings settings;
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+
   QGis::UnitType myDisplayUnits;
   convertMeasurement( distance, myDisplayUnits, false );
-  return QgsDistanceArea::textUnit( distance, 2, myDisplayUnits, false );
+  return QgsDistanceArea::textUnit( distance, decimalPlaces, myDisplayUnits, false, baseUnit );
 }
 
-QString QgsMeasureDialog::formatArea( double area )
+QString QgsMeasureDialog::formatArea( double area, int decimalPlaces )
 {
+  QSettings settings;
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+
   QGis::UnitType myDisplayUnits;
   convertMeasurement( area, myDisplayUnits, true );
-  return QgsDistanceArea::textUnit( area, 2, myDisplayUnits, true );
+  return QgsDistanceArea::textUnit( area, decimalPlaces, myDisplayUnits, true, baseUnit );
 }
 
 void QgsMeasureDialog::updateUi()
 {
+  QSettings settings;
+  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+
   double dummy = 1.0;
   QGis::UnitType myDisplayUnits;
   // The dummy distance is ignored
@@ -216,12 +234,12 @@ void QgsMeasureDialog::updateUi()
   if ( mMeasureArea )
   {
     mTable->hide();
-    editTotal->setText( formatArea( 0 ) );
+    editTotal->setText( formatArea( 0, decimalPlaces ) );
   }
   else
   {
     mTable->show();
-    editTotal->setText( formatDistance( 0 ) );
+    editTotal->setText( formatDistance( 0, decimalPlaces ) );
   }
 
 }
