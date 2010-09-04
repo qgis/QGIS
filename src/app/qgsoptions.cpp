@@ -202,6 +202,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mDegreesRadioButton->setChecked( true );
   }
 
+  // set decimal places of the measure tool
+  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+  mDecimalPlacesSpinBox->setRange( 0, 12 );
+  mDecimalPlacesSpinBox->setValue( decimalPlaces );
+
+  // set if base unit of measure tool should be changed
+  bool baseUnit = settings.value( "qgis/measure/keepbaseunit", false ).toBool();
+  if ( baseUnit == true )
+  {
+    mKeepBaseUnitCheckBox->setChecked( true );
+  }
+  else
+  {
+    mKeepBaseUnitCheckBox->setChecked( false );
+  }
+
 
   // add the themes to the combo box on the option dialog
   QDir myThemeDir( ":/images/themes/" );
@@ -579,6 +595,14 @@ void QgsOptions::saveOptions()
     angleUnitString = "gon";
   }
   settings.setValue( "/qgis/measure/angleunits", angleUnitString );
+
+
+  int decimalPlaces = mDecimalPlacesSpinBox->value();
+  settings.setValue( "/qgis/measure/decimalplaces", decimalPlaces );
+
+  bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
+  settings.setValue( "/qgis/measure/keepbaseunit", baseUnit );
+
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();

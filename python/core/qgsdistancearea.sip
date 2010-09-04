@@ -58,6 +58,6 @@ class QgsDistanceArea
     //! compute bearing - in radians
     double bearing(const QgsPoint& p1, const QgsPoint& p2);
 
-    static QString textUnit(double value, int decimals, QGis::UnitType u, bool isArea);    
+    static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
 };

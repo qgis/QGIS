@@ -668,7 +668,7 @@ double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPoint>& points )
   return fabs( area ); // All areas are positive!
 }
 
-QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u, bool isArea )
+QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit )
 {
   QString unitLabel;
 
@@ -678,7 +678,11 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
     case QGis::Meters:
       if ( isArea )
       {
-        if ( fabs( value ) > 1000000.0 )
+        if ( keepBaseUnit )
+        {
+          unitLabel = QObject::tr( " m2" );
+        }
+        else if ( fabs( value ) > 1000000.0 )
         {
           unitLabel = QObject::tr( " km2" );
           value = value / 1000000.0;
@@ -695,11 +699,9 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       }
       else
       {
-        if ( fabs( value ) == 0.0 )
+        if ( keepBaseUnit || fabs( value ) == 0.0 )
         {
-          // Special case for pretty printing.
           unitLabel = QObject::tr( " m" );
-
         }
         else if ( fabs( value ) > 1000.0 )
         {
@@ -725,29 +727,33 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
     case QGis::Feet:
       if ( isArea )
       {
-        if ( fabs( value ) > ( 528.0*528.0 ) )
+        if ( keepBaseUnit  || fabs( value ) <= ( 528.0*528.0 ) )
+        {
+          unitLabel = QObject::tr( " sq ft" );
+        }
+        else
         {
           unitLabel = QObject::tr( " sq mile" );
           value = value / ( 5280.0 * 5280.0 );
         }
-        else
-        {
-          unitLabel = QObject::tr( " sq ft" );
-        }
       }
       else
       {
-        if ( fabs( value ) > 528.0 )
+        if ( fabs( value ) <= 528.0 || keepBaseUnit )
         {
-          unitLabel = QObject::tr( " mile" );
-          value = value / 5280.0;
+          if ( fabs( value ) == 1.0 )
+          {
+            unitLabel = QObject::tr( " foot" );
+          }
+          else
+          {
+            unitLabel = QObject::tr( " feet" );
+          }
         }
         else
         {
-          if ( fabs( value ) == 1.0 )
-            unitLabel = QObject::tr( " foot" );
-          else
-            unitLabel = QObject::tr( " feet" );
+          unitLabel = QObject::tr( " mile" );
+          value = value / 5280.0;
         }
       }
       break;

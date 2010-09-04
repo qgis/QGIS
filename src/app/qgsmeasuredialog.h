@@ -66,10 +66,10 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   private:
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance );
+    QString formatDistance( double distance, int decimalPlaces );
 
     //! formats area to most appropriate units
-    QString formatArea( double area );
+    QString formatArea( double area, int decimalPlaces );
 
     //! shows/hides table, shows correct units
     void updateUi();
