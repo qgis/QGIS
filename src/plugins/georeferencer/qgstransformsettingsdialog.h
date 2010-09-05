@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgstransformsettingsdialog.h 13764 2010-06-21 12:11:11Z mhugent $ */
+/* $Id$ */
 
 #ifndef QGSTRANSFORMSETTINGSDIALOG_H
 #define QGSTRANSFORMSETTINGSDIALOG_H
@@ -32,7 +32,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
                                 int countGCPpoints, QWidget *parent = 0 );
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QString &proj, QString& pdfReportFile, bool &zt, bool &loadInQgis,
+                               QString &raster, QString &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
                                double& resX, double& resY );
     static void resetSettings();
 
@@ -43,6 +43,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
   private slots:
     void on_tbnOutputRaster_clicked();
     void on_tbnTargetSRS_clicked();
+    void on_tbnMapFile_clicked();
     void on_tbnReportFile_clicked();
     void on_leTargetSRS_textChanged( const QString &text );
     void on_cmbTransformType_currentIndexChanged( const QString& text );
