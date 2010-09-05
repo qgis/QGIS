@@ -48,16 +48,16 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   leTargetSRS->setValidator( mRegExpValidator );
 
   // Populate CompressionComboBox
-  mListCompression.append("NONE");
-  mListCompression.append("LZW");
-  mListCompression.append("PACKBITS");
-  mListCompression.append("DEFLATE");
+  mListCompression.append( "NONE" );
+  mListCompression.append( "LZW" );
+  mListCompression.append( "PACKBITS" );
+  mListCompression.append( "DEFLATE" );
   QStringList listCompressionTr;
-  foreach ( QString item, mListCompression)
+  foreach( QString item, mListCompression )
   {
-    listCompressionTr.append(tr(item.toAscii().data()));
+    listCompressionTr.append( tr( item.toAscii().data() ) );
   }
-  cmbCompressionComboBox->addItems(listCompressionTr);
+  cmbCompressionComboBox->addItems( listCompressionTr );
 
 
   QSettings s;
@@ -86,12 +86,13 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   tbnOutputRaster->setIcon( getThemeIcon( "/mPushButtonFileOpen.png" ) );
   tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSDisabled.png" ) );
   tbnReportFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
+  tbnMapFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QString &proj, QString& pdfReportFile, bool &zt, bool &loadInQgis,
+    QString &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
     double& resX, double& resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -110,6 +111,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
     raster = leOutputRaster->text();
   }
   proj = leTargetSRS->text();
+  pdfMapFile = mMapFileLineEdit->text();
   pdfReportFile = mReportFileLineEdit->text();
   zt = cbxZeroAsTrans->isChecked();
   loadInQgis = cbxLoadInQgisWhenDone->isChecked();
@@ -241,6 +243,21 @@ void QgsTransformSettingsDialog::on_tbnTargetSRS_clicked()
       srs = projSelector->selectedAuthId();
     }
     leTargetSRS->setText( srs );
+  }
+}
+
+void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
+{
+  QSettings s;
+  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
+  QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  if ( !outputFileName.isNull() )
+  {
+    if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
+    {
+      outputFileName.append( ".pdf" );
+    }
+    mMapFileLineEdit->setText( outputFileName );
   }
 }
 

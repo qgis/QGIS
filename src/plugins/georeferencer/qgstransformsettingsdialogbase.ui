@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>356</width>
-    <height>429</height>
+    <width>438</width>
+    <height>478</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -137,14 +137,14 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>Generate pdf report:</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QLineEdit" name="mReportFileLineEdit"/>
@@ -158,21 +158,21 @@
        </item>
       </layout>
      </item>
-     <item row="7" column="0" colspan="2">
+     <item row="8" column="0" colspan="2">
       <widget class="QCheckBox" name="cbxUserResolution">
        <property name="text">
         <string>Set Target Resolution</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="9" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>Horizontal</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="9" column="1">
       <widget class="QgsValidatedDoubleSpinBox" name="dsbHorizRes">
        <property name="decimals">
         <number>5</number>
@@ -185,14 +185,14 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
+     <item row="10" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Vertical</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="10" column="1">
       <widget class="QgsValidatedDoubleSpinBox" name="dsbVerticalRes">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -220,6 +220,27 @@
         <string>Create world file</string>
        </property>
       </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Generate pdf map:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLineEdit" name="mMapFileLineEdit"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="tbnMapFile">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

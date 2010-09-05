@@ -103,7 +103,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void updateMouseCoordinatePrecision();
 
     // when one Layer is removed
-    void layerWillBeRemoved ( QString theLayerId );
+    void layerWillBeRemoved( QString theLayerId );
     void extentsChanged(); // Use for need add again Raster (case above)
 
     bool updateGeorefTransform();
@@ -127,7 +127,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void setupConnections();
 
     // Mapcanvas Plugin
-    void addRaster(QString file);
+    void addRaster( QString file );
 
     // settings
     void readSettings();
@@ -142,6 +142,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool georeference();
     bool writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform );
+    bool writePDFMapFile( const QString& fileName, const QgsGeorefTransform& transform );
     void updateTransformParamLabel();
 
     // gdal script
@@ -201,6 +202,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QString mGCPpointsFileName;
     QString mProjection;
     QString mPdfOutputFile;
+    QString mPdfOutputMapFile;
     double  mUserResX, mUserResY;  // User specified target scale
 
     QgsGeorefTransform::TransformParametrisation mTransformParam;

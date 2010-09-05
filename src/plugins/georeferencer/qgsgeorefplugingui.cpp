@@ -28,6 +28,9 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QTextStream>
+#include <QPen>
+#include <QStringList>
+#include <QList>
 
 #include "qgisinterface.h"
 #include "qgslegendinterface.h"
@@ -61,7 +64,6 @@
 #include "qgstransformsettingsdialog.h"
 
 #include "qgsgeorefplugingui.h"
-
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
@@ -310,7 +312,7 @@ bool QgsGeorefPluginGui::getTransformSettings()
   }
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
-                          mModifiedRasterFileName, mProjection, mPdfOutputFile, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+                          mModifiedRasterFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
@@ -1219,6 +1221,12 @@ bool QgsGeorefPluginGui::georeference()
     {
       writePDFReportFile( mPdfOutputFile, mGeorefTransform );
     }
+    if ( success && !mPdfOutputMapFile.isEmpty() )
+    {
+      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
+    }
+
+
   }
   else // Helmert, Polinom 1, Polinom 2, Polinom 3
   {
@@ -1242,6 +1250,10 @@ bool QgsGeorefPluginGui::georeference()
       if ( !mPdfOutputFile.isEmpty() )
       {
         writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+      }
+      if ( !mPdfOutputMapFile.isEmpty() )
+      {
+        writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
       }
       return true;
     }
@@ -1327,6 +1339,112 @@ bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
   error = sqrt(( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ) );
   return true;
 }
+
+bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeorefTransform& transform )
+{
+  if ( !mCanvas )
+  {
+    return false;
+  }
+
+  QgsMapRenderer* canvasRenderer = mCanvas->mapRenderer();
+  if ( !canvasRenderer )
+  {
+    return false;
+  }
+
+  QgsRasterLayer *rlayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
+  if ( !rlayer )
+  {
+    return false;
+  }
+  double mapRatio =  rlayer->extent().width() / rlayer->extent().height();
+
+  QPrinter printer;
+  printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( fileName );
+
+  QSettings s;
+  double paperWidth = s.value( "/Plugin-GeoReferencer/Config/WidthPDFMap" ).toDouble();
+  double paperHeight = s.value( "/Plugin-GeoReferencer/Config/HeightPDFMap" ).toDouble();
+
+  //create composition
+  QgsComposition* composition = new QgsComposition( mCanvas->mapRenderer() );
+  if ( mapRatio >= 1 )
+  {
+    composition->setPaperSize( paperHeight, paperWidth );
+  }
+  else
+  {
+    composition->setPaperSize( paperWidth, paperHeight );
+  }
+  composition->setPrintResolution( 300 );
+  printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );
+
+  double leftMargin = 8;
+  double topMargin = 8;
+  double contentWidth = composition->paperWidth() - 2 * leftMargin;
+  double contentHeight = composition->paperHeight() - 2 * topMargin;
+  double contentRatio = contentWidth / contentHeight;
+
+  //composer map
+  QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
+  composerMap->setKeepLayerSet( true );
+  QStringList list;
+  list.append( canvasRenderer->layerSet()[0] );
+  composerMap->setLayerSet( list );
+
+  double xcenter = rlayer->extent().center().x();
+  double ycenter = rlayer->extent().center().y();
+
+  QgsRectangle rect;
+  if ( mapRatio > contentRatio )
+  {
+    rect = QgsRectangle( 0, ycenter - ( rlayer->extent().width() / contentRatio ) / 2, rlayer->extent().width(), ycenter + ( rlayer->extent().width() / contentRatio ) / 2 );
+  }
+  if ( mapRatio <= contentRatio )
+  {
+    rect = QgsRectangle( xcenter - ( rlayer->extent().height() * contentRatio / 2 ), -1 * rlayer->extent().height(), xcenter + ( rlayer->extent().height() * contentRatio / 2 ), 0 );
+  }
+
+  composerMap->setNewExtent( rect );
+  composition->addItem( composerMap );
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+
+  QString residualUnits;
+  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
+  {
+    residualUnits = tr( "map units" );
+  }
+  else
+  {
+    residualUnits = tr( "pixels" );
+  }
+
+  //residual plot
+  QgsResidualPlotItem* resPlotItem = new QgsResidualPlotItem( composition );
+  composition->addItem( resPlotItem );
+  resPlotItem->setSceneRect( QRectF( leftMargin, topMargin, contentWidth, contentHeight ) );
+  resPlotItem->setExtent( rect );
+  resPlotItem->setGCPList( mPoints );
+  resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
+
+  printer.setResolution( composition->printResolution() );
+  QPainter p( &printer );
+  composition->setPlotStyle( QgsComposition::Print );
+  QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
+  QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
+  composition->render( &p, paperRectPixel, paperRectMM );
+
+  delete resPlotItem;
+  delete composerMap;
+  delete composition;
+
+  return true;
+}
+
+
 
 bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform )
 {
@@ -1475,7 +1593,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   gcpTable->setHeaderFont( tableHeaderFont );
   gcpTable->setContentFont( tableContentFont );
   QStringList gcpHeader;
-  gcpHeader << "id" << "enabled" << "pixelX" << "pixelY" << "mapX" << "mapY" << "resX[" + residualUnits + "]" << "resY[" + residualUnits + "]" << "resTot[" + residualUnits + "]";
+  gcpHeader << "id" << "enabled" << "pixelX" << "pixelY" << "mapX" << "mapY" << "resX [" + residualUnits + "]" << "resY [" + residualUnits + "]" << "resTot [" + residualUnits + "]";
   gcpTable->setHeaderLabels( gcpHeader );
 
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
@@ -1494,8 +1612,8 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 2 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 2 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 2 )\
-    <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 2 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
+    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 3 )\
+    <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTable->addRow( currentGCPStrings );
   }
 

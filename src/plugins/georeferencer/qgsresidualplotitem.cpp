@@ -44,12 +44,10 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   double widthMM = rect().width();
   double heightMM = rect().height();
 
-  QPen enabledPen( QColor( 0, 0, 255, 255 ) );
-  enabledPen.setWidthF( 0.4 );
-  QPen disabledPen( QColor( 0, 0, 255, 127 ) );
-  disabledPen.setWidthF( 0.3 );
-  QBrush enabledBrush( QColor( 255, 0, 0, 255 ) );
-  QBrush disabledBrush( QColor( 255, 0, 0, 127 ) );
+  QPen enabledPen( QColor( 255, 0, 0, 255 ), 0.3, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
+  QPen disabledPen( QColor( 255, 0, 0, 85 ), 0.2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
+  QBrush enabledBrush( QColor( 255, 255, 255, 255 ) );
+  QBrush disabledBrush( QColor( 255, 255, 255, 127 ) );
 
   //draw all points and collect minimal mm/pixel ratio
   double minMMPixelRatio = DBL_MAX;
@@ -74,7 +72,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
       painter->setPen( disabledPen );
       painter->setBrush( disabledBrush );
     }
-    painter->drawRect( QRectF( gcpItemMMX - 1, gcpItemMMY - 1, 2, 2 ) );
+    painter->drawRect( QRectF( gcpItemMMX - 0.5, gcpItemMMY - 0.5, 1, 1 ) );
     drawText( painter, gcpItemMMX + 2, gcpItemMMY + 2, QString::number(( *gcpIt )->id() ), QFont() );
 
     mmPixelRatio = maxMMToPixelRatioForGCP( *gcpIt, gcpItemMMX, gcpItemMMY );
