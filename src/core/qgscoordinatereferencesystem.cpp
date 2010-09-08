@@ -167,7 +167,7 @@ bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  return loadFromDb( id < 100000 ? QgsApplication::srsDbFilePath() :
+  return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
                      QgsApplication::qgisUserDbFilePath(), "srs_id", QString::number( id ) );
 }
 
