@@ -1903,7 +1903,7 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le coordinate dell&apos;immagine (pixel) devono essere numeri interi.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
@@ -1911,7 +1911,7 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le coordinate dell&apos;immagine (geografiche) devono essere numeri.</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
@@ -2595,7 +2595,7 @@ Vuoi comunque terminarlo?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="186"/>
@@ -2619,17 +2619,17 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
         <source>Gray</source>
-        <translation type="unfinished">Grigio</translation>
+        <translation>Grigio</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="219"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="224"/>
         <source>RGBA</source>
-        <translation type="unfinished"></translation>
+        <translation>RGBA</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="232"/>
@@ -3328,7 +3328,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation>Usa un render personalizzato</translation>
+        <translation>Usa un visualizzatore personalizzato</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
@@ -3626,7 +3626,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation>Usa un render personalizzato</translation>
+        <translation>Usa un visualizzatore personalizzato</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
@@ -3869,14 +3869,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>PythonConsole</name>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished">Console python</translation>
+        <translation>Console python</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this console
 use qgis.utils.iface object (instance of QgisInterface class).
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Per accedere all&apos;ambiente Quantum GISda questa console
+usa l&apos;oggetto qgis.utils.iface (istanza della classe QgisInterface).</translation>
     </message>
 </context>
 <context>
@@ -4999,7 +5000,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="269"/>
         <source>created field %1 not found (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>il campo creato %1 non è stato trovato (errore OGR: %2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="509"/>
@@ -5049,7 +5050,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="27"/>
         <source>Adds a new renderer that automatically handles point displacement in case they have the same position</source>
-        <translation>Aggiunge un nuovo renderer che gestisce automaticamente lo spostamento di punti che hanno la stessa posizione</translation>
+        <translation>Aggiunge un nuovo visualizzatore che gestisce automaticamente lo spostamento di punti che hanno la stessa posizione</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
@@ -5375,7 +5376,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1850"/>
         <source>Render</source>
-        <translation>Render</translation>
+        <translation>Visualizza</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2229"/>
@@ -5395,7 +5396,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1765"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation>Barra di progressione che mostra lo stato di rendering dei layer e molte altre operazioni che richiedono tempo</translation>
+        <translation>Barra di progressione che mostra lo stato di visualizzazione dei layer e molte altre operazioni che richiedono tempo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1837"/>
@@ -5405,7 +5406,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1853"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation>Se selezionato, vengono ridisegnati (rendering) tutti i vettori con le relative proprietà. Se non selezionato, non avverrà alcun rendering. Questo permette di aggiungere un gran numero di vettori e di cambiarne le proprietà prima che vengano disegnati.</translation>
+        <translation>Se selezionato, vengono ridisegnati (rendering) tutti i vettori con le relative proprietà. Se non selezionato, non avverrà alcuna visualizzazione. Questo permette di aggiungere un gran numero di vettori e di cambiarne le proprietà prima che vengano disegnati.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1569"/>
@@ -5415,7 +5416,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1857"/>
         <source>Toggle map rendering</source>
-        <translation>Attiva/disattiva il rendering della mappa</translation>
+        <translation>Attiva/disattiva la visualizzazione della mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3259"/>
@@ -6261,7 +6262,7 @@ Questo binario è stato compilato con le Qt %1, quelle attualmente in uso dall´
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1847"/>
         <source>Stop map rendering</source>
-        <translation>Interrompi il render della mappa</translation>
+        <translation>Interrompi la visualizzazione della mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="383"/>
@@ -6654,7 +6655,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2529"/>
         <source>Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points</source>
-        <translation>Aggiunto plugin renderer spostamento punto - permette di spostare punti per evitare sovrapposizioni con altri punti </translation>
+        <translation>Aggiunto plugin visualizzzione spostamento punto - permette di spostare punti per evitare sovrapposizioni con altri punti </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2530"/>
@@ -6699,7 +6700,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2538"/>
         <source>Data-defined size and rotation for single symbol renderer in symbology-ng</source>
-        <translation>Nuova simbologia: il renderer simbolo singolo supporta dimensione e rotazione definiti negli attributi</translation>
+        <translation>Nuova simbologia: la visualizzazione simbolo singolo supporta dimensione e rotazione definiti negli attributi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2539"/>
@@ -6750,7 +6751,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2548"/>
         <source>Added rule-based renderer for symbology-ng</source>
-        <translation>Aggiunto renderer basato su regole per la nuova simbologia</translation>
+        <translation>Aggiunto visualizzatore basato su regole per la nuova simbologia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2549"/>
@@ -8131,7 +8132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="151"/>
         <source> (long)</source>
-        <translation type="unfinished"></translation>
+        <translation> (long)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="156"/>
@@ -8906,7 +8907,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="164"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avanzato</translation>
+        <translation>Avanzato</translation>
     </message>
 </context>
 <context>
@@ -8924,7 +8925,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Image too big</source>
-        <translation type="unfinished"></translation>
+        <translation>Immagine troppo grande</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
@@ -8975,7 +8976,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
         <source>Image too large</source>
-        <translation type="unfinished"></translation>
+        <translation>Immagine troppo grande</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
@@ -9536,42 +9537,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="84"/>
         <source>Horizontal Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineamento orizzontale:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="93"/>
         <source>Left</source>
-        <translation type="unfinished">Sinistra</translation>
+        <translation>Sinistra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="100"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="107"/>
         <source>Right</source>
-        <translation type="unfinished">Destra</translation>
+        <translation>Destra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="117"/>
         <source>Vertical Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineamento verticale:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="123"/>
         <source>Top</source>
-        <translation type="unfinished">Cima</translation>
+        <translation>Cima</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="130"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Metà</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="137"/>
         <source>Bottom</source>
-        <translation type="unfinished">Fondo</translation>
+        <translation>Fondo</translation>
     </message>
 </context>
 <context>
@@ -9870,7 +9871,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="124"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="264"/>
         <source>Render</source>
-        <translation>Render</translation>
+        <translation>Visualizza</translation>
     </message>
 </context>
 <context>
@@ -13417,7 +13418,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1789"/>
         <source>Projective</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiettivo</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1791"/>
@@ -13787,7 +13788,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="179"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avanzato</translation>
+        <translation>Avanzato</translation>
     </message>
 </context>
 <context>
@@ -16837,12 +16838,12 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="23"/>
         <source>Lower value</source>
-        <translation>Abbassa il valore</translation>
+        <translation>Valore minimo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="36"/>
         <source>Upper value</source>
-        <translation>Alza il valore</translation>
+        <translation>Valore massimo</translation>
     </message>
 </context>
 <context>
@@ -16981,7 +16982,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
         <source>Buffer size</source>
-        <translation>Dimesione buffer</translation>
+        <translation>Dimensione buffer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="813"/>
@@ -17115,7 +17116,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
         <source>Use scale dependent rendering</source>
-        <translation>Utilizzare un rendering in funzione della scala</translation>
+        <translation>Visualizza in funzione della scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="144"/>
@@ -17156,7 +17157,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="28"/>
         <source>Label settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni delle etichette</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="34"/>
@@ -17403,27 +17404,27 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="752"/>
         <source>Font properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà del carattere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="770"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Grassetto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="793"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Corsivo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="803"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Sottolineato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="813"/>
         <source>Font family</source>
-        <translation type="unfinished">Famiglia del carattere</translation>
+        <translation>Famiglia del carattere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="823"/>
@@ -17433,17 +17434,17 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="835"/>
         <source>Buffer properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà del buffer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="843"/>
         <source>Buffer size</source>
-        <translation type="unfinished">Dimesione buffer</translation>
+        <translation>Dimensione buffer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="853"/>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore del buffer</translation>
     </message>
 </context>
 <context>
@@ -17499,7 +17500,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="402"/>
         <source>&amp;Stretch using current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stira usando l&apos;estensione attuale</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="407"/>
@@ -18560,7 +18561,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="142"/>
         <source>Rendering</source>
-        <translation>Rendering in corso</translation>
+        <translation>Visualizzazione in corso</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="204"/>
@@ -18853,7 +18854,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
-        <translation type="unfinished"></translation>
+        <translation>Se il servizo richiede un&apos;autenticazione semplice, inserisci un nome utente e una password opzionale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
@@ -19531,7 +19532,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli i layer da caricare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="43"/>
@@ -20062,7 +20063,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
         <source>Create raster icons in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea le icone raster nella legenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="399"/>
@@ -20082,7 +20083,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="489"/>
         <source>Rendering behavior</source>
-        <translation>Impostazioni di render</translation>
+        <translation>Impostazioni di visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="502"/>
@@ -20097,12 +20098,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="529"/>
         <source>Use render caching where possible to speed up redraws</source>
-        <translation>Usa il caching del disegno quando possibile per velocizzare il render</translation>
+        <translation>Usa il caching del disegno quando possibile per velocizzare la visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="539"/>
         <source>Rendering quality</source>
-        <translation>Qualità di rendering</translation>
+        <translation>Qualità di visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="584"/>
@@ -20127,7 +20128,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="574"/>
         <source>Use new generation symbology for rendering</source>
-        <translation>Utilizza la nuova generazione di simboli per il rendering</translation>
+        <translation>Utilizza la nuova generazione di simboli per la visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="766"/>
@@ -20400,7 +20401,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="99"/>
         <source>Rendering &amp; SVG</source>
-        <translation>Rendering &amp; SVG</translation>
+        <translation>Visualizzazione &amp; SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="114"/>
@@ -21004,7 +21005,7 @@ Messaggio di errore restituito dal database
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="791"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>In attesa</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="803"/>
@@ -22019,8 +22020,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="351"/>
         <source>The point displacement renderer only applies to (single) point layers. 
 &apos;%1&apos; is not a point layer and cannot be displayed by the point displacement renderer</source>
-        <translation>Il renderer per lo spostamento del punto si applica solo a layer puntuali (singoli). 
-&apos;%1&apos; non è un layer puntuale e non può essere visualizzato dal renderer per lo spostamento del punto</translation>
+        <translation>La visualizzazione per lo spostamento del punto si applica solo a layer puntuali (singoli). 
+&apos;%1&apos; non è un layer puntuale e non può essere visualizzato dal visualizzazione per lo spostamento del punto</translation>
     </message>
 </context>
 <context>
@@ -22038,12 +22039,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="40"/>
         <source>Renderer:</source>
-        <translation>Renderer:</translation>
+        <translation>Visualizzazione:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="52"/>
         <source>Renderer settings...</source>
-        <translation>Impostazioni renderer...</translation>
+        <translation>Impostazioni visualizzazione...</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="59"/>
@@ -24541,19 +24542,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="20"/>
         <source>Rotation field</source>
-        <translation type="unfinished">Campo di rotazione</translation>
+        <translation>Campo di rotazione</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="21"/>
         <source>Size scale field</source>
-        <translation type="unfinished">Campo di dimensione della scala</translation>
+        <translation>Campo di dimensione della scala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="32"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="71"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="91"/>
         <source>- no field -</source>
-        <translation type="unfinished">- nessun campo -</translation>
+        <translation>- nessun campo -</translation>
     </message>
 </context>
 <context>
@@ -24574,12 +24575,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="14"/>
         <source>Renderer settings</source>
-        <translation>Impostazioni renderer</translation>
+        <translation>Impostazioni visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer</source>
-        <translation>Renderer</translation>
+        <translation>Visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="48"/>
@@ -24594,7 +24595,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="80"/>
         <source>This renderer doesn&apos;t implement a graphical interface.</source>
-        <translation>Questo renderer non implementa una interfaccia grafica.</translation>
+        <translation>Questo visualizzatore non ha un&apos;interfaccia grafica.</translation>
     </message>
 </context>
 <context>
@@ -26758,7 +26759,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="39"/>
         <source>Projective</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiettivo</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="40"/>
@@ -27168,12 +27169,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2860"/>
         <source>renderer failed to save</source>
-        <translation>il renderer non è riuscito a salvare</translation>
+        <translation>il visualizzatore non è riuscito a salvare</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2867"/>
         <source>no renderer</source>
-        <translation>nessun renderer</translation>
+        <translation>nessun visualizzatore</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3217"/>
@@ -27286,7 +27287,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2696"/>
         <source>Unknown renderer</source>
-        <translation>Renderer sconosciuto</translation>
+        <translation>Visualizzatore sconosciuto</translation>
     </message>
 </context>
 <context>
@@ -27658,7 +27659,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="572"/>
         <source>Use scale dependent rendering</source>
-        <translation>Utilizzare un render in funzione della scala</translation>
+        <translation>Visualizza in funzione della scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="475"/>
@@ -27975,7 +27976,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2215"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
 </context>
 <context>
@@ -27992,7 +27993,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>No Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
@@ -28007,7 +28008,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="286"/>
         <source>GetCapabilities Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore in GetCapabilities</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="301"/>
