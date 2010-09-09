@@ -12372,7 +12372,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="341"/>
         <source>Disconnect</source>
-        <translation>Getrennt</translation>
+        <translation>Trennen</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="352"/>
@@ -22495,7 +22495,7 @@ Soll versucht werden die fehlenden Layer zu finden?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="177"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation>Layereinheiten (nur ohne KBS-Transformation)</translation>
+        <translation>Layereinheiten (nur verwendet wenn KBS-Transformation deaktiviert)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="183"/>
