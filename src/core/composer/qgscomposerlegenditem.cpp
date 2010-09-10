@@ -22,6 +22,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -134,6 +135,9 @@ void QgsComposerSymbolItem::readXML( const QDomElement& itemElem )
           break;
         case QGis::Polygon:
           setIcon( QIcon( QPixmap::fromImage( symbol->getPolygonSymbolAsImage() ) ) );
+          break;
+        case QGis::NoGeometry:
+          setIcon( QIcon( QgsApplication::activeThemePath() + "/mIconTableLayer.png" ) );
           break;
         case QGis::UnknownGeometry:
           // should not occur

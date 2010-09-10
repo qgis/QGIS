@@ -370,7 +370,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
           return QgisApp::getThemePixmap( "/mIconPolygonLayer.png" );
           break;
         case QGis::NoGeometry:
-          return QgisApp::getThemePixmap( "mActionOpenTable.png" );
+          return QgisApp::getThemePixmap( "/mIconTableLayer.png" );
         default:
           return QgisApp::getThemePixmap( "/mIconLayer.png" );
       }

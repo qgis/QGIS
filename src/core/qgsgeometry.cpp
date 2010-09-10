@@ -1796,6 +1796,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
       }
       break;
     }
+    case QGis::WKBNoGeometry:
     case QGis::WKBUnknown:
       break;
   }
@@ -2099,6 +2100,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
       }
       break;
     }
+    case QGis::WKBNoGeometry:
     case QGis::WKBUnknown:
       break;
   }
@@ -6588,6 +6590,7 @@ void QgsGeometry::validateGeometry( QList<Error> &errors )
     }
     break;
 
+    case QGis::WKBNoGeometry:
     case QGis::WKBUnknown:
       QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
       errors << Error( QObject::tr( "Unknown geometry type" ) );

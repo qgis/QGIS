@@ -1171,6 +1171,7 @@ void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, d
       drawPolygonSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, yDownShift );
       break;
     case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
       // shouldn't occur
       break;
   }
