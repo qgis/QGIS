@@ -27,7 +27,13 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLegend::QgsComposerLegend( QgsComposition* composition ): QgsComposerItem( composition ), mTitle( tr( "Legend" ) ), mBoxSpace( 2 ), mLayerSpace( 3 ), mSymbolSpace( 2 ), mIconLabelSpace( 2 )
+QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
+	: QgsComposerItem( composition )
+	  , mTitle( tr( "Legend" ) )
+	  , mBoxSpace( 2 )
+	  , mLayerSpace( 3 )
+	  , mSymbolSpace( 2 )
+	  , mIconLabelSpace( 2 )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -326,6 +332,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
       symbolHeight = mSymbolHeight;
       break;
     case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
       // shouldn't occur
       break;
   }

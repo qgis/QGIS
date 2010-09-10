@@ -39,8 +39,15 @@
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
-QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue ): QObject( 0 ), QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), \
-    mFrame( true ), mItemPositionLocked( false ), mLastValidViewScaleFactor( -1 ), mRotation( 0 )
+QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
+    : QObject( 0 )
+    , QGraphicsRectItem( 0 )
+    , mComposition( composition )
+    , mBoundingResizeRectangle( 0 )
+    , mFrame( true )
+    , mItemPositionLocked( false )
+    , mLastValidViewScaleFactor( -1 )
+    , mRotation( 0 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -58,9 +65,15 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
   }
 }
 
-QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue ): \
-    QObject( 0 ), QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true ), \
-    mItemPositionLocked( false ), mLastValidViewScaleFactor( -1 ), mRotation( 0 )
+QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
+    : QObject( 0 )
+    , QGraphicsRectItem( 0, 0, width, height, 0 )
+    , mComposition( composition )
+    , mBoundingResizeRectangle( 0 )
+    , mFrame( true )
+    , mItemPositionLocked( false )
+    , mLastValidViewScaleFactor( -1 )
+    , mRotation( 0 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -530,8 +543,8 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
       }
       else  //for composer items, we prefer setSceneRect as subclasses can implement custom behaviour (e.g. item group)
       {
-        changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + moveRectX, \
-                                          originalItem->transform().dy() + moveRectY, \
+        changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + moveRectX,
+                                          originalItem->transform().dy() + moveRectY,
                                           originalItem->rect().width(), originalItem->rect().height() ) );
       }
     }
@@ -550,7 +563,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
   }
   else //for composer items, we prefer setSceneRect as subclasses can implement custom behaviour (e.g. item group)
   {
-    changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + mx, originalItem->transform().dy() + my, \
+    changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + mx, originalItem->transform().dy() + my,
                                       originalItem->rect().width() + rx, originalItem->rect().height() + ry ) );
   }
 }
