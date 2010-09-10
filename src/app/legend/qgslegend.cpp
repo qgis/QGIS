@@ -218,8 +218,8 @@ void QgsLegend::mousePressEvent( QMouseEvent * e )
   else if ( e->button() == Qt::RightButton )
   {
     QTreeWidgetItem* item = itemAt( e->pos() );
-    setCurrentItem( item );
-    handleRightClickEvent( item, e->globalPos() );
+    if ( item == currentItem() )
+      handleRightClickEvent( item, e->globalPos() );
   }
   QTreeWidget::mousePressEvent( e );
 }                               // contentsMousePressEvent
@@ -622,6 +622,7 @@ bool QgsLegend::setCurrentLayer( QgsMapLayer *layer )
     return false;
 
   setCurrentItem( ll );
+  clearSelection();
   return true;
 }
 
