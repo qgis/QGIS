@@ -455,6 +455,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
 
   if ( configureMapRender( outputImage ) != 0 )
   {
+    delete outputImage;
     return 2;
   }
 
@@ -462,6 +463,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationSrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, outputImage->width() ) );
+  delete outputImage; //no longer needed for feature info
 
   //read FEATURE_COUNT
   int featureCount = 1;
