@@ -5694,7 +5694,7 @@ void QgisApp::extentsViewToggled( bool theFlag )
     //extents view mode!
     mToggleExtentsViewButton->setIcon( getThemeIcon( "extents.png" ) );
     mCoordsEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
-    mCoordsEdit->setEnabled( false );
+    mCoordsEdit->setReadOnly( true );
     showExtents();
   }
   else
@@ -5702,7 +5702,7 @@ void QgisApp::extentsViewToggled( bool theFlag )
     //mouse cursor pos view mode!
     mToggleExtentsViewButton->setIcon( getThemeIcon( "tracking.png" ) );
     mCoordsEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
-    mCoordsEdit->setEnabled( true );
+    mCoordsEdit->setReadOnly( false );
     mCoordsLabel->setText( tr( "Coordinate:" ) );
   }
 }
