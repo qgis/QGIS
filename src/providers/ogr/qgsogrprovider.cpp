@@ -843,6 +843,9 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
   }
   recalculateFeatureCount();
 
+  if ( returnvalue )
+    clearMinMaxCache();
+
   return returnvalue;
 }
 
@@ -888,6 +891,11 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
 {
+  if ( attr_map.isEmpty() )
+    return true;
+
+  clearMinMaxCache();
+
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
     long fid = ( long ) it.key();
@@ -1048,6 +1056,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
 
   recalculateFeatureCount();
+
+  clearMinMaxCache();
 
   if ( extent_ )
   {

@@ -356,6 +356,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
 
+    void clearMinMaxCache();
     void fillMinMaxCache();
 
     bool mCacheMinMaxDirty;
