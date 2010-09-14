@@ -414,7 +414,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
         {
           mCacheMinValues[*it] = value;
         }
-        if ( mCacheMaxValues[*it].isNull() || value > mCacheMinValues[*it].toString() )
+        if ( mCacheMaxValues[*it].isNull() || value > mCacheMaxValues[*it].toString() )
         {
           mCacheMaxValues[*it] = value;
         }
