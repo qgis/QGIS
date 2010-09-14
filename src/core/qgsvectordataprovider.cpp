@@ -305,10 +305,7 @@ QVariant QgsVectorDataProvider::minimumValue( int index )
     return QVariant();
   }
 
-  if ( mCacheMinMaxDirty )
-  {
-    fillMinMaxCache();
-  }
+  fillMinMaxCache();
 
   if ( !mCacheMinValues.contains( index ) )
     return QVariant();
@@ -324,10 +321,7 @@ QVariant QgsVectorDataProvider::maximumValue( int index )
     return QVariant();
   }
 
-  if ( mCacheMinMaxDirty )
-  {
-    fillMinMaxCache();
-  }
+  fillMinMaxCache();
 
   if ( !mCacheMaxValues.contains( index ) )
     return QVariant();
@@ -358,8 +352,16 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
   }
 }
 
+void QgsVectorDataProvider::clearMinMaxCache()
+{
+  mCacheMinMaxDirty = true;
+}
+
 void QgsVectorDataProvider::fillMinMaxCache()
 {
+  if ( !mCacheMinMaxDirty )
+    return;
+
   const QgsFieldMap& flds = fields();
   for ( QgsFieldMap::const_iterator it = flds.begin(); it != flds.end(); ++it )
   {
