@@ -2614,7 +2614,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <source>Expand:</source>
-        <translation type="unfinished"></translation>
+        <translation>Espandi:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
@@ -3969,7 +3969,7 @@ usa l&apos;oggetto qgis.utils.iface (istanza della classe QgisInterface).</trans
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="233"/>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adeguare una trasformazione proiettiva richiede almeno 4 punti corrispondenti.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
@@ -5173,22 +5173,22 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="39"/>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun vettoriale attivo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="40"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Per selezionare geometrie, seleziona un vettore cliccando sul nome nella legenda</translation>
+        <translation>Per selezionare geometrie, seleziona un vettore cliccando sul nome nella legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="116"/>
         <source>CRS Exception</source>
-        <translation type="unfinished">Eccezione CRS</translation>
+        <translation>Eccezione CRS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished">Selezione dell&apos;estensione oltre il sistema di coordinate del layer.</translation>
+        <translation>Selezione dell&apos;estensione oltre il sistema di coordinate del layer.</translation>
     </message>
 </context>
 <context>
@@ -6153,7 +6153,7 @@ Questa copia di QGIS registra l&apos;output per il debugging.</translation>
         <location filename="../src/app/qgisapp.cpp" line="817"/>
         <location filename="../src/app/qgisapp.cpp" line="819"/>
         <source>Add Ring</source>
-        <translation>Aggiunge buco</translation>
+        <translation>Aggiungi buco</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1823"/>
@@ -6379,25 +6379,25 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="888"/>
         <location filename="../src/app/qgisapp.cpp" line="890"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleleziona elementi con un rettangolo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="894"/>
         <location filename="../src/app/qgisapp.cpp" line="896"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleleziona elementi con un poligono</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="900"/>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleleziona elementi a mano libera</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="906"/>
         <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>Select features by radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleleziona elementi con un cerchio</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="948"/>
@@ -6886,17 +6886,17 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2758"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona un raster da aggiungere...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2763"/>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2797"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona un vettore da aggiungere...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3426"/>
@@ -8930,7 +8930,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
-        <translation type="unfinished"></translation>
+        <translation>La creazione dell&apos;immagine con %1x%2 pixel è fallita. L&apos;esportazione è stata interrotta.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
@@ -12101,7 +12101,7 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="275"/>
         <source>rownum</source>
-        <translation type="unfinished"></translation>
+        <translation>num righe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="285"/>
@@ -17379,7 +17379,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="677"/>
         <source>multiline labels</source>
-        <translation type="unfinished"></translation>
+        <translation>etichette multilinea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="686"/>
@@ -17399,7 +17399,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="740"/>
         <source>Data defined settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni definite dai dati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="752"/>
@@ -20987,7 +20987,7 @@ Questo il messaggio di errore restituito:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="705"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished"></translation>
+        <translation>La connessione al database ha avuto successo, ma non si sono trovate tabelle accessibili.</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="765"/>
@@ -27998,12 +27998,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>capabilities document contained no layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>il documento di capabilities non contiene layers.</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="281"/>
         <source>Capabilities document is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Il documento di capabilities non è valido</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="286"/>
@@ -28697,7 +28697,7 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="871"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished"></translation>
+        <translation>il documento di capabilities è vuoto</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="983"/>
@@ -31110,7 +31110,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Create and add new table to vector</source>
-        <translation>Crea e aggiunge una nuova tabella al vettore</translation>
+        <translation>Crea e aggiungi una nuova tabella al vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
