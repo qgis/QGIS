@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Gaussian kernel density" module="qgis.v.kernel.rast.py">
+<qgisgrassmodule label="Gaussian kernel density" module="qgis.v.kernel.rast.py"  manual="v.kernel">
 	<option key="input" />
 	<option key="stddeviation" />
 	<option key="output" />
