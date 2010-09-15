@@ -78,10 +78,8 @@ void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
     r = r.normalized();
   }
 
-  // update the point prior to changing its position
-  update();
-
   // set position in canvas where the item will have coordinate (0,0)
+  prepareGeometryChange();
   setPos( r.topLeft() );
   mItemSize = QSizeF( r.width() + 2, r.height() + 2 );
 
