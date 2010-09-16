@@ -627,12 +627,16 @@ void QgsAttributeTableDialog::search()
   int fldIndex = mLayer->fieldNameIndex( fieldName );
   QVariant::Type fldType = flds[fldIndex].type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
+  QString sensString = "ILIKE";
+  if (cbxCaseSensitive->isChecked()) {
+     sensString = "LIKE";
+  }
 
   QString str = QString( "%1 %2 '%3'" )
                 .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
-                .arg( numeric ? "=" : "~" )
-                .arg( mQuery->displayText().replace( "'", "''" ) ); // escape quotes
-
+                .arg( numeric ? "=" : sensString )
+                .arg( numeric ? mQuery->displayText().replace( "'", "''" ) :
+                                "%" + mQuery->displayText().replace ("'", "''") + "%"  ); // escape quotes
   doSearch( str );
 }
 

@@ -26,14 +26,24 @@
      <item>
       <widget class="QCheckBox" name="cbxShowSelectedOnly">
        <property name="text">
-        <string>Show selected records only</string>
+        <string>Show selected only</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="cbxSearchSelectedOnly">
        <property name="text">
-        <string>Search selected records only</string>
+        <string>Search selected only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbxCaseSensitive">
+       <property name="text">
+        <string>Case sensitive</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -68,8 +78,14 @@
      </item>
      <item>
       <widget class="QPushButton" name="mHelpButton">
+       <property name="minimumSize">
+        <size>
+         <width>85</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
-        <string>Help</string>
+        <string>?</string>
        </property>
       </widget>
      </item>
