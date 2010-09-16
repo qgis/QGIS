@@ -1847,7 +1847,8 @@ void QgisApp::createStatusBar()
   mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
   mScaleEdit->setAlignment( Qt::AlignLeft );
-  QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
+  // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
+  QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
   mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
   mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
@@ -4932,6 +4933,15 @@ void QgisApp::userScale()
       mMapCanvas->zoomScale( rightSide / leftSide );
     }
   }
+  else
+  {
+    bool rightOk;
+    double rightSide = parts.at( 0 ).toDouble( &rightOk );
+    if ( rightOk )
+    {
+      mMapCanvas->zoomScale( rightSide );
+    }
+  } 
 }
 
 void QgisApp::userCenter()
