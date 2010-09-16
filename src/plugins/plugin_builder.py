@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #***************************************************************************
 #    plugin_builder.py
 # A script to automate creation of a new QGIS plugin using the plugin_template
@@ -14,9 +15,6 @@
 #*   (at your option) any later version.                                   *
 #*                                                                         *
 #***************************************************************************/
-
-
-
 import os, sys, shutil, re
 
 def template_file(file):
@@ -25,7 +23,7 @@ def template_file(file):
 def plugin_file(pluginDir, file):
 	return os.path.join(pluginDir, file)
 
-# make sure we are in a the plugins directory otherwise the changes this script will make will 
+# make sure we are in the plugins directory otherwise the changes this script will make will 
 # wreak havoc....
 
 myDir = os.getcwd()
