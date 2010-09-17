@@ -256,6 +256,10 @@ class QgisInterface : QObject
     virtual QAction *actionHelpSeparator2() = 0;
     virtual QAction *actionAbout() = 0;
 
+    //! open feature form
+    // @added in 1.6
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+
   signals:
     /** Emited whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
