@@ -37,6 +37,7 @@ class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsLegendInterface;
+class QgsFeature;
 
 /** \ingroup gui
  * QgisInterface
@@ -301,6 +302,11 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionHelpSeparator2() = 0;
     virtual QAction *actionAbout() = 0;
+
+    //! Open feature form
+    // returns true when dialog was accepted
+    // @added in 1.6
+    virtual bool openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f ) = 0;
 
   signals:
     /** Emited whenever current (selected) layer changes.

@@ -29,6 +29,9 @@
 #include "qgsmapcanvas.h"
 #include "qgslegend.h"
 #include "qgsshortcutsmanager.h"
+#include "qgsattributedialog.h"
+#include "qgsfield.h"
+#include "qgsvectordataprovider.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis ),
@@ -352,3 +355,26 @@ QAction *QgisAppInterface::actionQgisHomePage() { return qgis->actionQgisHomePag
 QAction *QgisAppInterface::actionCheckQgisVersion() { return qgis->actionCheckQgisVersion(); }
 QAction *QgisAppInterface::actionHelpSeparator2() { return qgis->actionHelpSeparator2(); }
 QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
+
+bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f )
+{
+  if ( !vlayer )
+    return false;
+
+  QgsVectorDataProvider *dp = vlayer->dataProvider();
+  if ( dp )
+  {
+    // add the fields to the QgsFeature
+    const QgsFieldMap fields = vlayer->pendingFields();
+    for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+    {
+      if ( !f.attributeMap().contains( it.key() ) )
+        f.addAttribute( it.key(), dp->defaultValue( it.key() ) );
+    }
+  }
+
+  QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, &f );
+  bool res = mypDialog->exec();
+  delete mypDialog;
+  return res;
+}
