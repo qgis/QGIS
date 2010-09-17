@@ -262,6 +262,11 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionHelpSeparator2();
     virtual QAction *actionAbout();
 
+    //! open feature form
+    // returns true when dialog was accepted
+    // @added in 1.6
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f );
+
   signals:
     void currentThemeChanged( QString );
 
