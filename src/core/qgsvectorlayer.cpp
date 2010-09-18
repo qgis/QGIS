@@ -3926,6 +3926,10 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
   bool needToTrim = false;
 
   QgsGeometry* geom = fet.geometry();
+  if ( !geom )
+  {
+    return;
+  }
   unsigned char* feature = geom->asWkb();
 
   QGis::WkbType wkbType = geom->wkbType();
