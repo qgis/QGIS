@@ -68,6 +68,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %token ROWNUM
 %token AREA
 %token LENGTH
+%token ID
 %token NULLVALUE
 
 %token STRING
@@ -151,6 +152,7 @@ scalar_exp:
     | ROWNUM                      { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opROWNUM, 0, 0); addToTmpNodes($$); }
     | AREA                        { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opAREA, 0, 0); addToTmpNodes($$); }
     | LENGTH                      { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opLENGTH, 0, 0); addToTmpNodes($$); }
+    | ID                          { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opID, 0, 0); addToTmpNodes($$); }
     | NUMBER                      { $$ = new QgsSearchTreeNode($1); addToTmpNodes($$); }
     | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }
     | COLUMN_REF                  { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 1); addToTmpNodes($$); }

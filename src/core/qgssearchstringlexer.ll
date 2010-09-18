@@ -110,6 +110,7 @@ string      "'"{str_char}*"'"
 
 "$area" { return AREA; }
 "$length" { return LENGTH; }
+"$id" { return ID; }
 
 {column_ref}   { return COLUMN_REF; }
 {column_ref_quoted}  { return COLUMN_REF; }

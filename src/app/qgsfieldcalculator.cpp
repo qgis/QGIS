@@ -170,14 +170,7 @@ void QgsFieldCalculator::accept()
       searchTree->setCurrentRowNumber( rownum );
 
       QgsSearchTreeValue value;
-      if ( useGeometry )
-      {
-        searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature.attributeMap(), feature.geometry() );
-      }
-      else
-      {
-        searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature.attributeMap() );
-      }
+      searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature );
       if ( value.isError() )
       {
         calculationSuccess = false;

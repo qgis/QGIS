@@ -343,7 +343,7 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )
   {
-    if ( tree->checkAgainst( fields, f.attributeMap() ) )
+    if ( tree->checkAgainst( fields, f ) )
       count++;
     if ( tree->hasError() )
       break;

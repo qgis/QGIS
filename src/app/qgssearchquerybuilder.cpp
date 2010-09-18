@@ -216,7 +216,7 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   while ( provider->nextFeature( feat ) )
   {
-    if ( searchTree->checkAgainst( fields, feat.attributeMap(), feat.geometry() ) )
+    if ( searchTree->checkAgainst( fields, feat ) )
     {
       count++;
     }

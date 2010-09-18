@@ -84,6 +84,9 @@ class CORE_EXPORT QgsSearchTreeNode
       opLENGTH,
       opAREA,
 
+      // feature id
+      opID,
+
       // comparison
       opISNULL,     // IS NULL
       opISNOTNULL,  // IS NOT NULL
@@ -144,8 +147,11 @@ class CORE_EXPORT QgsSearchTreeNode
     QString makeSearchString();
 
     //! checks whether the node tree is valid against supplied attributes
-    //! @note optional geom parameter added in 1.5
-    bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+    //! @note attribute and optional geom parameter replaced with feature in 1.6
+    bool checkAgainst( const QgsFieldMap& fields, QgsFeature &f );
+
+    //! @note deprecated
+    bool checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
     bool hasError() { return ( !mError.isEmpty() ); }
@@ -156,7 +162,11 @@ class CORE_EXPORT QgsSearchTreeNode
     //! wrapper around valueAgainst()
     //! @note added in 1.4
     bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
-                   const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+                   const QgsFieldMap& fields, QgsFeature &f );
+
+    //! @note deprecated
+    bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
+                   const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
@@ -188,10 +198,11 @@ class CORE_EXPORT QgsSearchTreeNode
     void append( QList<QgsSearchTreeNode*> );
 
   protected:
-
-
     //! returns scalar value of node
-    QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+    QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, QgsFeature &f );
+
+    //! @note deprecated
+    QgsSearchTreeValue valueAgainst( const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type
     void stripText();

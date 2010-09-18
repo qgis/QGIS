@@ -81,7 +81,7 @@ bool QgsRuleBasedRendererV2::Rule::isFilterOK( const QgsFieldMap& fields, QgsFea
   if ( ! mFilterTree )
     return true;
 
-  bool res = mFilterTree->checkAgainst( fields, f.attributeMap() );
+  bool res = mFilterTree->checkAgainst( fields, f );
   //print "is_ok", res, feature.id(), feature.attributeMap()
   return res;
 }
