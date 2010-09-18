@@ -111,7 +111,6 @@ int QgsWFSData::getWFSData()
     progressDialog->show();
   }
 
-  QByteArray readData;
   int atEnd = 0;
   while ( !atEnd )
   {
@@ -119,10 +118,10 @@ int QgsWFSData::getWFSData()
     {
       atEnd = 1;
     }
-    readData = reply->readAll();
+    QByteArray readData = reply->readAll();
     if ( readData.size() > 0 )
     {
-      XML_Parse( p, readData.data(), readData.size(), atEnd );
+      XML_Parse( p, readData.constData(), readData.size(), atEnd );
     }
     QCoreApplication::processEvents();
   }

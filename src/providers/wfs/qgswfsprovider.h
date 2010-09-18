@@ -57,6 +57,22 @@ class QgsWFSProvider: public QgsVectorDataProvider
                          bool useIntersect = false );
 
     /**
+     * Gets the feature at the given feature ID.
+     * @param featureId of the feature to be returned
+     * @param feature which will receive the data
+     * @param fetchGeometry flag which if true, will cause the geometry to be fetched from the provider
+     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+     * @return True when feature was found, otherwise false
+     *
+     * Default implementation traverses all features until it finds the one with correct ID.
+     * In case the provider supports reading the feature directly, override this function.
+     */
+    virtual bool featureAtId( int featureId,
+                              QgsFeature& feature,
+                              bool fetchGeometry = true,
+                              QgsAttributeList fetchAttributes = QgsAttributeList() );
+
+    /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
@@ -188,6 +204,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
     int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes ) const;
+
+    /**Copies feature attributes / geometry from f to feature*/
+    void copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes );
 
     //GML2 specific methods
     int getExtentFromGML2( QgsRectangle* extent, const QDomElement& wfsCollectionElement ) const;
