@@ -794,41 +794,41 @@ QString QgsVectorLayerProperties::metadata()
 
   QString xMin, yMin, xMax, yMax;
   double changeoverValue = 99999; // The 'largest' 5 digit number
-  if (fabs(myExtent.xMinimum()) > changeoverValue)
-    {
-      xMin = QString("%1").arg(myExtent.xMinimum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.xMinimum() ) > changeoverValue )
+  {
+    xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
+  }
   else
-    {
-      xMin = QString("%1").arg(myExtent.xMinimum());
-    }
+  {
+    xMin = QString( "%1" ).arg( myExtent.xMinimum() );
+  }
 
-  if (fabs(myExtent.yMinimum()) > changeoverValue)
-    {
-      yMin = QString("%1").arg(myExtent.yMinimum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.yMinimum() ) > changeoverValue )
+  {
+    yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
+  }
   else
-    {
-      yMin = QString("%1").arg(myExtent.yMinimum());
-    }
+  {
+    yMin = QString( "%1" ).arg( myExtent.yMinimum() );
+  }
 
-  if (fabs(myExtent.xMaximum()) > changeoverValue)
-    {
-      xMax = QString("%1").arg(myExtent.xMaximum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.xMaximum() ) > changeoverValue )
+  {
+    xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
+  }
   else
-    {
-      xMax = QString("%1").arg(myExtent.xMaximum());
-    }
+  {
+    xMax = QString( "%1" ).arg( myExtent.xMaximum() );
+  }
 
-  if (fabs(myExtent.yMaximum()) > changeoverValue)
-    {
-      yMax = QString("%1").arg(myExtent.yMaximum(), 0, 'f', 2);
-    }
+  if ( fabs( myExtent.yMaximum() ) > changeoverValue )
+  {
+    yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
+  }
   else
-    {
-      yMax = QString("%1").arg(myExtent.yMaximum());
-    }
+  {
+    yMax = QString( "%1" ).arg( myExtent.yMaximum() );
+  }
 
   myMetadata += tr( "In layer spatial reference system units : " )
                 + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
@@ -1193,11 +1193,9 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
 
     connect( mRendererDialog, SIGNAL( useNewSymbology( bool ) ), this, SLOT( setUsingNewSymbology( bool ) ) );
-
   }
-  else
+  else if ( layer->renderer() )
   {
-
     QString rtype = layer->renderer()->name();
     if ( rtype == "Single Symbol" )
     {
@@ -1222,7 +1220,15 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
     QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
                       SLOT( alterLayerDialog( const QString & ) ) );
+  }
+  else
+  {
+    if ( listWidget->currentRow() == 0 )
+    {
+      listWidget->setCurrentRow( 1 );
+    }
 
+    listWidget->setItemHidden( listWidget->item( 0 ), true ); // hide symbology item
   }
 
   if ( mRendererDialog )
