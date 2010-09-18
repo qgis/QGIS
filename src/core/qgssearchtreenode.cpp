@@ -231,7 +231,7 @@ QString QgsSearchTreeNode::makeSearchString()
       // currently all functions take one parameter
       str += QString( "(%1)" ).arg( mLeft->makeSearchString() );
     }
-    else if ( mOp == opLENGTH || mOp == opAREA || mOp == opROWNUM )
+    else if ( mOp == opLENGTH || mOp == opAREA || mOp == opROWNUM || mOp == opID )
     {
       // special nullary opeators
       switch ( mOp )
@@ -239,6 +239,7 @@ QString QgsSearchTreeNode::makeSearchString()
         case opLENGTH: str += "$length"; break;
         case opAREA: str += "$area"; break;
         case opROWNUM: str += "$rownum"; break;
+        case opID: str += "$id"; break;
         default: str += "?";
       }
     }
@@ -374,8 +375,16 @@ bool QgsSearchTreeNode::needsGeometry()
   }
 }
 
+bool QgsSearchTreeNode::checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
+{
+  QgsFeature f;
+  f.setAttributeMap( attributes );
+  if ( geom )
+    f.setGeometry( *geom );
+  return checkAgainst( fields, f );
+}
 
-bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
+bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
 {
   QgsDebugMsgLevel( "checkAgainst: " + makeSearchString(), 2 );
 
@@ -394,31 +403,24 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
   switch ( mOp )
   {
     case opNOT:
-      return !mLeft->checkAgainst( fields, attributes, geom );
+      return !mLeft->checkAgainst( fields, f );
 
     case opAND:
-      if ( !mLeft->checkAgainst( fields, attributes, geom ) )
+      if ( !mLeft->checkAgainst( fields, f ) )
         return false;
-      return mRight->checkAgainst( fields, attributes, geom );
+      return mRight->checkAgainst( fields, f );
 
     case opOR:
-      if ( mLeft->checkAgainst( fields, attributes, geom ) )
+      if ( mLeft->checkAgainst( fields, f ) )
         return true;
-      return mRight->checkAgainst( fields, attributes, geom );
+      return mRight->checkAgainst( fields, f );
 
     case opISNULL:
     case opISNOTNULL:
-      if ( !getValue( value1, mLeft, fields, attributes, geom ) )
+      if ( !getValue( value1, mLeft, fields, f ) )
         return false;
 
-      if ( mOp == opISNULL )
-      {
-        return value1.isNull();
-      }
-      else if ( mOp == opISNOTNULL )
-      {
-        return !value1.isNull();
-      }
+      return ( mOp == opISNULL ) == value1.isNull();
 
     case opEQ:
     case opNE:
@@ -426,8 +428,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opLT:
     case opGE:
     case opLE:
-
-      if ( !getValue( value1, mLeft, fields, attributes, geom ) || !getValue( value2, mRight, fields, attributes, geom ) )
+      if ( !getValue( value1, mLeft, fields, f ) || !getValue( value2, mRight, fields, f ) )
         return false;
 
       if ( value1.isNull() || value2.isNull() )
@@ -440,12 +441,12 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
 
       switch ( mOp )
       {
-        case opEQ: return ( res == 0 );
-        case opNE: return ( res != 0 );
-        case opGT: return ( res >  0 );
-        case opLT: return ( res <  0 );
-        case opGE: return ( res >= 0 );
-        case opLE: return ( res <= 0 );
+        case opEQ: return res == 0;
+        case opNE: return res != 0;
+        case opGT: return res >  0;
+        case opLT: return res <  0;
+        case opGE: return res >= 0;
+        case opLE: return res <= 0;
         default:
           mError = QObject::tr( "Unexpected state when evaluating operator!" );
           return false;
@@ -454,7 +455,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opIN:
     case opNOTIN:
     {
-      if ( !getValue( value1, mLeft, fields, attributes, geom ) ||
+      if ( !getValue( value1, mLeft, fields, f ) ||
            !mRight || mRight->type() != tNodeList )
       {
         return false;
@@ -462,7 +463,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
 
       foreach( QgsSearchTreeNode *node, mRight->mNodeList )
       {
-        if ( !getValue( value2, node, fields, attributes, geom ) )
+        if ( !getValue( value2, node, fields, f ) )
         {
           mError = QObject::tr( "Could not retrieve value of list value" );
           return false;
@@ -485,8 +486,8 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opLike:
     case opILike:
     {
-      if ( !getValue( value1, mLeft, fields, attributes, geom ) ||
-           !getValue( value2, mRight, fields, attributes, geom ) )
+      if ( !getValue( value1, mLeft, fields, f ) ||
+           !getValue( value2, mRight, fields, f ) )
         return false;
 
       // value1 is string to be matched
@@ -512,20 +513,29 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
       }
       else
       {
-        return ( QRegExp( str ).indexIn( value1.string() ) != -1 );
+        return QRegExp( str ).indexIn( value1.string() ) != -1;
       }
-
     }
 
     default:
       mError = QObject::tr( "Unknown operator: %1" ).arg( mOp );
-      return false;
   }
+
+  return false;
 }
 
-bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
+bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
 {
-  value = node->valueAgainst( fields, attributes, geom );
+  QgsFeature f;
+  f.setAttributeMap( attributes );
+  if ( geom )
+    f.setGeometry( *geom );
+  return getValue( value, node, fields, f );
+}
+
+bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, QgsFeature &f )
+{
+  value = node->valueAgainst( fields, f );
   if ( value.isError() )
   {
     switch (( int )value.number() )
@@ -553,7 +563,16 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* 
   return true;
 }
 
-QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
+QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
+{
+  QgsFeature f;
+  f.setAttributeMap( attributes );
+  if ( geom )
+    f.setGeometry( *geom );
+  return valueAgainst( fields, f );
+}
+
+QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, QgsFeature &f )
 {
   QgsDebugMsgLevel( "valueAgainst: " + makeSearchString(), 2 );
 
@@ -587,7 +606,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
       }
 
       // get the value
-      QVariant val = attributes[it.key()];
+      QVariant val = f.attributeMap()[it.key()];
       if ( val.isNull() )
       {
         QgsDebugMsgLevel( "   NULL", 2 );
@@ -612,30 +631,35 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
       QgsSearchTreeValue value1, value2;
       if ( mLeft )
       {
-        if ( !getValue( value1, mLeft, fields, attributes, geom ) ) return value1;
+        if ( !getValue( value1, mLeft, fields, f ) ) return value1;
       }
       if ( mRight )
       {
-        if ( !getValue( value2, mRight, fields, attributes, geom ) ) return value2;
+        if ( !getValue( value2, mRight, fields, f ) ) return value2;
       }
 
       if ( mOp == opLENGTH || mOp == opAREA )
       {
-        if ( !geom )
+        if ( !f.geometry() )
         {
           return QgsSearchTreeValue( 2, "Geometry is 0" );
         }
 
         //check that we don't use area for lines or length for polygons
-        if ( mOp == opLENGTH && geom->type() != QGis::Line )
+        if ( mOp == opLENGTH && f.geometry()->type() != QGis::Line )
         {
           return QgsSearchTreeValue( 0 );
         }
-        if ( mOp == opAREA && geom->type() != QGis::Polygon )
+        if ( mOp == opAREA && f.geometry()->type() != QGis::Polygon )
         {
           return QgsSearchTreeValue( 0 );
         }
-        return QgsSearchTreeValue( mCalc->measure( geom ) );
+        return QgsSearchTreeValue( mCalc->measure( f.geometry() ) );
+      }
+
+      if ( mOp == opID )
+      {
+        return QgsSearchTreeValue( f.id() );
       }
 
       if ( mOp == opROWNUM )

@@ -17,6 +17,7 @@
 
 #include <qgssearchstring.h>
 #include <qgssearchtreenode.h>
+#include <qgsfeature.h>
 
 class TestQgsSearchString : public QObject
 {
@@ -36,9 +37,10 @@ class TestQgsSearchString : public QObject
 
 static bool evalString( QString str )
 {
+  QgsFeature f;
   QgsSearchString ss;
   ss.setString( str );
-  return ss.tree()->checkAgainst( QgsFieldMap(), QgsAttributeMap() );
+  return ss.tree()->checkAgainst( QgsFieldMap(), f );
 }
 
 void TestQgsSearchString::testLike()

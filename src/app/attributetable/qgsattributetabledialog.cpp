@@ -568,7 +568,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
     for ( QgsFeatureList::Iterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), it->attributeMap(), it->geometry() ) )
+      if ( searchTree->checkAgainst( mLayer->pendingFields(), *it ) )
         mSelectedFeatures << it->id();
 
       // check if there were errors during evaluating
@@ -583,7 +583,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
 
     while ( mLayer->nextFeature( f ) )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap(), f.geometry() ) )
+      if ( searchTree->checkAgainst( mLayer->pendingFields(), f ) )
         mSelectedFeatures << f.id();
 
       // check if there were errors during evaluating

@@ -46,6 +46,9 @@ class QgsSearchTreeNode
       opLENGTH,
       opAREA,
 
+      // feature id
+      opID,
+
       // comparison
       opEQ,   // =
       opNE,   // != resp. <>
@@ -98,7 +101,10 @@ class QgsSearchTreeNode
     QString makeSearchString();
 
     //! checks whether the node tree is valid against supplied attributes
-    //! @note optional geom parameter added in 1.5
+    //! @note attributes and optional geom parameter replace with feature in 1.6
+    bool checkAgainst( const QMap<int,QgsField>& fields, QgsFeature &f );
+
+    //! @note deprecated
     bool checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
@@ -109,6 +115,11 @@ class QgsSearchTreeNode
 
     //! wrapper around valueAgainst()
     //! @note added in 1.4
+    //! @note attribute/geom replaced by feature in 1.6
+    bool getValue( QgsSearchTreeValue& value /Out/, QgsSearchTreeNode* node,
+                   const QMap<int,QgsField>& fields, QgsFeature &f );
+
+    //! @note deprecated
     bool getValue( QgsSearchTreeValue& value /Out/, QgsSearchTreeNode* node,
                    const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
@@ -134,14 +145,15 @@ class QgsSearchTreeNode
     void setCurrentRowNumber( int rownum );
 
   protected:
-
-
     //! returns scalar value of node
+    //! @note attribute/geom replaced by feature in 1.6
+    QgsSearchTreeValue valueAgainst( const QMap<int,QgsField>& fields, QgsFeature &f );
+
+    //! @note deprecated
     QgsSearchTreeValue valueAgainst( const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type
     void stripText();
-
 };
 
 
