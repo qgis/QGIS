@@ -568,7 +568,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     {
       try
       {
-        fet.geometry()->transform( *ct );
+        if ( fet.geometry() )
+        {
+          fet.geometry()->transform( *ct );
+        }
       }
       catch ( QgsCsException &e )
       {
