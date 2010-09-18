@@ -76,6 +76,54 @@ QgsWFSProvider::~QgsWFSProvider()
   delete mSpatialIndex;
 }
 
+void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+{
+  if ( !f )
+  {
+    return;
+  }
+
+  //copy the geometry
+  QgsGeometry* geometry = f->geometry();
+  unsigned char *geom = geometry->asWkb();
+  int geomSize = geometry->wkbSize();
+  unsigned char* copiedGeom = new unsigned char[geomSize];
+  memcpy( copiedGeom, geom, geomSize );
+  feature.setGeometryAndOwnership( copiedGeom, geomSize );
+
+  //and the attributes
+  const QgsAttributeMap& attributes = f->attributeMap();
+  for ( QgsAttributeList::const_iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it )
+  {
+    feature.addAttribute( *it, attributes[*it] );
+  }
+
+  //id and valid
+  feature.setValid( true );
+  feature.setFeatureId( f->id() );
+}
+
+bool QgsWFSProvider::featureAtId( int featureId,
+                                  QgsFeature& feature,
+                                  bool fetchGeometry,
+                                  QgsAttributeList fetchAttributes )
+{
+  QMap<int, QgsFeature* >::iterator it = mFeatures.find( featureId );
+  if ( it == mFeatures.end() )
+  {
+    return false;
+  }
+
+  QgsFeature* f = it.value();
+  if ( !f )
+  {
+    return false;
+  }
+
+  copyFeature( f, feature, fetchGeometry, fetchAttributes );
+  return true;
+}
+
 bool QgsWFSProvider::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
@@ -87,27 +135,19 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
       return 0;
     }
 
-    feature.setFeatureId( mFeatures[*mFeatureIterator]->id() );
-
-    //we need geometry anyway, e.g. for intersection tests
-    QgsGeometry* geometry = mFeatures[*mFeatureIterator]->geometry();
-    unsigned char *geom = geometry->asWkb();
-    int geomSize = geometry->wkbSize();
-    unsigned char* copiedGeom = new unsigned char[geomSize];
-    memcpy( copiedGeom, geom, geomSize );
-    feature.setGeometryAndOwnership( copiedGeom, geomSize );
-
-    const QgsAttributeMap& attributes = mFeatures[*mFeatureIterator]->attributeMap();
-    for ( QgsAttributeList::const_iterator it = mAttributesToFetch.begin(); it != mAttributesToFetch.end(); ++it )
-    {
-      feature.addAttribute( *it, attributes[*it] );
-    }
+    QgsFeature* f = mFeatures[*mFeatureIterator];
     ++mFeatureIterator;
+    if ( !f )
+    {
+      continue;
+    }
+
+    copyFeature( f, feature, true, mAttributesToFetch );
+
     if ( mUseIntersect )
     {
       if ( feature.geometry() && feature.geometry()->intersects( mSpatialFilter ) )
       {
-        feature.setValid( true );
         return true;
       }
       else
@@ -117,7 +157,6 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
     }
     else
     {
-      feature.setValid( true );
       return true;
     }
   }
