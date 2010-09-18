@@ -155,7 +155,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     typedef QList<geomPair> geomCol;
 
     /**Inserts information about the spatial tables into mTableModel*/
-    bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly );
+    bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
 
     /** get primary key candidates (all int4 columns) */
     QStringList pkCandidates( PGconn *pg, QString schemaName, QString viewName );

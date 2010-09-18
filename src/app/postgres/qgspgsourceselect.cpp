@@ -362,9 +362,9 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
     uri += QString( " estimatedmetadata=true" );
   }
 
-  uri += QString( " table=\"%1\".\"%2\" (%3) sql=%4" )
+  uri += QString( " table=\"%1\".\"%2\"%3 sql=%4" )
          .arg( schemaName ).arg( tableName )
-         .arg( geomColumnName )
+         .arg( geomColumnName.isEmpty() ? QString() : QString( " (%1)" ).arg( geomColumnName ) )
          .arg( sql );
 
   return uri;
@@ -429,6 +429,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
   bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
+  bool allowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata" ).toBool();
   // Need to escape the password to allow for single quotes and backslashes
 
@@ -481,7 +482,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     // get the list of suitable tables and columns and populate the UI
     geomCol details;
 
-    if ( getTableInfo( pd, searchGeometryColumnsOnly, searchPublicOnly ) )
+    if ( getTableInfo( pd, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
     {
       // Start the thread that gets the geometry type for relations that
       // may take a long time to return
@@ -604,7 +605,7 @@ QStringList QgsPgSourceSelect::pkCandidates( PGconn *pg, QString schemaName, QSt
   return cols;
 }
 
-bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly )
+bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
 {
   int nColumns = 0;
   int nGTables = 0;
@@ -789,6 +790,58 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
         addSearchGeometryColumn( schema, table, column );
         //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
         mTableModel.addTableEntry( tr( "Waiting" ), schema, table, column, relkind == "v" ? pkCandidates( pg, schema, table ) : QStringList(), "" );
+        nColumns++;
+      }
+    }
+
+    PQclear( result );
+    result = 0;
+  }
+
+  if ( allowGeometrylessTables )
+  {
+    QString sql = "select "
+                  "pg_class.relname"
+                  ",pg_namespace.nspname"
+                  ",pg_class.relkind"
+                  " from "
+                  " pg_class"
+                  ",pg_namespace"
+                  " where "
+                  "pg_namespace.oid=pg_class.relnamespace"
+                  " and has_schema_privilege( pg_namespace.nspname, 'usage' )"
+                  " and has_table_privilege( '\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"', 'select' )"
+                  " and pg_class.relkind in( 'v', 'r' )";
+
+    // user has select privilege
+    if ( searchPublicOnly )
+      sql += " and pg_namespace.nspname = 'public'";
+
+    QgsDebugMsg( "sql: " + sql );
+
+    result = PQexec( pg, sql.toUtf8() );
+
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+      QMessageBox::warning( this,
+                            tr( "Accessible tables could not be determined" ),
+                            tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
+                                "The error message from the database was:\n%1\n" )
+                            .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
+      if ( nColumns == 0 )
+        nColumns = -1;
+    }
+    else if ( PQntuples( result ) > 0 )
+    {
+      for ( int i = 0; i < PQntuples( result ); i++ )
+      {
+        QString table  = QString::fromUtf8( PQgetvalue( result, i, 0 ) ); // relname
+        QString schema = QString::fromUtf8( PQgetvalue( result, i, 1 ) ); // nspname
+        QString relkind = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // relation kind
+
+        QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
+
+        mTableModel.addTableEntry( tr( "No geometry" ), schema, table, QString::null, relkind == "v" ? pkCandidates( pg, schema, table ) : QStringList(), "" );
         nColumns++;
       }
     }

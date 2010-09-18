@@ -124,7 +124,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     setCoordinateSystem();
 
     QSettings settings;
-    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() )
+    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() && geometryType() != QGis::NoGeometry )
     {
       // using symbology-ng!
       setUsingRendererV2( true );
@@ -139,7 +139,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag )
+    if ( !defaultLoadedFlag && geometryType() != QGis::NoGeometry )
     {
       // add single symbol renderer
       if ( mUsingRendererV2 )
