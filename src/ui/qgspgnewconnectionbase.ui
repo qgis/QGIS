@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>323</width>
-    <height>384</height>
+    <width>352</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -228,7 +228,7 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QCheckBox" name="cb_useEstimatedMetadata">
         <property name="toolTip">
          <string>Use estimated table statistics for the layer metadata.</string>
@@ -246,6 +246,16 @@
         </property>
         <property name="text">
          <string>Use estimated table metadata</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
+        <property name="text">
+         <string>Allow geometryless tables</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

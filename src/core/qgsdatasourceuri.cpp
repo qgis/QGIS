@@ -103,6 +103,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyC
 
           i++;
         }
+        else
+        {
+          mGeometryColumn = QString::null;
+        }
       }
       else if ( pname == "key" )
       {
@@ -439,9 +443,9 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " estimatedmetadata=true" );
   }
 
-  theUri += QString( " table=%1 (%2) sql=%3" )
+  theUri += QString( " table=%1%2 sql=%3" )
             .arg( quotedTablename() )
-            .arg( mGeometryColumn )
+            .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( mGeometryColumn ) )
             .arg( mSql );
 
   return theUri;

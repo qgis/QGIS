@@ -72,7 +72,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   mUri = QgsDataSourceURI( uri );
 
-  /* populate members from the uri structure */
+  // populate members from the uri structure
   mSchemaName = mUri.schema();
   mTableName = mUri.table();
   geometryColumn = mUri.geometryColumn();
@@ -390,6 +390,11 @@ bool QgsPostgresProvider::declareCursor(
   bool fetchGeometry,
   QString whereClause )
 {
+  if ( fetchGeometry && geometryColumn.isNull() )
+  {
+    return false;
+  }
+
   try
   {
     QString query = QString( "select %1" ).arg( quotedIdentifier( primaryKey ) );
@@ -548,7 +553,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
   QString whereClause;
 
-  if ( !rect.isEmpty() )
+  if ( !rect.isEmpty() && !geometryColumn.isNull() )
   {
     if ( isGeography )
     {
@@ -983,10 +988,16 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       sql = QString( "SELECT "
                      "has_table_privilege(%1,'DELETE'),"
                      "has_any_column_privilege(%1,'UPDATE'),"
-                     "has_column_privilege(%1,%2,'UPDATE'),"
+                     "%2"
                      "has_table_privilege(%1,'INSERT'),"
                      "current_schema()" )
-            .arg( quotedValue( mQuery ) ).arg( quotedValue( geometryColumn ) );
+            .arg( quotedValue( mQuery ) )
+            .arg( geometryColumn.isNull()
+                  ? QString( "" )
+                  : QString( "has_column_privilege(%1,%2,'UPDATE')," )
+                  .arg( quotedValue( mQuery ) )
+                  .arg( quotedValue( geometryColumn ) )
+                );
     }
     else
     {
@@ -2254,18 +2265,28 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     connectionRW->PQexecNR( "BEGIN" );
 
     // Prepare the INSERT statement
-    QString insert = QString( "INSERT INTO %1(%2" )
-                     .arg( mQuery )
-                     .arg( quotedIdentifier( geometryColumn ) ),
-                     values = QString( ") VALUES (GeomFromWKB($1%1,%2)" )
-                              .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
-                              .arg( srid );
+    QString insert = QString( "INSERT INTO %1(" ).arg( mQuery );
+    QString values;
+    QString delim = ",";
+
+    if ( !geometryColumn.isNull() )
+    {
+      insert += quotedIdentifier( geometryColumn );
+      values = QString( ") VALUES (GeomFromWKB($1%1,%2)" )
+               .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
+               .arg( srid );
+      delim = ",";
+    }
+    else
+    {
+      delim = "";
+    }
 
     int offset;
     if ( primaryKeyType != "tid" && primaryKeyType != "oid" )
     {
-      insert += "," + quotedIdentifier( primaryKey );
-      values += ",$2";
+      insert += delim + quotedIdentifier( primaryKey );
+      values += delim + "$2";
       offset = 3;
     }
     else
@@ -2306,7 +2327,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
           break;
       }
 
-      insert += "," + quotedIdentifier( fieldname );
+      insert += delim + quotedIdentifier( fieldname );
 
       QString defVal = defaultValue( it.key() ).toString();
 
@@ -2316,24 +2337,24 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           if ( defVal.isNull() )
           {
-            values += ",NULL";
+            values += delim + "NULL";
           }
           else
           {
-            values += "," + defVal;
+            values += delim + defVal;
           }
         }
         else if ( fit->typeName() == "geometry" )
         {
-          values += QString( ",geomfromewkt(%1)" ).arg( quotedValue( it->toString() ) );
+          values += QString( "%1geomfromewkt(%2)" ).arg( delim ).arg( quotedValue( it->toString() ) );
         }
         else if ( fit->typeName() == "geography" )
         {
-          values += QString( ",st_geographyfromewkt(%1)" ).arg( quotedValue( it->toString() ) );
+          values += QString( "%1st_geographyfromewkt(%2)" ).arg( delim ).arg( quotedValue( it->toString() ) );
         }
         else
         {
-          values += "," + quotedValue( it->toString() );
+          values += delim + quotedValue( it->toString() );
         }
       }
       else
@@ -2341,19 +2362,21 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         // value is not unique => add parameter
         if ( fit->typeName() == "geometry" )
         {
-          values += QString( ",geomfromewkt($%1)" ).arg( defaultValues.size() + offset );
+          values += QString( "%1geomfromewkt($%2)" ).arg( delim ).arg( defaultValues.size() + offset );
         }
         else if ( fit->typeName() == "geography" )
         {
-          values += QString( ",st_geographyfromewkt($%1)" ).arg( defaultValues.size() + offset );
+          values += QString( "%1st_geographyfromewkt($%2)" ).arg( delim ).arg( defaultValues.size() + offset );
         }
         else
         {
-          values += QString( ",$%1" ).arg( defaultValues.size() + offset );
+          values += QString( "%1$%2" ).arg( delim ).arg( defaultValues.size() + offset );
         }
         defaultValues.append( defVal );
         fieldId.append( it.key() );
       }
+
+      delim = ",";
     }
 
     insert += values + ")";
@@ -2656,7 +2679,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
   QgsDebugMsg( "entering." );
 
-  if ( isQuery )
+  if ( isQuery || geometryColumn.isNull() )
     return false;
 
   if ( !connectRW() )
@@ -2811,6 +2834,9 @@ long QgsPostgresProvider::featureCount() const
 
 QgsRectangle QgsPostgresProvider::extent()
 {
+  if ( geometryColumn.isNull() )
+    return QgsRectangle();
+
   if ( isGeography )
     return QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
 
@@ -2846,7 +2872,7 @@ QgsRectangle QgsPostgresProvider::extent()
             // dateline extent() returns -180 to 180 (which appears right), but
             // estimated_extent() returns eastern bound of data (>-180) and
             // 180 degrees.
-            if ( !ext.startsWith( "-180 ") && ext.contains( ",180 " ) )
+            if ( !ext.startsWith( "-180 " ) && ext.contains( ",180 " ) )
             {
               ext.clear();
             }
@@ -2974,6 +3000,13 @@ bool QgsPostgresProvider::deduceEndian()
 
 bool QgsPostgresProvider::getGeometryDetails()
 {
+  if ( geometryColumn.isNull() )
+  {
+    geomType = QGis::WKBNoGeometry;
+    valid = true;
+    return true;
+  }
+
   QString fType( "" );
   srid = "";
   valid = false;
