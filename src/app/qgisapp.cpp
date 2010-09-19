@@ -4756,6 +4756,7 @@ void QgisApp::saveEdits()
   }
 
   vlayer->startEditing();
+  vlayer->triggerRepaint();
 }
 
 void QgisApp::layerSubsetString()
