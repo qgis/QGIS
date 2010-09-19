@@ -260,30 +260,45 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
     layerFound = true;
   }
 
-  //maybe the layer is a goup. Check if lName is contained in the group list
-  if ( !layerFound )
+  if ( layerFound )
   {
-    QMap< QString, QDomElement > idLayerMap = projectLayerElementsById();
+    return layerList;
+  }
 
-    QList< GroupLayerInfo > groupInfo = groupLayerRelationshipFromProject();
-    QList< GroupLayerInfo >::const_iterator groupIt = groupInfo.constBegin();
-    for ( ; groupIt != groupInfo.constEnd(); ++groupIt )
+  //Check if layer name refers to the top level group for the project.
+  //The project group is not contained in the groupLayerRelationship list
+  //because the list (and the qgis legend) does not support nested groups
+  if ( lName == projectTitle() )
+  {
+    QList<QDomElement> layerElemList = projectLayerElements();
+    QList<QDomElement>::const_iterator layerElemIt = layerElemList.constBegin();
+    for ( ; layerElemIt != layerElemList.constEnd(); ++layerElemIt )
     {
-      if ( groupIt->first == lName )
+      layerList.push_back( createLayerFromElement( *layerElemIt ) );
+    }
+    return layerList;
+  }
+
+  //maybe the layer is a goup. Check if lName is contained in the group list
+  QMap< QString, QDomElement > idLayerMap = projectLayerElementsById();
+
+  QList< GroupLayerInfo > groupInfo = groupLayerRelationshipFromProject();
+  QList< GroupLayerInfo >::const_iterator groupIt = groupInfo.constBegin();
+  for ( ; groupIt != groupInfo.constEnd(); ++groupIt )
+  {
+    if ( groupIt->first == lName )
+    {
+      QList< QString >::const_iterator layerIdIt = groupIt->second.constBegin();
+      for ( ; layerIdIt != groupIt->second.constEnd(); ++layerIdIt )
       {
-        QList< QString >::const_iterator layerIdIt = groupIt->second.constBegin();
-        for ( ; layerIdIt != groupIt->second.constEnd(); ++layerIdIt )
+        QMap< QString, QDomElement >::const_iterator layerEntry = idLayerMap.find( *layerIdIt );
+        if ( layerEntry != idLayerMap.constEnd() )
         {
-          QMap< QString, QDomElement >::const_iterator layerEntry = idLayerMap.find( *layerIdIt );
-          if ( layerEntry != idLayerMap.constEnd() )
-          {
-            layerList.push_back( createLayerFromElement( layerEntry.value() ) );
-          }
+          layerList.push_back( createLayerFromElement( layerEntry.value() ) );
         }
       }
     }
   }
-
   return layerList;
 }
 
