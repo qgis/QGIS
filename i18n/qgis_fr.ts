@@ -1417,7 +1417,7 @@ Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation>Outil de contours</translation>
+        <translation>Création de contours</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
@@ -1441,7 +1441,7 @@ Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation>Fusion</translation>
+        <translation>Fusionner</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
@@ -20628,7 +20628,7 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation>Récupération des extensions python...</translation>
+        <translation>Installateur d&apos;extensions python</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
@@ -21216,12 +21216,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="606"/>
         <source>Show all plugins except those marked as experimental</source>
-        <translation>Afficher toutes les extenions à l&apos;exception de celles encore expérimentales</translation>
+        <translation>Afficher toutes les extensions à l&apos;exception de celles encore expérimentales</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="619"/>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation>Afficher toutes les extenions, même de celles encore expérimentales</translation>
+        <translation>Afficher toutes les extensions, même de celles encore expérimentales</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="638"/>
@@ -30053,7 +30053,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation>Outil de gestion de &amp;données</translation>
+        <translation>Outils de gestion de &amp;données</translation>
     </message>
     <message>
         <source>Export to new projection</source>
