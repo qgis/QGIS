@@ -10,10 +10,6 @@
 set -e
 
 cleanup() {
-	if [ -f i18n/qt_ts.tar ]; then
-		echo Restoring Qt translations
-		tar -xf i18n/qt_ts.tar
-	fi
 	if [ -f i18n/qgis_ts.tar ]; then
 		echo Restoring excluded translations
 		tar -xf i18n/qgis_ts.tar
@@ -26,7 +22,6 @@ cleanup() {
 		python/plugins/*/python-i18n.{ts,cpp} \
 		i18n/qgis_*.ts.bak \
 		src/plugins/grass/grasslabels-i18n.cpp \
-		i18n/qt_ts.tar \
 		i18n/qgis_ts.tar \
 		qgis_ts.pro
 	do
@@ -45,10 +40,6 @@ trap cleanup EXIT
 
 PATH=$QTDIR/bin:$PATH
 
-#first tar the qt_xx.ts files in i18n folder such that lupdate does not 
-#merge the qgis strings to them
-echo Saving Qt translations
-tar --remove-files -cf i18n/qt_ts.tar i18n/qt_*.ts
 exclude=
 opts=
 while (( $# > 0 )); do
