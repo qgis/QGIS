@@ -12,9 +12,10 @@
 #include <QDomElement>
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
-    : QgsFeatureRendererV2( "singleSymbol" ),
-    mTempSymbol( NULL )
+    : QgsFeatureRendererV2( "singleSymbol" )
+    , mTempSymbol( NULL )
 {
+  Q_ASSERT( symbol );
   mSymbol = symbol;
 }
 
@@ -59,8 +60,8 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 
 void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
 {
-  mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
-  mSizeScaleFieldIdx = ( mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField ) );
+  mRotationFieldIdx  = mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField );
+  mSizeScaleFieldIdx = mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField );
 
   mSymbol->startRender( context );
 
@@ -121,6 +122,7 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbol() const
 
 void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
 {
+  Q_ASSERT( s );
   delete mSymbol;
   mSymbol = s;
 }

@@ -223,6 +223,8 @@ QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size 
 
 QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size )
 {
+  Q_ASSERT( symbol );
+
   QPixmap pixmap( size );
   QPainter painter;
   painter.begin( &pixmap );
@@ -472,6 +474,8 @@ static QString _nameForSymbolType( QgsSymbolV2::SymbolType type )
 
 QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols )
 {
+  Q_ASSERT( symbol );
+
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
