@@ -4942,7 +4942,7 @@ void QgisApp::userScale()
     {
       mMapCanvas->zoomScale( rightSide );
     }
-  } 
+  }
 }
 
 void QgisApp::userCenter()
@@ -6705,6 +6705,7 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
 
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
   {
+    QApplication::setOverrideCursor( Qt::ArrowCursor );
     QMessageBox::warning( NULL, tr( "Project file is older" ),
                           tr( "<p>This project file was saved by an older version of QGIS."
                               " When saving this project file, QGIS will update it to the latest version, "
@@ -6725,7 +6726,7 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
                           .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
                           .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) )
                         );
-
+    QApplication::restoreOverrideCursor();
   }
   return;
 }
