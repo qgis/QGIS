@@ -132,6 +132,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsFeatureIds newSelectedFeatures;
   QgsFeature f;
   int closestFeatureId = 0;
+  bool foundSingleFeature = false;
   double closestFeatureDist = std::numeric_limits<double>::max();
   while ( vlayer->nextFeature( f ) )
   {
@@ -142,6 +143,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     }
     if ( singleSelect )
     {
+      foundSingleFeature = true;
       double distance = g->distance( selectGeomTrans );
       if ( distance <= closestFeatureDist )
       {
@@ -154,7 +156,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
       newSelectedFeatures.insert( f.id() );
     }
   }
-  if ( singleSelect && closestFeatureId > 0 )
+  if ( singleSelect && foundSingleFeature )
   {
     newSelectedFeatures.insert( closestFeatureId );
   }
