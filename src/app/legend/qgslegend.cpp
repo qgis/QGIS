@@ -218,8 +218,12 @@ void QgsLegend::mousePressEvent( QMouseEvent * e )
   else if ( e->button() == Qt::RightButton )
   {
     QTreeWidgetItem* item = itemAt( e->pos() );
-    if ( item == currentItem() )
+    if ( !item || item == currentItem() )
+    {
+      if ( !item )
+        setCurrentItem( 0 );
       handleRightClickEvent( item, e->globalPos() );
+    }
   }
   QTreeWidget::mousePressEvent( e );
 }                               // contentsMousePressEvent
