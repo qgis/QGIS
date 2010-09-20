@@ -380,6 +380,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                          QgsSnappingResult > & snappingResults,
                          QgsSnapper::SnappingType snap_to );
 
+    /**Synchronises with changes in the datasource
+      @note added in version 1.6*/
+    virtual void reload();
+
     /** Draws the layer
      *  @return false if an error occurred during drawing
      */

@@ -138,6 +138,7 @@ int QgsWFSData::getWFSData()
     }
   }
 
+  XML_ParserFree( p );
   return 0;
 }
 

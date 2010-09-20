@@ -136,6 +136,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
+    /**Reloads the data from the the source. Needs to be implemented by providers with data caches to
+      synchronize with changes in the data source*/
+    virtual void reloadData();
+
   signals:
     void dataReadProgressMessage( QString message );
 
@@ -282,6 +286,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
     void appendSupportedOperations( const QDomElement& operationsElem, int& capabilities ) const;
     /**Shows a message box with the exception string (or does nothing if the xml document is not an exception)*/
     void handleException( const QDomDocument& serverResponse ) const;
+
+    void deleteData();
 };
 
 #endif

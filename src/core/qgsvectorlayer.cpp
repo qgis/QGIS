@@ -888,6 +888,14 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
   stopRendererV2( rendererContext, selRenderer );
 }
 
+void QgsVectorLayer::reload()
+{
+  if ( mDataProvider )
+  {
+    mDataProvider->reloadData();
+  }
+}
+
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
   //set update threshold before each draw to make sure the current setting is picked up
