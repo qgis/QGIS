@@ -70,7 +70,7 @@ void QgsWFSProvider::reloadData()
 {
   deleteData();
   delete mSpatialIndex;
-  mSpatialIndex = new QgsSpatialIndex;
+  mSpatialIndex = new QgsSpatialIndex();
   mValid = !getFeature( dataSourceUri() );
 }
 
