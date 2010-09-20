@@ -429,7 +429,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
   bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
-  bool allowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
+  bool allowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata" ).toBool();
   // Need to escape the password to allow for single quotes and backslashes
 

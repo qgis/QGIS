@@ -58,7 +58,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
     txtPort->setText( port );
     cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometrycolumnsOnly", false ).toBool() );
-    cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", true ).toBool() );
+    cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
     // Ensure that cb_publicSchemaOnly is set correctly
     on_cb_geometryColumnsOnly_clicked();
 
