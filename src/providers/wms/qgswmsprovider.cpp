@@ -2813,6 +2813,11 @@ QString  QgsWmsProvider::description() const
   return WMS_DESCRIPTION;
 } //  QgsWmsProvider::description()
 
+void QgsWmsProvider::reloadData()
+{
+  delete cachedImage;
+  cachedImage = 0;
+}
 
 /**
  * Class factory to return a pointer to a newly created

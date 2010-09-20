@@ -303,6 +303,10 @@ public:
     /** Returns the data provider in a const-correct manner */
     //const QgsRasterDataProvider* dataProvider() const;
 
+    /**Synchronises with changes in the datasource
+    @note added in version 1.6*/
+    virtual void reload();
+
     /** \brief This is called when the view on the raster layer needs to be redrawn */
     bool draw( QgsRenderContext& rendererContext );
 

@@ -52,28 +52,36 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     mFeatureCount( 0 ),
     mValid( true )
 {
-  mSpatialIndex = new QgsSpatialIndex;
-  if ( getFeature( uri ) == 0 )
+  mSpatialIndex = 0;
+  reloadData();
+  if ( mValid )
   {
-    mValid = true;
     getLayerCapabilities();
-
-    //set spatial filter to the whole extent
-    //select(mExtent, false); //MH TODO: fix this in provider0_9-branch
-  }
-  else
-  {
-    mValid = false;
   }
 }
 
 QgsWFSProvider::~QgsWFSProvider()
 {
+  deleteData();
+  delete mSpatialIndex;
+}
+
+void QgsWFSProvider::reloadData()
+{
+  deleteData();
+  delete mSpatialIndex;
+  mSpatialIndex = new QgsSpatialIndex;
+  mValid = !getFeature( dataSourceUri() );
+}
+
+void QgsWFSProvider::deleteData()
+{
   mSelectedFeatures.clear();
   for ( int i = 0; i < mFeatures.size(); i++ )
+  {
     delete mFeatures[i];
+  }
   mFeatures.clear();
-  delete mSpatialIndex;
 }
 
 void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
@@ -626,6 +634,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
 {
+  fields.clear();
   switch ( mEncoding )
   {
     case QgsWFSProvider::GET:

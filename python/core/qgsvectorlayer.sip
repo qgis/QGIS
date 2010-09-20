@@ -333,6 +333,10 @@ public:
   int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults /Out/,
                       QgsSnapper::SnappingType snap_to);
 
+  /**Synchronises with changes in the datasource
+  @note added in version 1.6*/
+  virtual void reload();
+
   /** Draws the layer using coordinate transformation
    *  @return FALSE if an error occurred during drawing
    */

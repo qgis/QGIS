@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
         qgsrasterlayer.cpp -  description
    -------------------
 begin                : Sat Jun 22 2002
@@ -824,7 +824,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
             continue; // NULL
           }
 
-          myRasterBandStats.sum += myValue;          
+          myRasterBandStats.sum += myValue;
           ++myRasterBandStats.elementCount;
           //only use this element if we have a non null element
           if ( myFirstIterationFlag )
@@ -1383,6 +1383,14 @@ QgsRasterDataProvider* QgsRasterLayer::dataProvider()
 const QgsRasterDataProvider* QgsRasterLayer::dataProvider() const
 {
   return mDataProvider;
+}
+
+void QgsRasterLayer::reload()
+{
+  if ( mDataProvider )
+  {
+    mDataProvider->reloadData();
+  }
 }
 
 bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )

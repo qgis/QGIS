@@ -67,6 +67,10 @@ public:
  */
  void clearAllLayerCaches();
 
+ /**Reload all provider data caches (currently used for WFS and WMS providers)
+ @note: this method was added in QGIS 1.6*/
+ void reloadAllLayers();
+
 signals:
 
     /** emitted when a layer is removed from the registry

@@ -4706,6 +4706,8 @@ void QgisApp::refreshMapCanvas()
 {
   //clear all caches first
   QgsMapLayerRegistry::instance()->clearAllLayerCaches();
+  //reload cached provider data
+  QgsMapLayerRegistry::instance()->reloadAllLayers();
   //then refresh
   mMapCanvas->refresh();
 }

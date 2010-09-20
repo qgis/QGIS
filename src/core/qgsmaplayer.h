@@ -79,6 +79,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString const & name() const;
 
+    /**Synchronises with changes in the datasource
+        @note added in version 1.6*/
+    virtual void reload() {}
+
     /** This is the method that does the actual work of
      * drawing the layer onto a paint device.
      * @param QgsRenderContext - describes the extents,

@@ -70,6 +70,10 @@ public:
      */
     const QString & name() const;
 
+    /**Synchronises with changes in the datasource
+      @note added in version 1.6*/
+    virtual void reload();
+
     /** Render the layer, to be overridden in child classes
      */
     virtual bool draw(QgsRenderContext& rendererContext);

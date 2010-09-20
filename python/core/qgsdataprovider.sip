@@ -178,6 +178,10 @@ class QgsDataProvider : QObject
     */
     virtual QString fileRasterFilters() const;
 
+    /**Reloads the data from the the source. Needs to be implemented by providers with data caches to
+      synchronize with changes in the data source*/
+    virtual void reloadData();
+
   signals:
 
       /** 

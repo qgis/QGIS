@@ -22,7 +22,6 @@
 #include "qgsmaplayer.h"
 #include "qgslogger.h"
 
-
 //
 // Static calls to enforce singleton behaviour
 //
@@ -127,6 +126,19 @@ void QgsMapLayerRegistry::clearAllLayerCaches()
     it.value()->setCacheImage( 0 );
   }
 } // QgsMapLayerRegistry::clearAllLayerCaches()
+
+void QgsMapLayerRegistry::reloadAllLayers()
+{
+  QMap<QString, QgsMapLayer *>::iterator it;
+  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
+  {
+    QgsMapLayer* layer = it.value();
+    if ( layer )
+    {
+      layer->reload();
+    }
+  }
+}
 
 QMap<QString, QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 {
