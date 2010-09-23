@@ -309,12 +309,30 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
     if ( ogrIdx < 0 )
     {
-      QgsDebugMsg( "error creating field " + attrField.name() );
-      mErrorMessage = QObject::tr( "created field %1 not found (OGR error: %2)" )
-                      .arg( attrField.name() )
-                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      mError = ErrAttributeCreationFailed;
-      return;
+      // if we didn't find our new column, assume it's name was truncated and
+      // it was the last one added (like for shape files)
+      int fieldCount = OGR_FD_GetFieldCount( defn );
+
+      OGRFieldDefnH fdefn = OGR_FD_GetFieldDefn( defn, fieldCount - 1 );
+      if ( fdefn )
+      {
+        const char *fieldName = OGR_Fld_GetNameRef( fdefn );
+
+        if ( attrField.name().left( strlen( fieldName ) ) == fieldName )
+        {
+          ogrIdx = fieldCount - 1;
+        }
+      }
+
+      if ( ogrIdx < 0 )
+      {
+        QgsDebugMsg( "error creating field " + attrField.name() );
+        mErrorMessage = QObject::tr( "created field %1 not found (OGR error: %2)" )
+                        .arg( attrField.name() )
+                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+        mError = ErrAttributeCreationFailed;
+        return;
+      }
     }
 
     mAttrIdxToOgrIdx.insert( fldIt.key(), ogrIdx );
