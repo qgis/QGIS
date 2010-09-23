@@ -18,6 +18,7 @@
 #include "qgsconfigparser.h"
 #include "qgsepsgcache.h"
 #include "qgsfield.h"
+#include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
@@ -953,7 +954,19 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPo
       attributeElement.setAttribute( "value", it->toString() );
       featureElement.appendChild( attributeElement );
     }
+
+    //also append the wkt geometry as an attribute
+    QgsGeometry* geom = feature.geometry();
+    if ( geom )
+    {
+      QDomElement geometryElement = infoDocument.createElement( "Attribute" );
+      geometryElement.setAttribute( "name", "geometry" );
+      geometryElement.setAttribute( "value", geom->exportToWkt() );
+      featureElement.appendChild( geometryElement );
+    }
   }
+
+
   return 0;
 }
 
