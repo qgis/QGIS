@@ -51,6 +51,12 @@
 #include <QMouseEvent>
 #include "qgslogger.h"
 
+// QWT Charting widget
+#include <qwt_array.h>
+#include <qwt_legend.h>
+#include <qwt_plot.h> 
+#include <qwt_plot_curve.h> 
+#include <qwt_plot_grid.h>
 
 const char * const ident =
   "$Id$";
@@ -218,8 +224,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       myPixmap.fill( Qt::gray );
     }
     lstHistogramLabels->addItem( new QListWidgetItem( myPixmap, myRasterBandNameQString ) );
-    mGradientHeight = pixHistogram->height() / 2;
-    mGradientWidth = pixHistogram->width() / 2;
     //keep a list of band names for later use
     //! @note band names should not be translated!
     myBandNameList.append( myRasterBandNameQString );
@@ -1948,8 +1952,8 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   int myXAxisMax = 0;
   bool myFirstItemFlag = true;
   for ( int myIteratorInt = 1;
-        myIteratorInt <= myBandCountInt;
-        ++myIteratorInt )
+      myIteratorInt <= myBandCountInt;
+      ++myIteratorInt )
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     //calculate the x axis min max
@@ -1998,318 +2002,51 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   QgsDebugMsg( QString( "max %1" ).arg( myYAxisMax ) );
   QgsDebugMsg( QString( "min %1" ).arg( myYAxisMin ) );
 
-  //create the image onto which graph and axes will be drawn
-  int myImageWidth = pixHistogram->width() - 2;
-  int myImageHeight =  pixHistogram->height() - 2; //Take two pixels off to account for the boarder around the QLabel
-  QPixmap myPixmap( myImageWidth, myImageHeight );
-  myPixmap.fill( Qt::white );
-
-  // TODO: Confirm that removing the "const QWidget * copyAttributes" 2nd parameter,
-  // in order to make things work in Qt4, doesn't break things in Qt3.
-  //QPainter myPainter(&myPixmap, this);
-  QPainter myPainter( &myPixmap );
-  //anti alias lines in the graph
-  myPainter.setRenderHint( QPainter::Antialiasing );
-  //determine labels sizes and draw them
-  QFont myQFont( "arial", 8, QFont::Normal );
-  QFontMetrics myFontMetrics( myQFont );
-  myPainter.setFont( myQFont );
-  myPainter.setPen( Qt::black );
-  QString myYMaxLabel = QString::number( static_cast < unsigned int >( myYAxisMax ) );
-  QString myXMinLabel = QString::number( myXAxisMin );
-  QString myXMaxLabel = QString::number( myXAxisMax );
-  //calculate the gutters
-  int myYGutterWidth = 0;
-  if ( myFontMetrics.width( myXMinLabel ) < myFontMetrics.width( myYMaxLabel ) )
-  {
-    myYGutterWidth = myFontMetrics.width( myYMaxLabel ) + 2; //add 2 so we can have 1 pix whitespace either side of label
-  }
-  else
-  {
-    myYGutterWidth = myFontMetrics.width( myXMinLabel ) + 2; //add 2 so we can have 1 pix whitespace either side of label
-  }
-  int myXGutterHeight = myFontMetrics.height() + 2;
-  int myXGutterWidth = myFontMetrics.width( myXMaxLabel ) + 1;//1 pix whtispace from right edge of image
-
+  QwtPlot * mypPlot = new QwtPlot( mChartWidget );
+  //ensure all children get removed
+  mypPlot->setAutoDelete( true );
+  QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mChartWidget );
+  mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
+  mpHistogramLayout->addWidget( mypPlot );
+  mChartWidget->setLayout( mpHistogramLayout );
+  mypPlot->setTitle(QObject::tr("Raster Histogram"));
+  mypPlot->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+  // Set axis titles
+  mypPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Pixel Value"));
+  mypPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("Frequency"));
   //
-  // Now calculate the graph drawable area after the axis labels have been taken
-  // into account
+  // add a grid
   //
-  int myGraphImageWidth = myImageWidth - myYGutterWidth;
-  int myGraphImageHeight = myImageHeight - myXGutterHeight;
-
-  //find out how wide to draw bars when in bar chart mode
-  int myBarWidth = static_cast<int>(((( double )myGraphImageWidth ) / (( double )BINCOUNT ) ) );
-
-
+  QwtPlotGrid * myGrid = new QwtPlotGrid();
+  myGrid->attach(mypPlot);
   //
   //now draw actual graphs
   //
-  if ( mRasterLayer->rasterType()
-       == QgsRasterLayer::Palette ) //paletted layers have hard coded color entries
+  QList<QColor> myColors;
+  myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
+  for ( int myIteratorInt = 1;
+      myIteratorInt <= myBandCountInt;
+      ++myIteratorInt )
   {
-    QPolygonF myPolygon;
-    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->rasterShader()->rasterShaderFunction();
-    QgsDebugMsg( "Making paletted image histogram....computing band stats" );
-    QgsDebugMsg( QString( "myLastBinWithData = %1" ).arg( myLastBinWithData ) );
-
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( 1 );
-    for ( int myBin = 0; myBin < myLastBinWithData; myBin++ )
+    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
+    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
+    if ( myItem->isSelected() )
     {
-      double myBinValue = myRasterBandStats.histogramVector->at( myBin );
-      QgsDebugMsg( QString( "myBin = %1 myBinValue = %2" ).arg( myBin ).arg( myBinValue ) );
-      //NOTE: Int division is 0 if the numerator is smaller than the denominator.
-      //hence the casts
-      int myX = static_cast<int>(((( double )myGraphImageWidth ) / (( double )myLastBinWithData ) ) * myBin );
-      //height varies according to freq. and scaled to greatet value in all layers
-      int myY = 0;
-      if ( myYAxisMax != 0 )
+      QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %i" ).arg( myIteratorInt ) );
+      mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
+      mypCurve->setPen(QPen( myColors.at( myIteratorInt ) ) );
+      QwtArray<double> myX2Data;//qwtarray is just a wrapped qvector
+      QwtArray<double> myY2Data;//qwtarray is just a wrapped qvector
+      for ( int myBin = 0; myBin < myLastBinWithData; myBin++ )
       {
-        myY = static_cast<int>((( double )myBinValue / ( double )myYAxisMax ) * myGraphImageHeight );
+        double myBinValue = myRasterBandStats.histogramVector->at( myBin );
+        myX2Data.append(myBin);
+        myY2Data.append(myBinValue);
       }
-
-      //see wehter to draw something each loop or to save up drawing for after iteration
-      if ( myGraphType == BAR_CHART )
-      {
-        //determine which color to draw the bar
-        int c1, c2, c3;
-        // Take middle of the interval for color
-        // TODO: this is not precise
-        double myInterval = ( myXAxisMax - myXAxisMin ) / myLastBinWithData;
-        double myMiddle = myXAxisMin + myBin * myInterval + myInterval / 2;
-
-        QgsDebugMsg( QString( "myMiddle = %1" ).arg( myMiddle ) );
-
-        if ( myRasterShaderFunction->shade( myMiddle, &c1, &c2, &c3 ) )
-        {
-          QgsDebugMsg( "Color not found" );
-          c1 = c2 = c3 = 180; // grey
-        }
-
-        QgsDebugMsg( QString( "c1 = %1 c2 = %2 c3 = %3" ).arg( c1 ).arg( c2 ).arg( c3 ) );
-
-        //draw the bar
-        //QBrush myBrush(QColor(c1,c2,c3));
-        myPainter.setBrush( QColor( c1, c2, c3 ) );
-        myPainter.setPen( QColor( c1, c2, c3 ) );
-        QgsDebugMsg( QString( "myX = %1 myY = %2" ).arg( myX ).arg( myY ) );
-        QgsDebugMsg( QString( "rect: %1, %2, %3, %4" ).arg( myX + myYGutterWidth ).arg( myImageHeight - ( myY + myXGutterHeight ) ).arg( myBarWidth ).arg( myY ) );
-        myPainter.drawRect( myX + myYGutterWidth, myImageHeight - ( myY + myXGutterHeight ), myBarWidth, myY );
-      }
-      //store this point in our line too
-      myY = myGraphImageHeight - myY;
-      myPolygon << QPointF( myX + myYGutterWidth, myY - myXGutterHeight );
-    }
-    //draw a line on the graph along the bar peaks;
-    if ( myGraphType == LINE_CHART )
-    {
-      //close of the point array so it makes a nice polygon
-      //bottom right point
-      myPolygon << QPointF(
-        myImageWidth,
-        myImageHeight - myXGutterHeight );
-      //bottom left point
-      myPolygon << QPointF(
-        myYGutterWidth,
-        myImageHeight - myXGutterHeight );
-      myPainter.setPen( Qt::black );
-      //set a gradient fill for the path
-      QLinearGradient myGradient = greenGradient();
-      myPainter.setBrush( myGradient );
-      QPainterPath myPath;
-      myPath.addPolygon( myPolygon );
-      myPainter.drawPath( myPath );
+      mypCurve->setData(myX2Data,myY2Data);
+      mypCurve->attach(mypPlot);
     }
   }
-  else
-  {
-
-    for ( int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt )
-    {
-      QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
-      QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
-      if ( myItem->isSelected() )
-      {
-
-        QPolygonF myPolygon;
-        for ( int myBin = 0; myBin < myLastBinWithData; myBin++ )
-        {
-          double myBinValue = myRasterBandStats.histogramVector->at( myBin );
-          //NOTE: Int division is 0 if the numerator is smaller than the denominator.
-          //hence the casts
-          int myX = static_cast<int>(((( double )myGraphImageWidth ) / (( double )myLastBinWithData ) ) * myBin );
-          //height varies according to freq. and scaled to greatet value in all layers
-          int myY = static_cast<int>((( double )myBinValue / ( double )myYAxisMax ) * myGraphImageHeight );
-          //adjust for image origin being top left
-          QgsDebugMsg( "-------------" );
-          QgsDebugMsg( "int myY = (myBinValue/myCellCount)*myGraphImageHeight" );
-          QgsDebugMsg( QString( "int myY = (%1/%2)*%3" ).arg( myBinValue ).arg( myCellCount ).arg( myGraphImageHeight ) );
-          QgsDebugMsg( QString( "Band %1, bin %2, Hist Value : %3, Scaled Value : %4" ).arg( myIteratorInt ).arg( myBin ).arg( myBinValue ).arg( myY ) );
-          QgsDebugMsg( "myY = myGraphImageHeight - myY" );
-          QgsDebugMsg( QString( "myY = %1-%2" ).arg( myGraphImageHeight ).arg( myY ) );
-
-          if ( myGraphType == BAR_CHART )
-          {
-            //draw the bar
-            if ( myBandCountInt == 1 ) //draw single band images with black
-            {
-              myPainter.setPen( Qt::black );
-            }
-            else if ( myIteratorInt == 1 )
-            {
-              myPainter.setPen( Qt::red );
-            }
-            else if ( myIteratorInt == 2 )
-            {
-              myPainter.setPen( Qt::green );
-            }
-            else if ( myIteratorInt == 3 )
-            {
-              myPainter.setPen( Qt::blue );
-            }
-            else if ( myIteratorInt == 4 )
-            {
-              myPainter.setPen( Qt::magenta );
-            }
-            else if ( myIteratorInt == 5 )
-            {
-              myPainter.setPen( Qt::darkRed );
-            }
-            else if ( myIteratorInt == 6 )
-            {
-              myPainter.setPen( Qt::darkGreen );
-            }
-            else if ( myIteratorInt == 7 )
-            {
-              myPainter.setPen( Qt::darkBlue );
-            }
-            else
-            {
-              myPainter.setPen( Qt::gray );
-            }
-
-            // QgsDebugMsg(QString("myPainter.fillRect(QRect(%1,%2,%3,%2), myBrush );").arg(myX).arg(myY).arg(myBarWidth));
-
-            myPainter.drawRect( myX + myYGutterWidth, myImageHeight - ( myY + myXGutterHeight ), myBarWidth, myY );
-          }
-          else //line graph
-          {
-            myY = myGraphImageHeight - myY;
-            myPolygon << QPointF( myX + myYGutterWidth, myY );
-          }
-        }
-
-        if ( myGraphType == LINE_CHART )
-        {
-          QLinearGradient myGradient;
-          if ( myBandCountInt == 1 ) //draw single band images with black
-          {
-            myPainter.setPen( Qt::black );
-            myGradient = grayGradient();
-          }
-          else if ( myIteratorInt == 1 )
-          {
-            myPainter.setPen( Qt::red );
-            myGradient = redGradient();
-          }
-          else if ( myIteratorInt == 2 )
-          {
-            myPainter.setPen( Qt::green );
-            myGradient = greenGradient();
-          }
-          else if ( myIteratorInt == 3 )
-          {
-            myPainter.setPen( Qt::blue );
-            myGradient = blueGradient();
-          }
-          else if ( myIteratorInt == 4 )
-          {
-            myPainter.setPen( Qt::magenta );
-            myGradient = grayGradient();
-          }
-          else if ( myIteratorInt == 5 )
-          {
-            myPainter.setPen( Qt::darkRed );
-            myGradient = grayGradient();
-          }
-          else if ( myIteratorInt == 6 )
-          {
-            myPainter.setPen( Qt::darkGreen );
-            myGradient = grayGradient();
-          }
-          else if ( myIteratorInt == 7 )
-          {
-            myPainter.setPen( Qt::darkBlue );
-            myGradient = grayGradient();
-          }
-          else
-          {
-            myPainter.setPen( Qt::gray );
-            myGradient = grayGradient();
-          }
-          //close of the point array so it makes a nice polygon
-          //bottom right point
-          myPolygon << QPointF(
-            myImageWidth,
-            myImageHeight - myXGutterHeight );
-          //bottom left point
-          myPolygon << QPointF(
-            myYGutterWidth,
-            myImageHeight - myXGutterHeight );
-          myPainter.setPen( Qt::black );
-          myPainter.setBrush( myGradient );
-          QPainterPath myPath;
-          myPath.addPolygon( myPolygon );
-          myPainter.drawPath( myPath );
-        }
-      }
-    }
-  }
-
-  //
-  // Now draw interval markers on the x axis
-  //
-  int myXDivisions = myGraphImageWidth / 10;
-  myPainter.setPen( Qt::gray );
-  for ( int i = 0; i < myXDivisions; ++i )
-  {
-    QPolygon myPolygon;
-    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
-    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - ( myXGutterHeight - 5 ) );
-    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
-    myPolygon << QPoint((( i + 1 )*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
-    myPainter.drawPolyline( myPolygon );
-  }
-  //
-  // Now draw interval markers on the y axis
-  //
-  int myYDivisions = myGraphImageHeight / 10;
-  myPainter.setPen( Qt::gray );
-  for ( int i = myYDivisions; i > 0; --i )
-  {
-
-    QPolygon myPolygon;
-    int myYOrigin = myImageHeight - myXGutterHeight;
-    myPolygon << QPoint( myYGutterWidth, myYOrigin - ( i*myYDivisions ) );
-    myPolygon << QPoint( myYGutterWidth - 5, myYOrigin - ( i*myYDivisions ) );
-    myPolygon << QPoint( myYGutterWidth, myYOrigin - ( i*myYDivisions ) );
-    myPolygon << QPoint( myYGutterWidth, myYOrigin - (( i - 1 )*myYDivisions ) );
-    myPainter.drawPolyline( myPolygon );
-  }
-
-  //now draw the axis labels onto the graph
-  myPainter.drawText( 1, 12, myYMaxLabel );
-  myPainter.drawText( 1, myImageHeight - myXGutterHeight, QString::number( static_cast < unsigned int >( myYAxisMin ) ) );
-  myPainter.drawText( myYGutterWidth, myImageHeight - 1, myXMinLabel );
-  myPainter.drawText( myImageWidth - myXGutterWidth, myImageHeight - 1, myXMaxLabel );
-
-  //
-  // Finish up
-  //
-  myPainter.end();
-  pixHistogram->setPixmap( myPixmap );
   QApplication::restoreOverrideCursor();
 }
 
