@@ -962,6 +962,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPo
       QDomElement geometryElement = infoDocument.createElement( "Attribute" );
       geometryElement.setAttribute( "name", "geometry" );
       geometryElement.setAttribute( "value", geom->exportToWkt() );
+      geometryElement.setAttribute( "type", "derived" );
       featureElement.appendChild( geometryElement );
     }
   }
