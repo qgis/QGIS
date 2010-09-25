@@ -264,8 +264,11 @@ class QgisAppInterface : public QgisInterface
 
     //! open feature form
     // returns true when dialog was accepted
+    // @param l vector layer
+    // @param f feature to show/modify
+    // @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
     // @added in 1.6
-    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f );
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
 
   signals:
     void currentThemeChanged( QString );

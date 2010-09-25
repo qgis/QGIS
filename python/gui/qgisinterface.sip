@@ -258,7 +258,7 @@ class QgisInterface : QObject
 
     //! open feature form
     // @added in 1.6
-    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
 
   signals:
     /** Emited whenever current (selected) layer changes.
