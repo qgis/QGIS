@@ -209,7 +209,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
 
   int featureCount = 0;
-  const QgsFieldMap& fields = layer->pendingFields();
 
   // init distance/area calculator
   QgsDistanceArea calc;
@@ -254,37 +253,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     featureCount++;
 
     int fid = f_it->id();
-    QString displayField, displayValue;
-    QMap<QString, QString> attributes, derivedAttributes;
-
-    const QgsAttributeMap& attr = f_it->attributeMap();
-
-    for ( QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it )
-    {
-      QString attributeName  = layer->attributeDisplayName( it.key() );
-      QString attributeValue = it->isNull() ? "NULL" : it->toString();
-
-      switch ( layer->editType( it.key() ) )
-      {
-        case QgsVectorLayer::Hidden:
-          continue;
-
-        case QgsVectorLayer::ValueMap:
-          attributeValue = layer->valueMap( it.key() ).key( it->toString(), QString( "(%1)" ).arg( it->toString() ) );
-          break;
-
-        default:
-          break;
-      }
-
-      if ( fields[it.key()].name() == layer->displayField() )
-      {
-        displayField = attributeName;
-        displayValue = attributeValue;
-      }
-
-      attributes.insert( attributeName, attributeValue );
-    }
+    QMap<QString, QString> derivedAttributes;
 
     // Calculate derived attributes and insert:
     // measure distance or area depending on geometry type
@@ -331,7 +300,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : QString::number( fid ) );
 
-    results()->addFeature( layer, fid, displayField, displayValue, attributes, derivedAttributes );
+    results()->addFeature( layer, fid, f_it->attributeMap(), derivedAttributes );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
@@ -392,7 +361,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   if ( res )
   {
     derivedAttributes.insert( tr( "(clicked coordinate)" ), idPoint.toString() );
-    results()->addFeature( layer, -1, type, "", attributes, derivedAttributes );
+    results()->addFeature( layer, type, attributes, derivedAttributes );
   }
 
   return res;

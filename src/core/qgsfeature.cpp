@@ -23,24 +23,24 @@ email                : sherman at mrcc.com
  */
 
 QgsFeature::QgsFeature( int id, QString typeName )
-    : mFid( id ),
-    mGeometry( 0 ),
-    mOwnsGeometry( 0 ),
-    mValid( false ),
-    mDirty( 0 ),
-    mTypeName( typeName )
+    : mFid( id )
+    , mGeometry( 0 )
+    , mOwnsGeometry( 0 )
+    , mValid( false )
+    , mDirty( 0 )
+    , mTypeName( typeName )
 {
   // NOOP
 }
 
 QgsFeature::QgsFeature( QgsFeature const & rhs )
-    : mFid( rhs.mFid ),
-    mAttributes( rhs.mAttributes ),
-    mGeometry( 0 ),
-    mOwnsGeometry( false ),
-    mValid( rhs.mValid ),
-    mDirty( rhs.mDirty ),
-    mTypeName( rhs.mTypeName )
+    : mFid( rhs.mFid )
+    , mAttributes( rhs.mAttributes )
+    , mGeometry( 0 )
+    , mOwnsGeometry( false )
+    , mValid( rhs.mValid )
+    , mDirty( rhs.mDirty )
+    , mTypeName( rhs.mTypeName )
 {
 
   // copy embedded geometry
