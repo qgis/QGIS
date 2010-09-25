@@ -58,7 +58,7 @@ class QgsCPLErrorHandler
 {
     static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
     {
-      QgsDebugMsg( QString( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ) );
+      QgsLogger::warning( QString( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ) );
     }
 
   public:
@@ -71,7 +71,6 @@ class QgsCPLErrorHandler
     {
       CPLPopErrorHandler();
     }
-
 };
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )

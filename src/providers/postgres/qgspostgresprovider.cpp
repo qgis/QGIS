@@ -623,7 +623,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
     QString fetch = QString( "fetch forward %1 from %2" ).arg( mFeatureQueueSize ).arg( cursorName );
     if ( connectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
-      QgsDebugMsg( "PQsendQuery failed" );
+      QgsLogger::warning( "PQsendQuery failed" );
     }
 
     Result queryResult;
@@ -758,7 +758,7 @@ const QgsField &QgsPostgresProvider::field( int index ) const
 
   if ( it == attributeFields.constEnd() )
   {
-    QgsDebugMsg( "Field " + QString::number( index ) + " not found." );
+    QgsLogger::warning( "Field " + QString::number( index ) + " not found." );
     throw PGFieldNotFound();
   }
 
@@ -924,7 +924,7 @@ bool QgsPostgresProvider::loadFields()
       }
       else
       {
-        QgsDebugMsg( "Field " + fieldName + " ignored, because of unsupported type " + fieldTypeName );
+        QgsLogger::warning( "Field " + fieldName + " ignored, because of unsupported type " + fieldTypeName );
         continue;
       }
 
@@ -943,7 +943,7 @@ bool QgsPostgresProvider::loadFields()
     }
     else
     {
-      QgsDebugMsg( "Field " + fieldName + " ignored, because of unsupported type type " + fieldTType );
+      QgsLogger::warning( "Field " + fieldName + " ignored, because of unsupported type type " + fieldTType );
       continue;
     }
 
@@ -3307,13 +3307,11 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
   if ( errorStatus == PGRES_COMMAND_OK )
     return true;
 
-#ifdef QGISDEBUG
-  QString err = QString( "Query: %1 returned %2 [%3]" )
-                .arg( query )
-                .arg( errorStatus )
-                .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) );
-  QgsDebugMsg( err );
-#endif
+  QgsLogger::warning( QString( "Query: %1 returned %2 [%3]" )
+                      .arg( query )
+                      .arg( errorStatus )
+                      .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
+
   if ( openCursors )
   {
     QgsPostgresProvider::showMessageBox(
