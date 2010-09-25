@@ -306,7 +306,7 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Open feature form
     // returns true when dialog was accepted
     // @added in 1.6
-    virtual bool openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
 
   signals:
     /** Emited whenever current (selected) layer changes.
