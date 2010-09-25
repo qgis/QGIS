@@ -28,6 +28,7 @@
 #include "qgsattributedialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsattributeaction.h"
+#include "qgsfeatureaction.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -43,20 +44,6 @@
 #include <QTextBrowser>
 
 #include "qgslogger.h"
-
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem )
-    : QAction( name, results )
-    , mLayer( vl )
-    , mAction( action )
-{
-  QList< QPair<QString, QString> > attributes;
-  results->retrieveAttributes( featItem, mAttributes, mIdx );
-}
-
-void QgsFeatureAction::execute()
-{
-  mLayer->actions()->doAction( mAction, mAttributes, mIdx );
-}
 
 class QgsIdentifyResultsDock : public QDockWidget
 {
@@ -82,9 +69,9 @@ class QgsIdentifyResultsDock : public QDockWidget
 //     actions (if any) [userrole: "actions"]
 //       edit [userrole: "edit"]
 //       action [userrole: "action", idx]
-//     name value
-//     name value
-//     name value
+//     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
+//     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
+//     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
 //   feature
 //     derived attributes (if any)
 //       name value
@@ -145,61 +132,74 @@ QTreeWidgetItem *QgsIdentifyResults::layerItem( QObject *layer )
   return 0;
 }
 
-void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
-                                     QString displayField, QString displayValue,
-                                     const QMap<QString, QString> &attributes,
+void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer, int fid,
+                                     const QgsAttributeMap &attributes,
                                      const QMap<QString, QString> &derivedAttributes )
 {
-  QTreeWidgetItem *layItem = layerItem( layer );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  QTreeWidgetItem *layItem = layerItem( vlayer );
 
   if ( layItem == 0 )
   {
-    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
-    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << vlayer->name() );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
 
-    if ( vlayer )
-    {
-      connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
-      connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
-      connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
-      connect( vlayer, SIGNAL( attributeValueChanged( int, int, const QVariant & ) ), this, SLOT( attributeValueChanged( int, int, const QVariant & ) ) );
-      connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-      connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-    }
-    else
-    {
-      connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
-      connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
-    }
+    connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
+    connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
+    connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
+    connect( vlayer, SIGNAL( attributeValueChanged( int, int, const QVariant & ) ), this, SLOT( attributeValueChanged( int, int, const QVariant & ) ) );
+    connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
+    connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
 
-  QTreeWidgetItem *featItem = new QTreeWidgetItem( QStringList() << displayField << displayValue );
+  QTreeWidgetItem *featItem = new QTreeWidgetItem;
   featItem->setData( 0, Qt::UserRole, fid );
   layItem->addChild( featItem );
 
-  if ( !rlayer || rlayer->providerKey() != "wms" )
+  for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
   {
-    for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
-    {
-      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
-      if ( vlayer )
-      {
-        attrItem->setData( 0, Qt::UserRole, vlayer->fieldNameIndex( it.key() ) );
-      }
-      featItem->addChild( attrItem );
-    }
-  }
-  else
-  {
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << attributes.begin().key() << "" );
-    featItem->addChild( attrItem );
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( it.key() ) << it.value().toString() );
 
-    QTextBrowser *tb = new QTextBrowser( attrItem->treeWidget() );
-    tb->setHtml( attributes.begin().value() );
-    attrItem->treeWidget()->setItemWidget( attrItem, 1, tb );
+    const QgsFieldMap &fields = vlayer->pendingFields();
+
+    QgsFieldMap::const_iterator fit = fields.find( it.key() );
+    if ( fit == fields.constEnd() )
+    {
+      delete attrItem;
+      continue;
+    }
+
+    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( it.key() ) );
+    attrItem->setData( 0, Qt::UserRole, fit->name() );
+    attrItem->setData( 0, Qt::UserRole + 1, it.key() );
+
+    QVariant value = it.value();
+    attrItem->setData( 1, Qt::UserRole, value );
+
+    switch ( vlayer->editType( it.key() ) )
+    {
+      case QgsVectorLayer::Hidden:
+        // skip the item
+        delete attrItem;
+        continue;
+
+      case QgsVectorLayer::ValueMap:
+        value = vlayer->valueMap( it.key() ).key( it->toString(), QString( "(%1)" ).arg( it->toString() ) );
+        break;
+
+      default:
+        break;
+    }
+
+    attrItem->setData( 1, Qt::DisplayRole, value );
+
+    if ( fit->name() == vlayer->displayField() )
+    {
+      featItem->setText( 0, attrItem->text( 0 ) );
+      featItem->setText( 1, attrItem->text( 1 ) );
+    }
+
+    featItem->addChild( attrItem );
   }
 
   if ( derivedAttributes.size() >= 0 )
@@ -214,33 +214,81 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     }
   }
 
-  if ( vlayer )
+  QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
+  actionItem->setData( 0, Qt::UserRole, "actions" );
+  featItem->addChild( actionItem );
+
+  QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
+  editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+  editItem->setData( 0, Qt::UserRole, "edit" );
+  actionItem->addChild( editItem );
+
+  for ( int i = 0; i < vlayer->actions()->size(); i++ )
   {
-    QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
-    actionItem->setData( 0, Qt::UserRole, "actions" );
-    featItem->addChild( actionItem );
+    const QgsAction &action = vlayer->actions()->at( i );
 
-    QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
-    editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
-    editItem->setData( 0, Qt::UserRole, "edit" );
-    actionItem->addChild( editItem );
+    if ( !action.runable() )
+      continue;
 
-    for ( int i = 0; i < vlayer->actions()->size(); i++ )
-    {
-      const QgsAction &action = vlayer->actions()->at( i );
-
-      if ( !action.runable() )
-        continue;
-
-      QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
-      twi->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
-      twi->setData( 0, Qt::UserRole, "action" );
-      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
-      actionItem->addChild( twi );
-    }
+    QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
+    twi->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
+    twi->setData( 0, Qt::UserRole, "action" );
+    twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+    actionItem->addChild( twi );
   }
 
   highlightFeature( featItem );
+}
+
+void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
+                                     QString label,
+                                     const QMap<QString, QString> &attributes,
+                                     const QMap<QString, QString> &derivedAttributes )
+{
+  QTreeWidgetItem *layItem = layerItem( layer );
+
+  if ( layItem == 0 )
+  {
+    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    lstResults->addTopLevelItem( layItem );
+
+    connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+    connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
+  }
+
+  QTreeWidgetItem *featItem = new QTreeWidgetItem( QStringList() << label << "" );
+  featItem->setData( 0, Qt::UserRole, -1 );
+  layItem->addChild( featItem );
+
+  if ( layer && layer->providerKey() == "wms" )
+  {
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << attributes.begin().key() << "" );
+    featItem->addChild( attrItem );
+
+    QTextBrowser *tb = new QTextBrowser( attrItem->treeWidget() );
+    tb->setHtml( attributes.begin().value() );
+    attrItem->treeWidget()->setItemWidget( attrItem, 1, tb );
+  }
+  else
+  {
+    for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+    {
+      featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    }
+  }
+
+  if ( derivedAttributes.size() >= 0 )
+  {
+    QTreeWidgetItem *derivedItem = new QTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    derivedItem->setData( 0, Qt::UserRole, "derived" );
+    featItem->addChild( derivedItem );
+
+    for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); it++ )
+    {
+      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    }
+  }
 }
 
 void QgsIdentifyResults::editingToggled()
@@ -484,7 +532,7 @@ void QgsIdentifyResults::deactivate()
 void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
 {
   int idx;
-  QList< QPair<QString, QString> > attributes;
+  QgsAttributeMap attributes;
   QTreeWidgetItem *featItem = retrieveAttributes( item, attributes, idx );
   if ( !featItem )
     return;
@@ -570,7 +618,7 @@ QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
 }
 
 
-QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes, int &idx )
+QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
@@ -585,8 +633,8 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
     if ( item->childCount() > 0 )
       continue;
     if ( item == lstResults->currentItem() )
-      idx = attributes.size();
-    attributes << QPair<QString, QString>( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
+      idx = item->data( 0, Qt::UserRole + 1 ).toInt();
+    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, Qt::DisplayRole ) );
   }
 
   return featItem;
@@ -939,13 +987,23 @@ void QgsIdentifyResults::copyFeatureAttributes()
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
 
+  QgsVectorLayer *vlayer = vectorLayer( lstResults->currentItem() );
+  if ( !vlayer )
+    return;
+
   int idx;
-  QList< QPair<QString, QString> > attributes;
+  QgsAttributeMap attributes;
   retrieveAttributes( lstResults->currentItem(), attributes, idx );
 
-  for ( QList< QPair<QString, QString> >::iterator it = attributes.begin(); it != attributes.end(); it++ )
+  const QgsFieldMap &fields = vlayer->pendingFields();
+
+  for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
   {
-    text += QString( "%1: %2\n" ).arg( it->first ).arg( it->second );
+    QgsFieldMap::const_iterator fit = fields.find( it.key() );
+    if ( fit == fields.constEnd() )
+      continue;
+
+    text += QString( "%1: %2\n" ).arg( fit->name() ).arg( it.value().toString() );
   }
 
   QgsDebugMsg( QString( "set clipboard: %1" ).arg( text ) );

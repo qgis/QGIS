@@ -26,6 +26,7 @@ SET(QGIS_APP_SRCS
   qgsgraduatedsymboldialog.cpp
   qgshelpviewer.cpp
   qgsidentifyresults.cpp
+  qgsfeatureaction.cpp
   qgslabeldialog.cpp
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
@@ -155,6 +156,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h
   qgsidentifyresults.h
+  qgsfeatureaction.h
   qgslabeldialog.h
   qgsmanageconnectionsdialog.h
   qgsmaptoolidentify.h

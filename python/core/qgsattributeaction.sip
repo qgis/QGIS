@@ -37,7 +37,7 @@ class QgsAttributeAction
 #include "qgsattributeaction.h"
 %End
   public:
-    QgsAttributeAction();
+    QgsAttributeAction( QgsVectorLayer * );
 
     //! Destructor
     virtual ~QgsAttributeAction();
@@ -53,16 +53,17 @@ class QgsAttributeAction
     // index into values which indicates which value in the values vector
     // is to be used if the action has a default placeholder.
     // @note added to python API in 1.6 (without executePython parameter)
-    void doAction( int index, const QList< QPair<QString, QString> > &values,
+    void doAction( int index,
+                   const QMap<int, QVariant> &values,
                    int defaultValueIndex = 0 );
 
     //! Removes all actions
     void clearActions();
 
-    //! Expands the given action, replacing all %'s with the value as
-    // given.
-    static QString expandAction( QString action, const QList< QPair<QString, QString> > &values,
-                                 uint defaultValueIndex );
+    //! Expands the given action, replacing all %'s with the value as given.
+    QString expandAction( QString action,
+                          const QMap<int, QVariant> &values,
+                          uint defaultValueIndex );
 
     //! Writes the actions out in XML format
     bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;

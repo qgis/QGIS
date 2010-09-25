@@ -27,12 +27,13 @@
 
 #include <QString>
 #include <QObject>
-#include <QList>
-#include <QPair>
+
+#include <qgsfeature.h>
 
 class QDomNode;
 class QDomDocument;
 class QgsPythonUtils;
+class QgsVectorLayer;
 
 /** \ingroup core
  * Utility class that encapsulates an action based on vector attributes.
@@ -95,7 +96,7 @@ class  CORE_EXPORT QgsAttributeAction
 {
   public:
     //! Constructor
-    QgsAttributeAction() {}
+    QgsAttributeAction( QgsVectorLayer *layer ) : mLayer( layer ) {}
 
     //! Destructor
     virtual ~QgsAttributeAction() {}
@@ -111,16 +112,19 @@ class  CORE_EXPORT QgsAttributeAction
     // index into values which indicates which value in the values vector
     // is to be used if the action has a default placeholder.
     // @note parameter executePython deprecated (and missing in python binding)
-    void doAction( int index, const QList< QPair<QString, QString> > &values,
-                   int defaultValueIndex = 0, void ( *executePython )( const QString & ) = 0 );
+    void doAction( int index,
+                   const QgsAttributeMap &attributes,
+                   int defaultValueIndex = 0,
+                   void ( *executePython )( const QString & ) = 0 );
 
     //! Removes all actions
     void clearActions() { mActions.clear(); }
 
     //! Expands the given action, replacing all %'s with the value as
     // given.
-    static QString expandAction( QString action, const QList< QPair<QString, QString> > &values,
-                                 uint defaultValueIndex );
+    QString expandAction( QString action,
+                          const QgsAttributeMap &attributes,
+                          uint defaultValueIndex );
 
     //! Writes the actions out in XML format
     bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
@@ -136,6 +140,7 @@ class  CORE_EXPORT QgsAttributeAction
 
   private:
     QList<QgsAction> mActions;
+    QgsVectorLayer *mLayer;
     static void ( *smPythonExecute )( const QString & );
 };
 

@@ -22,6 +22,7 @@
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgsattributeaction.h"
 #include "qgscontexthelp.h"
+#include "qgsfeature.h"
 
 #include <QWidget>
 #include <QList>
@@ -31,8 +32,8 @@ class QTreeWidgetItem;
 class QAction;
 class QMenu;
 
-class QgsMapLayer;
 class QgsVectorLayer;
+class QgsRasterLayer;
 class QgsRubberBand;
 class QgsMapCanvas;
 class QDockWidget;
@@ -53,9 +54,13 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     ~QgsIdentifyResults();
 
-    /** Add add feature */
-    void addFeature( QgsMapLayer *layer, int fid,
-                     QString displayField, QString displayValue,
+    /** Add add feature from vector layer */
+    void addFeature( QgsVectorLayer *layer, int fid,
+                     const QgsAttributeMap &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
+
+    /** Add add feature from other layer */
+    void addFeature( QgsRasterLayer *layer, QString label,
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
@@ -104,7 +109,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
 
-    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes, int &currentIdx );
+    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
@@ -130,23 +135,6 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void doAction( QTreeWidgetItem *item, int action );
 
     QDockWidget *mDock;
-};
-
-class QgsFeatureAction : public QAction
-{
-    Q_OBJECT
-
-  public:
-    QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem );
-
-  public slots:
-    void execute();
-
-  private:
-    QgsVectorLayer *mLayer;
-    int mAction;
-    int mIdx;
-    QList< QPair<QString, QString> > mAttributes;
 };
 
 #endif

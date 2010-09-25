@@ -499,14 +499,11 @@ void QgsAttributeTableModel::incomingChangeLayout()
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
 {
-  QList< QPair<QString, QString> > attributes;
+  QgsAttributeMap attributes;
 
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    attributes << QPair<QString, QString>(
-      mLayer->pendingFields()[ mAttributes[i] ].name(),
-      data( index( idx.row(), i ), Qt::EditRole ).toString()
-    );
+    attributes.insert( i, data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );

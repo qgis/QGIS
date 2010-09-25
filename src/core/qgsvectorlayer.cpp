@@ -111,7 +111,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mVertexMarkerOnlyForSelection( false ),
     mFetching( false )
 {
-  mActions = new QgsAttributeAction;
+  mActions = new QgsAttributeAction( this );
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )

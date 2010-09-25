@@ -30,6 +30,7 @@
 
 #include "qgsattributeaction.h"
 #include "qgsrunprocess.h"
+#include "qgsvectorlayer.h"
 
 static const char * const ident_ = "$Id$";
 
@@ -38,7 +39,7 @@ void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QS
   mActions << QgsAction( type, name, action, capture );
 }
 
-void QgsAttributeAction::doAction( int index, const QList< QPair<QString, QString> > &values,
+void QgsAttributeAction::doAction( int index, const QgsAttributeMap &attributes,
                                    int defaultValueIndex, void ( *executePython )( const QString & ) )
 {
   if ( index < 0 || index >= size() )
@@ -61,7 +62,7 @@ void QgsAttributeAction::doAction( int index, const QList< QPair<QString, QStrin
 
   // The QgsRunProcess instance created by this static function
   // deletes itself when no longer needed.
-  QString expandedAction = expandAction( action.action(), values, defaultValueIndex );
+  QString expandedAction = expandAction( action.action(), attributes, defaultValueIndex );
   if ( action.type() == QgsAction::GenericPython )
   {
     if ( executePython )
@@ -79,7 +80,7 @@ void QgsAttributeAction::doAction( int index, const QList< QPair<QString, QStrin
   }
 }
 
-QString QgsAttributeAction::expandAction( QString action, const QList< QPair<QString, QString> > &values,
+QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap &attributes,
     uint clickedOnValue )
 {
   // This function currently replaces all %% characters in the action
@@ -98,19 +99,29 @@ QString QgsAttributeAction::expandAction( QString action, const QList< QPair<QSt
   // for the actual substitutions.
 
   QString expanded_action;
-  if ( clickedOnValue >= 0 && clickedOnValue < static_cast<unsigned int>( values.size() ) )
-    expanded_action = action.replace( "%%", values[clickedOnValue].second );
+  if ( clickedOnValue >= 0 && attributes.contains( clickedOnValue ) )
+    expanded_action = action.replace( "%%", attributes[clickedOnValue].toString() );
   else
     expanded_action = action;
 
-  for ( int i = 0; i < values.size(); ++i )
-  {
-    // Check for a replace a quoted version and a non-quoted version.
-    QString to_replace_1 = "[%" + values[i].first + "]";
-    QString to_replace_2 = "%" + values[i].first;
+  const QgsFieldMap &fields = mLayer->pendingFields();
 
-    expanded_action = expanded_action.replace( to_replace_1, values[i].second );
-    expanded_action = expanded_action.replace( to_replace_2, values[i].second );
+  for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+  {
+    QgsFieldMap::const_iterator fit = fields.find( it.key() );
+    if ( fit == fields.constEnd() )
+      continue;
+
+    // Check for a replace a quoted version and a non-quoted version.
+    QString to_replace_1 = "[%" + fit->name() + "]";
+    QString to_replace_2 = "%" + fit->name() + "%";
+    QString to_replace_3 = "%" + mLayer->attributeDisplayName( it.key() ) + "%";
+    QString to_replace_4 = "[%" + mLayer->attributeDisplayName( it.key() ) + "%]";
+
+    expanded_action = expanded_action.replace( to_replace_1, it.value().toString() );
+    expanded_action = expanded_action.replace( to_replace_2, it.value().toString() );
+    expanded_action = expanded_action.replace( to_replace_3, it.value().toString() );
+    expanded_action = expanded_action.replace( to_replace_4, it.value().toString() );
   }
 
   return expanded_action;
