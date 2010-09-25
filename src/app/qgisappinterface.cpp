@@ -20,6 +20,8 @@
 #include <QFileInfo>
 #include <QString>
 #include <QMenu>
+#include <QDialog>
+#include <QAbstractButton>
 
 #include "qgisappinterface.h"
 #include "qgisapp.h"
@@ -32,6 +34,8 @@
 #include "qgsattributedialog.h"
 #include "qgsfield.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeatureaction.h"
+#include "qgsattributeaction.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis ),
@@ -356,7 +360,7 @@ QAction *QgisAppInterface::actionCheckQgisVersion() { return qgis->actionCheckQg
 QAction *QgisAppInterface::actionHelpSeparator2() { return qgis->actionHelpSeparator2(); }
 QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
 
-bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f )
+bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly )
 {
   if ( !vlayer )
     return false;
@@ -373,8 +377,61 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f )
     }
   }
 
-  QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, &f );
-  bool res = mypDialog->exec();
-  delete mypDialog;
+  QgsAttributeMap src = f.attributeMap();
+
+  if ( !updateFeatureOnly && vlayer->isEditable() )
+    vlayer->beginEditCommand( tr( "Feature form edit" ) );
+
+  QgsAttributeDialog *ad = new QgsAttributeDialog( vlayer, &f );
+
+  if ( vlayer->actions()->size() > 0 )
+  {
+    ad->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    QAction *a = new QAction( tr( "Run actions" ), ad->dialog() );
+    a->setEnabled( false );
+    ad->dialog()->addAction( a );
+
+    for ( int i = 0; i < vlayer->actions()->size(); i++ )
+    {
+      const QgsAction &action = vlayer->actions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), f, vlayer, i, ad->dialog() );
+      ad->dialog()->addAction( a );
+      connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
+
+      QAbstractButton *pb = ad->dialog()->findChild<QAbstractButton *>( action.name() );
+      if ( pb )
+        connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
+    }
+  }
+
+  bool res = ad->exec();
+
+  if ( !updateFeatureOnly && vlayer->isEditable() )
+  {
+    if ( res )
+    {
+      const QgsAttributeMap &dst = f.attributeMap();
+      for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
+      {
+        if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
+        {
+          vlayer->changeAttributeValue( f.id(), it.key(), it.value() );
+        }
+      }
+      vlayer->endEditCommand();
+    }
+    else
+    {
+      vlayer->destroyEditCommand();
+    }
+  }
+
+  delete ad;
+
   return res;
 }
