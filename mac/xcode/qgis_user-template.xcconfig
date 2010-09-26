@@ -1,7 +1,8 @@
 // QGIS Xcode project common build settings
 
-// CURRENT_PROJECT_VERSION = 2.5.0
+// CURRENT_PROJECT_VERSION = 2.6.1
 
+//////////////////////////////////////////////////////////////////////
 // duplicate this file as qgis_user.xcconfig.
 // uncomment settings in qgis_user.xcconfig to override defaults
 //   in qgis_settings.xcconfig.
@@ -10,11 +11,13 @@
 
 // SDKSYS must be set to valid value
 //SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
-// default to universal, per system; space-separated list
-//ARCHS = $(ARCHS_$(SDKSYS)) // ppc i386 ppc64 x86_64
 
-// python archs use ; separator, must match what's in ARCHS
-//ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
+// default to native; space-separated list, ppc i386 ppc64 x86_64
+//ARCHS = $(UNIVERSAL) // use this for universal multiarch build
+
+// python archs, default same as ARCHS, must match what's in ARCHS
+// use ; separator
+//ARCHS_P = $(UNIVERSAL_P) // use this for universal multiarch build
 
 //////////////////////////////////////////////////////////////////////
 // Qt and other support
