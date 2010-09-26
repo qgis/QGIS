@@ -1260,6 +1260,8 @@
 		727800FC10FB77DE00574B67 /* qextserialport.h in Sources */ = {isa = PBXBuildFile; fileRef = 727800F410FB76E200574B67 /* qextserialport.h */; };
 		7278010610FB785F00574B67 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7278010510FB785F00574B67 /* IOKit.framework */; };
 		727801BA10FB7B1D00574B67 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F4B80F3A5434003DC336 /* CoreFoundation.framework */; };
+		727DEA1A124F9BDE00497454 /* qgsfeatureaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727DEA18124F9B9200497454 /* qgsfeatureaction.cpp */; };
+		727DEA1B124F9BDE00497454 /* qgsfeatureaction.h in Sources */ = {isa = PBXBuildFile; fileRef = 727DEA19124F9B9200497454 /* qgsfeatureaction.h */; };
 		727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */; };
 		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
 		727E6B110FEAA0CF00DF6F64 /* x_qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */; };
@@ -6134,18 +6136,6 @@
 		7209EFF20F39E5DA003DC336 /* qgis_vi.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_vi.ts; path = ../../i18n/qgis_vi.ts; sourceTree = SOURCE_ROOT; };
 		7209EFF30F39E5DA003DC336 /* qgis_zh_CN.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_zh_CN.ts; path = ../../i18n/qgis_zh_CN.ts; sourceTree = SOURCE_ROOT; };
 		7209EFF40F39E5DA003DC336 /* qgis_zh_TW.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_zh_TW.ts; path = ../../i18n/qgis_zh_TW.ts; sourceTree = SOURCE_ROOT; };
-		7209EFF50F39E5DA003DC336 /* qt_ar.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_ar.ts; path = ../../i18n/qt_ar.ts; sourceTree = SOURCE_ROOT; };
-		7209EFF60F39E5DA003DC336 /* qt_de.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_de.ts; path = ../../i18n/qt_de.ts; sourceTree = SOURCE_ROOT; };
-		7209EFF70F39E5DA003DC336 /* qt_es.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qt_es.ts; path = ../../i18n/qt_es.ts; sourceTree = SOURCE_ROOT; };
-		7209EFF80F39E5DA003DC336 /* qt_fr.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_fr.ts; path = ../../i18n/qt_fr.ts; sourceTree = SOURCE_ROOT; };
-		7209EFF90F39E5DA003DC336 /* qt_ja_jp.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_ja_jp.ts; path = ../../i18n/qt_ja_jp.ts; sourceTree = SOURCE_ROOT; };
-		7209EFFA0F39E5DA003DC336 /* qt_pl.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_pl.ts; path = ../../i18n/qt_pl.ts; sourceTree = SOURCE_ROOT; };
-		7209EFFB0F39E5DA003DC336 /* qt_pt.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_pt.ts; path = ../../i18n/qt_pt.ts; sourceTree = SOURCE_ROOT; };
-		7209EFFC0F39E5DA003DC336 /* qt_ru.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_ru.ts; path = ../../i18n/qt_ru.ts; sourceTree = SOURCE_ROOT; };
-		7209EFFD0F39E5DA003DC336 /* qt_sk.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_sk.ts; path = ../../i18n/qt_sk.ts; sourceTree = SOURCE_ROOT; };
-		7209EFFE0F39E5DA003DC336 /* qt_sv.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_sv.ts; path = ../../i18n/qt_sv.ts; sourceTree = SOURCE_ROOT; };
-		7209EFFF0F39E5DA003DC336 /* qt_zh_CN.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_zh_CN.ts; path = ../../i18n/qt_zh_CN.ts; sourceTree = SOURCE_ROOT; };
-		7209F0000F39E5DA003DC336 /* qt_zh_TW.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qt_zh_TW.ts; path = ../../i18n/qt_zh_TW.ts; sourceTree = SOURCE_ROOT; };
 		7209F0020F39E5DA003DC336 /* Bison.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bison.cmake; path = ../../cmake/Bison.cmake; sourceTree = SOURCE_ROOT; };
 		7209F0030F39E5DA003DC336 /* FindExpat.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindExpat.cmake; path = ../../cmake/FindExpat.cmake; sourceTree = SOURCE_ROOT; };
 		7209F0040F39E5DA003DC336 /* FindGDAL.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindGDAL.cmake; path = ../../cmake/FindGDAL.cmake; sourceTree = SOURCE_ROOT; };
@@ -7260,6 +7250,7 @@
 		726FD9A00F6BF83100D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/gis/layer_extent.png; sourceTree = SOURCE_ROOT; };
 		726FD9A10F6BF83100D50560 /* delaunay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delaunay.png; path = ../../python/plugins/fTools/icons/gis/delaunay.png; sourceTree = SOURCE_ROOT; };
 		726FD9A40F6BF86600D50560 /* voronoi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = voronoi.py; path = ../../python/plugins/fTools/tools/voronoi.py; sourceTree = SOURCE_ROOT; };
+		72728C43124519B90077E591 /* mIconTableLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconTableLayer.png; path = ../../images/themes/default/mIconTableLayer.png; sourceTree = SOURCE_ROOT; };
 		727459F10F7700C6007F4218 /* spit_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit_icon.png; path = ../../src/plugins/spit/spit_icon.png; sourceTree = SOURCE_ROOT; };
 		727459F20F7700C6007F4218 /* spit_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit_image.png; path = ../../src/plugins/spit/spit_image.png; sourceTree = SOURCE_ROOT; };
 		727459F50F770252007F4218 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../images/themes/gis/plugins/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
@@ -7304,6 +7295,8 @@
 		7278010510FB785F00574B67 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../../../../../System/Library/Frameworks/IOKit.framework; sourceTree = SOURCE_ROOT; };
 		727903F310A1EC29006254DF /* mActionNewComposer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNewComposer.png; path = ../../images/themes/default/mActionNewComposer.png; sourceTree = SOURCE_ROOT; };
 		727CEC210FBAFF6000F5B88C /* mIconLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLock.png; path = ../../images/themes/default/mIconLock.png; sourceTree = SOURCE_ROOT; };
+		727DEA18124F9B9200497454 /* qgsfeatureaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsfeatureaction.cpp; path = ../../src/app/qgsfeatureaction.cpp; sourceTree = SOURCE_ROOT; };
+		727DEA19124F9B9200497454 /* qgsfeatureaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsfeatureaction.h; path = ../../src/app/qgsfeatureaction.h; sourceTree = SOURCE_ROOT; };
 		727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_sqlite3.c; sourceTree = "<group>"; };
 		727E6B030FEA9BC000DF6F64 /* x_spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_spatialite.c; sourceTree = "<group>"; };
 		727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x_qgsspatialitesourceselect.h; sourceTree = "<group>"; };
@@ -9852,6 +9845,8 @@
 				72A93DDB11B5E494007E8AE7 /* qgslabelinggui.h */,
 				72A93DDC11B5E494007E8AE7 /* qgslabelpreview.cpp */,
 				72A93DDD11B5E494007E8AE7 /* qgslabelpreview.h */,
+				727DEA18124F9B9200497454 /* qgsfeatureaction.cpp */,
+				727DEA19124F9B9200497454 /* qgsfeatureaction.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				72AF7B3010F8F02100BD549A /* gps */,
@@ -12085,6 +12080,7 @@
 				7209EF560F39E5D9003DC336 /* mIconProperties.png */,
 				7209EF570F39E5D9003DC336 /* mIconPyramid.png */,
 				7209EF580F39E5D9003DC336 /* mIconSymbology.png */,
+				72728C43124519B90077E591 /* mIconTableLayer.png */,
 				7209EF590F39E5D9003DC336 /* mIconUnknownLayerType.png */,
 				7209EF5A0F39E5D9003DC336 /* mIconWaitingForLayerType.png */,
 				7209EF5B0F39E5D9003DC336 /* mMapserverExport.png */,
@@ -12353,18 +12349,6 @@
 				72EA46F50FCD77CB009D4CFB /* qgis_xh.ts */,
 				7209EFF30F39E5DA003DC336 /* qgis_zh_CN.ts */,
 				7209EFF40F39E5DA003DC336 /* qgis_zh_TW.ts */,
-				7209EFF50F39E5DA003DC336 /* qt_ar.ts */,
-				7209EFF60F39E5DA003DC336 /* qt_de.ts */,
-				7209EFF70F39E5DA003DC336 /* qt_es.ts */,
-				7209EFF80F39E5DA003DC336 /* qt_fr.ts */,
-				7209EFF90F39E5DA003DC336 /* qt_ja_jp.ts */,
-				7209EFFA0F39E5DA003DC336 /* qt_pl.ts */,
-				7209EFFB0F39E5DA003DC336 /* qt_pt.ts */,
-				7209EFFC0F39E5DA003DC336 /* qt_ru.ts */,
-				7209EFFD0F39E5DA003DC336 /* qt_sk.ts */,
-				7209EFFE0F39E5DA003DC336 /* qt_sv.ts */,
-				7209EFFF0F39E5DA003DC336 /* qt_zh_CN.ts */,
-				7209F0000F39E5DA003DC336 /* qt_zh_TW.ts */,
 			);
 			name = i18n;
 			path = ../../i18n;
@@ -18437,6 +18421,8 @@
 				7233D9871218E6A200C34505 /* qgsmaptoolselectrectangle.cpp in Sources */,
 				7233D9881218E6A200C34505 /* qgsmaptoolselectrectangle.h in Sources */,
 				7233D9891218E6A200C34505 /* qgsmaptoolselectutils.cpp in Sources */,
+				727DEA1A124F9BDE00497454 /* qgsfeatureaction.cpp in Sources */,
+				727DEA1B124F9BDE00497454 /* qgsfeatureaction.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21817,6 +21803,7 @@
 					"$(QT_INC)",
 					"$(FCGI_INC)",
 					"$(GDAL_INC)",
+					"$(GEOS_INC)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
 				MACH_O_TYPE = mh_execute;
@@ -21859,6 +21846,7 @@
 					"$(QT_INC)",
 					"$(FCGI_INC)",
 					"$(GDAL_INC)",
+					"$(GEOS_INC)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
 				MACH_O_TYPE = mh_execute;
