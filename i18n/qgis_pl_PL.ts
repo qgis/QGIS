@@ -17387,7 +17387,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="129"/>
         <source>group</source>
-        <translation>grupuj</translation>
+        <translation>grupa</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="458"/>
