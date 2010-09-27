@@ -68,8 +68,10 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
     void on_pbnExportTransparentPixelValues_clicked();
+    /** \brief auto slot executed when the active page in the main widget stack is changed */
+    void on_tabBar_currentChanged( int theTab );
     /** \brief slot executed when user wishes to refresh raster histogram */
-    void on_pbnHistRefresh_clicked();
+    void refreshHistogram();
     /** \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */

@@ -52,6 +52,7 @@
 #include "qgslogger.h"
 
 // QWT Charting widget
+#include <qwt_plot_canvas.h>
 #include <qwt_array.h>
 #include <qwt_legend.h>
 #include <qwt_plot.h> 
@@ -167,97 +168,23 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   QgsDebugMsg( "Populating band combo boxes" );
 
-  //
-  // Get a list of band names
-  //
-  QStringList myBandNameList;
-
   int myBandCountInt = mRasterLayer->bandCount();
-
-  QgsDebugMsg( QString( "Looping though %1 image layers to get their names " ).arg( myBandCountInt ) );
-
   for ( int myIteratorInt = 1;
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
   {
-    //find out the name of this band
-    QString myRasterBandNameQString = mRasterLayer->bandName( myIteratorInt ) ;
-
-    //add the band to the histogram tab
-    //
-    QPixmap myPixmap( 10, 10 );
-
-    if ( myBandCountInt == 1 ) //draw single band images with black
-    {
-      myPixmap.fill( Qt::black );
-    }
-    else if ( myIteratorInt == 1 )
-    {
-      myPixmap.fill( Qt::red );
-    }
-    else if ( myIteratorInt == 2 )
-    {
-      myPixmap.fill( Qt::green );
-    }
-    else if ( myIteratorInt == 3 )
-    {
-      myPixmap.fill( Qt::blue );
-    }
-    else if ( myIteratorInt == 4 )
-    {
-      myPixmap.fill( Qt::magenta );
-    }
-    else if ( myIteratorInt == 5 )
-    {
-      myPixmap.fill( Qt::darkRed );
-    }
-    else if ( myIteratorInt == 6 )
-    {
-      myPixmap.fill( Qt::darkGreen );
-    }
-    else if ( myIteratorInt == 7 )
-    {
-      myPixmap.fill( Qt::darkBlue );
-    }
-    else
-    {
-      myPixmap.fill( Qt::gray );
-    }
-    lstHistogramLabels->addItem( new QListWidgetItem( myPixmap, myRasterBandNameQString ) );
-    //keep a list of band names for later use
-    //! @note band names should not be translated!
-    myBandNameList.append( myRasterBandNameQString );
-  }
-
-  //select all histogram layers list items by default
-  for ( int myIteratorInt = 1;
-        myIteratorInt <= myBandCountInt;
-        ++myIteratorInt )
-  {
-    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
-    myItem->setSelected( true );
-  }
-
-  for ( QStringList::Iterator myIterator = myBandNameList.begin();
-        myIterator != myBandNameList.end();
-        ++myIterator )
-  {
-    QString myQString = *myIterator;
-
-    QgsDebugMsg( QString( "Inserting : %1" ).arg( myQString ) );
-
-    cboGray->addItem( myQString );
-    cboRed->addItem( myQString );
-    cboGreen->addItem( myQString );
-    cboBlue->addItem( myQString );
-    cboxColorMapBand->addItem( myQString );
+    QString myRasterBandName = mRasterLayer->bandName( myIteratorInt ) ;
+    cboGray->addItem( myRasterBandName );
+    cboRed->addItem( myRasterBandName );
+    cboGreen->addItem( myRasterBandName );
+    cboBlue->addItem( myRasterBandName );
+    cboxColorMapBand->addItem( myRasterBandName );
   }
 
   cboRed->addItem( TRSTRING_NOT_SET );
   cboGreen->addItem( TRSTRING_NOT_SET );
   cboBlue->addItem( TRSTRING_NOT_SET );
   cboGray->addItem( TRSTRING_NOT_SET );
-
   cboxTransparencyBand->addItem( TRSTRING_NOT_SET );
 
   QIcon myPyramidPixmap( QgisApp::getThemeIcon( "/mIconPyramid.png" ) );
@@ -1911,13 +1838,40 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
   }
 }
 
-void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
+void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 {
+  int myHistogramTab = 6;
+  if ( theTab == myHistogramTab )
+  {
+    refreshHistogram();
+  }
+}
+
+void QgsRasterLayerProperties::refreshHistogram()
+{
+  mHistogramProgress->show();
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsDebugMsg( "entered." );
-  int myBandCountInt = mRasterLayer->bandCount();
 
+  QwtPlot * mypPlot = new QwtPlot( mChartWidget );
+  mypPlot->canvas()->setCursor(Qt::ArrowCursor);
+  //ensure all children get removed
+  mypPlot->setAutoDelete( true );
+  QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mChartWidget );
+  mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
+  mpHistogramLayout->addWidget( mypPlot );
+  mChartWidget->setLayout( mpHistogramLayout );
+  mypPlot->setTitle( QObject::tr( "Raster Histogram") );
+  mypPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
+  // Set axis titles
+  mypPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr("Pixel Value") );
+  mypPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr("Frequency") );
+  mypPlot->setAxisAutoScale( QwtPlot::xBottom );
+  mypPlot->setAxisAutoScale( QwtPlot::yLeft );
+  // add a grid
+  QwtPlotGrid * myGrid = new QwtPlotGrid();
+  myGrid->attach(mypPlot);
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected
   // layer. Currently the hist is hardcoded
@@ -1928,125 +1882,48 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
-  const int BINCOUNT = spinHistBinCount->value();
+  const int BINCOUNT = 255;
   enum GRAPH_TYPE { BAR_CHART, LINE_CHART } myGraphType;
-  if ( radHistTypeBar->isChecked() ) myGraphType = BAR_CHART; else myGraphType = LINE_CHART;
-  bool myIgnoreOutOfRangeFlag = chkHistIgnoreOutOfRange->isChecked();
-  bool myThoroughBandScanFlag = chkHistAllowApproximation->isChecked();
-
-#ifdef QGISDEBUG
-  long myCellCount = mRasterLayer->width() * mRasterLayer->height();
-#endif
-
-  QgsDebugMsg( "Computing histogram minima and maxima" );
-  //somtimes there are more bins than needed
-  //we find out the last on that actually has data in it
-  //so we can discard the rest adn the x-axis scales correctly
+  myGraphType = BAR_CHART;
+  bool myIgnoreOutOfRangeFlag = true;
+  bool myThoroughBandScanFlag = false;
   int myLastBinWithData = 0;
-  //
-  // First scan through to get max and min cell counts from among selected layers' histograms
-  //
-  double myYAxisMax = 0;
-  double myYAxisMin = 0;
-  int myXAxisMin = 0;
-  int myXAxisMax = 0;
-  bool myFirstItemFlag = true;
-  for ( int myIteratorInt = 1;
-      myIteratorInt <= myBandCountInt;
-      ++myIteratorInt )
-  {
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
-    //calculate the x axis min max
-    if ( myRasterBandStats.minimumValue < myXAxisMin || myIteratorInt == 1 )
-    {
-      myXAxisMin = static_cast < unsigned int >( myRasterBandStats.minimumValue );
-    }
-    if ( myRasterBandStats.maximumValue < myXAxisMax || myIteratorInt == 1 )
-    {
-      myXAxisMax = static_cast < unsigned int >( myRasterBandStats.maximumValue );
-    }
-    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
-    if ( myItem->isSelected() )
-    {
-      QgsDebugMsg( "Ensuring hist is populated for this layer" );
-      mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
-
-      QgsDebugMsg( QString( "...done...%1 bins filled" ).arg( myRasterBandStats.histogramVector->size() ) );
-      for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
-      {
-        int myBinValue = myRasterBandStats.histogramVector->at( myBin );
-        if ( myBinValue > 0 && myBin > myLastBinWithData )
-        {
-          myLastBinWithData = myBin;
-        }
-        QgsDebugMsg( QString( "Testing if %1 is less than %2or greater then %3" ).arg( myBinValue ).arg( myYAxisMin ).arg( myYAxisMax ) );
-        if ( myBin == 0 && myFirstItemFlag )
-        {
-          myYAxisMin = myBinValue;
-          myYAxisMax = myBinValue;
-        }
-
-        if ( myBinValue  > myYAxisMax )
-        {
-          myYAxisMax = myBinValue;
-        }
-        if ( myBinValue < myYAxisMin )
-        {
-          myYAxisMin = myBinValue;
-        }
-      }
-      myFirstItemFlag = false;
-    }
-  }
-  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
-  QgsDebugMsg( QString( "max %1" ).arg( myYAxisMax ) );
-  QgsDebugMsg( QString( "min %1" ).arg( myYAxisMin ) );
-
-  QwtPlot * mypPlot = new QwtPlot( mChartWidget );
-  //ensure all children get removed
-  mypPlot->setAutoDelete( true );
-  QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mChartWidget );
-  mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
-  mpHistogramLayout->addWidget( mypPlot );
-  mChartWidget->setLayout( mpHistogramLayout );
-  mypPlot->setTitle(QObject::tr("Raster Histogram"));
-  mypPlot->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
-  // Set axis titles
-  mypPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Pixel Value"));
-  mypPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("Frequency"));
-  //
-  // add a grid
-  //
-  QwtPlotGrid * myGrid = new QwtPlotGrid();
-  myGrid->attach(mypPlot);
+  int myBandCountInt = mRasterLayer->bandCount();
+  QList<QColor> myColors;
+  myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
   //
   //now draw actual graphs
   //
-  QList<QColor> myColors;
-  myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
+
+  //somtimes there are more bins than needed
+  //we find out the last one that actually has data in it
+  //so we can discard the rest and set the x-axis scales correctly
+  //
+  // scan through to get counts from layers' histograms
+  //
   for ( int myIteratorInt = 1;
       myIteratorInt <= myBandCountInt;
       ++myIteratorInt )
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
-    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
-    if ( myItem->isSelected() )
+    mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
+    mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
+    mypCurve->setPen(QPen( myColors.at( myIteratorInt ) ) );
+    QwtArray<double> myX2Data;//qwtarray is just a wrapped qvector
+    QwtArray<double> myY2Data;//qwtarray is just a wrapped qvector
+    for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
-      QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %i" ).arg( myIteratorInt ) );
-      mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
-      mypCurve->setPen(QPen( myColors.at( myIteratorInt ) ) );
-      QwtArray<double> myX2Data;//qwtarray is just a wrapped qvector
-      QwtArray<double> myY2Data;//qwtarray is just a wrapped qvector
-      for ( int myBin = 0; myBin < myLastBinWithData; myBin++ )
-      {
-        double myBinValue = myRasterBandStats.histogramVector->at( myBin );
-        myX2Data.append(myBin);
-        myY2Data.append(myBinValue);
-      }
-      mypCurve->setData(myX2Data,myY2Data);
-      mypCurve->attach(mypPlot);
+      int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+      myX2Data.append( double( myBin) );
+      myY2Data.append( double( myBinValue) );
     }
+    mypCurve->setData(myX2Data,myY2Data);
+    mypCurve->attach(mypPlot);
   }
+  mypPlot->replot();
+  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
+  mHistogramProgress->hide();
   QApplication::restoreOverrideCursor();
 }
 
