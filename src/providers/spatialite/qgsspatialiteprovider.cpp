@@ -740,7 +740,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   else
   {
     // returning as DOUBLE
-    return minValue.toDouble();
+    return convertValue( fld.type(), minValue );
   }
 
 error:
@@ -795,8 +795,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
   }
   else
   {
-    // returning as DOUBLE
-    return maxValue.toDouble();
+    return convertValue( fld.type(), maxValue );
   }
 
 error:
