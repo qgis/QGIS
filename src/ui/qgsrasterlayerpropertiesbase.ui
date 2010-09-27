@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>757</width>
-    <height>638</height>
+    <width>755</width>
+    <height>618</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,175 +25,42 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="minimumSize">
-      <size>
-       <width>110</width>
-       <height>0</height>
-      </size>
+   <item row="1" column="0" colspan="2">
+    <widget class="QPushButton" name="pbnLoadDefaultStyle">
+     <property name="text">
+      <string>Restore Default Style</string>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>110</width>
-       <height>16777215</height>
-      </size>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pbnSaveDefaultStyle">
+     <property name="text">
+      <string>Save As Default</string>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="pbnLoadStyle">
+     <property name="text">
+      <string>Load Style ...</string>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QPushButton" name="pbnSaveStyleAs">
+     <property name="text">
+      <string>Save Style ...</string>
      </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="5">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>64</width>
-       <height>64</height>
-      </size>
-     </property>
-     <property name="textElideMode">
-      <enum>Qt::ElideNone</enum>
-     </property>
-     <property name="flow">
-      <enum>QListView::TopToBottom</enum>
-     </property>
-     <property name="isWrapping" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="spacing">
-      <number>9</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::IconMode</enum>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>Symbology</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Transparency</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/transparency.png</normaloff>:/images/themes/default/propertyicons/transparency.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Colormap</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/colormap.png</normaloff>:/images/themes/default/propertyicons/colormap.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Metadata</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pyramids</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/pyramids.png</normaloff>:/images/themes/default/propertyicons/pyramids.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Histogram</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true"/>
-      </property>
-      <property name="flags">
-       <set>NoItemFlags</set>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="0" column="1" colspan="4">
@@ -1893,6 +1760,8 @@ p, li { white-space: pre-wrap; }
 &lt;td style=&quot;border: none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
@@ -1963,116 +1832,25 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="tabPageHistogram">
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0" colspan="3">
-        <widget class="QWidget" name="mChartWidget" native="true"/>
-       </item>
-       <item row="1" column="0" rowspan="3">
-        <widget class="QListWidget" name="lstHistogramLabels">
-         <property name="maximumSize">
-          <size>
-           <width>99999</width>
-           <height>32767</height>
-          </size>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QGroupBox" name="grpHistCharType">
+        <widget class="QWidget" name="mChartWidget" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
-          <string>Chart Type</string>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
          </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>11</number>
-          </property>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="radHistTypeLine">
-            <property name="text">
-             <string>Line graph</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="radHistTypeBar">
-            <property name="text">
-             <string>Bar chart</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
-       <item row="2" column="1" colspan="2">
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Options</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="textLabel1_2">
-            <property name="text">
-             <string>Column count</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinHistBinCount">
-            <property name="minimum">
-             <number>8</number>
-            </property>
-            <property name="maximum">
-             <number>1024</number>
-            </property>
-            <property name="singleStep">
-             <number>8</number>
-            </property>
-            <property name="value">
-             <number>64</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="chkHistIgnoreOutOfRange">
-            <property name="text">
-             <string>Out of range OK?</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="chkHistAllowApproximation">
-            <property name="text">
-             <string>Allow approximation</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="1">
+       <item row="1" column="1">
         <widget class="QProgressBar" name="mHistogramProgress">
          <property name="value">
           <number>0</number>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="pbnHistRefresh">
-         <property name="text">
-          <string>Refresh</string>
          </property>
         </widget>
        </item>
@@ -2080,42 +1858,175 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QPushButton" name="pbnLoadDefaultStyle">
-     <property name="text">
-      <string>Restore Default Style</string>
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>110</width>
+       <height>0</height>
+      </size>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="pbnSaveDefaultStyle">
-     <property name="text">
-      <string>Save As Default</string>
+     <property name="maximumSize">
+      <size>
+       <width>110</width>
+       <height>16777215</height>
+      </size>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="pbnLoadStyle">
-     <property name="text">
-      <string>Load Style ...</string>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QPushButton" name="pbnSaveStyleAs">
-     <property name="text">
-      <string>Save Style ...</string>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="5">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="flow">
+      <enum>QListView::TopToBottom</enum>
+     </property>
+     <property name="isWrapping" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>9</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Symbology</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Transparency</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/transparency.png</normaloff>:/images/themes/default/propertyicons/transparency.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Colormap</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/colormap.png</normaloff>:/images/themes/default/propertyicons/colormap.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Metadata</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Pyramids</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/pyramids.png</normaloff>:/images/themes/default/propertyicons/pyramids.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Histogram</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true"/>
+      </property>
+      <property name="flags">
+       <set>NoItemFlags</set>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>
@@ -2145,18 +2056,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>tePyramidDescription</tabstop>
   <tabstop>cboResamplingMethod</tabstop>
   <tabstop>buttonBuildPyramids</tabstop>
-  <tabstop>radHistTypeBar</tabstop>
-  <tabstop>radHistTypeLine</tabstop>
-  <tabstop>spinHistBinCount</tabstop>
-  <tabstop>chkHistIgnoreOutOfRange</tabstop>
-  <tabstop>chkHistAllowApproximation</tabstop>
-  <tabstop>pbnHistRefresh</tabstop>
   <tabstop>leGrayMin</tabstop>
   <tabstop>cboGray</tabstop>
   <tabstop>lbxPyramidResolutions</tabstop>
   <tabstop>leGrayMax</tabstop>
   <tabstop>cboxColorMap</tabstop>
-  <tabstop>lstHistogramLabels</tabstop>
   <tabstop>sboxSingleBandStdDev</tabstop>
  </tabstops>
  <resources>
@@ -2170,8 +2074,8 @@ p, li { white-space: pre-wrap; }
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>476</x>
-     <y>620</y>
+     <x>485</x>
+     <y>608</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
