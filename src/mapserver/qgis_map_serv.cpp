@@ -125,8 +125,19 @@ int main( int argc, char * argv[] )
 
   QgsApplication qgsapp( argc, argv, false );
 
-  // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
+  //Default prefix path may be altered by environment variable
+  char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
+  if ( prefixPath )
+  {
+    QgsApplication::setPrefixPath( prefixPath, TRUE );
+  }
+  else
+  {
+    // init QGIS's paths - true means that all path will be inited from prefix
+    QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
+  }
+
+
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
