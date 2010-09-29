@@ -1,5 +1,5 @@
 @echo off
-set GRASS_VERSION=6.4.0svn
+set GRASS_VERSION=6.4.0
 set SVNVERSION=c:/cygwin/bin/svnversion
 
 set BUILDDIR=%CD%\build
