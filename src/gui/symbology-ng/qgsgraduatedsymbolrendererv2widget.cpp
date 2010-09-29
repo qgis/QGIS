@@ -192,7 +192,13 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   QgsGraduatedSymbolRendererV2::Mode mode;
   if ( cboGraduatedMode->currentIndex() == 0 )
     mode = QgsGraduatedSymbolRendererV2::EqualInterval;
-  else
+  else if ( cboGraduatedMode->currentIndex() == 2 )
+    mode = QgsGraduatedSymbolRendererV2::Jenks;
+  else if ( cboGraduatedMode->currentIndex() == 3 )
+    mode = QgsGraduatedSymbolRendererV2::StdDev;
+  else if ( cboGraduatedMode->currentIndex() == 4 )
+    mode = QgsGraduatedSymbolRendererV2::Pretty;
+  else // default should be quantile for now
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
   // create and set new renderer
