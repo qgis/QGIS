@@ -9,14 +9,14 @@ Documentation:
 
 You really need to read the QGIS API Documentation now at:
 
-http://doc.qgis.org/
+http://qgis.org/api/
 
 In particular look at the following classes:
 
-QGisInterface : http://doc.qgis.org/classQgisInterface.html
-QgsMapCanvas  : http://doc.qgis.org/classQgsMapCanvas.html
-QgsMapTool    : http://doc.qgis.org/classQgsMapTool.html
-QgisPlugin    : http://doc.qgis.org/classQgisPlugin.html
+QGisInterface : http://qgis.org/api/classQgisInterface.html
+QgsMapCanvas  : http://qgis.org/api/classQgsMapCanvas.html
+QgsMapTool    : http://qgis.org/api/classQgsMapTool.html
+QgisPlugin    : http://qgis.org/api/classQgisPlugin.html
 
 QGisInterface is an abstract base class (ABC) that specifies what publicly
 available features of QGIS are exposed to third party code and plugins. An
