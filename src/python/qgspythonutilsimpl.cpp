@@ -70,7 +70,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   QStringList newpaths;
   newpaths << pythonPath() << homePythonPath();
   newpaths += pluginpaths;
-  runString( "sys.path = [\"" + newpaths.join("\", \"") + "\"] + sys.path" );
+  runString( "sys.path = [\"" + newpaths.join( "\", \"" ) + "\"] + sys.path" );
 
   // import SIP
   if ( !runString( "from sip import wrapinstance, unwrapinstance",
@@ -405,7 +405,7 @@ QString QgsPythonUtilsImpl::homePluginsPath()
 QStringList QgsPythonUtilsImpl::extraPluginsPaths()
 {
   const char* cpaths = getenv( "QGIS_PLUGINPATH" );
-  if (cpaths == NULL)
+  if ( cpaths == NULL )
     return QStringList();
 
   QString paths = QString::fromLocal8Bit( cpaths );

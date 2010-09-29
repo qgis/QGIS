@@ -375,7 +375,7 @@ bool QgsSearchTreeNode::needsGeometry()
   }
 }
 
-bool QgsSearchTreeNode::checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
+bool QgsSearchTreeNode::checkAgainst( const QMap<int, QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
 {
   QgsFeature f;
   f.setAttributeMap( attributes );

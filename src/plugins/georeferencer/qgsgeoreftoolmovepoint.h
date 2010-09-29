@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsgeoreftoolmovepoint.h 13187 2010-03-28 22:14:44Z jef $ */
+/* $Id$ */
 
 #ifndef QGSGEOREFTOOLMOVEPOINT_H
 #define QGSGEOREFTOOLMOVEPOINT_H
@@ -34,7 +34,7 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     void canvasMoveEvent( QMouseEvent *e );
     void canvasReleaseEvent( QMouseEvent *e );
 
-    bool isCanvas(QgsMapCanvas *);
+    bool isCanvas( QgsMapCanvas * );
 
   signals:
     void pointPressed( const QPoint &p );

@@ -570,38 +570,38 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const std::vector<Q
   {
     flippedPixelCoords[i] = QgsPoint( pixelCoords[i].x(), -pixelCoords[i].y() );
   }
-  
+
   QgsLeastSquares::projective( mapCoords, flippedPixelCoords, mParameters.H );
 
   // Invert the homography matrix using adjoint matrix
   double *H = mParameters.H;
 
   double adjoint[9];
-  adjoint[0] =  H[4]*H[8] - H[5]*H[7];
-  adjoint[1] = -H[1]*H[8] + H[2]*H[7];
-  adjoint[2] =  H[1]*H[5] - H[2]*H[4];
+  adjoint[0] =  H[4] * H[8] - H[5] * H[7];
+  adjoint[1] = -H[1] * H[8] + H[2] * H[7];
+  adjoint[2] =  H[1] * H[5] - H[2] * H[4];
 
-  adjoint[3] = -H[3]*H[8] + H[5]*H[6];
-  adjoint[4] =  H[0]*H[8] - H[2]*H[6];
-  adjoint[5] = -H[0]*H[5] + H[2]*H[3];
+  adjoint[3] = -H[3] * H[8] + H[5] * H[6];
+  adjoint[4] =  H[0] * H[8] - H[2] * H[6];
+  adjoint[5] = -H[0] * H[5] + H[2] * H[3];
 
-  adjoint[6] =  H[3]*H[7] - H[4]*H[6];
-  adjoint[7] = -H[0]*H[7] + H[1]*H[6];
-  adjoint[8] =  H[0]*H[4] - H[1]*H[3];
+  adjoint[6] =  H[3] * H[7] - H[4] * H[6];
+  adjoint[7] = -H[0] * H[7] + H[1] * H[6];
+  adjoint[8] =  H[0] * H[4] - H[1] * H[3];
 
-  double det = H[0]*adjoint[0] + H[3]*adjoint[1] + H[6]*adjoint[2];
+  double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
 
-  if (std::abs(det) < 1024.0*std::numeric_limits<double>::epsilon())
+  if ( std::abs( det ) < 1024.0*std::numeric_limits<double>::epsilon() )
   {
     mParameters.hasInverse = false;
   }
   else
   {
     mParameters.hasInverse = true;
-    double oo_det = 1.0/det;
+    double oo_det = 1.0 / det;
     for ( int i = 0; i < 9; i++ )
     {
-      mParameters.Hinv[i] = adjoint[i]*oo_det;
+      mParameters.Hinv[i] = adjoint[i] * oo_det;
     }
   }
   return true;
@@ -630,7 +630,7 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
   {
     if ( !t->hasInverse )
     {
-      for (int i = 0; i < nPointCount; ++i )
+      for ( int i = 0; i < nPointCount; ++i )
       {
         panSuccess[i] = false;
       }
@@ -639,22 +639,22 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
     H = t->Hinv;
   }
 
-  
-  for (int i = 0; i < nPointCount; ++i )
+
+  for ( int i = 0; i < nPointCount; ++i )
   {
-    double Z = x[i]*H[6] + y[i]*H[7] + H[8];
+    double Z = x[i] * H[6] + y[i] * H[7] + H[8];
     // Projects to infinity?
-    if ( std::abs(Z) < 1024.0*std::numeric_limits<double>::epsilon() )
+    if ( std::abs( Z ) < 1024.0*std::numeric_limits<double>::epsilon() )
     {
       panSuccess[i] = false;
       continue;
     }
-    double X = (x[i]*H[0] + y[i]*H[1] + H[2]) / Z;
-    double Y = (x[i]*H[3] + y[i]*H[4] + H[5]) / Z;
+    double X = ( x[i] * H[0] + y[i] * H[1] + H[2] ) / Z;
+    double Y = ( x[i] * H[3] + y[i] * H[4] + H[5] ) / Z;
 
     x[i] = X;
     y[i] = Y;
- 
+
     panSuccess[i] = true;
   }
 

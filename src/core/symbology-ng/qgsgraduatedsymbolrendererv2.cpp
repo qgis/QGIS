@@ -355,11 +355,11 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
   QList<double> breaks;
   if ( classes < 1 )
   {
-      breaks.append( maximum );
-      return breaks;
+    breaks.append( maximum );
+    return breaks;
   }
 
-  int minimumCount = (int) classes / 3;
+  int minimumCount = ( int ) classes / 3;
   double shrink = 0.75;
   double highBias = 1.5;
   double adjustBias = 0.5 + 1.5 * highBias;
@@ -381,11 +381,11 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
     cell = qMax( qAbs( minimum ), qAbs( maximum ) );
     if ( adjustBias >= 1.5 * h + 0.5 )
     {
-      U = 1 + (1.0/(1 + h));
+      U = 1 + ( 1.0 / ( 1 + h ) );
     }
     else
     {
-      U = 1 + (1.5 / (1 + adjustBias));
+      U = 1 + ( 1.5 / ( 1 + adjustBias ) );
     }
     small = dx < ( cell * U * qMax( 1, divisions ) * 1e-07 * 3.0 );
   }
@@ -417,13 +417,13 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
 
   double base = pow( 10.0, floor( log10( cell ) ) );
   double unit = base;
-  if ( ( 2 * base ) - cell < h * ( cell - unit ) )
+  if (( 2 * base ) - cell < h * ( cell - unit ) )
   {
     unit = 2.0 * base;
-    if ( ( 5 * base ) - cell < adjustBias * ( cell - unit ) )
+    if (( 5 * base ) - cell < adjustBias * ( cell - unit ) )
     {
       unit = 5.0 * base;
-      if ( ( 10.0 * base ) - cell < h * ( cell - unit ) )
+      if (( 10.0 * base ) - cell < h * ( cell - unit ) )
       {
         unit = 10.0 * base;
       }
@@ -470,7 +470,7 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
   double maximumBreak = end * unit;
   int count = ceil( maximumBreak - minimumBreak ) / unit;
 
-  for ( int i = 1; i < count+1; i++ )
+  for ( int i = 1; i < count + 1; i++ )
   {
     breaks.append( minimumBreak + i * unit );
   }
@@ -509,7 +509,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
     minimum = qMin( values[i], minimum ); // could use precomputed max and min
     maximum = qMax( values[i], maximum ); // but have to go through entire list anyway
   }
-  mean = mean / (double) n;
+  mean = mean / ( double ) n;
 
   double sd = 0.0;
   for ( int i = 0; i < n; i++ )
@@ -519,10 +519,10 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   }
   stdDev = sqrt( stdDev / n );
 
-  QList<double> breaks = _calcPrettyBreaks( ( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
+  QList<double> breaks = _calcPrettyBreaks(( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
   for ( int i = 0; i < breaks.count(); i++ )
   {
-    labels.append( (int) breaks[i]);
+    labels.append(( int ) breaks[i] );
     breaks[i] = ( breaks[i] * stdDev ) + mean;
   }
 
@@ -547,8 +547,8 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   QList<double> breaks;
   if ( classes < 1 )
   {
-      breaks.append( maximum );
-      return breaks;
+    breaks.append( maximum );
+    return breaks;
   }
 
   int n = values.count();
@@ -560,20 +560,20 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     // for now, sample at least maximumSize values or a 10% sample, whichever
     // is larger. This will produce a more representative sample for very large
     // layers, but could end up being computationally intensive...
-    n = qMax( maximumSize, (int) ( (double) n * 0.10 ) );
+    n = qMax( maximumSize, ( int )(( double ) n * 0.10 ) );
     QgsDebugMsg( QString( "natural breaks (jenks) sample size: %1" ).arg( n ) );
     sample.append( minimum );
     sample.append( maximum );
-    for ( int i = 0; i < n-2; i++ )
+    for ( int i = 0; i < n - 2; i++ )
     {
       // pick a random integer from 0 to n
-      int c = (int) ( (double) rand() / ( (double) RAND_MAX + 1 ) * n - 1 );
+      int c = ( int )(( double ) rand() / (( double ) RAND_MAX + 1 ) * n - 1 );
       sample.append( values[i+c] );
     }
   }
   else
   {
-      sample = values;
+    sample = values;
   }
   // sort the values
   qSort( sample );
@@ -587,13 +587,13 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   {
     QList<double > tempOne;
     QList<double > tempTwo;
-    for (int j = 0; j < classes + 1; j++)
+    for ( int j = 0; j < classes + 1; j++ )
     {
-      tempOne.append(0.0);
-      tempTwo.append(0.0);
+      tempOne.append( 0.0 );
+      tempTwo.append( 0.0 );
     }
-    matrixOne.append(tempOne);
-    matrixTwo.append(tempTwo);
+    matrixOne.append( tempOne );
+    matrixTwo.append( tempTwo );
   }
 
   for ( int i = 1; i < classes + 1; i++ )
@@ -622,7 +622,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
       s1 += val;
 
       w += 1.0;
-      v = s2 - (s1 * s1) / w;
+      v = s2 - ( s1 * s1 ) / w;
       i4 = i3 - 1;
 
       if ( i4 != 0.0 )
@@ -643,7 +643,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
 
   for ( int i = 0; i < classes; i++ )
   {
-    breaks.append(0.0);
+    breaks.append( 0.0 );
   }
 
   breaks[classes - 1] = sample[sample.length() - 1];
@@ -704,15 +704,15 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     // calculate the breaks
     if ( mode == Quantile )
     {
-        breaks = _calcQuantileBreaks( values, classes );
+      breaks = _calcQuantileBreaks( values, classes );
     }
     else if ( mode == Jenks )
     {
-        breaks = _calcJenksBreaks( values, classes, minimum, maximum );
+      breaks = _calcJenksBreaks( values, classes, minimum, maximum );
     }
     else if ( mode == StdDev )
     {
-        breaks = _calcStdDevBreaks( values, classes, labels );
+      breaks = _calcStdDevBreaks( values, classes, labels );
     }
   }
   else

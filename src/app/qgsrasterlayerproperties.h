@@ -89,7 +89,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief slot executed when the three band standard deviation radio button is pressed. */
     void on_rbtnThreeBandStdDev_toggled( bool );
 
-    void pixelSelected( int x, int y);
+    void pixelSelected( int x, int y );
     /** \brief this slot clears min max values from gui */
     void sboxSingleBandStdDev_valueChanged( double );
     /** \brief this slot clears min max values from gui */
@@ -226,7 +226,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
   */
 class QgsPixelSelectorTool: public QgsMapTool
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsPixelSelectorTool( QgsMapCanvas* );
@@ -237,7 +237,7 @@ class QgsPixelSelectorTool: public QgsMapTool
 
   signals:
     /** \brief Alter the listener ( raster properties dialog ) that a mouse click was registered */
-    void pixelSelected( int x, int y);
+    void pixelSelected( int x, int y );
 
   private:
     QgsMapCanvas * mMapCanvas;
