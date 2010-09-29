@@ -131,7 +131,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
     // or convert between waypoints/tracks=
     case 4:
     {
-      int convertType = cmbCONVType->itemData(cmbCONVType->currentIndex()).toInt();
+      int convertType = cmbCONVType->itemData( cmbCONVType->currentIndex() ).toInt();
 
       emit convertGPSFile( leCONVInput->text(),
                            convertType,
@@ -331,10 +331,10 @@ void QgsGPSPluginGui::populatePortComboBoxes()
 
 void QgsGPSPluginGui::populateCONVDialog()
 {
-  cmbCONVType->addItem(tr("Waypoints from a route"), QVariant(int(0)));
-  cmbCONVType->addItem(tr("Waypoints from a track"), QVariant(int(3)));
-  cmbCONVType->addItem(tr("Route from waypoints"), QVariant(int(1)));
-  cmbCONVType->addItem(tr("Track from waypoints"), QVariant(int(2)));
+  cmbCONVType->addItem( tr( "Waypoints from a route" ), QVariant( int( 0 ) ) );
+  cmbCONVType->addItem( tr( "Waypoints from a track" ), QVariant( int( 3 ) ) );
+  cmbCONVType->addItem( tr( "Route from waypoints" ), QVariant( int( 1 ) ) );
+  cmbCONVType->addItem( tr( "Track from waypoints" ), QVariant( int( 2 ) ) );
 }
 
 void QgsGPSPluginGui::populateULLayerComboBox()

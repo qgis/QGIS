@@ -355,7 +355,7 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleRanges( Qg
 
 QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule& initialRule, QList<int> scales )
 {
-  qSort(scales); // make sure the scales are in ascending order
+  qSort( scales ); // make sure the scales are in ascending order
   QList<Rule> rules;
   int oldScale = initialRule.scaleMinDenom();
   int maxDenom = initialRule.scaleMaxDenom();

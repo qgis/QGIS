@@ -81,8 +81,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
 
-  setWindowTitle( tr ("Attribute table - %3 :: %1 / %2 features(s) selected", "feature count").
-      arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ));
+  setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
+                  arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
 
   mRemoveSelectionButton->setIcon( getThemeIcon( "/mActionUnselectAttributes.png" ) );
   mSelectedToTopButton->setIcon( getThemeIcon( "/mActionSelectedToTop.png" ) );
@@ -305,8 +305,8 @@ void QgsAttributeTableDialog::updateSelection()
 
   mSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );// | QItemSelectionModel::Columns);
   mView->setSelectionModel( mSelectionModel );
-  setWindowTitle( tr ("Attribute table - %3 :: %1 / %2 features(s) selected", "feature count").
-      arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ));
+  setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
+                  arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
 
   /*for (int i = 0; i < mModel->rowCount(); ++i)
   {
@@ -354,8 +354,8 @@ void QgsAttributeTableDialog::updateRowSelection( int index )
     }
 
     updateRowSelection( first, last, 3 );
-    setWindowTitle( tr ("Attribute table - %3 :: %1 / %2 features(s) selected", "feature count").
-      arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ));
+    setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
+                    arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
     mView->setSelectionMode( QAbstractItemView::NoSelection );
     return;
   }
@@ -406,8 +406,8 @@ void QgsAttributeTableDialog::updateRowSelection( int index )
     }
   }
   mView->setSelectionMode( QAbstractItemView::NoSelection );
-  setWindowTitle( tr ("Attribute table - %3 :: %1 / %2 features(s) selected", "feature count").
-      arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ));
+  setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
+                  arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
 }
 
 void QgsAttributeTableDialog::updateRowSelection( int first, int last, int clickType )
@@ -628,15 +628,16 @@ void QgsAttributeTableDialog::search()
   QVariant::Type fldType = flds[fldIndex].type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
   QString sensString = "ILIKE";
-  if (cbxCaseSensitive->isChecked()) {
-     sensString = "LIKE";
+  if ( cbxCaseSensitive->isChecked() )
+  {
+    sensString = "LIKE";
   }
 
   QString str = QString( "%1 %2 '%3'" )
                 .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
                 .arg( numeric ? "=" : sensString )
                 .arg( numeric ? mQuery->displayText().replace( "'", "''" ) :
-                                "%" + mQuery->displayText().replace ("'", "''") + "%"  ); // escape quotes
+                      "%" + mQuery->displayText().replace( "'", "''" ) + "%" ); // escape quotes
   doSearch( str );
 }
 

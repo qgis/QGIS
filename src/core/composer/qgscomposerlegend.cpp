@@ -28,12 +28,12 @@
 #include <QPainter>
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
-	: QgsComposerItem( composition )
-	  , mTitle( tr( "Legend" ) )
-	  , mBoxSpace( 2 )
-	  , mLayerSpace( 3 )
-	  , mSymbolSpace( 2 )
-	  , mIconLabelSpace( 2 )
+    : QgsComposerItem( composition )
+    , mTitle( tr( "Legend" ) )
+    , mBoxSpace( 2 )
+    , mLayerSpace( 3 )
+    , mSymbolSpace( 2 )
+    , mIconLabelSpace( 2 )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );

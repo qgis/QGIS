@@ -55,8 +55,8 @@
 #include <qwt_plot_canvas.h>
 #include <qwt_array.h>
 #include <qwt_legend.h>
-#include <qwt_plot.h> 
-#include <qwt_plot_curve.h> 
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 
 const char * const ident =
@@ -206,7 +206,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   mMapCanvas = theCanvas;
   mPixelSelectorTool = 0;
-  if( mMapCanvas )
+  if ( mMapCanvas )
   {
     mPixelSelectorTool = new QgsPixelSelectorTool( theCanvas );
     connect( mPixelSelectorTool, SIGNAL( pixelSelected( int, int ) ), this, SLOT( pixelSelected( int, int ) ) );
@@ -281,7 +281,7 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
   QSettings settings;
   settings.setValue( "/Windows/RasterLayerProperties/geometry", saveGeometry() );
   settings.setValue( "/Windows/RasterLayerProperties/row", listWidget->currentRow() );
-  if( mPixelSelectorTool )
+  if ( mPixelSelectorTool )
   {
     delete mPixelSelectorTool;
   }
@@ -1650,7 +1650,7 @@ void QgsRasterLayerProperties::on_cboRed_currentIndexChanged( const QString& the
 
 void QgsRasterLayerProperties::on_pbnAddValuesFromDisplay_clicked()
 {
-  if( mMapCanvas && mPixelSelectorTool )
+  if ( mMapCanvas && mPixelSelectorTool )
   {
     mMapCanvas->setMapTool( mPixelSelectorTool );
     //Need to work around the modality of the dialog but can not just hide() it.
@@ -1855,23 +1855,23 @@ void QgsRasterLayerProperties::refreshHistogram()
   QgsDebugMsg( "entered." );
 
   QwtPlot * mypPlot = new QwtPlot( mChartWidget );
-  mypPlot->canvas()->setCursor(Qt::ArrowCursor);
+  mypPlot->canvas()->setCursor( Qt::ArrowCursor );
   //ensure all children get removed
   mypPlot->setAutoDelete( true );
   QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mChartWidget );
   mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
   mpHistogramLayout->addWidget( mypPlot );
   mChartWidget->setLayout( mpHistogramLayout );
-  mypPlot->setTitle( QObject::tr( "Raster Histogram") );
+  mypPlot->setTitle( QObject::tr( "Raster Histogram" ) );
   mypPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
   // Set axis titles
-  mypPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr("Pixel Value") );
-  mypPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr("Frequency") );
+  mypPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Pixel Value" ) );
+  mypPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Frequency" ) );
   mypPlot->setAxisAutoScale( QwtPlot::xBottom );
   mypPlot->setAxisAutoScale( QwtPlot::yLeft );
   // add a grid
   QwtPlotGrid * myGrid = new QwtPlotGrid();
-  myGrid->attach(mypPlot);
+  myGrid->attach( mypPlot );
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected
   // layer. Currently the hist is hardcoded
@@ -1902,24 +1902,24 @@ void QgsRasterLayerProperties::refreshHistogram()
   // scan through to get counts from layers' histograms
   //
   for ( int myIteratorInt = 1;
-      myIteratorInt <= myBandCountInt;
-      ++myIteratorInt )
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt )
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
-    mypCurve->setPen(QPen( myColors.at( myIteratorInt ) ) );
+    mypCurve->setPen( QPen( myColors.at( myIteratorInt ) ) );
     QwtArray<double> myX2Data;//qwtarray is just a wrapped qvector
     QwtArray<double> myY2Data;//qwtarray is just a wrapped qvector
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
       int myBinValue = myRasterBandStats.histogramVector->at( myBin );
-      myX2Data.append( double( myBin) );
-      myY2Data.append( double( myBinValue) );
+      myX2Data.append( double( myBin ) );
+      myY2Data.append( double( myBinValue ) );
     }
-    mypCurve->setData(myX2Data,myY2Data);
-    mypCurve->attach(mypPlot);
+    mypCurve->setData( myX2Data, myY2Data );
+    mypCurve->attach( mypPlot );
   }
   mypPlot->replot();
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
@@ -2206,15 +2206,15 @@ void QgsRasterLayerProperties::pixelSelected( int x, int y )
   activateWindow();
 
   //Get the pixel values and add a new entry to the transparency table
-  if( mMapCanvas && mPixelSelectorTool )
+  if ( mMapCanvas && mPixelSelectorTool )
   {
     QMap< QString, QString > myPixelMap;
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
     mRasterLayer->identify( mMapCanvas->getCoordinateTransform( )->toMapCoordinates( x, y ), myPixelMap );
-    if( tableTransparency->columnCount() == 2 )
+    if ( tableTransparency->columnCount() == 2 )
     {
-      QString myValue = myPixelMap[ mRasterLayer->grayBandName() ];
-      if( myValue != tr( "out of extent" ) )
+      QString myValue = myPixelMap[ mRasterLayer->grayBandName()];
+      if ( myValue != tr( "out of extent" ) )
       {
         tableTransparency->insertRow( tableTransparency->rowCount() );
         tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
@@ -2223,14 +2223,14 @@ void QgsRasterLayerProperties::pixelSelected( int x, int y )
     }
     else
     {
-      QString myValue = myPixelMap[ mRasterLayer->redBandName() ];
-      if( myValue != tr( "out of extent" ) )
+      QString myValue = myPixelMap[ mRasterLayer->redBandName()];
+      if ( myValue != tr( "out of extent" ) )
       {
         tableTransparency->insertRow( tableTransparency->rowCount() );
         tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
         tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 1, new QTableWidgetItem( myPixelMap[ mRasterLayer->greenBandName() ] ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 2, new QTableWidgetItem( myPixelMap[ mRasterLayer->blueBandName() ] ) );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, 1, new QTableWidgetItem( myPixelMap[ mRasterLayer->greenBandName()] ) );
+        tableTransparency->setItem( tableTransparency->rowCount() - 1, 2, new QTableWidgetItem( myPixelMap[ mRasterLayer->blueBandName()] ) );
       }
     }
   }
