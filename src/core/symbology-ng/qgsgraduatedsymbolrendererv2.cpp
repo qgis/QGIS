@@ -1,3 +1,15 @@
+/***************************************************************************
+
+qgsgraduatedsymbolrendererv2.cpp - Graduated Symbol Renderer Version 2
+
+/***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #include "qgsgraduatedsymbolrendererv2.h"
 
@@ -12,6 +24,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSettings> // for legend
+#include <limits> // for jenks classification
+#include "math.h" // for pretty classification
 
 QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
     : mLowerValue( lowerValue ), mUpperValue( upperValue ), mSymbol( symbol ), mLabel( label )
@@ -273,6 +287,12 @@ QgsSymbolV2List QgsGraduatedSymbolRendererV2::symbols()
 
 static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, int classes )
 {
+
+  // Equal interval algorithm
+  //
+  // Returns breaks based on dividing the range ('minimum' to 'maximum')
+  // into 'classes' parts.
+
   double step = ( maximum - minimum ) / classes;
 
   QList<double> breaks;
@@ -287,10 +307,6 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
 
 static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
 {
-  // sort the values first
-  qSort( values );
-
-  QList<double> breaks;
 
   // q-th quantile of a data set:
   // value where q fraction of data is below and (1-q) fraction is above this value
@@ -299,6 +315,11 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   //   NI2 = NI1 + 1
   //   r = q * (n+1) - (int) (q * (n+1))
   // (indices of X: 1...n)
+
+  // sort the values first
+  qSort( values );
+
+  QList<double> breaks;
 
   int n = values.count();
   double q, a, aa, r, Xq;
@@ -318,6 +339,328 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
 
   return breaks;
 }
+
+static QList<double> _calcPrettyBreaks( double minimum, double maximum, int classes )
+{
+
+  // C++ implementation of R's pretty algorithm
+  // Based on code for determining optimal tick placement for statistical graphics
+  // from the R statistical programming language.
+  // Code ported from R implementation from 'labeling' R package
+  //
+  // Computes a sequence of about 'classes' equally spaced 'round' values
+  // which cover the range of of values from 'minimum' to 'maximum'.
+  // The values are chosen so that they are 1, 2 or 5 times a power of 10.
+
+  QList<double> breaks;
+  if ( classes < 1 )
+  {
+      breaks.append( maximum );
+      return breaks;
+  }
+
+  int minimumCount = (int) classes / 3;
+  double shrink = 0.75;
+  double highBias = 1.5;
+  double adjustBias = 0.5 + 1.5 * highBias;
+  int divisions = classes;
+  double h = highBias;
+  double cell;
+  int U;
+  bool small = false;
+  double dx = maximum - minimum;
+
+  if ( dx == 0 and maximum == 0 )
+  {
+    cell = 1.0;
+    small = true;
+    U = 1;
+  }
+  else
+  {
+    cell = qMax( qAbs( minimum ), qAbs( maximum ) );
+    if ( adjustBias >= 1.5 * h + 0.5 )
+    {
+      U = 1 + (1.0/(1 + h));
+    }
+    else
+    {
+      U = 1 + (1.5 / (1 + adjustBias));
+    }
+    small = dx < ( cell * U * qMax( 1, divisions ) * 1e-07 * 3.0 );
+  }
+
+  if ( small )
+  {
+    if ( cell > 10 )
+    {
+      cell = 9 + cell / 10;
+      cell = cell * shrink;
+    }
+    if ( minimumCount > 1 )
+    {
+      cell = cell / minimumCount;
+    }
+  }
+  else
+  {
+    cell = dx;
+    if ( divisions > 1 )
+    {
+      cell = cell / divisions;
+    }
+  }
+  if ( cell < 20 * 1e-07 )
+  {
+    cell = 20 * 1e-07;
+  }
+
+  double base = pow( 10.0, floor( log10( cell ) ) );
+  double unit = base;
+  if ( ( 2 * base ) - cell < h * ( cell - unit ) )
+  {
+    unit = 2.0 * base;
+    if ( ( 5 * base ) - cell < adjustBias * ( cell - unit ) )
+    {
+      unit = 5.0 * base;
+      if ( ( 10.0 * base ) - cell < h * ( cell - unit ) )
+      {
+        unit = 10.0 * base;
+      }
+    }
+  }
+  // Maybe used to correct for the epsilon here??
+  int start = floor( minimum / unit + 1e-07 );
+  int end = ceil( maximum / unit - 1e-07 );
+
+  // Extend the range out beyond the data. Does this ever happen??
+  while ( start * unit > minimum + ( 1e-07 * unit ) )
+  {
+    start = start - 1;
+  }
+  while ( end * unit < maximum - ( 1e-07 * unit ) )
+  {
+    end = end + 1;
+  }
+  QgsDebugMsg( QString( "pretty classes: %1" ).arg( end ) );
+
+  // If we don't have quite enough labels, extend the range out
+  // to make more (these labels are beyond the data :( )
+  int k = floor( 0.5 + end - start );
+  if ( k < minimumCount )
+  {
+    k = minimumCount - k;
+    if ( start >= 0 )
+    {
+      end = end + k / 2;
+      start = start - k / 2 + k % 2;
+    }
+    else
+    {
+      start = start - k / 2;
+      end = end + k / 2 + k % 2;
+    }
+    divisions = minimumCount;
+  }
+  else
+  {
+    divisions = k;
+  }
+  double minimumBreak = start * unit;
+  double maximumBreak = end * unit;
+  int count = ceil( maximumBreak - minimumBreak ) / unit;
+
+  for ( int i = 1; i < count+1; i++ )
+  {
+    breaks.append( minimumBreak + i * unit );
+  }
+
+  if ( breaks.first() < minimum )
+  {
+    breaks[0] = minimum;
+  }
+  if ( breaks.last() > maximum )
+  {
+    breaks[breaks.count()-1] = maximum;
+  }
+  return breaks;
+} // _calcPrettyBreaks
+
+
+static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList<int> &labels )
+{
+
+  // C++ implementation of the standard deviation class interval algorithm
+  // as implemented in the 'classInt' package available for the R statistical
+  // prgramming language.
+
+  // Returns breaks based on '_calcPrettyBreaks' of the centred and scaled
+  // values of 'values', and may have a number of classes different from 'classes'.
+
+  double mean = 0.0;
+  double stdDev = 0.0;
+  int n = values.count();
+  double minimum = values[0];
+  double maximum = values[0];
+
+  for ( int i = 0; i < n; i++ )
+  {
+    mean += values[i];
+    minimum = qMin( values[i], minimum ); // could use precomputed max and min
+    maximum = qMax( values[i], maximum ); // but have to go through entire list anyway
+  }
+  mean = mean / (double) n;
+
+  double sd = 0.0;
+  for ( int i = 0; i < n; i++ )
+  {
+    sd = values[i] - mean;
+    stdDev += sd * sd;
+  }
+  stdDev = sqrt( stdDev / n );
+
+  QList<double> breaks = _calcPrettyBreaks( ( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
+  for ( int i = 0; i < breaks.count(); i++ )
+  {
+    labels.append( (int) breaks[i]);
+    breaks[i] = ( breaks[i] * stdDev ) + mean;
+  }
+
+  return breaks;
+} // _calcStdDevBreaks
+
+static QList<double> _calcJenksBreaks( QList<double> values, int classes,
+                                       double minimum, double maximum,
+                                       int maximumSize = 1000 )
+{
+
+  // Jenks Optimal (Natural Breaks) algorithm
+  // Based on the Jenks algorithm from the 'classInt' package available for
+  // the R statistical prgramming language, and from Python code from here:
+  // http://danieljlewis.org/2010/06/07/jenks-natural-breaks-algorithm-in-python/
+  // and is based on a JAVA and Fortran code available here:
+  // https://stat.ethz.ch/pipermail/r-sig-geo/2006-March/000811.html
+
+  // Returns class breaks such that classes are internally homogeneous while
+  // assuring heterogeneity among classes.
+
+  QList<double> breaks;
+  if ( classes < 1 )
+  {
+      breaks.append( maximum );
+      return breaks;
+  }
+
+  int n = values.count();
+  QList<double> sample;
+
+  // if we have lots of values, we need to take a random sample
+  if ( n > maximumSize )
+  {
+    // for now, sample at least maximumSize values or a 10% sample, whichever
+    // is larger. This will produce a more representative sample for very large
+    // layers, but could end up being computationally intensive...
+    n = qMax( maximumSize, (int) ( (double) n * 0.10 ) );
+    QgsDebugMsg( QString( "natural breaks (jenks) sample size: %1" ).arg( n ) );
+    sample.append( minimum );
+    sample.append( maximum );
+    for ( int i = 0; i < n-2; i++ )
+    {
+      // pick a random integer from 0 to n
+      int c = (int) ( (double) rand() / ( (double) RAND_MAX + 1 ) * n - 1 );
+      sample.append( values[i+c] );
+    }
+  }
+  else
+  {
+      sample = values;
+  }
+  // sort the values
+  qSort( sample );
+
+  QList< QList<double> > matrixOne;
+  QList< QList<double> > matrixTwo;
+
+  double v, s1, s2, w, i3, i4, val;
+
+  for ( int i = 0; i < n + 1; i++ )
+  {
+    QList<double > tempOne;
+    QList<double > tempTwo;
+    for (int j = 0; j < classes + 1; j++)
+    {
+      tempOne.append(0.0);
+      tempTwo.append(0.0);
+    }
+    matrixOne.append(tempOne);
+    matrixTwo.append(tempTwo);
+  }
+
+  for ( int i = 1; i < classes + 1; i++ )
+  {
+    matrixOne[1][i] = 1.0;
+    matrixTwo[1][i] = 0.0;
+    for ( int j = 2; j < n + 1; j++ )
+    {
+      matrixTwo[j][i] = std::numeric_limits<qreal>::max();
+    }
+  }
+
+  v = 0.0;
+  for ( int l = 2; l < n + 1; l++ )
+  {
+    s1 = 0.0;
+    s2 = 0.0;
+    w = 0.0;
+    for ( int m = 1; m < l + 1; m++ )
+    {
+      i3 = l - m + 1;
+
+      val = sample[ i3 - 1 ];
+
+      s2 += val * val;
+      s1 += val;
+
+      w += 1.0;
+      v = s2 - (s1 * s1) / w;
+      i4 = i3 - 1;
+
+      if ( i4 != 0.0 )
+      {
+        for ( int j = 2; j < classes + 1; j++ )
+        {
+          if ( matrixTwo[l][j] >= v + matrixTwo[i4][j - 1] )
+          {
+            matrixOne[l][j] = i3;
+            matrixTwo[l][j] = v + matrixTwo[i4][j - 1];
+          }
+        }
+      }
+    }
+    matrixOne[l][1] = 1.0;
+    matrixTwo[l][1] = v;
+  }
+
+  for ( int i = 0; i < classes; i++ )
+  {
+    breaks.append(0.0);
+  }
+
+  breaks[classes - 1] = sample[sample.length() - 1];
+//  breaks[0] = values[0];
+
+  int k = n;
+  int count = classes;
+  while ( count >= 2 )
+  {
+    int id = matrixOne[k][count] - 2;
+    breaks[count - 2] = sample[id];
+    k = matrixOne[k][count] - 1;
+    count -= 1;
+  }
+
+  return breaks;
+} //_calcJenksBreaks
 
 #include "qgsvectordataprovider.h"
 #include "qgsvectorcolorrampv2.h"
@@ -339,11 +682,16 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
 
   QList<double> breaks;
+  QList<int> labels;
   if ( mode == EqualInterval )
   {
     breaks = _calcEqualIntervalBreaks( minimum, maximum, classes );
   }
-  else if ( mode == Quantile )
+  else if ( mode == Pretty )
+  {
+    breaks = _calcPrettyBreaks( minimum, maximum, classes );
+  }
+  else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
     // get values from layer
     QList<double> values;
@@ -354,7 +702,18 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     while ( provider->nextFeature( f ) )
       values.append( f.attributeMap()[attrNum].toDouble() );
     // calculate the breaks
-    breaks = _calcQuantileBreaks( values, classes );
+    if ( mode == Quantile )
+    {
+        breaks = _calcQuantileBreaks( values, classes );
+    }
+    else if ( mode == Jenks )
+    {
+        breaks = _calcJenksBreaks( values, classes, minimum, maximum );
+    }
+    else if ( mode == StdDev )
+    {
+        breaks = _calcStdDevBreaks( values, classes, labels );
+    }
   }
   else
   {
@@ -371,10 +730,28 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   {
     lower = upper; // upper border from last interval
     upper = *it;
-    label = QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 );
+    if ( mode == StdDev )
+    {
+      if ( i == 0 )
+      {
+        label = "< " + QString::number( labels[i], 'i', 0 ) + " Std Dev";
+      }
+      else if ( i == labels.count() - 1 )
+      {
+        label = ">= " + QString::number( labels[i-1], 'i', 0 ) + " Std Dev";
+      }
+      else
+      {
+        label = QString::number( labels[i-1], 'i', 0 ) + " Std Dev" + " - " + QString::number( labels[i], 'i', 0 ) + " Std Dev";
+      }
+    }
+    else
+    {
+      label = QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 );
+    }
 
     QgsSymbolV2* newSymbol = symbol->clone();
-    newSymbol->setColor( ramp->color(( double ) i / ( classes - 1 ) ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
+    newSymbol->setColor( ramp->color(( double ) i / ( breaks.count() - 1 ) ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
 
     ranges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
   }
@@ -454,6 +831,12 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
       r->setMode( EqualInterval );
     else if ( modeString == "quantile" )
       r->setMode( Quantile );
+    else if ( modeString == "jenks" )
+      r->setMode( Jenks );
+    else if ( modeString == "stddev" )
+      r->setMode( StdDev );
+    else if ( modeString == "pretty" )
+      r->setMode( Pretty );
   }
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
@@ -523,6 +906,12 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     modeString = "equal";
   else if ( mMode == Quantile )
     modeString = "quantile";
+  else if ( mMode == Jenks )
+    modeString = "jenks";
+  else if ( mMode == StdDev )
+    modeString = "stddev";
+  else if ( mMode == Pretty )
+    modeString = "pretty";
   if ( !modeString.isEmpty() )
   {
     QDomElement modeElem = doc.createElement( "mode" );

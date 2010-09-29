@@ -74,6 +74,9 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     {
       EqualInterval,
       Quantile,
+      Jenks,
+      StdDev,
+      Pretty,
       Custom
     };
 

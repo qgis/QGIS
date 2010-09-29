@@ -113,6 +113,21 @@
          <string>Quantile</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Natural Breaks (Jenks)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Standard Deviation</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Pretty Breaks</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="1" column="2" rowspan="2">
