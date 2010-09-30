@@ -42,12 +42,13 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
 
     /** stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
-       * @param temp write template file
+       * @param doc is the Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
+       * @param doc is the Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 

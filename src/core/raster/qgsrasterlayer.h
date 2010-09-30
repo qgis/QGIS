@@ -503,7 +503,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString identifyAsText( const QgsPoint & point );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
-     * @added in 1.5
+     * @note added in 1.5
      */
     QString identifyAsHtml( const QgsPoint & point );
 

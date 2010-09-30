@@ -225,7 +225,7 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
 
 
 /**
-   @param element created by parent QgsPropertyKey
+   keyElement created by parent QgsPropertyKey
 */
 bool QgsPropertyValue::writeXML( QString const & nodeName,
                                  QDomElement   & keyElement,

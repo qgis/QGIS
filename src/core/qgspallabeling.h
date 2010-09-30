@@ -131,7 +131,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QMap< DataDefinedProperties, int > dataDefinedProperties;
 
     /**Calculates pixel size (considering scale factors and oversampling)
-     @param label size (pixels, possibily map units in future)
+     @param size size to convert
      @param c rendercontext
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c ) const;

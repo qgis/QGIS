@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update
      *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
+     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
      *
      * \return  A text document containing the return from the WMS server
      *
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update
      *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
+     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
      *
      * \return  A html document containing the return from the WMS server
      *

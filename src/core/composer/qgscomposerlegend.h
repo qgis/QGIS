@@ -88,12 +88,13 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
     /** stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
-       * @param temp write template file
+       * @param doc Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
+       * @param doc is Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
@@ -135,6 +136,7 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     void drawLayerItem( QPainter* p, QgsComposerLayerItem* layerItem, double& currentYCoord, double& maxXCoord );
 
     /**Draws child items of a layer item
+       @param p painter
        @param layerItem parent model item (layer)
        @param currentYCoord in/out: current y position of legend item
        @param maxXCoord in/out: maximum x-coordinate of the whole legend

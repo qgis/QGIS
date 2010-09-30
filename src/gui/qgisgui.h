@@ -56,6 +56,7 @@ namespace QgisGui
     @param selectedFiles string list of selected files; will be empty if none selected
     @param enc        encoding?
     @param title      the title for the dialog
+    @param cancelAll  add button to cancel further requests
     @note
 
     Stores persistent settings under /UI/.  The sub-keys will be

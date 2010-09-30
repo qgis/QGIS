@@ -173,7 +173,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     /**
        * \brief gets an arbitrary sqlite3 expression from the selection
        *
-       * \param attributeName   The sqlite3 column name, typically "srid" or "sridid"
+       * \param e The sqlite3 expression (typically "srid" or "sridid")
        */
     QString getSelectedExpression( QString e );
 

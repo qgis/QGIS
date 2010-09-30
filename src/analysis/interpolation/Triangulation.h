@@ -77,8 +77,7 @@ class ANALYSIS_EXPORT Triangulation
     virtual void setTriangleInterpolator( TriangleInterpolator* interpolator ) = 0;
     /**Eliminates the horizontal triangles by swapping*/
     virtual void eliminateHorizontalTriangles() = 0;
-    /**Adds points to make the triangles better shaped (algorithm of ruppert)
-     \param tin the triangulation or decorator which interpolates the elevation*/
+    /**Adds points to make the triangles better shaped (algorithm of ruppert)*/
     virtual void ruppertRefinement() = 0;
     /**Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise*/
     virtual bool pointInside( double x, double y ) = 0;

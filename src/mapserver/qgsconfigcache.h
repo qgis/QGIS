@@ -23,7 +23,7 @@
 
 class QgsConfigParser;
 
-/**A cache for configuration XML (usefull because of the mapfile parameter)*/
+/**A cache for configuration XML (useful because of the mapfile parameter)*/
 class QgsConfigCache
 {
   public:

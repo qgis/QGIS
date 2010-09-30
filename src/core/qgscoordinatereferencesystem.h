@@ -211,17 +211,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool readXML( QDomNode & theNode );
     /*! Stores state to the given Dom node in the given document.
      * Below is an example of the generated tag.
-     *  <spatialrefsys>
-     *      <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>
-     *       <srsid>2585</srsid>
-     *       <srid>4326</srid>
-     *       <epsg>4326</epsg>
-     *       <description>WGS 84</description>
-     *       <projectionacronym>longlat</projectionacronym>
-     *       <ellipsoidacronym>WGS84</ellipsoidacronym>
-     *   </spatialrefsys>
+     \verbatim
+      <spatialrefsys>
+          <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>
+           <srsid>2585</srsid>
+           <srid>4326</srid>
+           <epsg>4326</epsg>
+           <description>WGS 84</description>
+           <projectionacronym>longlat</projectionacronym>
+           <ellipsoidacronym>WGS84</ellipsoidacronym>
+       </spatialrefsys>
+     \endverbatim
      * @param theNode The node in which state will be restored
-     * @param theDom The document in which state will be stored
+     * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure
      */
     bool writeXML( QDomNode & theNode, QDomDocument & theDoc ) const;
@@ -315,21 +317,21 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
     /** A static helper function to find out the proj4 string for a srsid
-      * @param int theSrsId The srsid used for the lookup
+      * @param theSrsId The srsid used for the lookup
       * @return QString The proj4 string
     */
     static QString proj4FromSrsId( const int theSrsId );
 
     /*! Set the QGIS  SrsId
-     *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs
+     *  @param theSrsId The internal sqlite3 srs.db primary key for this srs
      */
     void setInternalId( long theSrsId );
     /*! Set the postgis srid
-     *  @param  long theSrsId The postgis spatial_ref_sys key for this srs
+     *  @param theSrid The postgis spatial_ref_sys key for this srs
      */
     void setSrid( long theSrid );
     /*! Set the Description
-     * @param  QString the Description A textual description of the srs.
+     * @param theDescription A textual description of the srs.
      */
     void setDescription( QString theDescription );
     /* Set the Proj Proj4String.
@@ -337,25 +339,25 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     void setProj4String( QString theProj4String );
     /*! Set this Geographic? flag
-     * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
+     * @param theGeoFlag Whether this is a geographic or projected coordinate system
      */
     void setGeographicFlag( bool theGeoFlag );
 
     /*! Set the EpsgCrsId identifier for this srs
-     * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
+     * @param theEpsg the ESPG identifier for this srs (defaults to 0)
      */
     void setEpsg( long theEpsg );
 
     /*! Set the authority identifier for this srs
-     * @param  QString thID the authority identifier for this srs (defaults to 0)
+     * @param theID the authority identifier for this srs (defaults to 0)
      */
     void setAuthId( QString theID );
     /*! Set the projection acronym
-     * @param QString the acronym (must be a valid proj4 projection acronym)
+     * @param theProjectionAcronym the acronym (must be a valid proj4 projection acronym)
      */
     void setProjectionAcronym( QString theProjectionAcronym );
     /*! Set the ellipsoid acronym
-     * @param QString the acronym (must be a valid proj4 ellipsoid acronym)
+     * @param theEllipsoidAcronym the acronym (must be a valid proj4 ellipsoid acronym)
      */
     void setEllipsoidAcronym( QString theEllipsoidAcronym );
 
@@ -368,8 +370,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /*! Get a record from the srs.db or qgis.db backends, given an sql statment.
      * @note only handles queries that return a single record.
      * @note it will first try the system srs.db then the users qgis.db!
-     * @param QString The sql query to execute
-     * @return QMap An associative array of field name <-> value pairs
+     * @param theSql The sql query to execute
+     * @return An associative array of field name <-> value pairs
      */
     RecordMap getRecord( QString theSql );
 

@@ -76,9 +76,9 @@ class GUI_EXPORT QgsQuickPrint: public QObject
      * to choose an appropriate scale factor, typically
      * you should divide the print resolution by the
      * screen resolution (often 72dpi or 96dpi).
-     * @param theScaleFactor - amount by which symbol sizes
+     * @param theScaleFactor amount by which symbol sizes
      * will be multiplied.
-     * @param SymbolScalingType - whether the sizes should
+     * @param theDirection whether the sizes should
      * be scaled up or down.
      * @see scaleTextLabels
      */
@@ -92,9 +92,9 @@ class GUI_EXPORT QgsQuickPrint: public QObject
      * to choose an appropriate scale factor, typically
      * you should divide the print resolution by the
      * screen resolution (often 72dpi or 96dpi).
-     * @param theScaleFactor - amount by which symbol sizes
+     * @param theScaleFactor amount by which symbol sizes
      * will be multiplied.
-     * @param SymbolScalingType - whether the sizes should
+     * @param theDirection whether the sizes should
      * be scaled up or down.
      * @see scalePointSymbols
      */

@@ -19,7 +19,7 @@
 
 #include <QDialog>
 
-/**Interface class for dialogs that have an apply operation (e.g. for symbology)*/
+/** \brief Interface class for dialogs that have an apply operation (e.g. for symbology)*/
 class QgsApplyDialog: public QDialog
 {
   public:

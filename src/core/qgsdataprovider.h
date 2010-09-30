@@ -66,7 +66,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Set the data source specification. This may be a path or database
      * connection string
-     * @param data source specification
+     * @param uri source specification
      */
     virtual void setDataSourceUri( QString const & uri )
     {

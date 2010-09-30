@@ -37,6 +37,10 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
 
     QString name() const;
 
+    /*! draw method
+     @param p painter object
+     @param xOffset offset
+     */
     void draw( QPainter* p, double xOffset = 0 ) const;
 
     void setTickPosition( TickPosition p ) {mTickPosition = p;}

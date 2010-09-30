@@ -31,6 +31,10 @@ class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
 
     QString name() const;
 
+    /*! draw method
+     @param p painter object
+     @param xOffset x offset
+     */
     void draw( QPainter* p, double xOffset = 0 ) const;
 
   private:

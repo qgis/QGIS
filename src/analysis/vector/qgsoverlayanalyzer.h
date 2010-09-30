@@ -50,52 +50,54 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
                        const QString& shapefileName, bool onlySelectedFeatures = false, \
                        QProgressDialog* p = 0 );
 
-//    /**Perform a union of two input vector layers and write output to a new shape file
-//      @param layerA input vector layer
-//      @param layerB input vector layer
-//      @param shapefileName path to the output shp
-//      @param onlySelectedFeatures if true, only selected features are considered, else all the features
-//      @param p progress dialog (or 0 if no progress dialog is to be shown)
-//      @note: added in version 1.4*/
-//    bool combine( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-//                       const QString& shapefileName, bool onlySelectedFeatures = false,
-//                       QProgressDialog* p = 0 );
-//
-//    /**Clip a vector layer based on the boundary of another vector layer and
-//       write output to a new shape file
-//      @param layerA input vector layer
-//      @param layerB input vector layer
-//      @param shapefileName path to the output shp
-//      @param onlySelectedFeatures if true, only selected features are considered, else all the features
-//      @param p progress dialog (or 0 if no progress dialog is to be shown)
-//      @note: added in version 1.4*/
-//    bool clip( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-//                       const QString& shapefileName, bool onlySelectedFeatures = false,
-//                       QProgressDialog* p = 0 );
-//
-//    /**Difference a vector layer based on the geometries of another vector layer
-//       and write the output to a new shape file
-//      @param layerA input vector layer
-//      @param layerB input vector layer
-//      @param shapefileName path to the output shp
-//      @param onlySelectedFeatures if true, only selected features are considered, else all the features
-//      @param p progress dialog (or 0 if no progress dialog is to be shown)
-//      @note: added in version 1.4*/
-//    bool difference( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-//                       const QString& shapefileName, bool onlySelectedFeatures = false,
-//                       QProgressDialog* p = 0 );
-//
-//    /**Intersect two vector layers and write the geometries of each layer that
-//       do not intersect with the other layer to a new shape file (Symmetrical difference)
-//      @param layerA input vector layer
-//      @param layerB input vector layer
-//      @param shapefileName path to the output shp
-//      @param onlySelectedFeatures if true, only selected features are considered, else all the features
-//      @param p progress dialog (or 0 if no progress dialog is to be shown)
-//      @note: added in version 1.4*/
-//    bool symDifference( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-//                       const QString& shapefileName, bool onlySelectedFeatures = false,
-//                       QProgressDialog* p = 0 );
+#if 0
+    /**Perform a union of two input vector layers and write output to a new shape file
+      @param layerA input vector layer
+      @param layerB input vector layer
+      @param shapefileName path to the output shp
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool combine( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
+                  const QString& shapefileName, bool onlySelectedFeatures = false,
+                  QProgressDialog* p = 0 );
+
+    /**Clip a vector layer based on the boundary of another vector layer and
+       write output to a new shape file
+      @param layerA input vector layer
+      @param layerB input vector layer
+      @param shapefileName path to the output shp
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool clip( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
+               const QString& shapefileName, bool onlySelectedFeatures = false,
+               QProgressDialog* p = 0 );
+
+    /**Difference a vector layer based on the geometries of another vector layer
+       and write the output to a new shape file
+      @param layerA input vector layer
+      @param layerB input vector layer
+      @param shapefileName path to the output shp
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool difference( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
+                     const QString& shapefileName, bool onlySelectedFeatures = false,
+                     QProgressDialog* p = 0 );
+
+    /**Intersect two vector layers and write the geometries of each layer that
+       do not intersect with the other layer to a new shape file (Symmetrical difference)
+      @param layerA input vector layer
+      @param layerB input vector layer
+      @param shapefileName path to the output shp
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool symDifference( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
+                        const QString& shapefileName, bool onlySelectedFeatures = false,
+                        QProgressDialog* p = 0 );
+#endif
 
   private:
 

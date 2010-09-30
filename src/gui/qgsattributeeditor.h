@@ -25,6 +25,7 @@ class QWidget;
 class QgsVectorLayer;
 class QComboBox;
 
+/* \brief create attribute widget for editing */
 class GUI_EXPORT QgsAttributeEditor : public QObject
 {
     Q_OBJECT

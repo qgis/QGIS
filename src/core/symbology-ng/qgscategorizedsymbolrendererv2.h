@@ -8,6 +8,7 @@
 class QgsVectorColorRampV2;
 class QgsVectorLayer;
 
+/* \brief categorized renderer */
 class CORE_EXPORT QgsRendererCategoryV2
 {
   public:

@@ -204,19 +204,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
     /** Read the symbology for the current layer from the Dom node supplied.
-    * @param QDomNode node that will contain the symbology definition for this layer.
+    * @param node node that will contain the symbology definition for this layer.
     * @param errorMessage reference to string that will be updated with any error messages
     * @return true in case of success.
     */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
     /** Write the symbology for the layer into the docment provided.
-     *  @param QDomNode the node that will have the style element added to it.
-     *  @param QDomDocument the document that will have the QDomNode added.
-     * @param errorMessage reference to string that will be updated with any error messages
+     *  @param node the node that will have the style element added to it.
+     *  @param doc the document that will have the QDomNode added.
+     *  @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      */
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
+    bool writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
 
 
     /**
@@ -260,7 +260,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool featureAtId( int featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
 
     /** Adds a feature
-        @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.
+        @param f feature to add
+        @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
         @return                    True in case of success and False in case of error
      */
     bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
@@ -637,9 +638,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**Snaps to a geometry and adds the result to the multimap if it is within the snapping result
      @param startPoint start point of the snap
+     @param featureId id of feature
      @param geom geometry to snap
      @param sqrSnappingTolerance squared search tolerance of the snap
-     @param snappingResult list to which the result is appended
+     @param snappingResults list to which the result is appended
      @param snap_to snap to vertex or to segment
     */
     void snapToGeometry( const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance,

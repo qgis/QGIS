@@ -1,17 +1,18 @@
-/** @defgroup core
+/** @defgroup core QGIS core library
 
-QGIS core library. Contains all basic GIS functionality.
+Contains all basic GIS functionality.
 
 */
 
-/** @defgroup gui
+/** @defgroup gui QGIS gui library.
 
-QGIS gui library. It's built on top of core library and adds reusable GUI widgets.
+It's built on top of core library and adds reusable GUI widgets.
+
 */
 
-/** @defgroup analysis
+/** @defgroup analysis QGIS analysis library.
 
-Analysis library. Built on top of core library, the analysis library provides 
+Built on top of core library, the analysis library provides 
 high level tools for carrying out spatial analysis on vector and raster data.
 */
 

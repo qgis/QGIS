@@ -79,15 +79,15 @@ QgsRasterLayer::QgsRasterLayer(
   QString const & path,
   QString const & baseName,
   bool loadDefaultStyleFlag )
-    : QgsMapLayer( RasterLayer, baseName, path ),
+    : QgsMapLayer( RasterLayer, baseName, path )
     // Constant that signals property not used.
-    QSTRING_NOT_SET( "Not Set" ),
-    TRSTRING_NOT_SET( tr( "Not Set" ) ),
-    mStandardDeviations( 0 ),
-    mDataProvider( 0 ),
-    mWidth( std::numeric_limits<int>::max() ),
-    mHeight( std::numeric_limits<int>::max() ),
-    mInvertColor( false )
+    , QSTRING_NOT_SET( "Not Set" )
+    , TRSTRING_NOT_SET( tr( "Not Set" ) )
+    , mStandardDeviations( 0 )
+    , mDataProvider( 0 )
+    , mWidth( std::numeric_limits<int>::max() )
+    , mHeight( std::numeric_limits<int>::max() )
+    , mInvertColor( false )
 {
 
   mRasterType = QgsRasterLayer::GrayOrUndefined;
@@ -167,8 +167,8 @@ QgsRasterLayer::QgsRasterLayer(
 } // QgsRasterLayer ctor
 
 /**
- * TODO Rename into a general constructor when the old raster interface is retired
- * @param  dummy  is just there to distinguish this function signature from the old non-provider one.
+ * @todo Rename into a general constructor when the old raster interface is retired
+ * parameter dummy is just there to distinguish this function signature from the old non-provider one.
  */
 QgsRasterLayer::QgsRasterLayer( int dummy,
                                 QString const & rasterLayerPath,
@@ -178,15 +178,15 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
                                 QStringList const & styles,
                                 QString const & format,
                                 QString const & crs )
-    : QgsMapLayer( RasterLayer, baseName, rasterLayerPath ),
-    mStandardDeviations( 0 ),
-    mDataProvider( 0 ),
-    mEditable( false ),
-    mWidth( std::numeric_limits<int>::max() ),
-    mHeight( std::numeric_limits<int>::max() ),
-    mInvertColor( false ),
-    mModified( false ),
-    mProviderKey( providerKey )
+    : QgsMapLayer( RasterLayer, baseName, rasterLayerPath )
+    , mStandardDeviations( 0 )
+    , mDataProvider( 0 )
+    , mEditable( false )
+    , mWidth( std::numeric_limits<int>::max() )
+    , mHeight( std::numeric_limits<int>::max() )
+    , mInvertColor( false )
+    , mModified( false )
+    , mProviderKey( providerKey )
 {
   QgsDebugMsg( "(8 arguments) starting. with layer list of " +
                layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
@@ -677,7 +677,7 @@ int QgsRasterLayer::bandNumber( QString const & theBandName )
  * <li>myRasterBandStats.colorTable
  * </ul>
  *
- * @seealso RasterBandStats
+ * @sa RasterBandStats
  * @note This is a cpu intensive and slow task!
  */
 const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
@@ -1051,7 +1051,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
       {
 
         //build the pyramid and show progress to console
-        //NOTE this (magphase) is disabled in teh gui since it tends
+        //NOTE this (magphase) is disabled in the gui since it tends
         //to create corrupted images. The images can be repaired
         //by running one of the other resampling strategies below.
         //see ticket #284
@@ -1361,7 +1361,7 @@ bool QgsRasterLayer::copySymbologySettings( const QgsMapLayer& theOther )
 } //todo
 
 /**
- * @param band number
+ * @param theBandNo the band number
  * @return pointer to the color table
  */
 QList<QgsColorRampShader::ColorRampItem>* QgsRasterLayer::colorTable( int theBandNo )
@@ -2314,7 +2314,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
 }                               //end of legendAsPixmap function
 
 /**
- * \param int theLabelCountInt Number of vertical labels to display
+ * \param theLabelCount number of vertical labels to display
  * @return a pixmap representing a legend image
  */
 QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
@@ -3899,6 +3899,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   Raster layer project file XML of form:
 
+  \verbatim
   <maplayer type="raster" visible="1" showInOverviewFlag="1">
   <layername>Wynoochee_dem</layername>
   <datasource>/home/mcoletti/mnt/MCOLETTIF8F9/c/Toolkit_Course/Answers/Training_Data/wynoochee_dem.img</datasource>
@@ -3914,12 +3915,13 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   <mGrayBandName>Undefined</mGrayBandName>
   </rasterproperties>
   </maplayer>
+  \endverbatim
 
   @note Called by QgsMapLayer::readXML().
 */
 bool QgsRasterLayer::readXml( QDomNode & layer_node )
 {
-  //! @NOTE Make sure to read the file first so stats etc are initialised properly!
+  //! @note Make sure to read the file first so stats etc are initialised properly!
 
   //process provider key
   QDomNode pkeyNode = layer_node.namedItem( "provider" );
@@ -4538,9 +4540,10 @@ void QgsRasterLayer::drawMultiBandSingleBandPseudoColor( QPainter * theQPainter,
 
 /**
  * This method is used to render a single band with a color map.
- * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
- * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
- * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
+ * @param theQPainter pointer to the QPainter onto which the layer should be drawn.
+ * @param theRasterViewPort pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
+ * @param theQgsMapToPixel transformation coordinate to map canvas pixel
+ * @param theBandNo band number
  */
 void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
@@ -4617,9 +4620,10 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
 
 /**
  * This method is used to render a paletted raster layer as a gray image.
- * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
- * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
- * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
+ * @param theQPainter pointer to the QPainter onto which the layer should be drawn.
+ * @param theRasterViewPort pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
+ * @param theQgsMapToPixel transformation between map coordinates and canvas pixels
+ * @param theBandNo band number
   */
 void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
@@ -4700,7 +4704,8 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
  * This method is used to render a paletted raster layer as a pseudocolor image.
  * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
  * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
- * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
+ * @param theQgsMapToPixel transformation between map coordinates and canvas pixels
+ * @param theBandNo band number
  gray.
  */
 
@@ -4792,9 +4797,11 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
 
 /**
  * This method is used to render a paletted raster layer as a color image -- currently not supported
- * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
- * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
- * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
+ * @param theQPainter pointer to the QPainter onto which the layer should be drawn.
+ * @param theRasterViewPort pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
+ * @param theQgsMapToPixel transformation coordinate to map canvas pixel
+ * @param theBandNo pointer to the GDALRasterBand which should be rendered.
+ * @note not supported at this time
  */
 void QgsRasterLayer::drawPalettedMultiBandColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )

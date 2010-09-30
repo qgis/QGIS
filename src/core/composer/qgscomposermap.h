@@ -78,6 +78,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
     /** \brief Draw to paint device
+        @param painter painter
         @param extent map extent
         @param size size in scene coordinates
         @param dpi scene dpi*/
@@ -155,12 +156,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** stores state in Dom node
      * @param elem is Dom element corresponding to 'Composer' tag
-     * @param temp write template file
+     * @param doc Dom document
      */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag
+     * @param doc is Dom document
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
@@ -353,14 +355,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
     /**Draw coordinates for mGridAnnotationType Coordinate
-        @param lines the coordinate lines in item coordinates*/
+        @param p drawing painter
+    @param hLines horizontal coordinate lines in item coordinates
+        @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
     void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString );
     /**Draws a single annotation
         @param p drawing painter
         @param pos item coordinates where to draw
         @param rotation text rotation
-        @param the text to draw*/
+        @param annotationText the text to draw*/
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
     /**Returns the grid lines with associated coordinate value
         @return 0 in case of success*/

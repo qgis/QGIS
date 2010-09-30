@@ -42,18 +42,8 @@
 
 static const char *const ident_ = "$Id$";
 
-
-
-
-
-// / canonical project instance
+// canonical project instance
 QgsProject * QgsProject::theProject_;
-
-
-
-
-
-
 
 /**
     Take the given scope and key and convert them to a string list of key
@@ -85,8 +75,9 @@ QStringList makeKeyTokens_( QString const &scope, QString const &key )
 /**
    return the property that matches the given key sequence, if any
 
-   @param sequence is a tokenized key sequence
-   @param p is likely to be the top level QgsPropertyKey in QgsProject:e:Imp.
+   @param scope scope of key
+   @param key keyname
+   @param rootProperty is likely to be the top level QgsPropertyKey in QgsProject:e:Imp.
 
    @return null if not found, otherwise located Property
 */
@@ -159,7 +150,8 @@ QgsProperty * findKey_( QString const & scope,
 
 /** add the given key and value
 
-@param sequence is list of keys
+@param scope scope of key
+@param key key name
 @param rootProperty is the property from which to start adding
 @param value the value associated with the key
 */
@@ -435,10 +427,11 @@ static void dump_( QgsPropertyKey const & topQgsPropertyKey )
 
 Restore any optional properties found in "doc" to "properties".
 
-<properties> tags for all optional properties.  Within that there will be
-scope tags.  In the following example there exist one property in the
-"fsplugin" scope.  "layers" is a list containing three string values.
+properties tags for all optional properties.  Within that there will be scope
+tags.  In the following example there exist one property in the "fsplugin"
+scope.  "layers" is a list containing three string values.
 
+\verbatim
 <properties>
   <fsplugin>
     <foo type="int" >42</foo>
@@ -454,7 +447,9 @@ scope tags.  In the following example there exist one property in the
     </feature_types>
   </fsplugin>
 </properties>
+\endverbatim
 
+@param doc xml document
 @param project_properties should be the top QgsPropertyKey node.
 
 */
@@ -537,10 +532,12 @@ _getProperties( QDomDocument const &doc, QgsPropertyKey & project_properties )
    Get the project title
 
    XML in file has this form:
+\verbatim
    <qgis projectname="default project">
    <title>a project title</title>
+\endverbatim
 
-   @todo XXX we should go with the attribute xor <title>, not both.
+   @todo XXX we should go with the attribute xor title, not both.
 */
 static void _getTitle( QDomDocument const &doc, QString & title )
 {
@@ -604,12 +601,13 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
    Read map layers from project file
 
 
-   @returns pair of < bool, list<QDomNode> >; bool is true if function worked;
-            else is false.  list contains nodes corresponding to layers that couldn't
-            be loaded
+   @returns \code QPair< bool, QList<QDomNode> > \endcode
+        bool is true if function worked; else is false.
+     list contains nodes corresponding to layers that couldn't be loaded
 
    @note XML of form:
 
+\verbatim
    <maplayer type="vector">
       <layername>Hydrop</layername>
       <datasource>/data/usgs/city_shp/hydrop.shp</datasource>
@@ -644,7 +642,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
          <alignment value="center" field="" />
       </labelattributes>
    </maplayer>
-
+\endverbatim
 */
 QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &doc )
 {
@@ -750,7 +748,7 @@ bool QgsProject::read( QFileInfo const &file )
 
 
 
-/**
+/*
    @note it's presumed that the caller has already reset the map canvas, map
    registry, and legend
 */
@@ -763,10 +761,10 @@ bool QgsProject::read()
 
   if ( !imp_->file.open( QIODevice::ReadOnly ) )
   {
-    imp_->file.close();     // even though we got an error, let's make
-    // sure it's closed anyway
+    imp_->file.close();
 
     setError( tr( "Unable to open %1" ).arg( imp_->file.fileName() ) );
+
     return false;
   }
 
@@ -789,6 +787,7 @@ bool QgsProject::read()
     imp_->file.close();
 
     setError( tr( "%1 for file %2" ).arg( errorString ).arg( imp_->file.fileName() ) );
+
     return false;
   }
 

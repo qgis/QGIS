@@ -67,15 +67,17 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     virtual bool willRenderFeature( QgsFeature *f );
 
     /**Renders a feature
-     \param p a painter (usually the one from the current map canvas)
+     \param renderContext the render context
      \param f a pointer to a feature to render
-     \param t the transform object containing the information how to transform the map coordinates to screen coordinates
+     \param img image to render in
+     \param selected feature is selected
+     \param opacity opacity of feature
      \note added in 1.2 */
     void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected, double opacity = 1.0 );
 
     /**Sets the classicifation field by index
     \param field the number of the field to classify*/
-    void setClassificationField( int );
+    void setClassificationField( int field );
 
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read

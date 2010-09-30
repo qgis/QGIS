@@ -55,6 +55,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Constructor
      * @param type Type of layer as defined in QgsMapLayer::LayerType enum
      * @param lyrname Display Name of the layer
+     * @param source datasouce of layer
      */
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, QString lyrname = QString::null, QString source = QString::null );
 
@@ -85,14 +86,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** This is the method that does the actual work of
      * drawing the layer onto a paint device.
-     * @param QgsRenderContext - describes the extents,
+     * @param rendererContext describes the extents,
      * resolution etc. that should be used when rendering the
      * layer.
      */
     virtual bool draw( QgsRenderContext& rendererContext );
 
     /** Draw labels
-     * @TODO to be removed: used only in vector layers
+     * @todo to be removed: used only in vector layers
      */
     virtual void drawLabels( QgsRenderContext& rendererContext );
 
@@ -152,6 +153,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** stores state in Dom node
        @param layer_node is Dom node corresponding to ``projectlayers'' tag
+       @param document is Dom document
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be
@@ -227,7 +229,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * @return a QString with any status messages
      * @see also loadNamedStyle ();
@@ -237,12 +239,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve a named style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param QString theURI - the file name or other URI for the
+     * @param theURI - the file name or other URI for the
      * style file. First an attempt will be made to see if this
      * is a file and load that, if that fails the qgis.db styles
      * table will be consulted to see if there is a style who's
      * key matches the URI.
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
@@ -254,42 +256,42 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * @return a QString with any status messages
-     * @see also loadNamedStyle () and saveNamedStyle()
+     * @sa loadNamedStyle() and @see saveNamedStyle()
      */
     virtual QString saveDefaultStyle( bool & theResultFlag );
 
     /** Save the properties of this layer as a named style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param QString theURI - the file name or other URI for the
+     * @param theURI the file name or other URI for the
      * style file. First an attempt will be made to see if this
      * is a file and save to that, if that fails the qgis.db styles
      * table will be used to create a style entry who's
      * key matches the URI.
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * @return a QString with any status messages
-     * @see also saveDefaultStyle ();
+     * @sa saveDefaultStyle()
      */
     virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
 
     /** Read the symbology for the current layer from the Dom node supplied.
-     * @param QDomNode node that will contain the symbology definition for this layer.
+     * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
     */
     virtual bool readSymbology( const QDomNode& node, QString& errorMessage ) = 0;
 
     /** Write the symbology for the layer into the docment provided.
-     *  @param QDomNode the node that will have the style element added to it.
-     *  @param QDomDocument the document that will have the QDomNode added.
-     * @param errorMessage reference to string that will be updated with any error messages
+     *  @param node the node that will have the style element added to it.
+     *  @param doc the document that will have the QDomNode added.
+     *  @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      */
-    virtual bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument& doc, QString& errorMessage ) const = 0;
 
     /** Return pointer to layer's undo stack */
     QUndoStack* undoStack();
@@ -339,7 +341,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void layerCrsChanged();
 
     /** This signal should be connected with the slot QgsMapCanvas::refresh()
-     * @TODO: to be removed - GUI dependency
+     * \todo to be removed - GUI dependency
      */
     void repaintRequested();
 
