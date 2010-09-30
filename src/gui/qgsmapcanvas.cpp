@@ -54,7 +54,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include <math.h>
 
-/**  @DEPRECATED: to be deleted, stuff from here should be moved elsewhere */
+/**  @deprecated to be deleted, stuff from here should be moved elsewhere */
 class QgsMapCanvas::CanvasProperties
 {
   public:

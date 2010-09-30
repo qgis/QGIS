@@ -195,7 +195,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Return unique values of an attribute
      * @param index the index of the attribute
-     * @param values reference to the list to fill
+     * @param uniqueValues values reference to the list to fill
      * @param limit maxmum number of the values to return (added in 1.4)
      *
      * Default implementation simply iterates the features

@@ -49,7 +49,7 @@ class QgsSLDRule
 
     const QgsFilter* filter() const {return mFilter;}
 
-    /**Returns a set of attribute incices needed in this rule (filter indices and ev. \
+    /**Returns a set of attribute indices needed in this rule (filter indices and if any\
         rotation attribute index and scaling attribute index */
     QSet<int> attributeIndices() const;
 

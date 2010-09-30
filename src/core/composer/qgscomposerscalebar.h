@@ -101,14 +101,15 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**Returns string of first label (important for drawing, labeling, size calculation*/
     QString firstLabelString() const;
 
-    /** stores state in Dom node
+    /** stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
-       * @param temp write template file
+       * @param doc Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
+       * @param doc is Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 

@@ -60,14 +60,15 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     MarkerMode markerMode() const { return mMarkerMode;}
     void setMarkerMode( MarkerMode mode ) {mMarkerMode = mode;}
 
-    /** stores state in Dom node
-    * @param node is Dom node corresponding to 'Composer' tag
-    * @param temp write template file
+    /** stores state in Dom element
+    * @param elem is Dom element corresponding to 'Composer' tag
+    * @param doc document
     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
     * @param itemElem is Dom node corresponding to item tag
+    * @param doc is the document to read
     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 

@@ -267,9 +267,9 @@ class CORE_EXPORT QgsGeometry
     /**Splits this geometry according to a given line. Note that the geometry is only split once. If there are several intersections
      between geometry and splitLine, only the first one is considered.
     @param splitLine the line that splits the geometry
-    @param newGeometrys OUT: list of new geometries that have been created with the split
+    @param[out] newGeometries list of new geometries that have been created with the split
     @param topological true if topological editing is enabled
-    @topologyTestPoints OUT: points that need to be tested for topological completeness in the dataset
+    @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
     int splitGeometry( const QList<QgsPoint>& splitLine,
                        QList<QgsGeometry*>&newGeometries,
@@ -478,6 +478,9 @@ class CORE_EXPORT QgsGeometry
      *  If the requested vertex number is greater
      *  than the last actual vertex,
      *  it is assumed that the vertex is to be appended instead of inserted.
+     *  @param x x coordinate
+     *  @param y y coordinate
+     *  @param beforeVertex insert before vertex with this index
      *  @param old_sequence   The sequence to update (The caller remains the owner).
      *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns true).
      *  Returns false if beforeVertex does not correspond to a valid vertex number
@@ -489,7 +492,6 @@ class CORE_EXPORT QgsGeometry
                        GEOSCoordSequence** new_sequence );
 
     /**Translates a single vertex by dx and dy.
-     @param ptr pointer to the wkb fragment containing the vertex
     @param wkbPosition position in wkb array. Is increased automatically by the function
     @param dx translation of x-coordinate
     @param dy translation of y-coordinate
@@ -497,7 +499,6 @@ class CORE_EXPORT QgsGeometry
     void translateVertex( int& wkbPosition, double dx, double dy, bool hasZValue );
 
     /**Transforms a single vertex by ct.
-     @param ptr pointer to the wkb fragment containing the vertex
     @param wkbPosition position in wkb array. Is increased automatically by the function
     @param ct the QgsCoordinateTransform
     @param hasZValue 25D type?*/
@@ -506,8 +507,8 @@ class CORE_EXPORT QgsGeometry
     //helper functions for geometry splitting
 
     /**Splits line/multiline geometries
-     @splitLine the line that splits the feature
-     @newGeometry new geometry if splitting was successful
+     @param splitLine the line that splits the feature
+     @param newGeometries new geometries if splitting was successful
      @return 0 in case of success, 1 if geometry has not been split, error else*/
     int splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries );
     /**Splits polygon/multipolygon geometries

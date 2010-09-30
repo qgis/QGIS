@@ -30,7 +30,7 @@ class CORE_EXPORT QgsField
 {
   public:
     /** Constructor. Constructs a new QgsField object.
-     * @param nam Field name
+     * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
      * @param typeName Field type (eg. char, varchar, text, int, serial, double).
      Field types are usually unique to the source and are stored exactly

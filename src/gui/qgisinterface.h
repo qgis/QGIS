@@ -163,13 +163,13 @@ class GUI_EXPORT QgisInterface : public QObject
     */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
-    // TODO: is this deprecated in favour of QgsContextHelp?
+    // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.
      * @param url URL to open
      * @param useQgisDocDirectory If true, the URL will be formed by concatenating
-     * url to the QGIS documentation directory path (<prefix>/share/doc)
+     * url to the QGIS documentation directory path (prefix/share/doc)
      */
     virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0;
 

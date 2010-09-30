@@ -78,7 +78,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
      * Constructs a QgsCoordinateTransform using a Spatial Reference Id
      * of the layer and map canvas coordinate system as Wkt
      * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
-     * @param theSourceWkt Wkt of the map canvas coordinate system
+     * @param theDestWkt Wkt of the map canvas coordinate system
      * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
      */
     QgsCoordinateTransform( long theSourceSrid,
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     * It assumes that rect is a bounding box, and creates a bounding box
     * in the proejcted CS, so that all points in source rectangle is within
     * returned rectangle.
-    * @param QgsRectangle rect to transform
+    * @param theRect rect to transform
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRectangle in Destination Coordinate System
      */
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     /*! Transform a QgsRectangle to the dest Coordinate system
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
-    * @param QgsRectangle rect to transform
+    * @param theRect rect to transform
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRectangle in Destination Coordinate System
      */
@@ -170,8 +170,10 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     /*! Transform an array of coordinates to a different Coordinate System
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
-    * @param x x cordinate of point to transform
-    * @param y y coordinate of point to transform
+    * @param numPoint number of coordinates in arrays
+    * @param x array of x coordinates to transform
+    * @param y array of y coordinates to transform
+    * @param z array of z coordinates to transform
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRectangle in Destination Coordinate System
      */
@@ -211,7 +213,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
 
     /*! Stores state to the given Dom node in the given document
     * @param theNode The node in which state will be restored
-    * @param theDom The document in which state will be stored
+    * @param theDoc The document in which state will be stored
     * @return bool True on success, False on failure
     */
     bool writeXML( QDomNode & theNode, QDomDocument & theDoc );

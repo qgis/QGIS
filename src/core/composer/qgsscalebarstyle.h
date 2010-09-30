@@ -34,6 +34,7 @@ class CORE_EXPORT QgsScaleBarStyle
     virtual ~QgsScaleBarStyle();
 
     /**Draws the style
+     @param p painter object
      @param xOffset offset to account for centered labeling*/
     virtual void draw( QPainter* p, double xOffset = 0 ) const = 0; //to do by every subclass
     virtual void drawLabels( QPainter* p ) const; //default implementation provided

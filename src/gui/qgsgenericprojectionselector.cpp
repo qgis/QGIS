@@ -80,13 +80,13 @@ void QgsGenericProjectionSelector::setSelectedAuthId( QString theID )
 
 QString QgsGenericProjectionSelector::selectedProj4String()
 {
-  //@NOTE don't use getSelectedWkt as that just returns the name part!
+  //@note don't use getSelectedWkt as that just returns the name part!
   return projectionSelector->selectedProj4String();
 }
 
 long QgsGenericProjectionSelector::selectedCrsId()
 {
-  //@NOTE don't use getSelectedWkt as that just returns the name part!
+  //@note don't use getSelectedWkt as that just returns the name part!
   return projectionSelector->selectedCrsId();
 }
 

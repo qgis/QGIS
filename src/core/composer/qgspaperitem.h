@@ -32,14 +32,15 @@ class CORE_EXPORT QgsPaperItem: public QgsComposerItem
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /** stores state in Dom node
-       * @param node is Dom node corresponding to 'Composer' tag
-       * @param temp write template file
+    /** stores state in Dom element
+       * @param elem is Dom element corresponding to 'Composer' tag
+       * @param doc Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
+     * @param doc is the Dom document
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 

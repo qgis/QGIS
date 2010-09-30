@@ -92,13 +92,22 @@ class CORE_EXPORT QgsLabel
     };
 
     /** \brief render label
-     *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
-     *  \note deprecated
+     *  \param painter painter to render label in
+     *  \param viewExtent extent to render labels in
+     *  \param coordinateTransform coordinate transformation to use
+     *  \param transform transformation from coordinate to canvas pixels
+     *  \param feature feature to label
+     *  \param selected feature is selected
+     *  \param classAttributes attributes to create label from
+     *  \param sizeScale scale
+     *  \param rasterScaleFactor raster scale
+     *  \deprecated
      */
     void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
                       QgsCoordinateTransform* coordinateTransform,
                       const QgsMapToPixel *transform,
-                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1., double rasterScaleFactor = 1.0 )
+                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0,
+                      double sizeScale = 1., double rasterScaleFactor = 1.0 )
     {
       QgsRenderContext r;
       r.setExtent( viewExtent );
@@ -111,13 +120,16 @@ class CORE_EXPORT QgsLabel
     }
 
     /** \brief render label
-     *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
+     *  \param renderContext the render context
+     *  \param feature feature to render the label for
+     *  \param selected feature is selected
+     *  \param classAttributes attributes to create the label from
      *  \note added in 1.2
      */
     void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
 
     /** Reads the renderer configuration from an XML file
-     @param rnode the Dom node to read
+     @param node the Dom node to read
     */
     void readXML( const QDomNode& node );
 

@@ -57,14 +57,15 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
         @note: this function was added in version 1.4*/
     QColor fontColor() const {return mFontColor;}
 
-    /** stores state in Dom node
-       * @param node is Dom node corresponding to 'Composer' tag
-       * @param temp write template file
+    /** stores state in Dom element
+       * @param elem is Dom element corresponding to 'Composer' tag
+       * @param doc document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
-       * @param node is Dom node corresponding to 'ComposerLabel' tag
+       * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
+       * @param doc document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 

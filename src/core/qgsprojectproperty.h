@@ -85,13 +85,13 @@ class CORE_EXPORT QgsProperty
     virtual bool readXML( QDomNode & keyNode ) = 0;
 
     /**
-       adds property hierarchy to given Dom node
+       adds property hierarchy to given Dom element
 
        Used for saving properties to project file.
 
        @param nodeName the tag name associated with this element
-       @param node     the parent (or encompassing) property node
-       @param documetn the overall project file Dom document
+       @param element the parent (or encompassing) property element
+       @param document the overall project file Dom document
     */
     virtual bool writeXML( QString const & nodeName,
                            QDomElement   & element,
@@ -238,6 +238,8 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
     /** set the value associated with this key
         @param name is the key name
+        @param value is the value to set
+    @return pointer to property value
     */
     QgsPropertyValue * setValue( QString const & name, QVariant const & value )
     {

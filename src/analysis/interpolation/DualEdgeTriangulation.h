@@ -92,8 +92,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     void setTriangleInterpolator( TriangleInterpolator* interpolator );
     /**Eliminates the horizontal triangles by swapping or by insertion of new points*/
     void eliminateHorizontalTriangles();
-    /**Adds points to make the triangles better shaped (algorithm of ruppert)
-     \param tin the triangulation or decorator which interpolates the elevation*/
+    /**Adds points to make the triangles better shaped (algorithm of ruppert)*/
     virtual void ruppertRefinement();
     /**Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise*/
     bool pointInside( double x, double y );

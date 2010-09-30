@@ -64,9 +64,15 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     };
 
     /**Constructor
+     @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( QgsComposition* composition, bool manageZValue = true );
     /**Constructor with box position and composer object
+     @param x x coordinate of item
+     @param y y coordinate of item
+     @param width width of item
+     @param height height of item
+     @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true );
     virtual ~QgsComposerItem();
@@ -107,9 +113,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
 
-    /** stores state in Dom node
-     * @param node is Dom node corresponding to 'Composer' tag
-     * @param temp write template file
+    /** stores state in Dom element
+     * @param elem is Dom element corresponding to 'Composer' tag
+     * @param doc is the Dom document
      */
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
 
@@ -118,6 +124,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
+     * @param doc is Dom document
      */
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 

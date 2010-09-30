@@ -38,7 +38,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
-     * @Note A basic test will be carried out to ensure the theme search path
+     * @note A basic test will be carried out to ensure the theme search path
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */

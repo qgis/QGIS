@@ -39,7 +39,7 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
 
       The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 
-      Essentially dumps <datasource> tag.
+      Essentially dumps datasource tag.
     */
     QString dataSource( QDomNode & layerNode );
 
@@ -47,19 +47,18 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
 
       The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 
-      If the <provider> is "ogr", then it's a file type.
+      If the provider tag is "ogr", then it's a file type.
 
-      However, if the layer is a raster, then there won't be a <provider> tag.  It
-      will always have an associated file.
+      However, if the layer is a raster, then there won't be a
+      provider tag.  It will always have an associated file.
 
       If the layer doesn't fall into either of the previous two categories, then
-      it's either a database or URL.  If the <datasource> tag has "url=", then
-      it's URL based.  If the <datasource> tag has "dbname=">, then the layer data
-      is in a database.
+      it's either a database or URL.  If the datasource tag has "url=", then it's
+      URL based and if it has "dbname=">, then the layer data is in a database.
     */
     ProviderType providerType( QDomNode & layerNode );
 
-    /** set the <datasource> to the new value */
+    /** set the datasource element to the new value */
     void setDataSource( QDomNode & layerNode, QString const & dataSource );
 
     /** this is used to locate files that have moved or otherwise are missing */
@@ -69,7 +68,8 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
 
       This QDom object represents a QgsProject node that maps to a specific layer.
 
-      @param layerNode QDom node containing layer project information
+      @param fileFilters file filters to use
+      @param constLayerNode QDom node containing layer project information
 
       @todo
 

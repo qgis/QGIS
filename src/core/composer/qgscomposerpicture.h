@@ -42,14 +42,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
        corresponds to 1 scene size unit and resizes the svg symbol / image*/
     void setSceneRect( const QRectF& rectangle );
 
-    /** stores state in Dom node
-       * @param node is Dom node corresponding to 'Composer' tag
-       * @param temp write template file
+    /** stores state in Dom element
+       * @param elem is Dom element corresponding to 'Composer' tag
+       * @param doc is Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
       * @param itemElem is Dom node corresponding to item tag
+      * @param doc is Dom document
       */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
@@ -80,9 +81,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Calculates bounding rect for image such that aspect ratio is correct*/
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
 
-    /**Updates content of mImage using svg generator
-    @param out: boundWidth width of mImage that is used by the svg renderer. May different from mImage.width() to preserve aspect ratio
-    @param out: boundHeight height of mImage that is used by the svg renderer*/
+    /**Updates content of mImage using svg generator*/
     void updateImageFromSvg();
 
 

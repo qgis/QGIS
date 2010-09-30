@@ -42,7 +42,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
      and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
-      @param fileEncoding encoding of the output file
       @param tolerance (level of simplification)
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
@@ -54,7 +53,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
        write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
-      @param fileEncoding encoding of the output file
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
@@ -64,7 +62,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**Create a polygon based on the extent of all (selected) features and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
-      @param fileEncoding encoding of the output file
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
@@ -73,7 +70,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**Create buffers for a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
-      @param fileEncoding encoding of the output file
       @param bufferDistance distance for buffering (if no buffer field is specified)
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param dissolve if true, merge all the buffers to a big multipolygon
@@ -86,7 +82,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**Create convex hull(s) of a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
-      @param fileEncoding encoding of the output file
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param uniqueIdField index of the attribute field that contains the unique convex hull id (or -1 if
       all features have the same buffer distance)
@@ -98,7 +93,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**Dissolve a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
-      @param fileEncoding encoding of the output file
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param uniqueIdField index of the attribute field that contains the unique id to dissolve on (or -1 if
       all features should be dissolved together)

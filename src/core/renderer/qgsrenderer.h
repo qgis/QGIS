@@ -58,8 +58,10 @@ class CORE_EXPORT QgsRenderer
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
-     @param pic pointer to an image (used for point symbols)
-     @param scalefactor pointer to the scale factor for the marker image
+     @param img a pointer to picture
+     @param selected feature is selected
+     @param widthScale scale
+     @param rasterScaleFactor raster scale
      @note deprecated */
     void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 )
     {
@@ -82,8 +84,9 @@ class CORE_EXPORT QgsRenderer
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer
-    @return 0 in case of success, 1 if vector layer has no renderer, 2 if classification field not found*/
+     @return 0 in case of success, 1 if vector layer has no renderer, 2 if classification field not found*/
     virtual int readXML( const QDomNode& rnode, QgsVectorLayer& vl ) = 0;
+
     /**Writes the contents of the renderer to a configuration file*/
     // virtual void writeXML(std::ostream& xml)=0;
     /**Writes the contents of the renderer to a configuration file

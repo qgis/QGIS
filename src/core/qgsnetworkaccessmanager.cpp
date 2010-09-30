@@ -122,7 +122,7 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
   mExcludedURLs = excludes;
 }
 
-QNetworkReply *QgsNetworkAccessManager::createRequest( QgsNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
+QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );

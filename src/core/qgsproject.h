@@ -144,7 +144,7 @@ class CORE_EXPORT QgsProject : public QObject
         implementations fails.  Since the read()s are invoked from qgisapp,
         then qgisapp handles the exception.  It prompts the user for the new
         location of the data, if any.  If there is a new location, the Dom
-        node associated with the layer has its <datasource> tag corrected.
+        node associated with the layer has its datasource tag corrected.
         Then that node is passed to this member function to be re-opened.
 
      */
