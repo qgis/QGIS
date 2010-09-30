@@ -127,6 +127,22 @@ SET(QGIS_APP_SRCS
   attributetable/qgsattributetablefiltermodel.cpp
   attributetable/qgsattributetableidcolumnpair.cpp
   attributetable/qgsattributetabledelegate.cpp
+
+  gps/qgsgpsinformationwidget.cpp
+  gps/qgsgpsmarker.cpp
+  gps/qwtpolar/qwt_polar_canvas.cpp  
+  gps/qwtpolar/qwt_polar_curve.cpp
+  gps/qwtpolar/qwt_polar_fitter.cpp  
+  gps/qwtpolar/qwt_polar_grid.cpp   
+  gps/qwtpolar/qwt_polar_itemdict.cpp  
+  gps/qwtpolar/qwt_polar_item.cpp
+  gps/qwtpolar/qwt_polar_layout.cpp    
+  gps/qwtpolar/qwt_polar_magnifier.cpp
+  gps/qwtpolar/qwt_polar_marker.cpp     
+  gps/qwtpolar/qwt_polar_panner.cpp
+  gps/qwtpolar/qwt_polar_plot.cpp 
+  gps/qwtpolar/qwt_polar_point.cpp
+  gps/qwtpolar/qwt_polar_spectrogram.cpp
 )
 
 
@@ -231,39 +247,12 @@ SET (QGIS_APP_MOC_HDRS
   attributetable/qgsattributetabledialog.h
   attributetable/qgsattributetabledelegate.h
 
+  gps/qgsgpsinformationwidget.h
+  gps/qwtpolar/qwt_polar_canvas.h  
+  gps/qwtpolar/qwt_polar_magnifier.h
+  gps/qwtpolar/qwt_polar_panner.h
+  gps/qwtpolar/qwt_polar_plot.h 
   )
-
-IF( QWT_FOUND )
-  ADD_DEFINITIONS(-DHAVE_QWT)
-
-  SET(QGIS_APP_SRCS 
-    ${QGIS_APP_SRCS}
-    gps/qgsgpsinformationwidget.cpp
-    gps/qgsgpsmarker.cpp
-    gps/qwtpolar/qwt_polar_canvas.cpp  
-    gps/qwtpolar/qwt_polar_curve.cpp
-    gps/qwtpolar/qwt_polar_fitter.cpp  
-    gps/qwtpolar/qwt_polar_grid.cpp   
-    gps/qwtpolar/qwt_polar_itemdict.cpp  
-    gps/qwtpolar/qwt_polar_item.cpp
-    gps/qwtpolar/qwt_polar_layout.cpp    
-    gps/qwtpolar/qwt_polar_magnifier.cpp
-    gps/qwtpolar/qwt_polar_marker.cpp     
-    gps/qwtpolar/qwt_polar_panner.cpp
-    gps/qwtpolar/qwt_polar_plot.cpp 
-    gps/qwtpolar/qwt_polar_point.cpp
-    gps/qwtpolar/qwt_polar_spectrogram.cpp
-  )
-
-  SET (QGIS_APP_MOC_HDRS
-    ${QGIS_APP_MOC_HDRS}
-    gps/qgsgpsinformationwidget.h
-    gps/qwtpolar/qwt_polar_canvas.h  
-    gps/qwtpolar/qwt_polar_magnifier.h
-    gps/qwtpolar/qwt_polar_panner.h
-    gps/qwtpolar/qwt_polar_plot.h 
-  )
-ENDIF( QWT_FOUND )
 
 IF (POSTGRES_FOUND)
   IF(HAVE_PGCONFIG)
@@ -388,13 +377,11 @@ TARGET_LINK_LIBRARIES(qgis
   qgis_gui
 )
 
-IF( QWT_FOUND )
-  IF( WIN32 )
-    ADD_DEFINITIONS(-DQWT_DLL)
-  ENDIF( WIN32 ) 
-  INCLUDE_DIRECTORIES(${QWT_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(qgis ${QWT_LIBRARY})
-ENDIF( QWT_FOUND )
+IF( WIN32 )
+  ADD_DEFINITIONS(-DQWT_DLL)
+ENDIF( WIN32 ) 
+INCLUDE_DIRECTORIES(${QWT_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(qgis ${QWT_LIBRARY})
 
 IF(NOT WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(qgis ${SQLITE_LIBRARY})

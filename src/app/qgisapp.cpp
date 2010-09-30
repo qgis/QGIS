@@ -160,10 +160,7 @@
 #include "qgstilescalewidget.h"
 #include "qgsquerybuilder.h"
 #include "qgsattributeaction.h"
-
-#ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
-#endif
 
 //
 // Gdal/Ogr includes
@@ -372,9 +369,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
-#ifdef HAVE_QWT
     , mpGpsWidget( NULL )
-#endif
 {
   if ( smInstance )
   {
@@ -643,13 +638,11 @@ void QgisApp::readSettings()
   {
     showTileScale();
   }
-#if HAVE_QWT
   // Restore state of GPS Tracker
   if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
   {
     showGpsTool();
   }
-#endif
 }
 
 
@@ -1084,13 +1077,11 @@ void QgisApp::createActions()
   connect( mActionTileScale, SIGNAL( triggered() ), this, SLOT( showTileScale() ) );
   mActionTileScale->setEnabled( true );
 
-#ifdef HAVE_QWT
   mActionGpsTool = new QAction( getThemeIcon( "mActionGpsTool.png" ), tr( "Live GPS tracking" ), this );
   shortcuts->registerAction( mActionGpsTool, tr( "", "Live GPS tracking" ) );
   mActionGpsTool->setStatusTip( tr( "Show GPS tool" ) );
   connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
   mActionGpsTool->setEnabled( true );
-#endif
 
   mActionLayerProperties = new QAction( tr( "Properties..." ), this );
   shortcuts->registerAction( mActionLayerProperties );
@@ -1501,9 +1492,7 @@ void QgisApp::createMenus()
 
   mViewMenu->addAction( mActionTileScale );
 
-#ifdef HAVE_QWT
   mViewMenu->addAction( mActionGpsTool );
-#endif
 
   // Layers Menu
 
@@ -2426,7 +2415,6 @@ void QgisApp::saveWindowState()
     settings.setValue( "/UI/tileScaleEnabled", false );
   }
 
-#if HAVE_QWT
   // Persist state of GPS Tracker
   if ( mpGpsWidget )
   {
@@ -2437,7 +2425,6 @@ void QgisApp::saveWindowState()
   {
     settings.setValue( "/gps/widgetEnabled", false );
   }
-#endif
 
   QgsPluginRegistry::instance()->unloadAll();
 }
@@ -2497,11 +2484,7 @@ void QgisApp::about()
     versionString += tr( "\nThis copy of QGIS has been built without SpatiaLite support." );
 #endif
 
-#ifdef HAVE_QWT
-    versionString += tr( "\nThis copy of QGIS has been built with QWT support (%1)." ).arg( QWT_VERSION_STR );
-#else
-    versionString += tr( "\nThis copy of QGIS has been built without QWT support." );
-#endif
+    versionString += tr( "\nThis copy of QGIS has been built with QWT %1." ).arg( QWT_VERSION_STR );
 
 #ifdef QGISDEBUG
     versionString += tr( "\nThis copy of QGIS writes debugging output." );
@@ -5021,7 +5004,6 @@ void QgisApp::removeLayer()
 
 void QgisApp::showGpsTool()
 {
-#ifdef HAVE_QWT
   if ( !mpGpsWidget )
   {
     mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
@@ -5040,7 +5022,6 @@ void QgisApp::showGpsTool()
   {
     mpGpsDock->setVisible( mpGpsDock->isHidden() );
   }
-#endif
 }
 
 void QgisApp::showTileScale()
