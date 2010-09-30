@@ -1887,7 +1887,6 @@ void QgsRasterLayerProperties::refreshHistogram()
   myGraphType = BAR_CHART;
   bool myIgnoreOutOfRangeFlag = true;
   bool myThoroughBandScanFlag = false;
-  int myLastBinWithData = 0;
   int myBandCountInt = mRasterLayer->bandCount();
   QList<QColor> myColors;
   myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
