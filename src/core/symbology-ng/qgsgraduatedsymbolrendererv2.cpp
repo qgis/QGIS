@@ -2,7 +2,7 @@
 
 qgsgraduatedsymbolrendererv2.cpp - Graduated Symbol Renderer Version 2
 
-/***************************************************************************
+***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -370,7 +370,7 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
   bool small = false;
   double dx = maximum - minimum;
 
-  if ( dx == 0 and maximum == 0 )
+  if ( dx == 0 && maximum == 0 )
   {
     cell = 1.0;
     small = true;
@@ -646,7 +646,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     breaks.append( 0.0 );
   }
 
-  breaks[classes - 1] = sample[sample.length() - 1];
+  breaks[classes - 1] = sample[sample.size() - 1];
 //  breaks[0] = values[0];
 
   int k = n;
