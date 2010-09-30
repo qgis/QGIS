@@ -67,9 +67,7 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
-#ifdef HAVE_QWT
 class QgsGPSInformationWidget;
-#endif
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -285,9 +283,7 @@ class QgisApp : public QMainWindow
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     QAction *actionTileScale() { return mActionTileScale; }
-#ifdef HAVE_QWT
     QAction *actionGpsTool() { return mActionGpsTool; }
-#endif
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionLayerSeparator2() { return mActionLayerSeparator2; }
@@ -944,9 +940,7 @@ class QgisApp : public QMainWindow
     QAction *mActionLayerSelectionSaveAs;
     QAction *mActionRemoveLayer;
     QAction *mActionTileScale;
-#ifdef HAVE_QWT
     QAction *mActionGpsTool;
-#endif
     QAction *mActionLayerProperties;
     QAction *mActionLayerSubsetString;
     QAction *mActionLayerSeparator2;
@@ -1009,9 +1003,7 @@ class QgisApp : public QMainWindow
     QDockWidget *mLegendDock;
     QDockWidget *mOverviewDock;
     QDockWidget *mpTileScaleDock;
-#ifdef HAVE_QWT
     QDockWidget *mpGpsDock;
-#endif
 
 #ifdef Q_WS_MAC
     //! Window menu action to select this window
@@ -1172,10 +1164,8 @@ class QgisApp : public QMainWindow
     int mSkipNextContextMenuEvent; // ugly hack
 #endif
 
-#ifdef HAVE_QWT
     //! Persistent GPS toolbox
     QgsGPSInformationWidget * mpGpsWidget;
-#endif
 
     QgsPalLabeling* mLBL;
 
