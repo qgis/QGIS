@@ -672,7 +672,7 @@ void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
     //   process child layers and style selection first
     // then
     //   if all child layers of a group are selected, deselect them and select the group and collapse it
-    //   if some child layers are selected, deselect the group
+    //   if some child layers are selected, deselect the group and all parents
     //   otherwise keep the selection state of the group
     int n = 0;
     for ( int i = 0; i < item->childCount(); i++ )
@@ -691,6 +691,11 @@ void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
         for ( int i = 0; i < n; i++ )
           item->child( i )->setSelected( false );
         item->setExpanded( false );
+      }
+      else
+      {
+        for ( QTreeWidgetItem *parent = item->parent(); parent;  parent = parent->parent() )
+          parent->setSelected( false );
       }
     }
   }
