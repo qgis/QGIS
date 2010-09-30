@@ -739,7 +739,6 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   }
   else
   {
-    // returning as DOUBLE
     return convertValue( fld.type(), minValue );
   }
 
