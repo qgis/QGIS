@@ -27,6 +27,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QProgressDialog>
+#include <QSettings>
 #include <QSvgRenderer>
 
 QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture )
@@ -180,11 +181,24 @@ void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
 
   //and add icons to the preview
   addDirectoryToPreview( directory );
+
+  //update the image directory list in the settings
+  QSettings s;
+  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  if ( !userDirList.contains( directory ) )
+  {
+    userDirList.append( directory );
+  }
+  s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
 }
 
 void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
 {
   QString directoryToRemove = mSearchDirectoriesComboBox->currentText();
+  if ( directoryToRemove.isEmpty() )
+  {
+    return;
+  }
   mSearchDirectoriesComboBox->removeItem( mSearchDirectoriesComboBox->currentIndex() );
 
   //remove entries from back to front (to have the indices of existing items constant)
@@ -196,6 +210,12 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
       delete( mPreviewListWidget->takeItem( i ) );
     }
   }
+
+  //update the image directory list in the settings
+  QSettings s;
+  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  userDirList.removeOne( directoryToRemove );
+  s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
 }
 
 void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged( int state )
@@ -462,6 +482,16 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
         mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
       }
     }
+  }
+
+  //include additional user-defined directories for images
+  QSettings s;
+  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList::const_iterator userDirIt = userDirList.constBegin();
+  for ( ; userDirIt != userDirList.constEnd(); ++userDirIt )
+  {
+    addDirectoryToPreview( *userDirIt );
+    mSearchDirectoriesComboBox->addItem( *userDirIt );
   }
 }
 
