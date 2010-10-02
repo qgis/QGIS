@@ -289,8 +289,12 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   btnChangeBorderColor->setColor( mLayer->borderColor() );
   cboBorderStyle->setPenStyle( mLayer->borderStyle() );
   spinBorderWidth->setValue( mLayer->borderWidth() );
+  spinOffsetX->blockSignals( true );
   spinOffsetX->setValue( mLayer->offset().x() );
+  spinOffsetX->blockSignals( false );
+  spinOffsetY->blockSignals( true );
   spinOffsetY->setValue( mLayer->offset().y() );
+  spinOffsetY->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
