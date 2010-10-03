@@ -383,7 +383,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
   //delete selected items
-  if ( e->key() == Qt::Key_Delete )
+  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
