@@ -14,6 +14,8 @@ which are not wrapped by PyQt:
 - QMap<int, QgsOverlayObject*>*
 */
 
+%Feature QSETINT_CONVERSION
+
 %ModuleHeaderCode
 // From Python 2.5, some functions use Py_ssize_t instead of int
 // thus this typedef is for maintaining backward compatibility
@@ -264,7 +266,7 @@ template <TYPE>
 
 
 
-
+%If (QSETINT_CONVERSION)
 %MappedType QSet<int>
 {
 %TypeHeaderCode
@@ -316,6 +318,7 @@ template <TYPE>
 %End
 
 };
+%End
 
 
 template <TYPE>
