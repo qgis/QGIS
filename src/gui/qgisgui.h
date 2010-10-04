@@ -17,6 +17,7 @@
 #define QGISGUI_H
 
 #include <Qt>
+#include <QPair>
 
 class QStringList;
 
@@ -74,6 +75,29 @@ namespace QgisGui
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
       QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
       bool cancelAll = false );
+
+  /** A helper function to get an image name from the user. It will nicely 
+   * provide filters with all available writable image formats.
+   * @param QWidget - widget that should act as the parent for the file dialog
+   * @param QString the message to display to the user
+   * @return QPair<QString, QString> where first is the file name and second is
+   * the file type
+   * @note added in 1.6
+   */
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName(  QWidget * theParent, QString theMessage  );
+  
+  /**
+
+    Convenience function for readily creating file filters.
+
+    Given a long name for a file filter and a regular expression, return
+    a file filter string suitable for use in a QFileDialog::OpenFiles()
+    call.  The regular express, glob, will have both all lower and upper
+    case versions added.
+   * @note added in 1.6
+
+  */
+  static QString createFileFilter_( QString const &longName, QString const &glob );
 
 }
 

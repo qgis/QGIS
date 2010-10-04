@@ -31,7 +31,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsPixelSelectorTool;
-
+class QwtPlot;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -144,6 +144,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    /** This slot lets you save the histogram as an image to disk */
+    void on_mSaveAsImageButton_clicked();
 
   signals:
 
@@ -219,6 +221,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     QgsMapCanvas* mMapCanvas;
     QgsPixelSelectorTool* mPixelSelectorTool;
+    QwtPlot * mpPlot;
 };
 
 /**
