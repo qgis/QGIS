@@ -256,22 +256,5 @@
   <tabstop>lstRecent</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>leSearch</sender>
-   <signal>editingFinished()</signal>
-   <receiver>pbnFind</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>376</x>
-     <y>217</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>575</x>
-     <y>219</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
