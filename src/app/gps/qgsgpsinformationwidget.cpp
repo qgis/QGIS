@@ -152,14 +152,23 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mSliderMarkerSize->setValue( mySettings.value( "/gps/markerSize", "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( "/gps/trackWidth", "2" ).toInt() );
   QString myPortMode = mySettings.value( "/gps/portMode", "scanPorts" ).toString();
+
+  mGpsdHost->setText( mySettings.value( "/gps/gpsdHost", "localhost" ).toString() );
+  mGpsdPort->setText( mySettings.value( "/gps/gpsdPort", 2947 ).toString() );
+  mGpsdDevice->setText( mySettings.value( "/gps/gpsdDevice" ).toString() );
+
   //port mode
   if ( myPortMode == "scanPorts" )
   {
     mRadAutodetect->setChecked( true );
   }
-  else
+  else if ( myPortMode == "explicitPort" )
   {
     mRadUserPath->setChecked( true );
+  }
+  else if ( myPortMode == "gpsd" )
+  {
+    mRadGpsd->setChecked( true );
   }
   //auto digitising behaviour
   bool myAutoAddVertexFlag = mySettings.value( "/gps/autoAddVertices", "false" ).toBool();
@@ -198,15 +207,23 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   mySettings.setValue( "/gps/trackWidth", mSpinTrackWidth->value() );
   mySettings.setValue( "/gps/markerSize", mSliderMarkerSize->value() );
   mySettings.setValue( "/gps/autoAddVertices", mCbxAutoAddVertices->isChecked() );
-  // scan or explicit port
+  // scan, explicit port or gpsd
   if ( mRadAutodetect->isChecked() )
   {
     mySettings.setValue( "/gps/portMode", "scanPorts" );
   }
-  else
+  else if ( mRadUserPath->isChecked() )
   {
     mySettings.setValue( "/gps/portMode", "explicitPort" );
   }
+  else
+  {
+    mySettings.setValue( "/gps/portMode", "gpsd" );
+  }
+
+  mySettings.setValue( "/gps/gpsdHost", mGpsdHost->text() );
+  mySettings.setValue( "/gps/gpsdPort", mGpsdPort->text().toInt() );
+  mySettings.setValue( "/gps/gpsdDevice", mGpsdDevice->text() );
 
   // pan mode
   if ( radRecenterMap->isChecked() )
@@ -316,6 +333,10 @@ void QgsGPSInformationWidget::connectGps()
       mConnectButton->setChecked( false );
       return;
     }
+  }
+  else if ( mRadGpsd->isChecked() )
+  {
+    port = QString( "%1:%2:%3" ).arg( mGpsdHost->text() ).arg( mGpsdPort->text() ).arg( mGpsdDevice->text() );
   }
 
   mGPSTextEdit->append( tr( "Connecting..." ) );
