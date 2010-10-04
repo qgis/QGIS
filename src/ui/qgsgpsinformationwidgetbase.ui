@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>273</width>
-    <height>331</height>
+    <width>279</width>
+    <height>723</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -283,8 +283,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>168</width>
-            <height>505</height>
+            <width>272</width>
+            <height>684</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -294,7 +294,7 @@
            <item row="0" column="0">
             <widget class="QGroupBox" name="mDeviceGroupBox">
              <property name="title">
-              <string>GPS device port</string>
+              <string>GPS connection</string>
              </property>
              <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
@@ -307,31 +307,41 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QRadioButton" name="mRadUserPath">
                 <property name="text">
                  <string>Use path / port below</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <item>
                  <widget class="QLabel" name="mPathLabel">
                   <property name="text">
                    <string>Path to serial device</string>
                   </property>
+                  <property name="buddy">
+                   <cstring>mCboDevices</cstring>
+                  </property>
                  </widget>
                 </item>
                </layout>
               </item>
-              <item row="3" column="0">
+              <item row="4" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="QComboBox" name="mCboDevices"/>
+                 <widget class="QComboBox" name="mCboDevices">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QToolButton" name="mBtnRefreshDevices">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string>...</string>
                   </property>
@@ -342,6 +352,74 @@
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item row="6" column="0">
+               <layout class="QGridLayout" name="gridLayout_12">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>Port</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mGpsdPort</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>Host</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mGpsdHost</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>Device</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mGpsdDevice</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="mGpsdDevice">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="mGpsdHost">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="mGpsdPort">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="inputMask">
+                   <string>ddddd; </string>
+                  </property>
+                  <property name="maxLength">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="5" column="0">
+               <widget class="QRadioButton" name="mRadGpsd">
+                <property name="text">
+                 <string>Connection to gpsd</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -538,12 +616,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>100</x>
-     <y>-176</y>
+     <x>114</x>
+     <y>65</y>
     </hint>
     <hint type="destinationlabel">
-     <x>86</x>
-     <y>-100</y>
+     <x>101</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
@@ -554,12 +632,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>-176</y>
+     <x>167</x>
+     <y>65</y>
     </hint>
     <hint type="destinationlabel">
-     <x>142</x>
-     <y>-65</y>
+     <x>157</x>
+     <y>147</y>
     </hint>
    </hints>
   </connection>
@@ -570,12 +648,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>194</x>
-     <y>-138</y>
+     <x>208</x>
+     <y>93</y>
     </hint>
     <hint type="destinationlabel">
-     <x>192</x>
-     <y>-100</y>
+     <x>207</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
@@ -586,12 +664,236 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>217</x>
-     <y>-138</y>
+     <x>231</x>
+     <y>93</y>
     </hint>
     <hint type="destinationlabel">
-     <x>188</x>
-     <y>-65</y>
+     <x>203</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadAutodetect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdHost</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>172</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadAutodetect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdPort</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadAutodetect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdDevice</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdHost</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>60</x>
+     <y>104</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdPort</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdDevice</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mCboDevices</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>235</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mBtnRefreshDevices</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>168</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadAutodetect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mBtnRefreshDevices</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>168</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadGpsd</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdHost</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>196</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadGpsd</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdPort</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadGpsd</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdDevice</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadGpsd</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mCboDevices</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>235</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadGpsd</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mBtnRefreshDevices</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>168</y>
     </hint>
    </hints>
   </connection>

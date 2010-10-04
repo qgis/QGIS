@@ -34,7 +34,7 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     /**Parse available data source content*/
     void parseData();
 
-  private:
+  protected:
     /**Store data from the device before it is processed*/
     QString mStringBuffer;
     /**Splits mStringBuffer into sentences and calls libnmea*/

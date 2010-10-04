@@ -11,6 +11,7 @@ SET(QGIS_CORE_SRCS
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
   gps/parse.c
   gps/sentence.c
@@ -257,6 +258,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
+  gps/qgsgpsdconnection.h
   gps/qextserialport/qextserialport.h
   gps/qextserialport/qextserialenumerator.h
 )

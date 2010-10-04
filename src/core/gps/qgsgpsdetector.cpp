@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
+#include "qgsgpsdconnection.h"
 
 #include <QStringList>
 #include <QFileInfo>
@@ -28,6 +29,9 @@
 QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 {
   QList< QPair<QString, QString> > devs;
+
+  // try local gpsd first
+  devs << QPair<QString, QString>( "localhost:2947:", tr( "local gpsd" ) );
 
 #ifdef linux
   // look for linux serial devices
@@ -115,9 +119,9 @@ void QgsGPSDetector::advance()
     delete mConn;
   }
 
-  QextSerialPort *port = 0;
+  mConn = 0;
 
-  do
+  while ( !mConn )
   {
     mBaudIndex++;
     if ( mBaudIndex == mBaudList.size() )
@@ -133,19 +137,37 @@ void QgsGPSDetector::advance()
       return;
     }
 
-    if ( port )
-      delete port;
+    if ( mPortList[ mPortIndex ].first.contains( ":" ) )
+    {
+      mBaudIndex = mBaudList.size() - 1;
 
-    port = new QextSerialPort( mPortList[ mPortIndex ].first, QextSerialPort::EventDriven );
-    port->setBaudRate( mBaudList[ mBaudIndex ] );
-    port->setFlowControl( FLOW_OFF );
-    port->setParity( PAR_NONE );
-    port->setDataBits( DATA_8 );
-    port->setStopBits( STOP_1 );
+      QStringList gpsParams = mPortList[ mPortIndex ].first.split( ":" );
+
+      Q_ASSERT( gpsParams.size() == 3 );
+
+      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toInt(), gpsParams[2] );
+    }
+    else
+    {
+      QextSerialPort *serial = new QextSerialPort( mPortList[ mPortIndex ].first, QextSerialPort::EventDriven );
+
+      serial->setBaudRate( mBaudList[ mBaudIndex ] );
+      serial->setFlowControl( FLOW_OFF );
+      serial->setParity( PAR_NONE );
+      serial->setDataBits( DATA_8 );
+      serial->setStopBits( STOP_1 );
+
+      if ( serial->open( QIODevice::ReadOnly | QIODevice::Unbuffered ) )
+      {
+        mConn = new QgsNMEAConnection( serial );
+      }
+      else
+      {
+        delete serial;
+      }
+    }
   }
-  while ( !port->open( QIODevice::ReadOnly | QIODevice::Unbuffered ) );
 
-  mConn = new QgsNMEAConnection( port );
   connect( mConn, SIGNAL( stateChanged( const QgsGPSInformation & ) ), this, SLOT( detected( const QgsGPSInformation & ) ) );
   connect( mConn, SIGNAL( destroyed( QObject * ) ), this, SLOT( connDestroyed( QObject * ) ) );
 
