@@ -2593,20 +2593,6 @@ void QgisApp::about()
 
 
 
-/**
-
-  Convenience function for readily creating file filters.
-
-  Given a long name for a file filter and a regular expression, return
-  a file filter string suitable for use in a QFileDialog::OpenFiles()
-  call.  The regular express, glob, will have both all lower and upper
-  case versions added.
-
-*/
-static QString createFileFilter_( QString const &longName, QString const &glob )
-{
-  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
-}                               // createFileFilter_
 
 
 
@@ -3558,93 +3544,15 @@ void QgisApp::showComposerManager()
 
 void QgisApp::saveMapAsImage()
 {
-  //create a map to hold the QImageIO names and the filter names
-  //the QImageIO name must be passed to the mapcanvas saveas image function
-  typedef QMap<QString, QString> FilterMap;
-  FilterMap myFilterMap;
-
-  //find out the last used filter
-  QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedFilter = myQSettings.value( "/UI/lastSaveAsImageFilter" ).toString();
-  QString myLastUsedDir = myQSettings.value( "/UI/lastSaveAsImageDir", "." ).toString();
-
-  // get a list of supported output image types
-  int myCounterInt = 0;
-  QString myFilters;
-  QList<QByteArray> formats = QImageWriter::supportedImageFormats();
-
-  for ( ; myCounterInt < formats.count(); myCounterInt++ )
+  QPair< QString,QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  if ( myFileNameAndFilter.first != "" )
   {
-    QString myFormat = QString( formats.at( myCounterInt ) );
-    //svg doesnt work so skip it
-    if ( myFormat ==  "svg" )
-      continue;
-
-    QString myFilter = createFileFilter_( myFormat + " format", "*." + myFormat );
-    if ( !myFilters.isEmpty() )
-      myFilters += ";;";
-    myFilters += myFilter;
-    myFilterMap[myFilter] = myFormat;
-  }
-#ifdef QGISDEBUG
-  QgsDebugMsg( "Available Filters Map: " );
-  FilterMap::Iterator myIterator;
-  for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
-  {
-    QgsDebugMsg( myIterator.key() + "  :  " + myIterator.value() );
-  }
-#endif
-
-  //create a file dialog using the the filter list generated above
-  std::auto_ptr < QFileDialog > myQFileDialog( new QFileDialog( this,
-      tr( "Choose a file name to save the map image as" ),
-      myLastUsedDir, myFilters ) );
-
-  // allow for selection of more than one file
-  myQFileDialog->setFileMode( QFileDialog::AnyFile );
-
-  myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-  myQFileDialog->setConfirmOverwrite( true );
-
-
-  if ( !myLastUsedFilter.isEmpty() )     // set the filter to the last one used
-  {
-    myQFileDialog->selectFilter( myLastUsedFilter );
-  }
-
-
-  //prompt the user for a fileName
-  QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
-  if ( myQFileDialog->exec() == QDialog::Accepted )
-  {
-    myOutputFileNameQString = myQFileDialog->selectedFiles().first();
-  }
-
-  QString myFilterString = myQFileDialog->selectedFilter();
-  QgsDebugMsg( "Selected filter: " + myFilterString );
-  QgsDebugMsg( "Image type to be passed to mapcanvas: " + myFilterMap[myFilterString] );
-
-  // Add the file type suffix to the fileName if required
-  if ( !myOutputFileNameQString.endsWith( myFilterMap[myFilterString] ) )
-  {
-    myOutputFileNameQString += "." + myFilterMap[myFilterString];
-  }
-
-  myQSettings.setValue( "/UI/lastSaveAsImageFilter", myFilterString );
-  myQSettings.setValue( "/UI/lastSaveAsImageDir", myQFileDialog->directory().absolutePath() );
-
-  if ( myOutputFileNameQString != "" )
-  {
-
     //save the mapview to the selected file
-    mMapCanvas->saveAsImage( myOutputFileNameQString, NULL, myFilterMap[myFilterString] );
-    statusBar()->showMessage( tr( "Saved map image to %1" ).arg( myOutputFileNameQString ) );
+    mMapCanvas->saveAsImage( myFileNameAndFilter.first, NULL, myFileNameAndFilter.second );
+    statusBar()->showMessage( tr( "Saved map image to %1" ).arg( myFileNameAndFilter.first ) );
   }
 
 } // saveMapAsImage
-
-
 
 //overloaded version of the above function
 void QgisApp::saveMapAsImage( QString theImageFileNameQString, QPixmap * theQPixmap )

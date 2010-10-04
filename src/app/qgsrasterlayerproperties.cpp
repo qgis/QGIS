@@ -66,7 +66,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     : QDialog( parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
-    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
+    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ),
+    mpPlot( 0 )
 {
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
   mGrayMinimumMaximumEstimated = true;
@@ -204,6 +205,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   pbtnExportColorMapToFile->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnLoadColorMapFromFile->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
 
+  mSaveAsImageButton->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
+  
   mMapCanvas = theCanvas;
   mPixelSelectorTool = 0;
   if ( mMapCanvas )
@@ -1849,29 +1852,31 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 
 void QgsRasterLayerProperties::refreshHistogram()
 {
+  if ( mpPlot != 0 )
+  {
+    delete mpPlot;
+  }
   mHistogramProgress->show();
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsDebugMsg( "entered." );
-
-  QwtPlot * mypPlot = new QwtPlot( mChartWidget );
-  mypPlot->canvas()->setCursor( Qt::ArrowCursor );
+  mpPlot = new QwtPlot( mChartWidget );
   //ensure all children get removed
-  mypPlot->setAutoDelete( true );
+  mpPlot->setAutoDelete( true );
   QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mChartWidget );
   mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
-  mpHistogramLayout->addWidget( mypPlot );
+  mpHistogramLayout->addWidget( mpPlot );
   mChartWidget->setLayout( mpHistogramLayout );
-  mypPlot->setTitle( QObject::tr( "Raster Histogram" ) );
-  mypPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
+  mpPlot->setTitle( QObject::tr( "Raster Histogram") );
+  mpPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
   // Set axis titles
-  mypPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Pixel Value" ) );
-  mypPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Frequency" ) );
-  mypPlot->setAxisAutoScale( QwtPlot::xBottom );
-  mypPlot->setAxisAutoScale( QwtPlot::yLeft );
+  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr("Pixel Value") );
+  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr("Frequency") );
+  mpPlot->setAxisAutoScale( QwtPlot::xBottom );
+  mpPlot->setAxisAutoScale( QwtPlot::yLeft );
   // add a grid
   QwtPlotGrid * myGrid = new QwtPlotGrid();
-  myGrid->attach( mypPlot );
+  myGrid->attach(mpPlot);
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected
   // layer. Currently the hist is hardcoded
@@ -1917,15 +1922,39 @@ void QgsRasterLayerProperties::refreshHistogram()
       myX2Data.append( double( myBin ) );
       myY2Data.append( double( myBinValue ) );
     }
-    mypCurve->setData( myX2Data, myY2Data );
-    mypCurve->attach( mypPlot );
+    mypCurve->setData(myX2Data,myY2Data);
+    mypCurve->attach(mpPlot);
   }
-  mypPlot->replot();
+  mpPlot->replot();
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   mHistogramProgress->hide();
+  mpPlot->canvas()->setCursor(Qt::ArrowCursor);
   QApplication::restoreOverrideCursor();
 }
 
+void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
+{
+  if ( mpPlot == 0 )
+  {
+    return;
+  }
+  
+  QPixmap myPixmap(600, 600);
+  myPixmap.fill(Qt::white); // Qt::transparent ?
+
+  QwtPlotPrintFilter myFilter;
+  int myOptions = QwtPlotPrintFilter::PrintAll;
+  myOptions &= ~QwtPlotPrintFilter::PrintBackground;
+  myOptions |= QwtPlotPrintFilter::PrintFrameWithScales;
+  myFilter.setOptions(myOptions);
+
+  mpPlot->print(myPixmap, myFilter);
+  QPair< QString,QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  if ( myFileNameAndFilter.first != "" )
+  {
+    myPixmap.save( myFileNameAndFilter.first );
+  }
+}
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
 {
   int myLineCounter = 0;
