@@ -29,7 +29,7 @@ class QgsLegendInterface;
 class QgsMapLayer;
 class QgsOfflineEditingProgressDialog;
 class QgsVectorLayer;
-class sqlite3;
+struct sqlite3;
 
 class QgsOfflineEditing : public QObject
 {
