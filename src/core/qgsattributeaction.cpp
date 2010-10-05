@@ -114,9 +114,9 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
 
     // Check for a replace a quoted version and a non-quoted version.
     QString to_replace_1 = "[%" + fit->name() + "]";
-    QString to_replace_2 = "%" + fit->name() + "%";
-    QString to_replace_3 = "%" + mLayer->attributeDisplayName( it.key() ) + "%";
-    QString to_replace_4 = "[%" + mLayer->attributeDisplayName( it.key() ) + "%]";
+    QString to_replace_2 = "%" + fit->name();
+    QString to_replace_3 = "%" + mLayer->attributeDisplayName( it.key() );
+    QString to_replace_4 = "[%" + mLayer->attributeDisplayName( it.key() ) + "]";
 
     expanded_action = expanded_action.replace( to_replace_1, it.value().toString() );
     expanded_action = expanded_action.replace( to_replace_2, it.value().toString() );
