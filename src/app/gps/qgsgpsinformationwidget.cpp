@@ -889,7 +889,9 @@ void QgsGPSInformationWidget::populateDevices()
   QList< QPair<QString, QString> > ports = QgsGPSDetector::availablePorts();
 
   mCboDevices->clear();
-  for ( int i = 0; i < ports.size(); i++ )
+
+  // add devices to combobox, but skip gpsd which is first.
+  for ( int i = 1; i < ports.size(); i++ )
   {
     mCboDevices->addItem( ports[i].second, ports[i].first );
   }

@@ -85,7 +85,27 @@ QextSerialEnumerator::~QextSerialEnumerator( )
     //static
     void QextSerialEnumerator::setupAPIScan(QList<QextPortInfo> & infoList)
     {
+#if 0
         enumerateDevicesWin(GUID_DEVCLASS_PORTS, &infoList);
+#else
+        // just iterate the com ports.
+        // looks like GUID_DEVCLASS_PORTS doesn't find them all.
+        for( unsigned int i = 0 ; i < 256; i++ )
+        {
+          QString port = "\\\\.\\COM" + QString::number(i);
+
+          HANDLE hPort = ::CreateFile(port.toAscii(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+          if( hPort == INVALID_HANDLE_VALUE )
+            continue;
+
+          QextPortInfo info;
+          info.friendName = QString("COM%1:").arg( i );
+          info.portName = port;
+          infoList.append(info);
+
+          CloseHandle( hPort );
+				}
+#endif
     }
 
     void QextSerialEnumerator::enumerateDevicesWin( const GUID & guid, QList<QextPortInfo>* infoList )
