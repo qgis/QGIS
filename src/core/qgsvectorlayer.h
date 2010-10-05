@@ -594,6 +594,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     void attributeValueChanged( int fid, int idx, const QVariant & );
 
+    /** Signals emitted after committing changes */
+    void committedAttributesDeleted( const QString& layerId, const QgsAttributeIds& deletedAttributeIds );
+    void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
+    void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
+    void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );
+    void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
+    void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
+
   private:                       // Private methods
 
     /** vector layers are not copyable */
