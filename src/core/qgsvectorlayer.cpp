@@ -3228,6 +3228,9 @@ bool QgsVectorLayer::commitChanges()
     if (( cap & QgsVectorDataProvider::DeleteAttributes ) && mDataProvider->deleteAttributes( mDeletedAttributeIds ) )
     {
       mCommitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
+
+      emit committedAttributesDeleted( getLayerID(), mDeletedAttributeIds );
+
       mDeletedAttributeIds.clear();
       attributesChanged = true;
     }
@@ -3250,6 +3253,9 @@ bool QgsVectorLayer::commitChanges()
     if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
     {
       mCommitErrors << tr( "SUCCESS: %n attribute(s) added.", "added attributes count", mAddedAttributeIds.size() );
+
+      emit committedAttributesAdded( getLayerID(), addedAttributes );
+
       mAddedAttributeIds.clear();
       attributesChanged = true;
     }
@@ -3366,6 +3372,9 @@ bool QgsVectorLayer::commitChanges()
       if (( cap & QgsVectorDataProvider::ChangeAttributeValues ) && mDataProvider->changeAttributeValues( mChangedAttributeValues ) )
       {
         mCommitErrors << tr( "SUCCESS: %n attribute value(s) changed.", "changed attribute values count", mChangedAttributeValues.size() );
+
+        emit committedAttributeValuesChanges( getLayerID(), mChangedAttributeValues );
+
         mChangedAttributeValues.clear();
       }
       else
@@ -3404,6 +3413,9 @@ bool QgsVectorLayer::commitChanges()
       if (( cap & QgsVectorDataProvider::AddFeatures ) && mDataProvider->addFeatures( mAddedFeatures ) )
       {
         mCommitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
+
+        emit committedFeaturesAdded( getLayerID(), mAddedFeatures );
+
         mAddedFeatures.clear();
       }
       else
@@ -3422,6 +3434,9 @@ bool QgsVectorLayer::commitChanges()
     if (( cap & QgsVectorDataProvider::ChangeGeometries ) && mDataProvider->changeGeometryValues( mChangedGeometries ) )
     {
       mCommitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
+
+      emit committedGeometriesChanges( getLayerID(), mChangedGeometries );
+
       mChangedGeometries.clear();
     }
     else
@@ -3444,6 +3459,9 @@ bool QgsVectorLayer::commitChanges()
         mChangedAttributeValues.remove( *it );
         mChangedGeometries.remove( *it );
       }
+
+      emit committedFeaturesRemoved( getLayerID(), mDeletedFeatureIds );
+
       mDeletedFeatureIds.clear();
     }
     else
