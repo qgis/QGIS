@@ -117,14 +117,15 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
   }
 
   //get property index
-  int attributeIndex;
+  int attributeIndex = -1;
   if ( vl->dataProvider() )
   {
     attributeIndex = vl->dataProvider()->fieldNameIndex( attributeName );
-    if ( attributeIndex == -1 )
-    {
-      return 0;
-    }
+  }
+
+  if ( attributeIndex == -1 )
+  {
+    return 0;
   }
 
   //get literal value(s)
