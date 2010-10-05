@@ -143,7 +143,7 @@ void QgsGPSDetector::advance()
 
       QStringList gpsParams = mPortList[ mPortIndex ].first.split( ":" );
 
-      Q_ASSERT( gpsParams.size() == 3 );
+      Q_ASSERT( gpsParams.size() >= 3 );
 
       mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toInt(), gpsParams[2] );
     }
