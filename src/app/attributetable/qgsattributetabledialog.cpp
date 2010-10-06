@@ -81,8 +81,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
 
-  setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
-                  arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
+  updateTitle();
 
   mRemoveSelectionButton->setIcon( getThemeIcon( "/mActionUnselectAttributes.png" ) );
   mSelectedToTopButton->setIcon( getThemeIcon( "/mActionSelectedToTop.png" ) );
@@ -138,6 +137,17 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
   delete mSelectionModel;
+}
+
+void QgsAttributeTableDialog::updateTitle()
+{
+  setWindowTitle( tr( "Attribute table - %1 :: %n / %2 feature(s) selected",
+                      "feature count",
+                      mView->selectionModel()->selectedRows().size()
+                    )
+                  .arg( mLayer->name() )
+                  .arg( mModel->rowCount() )
+                );
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
@@ -305,16 +315,16 @@ void QgsAttributeTableDialog::updateSelection()
 
   mSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );// | QItemSelectionModel::Columns);
   mView->setSelectionModel( mSelectionModel );
-  setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
-                  arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
+  updateTitle();
 
-  /*for (int i = 0; i < mModel->rowCount(); ++i)
+#if 0
+  for ( int i = 0; i < mModel->rowCount(); ++i )
   {
-  int id = mModel->rowToId(i);
-    QgsDebugMsg(id);
+    int id = mModel->rowToId( i );
+    QgsDebugMsg( id );
   }
-  QgsDebugMsg("--------------");
-  */
+  QgsDebugMsg( "--------------" );
+#endif
 }
 
 void QgsAttributeTableDialog::updateRowPressed( int index )
@@ -354,8 +364,8 @@ void QgsAttributeTableDialog::updateRowSelection( int index )
     }
 
     updateRowSelection( first, last, 3 );
-    setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
-                    arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
+    updateTitle();
+
     mView->setSelectionMode( QAbstractItemView::NoSelection );
     return;
   }
@@ -406,8 +416,7 @@ void QgsAttributeTableDialog::updateRowSelection( int index )
     }
   }
   mView->setSelectionMode( QAbstractItemView::NoSelection );
-  setWindowTitle( tr( "Attribute table - %3 :: %1 / %2 features(s) selected", "feature count" ).
-                  arg( mView->selectionModel()->selectedRows().size() ).arg( mModel->rowCount() ).arg( mLayer->name() ) );
+  updateTitle();
 }
 
 void QgsAttributeTableDialog::updateRowSelection( int first, int last, int clickType )
