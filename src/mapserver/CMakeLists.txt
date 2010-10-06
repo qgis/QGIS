@@ -14,7 +14,7 @@ ADD_DEFINITIONS(-DQGIS_LIB_DIR="\\"${QGIS_LIB_DIR}\\"")
 #MH: for this we need to locate the headers of the diagram and interpolation plugin
 #ADD_DEFINITIONS(-DDIAGRAMSERVER=1)
 
-IF (CMAKE_BUILD_TYPE MATCHES Debug)
+IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   ADD_DEFINITIONS(-DQGSMSDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
 ########################################################

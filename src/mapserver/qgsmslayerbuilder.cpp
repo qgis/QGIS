@@ -74,25 +74,14 @@ QString QgsMSLayerBuilder::createTempFile() const
   int randomNumber = rand();
   QString tempFileName = QString::number( randomNumber );
   QString tempFilePath;
-  //on windows, store the temporary file in current_path/tmp directory,
-  //on unix, store it in /tmp/qgis_wms_serv
-#ifndef WIN32
-  QDir tempFileDir( "/tmp/qgis_wms_serv" );
+  // store temporary file in temporary qgis_wms_serv in temporary directory
+  QDir tempFileDir( QDir::tempPath() + "/qgis_wms_serv" );
   if ( !tempFileDir.exists() ) //make sure the directory exists
   {
-    QDir tmpDir( "/tmp" );
+    QDir tmpDir( QDir::tempPath() );
     tmpDir.mkdir( "qgis_wms_serv" );
   }
-  tempFilePath = "/tmp/qgis_wms_serv/" + tempFileName;
-#else
-  QDir tempFileDir( QDir::currentPath() + "/tmp" );
-  if ( !tempFileDir.exists() )
-  {
-    QDir currentDir( QDir::currentPath() );
-    currentDir.mkdir( "tmp" );
-  }
-  tempFilePath = QDir::currentPath() + "/tmp" + "/" + tempFileName;
-#endif //WIN32
+  tempFilePath = QDir::tempPath() + "/qgis_wms_serv/" + tempFileName;
   return tempFilePath;
 }
 
