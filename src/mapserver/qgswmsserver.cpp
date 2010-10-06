@@ -43,6 +43,7 @@
 #include <QPainter>
 #include <QStringList>
 #include <QTextStream>
+#include <QDir>
 
 QgsWMSServer::QgsWMSServer( std::map<QString, QString> parameters, QgsMapRenderer* renderer ): mParameterMap( parameters ), mConfigParser( 0 ), mMapRenderer( renderer )
 {
@@ -213,7 +214,7 @@ QDomDocument QgsWMSServer::getCapabilities()
   QgsMSDebugMsg( "Entering layersAndStylesCapabilities" )
 
   //for debugging: save the document to disk
-  QFile capabilitiesFile( "/tmp/capabilities.txt" );
+  QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
   if ( capabilitiesFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream capabilitiesStream( &capabilitiesFile );

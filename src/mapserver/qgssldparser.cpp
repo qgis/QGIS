@@ -47,6 +47,7 @@
 #include <time.h>
 #include "qgslabel.h"
 #include <stdlib.h>
+#include <fcgi_stdio.h>
 
 
 //layer builders
@@ -1350,7 +1351,7 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
 
   if ( hDriver == NULL )
   {
-    fprintf( stderr, "Unable to find format driver named %s.\n",
+    fprintf( FCGI_stderr, "Unable to find format driver named %s.\n",
              pszFormat );
     exit( 10 );
   }

@@ -25,11 +25,7 @@
 #include <QImage>
 #include <QTextStream>
 #include <time.h>
-#ifdef WIN32 //don't use fast cgi on windows
-#include <stdio.h>
-#else
 #include <fcgi_stdio.h>
-#endif //WIN32
 
 QgsSOAPRequestHandler::QgsSOAPRequestHandler()
 {
@@ -736,11 +732,7 @@ int QgsSOAPRequestHandler::sendSOAPWithAttachments( QImage* img ) const
   printf( "Content-ID: <xml@mapservice>\n" );
   printf( "\n" );
   printf( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-#ifdef WIN32
-  fwrite( xmlByteArray.data(), xmlByteArray.size(), 1, stdout );
-#else
   fwrite( xmlByteArray.data(), xmlByteArray.size(), 1, FCGI_stdout );
-#endif //WIN32
   printf( "\n" );
   printf( "\r\n" );
   printf( "--MIME_boundary\r\n" );
@@ -755,11 +747,7 @@ int QgsSOAPRequestHandler::sendSOAPWithAttachments( QImage* img ) const
   printf( "Content-Transfer-Encoding: binary\n" );
   printf( "Content-ID: <image@mapservice>\n" );
   printf( "\n" );
-#ifdef WIN32
-  fwrite( ba.data(), ba.size(), 1, stdout );
-#else
   fwrite( ba.data(), ba.size(), 1, FCGI_stdout );
-#endif //WIN32
   printf( "\r\n" );
   printf( "--MIME_boundary\r\n" );
 

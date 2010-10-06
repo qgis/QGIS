@@ -31,16 +31,11 @@ map service syntax for SOAP/HTTP POST
 #include <QDomDocument>
 #include <QImage>
 #include <QSettings>
-#include <iostream>
-#include <stdlib.h>
+#include <QDateTime>
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 
-
-#ifdef WIN32
-#include <fcntl.h>
-#endif //WIN32
 #include <fcgi_stdio.h>
 
 
@@ -54,13 +49,7 @@ void printRequestInfos()
 #ifdef QGSMSDEBUG
   //print out some infos about the request
   QgsMSDebugMsg( "************************new request**********************" )
-  time_t t;
-  struct tm *currentTime;
-  time( &t );
-  currentTime = localtime( &t );
-  QgsMSDebugMsg( QString::number( currentTime->tm_year + 1900 ) + "/" \
-                 + QString::number( currentTime->tm_mon + 1 ) + "/" + QString::number( currentTime->tm_mday ) + ", " \
-                 + QString::number( currentTime->tm_hour ) + ":" + QString::number( currentTime->tm_min ) )
+  QgsMSDebugMsg( QDateTime::currentDateTime().toString( "yyyy-mm-dd hh:mm:ss" ) );
 
   if ( getenv( "REMOTE_ADDR" ) != NULL )
   {
@@ -96,6 +85,8 @@ void printRequestInfos()
 QFileInfo defaultProjectFile()
 {
   QDir currentDir;
+  QgsMSDebugMsg( "current directory: " + currentDir.absolutePath() );
+  fprintf( FCGI_stderr, "current directory: %s\n", currentDir.absolutePath().toUtf8().constData() );
   QStringList nameFilterList;
   nameFilterList << "*.qgs";
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
@@ -115,12 +106,6 @@ QFileInfo defaultAdminSLD()
 
 int main( int argc, char * argv[] )
 {
-  //#ifdef WIN32 //not needed any more since the QGIS mapserver uses a modified version of libfcgi
-  //_setmode(_fileno(FCGI_stdout->stdio_stream),_O_BINARY); //we need binary mode to print images to stdout on windows
-  //#endif
-
-  //close disturbing output chanels
-  fclose( FCGI_stderr );
   qInstallMsgHandler( dummyMessageHandler );
 
   QgsApplication qgsapp( argc, argv, false );
@@ -131,13 +116,13 @@ int main( int argc, char * argv[] )
   {
     QgsApplication::setPrefixPath( prefixPath, TRUE );
   }
+#if !defined(Q_OS_WIN)
   else
   {
     // init QGIS's paths - true means that all path will be inited from prefix
     QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
   }
-
-
+#endif
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
