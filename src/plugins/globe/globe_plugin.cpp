@@ -40,39 +40,12 @@
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarthUtil/EarthManipulator>
-#include <osgEarthUtil/Viewpoint>
 #include <osgEarth/TileSource>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
 
-// some preset viewpoints.
-static osgEarthUtil::Viewpoint VPs[] = {
-    osgEarthUtil::Viewpoint( "Africa",        osg::Vec3d(    0.0,   0.0, 0.0 ), 0.0, -90.0, 10e6 ),
-    osgEarthUtil::Viewpoint( "California",    osg::Vec3d( -121.0,  34.0, 0.0 ), 0.0, -90.0, 6e6 ),
-    osgEarthUtil::Viewpoint( "Europe",        osg::Vec3d(    0.0,  45.0, 0.0 ), 0.0, -90.0, 4e6 ),
-    osgEarthUtil::Viewpoint( "Lech",          osg::Vec3d(  10.14, 47.21, 0.0 ), 0.0, -90.0, 1e4 ),
-    osgEarthUtil::Viewpoint( "Australia",     osg::Vec3d(  135.0, -20.0, 0.0 ), 0.0, -90.0, 2e6 )
-};
-
-// a simple handler that demonstrates the "viewpoint" functionality in 
-// osgEarthUtil::EarthManipulator. Press a number key to fly to a viewpoint.
-struct FlyToViewpointHandler : public osgGA::GUIEventHandler 
-{
-    FlyToViewpointHandler( osgEarthUtil::EarthManipulator* manip ) : _manip(manip) { }
-
-    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-    {
-        if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() >= '1' && ea.getKey() <= '5' )
-        {
-            _manip->setViewpoint( VPs[ea.getKey()-'1'], 4.0 );
-        }
-        return false;
-    }
-
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-};
 
 //static const char * const sIdent = "$Id: plugin.cpp 9327 2008-09-14 11:18:44Z jef $";
 static const QString sName = QObject::tr( "Globe" );
@@ -156,7 +129,7 @@ void GlobePlugin::run()
       osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON );
 
   // add our fly-to handler
-  viewer.addEventHandler(new FlyToViewpointHandler( manip ));
+  viewer.addEventHandler(new FlyToExtentHandler( manip, mQGisIface ));
 
   // add some stock OSG handlers:
   viewer.addEventHandler(new osgViewer::StatsHandler());
@@ -212,6 +185,19 @@ void GlobePlugin::unload()
 void GlobePlugin::help()
 {
 }
+
+
+bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+{
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
+  {
+    QgsPoint center = mQGisIface->mapCanvas()->extent().center();
+    osgEarthUtil::Viewpoint viewpoint( osg::Vec3d(  center.x(), center.y(), 0.0 ), 0.0, -90.0, 1e4 );
+    _manip->setViewpoint( viewpoint, 4.0 );
+  }
+  return false;
+}
+
 
 /**
  * Required extern functions needed  for every plugin

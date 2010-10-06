@@ -26,6 +26,7 @@
 #include <QDockWidget>
 #include <osgEarth/MapNode>
 #include <osgEarth/MapLayer>
+#include <osgEarthUtil/EarthManipulator>
 
 class QAction;
 class QToolBar;
@@ -75,5 +76,21 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
 };
+
+
+class FlyToExtentHandler : public osgGA::GUIEventHandler 
+{
+  public:
+    FlyToExtentHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
+
+    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
+
+  private:
+    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+
+    //! Pointer to the QGIS interface object
+    QgisInterface *mQGisIface;
+};
+
 
 #endif // QGS_GLOBE_PLUGIN_H
