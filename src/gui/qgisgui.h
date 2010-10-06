@@ -97,8 +97,7 @@ namespace QgisGui
    * @note added in 1.6
 
   */
-  static QString createFileFilter_( QString const &longName, QString const &glob );
-
+  QString createFileFilter_( QString const &longName, QString const &glob );
 }
 
 #endif
