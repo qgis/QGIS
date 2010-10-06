@@ -2,12 +2,13 @@ Source: qgis
 Section: science
 Priority: extra
 Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
-Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev, 
- libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj (<< 4.7.0) | libproj-dev (>= 4.7.0), libexpat1-dev, 
- flex, bison, python-dev, cmake (>= 2.6), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
- sip4 (>= 4.5), libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0),
- libqt4-sql (>=4.4.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev, libfcgi-dev, subversion
+Build-Depends: debhelper (>= 7), libgdal1-dev, libpq-dev, 
+ libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, libproj-dev,
+ libexpat1-dev, flex, bison, python-dev, cmake (>= 2.6), python-sip (>= 4.5.0),
+ python-central (>=0.5), python, libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0),
+ libqt4-gui (>=4.4.0), libqt4-sql (>=4.4.0), python-qt4 (>=4.1.0),
+ python-qt4-dev (>=4.1.0), python-sip-dev (>= 4.5.0), pyqt4-dev-tools,
+ libqwt5-qt4-dev, libspatialite-dev, libfcgi-dev, pkg-config, subversion
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current
@@ -15,7 +16,7 @@ Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-common (= ${source:Version}), qgis-providers (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
 Recommends: qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -30,7 +31,6 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
-Depends: qgis (>= ${binary:Version})
 Description: Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -68,7 +68,7 @@ Description: Quantum GIS - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, grass
+Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, grass640+42329
 Description: GRASS plugin for Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -79,6 +79,8 @@ Description: GRASS plugin for Quantum GIS
 Package: qgis-plugin-grass-common
 Architecture: all
 Depends: python
+Replaces: qgis-common (<< 1.5)
+Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -89,7 +91,7 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip4 (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
@@ -113,7 +115,7 @@ Description: Python bindings to Quantum GIS - architecture-independent files
 
 Package: qgis-providers
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: qgis-providers-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
 Replaces: qgis (<= 1.6)
 Breaks: qgis (<= 1.6)
 Description: collection of data providers to Quantum GIS

@@ -182,6 +182,11 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void doSearch( QString searchString );
 
+    /**
+     * update window title
+     */
+    void updateTitle();
+
     QIcon getThemeIcon( const QString theName );
 
     QLineEdit *mQuery;
