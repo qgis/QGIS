@@ -87,6 +87,11 @@ void QgsGLWidgetAdapter::mouseMoveEvent( QMouseEvent* event )
 }
 
 
+void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
+{
+    _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN);
+}
+
 // int mainAdapterWidget(QApplication& a, osg::ArgumentParser& arguments)
 // {
 //     // load the scene.

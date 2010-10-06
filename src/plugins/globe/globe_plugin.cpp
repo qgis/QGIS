@@ -117,16 +117,12 @@ void GlobePlugin::run()
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map );
 
+  viewer.setSceneData( mMapNode );
+
   // Set a home viewpoint
   manip->setHomeViewpoint(
     osgEarthUtil::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
     1.0 );
-
-  viewer.setSceneData( mMapNode );
-
-  manip->getSettings()->bindMouseDoubleClick(
-      osgEarthUtil::EarthManipulator::ACTION_GOTO,
-      osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON );
 
   // add our fly-to handler
   viewer.addEventHandler(new FlyToExtentHandler( manip, mQGisIface ));
