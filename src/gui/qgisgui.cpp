@@ -170,7 +170,7 @@ namespace QgisGui
     return myPair;
   } // 
 
-  static QString createFileFilter_( QString const &longName, QString const &glob )
+  QString createFileFilter_( QString const &longName, QString const &glob )
   {
     return longName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
   }                               // createFileFilter_
