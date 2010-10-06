@@ -352,7 +352,6 @@ Section "Quantum GIS" SecQGIS
 	File .\Installer-Files\QGIS.ico
 	File .\Installer-Files\QGIS_Web.ico
 	SetOutPath "$INSTALL_DIR"
-	File .\Installer-Files\QGIS-WebSite.url
 !if ${INSTALLER_TYPE} == "OSGeo4W"
 	File .\Installer-Files\postinstall.bat
 	File .\Installer-Files\preremove.bat
@@ -420,12 +419,6 @@ Section "Quantum GIS" SecQGIS
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !endif
 	
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Web Site.lnk" "$INSTALL_DIR\QGIS-WebSite.url" ""\
-	"$INSTALL_DIR\icons\QGIS_Web.ico" "" SW_SHOWNORMAL "" "Visit the Quantum GIS Web Site"
-	
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Uninstall ${QGIS_BASE}.lnk" "$INSTALL_DIR\Uninstall-QGIS.exe" ""\
-	"$INSTALL_DIR\Uninstall-QGIS.exe" "" SW_SHOWNORMAL "" "Uninstall ${COMPLETE_NAME}"
-
 	GetFullPathName /SHORT $0 $INSTALL_DIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
@@ -581,8 +574,6 @@ Section "Uninstall"
 	Delete "$INSTDIR\e00conv.exe"
 	Delete "$INSTDIR\gpsbabel.exe"
 	
-	Delete "$INSTDIR\QGIS-WebSite.url"
-		
 	Delete "$INSTDIR\*.dll"	
 	Delete "$INSTDIR\*.csv"	
 	
