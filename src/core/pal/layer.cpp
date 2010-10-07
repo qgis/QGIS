@@ -236,7 +236,9 @@ namespace pal
     if ( hashtable->find( geom_id ) )
     {
       modMutex->unlock();
-      throw new PalException::FeatureExists();
+      //A feature with this id already exists. Don't throw an exception as sometimes,
+      //the same feature is added twice (dateline split with otf-reprojection)
+      return false;
     }
 
     // Split MULTI GEOM and Collection in simple geometries

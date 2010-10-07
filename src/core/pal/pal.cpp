@@ -167,8 +167,6 @@ namespace pal
 
   Layer * Pal::addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel )
   {
-
-
     Layer *lyr;
     lyrsMutex->lock();
 
@@ -183,7 +181,9 @@ namespace pal
       if ( strcmp(( *it )->name, lyrName ) == 0 )   // if layer already known
       {
         lyrsMutex->unlock();
-        throw new PalException::LayerExists();
+        //There is already a layer with this name, so we just return the existing one.
+        //Sometimes the same layer is added twice (e.g. datetime split with otf-reprojection)
+        return *it;
       }
     }
 
