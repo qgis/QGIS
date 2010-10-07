@@ -247,7 +247,7 @@ int main( int argc, char * argv[] )
     {
       //do some error handling
       QgsMSDebugMsg( "qgis_wms_serv.cpp: unable to find 'REQUEST' parameter, exiting..." )
-      theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQEST parameter" ) );
+      theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
       delete theRequestHandler;
       delete theServer;
       continue;
