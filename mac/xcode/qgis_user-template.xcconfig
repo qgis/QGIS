@@ -41,6 +41,8 @@
 //SIP_INC = /usr/local/include
 //PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
 //PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_$(QT_VER_MAJOR)_$(QT_VER_MINOR)_0 -x Py_v3 -g
+// assume for now that PyQt 4.7 is at least 4.7.6, if 4.7.5 or earlier, uncomment following line:
+//SIP_DISABLE_FEATURES_4_7 = 
 //BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3
 //GPSBABEL = /usr/local/bin/gpsbabel
 
