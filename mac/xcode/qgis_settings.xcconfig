@@ -56,6 +56,10 @@ SIP_INC = /usr/local/include
 PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
 PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_$(QT_VER_MAJOR)_$(QT_VER_MINOR)_0 -x Py_v3 $(SIP_DISABLE_FEATURES) -g
 
+SIP_DISABLE_FEATURES = $(SIP_DISABLE_FEATURES_$(PYQT4_VER_MAJOR)_$(PYQT4_VER_MINOR))
+SIP_DISABLE_FEATURES_4_5 = -x PROXY_FACTORY
+SIP_DISABLE_FEATURES_4_7 = -x QSETINT_CONVERSION
+
 BISON = /usr/bin/bison
 GPSBABEL = /usr/local/bin/gpsbabel
 
@@ -234,7 +238,8 @@ DEFS_EXPORT = CORE_EXPORT= GUI_EXPORT= PYTHON_EXPORT= ANALYSIS_EXPORT=
 
 // use full flags instead of Xcode includes and defs,
 // since these are needed in scripts also
-QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -F$(QT_PREFIX_FW) -I$(QT_PREFIX_FW)/QtCore.framework/Headers -I$(QT_PREFIX_FW)/QtGui.framework/Headers -I$(QT_PREFIX_FW)/QtNetwork.framework/Headers -I$(QT_PREFIX_FW)/QtSql.framework/Headers -I$(QT_PREFIX_FW)/QtSvg.framework/Headers -I$(QT_PREFIX_FW)/QtXml.framework/Headers -I$(QT_PREFIX_FW)/QtWebKit.framework/Headers
+QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -F$(QT_PREFIX_FW) $(QT_INC)
+QT_INC = -I$(QT_PREFIX_FW)/QtCore.framework/Headers -I$(QT_PREFIX_FW)/QtGui.framework/Headers -I$(QT_PREFIX_FW)/QtNetwork.framework/Headers -I$(QT_PREFIX_FW)/QtSql.framework/Headers -I$(QT_PREFIX_FW)/QtSvg.framework/Headers -I$(QT_PREFIX_FW)/QtXml.framework/Headers -I$(QT_PREFIX_FW)/QtWebKit.framework/Headers
 QT_INC_UITOOLS = $(QT_DIR)/include/QtUiTools
 QTDEFS_Debug = -DQT_DEBUG
 QTDEFS_Release = -DQT_NO_DEBUG
@@ -262,9 +267,6 @@ QT_USE_4_6 = QtDBus QtXmlPatterns
 QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit $(QT_USE_$(QT_VER_MAJOR)_$(QT_VER_MINOR)) phonon
 // list of PyQt modules used
 PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit phonon
-
-SIP_DISABLE_FEATURES = $(SIP_DISABLE_FEATURES_$(PYQT4_VER_MAJOR)_$(PYQT4_VER_MINOR))
-SIP_DISABLE_FEATURES_4_5 = -x PROXY_FACTORY
 
 // with a choice of system vs user unix libs, use full path to lib file
 // to avoid possible accidental linking to system lib (ie expat)

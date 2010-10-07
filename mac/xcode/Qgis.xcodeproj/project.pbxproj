@@ -69,6 +69,7 @@
 				72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */,
 				7256F1AD0F411C120022BE1F /* PBXTargetDependency */,
 				7256F1AB0F411C120022BE1F /* PBXTargetDependency */,
+				72448A84125D3F8A0071B130 /* PBXTargetDependency */,
 				7256F1BF0F411C7C0022BE1F /* PBXTargetDependency */,
 				7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */,
 				7256F1C50F411C7C0022BE1F /* PBXTargetDependency */,
@@ -836,6 +837,19 @@
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
+		72448A51125D3D290071B130 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		72448A52125D3D290071B130 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		72448A67125D3D940071B130 /* offline_editing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72448A3F125D3D0C0071B130 /* offline_editing.cpp */; };
+		72448A68125D3D940071B130 /* offline_editing.h in Sources */ = {isa = PBXBuildFile; fileRef = 72448A40125D3D0C0071B130 /* offline_editing.h */; };
+		72448A69125D3D940071B130 /* offline_editing_plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72448A42125D3D0C0071B130 /* offline_editing_plugin.cpp */; };
+		72448A6A125D3D940071B130 /* offline_editing_plugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 72448A43125D3D0C0071B130 /* offline_editing_plugin.h */; };
+		72448A6B125D3D940071B130 /* offline_editing_plugin_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72448A45125D3D0C0071B130 /* offline_editing_plugin_gui.cpp */; };
+		72448A6C125D3D940071B130 /* offline_editing_plugin_gui.h in Sources */ = {isa = PBXBuildFile; fileRef = 72448A46125D3D0C0071B130 /* offline_editing_plugin_gui.h */; };
+		72448A6D125D3D940071B130 /* offline_editing_progress_dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72448A48125D3D0C0071B130 /* offline_editing_progress_dialog.cpp */; };
+		72448A6E125D3D940071B130 /* offline_editing_progress_dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72448A49125D3D0C0071B130 /* offline_editing_progress_dialog.h */; };
+		72448A6F125D3DCE0071B130 /* offline_editing_plugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 72448A44125D3D0C0071B130 /* offline_editing_plugin.qrc */; };
+		72448A7E125D3F6E0071B130 /* qgsgpsdconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72448A7D125D3F5E0071B130 /* qgsgpsdconnection.cpp */; };
+		72448A87125D40750071B130 /* qgsgpsdconnection.h in Sources */ = {isa = PBXBuildFile; fileRef = 72448A7B125D3F010071B130 /* qgsgpsdconnection.h */; };
 		72448CD310E9A1C100D4586B /* qgsprojectbadlayerguihandler.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; };
 		72448CD710E9A21500D4586B /* qgsattributetableview.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239480F74A62200AFC35B /* qgsattributetableview.h */; };
 		72463E511122FF7300BE5F17 /* qgis.g.browser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */; };
@@ -2251,6 +2265,28 @@
 			);
 			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
+		72448A53125D3D290071B130 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		72448A54125D3D290071B130 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -2294,7 +2330,7 @@
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python $QT_INC -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		7268E86D11023A8700B96374 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2308,7 +2344,7 @@
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part2.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part3.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python $QT_INC -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		7268E88B11023DF700B96374 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2322,7 +2358,7 @@
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part2.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part3.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python $QT_INC -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		726C673C1046030F00EFEDCC /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2938,6 +2974,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 7223B77E0F96A96500D905B4;
 			remoteInfo = oracleplugin;
+		};
+		72448A83125D3F8A0071B130 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72448A4D125D3D290071B130 /* offlineeditingplugin */;
+			remoteInfo = offlineeditingplugin;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -6675,6 +6718,23 @@
 		72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsavoidintersectionsdialogbase.ui; path = ../../src/ui/qgsavoidintersectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsavoidintersectionsdialog.cpp; path = ../../src/app/qgsavoidintersectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
+		72448A3E125D3D0C0071B130 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/offline_editing/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		72448A3F125D3D0C0071B130 /* offline_editing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = offline_editing.cpp; path = ../../src/plugins/offline_editing/offline_editing.cpp; sourceTree = SOURCE_ROOT; };
+		72448A40125D3D0C0071B130 /* offline_editing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = offline_editing.h; path = ../../src/plugins/offline_editing/offline_editing.h; sourceTree = SOURCE_ROOT; };
+		72448A41125D3D0C0071B130 /* offline_editing_copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = offline_editing_copy.png; path = ../../src/plugins/offline_editing/offline_editing_copy.png; sourceTree = SOURCE_ROOT; };
+		72448A42125D3D0C0071B130 /* offline_editing_plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = offline_editing_plugin.cpp; path = ../../src/plugins/offline_editing/offline_editing_plugin.cpp; sourceTree = SOURCE_ROOT; };
+		72448A43125D3D0C0071B130 /* offline_editing_plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = offline_editing_plugin.h; path = ../../src/plugins/offline_editing/offline_editing_plugin.h; sourceTree = SOURCE_ROOT; };
+		72448A44125D3D0C0071B130 /* offline_editing_plugin.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = offline_editing_plugin.qrc; path = ../../src/plugins/offline_editing/offline_editing_plugin.qrc; sourceTree = SOURCE_ROOT; };
+		72448A45125D3D0C0071B130 /* offline_editing_plugin_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = offline_editing_plugin_gui.cpp; path = ../../src/plugins/offline_editing/offline_editing_plugin_gui.cpp; sourceTree = SOURCE_ROOT; };
+		72448A46125D3D0C0071B130 /* offline_editing_plugin_gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = offline_editing_plugin_gui.h; path = ../../src/plugins/offline_editing/offline_editing_plugin_gui.h; sourceTree = SOURCE_ROOT; };
+		72448A47125D3D0C0071B130 /* offline_editing_plugin_guibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = offline_editing_plugin_guibase.ui; path = ../../src/plugins/offline_editing/offline_editing_plugin_guibase.ui; sourceTree = SOURCE_ROOT; };
+		72448A48125D3D0C0071B130 /* offline_editing_progress_dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = offline_editing_progress_dialog.cpp; path = ../../src/plugins/offline_editing/offline_editing_progress_dialog.cpp; sourceTree = SOURCE_ROOT; };
+		72448A49125D3D0C0071B130 /* offline_editing_progress_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = offline_editing_progress_dialog.h; path = ../../src/plugins/offline_editing/offline_editing_progress_dialog.h; sourceTree = SOURCE_ROOT; };
+		72448A4A125D3D0C0071B130 /* offline_editing_progress_dialog_base.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = offline_editing_progress_dialog_base.ui; path = ../../src/plugins/offline_editing/offline_editing_progress_dialog_base.ui; sourceTree = SOURCE_ROOT; };
+		72448A4B125D3D0C0071B130 /* offline_editing_sync.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = offline_editing_sync.png; path = ../../src/plugins/offline_editing/offline_editing_sync.png; sourceTree = SOURCE_ROOT; };
+		72448A58125D3D290071B130 /* libofflineeditingplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libofflineeditingplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		72448A7B125D3F010071B130 /* qgsgpsdconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgpsdconnection.h; path = ../../src/core/gps/qgsgpsdconnection.h; sourceTree = SOURCE_ROOT; };
+		72448A7D125D3F5E0071B130 /* qgsgpsdconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgpsdconnection.cpp; path = ../../src/core/gps/qgsgpsdconnection.cpp; sourceTree = SOURCE_ROOT; };
 		72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgis.g.browser.cpp; path = ../../src/plugins/grass/qgis.g.browser.cpp; sourceTree = SOURCE_ROOT; };
 		72463E451122FEF200BE5F17 /* qgis.g.browser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = qgis.g.browser; sourceTree = BUILT_PRODUCTS_DIR; };
 		724723DA11342BB3004B93DA /* qgsvalidateddoublespinbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvalidateddoublespinbox.h; path = ../../src/plugins/georeferencer/qgsvalidateddoublespinbox.h; sourceTree = SOURCE_ROOT; };
@@ -9056,6 +9116,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72448A50125D3D290071B130 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72448A51125D3D290071B130 /* libqgis_core.dylib in Frameworks */,
+				72448A52125D3D290071B130 /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		72463E411122FEF200BE5F17 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -9472,6 +9541,7 @@
 				72B236B711570743007B4803 /* libdisplacementplugin.so */,
 				7268C057118294F2001BC9C4 /* libspatialqueryplugin.so */,
 				72DBBD1C12217BB000384557 /* qgis_mapserv.fcgi */,
+				72448A58125D3D290071B130 /* libofflineeditingplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -10438,6 +10508,7 @@
 				72FB0B170FFD657D0052360B /* evis */,
 				7209EBB90F39E57B003DC336 /* interpolation */,
 				7209EBE90F39E57B003DC336 /* north_arrow */,
+				72448A3D125D3D0C0071B130 /* offline_editing */,
 				7209EBF90F39E57B003DC336 /* ogr_converter */,
 				7223B7720F969A9D00D905B4 /* oracle_raster */,
 				72B236A211570705007B4803 /* point_displacement_renderer */,
@@ -12769,6 +12840,28 @@
 			path = ../../src/plugins/grass/scripts;
 			sourceTree = SOURCE_ROOT;
 		};
+		72448A3D125D3D0C0071B130 /* offline_editing */ = {
+			isa = PBXGroup;
+			children = (
+				72448A3E125D3D0C0071B130 /* CMakeLists.txt */,
+				72448A3F125D3D0C0071B130 /* offline_editing.cpp */,
+				72448A40125D3D0C0071B130 /* offline_editing.h */,
+				72448A41125D3D0C0071B130 /* offline_editing_copy.png */,
+				72448A42125D3D0C0071B130 /* offline_editing_plugin.cpp */,
+				72448A43125D3D0C0071B130 /* offline_editing_plugin.h */,
+				72448A44125D3D0C0071B130 /* offline_editing_plugin.qrc */,
+				72448A45125D3D0C0071B130 /* offline_editing_plugin_gui.cpp */,
+				72448A46125D3D0C0071B130 /* offline_editing_plugin_gui.h */,
+				72448A47125D3D0C0071B130 /* offline_editing_plugin_guibase.ui */,
+				72448A48125D3D0C0071B130 /* offline_editing_progress_dialog.cpp */,
+				72448A49125D3D0C0071B130 /* offline_editing_progress_dialog.h */,
+				72448A4A125D3D0C0071B130 /* offline_editing_progress_dialog_base.ui */,
+				72448A4B125D3D0C0071B130 /* offline_editing_sync.png */,
+			);
+			name = offline_editing;
+			path = ../../src/plugins/offline_editing;
+			sourceTree = SOURCE_ROOT;
+		};
 		724D05D810A9112D00F9680A /* newgis */ = {
 			isa = PBXGroup;
 			children = (
@@ -14732,6 +14825,8 @@
 				72AF7B0410F8EC1600BD549A /* qgsgpsconnection.h */,
 				72AF7B0510F8EC1600BD549A /* qgsgpsconnectionregistry.cpp */,
 				72AF7B0610F8EC1600BD549A /* qgsgpsconnectionregistry.h */,
+				72448A7D125D3F5E0071B130 /* qgsgpsdconnection.cpp */,
+				72448A7B125D3F010071B130 /* qgsgpsdconnection.h */,
 				72D2486D1100CD2300923469 /* qgsgpsdetector.cpp */,
 				72D2486E1100CD2300923469 /* qgsgpsdetector.h */,
 				72AF7B0710F8EC1600BD549A /* qgsgpstrackerthread.cpp */,
@@ -15766,6 +15861,25 @@
 			productReference = 7223B78D0F96A96500D905B4 /* liboracleplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		72448A4D125D3D290071B130 /* offlineeditingplugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72448A55125D3D290071B130 /* Build configuration list for PBXNativeTarget "offlineeditingplugin" */;
+			buildPhases = (
+				72448A4E125D3D290071B130 /* Script - ui */,
+				72448A4F125D3D290071B130 /* Sources */,
+				72448A50125D3D290071B130 /* Frameworks */,
+			);
+			buildRules = (
+				72448A53125D3D290071B130 /* PBXBuildRule */,
+				72448A54125D3D290071B130 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = offlineeditingplugin;
+			productName = testprog;
+			productReference = 72448A58125D3D290071B130 /* libofflineeditingplugin.so */;
+			productType = "com.apple.product-type.tool";
+		};
 		72463E3E1122FEF200BE5F17 /* qgis.g.browser */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 72463E421122FEF200BE5F17 /* Build configuration list for PBXNativeTarget "qgis.g.browser" */;
@@ -16621,6 +16735,7 @@
 				72FB0B4A0FFD680F0052360B /* evisplugin */,
 				72A56B6C0F3C824400BA32A1 /* interpolationplugin */,
 				72A56B760F3C824400BA32A1 /* northarrowplugin */,
+				72448A4D125D3D290071B130 /* offlineeditingplugin */,
 				72A56C060F3C887300BA32A1 /* ogrconverterplugin */,
 				7223B77E0F96A96500D905B4 /* oracleplugin */,
 				72A56B800F3C824400BA32A1 /* quickprintplugin */,
@@ -16727,6 +16842,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "GUI_UI=\"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\n\nfor u in qgsdetaileditemwidgetbase qgsgenericprojectionselectorbase qgsmessageviewer qgsprojectionselectorbase qgscredentialdialog\ndo\n\tcp -f \"$GUI_UI/ui_$u.h\" \"$QGIS_BUILD_PATH/Headers/qgis/\"\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		72448A4E125D3D290071B130 /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		7256FA100F41D03B0022BE1F /* Script - qt.conf */ = {
@@ -17418,6 +17548,8 @@
 				7225EF9810B229FA00D23EA2 /* qgsvectorcolorrampv2.cpp in Sources */,
 				7295BC7510F57D50005D1408 /* qgscomposertable.cpp in Sources */,
 				72AF7B2010F8ECB100BD549A /* qgsgpsconnection.cpp in Sources */,
+				72448A7E125D3F6E0071B130 /* qgsgpsdconnection.cpp in Sources */,
+				72448A87125D40750071B130 /* qgsgpsdconnection.h in Sources */,
 				72AF7B1510F8EC6300BD549A /* qgsgpsconnectionregistry.cpp in Sources */,
 				72D2486F1100CD7400923469 /* qgsgpsdetector.cpp in Sources */,
 				72AF7B1710F8EC6300BD549A /* qgsnmeaconnection.cpp in Sources */,
@@ -17594,6 +17726,22 @@
 				7223B7980F96A99500D905B4 /* qgsoracle_plugin.cpp in Sources */,
 				7223B7990F96A99500D905B4 /* qgsoracleconnect_ui.cpp in Sources */,
 				7223B79A0F96A99500D905B4 /* qgsselectgeoraster_ui.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72448A4F125D3D290071B130 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72448A67125D3D940071B130 /* offline_editing.cpp in Sources */,
+				72448A68125D3D940071B130 /* offline_editing.h in Sources */,
+				72448A69125D3D940071B130 /* offline_editing_plugin.cpp in Sources */,
+				72448A6A125D3D940071B130 /* offline_editing_plugin.h in Sources */,
+				72448A6B125D3D940071B130 /* offline_editing_plugin_gui.cpp in Sources */,
+				72448A6C125D3D940071B130 /* offline_editing_plugin_gui.h in Sources */,
+				72448A6D125D3D940071B130 /* offline_editing_progress_dialog.cpp in Sources */,
+				72448A6E125D3D940071B130 /* offline_editing_progress_dialog.h in Sources */,
+				72448A6F125D3DCE0071B130 /* offline_editing_plugin.qrc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18449,6 +18597,11 @@
 			target = 7223B77E0F96A96500D905B4 /* oracleplugin */;
 			targetProxy = 7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */;
 		};
+		72448A84125D3F8A0071B130 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72448A4D125D3D290071B130 /* offlineeditingplugin */;
+			targetProxy = 72448A83125D3F8A0071B130 /* PBXContainerItemProxy */;
+		};
 		7256F1900F411B110022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 72A07D140F3BD625004FC2A4 /* delimitedtextprovider */;
@@ -19145,6 +19298,85 @@
 				);
 				PRODUCT_NAME = oracleplugin.so;
 				TARGET_PLUGINDIR = oracle_raster;
+			};
+			name = Release;
+		};
+		72448A56125D3D290071B130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					offlineeditingplugin_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/offline_editing,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GEOS_INC)",
+					"$(SQLITE_INC)",
+					"$(SPATIALITE_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+					"$(SQLITE_LIB)",
+					"$(SPATIALITE_LIB)",
+				);
+				PRODUCT_NAME = offlineeditingplugin.so;
+				TARGET_PLUGINDIR = offline_editing;
+			};
+			name = Debug;
+		};
+		72448A57125D3D290071B130 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					offlineeditingplugin_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/offline_editing,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GEOS_INC)",
+					"$(SQLITE_INC)",
+					"$(SPATIALITE_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+					"$(SQLITE_LIB)",
+					"$(SPATIALITE_LIB)",
+				);
+				PRODUCT_NAME = offlineeditingplugin.so;
+				TARGET_PLUGINDIR = offline_editing;
 			};
 			name = Release;
 		};
@@ -22517,6 +22749,15 @@
 			buildConfigurations = (
 				7223B78B0F96A96500D905B4 /* Debug */,
 				7223B78C0F96A96500D905B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72448A55125D3D290071B130 /* Build configuration list for PBXNativeTarget "offlineeditingplugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72448A56125D3D290071B130 /* Debug */,
+				72448A57125D3D290071B130 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
