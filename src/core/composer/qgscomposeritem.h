@@ -109,6 +109,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
+    /**Sets item position and width / height in one go
+      @note: this method was added in version 1.6*/
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
+
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
