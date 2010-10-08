@@ -39,9 +39,18 @@ QgsItemPositionDialog::QgsItemPositionDialog( QgsComposerItem* item, QWidget* pa
 
   mXLineEdit->setValidator( new QDoubleValidator( 0 ) );
   mYLineEdit->setValidator( new QDoubleValidator( 0 ) );
+  mWidthLineEdit->setValidator( new QDoubleValidator( 0 ) );
+  mHeightLineEdit->setValidator( new QDoubleValidator( 0 ) );
 
   //set lower left position of item
   mUpperLeftCheckBox->setCheckState( Qt::Checked );
+
+  //set initial width and height
+  if ( mItem )
+  {
+    mWidthLineEdit->setText( QString::number( mItem->rect().width() ) );
+    mHeightLineEdit->setText( QString::number( mItem->rect().height() ) );
+  }
 }
 
 QgsItemPositionDialog::QgsItemPositionDialog(): mItem( 0 )
@@ -66,6 +75,22 @@ int QgsItemPositionDialog::position( QgsPoint& point ) const
 
   point.setX( x );
   point.setY( y );
+  return 0;
+}
+
+int QgsItemPositionDialog::size( QSizeF& s ) const
+{
+  bool convSuccessWidth, convSuccessHeight;
+  double width = mWidthLineEdit->text().toDouble( &convSuccessWidth );
+  double height = mHeightLineEdit->text().toDouble( &convSuccessHeight );
+
+  if ( !convSuccessWidth || !convSuccessHeight )
+  {
+    return 1;
+  }
+
+  s.setWidth( width );
+  s.setHeight( height );
   return 0;
 }
 
@@ -123,10 +148,18 @@ void QgsItemPositionDialog::on_mSetPositionButton_clicked()
   }
 
   QgsPoint itemPosition;
+  QSizeF itemSize;
+
   if ( position( itemPosition ) == 0 )
   {
-    //query position and mode from dialog
-    mItem->setItemPosition( itemPosition.x(), itemPosition.y(), positionMode() );
+    if ( size( itemSize ) == 0 )
+    {
+      mItem->setItemPosition( itemPosition.x(), itemPosition.y(), itemSize.width(), itemSize.height(), positionMode() );
+    }
+    else
+    {
+      mItem->setItemPosition( itemPosition.x(), itemPosition.y(), positionMode() );
+    }
     mItem->update();
   }
 }

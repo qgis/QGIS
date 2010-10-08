@@ -32,6 +32,8 @@ class QgsItemPositionDialog: public QDialog, private Ui::QgsItemPositionDialogBa
 
     /**Get selected x- and y-coordinate as point. Returns 0 in case of success*/
     int position( QgsPoint& point ) const;
+    /**Get selected size. Returns 0 in case of success*/
+    int size( QSizeF& s ) const;
     /**A combination of upper/middle/lower and left/middle/right*/
     QgsComposerItem::ItemPositionMode positionMode() const;
 

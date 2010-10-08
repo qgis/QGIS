@@ -630,7 +630,11 @@ void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode item
 {
   double width = rect().width();
   double height = rect().height();
+  setItemPosition( x, y, width, height, itemPoint );
+}
 
+void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint )
+{
   double upperLeftX = x;
   double upperLeftY = y;
 
