@@ -436,31 +436,58 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( QWidget* paren
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
 }
 
+#include <QTime>
+#include <QAbstractListModel>
+
+class QgsSvgListModel : public QAbstractListModel
+{
+  public:
+    QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
+    {
+      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+    }
+
+    int rowCount( const QModelIndex & parent = QModelIndex() ) const
+    {
+      return mSvgFiles.count();
+    }
+
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const
+    {
+      QString entry = mSvgFiles.at( index.row() );
+
+      if ( role == Qt::DecorationRole ) // icon
+      {
+        QSvgRenderer renderer;
+        QPainter painter;
+
+        // render SVG file
+        renderer.load( entry );
+        QPixmap pixmap( QSize( 24, 24 ) );
+        pixmap.fill();
+        painter.begin( &pixmap );
+        renderer.render( &painter );
+        painter.end();
+
+        return pixmap;
+      }
+      else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
+      {
+        return entry;
+      }
+
+      return QVariant();
+    }
+
+  protected:
+    QStringList mSvgFiles;
+};
+
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {
-  QStandardItemModel* m = new QStandardItemModel( viewImages );
+  QgsSvgListModel* m = new QgsSvgListModel( viewImages );
+
   viewImages->setModel( m );
-
-  QSvgRenderer renderer;
-  QPainter painter;
-
-  foreach( QString entry, QgsSvgMarkerSymbolLayerV2::listSvgFiles() )
-  {
-    // render SVG file
-    renderer.load( entry );
-    QPixmap pixmap( renderer.defaultSize() );
-    pixmap.fill();
-    painter.begin( &pixmap );
-    renderer.render( &painter );
-    painter.end();
-
-    // add item
-    QStandardItem* item = new QStandardItem( QIcon( pixmap ), QString() );
-    item->setData( entry, Qt::UserRole );
-    item->setToolTip( entry );
-    m->appendRow( item );
-  }
-
 }
 
 
@@ -474,17 +501,19 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   // set values
 
-  QStandardItemModel* m = static_cast<QStandardItemModel*>( viewImages->model() );
+  QAbstractItemModel* m = viewImages->model();
+  QItemSelectionModel* selModel = viewImages->selectionModel();
   for ( int i = 0; i < m->rowCount(); i++ )
   {
-    QStandardItem* item = m->item( i, 0 );
-    if ( item->data( Qt::UserRole ).toString() == mLayer->path() )
+    QModelIndex idx( m->index( i, 0 ) );
+    if ( m->data( idx ).toString() == mLayer->path() )
     {
-      viewImages->selectionModel()->select( item->index(), QItemSelectionModel::SelectCurrent );
-      viewImages->selectionModel()->setCurrentIndex( item->index(), QItemSelectionModel::SelectCurrent );
+      selModel->select( idx, QItemSelectionModel::SelectCurrent );
+      selModel->setCurrentIndex( idx, QItemSelectionModel::SelectCurrent );
       break;
     }
   }
+
 
 
   spinSize->setValue( mLayer->size() );
@@ -578,6 +607,8 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QWidget* parent ): Qgs
   setupUi( this );
   insertIcons();
   updateOutlineIcon();
+
+  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -642,34 +673,15 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & t
   emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mSvgListWidget_currentItemChanged( QListWidgetItem* item, QListWidgetItem* previous )
+void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 {
-  mSVGLineEdit->setText( item->data( Qt::UserRole ).toString() );
+  mSVGLineEdit->setText( item.data( Qt::UserRole ).toString() );
 }
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
 {
-  mSvgListWidget->clear();
-
-  QStringList svgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
-  QSvgRenderer renderer;
-  QPainter painter;
-
-  QStringList::const_iterator it = svgFiles.constBegin();
-  for ( ; it != svgFiles.constEnd(); ++it )
-  {
-    renderer.load( *it );
-    QPixmap pixmap( renderer.defaultSize() );
-    pixmap.fill();
-    painter.begin( &pixmap );
-    renderer.render( &painter );
-    painter.end();
-
-    QListWidgetItem* item = new QListWidgetItem( mSvgListWidget );
-    item->setData( Qt::UserRole, *it );
-    item->setIcon( QIcon( pixmap ) );
-    item->setToolTip( *it );
-  }
+  QgsSvgListModel* m = new QgsSvgListModel( mSvgListView );
+  mSvgListView->setModel( m );
 }
 
 void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
