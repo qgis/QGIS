@@ -19,16 +19,7 @@
 #include "qgsosgviewer.h"
 
 #include <osgViewer/ViewerEventHandlers>
-#include <osgGA/TrackballManipulator>
-#include <osgDB/ReadFile>
 
-#include <QtCore/QString>
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMdiSubWindow>
-#include <QtGui/QMdiArea>
-
-#include <iostream>
 
 QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, const QGLWidget * shareWidget, WindowFlags f):
     QGLWidget(parent, shareWidget, f)
@@ -86,53 +77,7 @@ void QgsGLWidgetAdapter::mouseMoveEvent( QMouseEvent* event )
     _gw->getEventQueue()->mouseMotion(event->x(), event->y());
 }
 
-
 void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 {
     _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN);
 }
-
-// int mainAdapterWidget(QApplication& a, osg::ArgumentParser& arguments)
-// {
-//     // load the scene.
-//     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-//     if (!loadedModel)
-//     {
-//         std::cout << arguments[0] <<": No data loaded." << std::endl;
-//         return 1;
-//     }
-//     
-//     std::cout<<"Using AdapterWidget - QGLWidget subclassed to integrate with osgViewer using its embedded graphics window support."<<std::endl;
-//     
-//     if (arguments.read("--mdi")) {
-//           std::cout<<"Using ViewetQT MDI version"<<std::endl;
-//          /*
-//          Following problems are found here:
-//          - miminize causes loaded model to disappear (some problem with Camera matrix? - clampProjectionMatrix is invalid)
-//          */
-//          QgsOsgViewer* viewerWindow = new QgsOsgViewer;
-//          viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
-//          viewerWindow->setSceneData(loadedModel.get());
-//  
-//          QMainWindow* mw = new QMainWindow();
-//          QMdiArea* mdiArea = new QMdiArea(mw);
-//          mw->setCentralWidget(mdiArea);
-// 
-//          QMdiSubWindow *subWindow = mdiArea->addSubWindow(viewerWindow);
-//          subWindow->showMaximized();
-//          subWindow->setWindowTitle("New Window");
-//          mw->show();
-//     } else {
-//         QgsOsgViewer* viewerWindow = new QgsOsgViewer;
-// 
-//         viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
-//         viewerWindow->setSceneData(loadedModel.get());
-// 
-//         viewerWindow->show();
-//     }    
-//     
-//     
-//     a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );
-//    
-//     return a.exec();
-// }
