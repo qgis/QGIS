@@ -5,6 +5,11 @@
 
 <section label="GRASS MODULES">
 	<grass name="shell"/>
+
+        <section label="Create new location"> 
+ 				<grass name="g.proj.wkt"/> 
+ 	</section>
+
 	<section label="File">
 		<section label="Import">
 			<section label="Import raster">
