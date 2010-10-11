@@ -46,6 +46,18 @@ bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, co
 QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition ): QgsComposerTable( composition ), mVectorLayer( 0 ), mComposerMap( 0 ), \
     mMaximumNumberOfFeatures( 5 ), mShowOnlyVisibleFeatures( true )
 {
+  //set first vector layer from layer registry as default one
+  QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
+  for ( ; mapIt != layerMap.constEnd(); ++mapIt )
+  {
+    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( mapIt.value() );
+    if ( vl )
+    {
+      mVectorLayer = vl;
+      break;
+    }
+  }
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
 }
 
