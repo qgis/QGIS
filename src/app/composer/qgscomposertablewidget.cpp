@@ -32,6 +32,8 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mComposerTable );
   mToolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
 
+  blockAllSignals( true );
+
   //insert vector layers into combo
   QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
@@ -46,6 +48,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   }
 
   //insert composer maps into combo
+  mLayerComboBox->blockSignals( true );
   if ( mComposerTable )
   {
     const QgsComposition* tableComposition = mComposerTable->composition();
@@ -60,8 +63,10 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
       }
     }
   }
+  mLayerComboBox->blockSignals( false );
 
   updateGuiElements();
+  blockAllSignals( false );
 
   if ( mComposerTable )
   {
@@ -108,12 +113,13 @@ void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
     return;
   }
 
-  QgsAttributeSelectionDialog d( mComposerTable->vectorLayer(), mComposerTable->displayAttributes(), mComposerTable->fieldAliasMap(), 0 );
+  QgsAttributeSelectionDialog d( mComposerTable->vectorLayer(), mComposerTable->displayAttributes(), mComposerTable->fieldAliasMap(), mComposerTable->sortAttributes(), 0 );
   if ( d.exec() == QDialog::Accepted )
   {
     //change displayAttributes and aliases
     mComposerTable->setDisplayAttributes( d.enabledAttributes() );
     mComposerTable->setFieldAliasMap( d.aliasMap() );
+    mComposerTable->setSortAttributes( d.attributeSorting() );
     mComposerTable->update();
   }
 }

@@ -26,26 +26,20 @@
 #include <QScrollArea>
 
 QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap,
-    QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vLayer )
+    const QList< QPair<int, bool> >& sortColumns, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vLayer )
 {
+  setupUi( this );
   if ( vLayer )
   {
-    QScrollArea* attributeScrollArea = new QScrollArea( this );
-    QWidget* attributeWidget = new QWidget();
-
-    mAttributeGridLayout = new QGridLayout( attributeWidget );
-    QLabel* attributeLabel = new QLabel( QString( "<b>" ) + tr( "Attribute" ) + QString( "</b>" ), this );
-    attributeLabel->setTextFormat( Qt::RichText );
-    mAttributeGridLayout->addWidget( attributeLabel, 0, 0 );
-    QLabel* aliasLabel = new QLabel( QString( "<b>" ) + tr( "Alias" ) + QString( "</b>" ), this );
-    aliasLabel->setTextFormat( Qt::RichText );
-    mAttributeGridLayout->addWidget( aliasLabel, 0, 1 );
-
     QgsFieldMap fieldMap = vLayer->pendingFields();
     QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
     int layoutRowCounter = 1;
     for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
     {
+      //insert field into sorting combo first
+      mSortColumnComboBox->addItem( fieldIt.value().name(), QVariant( fieldIt.key() ) );
+
+      //and into enabled / alias list
       QCheckBox* attributeCheckBox = new QCheckBox( fieldIt.value().name(), this );
       if ( enabledAttributes.size() < 1 || enabledAttributes.contains( fieldIt.key() ) )
       {
@@ -55,7 +49,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
       {
         attributeCheckBox->setCheckState( Qt::Unchecked );
       }
-      mAttributeGridLayout->addWidget( attributeCheckBox, layoutRowCounter, 0 );
+      mAttributeGridLayout->addWidget(( QWidget* )attributeCheckBox, layoutRowCounter, 0, 1, 1 );
 
       QLineEdit* attributeLineEdit = new QLineEdit( this );
       QMap<int, QString>::const_iterator aliasIt = aliasMap.find( fieldIt.key() );
@@ -63,30 +57,24 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
       {
         attributeLineEdit->setText( aliasIt.value() );
       }
-      mAttributeGridLayout->addWidget( attributeLineEdit, layoutRowCounter, 1 );
+      mAttributeGridLayout->addWidget(( QWidget* )attributeLineEdit, layoutRowCounter, 1, 1, 1 );
       ++layoutRowCounter;
     }
 
-    attributeScrollArea->setWidget( attributeWidget );
-
-    QVBoxLayout* verticalLayout = new QVBoxLayout( this );
-    verticalLayout->addWidget( attributeScrollArea );
-
-    QHBoxLayout* selectClearLayout = new QHBoxLayout( this );
-    QPushButton* mSelectAllButton = new QPushButton( tr( "Select all" ), this );
-    QObject::connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAllAttributes() ) );
-    QPushButton* mClearButton = new QPushButton( tr( "Clear" ), this );
-    QObject::connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clearAttributes() ) );
-    selectClearLayout->addWidget( mSelectAllButton );
-    selectClearLayout->addWidget( mClearButton );
-    verticalLayout->addLayout( selectClearLayout );
-
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-    QObject::connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    QObject::connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-    verticalLayout->addWidget( buttonBox );
+    //sort columns
+    QList< QPair<int, bool> >::const_iterator sortIt = sortColumns.constBegin();
+    for ( ; sortIt != sortColumns.constEnd(); ++sortIt )
+    {
+      QTreeWidgetItem* item = new QTreeWidgetItem();
+      item->setText( 0, fieldMap[sortIt->first].name() );
+      item->setData( 0, Qt::UserRole, sortIt->first );
+      item->setText( 1, sortIt->second ? tr( "Ascending" ) : tr( "Descending" ) );
+      mSortColumnTreeWidget->addTopLevelItem( item );
+    }
   }
+
+  mOrderComboBox->insertItem( 0, tr( "Ascending" ) );
+  mOrderComboBox->insertItem( 0, tr( "Descending" ) );
 }
 
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
@@ -149,12 +137,28 @@ QMap<int, QString> QgsAttributeSelectionDialog::aliasMap() const
   return result;
 }
 
-void QgsAttributeSelectionDialog::selectAllAttributes()
+QList< QPair<int, bool> > QgsAttributeSelectionDialog::attributeSorting() const
+{
+  QList< QPair<int, bool> > sortingList;
+
+  for ( int i = 0; i < mSortColumnTreeWidget->topLevelItemCount(); ++i )
+  {
+    QTreeWidgetItem* item = mSortColumnTreeWidget->topLevelItem( i );
+    if ( item )
+    {
+      sortingList.push_back( qMakePair( item->data( 0, Qt::UserRole ).toInt(), item->text( 1 ) == tr( "Ascending" ) ) );
+    }
+  }
+
+  return sortingList;
+}
+
+void QgsAttributeSelectionDialog::on_mSelectAllButton_clicked()
 {
   setAllEnabled( true );
 }
 
-void QgsAttributeSelectionDialog::clearAttributes()
+void QgsAttributeSelectionDialog::on_mClearButton_clicked()
 {
   setAllEnabled( false );
 }
@@ -183,3 +187,48 @@ void QgsAttributeSelectionDialog::setAllEnabled( bool enabled )
   }
 }
 
+void QgsAttributeSelectionDialog::on_mAddPushButton_clicked()
+{
+  QTreeWidgetItem* item = new QTreeWidgetItem();
+  item->setText( 0, mSortColumnComboBox->currentText() );
+  item->setData( 0, Qt::UserRole, mSortColumnComboBox->itemData( mSortColumnComboBox->currentIndex() ) );
+  item->setText( 1, mOrderComboBox->currentText() );
+  mSortColumnTreeWidget->addTopLevelItem( item );
+}
+
+void QgsAttributeSelectionDialog::on_mRemovePushButton_clicked()
+{
+  int currentIndex = mSortColumnTreeWidget->indexOfTopLevelItem( mSortColumnTreeWidget->currentItem() );
+  if ( currentIndex != -1 )
+  {
+    delete( mSortColumnTreeWidget->takeTopLevelItem( currentIndex ) );
+  }
+}
+
+void QgsAttributeSelectionDialog::on_mUpPushButton_clicked()
+{
+  int currentIndex = mSortColumnTreeWidget->indexOfTopLevelItem( mSortColumnTreeWidget->currentItem() );
+  if ( currentIndex != -1 )
+  {
+    if ( currentIndex > 0 )
+    {
+      QTreeWidgetItem* item = mSortColumnTreeWidget->takeTopLevelItem( currentIndex );
+      mSortColumnTreeWidget->insertTopLevelItem( currentIndex - 1, item );
+      mSortColumnTreeWidget->setCurrentItem( item );
+    }
+  }
+}
+
+void QgsAttributeSelectionDialog::on_mDownPushButton_clicked()
+{
+  int currentIndex = mSortColumnTreeWidget->indexOfTopLevelItem( mSortColumnTreeWidget->currentItem() );
+  if ( currentIndex != -1 )
+  {
+    if ( currentIndex < ( mSortColumnTreeWidget->topLevelItemCount() - 1 ) )
+    {
+      QTreeWidgetItem* item = mSortColumnTreeWidget->takeTopLevelItem( currentIndex );
+      mSortColumnTreeWidget->insertTopLevelItem( currentIndex + 1, item );
+      mSortColumnTreeWidget->setCurrentItem( item );
+    }
+  }
+}
