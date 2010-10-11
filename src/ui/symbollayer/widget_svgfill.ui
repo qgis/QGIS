@@ -51,7 +51,7 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <widget class="QListWidget" name="mSvgListWidget">
+    <widget class="QListView" name="mSvgListView">
      <property name="flow">
       <enum>QListView::LeftToRight</enum>
      </property>
