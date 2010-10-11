@@ -20,6 +20,29 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
+QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare(): mCurrentSortColumn( 0 ), mAscending( true )
+{
+}
+
+
+bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
+{
+  QVariant v1 = m1[mCurrentSortColumn];
+  QVariant v2 = m2[mCurrentSortColumn];
+
+  bool less = false;
+  if ( v1.type() == QVariant::String && v2.type() == QVariant::String )
+  {
+    less = v1.toString() < v2.toString();
+  }
+  else
+  {
+    less = v1.toDouble() < v2.toDouble();
+  }
+  return ( mAscending ? less : !less );
+}
+
+
 QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition ): QgsComposerTable( composition ), mVectorLayer( 0 ), mComposerMap( 0 ), \
     mMaximumNumberOfFeatures( 5 ), mShowOnlyVisibleFeatures( true )
 {
@@ -109,6 +132,15 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
   {
     attributes.push_back( f.attributeMap() );
     ++counter;
+  }
+
+  //sort the list, starting with the last attribute
+  QgsComposerAttributeTableCompare c;
+  for ( int i = mSortInformation.size() - 1; i >= 0; --i )
+  {
+    c.setSortColumn( mSortInformation.at( i ).first );
+    c.setAscending( mSortInformation.at( i ).second );
+    qStableSort( attributes.begin(), attributes.end(), c );
   }
   return true;
 }
@@ -212,8 +244,20 @@ bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc 
     aliasMapElem.appendChild( mapEntryElem );
   }
   composerTableElem.appendChild( aliasMapElem );
-  bool ok = tableWriteXML( composerTableElem, doc );
+
+  //sort info
+  QDomElement sortColumnsElem = doc.createElement( "sortColumns" );
+  QList< QPair<int, bool> >::const_iterator sortIt = mSortInformation.constBegin();
+  for ( ; sortIt != mSortInformation.constEnd(); ++sortIt )
+  {
+    QDomElement columnElem = doc.createElement( "column" );
+    columnElem.setAttribute( "index", QString::number( sortIt->first ) );
+    columnElem.setAttribute( "ascending", sortIt->second == true ? "true" : "false" );
+    sortColumnsElem.appendChild( columnElem );
+  }
+  composerTableElem.appendChild( sortColumnsElem );
   elem.appendChild( composerTableElem );
+  bool ok = tableWriteXML( composerTableElem, doc );
   return ok;
 }
 
@@ -289,6 +333,21 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
       int key = aliasEntryElem.attribute( "key", "-1" ).toInt();
       QString value = aliasEntryElem.attribute( "value", "" );
       mFieldAliasMap.insert( key, value );
+    }
+  }
+
+  //restore sort columns
+  mSortInformation.clear();
+  QDomElement sortColumnsElem = itemElem.firstChildElement( "sortColumns" );
+  if ( !sortColumnsElem.isNull() )
+  {
+    QDomNodeList columns = sortColumnsElem.elementsByTagName( "column" );
+    for ( int i = 0; i < columns.size(); ++i )
+    {
+      QDomElement columnElem = columns.at( i ).toElement();
+      int attribute = columnElem.attribute( "index" ).toInt();
+      bool ascending = columnElem.attribute( "ascending" ) == "true" ? true : false;
+      mSortInformation.push_back( qMakePair( attribute, ascending ) );
     }
   }
   return tableReadXML( itemElem, doc );

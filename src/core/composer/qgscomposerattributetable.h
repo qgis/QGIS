@@ -23,6 +23,19 @@
 class QgsComposerMap;
 class QgsVectorLayer;
 
+/**Helper class for sorting, takes into account sorting column and ascending / descending*/
+class QgsComposerAttributeTableCompare
+{
+  public:
+    QgsComposerAttributeTableCompare();
+    bool operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 );
+    void setSortColumn( int col ) { mCurrentSortColumn = col; }
+    void setAscending( bool asc ) { mAscending = asc; }
+  private:
+    int mCurrentSortColumn;
+    bool mAscending;
+};
+
 /**A table class that displays a vector attribute table*/
 class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 {
@@ -58,6 +71,9 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     /**Adapts mMaximumNumberOfFeatures depending on the rectangle height*/
     void setSceneRect( const QRectF& rectangle );
 
+    void setSortAttributes( const QList<QPair<int, bool> > att ) { mSortInformation = att; }
+    QList<QPair<int, bool> > sortAttributes() const { return mSortInformation; }
+
   protected:
     /**Retrieves feature attributes*/
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributes );
@@ -78,6 +94,9 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     QSet<int> mDisplayAttributes;
     /**Map of attribute name aliases. The aliases might be different to those of QgsVectorLayer (but those from the vector layer are the default)*/
     QMap<int, QString> mFieldAliasMap;
+
+    /**Contains information about sort attribute index / ascending (true/false). First entry has the highest priority*/
+    QList< QPair<int, bool> > mSortInformation;
 
     /**Inserts aliases from vector layer as starting configuration to the alias map*/
     void initializeAliasMap();
