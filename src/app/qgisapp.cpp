@@ -3544,7 +3544,7 @@ void QgisApp::showComposerManager()
 
 void QgisApp::saveMapAsImage()
 {
-  QPair< QString,QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != "" )
   {
     //save the mapview to the selected file
@@ -3606,10 +3606,12 @@ void QgisApp::toggleFullScreen()
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
       bool renderFlag = mapCanvas()->renderFlag();
-      mapCanvas()->setRenderFlag( false );
+      if ( renderFlag )
+        mapCanvas()->setRenderFlag( false );
       showNormal();
       showMaximized();
-      mapCanvas()->setRenderFlag( renderFlag );
+      if ( renderFlag )
+        mapCanvas()->setRenderFlag( true );
       mPrevScreenModeMaximized = false;
     }
     else
@@ -4413,7 +4415,8 @@ void QgisApp::deselectAll()
 
   // Turn off rendering to improve speed.
   bool renderFlagState = mMapCanvas->renderFlag();
-  mMapCanvas->setRenderFlag( false );
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
 
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
@@ -4426,7 +4429,8 @@ void QgisApp::deselectAll()
   }
 
   // Turn on rendering (if it was on previously)
-  mMapCanvas->setRenderFlag( renderFlagState );
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 }
 
 void QgisApp::addVertex()

@@ -313,7 +313,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     refresh();
   }
 
-} // addLayer
+} // setLayerSet
 
 void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
 {
