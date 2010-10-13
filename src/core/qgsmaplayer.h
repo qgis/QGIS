@@ -55,7 +55,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Constructor
      * @param type Type of layer as defined in QgsMapLayer::LayerType enum
      * @param lyrname Display Name of the layer
-     * @param source datasouce of layer
+     * @param source datasource of layer
      */
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, QString lyrname = QString::null, QString source = QString::null );
 
