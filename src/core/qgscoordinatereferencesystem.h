@@ -179,13 +179,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /*! This is a globbing function to try to find a record in the database
      *  that matches a CRS defined only by a proj4string. The goal is to
      *  learn what the tbl_srs.srs_id value is for the CRS. Internally
-     *  the source CRS is converted to and OGR srs object using the proj4string
+     *  the source CRS is converted to an OGR srs object using the proj4string call
      *  and then every record in the database that matches projection and ellipsoid
      *  will be converted to an OGR srs in turn and compared to the source CRS.
      *  There are some gotchas with using ogr isSame() srs comparison, but
      *  its more effective than using straight string comparison of proj4params.
      *  @note The ellipsoid and projection acronyms must be set as well as the proj4string!
-     *  @return lomg the SrsId of the matched CRS
+     *  @return long the SrsId of the matched CRS
      */
     long findMatchingProj();
 
