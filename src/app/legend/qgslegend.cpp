@@ -155,7 +155,8 @@ void QgsLegend::selectAll( bool select )
 
   // Turn off rendering to improve speed.
   bool renderFlagState = mMapCanvas->renderFlag();
-  mMapCanvas->setRenderFlag( false );
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
 
   for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
   {
@@ -168,7 +169,8 @@ void QgsLegend::selectAll( bool select )
   }
 
   // Turn on rendering (if it was on previously)
-  mMapCanvas->setRenderFlag( renderFlagState );
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 
   QgsProject::instance()->dirty( true );
 }
@@ -1483,8 +1485,6 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     return;
   }
 
-  bool renderFlagState = mMapCanvas->renderFlag();
-
   //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
   // TODO: is this still necessary?
   QgsLegendLayer* theLegendLayer = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
@@ -1497,13 +1497,16 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   if ( item->data( 0, Qt::UserRole ).toInt() == item->checkState( 0 ) )
     return;
 
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item ); //item is a legend group
   if ( lg )
   {
     //set all the child layer files to the new check state
     std::list<QgsLegendLayer*> subfiles = lg->legendLayers();
-    bool renderFlagState = mMapCanvas->renderFlag();
-    mMapCanvas->setRenderFlag( false );
+
     for ( std::list<QgsLegendLayer*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter )
     {
 #ifdef QGISDEBUG
@@ -1530,10 +1533,6 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
       }
     }
 
-    // If it was on, turn it back on, otherwise leave it
-    // off, as turning it on causes a refresh.
-    if ( renderFlagState )
-      mMapCanvas->setRenderFlag( true );
     item->setData( 0, Qt::UserRole, item->checkState( 0 ) );
   }
 
@@ -1554,19 +1553,17 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
       static_cast<QgsLegendGroup*>( ll->parent() )->updateCheckState();
       ll->parent()->setData( 0, Qt::UserRole, ll->parent()->checkState( 0 ) );
     }
-    // If it was on, turn it back on, otherwise leave it
-    // off, as turning it on causes a refresh.
-    if ( renderFlagState )
-    {
-      mMapCanvas->setRenderFlag( true );
-    }
-    mMapCanvas->freeze( false );
     //update check state of the legend group
     item->setData( 0, Qt::UserRole, item->checkState( 0 ) );
   }
 
   // update layer set
   updateMapCanvasLayerSet();
+
+  // If it was on, turn it back on, otherwise leave it
+  // off, as turning it on causes a refresh.
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 }
 
 void QgsLegend::openEditor()
@@ -1770,7 +1767,8 @@ void QgsLegend::removeSelectedLayers()
 {
   // Turn off rendering to improve speed.
   bool renderFlagState = mMapCanvas->renderFlag();
-  mMapCanvas->setRenderFlag( false );
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
 
   foreach( QTreeWidgetItem *item, selectedItems() )
   {
@@ -1790,5 +1788,6 @@ void QgsLegend::removeSelectedLayers()
   }
 
   // Turn on rendering (if it was on previously)
-  mMapCanvas->setRenderFlag( renderFlagState );
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 }
