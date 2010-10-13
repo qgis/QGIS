@@ -253,13 +253,13 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
       {
         img = ( *it )->getLineSymbolAsImage();
       }
-      else  if (( *it )->type() == QGis::Line )//polygon
+      else  if (( *it )->type() == QGis::Polygon )
       {
         img = ( *it )->getPolygonSymbolAsImage();
       }
-      else //must be a layer without geometry then
+      else
       {
-
+        // must be a layer without geometry then
       }
 
       QString values;
