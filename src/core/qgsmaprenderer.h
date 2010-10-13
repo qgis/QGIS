@@ -151,7 +151,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! sets destination spatial reference system
     void setDestinationSrs( const QgsCoordinateReferenceSystem& srs );
 
-    //! returns CRS ID of destination spatial reference system
+    //! returns CRS of destination spatial reference system
     const QgsCoordinateReferenceSystem& destinationSrs();
 
     void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
