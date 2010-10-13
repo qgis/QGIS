@@ -3680,6 +3680,39 @@ void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
 
 }
 
+void QgsRasterLayer::thumbnailAsImage( QImage * thepImage )
+{
+  //TODO: This should be depreciated and a new function written that just returns a new QImage, it will be safer
+  if ( 0 == thepImage ) { return; }
+
+  thepImage->fill(Qt::white); //defaults to white
+
+  // Raster providers are disabled (for the moment)
+  if ( mProviderKey.isEmpty() )
+  {
+    QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
+    myRasterViewPort->rectXOffset = 0;
+    myRasterViewPort->rectYOffset = 0;
+    myRasterViewPort->clippedXMin = 0;
+    myRasterViewPort->clippedXMax = mWidth;
+    myRasterViewPort->clippedYMin = mHeight;
+    myRasterViewPort->clippedYMax = 0;
+    myRasterViewPort->clippedWidth   = mWidth;
+    myRasterViewPort->clippedHeight  = mHeight;
+    myRasterViewPort->topLeftPoint = QgsPoint( 0, 0 );
+    myRasterViewPort->bottomRightPoint = QgsPoint( thepImage->width(), thepImage->height() );
+    myRasterViewPort->drawableAreaXDim = thepImage->width();
+    myRasterViewPort->drawableAreaYDim = thepImage->height();
+
+    QPainter * myQPainter = new QPainter( thepImage );
+    draw( myQPainter, myRasterViewPort );
+    delete myRasterViewPort;
+    myQPainter->end();
+    delete myQPainter;
+  }
+
+}
+
 void QgsRasterLayer::triggerRepaint()
 {
   emit repaintRequested();
