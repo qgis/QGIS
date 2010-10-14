@@ -215,7 +215,7 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
 
   PGconn *pd = PQconnectdb( conninfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
-  if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
+  if ( PQstatus( pd ) != CONNECTION_OK )
   {
     QgsDataSourceURI uri( conninfo );
     QString username = uri.username();

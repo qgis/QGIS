@@ -168,7 +168,7 @@ void QgsPgNewConnection::testConnection()
 
   PGconn *pd = PQconnectdb( conninfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
-  if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
+  if ( PQstatus( pd ) != CONNECTION_OK )
   {
     QString username = txtUsername->text();
     QString password = txtPassword->text();
