@@ -445,7 +445,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
-  if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
+  if ( PQstatus( pd ) != CONNECTION_OK )
   {
     while ( PQstatus( pd ) != CONNECTION_OK )
     {
