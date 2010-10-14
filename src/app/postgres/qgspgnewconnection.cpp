@@ -161,8 +161,7 @@ void QgsPgNewConnection::testConnection()
 {
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
-                     chkStoreUsername->isChecked() ? txtUsername->text() : "",
-                     chkStorePassword->isChecked() ? txtPassword->text() : "",
+                     txtUsername->text(), txtPassword->text(),
                      ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
   QString conninfo = uri.connectionInfo();
   QgsDebugMsg( "PQconnectdb(\"" + conninfo + "\");" );
