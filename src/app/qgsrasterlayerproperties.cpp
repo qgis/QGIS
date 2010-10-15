@@ -1872,8 +1872,8 @@ void QgsRasterLayerProperties::refreshHistogram()
   // Set axis titles
   mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr("Pixel Value") );
   mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr("Frequency") );
-  mpPlot->setAxisAutoScale( QwtPlot::xBottom );
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
+  // x axis scale only set after computing global min/max across bands (see below)
   // add a grid
   QwtPlotGrid * myGrid = new QwtPlotGrid();
   myGrid->attach(mpPlot);
@@ -1905,6 +1905,9 @@ void QgsRasterLayerProperties::refreshHistogram()
   //
   // scan through to get counts from layers' histograms
   //
+  float myGlobalMin = 0;
+  float myGlobalMax = 0;
+  bool myFirstIteration = true;
   for ( int myIteratorInt = 1;
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
@@ -1924,7 +1927,22 @@ void QgsRasterLayerProperties::refreshHistogram()
     }
     mypCurve->setData(myX2Data,myY2Data);
     mypCurve->attach(mpPlot);
+    if ( myFirstIteration || myGlobalMin < myRasterBandStats.minimumValue )
+    {
+      myGlobalMin = myRasterBandStats.minimumValue;
+    }
+    if ( myFirstIteration || myGlobalMax < myRasterBandStats.maximumValue )
+    {
+      myGlobalMax = myRasterBandStats.maximumValue;
+    }
+    myFirstIteration = false;
   }
+  // for x axis use band pixel values rather than gdal hist. bin values
+  // subtract -0.5 to prevent rounding errors
+  // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
+  mpPlot->setAxisScale ( QwtPlot::xBottom, 
+      myGlobalMin - 0.5, 
+      myGlobalMax + 0.5 ); 
   mpPlot->replot();
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   mHistogramProgress->hide();
