@@ -50,6 +50,7 @@ SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass c:/msys/local /opt/grass)
 IF (APPLE)
   SET (GRASS_PATHS ${GRASS_PATHS}
     /Applications/GRASS-6.3.app/Contents/MacOS
+    /Applications/GRASS-6.4.app/Contents/MacOS
     /Applications/GRASS.app/Contents/Resources
   )
 ENDIF (APPLE)

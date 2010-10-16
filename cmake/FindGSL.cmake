@@ -46,9 +46,14 @@ IF(WIN32)
   SET (GSL_LIBRARIES ${GSL_LIB} ${GSLCBLAS_LIB})
 ELSE(WIN32)
   IF(UNIX) 
+    # try to use framework on mac
+    IF (APPLE)
+      SET (GSL_MAC_PATH /Library/Frameworks/GSL.framework/Programs)
+    ENDIF (APPLE)
     SET(GSL_CONFIG_PREFER_PATH "$ENV{GSL_HOME}/bin" CACHE STRING "preferred path to GSL (gsl-config)")
     FIND_PROGRAM(GSL_CONFIG gsl-config
       ${GSL_CONFIG_PREFER_PATH}
+      ${GSL_MAC_PATH}
       /usr/local/bin/
       /usr/bin/
       )

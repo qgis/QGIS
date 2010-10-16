@@ -18,9 +18,12 @@
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing. 
+
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/spatialite"
+  # try to use SQLite3 framework on mac, should be set from SQLite3 check
+  ${SQLITE3_MAC_INC_PATH}
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
