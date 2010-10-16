@@ -27,10 +27,10 @@
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
                                   QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mLayer( layer )
+    : QDialog( parent, fl )
+    , mLayer( layer )
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -91,16 +91,10 @@ void QgsQueryBuilder::setupGuiViews()
   lstValues->setAlternatingRowColors( true );
 }
 
-void QgsQueryBuilder::fillValues( int idx, QString subsetString, int limit )
+void QgsQueryBuilder::fillValues( int idx, int limit )
 {
   // clear the model
   mModelValues->clear();
-
-  if ( !mLayer->setSubsetString( subsetString ) )
-  {
-    QMessageBox::information( this, tr( "Invalid Query" ), tr( "Setting the query failed" ) );
-    return;
-  }
 
   // determine the field type
   QList<QVariant> values;
@@ -122,7 +116,7 @@ void QgsQueryBuilder::on_btnSampleValues_clicked()
   QStandardItemModel *tmp = new QStandardItemModel();
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), mOrigSubsetString, 25 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), 25 );
   lstValues->setModel( mModelValues );
   lstValues->setCursor( Qt::ArrowCursor );
   //delete the tmp
@@ -138,7 +132,7 @@ void QgsQueryBuilder::on_btnGetAllValues_clicked()
   QStandardItemModel *tmp = new QStandardItemModel();
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), mOrigSubsetString, -1 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), -1 );
   lstValues->setModel( mModelValues );
   lstValues->setCursor( Qt::ArrowCursor );
   //delete the tmp
@@ -151,14 +145,7 @@ void QgsQueryBuilder::test()
   // by counting the number of records that would be
   // returned
 
-  // if there is no sql, issue a warning
-  if ( txtSQL->toPlainText().isEmpty() )
-  {
-    QMessageBox::information( this,
-                              tr( "No Query" ),
-                              tr( "You must create a query before you can test it" ) );
-  }
-  else if ( mLayer->setSubsetString( txtSQL->toPlainText() ) )
+  if ( mLayer->setSubsetString( txtSQL->toPlainText() ) )
   {
     QMessageBox::information( this,
                               tr( "Query Result" ),
@@ -170,12 +157,6 @@ void QgsQueryBuilder::test()
                           tr( "Query Failed" ),
                           tr( "An error occurred when executing the query" ) );
   }
-}
-
-// Slot for showing help
-void QgsQueryBuilder::helpClicked()
-{
-  // QgsContextHelp::run( context_id );
 }
 
 void QgsQueryBuilder::accept()
