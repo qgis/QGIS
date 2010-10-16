@@ -5,57 +5,82 @@
 
 <section label="GRASS MODULES">
 	<grass name="shell"/>
+	<section label="Create new GRASS location and transfer data into it">
+		<section label="Create new GRASS location from metadata file">
+			<grass name="g.proj.wkt"/>
+		</section>
+		<section label="Create new GRASS location from raster data">
+			<grass name="r.in.gdal.qgis.loc"/>
+			<grass name="r.in.gdal.qgis"/>
+			<grass name="r.external.qgis"/>
+		</section>
+		<section label="Create new GRASS location from vector data">
+			<grass name="v.in.ogr.qgis.loc"/>
+			<grass name="v.in.ogr.qgis"/>
+		</section>
+		<section label="Print projection information from a georeferenced file and create a new location based on it">
+			<grass name="g.proj.geo.new"/>
+			<grass name="g.proj.ascii.new"/>
+			<grass name="g.proj.proj.new"/>
+		</section>
+	</section>
+	<section label="File management">
+		<section label="Import into GRASS">
+			<section label="Import raster into GRASS">
+                                <section label="Import raster into GRASS from QGIS view">
+					<grass name="r.in.gdal.qgis"/>
+                                	<grass name="r.in.gdal.qgis.loc"/>
+				</section>
+				<section label="Register external data sources in GRASS">
+					<grass name="r.external"/>
+					<grass name="r.external.qgis"/>
+					<grass name="r.external.all"/>
+				</section>
+				<section label="Import raster into GRASS from external data sources in GRASS">
+					<grass name="r.in.gdal"/>
+					<grass name="r.in.gdal.loc"/>
+					<grass name="r.in.xyz"/>
+					<grass name="r.in.ascii"/>
+					<grass name="r.in.poly"/>
+					<grass name="r.in.bin"/>
+					<grass name="r.in.arc"/>
+					<grass name="r.in.gridatb"/>
+					<grass name="r.in.mat"/>
+					<grass name="i.in.spotvgt"/>
+					<grass name="r.in.srtm"/>
+					<grass name="r.in.aster"/>
+					<grass name="r.in.wms"/>
+				</section>
 
-        <section label="Create new location"> 
- 				<grass name="g.proj.wkt"/> 
- 	</section>
-
-	<section label="File">
-		<section label="Import">
-			<section label="Import raster">
-                                <grass name="r.in.gdal.qgis"/>
-                                <grass name="r.in.gdal.qgis.loc"/>
-				<grass name="r.in.gdal"/>
-				<grass name="r.in.gdal.loc"/>
-				<grass name="r.in.xyz"/>
-				<grass name="r.in.ascii"/>
-				<grass name="r.in.poly"/>
-				<grass name="r.in.bin"/>
-				<grass name="r.in.arc"/>
-				<grass name="r.in.gridatb"/>
-				<grass name="r.in.mat"/>
-				<grass name="i.in.spotvgt"/>
-				<grass name="r.in.srtm"/>
-				<grass name="r.in.aster"/>
-				<grass name="r.in.wms"/>
-				<grass name="r.external"/>
-				<grass name="r.external.qgis"/>
-				<grass name="r.external.all"/>
 			</section>
-			<section label="Import vector">
-                                <grass name="v.in.ogr.qgis"/>
-                                <grass name="v.in.ogr.qgis.loc"/>
-				<grass name="v.in.ogr"/>
-				<grass name="v.in.ogr.loc"/>
-                                <grass name="v.in.ogr.all"/> 
-                                <grass name="v.in.ogr.all.loc"/> 
-				<grass name="v.in.dxf"/>
-				<grass name="v.in.e00"/>
-				<grass name="v.in.mapgen"/>
-				<grass name="v.in.db"/>
-				<grass name="v.in.garmin"/>
-				<grass name="v.in.gpsbabel"/>
-				<grass name="v.in.geonames"/>
-				<grass name="v.in.gns"/>
+			<section label="Import vector into GRASS">
+				<section label="Import vector into GRASS from QGIS view">
+	                                <grass name="v.in.ogr.qgis"/>
+        	                        <grass name="v.in.ogr.qgis.loc"/>
+				</section>
+				<section label="Import vector into GRASS from external data sources in GRASS">
+					<grass name="v.in.ogr"/>
+					<grass name="v.in.ogr.loc"/>
+                	                <grass name="v.in.ogr.all"/> 
+                        	        <grass name="v.in.ogr.all.loc"/> 
+					<grass name="v.in.dxf"/>
+					<grass name="v.in.e00"/>
+					<grass name="v.in.mapgen"/>
+					<grass name="v.in.db"/>
+					<grass name="v.in.garmin"/>
+					<grass name="v.in.gpsbabel"/>
+					<grass name="v.in.geonames"/>
+					<grass name="v.in.gns"/>
+				</section>
 			</section>
-			<section label="Database">
+<section label="Import from database into GRASS">
 				<grass name="db.in.ogr"/>
 			</section>
 		</section>
-		<section label="Export">
-			<section label="Export raster">
-				<grass name="r.out.gdal"/>
+		<section label="Export from GRASS">
+			<section label="Export raster from GRASS">
 				<grass name="r.out.gdal.gtiff"/>
+				<grass name="r.out.gdal"/>
 				<grass name="r.out.ascii"/>
 				<grass name="r.out.xyz"/>
 				<grass name="r.out.arc"/>
@@ -71,7 +96,7 @@
 				<grass name="r.out.vrml"/>
 				<grass name="r.out.vtk"/>
 			</section>
-			<section label="Export vector">
+			<section label="Export vector from GRASS">
 				<grass name="v.out.ogr"/>
 				<grass name="v.out.ogr.pg"/>
 				<grass name="v.out.ogr.gml"/>
@@ -82,49 +107,37 @@
 				<grass name="v.out.svg"/>
 				<grass name="v.out.vtk"/>
 			</section>
-			<section label="Export vector table">
+			<section label="Export vector table from GRASS to database format">
 				<grass name="db.out.ogr"/>
 			</section>
 		</section>
 		<section label="Map type conversion">
-			<section label="Convert a raster to vector">
+			<section label="Convert a raster to vector within GRASS">
 				<grass name="r.to.vect.point"/>
 				<grass name="r.to.vect.line"/>
 				<grass name="r.to.vect.area"/>
 			</section>
-			<section label="Convert a vector to raster">
+			<section label="Convert a vector to raster within GRASS">
 				<grass name="v.to.rast.constant"/>
 				<grass name="v.to.rast.attr"/>
 			</section>
 		</section>
 	</section>
 
-	<section label="Config">
-		<section label="Region">
-			<section label="Region settings">
-                                <grass name="g.region.save"/> 
-                                <grass name="g.region.zoom"/> 
-                                <grass name="g.region.multiple.raster"/> 
-                                <grass name="g.region.multiple.vector"/>
-			</section>
-			<section label="Projection management">
-                                <section label="Print projection information of the current location">
- 					<grass name="g.proj.print"/>
-				</section>
-                                <section label="Print projection information from a georeferenced file"> 
-					<grass name="g.proj.geo"/>
-                                        <grass name="g.proj.ascii"/> 
-					<grass name="g.proj.proj"/>
-				</section>
-                                <section label="Print projection information from a georeferenced file and create a new location based on it"> 
-                                        <grass name="g.proj.geo.new"/> 
-					<grass name="g.proj.ascii.new"/>
-					<grass name="g.proj.proj.new"/>
-				</section>
-			</section>
-			<section label="Convert coordinates">
-				<grass name="m.cogo"/>
-			</section>
+	<section label="Region settings">
+		<grass name="g.region.save"/> 
+		<grass name="g.region.zoom"/> 
+		<grass name="g.region.multiple.raster"/> 
+		<grass name="g.region.multiple.vector"/>
+	</section>
+	<section label="Projection management">
+		<section label="Print projection information of the current location">
+ 			<grass name="g.proj.print"/>
+		</section>
+		<section label="Print projection information from a georeferenced file"> 
+			<grass name="g.proj.geo"/>
+			<grass name="g.proj.ascii"/> 
+			<grass name="g.proj.proj"/>
 		</section>
 	</section>
 
@@ -476,6 +489,10 @@
 
 	<section label="3d Visualization">
 		<grass name="nviz"/>
+	</section>
+	<section label="Convert coordinates">
+		<grass name="m.cogo"/>
+		<grass name="m.proj"/>
 	</section>
 
 	<section label="Help">
