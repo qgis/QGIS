@@ -186,14 +186,15 @@ QGIS_PREFIX = $(QGIS_APP_NAME)/Contents
 QGIS_INSTALL_PATH = $(INSTALL_PREFIX)/$(QGIS_PREFIX)
 QGIS_BUILD_PATH = $(PROJECT_TARGET_DIR)/$(QGIS_PREFIX)
 // subdirs are relative to MacOS dir, as if MacOS is unix "prefix"
-QGIS_BIN_SUBDIR = bin // leave this alone for now
+// _REV dirs for backing out in relative paths, match depth of _SUBDIR
+QGIS_BIN_SUBDIR = bin
 QGIS_FW_SUBDIR = ../Frameworks
-QGIS_LIB_SUBDIR = lib // qgispython lib MUST be in MacOS/lib
+QGIS_LIB_SUBDIR = lib
 QGIS_DATA_SUBDIR = ../Resources
 QGIS_PLUGIN_SUBDIR = ../PlugIns/qgis
 QGIS_LIBEXEC_SUBDIR = lib/gqis
-QGIS_LIBEXEC_SUBDIR_REV = ../.. // for backing out in relative paths, match depth of _SUBDIR above
-QGIS_CGIBIN_SUBDIR = bin
+QGIS_LIBEXEC_SUBDIR_REV = ../..
+QGIS_CGIBIN_SUBDIR = qgis-mapserver
 QGIS_CGIBIN_SUBDIR_REV = ..
 
 QGIS_HEADER_SEARCH_BASE = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include
