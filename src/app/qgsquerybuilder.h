@@ -68,7 +68,6 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
   public slots:
     void accept();
     void reject();
-    void helpClicked();
     void clear();
     void on_btnEqual_clicked();
     void on_btnLessThan_clicked();
@@ -124,7 +123,7 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
      */
     void setupGuiViews();
     void setupLstFieldsModel();
-    void fillValues( int idx, QString subsetString, int limit );
+    void fillValues( int idx, int limit );
 
     // private members
     //! Model for fields ListView
