@@ -18,9 +18,16 @@
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing. 
+
+# try to use framework on mac
+IF (APPLE)
+  SET (SQLITE3_MAC_INC_PATH /Library/Frameworks/SQLite3.framework/Headers)
+ENDIF (APPLE)
+
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/sqlite"
+  ${SQLITE3_MAC_INC_PATH}
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH

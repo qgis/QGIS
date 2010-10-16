@@ -11,16 +11,22 @@
 #    PROJ_INCLUDE_DIR
 #    PROJ_LIBRARY
 
-
 # FIND_PATH and FIND_LIBRARY normally search standard locations
 # before the specified paths. To search non-standard paths first,
 # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing. 
+
+# try to use framework on mac
+IF (APPLE)
+  SET (PROJ_MAC_INC_PATH /Library/Frameworks/PROJ.framework/Headers)
+ENDIF (APPLE)
+
 FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
   "$ENV{LIB_DIR}/include/proj"
   "$ENV{LIB_DIR}/include"
+  ${PROJ_MAC_INC_PATH}
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
