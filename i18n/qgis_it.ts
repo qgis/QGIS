@@ -6564,7 +6564,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1702"/>
         <source>Select Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumenti di selezione</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1779"/>
@@ -8981,12 +8981,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>La creazione dell&apos;immagine con %1x%2 pixel è fallita. Riprova senza l&apos;opzione &quot;Stampa come raster&quot;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>La creazione di una immagine %1 x %2 richiede circa %3 MB di memoria. Procedere?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
@@ -12800,22 +12800,22 @@ Scegli un file valido.</translation>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="334"/>
         <source>Waypoints from a route</source>
-        <translation type="unfinished"></translation>
+        <translation>Waypoints da una route</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="335"/>
         <source>Waypoints from a track</source>
-        <translation type="unfinished"></translation>
+        <translation>Waypoints da una track</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="336"/>
         <source>Route from waypoints</source>
-        <translation type="unfinished"></translation>
+        <translation>Route da waypoints</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="337"/>
         <source>Track from waypoints</source>
-        <translation type="unfinished"></translation>
+        <translation>Track da waypoints</translation>
     </message>
 </context>
 <context>
@@ -17429,7 +17429,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="823"/>
         <source>Strikeout</source>
-        <translation type="unfinished">Strikeout</translation>
+        <translation>Barrato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="835"/>
@@ -28729,7 +28729,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
         <source>Request contains a format not offered by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>La richiesta contiene un formato non disponibile dal server.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2185"/>
