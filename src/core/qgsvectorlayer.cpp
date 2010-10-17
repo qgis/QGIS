@@ -2499,9 +2499,12 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
   }
 
   QString errorMsg;
-  if ( !readSymbology( layer_node, errorMsg ) )
+  if ( geometryType() != QGis::NoGeometry )
   {
-    return false;
+    if ( !readSymbology( layer_node, errorMsg ) )
+    {
+      return false;
+    }
   }
 
   return mValid;               // should be true if read successfully
@@ -2645,11 +2648,13 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // renderer specific settings
   QString errorMsg;
-  if ( !writeSymbology( layer_node, document, errorMsg ) )
+  if ( geometryType() != QGis::NoGeometry )
   {
-    return false;
+    if ( !writeSymbology( layer_node, document, errorMsg ) )
+    {
+      return false;
+    }
   }
-
   return true;
 } // bool QgsVectorLayer::writeXml
 
