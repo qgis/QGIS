@@ -26,7 +26,7 @@
 #include "qgscolorrampshader.h"
 #include "qgscontexthelp.h"
 
-
+class QVBoxLayout;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -222,6 +222,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QgsMapCanvas* mMapCanvas;
     QgsPixelSelectorTool* mPixelSelectorTool;
     QwtPlot * mpPlot;
+    QVBoxLayout *mpHistogramLayout;
 };
 
 /**
