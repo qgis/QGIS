@@ -2,12 +2,29 @@ Source: qgis
 Section: science
 Priority: extra
 Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
-Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev, 
- libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj (<< 4.7.0) | libproj-dev (>= 4.7.0), libexpat1-dev, 
- flex, bison, python-dev, cmake (>= 2.6), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
- sip4 (>= 4.5), libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0),
- libqt4-sql (>=4.4.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev, libfcgi-dev, subversion
+Build-Depends:
+ bison,
+ cmake (>= 2.6),
+ debhelper (>= 5.0.51~),
+ flex,
+ grass-dev,
+ libexpat1-dev,
+ libfcgi-dev,
+ libgdal1-dev,
+ libgeos-dev (>= 3.0.0),
+ libgsl0-dev,
+ libpq-dev,
+ libqt4-dev (>=4.4.0),
+ libqwt5-qt4-dev,
+ libsqlite3-dev,
+ proj (<< 4.7.0) | libproj-dev (>= 4.7.0),
+ pyqt4-dev-tools,
+ python,
+ python-central (>=0.5),
+ python-dev,
+ python-qt4-dev (>=4.1.0),
+ python-sip4-dev (>= 4.5.0) | sip4 (>= 4.5),
+ subversion
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current
@@ -51,11 +68,20 @@ Description: Quantum GIS - shared libraries
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
-Depends: libqgis1.6.0 (= ${binary:Version}), libgdal1-dev,
- libpq-dev, libgeos-dev (>= 3.0.0), grass-dev,
- libsqlite3-dev, libgsl0-dev, libproj-dev, libexpat1-dev, libqt4-core (>=4.4.0),
- libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0), libqt4-sql (>=4.4.0),
- python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0), qt4-designer (>=4.4.0)
+Depends:
+ grass-dev,
+ libexpat1-dev,
+ libgdal1-dev,
+ libgeos-dev (>= 3.0.0),
+ libgsl0-dev,
+ libpq-dev,
+ libproj-dev,
+ libqgis1.6.0 (= ${binary:Version}),
+ libqt4-dev (>=4.4.0),
+ libsqlite3-dev,
+ python-qt4 (>=4.1.0),
+ python-qt4-dev (>=4.1.0),
+ qt4-designer (>=4.4.0)
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev
 Description: Quantum GIS - development files

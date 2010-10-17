@@ -2,14 +2,32 @@ Source: qgis
 Section: science
 Priority: extra
 Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
-Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev, 
- libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj,
- libexpat1-dev, flex, bison, python-dev, cmake (>=2.4.3),
- python-sip4 (>= 4.5.0), python-central (>=0.5), python, sip4 (>= 4.5),
- libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
- libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- python-sip4-dev (>= 4.5.0), pyqt4-dev-tools, libqwt5-qt4-dev, pkg-config,
- libfcgi-dev, subversion
+Build-Depends:
+ bison,
+ cmake (>= 2.4.3),
+ debhelper (>= 5.0.51~),
+ flex,
+ grass-dev,
+ libexpat1-dev,
+ libfcgi-dev,
+ libgdal1-dev,
+ libgeos-dev (>= 3.0.0),
+ libgsl0-dev,
+ libpq-dev,
+ libqt4-dev (>=4.2.0),
+ libqwt5-qt4-dev,
+ libsqlite3-dev,
+ pkg-config,
+ proj,
+ pyqt4-dev-tools,
+ python,
+ python-central (>=0.5),
+ python-dev,
+ python-qt4 (>=4.1.0),
+ python-qt4-dev (>=4.1.0),
+ python-sip4-dev (>= 4.5.0),
+ sip4 (>= 4.5),
+ subversion
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.0
 XS-Python-Version: current
@@ -53,11 +71,19 @@ Description: Quantum GIS - shared libraries
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
-Depends: libqgis{QGIS_ABI} (= ${binary:Version}), libgdal1-dev,
- libpq-dev, libgeos-dev (>= 3.0.0), grass-dev,
- libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, libqt4-core (>=4.2.0),
- libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0),
- libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
+Depends:
+ grass-dev,
+ libexpat1-dev,
+ libgdal1-dev,
+ libgeos-dev (>= 3.0.0),
+ libgsl0-dev,
+ libpq-dev,
+ libqgis{QGIS_ABI} (= ${binary:Version}),
+ libqt4-dev (>=4.2.0),
+ libsqlite3-dev,
+ proj,
+ python-qt4 (>=4.1.0),
+ python-qt4-dev (>=4.1.0),
  qt4-designer (>=4.2.0)
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev

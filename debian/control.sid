@@ -2,13 +2,33 @@ Source: qgis
 Section: science
 Priority: extra
 Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
-Build-Depends: debhelper (>= 7), libgdal1-dev, libpq-dev, 
- libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, libproj-dev,
- libexpat1-dev, flex, bison, python-dev, cmake (>= 2.6), python-sip (>= 4.5.0),
- python-central (>=0.5), python, libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0),
- libqt4-gui (>=4.4.0), libqt4-sql (>=4.4.0), python-qt4 (>=4.1.0),
- python-qt4-dev (>=4.1.0), python-sip-dev (>= 4.5.0), pyqt4-dev-tools,
- libqwt5-qt4-dev, libspatialite-dev, libfcgi-dev, pkg-config, subversion
+Build-Depends:
+ bison,
+ cmake (>= 2.6),
+ debhelper (>= 7),
+ flex,
+ grass-dev,
+ libexpat1-dev,
+ libfcgi-dev,
+ libgdal1-dev,
+ libgeos-dev (>= 3.0.0),
+ libgsl0-dev,
+ libpq-dev,
+ libproj-dev,
+ libqt4-dev (>=4.4.0),
+ libqwt5-qt4-dev,
+ libspatialite-dev,
+ libsqlite3-dev,
+ pkg-config,
+ pyqt4-dev-tools,
+ python,
+ python-central (>=0.5),
+ python-dev,
+ python-qt4 (>=4.1.0),
+ python-qt4-dev (>=4.1.0),
+ python-sip (>= 4.5.0),
+ python-sip-dev (>= 4.5.0),
+ subversion
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current
@@ -52,11 +72,20 @@ Description: Quantum GIS - shared libraries
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
-Depends: libqgis{QGIS_ABI} (= ${binary:Version}), libgdal1-dev,
- libpq-dev, libgeos-dev (>= 3.0.0), grass-dev,
- libsqlite3-dev, libgsl0-dev, libproj-dev, libexpat1-dev, libqt4-core (>=4.4.0),
- libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0), libqt4-sql (>=4.4.0),
- python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0), qt4-designer (>=4.4.0)
+Depends:
+ grass-dev,
+ libexpat1-dev,
+ libgdal1-dev,
+ libgeos-dev (>= 3.0.0),
+ libgsl0-dev,
+ libpq-dev,
+ libproj-dev,
+ libqgis{QGIS_ABI} (= ${binary:Version}),
+ libqt4-dev (>=4.4.0),
+ libsqlite3-dev,
+ python-qt4 (>=4.1.0),
+ python-qt4-dev (>=4.1.0),
+ qt4-designer (>=4.4.0)
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev
 Description: Quantum GIS - development files

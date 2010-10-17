@@ -5,9 +5,10 @@ qgis (1.6.0) UNRELEASED; urgency=low
     control fields.
   * include displacementplugin and offline editing plugin
   * add subversion as build dependency for trunk
-  * add qgis-mapserver
+  * add qgis-mapserver package
+  * trim dependencies
  
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 05 Oct 2010 11:22:04 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 17 Oct 2010 12:09:23 +0200
 
 qgis (1.5.0) UNRELEASED; urgency=low
 
