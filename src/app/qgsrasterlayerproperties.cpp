@@ -276,6 +276,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   listWidget->setCurrentRow( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
+  mpHistogramLayout = new QVBoxLayout( mChartWidget );
+  mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
+  mChartWidget->setLayout( mpHistogramLayout );
 } // QgsRasterLayerProperties ctor
 
 
@@ -1863,10 +1866,7 @@ void QgsRasterLayerProperties::refreshHistogram()
   mpPlot = new QwtPlot( mChartWidget );
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
-  QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mChartWidget );
-  mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
   mpHistogramLayout->addWidget( mpPlot );
-  mChartWidget->setLayout( mpHistogramLayout );
   mpPlot->setTitle( QObject::tr( "Raster Histogram") );
   mpPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
   // Set axis titles
