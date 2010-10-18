@@ -5867,7 +5867,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    const QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+    QgsVectorDataProvider* dprovider = vlayer->dataProvider();
     bool layerHasSelection = vlayer->selectedFeatureCount() != 0;
 
     mActionSelect->setEnabled( true );
@@ -5881,7 +5881,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
-    mActionLayerSubsetString->setEnabled( true );
 
     if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
     {
@@ -5890,6 +5889,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     if ( dprovider )
     {
+      mActionLayerSubsetString->setEnabled( dprovider->supportsSubsetString() && !vlayer->isEditable() );
+
       //start editing/stop editing
       if ( dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
@@ -6088,6 +6089,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
       return;
     }
+
+    mActionLayerSubsetString->setEnabled( false );
   }
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
