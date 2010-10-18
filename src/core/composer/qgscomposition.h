@@ -85,7 +85,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
-    /**Returns the topmose composer item. Ignores mPaperItem*/
+    /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
     QList<QgsComposerItem*> selectedComposerItems();

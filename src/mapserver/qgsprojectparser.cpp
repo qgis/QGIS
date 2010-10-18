@@ -36,13 +36,34 @@ QgsProjectParser::~QgsProjectParser()
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   QList<QDomElement> layerElems = projectLayerElements();
-  QgsMapLayer* currentLayer = 0;
 
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
 
   if ( layerElems.size() < 1 )
   {
     return;
+  }
+
+  QMap<QString, QgsMapLayer *> layerMap;
+
+  QList<QDomElement>::const_iterator layerIt = layerElems.constBegin();
+  for ( ; layerIt != layerElems.constEnd(); ++layerIt )
+  {
+    QgsMapLayer *layer = createLayerFromElement( *layerIt );
+    if ( layer )
+    {
+      QgsMSDebugMsg( QString( "add layer %1 to map" ).arg( layer->getLayerID() ) );
+      layerMap.insert( layer->getLayerID(), layer );
+    }
+#if QGSMSDEBUG
+    else
+    {
+      QString buf;
+      QTextStream s( &buf );
+      layerIt->save( s, 0 );
+      QgsMSDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
+    }
+#endif
   }
 
   //According to the WMS spec, there can be only one toplevel layer.
@@ -57,7 +78,6 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   QDomText layerParentTitleText = doc.createTextNode( projTitle );
   layerParentTitleElem.appendChild( layerParentTitleText );
   layerParentElem.appendChild( layerParentTitleElem );
-  parentElement.appendChild( layerParentElem );
 
   //Map rectangle. If not empty, this will be set for every layer (instead of the bbox that comes from the data)
   QgsRectangle mapExtent = mapRectangle();
@@ -72,22 +92,110 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
     }
   }
 
-  QMap< QString, QDomElement > layerElemMap; //key: layer id, value: layer dom element ( used to apply legend groups )
+  QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
 
-  QList<QDomElement>::const_iterator layerIt = layerElems.constBegin();
-  for ( ; layerIt != layerElems.constEnd(); ++layerIt )
+  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, mapExtent, mapCRS );
+
+  parentElement.appendChild( layerParentElem );
+}
+
+void QgsProjectParser::addLayers( QDomDocument &doc,
+                                  QDomElement &parentElem,
+                                  const QDomElement &legendElem,
+                                  const QMap<QString, QgsMapLayer *> &layerMap,
+                                  const QStringList &nonIdentifiableLayers,
+                                  const QgsRectangle &mapExtent,
+                                  const QgsCoordinateReferenceSystem &mapCRS ) const
+{
+  QDomNodeList legendChildren = legendElem.childNodes();
+  for ( int i = 0; i < legendChildren.size(); ++i )
   {
-    currentLayer = createLayerFromElement( *layerIt );
-    if ( currentLayer )
+    QDomElement currentChildElem = legendChildren.at( i ).toElement();
+
+    QDomElement layerElem = doc.createElement( "Layer" );
+
+    if ( currentChildElem.tagName() == "legendgroup" )
     {
-      QDomElement currentLayerElem = doc.createElement( "Layer" );
+      QString name = currentChildElem.attribute( "name" );
+      QDomElement nameElem = doc.createElement( "Name" );
+      QDomText nameText = doc.createTextNode( name );
+      nameElem.appendChild( nameText );
+      layerElem.appendChild( nameElem );
+
+      QDomElement titleElem = doc.createElement( "Title" );
+      QDomText titleText = doc.createTextNode( name );
+      titleElem.appendChild( titleText );
+      layerElem.appendChild( titleElem );
+
+      addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, mapExtent, mapCRS );
+
+      // combine bounding boxes of childs (groups/layers)
+
+      QgsRectangle combinedGeographicBBox;
+      QSet<int> combinedCRSSet;
+      bool firstBBox = true;
+      bool firstCRSSet = true;
+
+      QDomNodeList layerChildren = layerElem.childNodes();
+      for ( int j = 0; j < layerChildren.size(); ++j )
+      {
+        QDomElement childElem = layerChildren.at( j ).toElement();
+
+        if ( childElem.tagName() != "Layer" )
+          continue;
+
+        QgsRectangle bbox;
+        if ( exGeographicBoundingBox( childElem, bbox ) )
+        {
+          if ( firstBBox )
+          {
+            combinedGeographicBBox = bbox;
+            firstBBox = false;
+          }
+          else
+          {
+            combinedGeographicBBox.combineExtentWith( &bbox );
+          }
+        }
+
+        //combine crs set
+        QSet<int> crsSet;
+        if ( crsSetForLayer( childElem, crsSet ) )
+        {
+          if ( firstCRSSet )
+          {
+            combinedCRSSet = crsSet;
+            firstCRSSet = false;
+          }
+          else
+          {
+            combinedCRSSet.intersect( crsSet );
+          }
+        }
+      }
+
+      appendCRSElementsToLayer( layerElem, doc, combinedCRSSet.toList() );
+
+      const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( 4326 );
+      appendExGeographicBoundingBox( layerElem, doc, combinedGeographicBBox, groupCRS );
+    }
+    else if ( currentChildElem.tagName() == "legendlayer" )
+    {
+      QString id = layerIdFromLegendLayer( currentChildElem );
+      QgsMapLayer *currentLayer = layerMap[ id ];
+      if ( !currentLayer )
+      {
+        QgsMSDebugMsg( QString( "layer %1 not found" ).arg( id ) );
+        continue;
+      }
+
       if ( nonIdentifiableLayers.contains( currentLayer->getLayerID() ) )
       {
-        currentLayerElem.setAttribute( "queryable", "0" );
+        layerElem.setAttribute( "queryable", "0" );
       }
       else
       {
-        currentLayerElem.setAttribute( "queryable", "1" );
+        layerElem.setAttribute( "queryable", "1" );
       }
 
       QDomElement nameElem = doc.createElement( "Name" );
@@ -95,29 +203,28 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
       //Because the id sometimes contains user/pw information and the name is more descriptive
       QDomText nameText = doc.createTextNode( currentLayer->name() );
       nameElem.appendChild( nameText );
-      currentLayerElem.appendChild( nameElem );
+      layerElem.appendChild( nameElem );
 
       QDomElement titleElem = doc.createElement( "Title" );
       QDomText titleText = doc.createTextNode( currentLayer->name() );
       titleElem.appendChild( titleText );
-      currentLayerElem.appendChild( titleElem );
+      layerElem.appendChild( titleElem );
 
       QDomElement abstractElem = doc.createElement( "Abstract" );
-      currentLayerElem.appendChild( abstractElem );
+      layerElem.appendChild( abstractElem );
 
       //CRS
       QList<int> crsList = createCRSListForLayer( currentLayer );
-      appendCRSElementsToLayer( currentLayerElem, doc, crsList );
-      layerElemMap.insert( currentLayer->getLayerID(), currentLayerElem );
+      appendCRSElementsToLayer( layerElem, doc, crsList );
 
       //Ex_GeographicBoundingBox
       if ( mapExtent.isEmpty() )
       {
-        appendExGeographicBoundingBox( currentLayerElem, doc, currentLayer->extent(), currentLayer->srs() );
+        appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->srs() );
       }
       else
       {
-        appendExGeographicBoundingBox( currentLayerElem, doc, mapExtent, mapCRS );
+        appendExGeographicBoundingBox( layerElem, doc, mapExtent, mapCRS );
       }
 
       //only one default style in project file mode
@@ -130,117 +237,26 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
       styleTitleElem.appendChild( styleTitleText );
       styleElem.appendChild( styleNameElem );
       styleElem.appendChild( styleTitleElem );
-      currentLayerElem.appendChild( styleElem );
+      layerElem.appendChild( styleElem );
     }
-  }
-
-  //apply legend settings (groups and layer in proper order)
-  QList< GroupLayerInfo > groupLayerRelationship = groupLayerRelationshipFromProject();
-  QList< GroupLayerInfo >::const_iterator groupIt = groupLayerRelationship.constBegin();
-  QDomElement layerElem;
-  QString entryName;
-  QList< QString > layerIdList;
-
-  for ( ; groupIt != groupLayerRelationship.constEnd(); ++groupIt )
-  {
-    entryName = groupIt->first;
-    layerIdList = groupIt->second;
-    if ( layerIdList.isEmpty() )
+    else
     {
+      QgsMSDebugMsg( "unexpected child element" );
       continue;
     }
 
-    if ( entryName.isNull() ) //a toplevel layer
-    {
-      layerElem = layerElemMap.take( layerIdList.first() );
-      if ( !layerElem.isNull() )
-      {
-        layerParentElem.appendChild( layerElem );
-      }
-    }
-    else //a group
-    {
-      QDomElement layerGroupElem = doc.createElement( "Layer" );
-      //name
-      QDomElement groupNameElem = doc.createElement( "Name" );
-      QDomText groupNameText = doc.createTextNode( entryName );
-      groupNameElem.appendChild( groupNameText );
-      layerGroupElem.appendChild( groupNameElem );
-      //title
-      QDomElement groupTitleElem = doc.createElement( "Title" );
-      QDomText groupTitleText = doc.createTextNode( entryName );
-      groupTitleElem.appendChild( groupTitleText );
-      layerGroupElem.appendChild( groupTitleElem );
 
-      QgsRectangle combinedGeographicBBox;
-      QSet<int> combinedCRSSet;
-      bool firstBBox = true;
-      bool firstCRSSet = true;
+#if QGSMSDEBUG
+    QString buf;
+    QTextStream s( &buf );
+    layerElem.save( s, 0 );
+    QgsMSDebugMsg( QString( "adding layer: %1" ).arg( buf ) );
+#endif
 
-      QList<QDomElement> childLayerList;
-
-      QList< QString >::const_iterator layerIt = layerIdList.constBegin();
-      for ( ; layerIt != layerIdList.constEnd(); ++layerIt )
-      {
-        layerElem = layerElemMap.take( *layerIt );
-        QgsRectangle layerBBox;
-        QSet<int> layerCRSSet;
-
-        if ( !layerElem.isNull() )
-        {
-          //combine layer bbox with group bbox
-          if ( exGeographicBoundingBox( layerElem, layerBBox ) )
-          {
-            if ( firstBBox )
-            {
-              combinedGeographicBBox = layerBBox;
-              firstBBox = false;
-            }
-            else
-            {
-              combinedGeographicBBox.combineExtentWith( &layerBBox );
-            }
-          }
-
-          //combine crs set
-          if ( crsSetForLayer( layerElem, layerCRSSet ) )
-          {
-            if ( firstCRSSet )
-            {
-              combinedCRSSet = layerCRSSet;
-              firstCRSSet = false;
-            }
-            else
-            {
-              combinedCRSSet.intersect( layerCRSSet );
-            }
-          }
-
-          //and insert layer element under this group element
-          //layerGroupElem.appendChild( layerElem );
-          childLayerList.append( layerElem );
-        }
-      }
-
-      //write CRS elements
-      appendCRSElementsToLayer( layerGroupElem, doc, combinedCRSSet.toList() );
-
-      //write group EX_GeographicBoundingBox
-      const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( 4326 );
-      appendExGeographicBoundingBox( layerGroupElem, doc, combinedGeographicBBox, groupCRS );
-
-      //append child layer elements
-      QList<QDomElement>::const_iterator childIt = childLayerList.constBegin();
-      for ( ; childIt != childLayerList.constEnd(); ++childIt )
-      {
-        layerGroupElem.appendChild( *childIt );
-      }
-
-      //and append Layer element of the group to the document
-      layerParentElem.appendChild( layerGroupElem );
-    }
+    parentElem.appendChild( layerElem );
   }
 }
+
 
 QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching ) const
 {

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Tim Sutton   *
- *   aps02ts@macbuntu   *
+ *   Copyright (C) 2005 by Tim Sutton                                      *
+ *   aps02ts@macbuntu                                                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -62,13 +62,8 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
       NO_ACTION //do nothing
     };
 
-    virtual bool isLeafNode() = 0;
     virtual LEGEND_ITEM_TYPE type() const {return mType;}
-    /**Returns the type of action that will be done if a drag, originating at a certain
-     item type, will be released at this item*/
-    virtual DRAG_ACTION accept( LEGEND_ITEM_TYPE type ) = 0;
-    /**Retrns the type of action that will be done if a legend item is dragged over this item*/
-    virtual DRAG_ACTION accept( const QgsLegendItem* li ) const = 0;
+
     /**Subclasses which allow insertion of other items may implement this method.
        @param theItem legend item to insert into this item
        @param changesettings Some insert actions may change the state of the layers or the map canvas.
@@ -111,7 +106,6 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
     virtual void release( QgsLegendItem* formerChild ) {}
 
   protected:
-    bool mLeafNodeFlag;
     LEGEND_ITEM_TYPE mType;
     /**Stores expanded property when storeAppearanceSettings is called*/
     bool mExpanded;

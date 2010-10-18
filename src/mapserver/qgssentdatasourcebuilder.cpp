@@ -66,10 +66,10 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
     QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), "WFS" );
     if ( !theVectorLayer || !theVectorLayer->isValid() )
     {
-      QgsMSDebugMsg( "vectorLayerFromGML: invalid maplayer" )
+      QgsMSDebugMsg( "invalid maplayer" )
       return 0;
     }
-    QgsMSDebugMsg( "vectorLayerFromGML: returning maplayer" )
+    QgsMSDebugMsg( "returning maplayer" )
 
     layersToRemove.push_back( theVectorLayer ); //make sure the layer gets deleted after each request
 
@@ -84,7 +84,7 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
 
 QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElement& sentRDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
 {
-  QgsMSDebugMsg( "Entering rasterLayerFromSentRDS" )
+  QgsMSDebugMsg( "Entering" )
   QString tempFilePath = createTempFile();
   if ( tempFilePath.isEmpty() )
   {

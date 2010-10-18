@@ -33,8 +33,6 @@ class QgsLegendSymbologyItem : public QgsLegendItem
     QgsLegendSymbologyItem( int pixmapWidth, int pixmapHeight );
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
-    DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
-    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
     int pixmapWidth() const {return mPixmapWidth;}
     int pixmapHeight() const {return mPixmapHeight;}
     void setLegend( QgsLegend* theLegend );

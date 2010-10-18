@@ -31,12 +31,7 @@ class QgsLegendPropertyItem : public QgsLegendItem
 {
   public:
     QgsLegendPropertyItem( QTreeWidgetItem * theItem, QString theString );
-
     ~QgsLegendPropertyItem();
-
-    bool isLeafNode() {return mLeafNodeFlag;}
-    DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
-    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
 };
 
 #endif

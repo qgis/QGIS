@@ -53,7 +53,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
     bool conversionSuccess = false;
     lengthQString = QString( lengthString );
     length = lengthQString.toInt( &conversionSuccess );
-    QgsMSDebugMsg( "qgssoaprequesthandler.cpp: length is: " + lengthQString )
+    QgsMSDebugMsg( "length is: " + lengthQString )
     if ( conversionSuccess )
     {
       input = ( char* )malloc( length + 1 );
@@ -76,24 +76,24 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
       }
       else
       {
-        QgsMSDebugMsg( "qgssoaprequesthandler.cpp: input is NULL " )
+        QgsMSDebugMsg( "input is NULL " )
       }
       free( input );
     }
     else
     {
-      QgsMSDebugMsg( "qgssoaprequesthandler.cpp: could not convert CONTENT_LENGTH to int" )
+      QgsMSDebugMsg( "could not convert CONTENT_LENGTH to int" )
     }
   }
 
-  //QgsMSDebugMsg("qgssoaprequesthandler.cpp: input string is: " + inputString)
+  //QgsMSDebugMsg("input string is: " + inputString)
 
   //inputString to QDomDocument
   QDomDocument inputXML;
   QString errorMsg;
   if ( !inputXML.setContent( inputString, true, &errorMsg ) )
   {
-    QgsMSDebugMsg( "qgssoaprequesthandler.cpp: soap request parse error" )
+    QgsMSDebugMsg( "soap request parse error" )
     QgsMSDebugMsg( "error message: " + errorMsg )
     QgsMSDebugMsg( "the xml string was:" )
     QgsMSDebugMsg( inputString )
@@ -114,7 +114,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   QDomNodeList envelopeNodeList = inputXML.elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
   if ( envelopeNodeList.size() < 1 )
   {
-    QgsMSDebugMsg( "qgssoaprequesthandler.cpp: Envelope element not found" )
+    QgsMSDebugMsg( "Envelope element not found" )
     throw QgsMapServiceException( "SOAPError", "Element <Envelope> not found" );
     return result;
   }
@@ -122,7 +122,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   QDomNodeList bodyNodeList = envelopeNodeList.item( 0 ).toElement().elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
   if ( bodyNodeList.size() < 1 )
   {
-    QgsMSDebugMsg( "qgssoaprequesthandler.cpp: body node not found" )
+    QgsMSDebugMsg( "body node not found" )
     throw QgsMapServiceException( "SOAPError", "Element <Body> not found" );
     return result;
   }
@@ -279,7 +279,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
         if ( !common.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
-          QgsMSDebugMsg( "qgissoaprequesthandler.cpp: external orchestra common capabilities not found" )
+          QgsMSDebugMsg( "external orchestra common capabilities not found" )
         }
         else
         {
@@ -288,7 +288,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           int errorLineNo;
           if ( !externCapDoc.setContent( &common, false, &parseError, &errorLineNo ) )
           {
-            QgsMSDebugMsg( "qgissoaprequesthandler.cpp: parse error at setting content of external orchestra common capabilities: "\
+            QgsMSDebugMsg( "parse error at setting content of external orchestra common capabilities: "
                            + parseError + " at line " + QString::number( errorLineNo ) );
             common.close();
           }
@@ -353,7 +353,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
         if ( !wmsService.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
-          QgsMSDebugMsg( "qgissoaprequesthandler.cpp: external wms service capabilities not found" )
+          QgsMSDebugMsg( "external wms service capabilities not found" )
         }
         else
         {
@@ -362,7 +362,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           int errorLineNo;
           if ( !externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
           {
-            QgsMSDebugMsg( "qgissoaprequesthandler.cpp: parse error at setting content of external wms service capabilities: "\
+            QgsMSDebugMsg( "parse error at setting content of external wms service capabilities: "
                            + parseError + " at line " + QString::number( errorLineNo ) )
             wmsService.close();
           }
@@ -400,7 +400,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
         if ( !common.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
-          QgsMSDebugMsg( "qgissoaprequesthandler.cpp: external orchestra common capabilities not found" )
+          QgsMSDebugMsg( "external orchestra common capabilities not found" )
         }
         else
         {
@@ -409,7 +409,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           int errorLineNo;
           if ( !externCapDoc.setContent( &common, false, &parseError, &errorLineNo ) )
           {
-            QgsMSDebugMsg( "qgissoaprequesthandler.cpp: parse error at setting content of external orchestra common capabilities: "\
+            QgsMSDebugMsg( "parse error at setting content of external orchestra common capabilities: "
                            + parseError + " at line " + QString::number( errorLineNo ) )
             common.close();
           }
@@ -702,7 +702,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( std::map<QString, QStri
 
 int QgsSOAPRequestHandler::sendSOAPWithAttachments( QImage* img ) const
 {
-  QgsMSDebugMsg( "In sendSOAPWithAttachments" )
+  QgsMSDebugMsg( "Entering." )
   //create response xml document
   QDomDocument xmlResponse; //response xml, save this into mimeString
   QDomElement envelopeElement = xmlResponse.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
@@ -760,7 +760,7 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   QFile theFile;
   QDir tmpDir;
 
-  QgsMSDebugMsg( "Entering sendUrlToFile" )
+  QgsMSDebugMsg( "Entering." )
 
   if ( findOutHostAddress( uri ) != 0 )
   {

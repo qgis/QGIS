@@ -37,14 +37,3 @@ QgsLegendPropertyGroup::~QgsLegendPropertyGroup()
 {
 
 }
-
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept( LEGEND_ITEM_TYPE type )
-{
-  return NO_ACTION;
-}
-
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept( const QgsLegendItem* li ) const
-{
-  return NO_ACTION;
-}
-

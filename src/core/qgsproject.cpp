@@ -744,13 +744,12 @@ bool QgsProject::read( QFileInfo const &file )
   imp_->file.setFileName( file.filePath() );
 
   return read();
-} // QgsProject::read( QFile & file )
+} // QgsProject::read
 
 
 
 /*
-   @note it's presumed that the caller has already reset the map canvas, map
-   registry, and legend
+   @note it's presumed that the caller has already reset the map canvas, map registry, and legend
 */
 bool QgsProject::read()
 {
@@ -775,9 +774,10 @@ bool QgsProject::read()
   if ( !doc->setContent( &imp_->file, &errorMsg, &line, &column ) )
   {
     // want to make this class as GUI independent as possible; so commented out
-    // QMessageBox::critical( 0x0, "Project File Read Error",
-    // errorMsg + " at line " + QString::number( line ) +
-    // " column " + QString::number( column ) );
+#if 0
+    QMessageBox::critical( 0, tr( "Project File Read Error" ),
+                           tr( "%1 at line %2 column %3" ).arg( errorMsg ).arg( line ).arg( column ) );
+#endif
 
     QString errorString = tr( "Project file read error: %1 at line %2 column %3" )
                           .arg( errorMsg ).arg( line ).arg( column );

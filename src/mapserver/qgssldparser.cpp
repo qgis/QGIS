@@ -407,7 +407,7 @@ QgsRenderer* QgsSLDParser::rendererFromUserStyle( const QDomElement& userStyleEl
     return 0;
   }
 
-  QgsMSDebugMsg( "Entering rendererFromUserStyle" )
+  QgsMSDebugMsg( "Entering" )
 
   QgsSLDRenderer* theRenderer = new QgsSLDRenderer( vec->geometryType() );
   theRenderer->setScaleDenominator( mScaleDenominator );
@@ -438,7 +438,7 @@ QgsRenderer* QgsSLDParser::rendererFromUserStyle( const QDomElement& userStyleEl
 
 bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleElement, QgsRasterLayer* r ) const
 {
-  QgsMSDebugMsg( "Entering rasterSymbologyFromUserStyle" )
+  QgsMSDebugMsg( "Entering" )
   if ( !r )
   {
     return false;
@@ -979,7 +979,7 @@ QDomElement QgsSLDParser::findUserStyleElement( const QDomElement& userLayerElem
 
 int QgsSLDParser::layersAndStyles( QStringList& layers, QStringList& styles ) const
 {
-  QgsMSDebugMsg( "Entering QgsSLDParser::layersAndStyles" )
+  QgsMSDebugMsg( "Entering." )
   layers.clear();
   styles.clear();
 
@@ -1075,7 +1075,7 @@ int QgsSLDParser::layersAndStyles( QStringList& layers, QStringList& styles ) co
 
 QgsMapLayer* QgsSLDParser::mapLayerFromUserLayer( const QDomElement& userLayerElem, const QString& layerName, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "mapLayerFromUserLayer" )
+  QgsMSDebugMsg( "Entering." )
   QgsMSLayerBuilder* layerBuilder = 0;
   QDomElement builderRootElement;
 
@@ -1191,7 +1191,7 @@ QgsMapLayer* QgsSLDParser::mapLayerFromUserLayer( const QDomElement& userLayerEl
 
 QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement gmlRootElement ) const
 {
-  QgsMSDebugMsg( "Entering vectorLayerFromSentVDS" )
+  QgsMSDebugMsg( "Entering." )
 
   //QString tempFilePath = QgsMSUtils::createTempFilePath();
   //QFile tempFile(tempFilePath);
@@ -1212,10 +1212,10 @@ QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement gmlRootEleme
   QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), "WFS" );
   if ( !theVectorLayer || !theVectorLayer->isValid() )
   {
-    QgsMSDebugMsg( "vectorLayerFromGML: invalid maplayer" )
+    QgsMSDebugMsg( "invalid maplayer" )
     return 0;
   }
-  QgsMSDebugMsg( "vectorLayerFromGML: returning maplayer" )
+  QgsMSDebugMsg( "returning maplayer" )
 
   mLayersToRemove.push_back( theVectorLayer ); //make sure the layer gets deleted after each request
 
@@ -1224,7 +1224,7 @@ QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement gmlRootEleme
 
 QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const
 {
-  QgsMSDebugMsg( "In method QgsSLDParser::contourLayerFromRaster" )
+  QgsMSDebugMsg( "Entering." )
 
   if ( !rasterLayer )
   {
@@ -1793,7 +1793,6 @@ int QgsSLDParser::diagramItemsFromCategorize( const QDomElement& categorizeEleme
     return 4;
   }
 
-  int currentSize;
   QVariant currentThreshold;
   QgsDiagramItem currentItem;
 

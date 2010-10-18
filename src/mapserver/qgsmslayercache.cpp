@@ -39,7 +39,7 @@ QgsMSLayerCache::QgsMSLayerCache()
 
 QgsMSLayerCache::~QgsMSLayerCache()
 {
-  QgsMSDebugMsg( "Destructor QgsMSLayerCache: removing all entries" )
+  QgsMSDebugMsg( "removing all entries" )
   QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it;
   for ( it = mEntries.begin(); it != mEntries.end(); ++it )
   {
@@ -147,7 +147,7 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
     QFile removeFile( *it );
     if ( !removeFile.remove() )
     {
-      QgsMSDebugMsg( "QgsMSLayerCache::freeEntryRessources: could not remove file: " + *it )
+      QgsMSDebugMsg( "could not remove file: " + *it )
       QgsMSDebugMsg( removeFile.errorString() )
     }
   }

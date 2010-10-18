@@ -18,7 +18,7 @@
 #ifndef QGSLEGENDVECTORSYMBOLOGYITEM_H
 #define QGSLEGENDVECTORSYMBOLOGYITEM_H
 
-#include <list>
+#include <QList>
 #include "qgslegendsymbologyitem.h"
 
 class QgsSymbol;
@@ -33,7 +33,7 @@ class QgsLegendVectorSymbologyItem: public QgsLegendSymbologyItem
     void handleDoubleClickEvent();
   private:
     /**Collection of pointers to the vector layer symbols associated with this item*/
-    std::list<QgsSymbol*> mSymbols;
+    QList<QgsSymbol*> mSymbols;
 };
 
 #endif

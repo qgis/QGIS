@@ -37,12 +37,9 @@ class QgsLegendGroup : public QgsLegendItem
     QgsLegendGroup( QString name );
     ~QgsLegendGroup();
 
-    QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
-    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
-    bool isLeafNode();
     bool insert( QgsLegendItem* theItem );
-    /**Returns all legend layers under this group*/
-    std::list<QgsLegendLayer*> legendLayers();
+    /**Returns all legend layers under this group (including those of subgroups by default)*/
+    QList<QgsLegendLayer*> legendLayers( bool recurse = true );
     /**Goes through all the legendlayers and sets check state to checked/partially checked/unchecked*/
     void updateCheckState();
 };

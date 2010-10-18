@@ -110,6 +110,14 @@ class QgsProjectParser: public QgsConfigParser
     QList< GroupLayerInfo > groupLayerRelationshipFromProject() const;
     /**Returns the layer id under a <legendlayer> tag in the QGIS projectfile*/
     QString layerIdFromLegendLayer( const QDomElement& legendLayer ) const;
+
+    void addLayers( QDomDocument &doc,
+                    QDomElement &parentLayer,
+                    const QDomElement &legendElem,
+                    const QMap<QString, QgsMapLayer *> &layerMap,
+                    const QStringList &nonIdentifiableLayers,
+                    const QgsRectangle &mapExtent,
+                    const QgsCoordinateReferenceSystem &mapCRS ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

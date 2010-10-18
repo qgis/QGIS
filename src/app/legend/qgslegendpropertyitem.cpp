@@ -34,15 +34,3 @@ QgsLegendPropertyItem::~QgsLegendPropertyItem()
 {
   mType = LEGEND_PROPERTY_ITEM;
 }
-
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyItem::accept( LEGEND_ITEM_TYPE type )
-{
-  return NO_ACTION;
-}
-
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyItem::accept( const QgsLegendItem* li ) const
-{
-  return NO_ACTION;
-}
-
-

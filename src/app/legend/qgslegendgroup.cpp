@@ -57,47 +57,10 @@ QgsLegendGroup::~QgsLegendGroup()
 {}
 
 
-bool QgsLegendGroup::isLeafNode()
-{
-  return mLeafNodeFlag;
-}
-
-QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept( LEGEND_ITEM_TYPE type )
-{
-  if ( type == LEGEND_GROUP )
-  {
-    return REORDER;
-  }
-  if ( type == LEGEND_LAYER )
-  {
-    return INSERT;
-  }
-  else
-  {
-    return NO_ACTION;
-  }
-}
-
-QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept( const QgsLegendItem* li ) const
-{
-  if ( li )
-  {
-    LEGEND_ITEM_TYPE type = li->type();
-    if ( type == LEGEND_GROUP )
-    {
-      return REORDER;
-    }
-    if ( type == LEGEND_LAYER )
-    {
-      return INSERT;
-    }
-  }
-  return NO_ACTION;
-}
-
 bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {
-  if ( theItem->type() == LEGEND_LAYER )
+  if ( theItem->type() == LEGEND_GROUP ||
+       theItem->type() == LEGEND_LAYER )
   {
     // Always insert at top of list
     insertChild( 0, theItem );
@@ -107,15 +70,24 @@ bool QgsLegendGroup::insert( QgsLegendItem* theItem )
   return true;
 }
 
-std::list<QgsLegendLayer*> QgsLegendGroup::legendLayers()
+QList<QgsLegendLayer*> QgsLegendGroup::legendLayers( bool recurse )
 {
-  std::list<QgsLegendLayer*> result;
+  QList<QgsLegendLayer*> result;
   for ( int i = 0; i < childCount(); ++i )
   {
-    QgsLegendLayer* childItem = dynamic_cast<QgsLegendLayer *>( child( i ) );
-    if ( childItem )
+    QgsLegendLayer *layer = dynamic_cast<QgsLegendLayer *>( child( i ) );
+    if ( layer )
     {
-      result.push_back( childItem );
+      result.push_back( layer );
+    }
+
+    if ( !recurse )
+      continue;
+
+    QgsLegendGroup *group = dynamic_cast<QgsLegendGroup *>( child( i ) );
+    if ( group )
+    {
+      result << group->legendLayers( true );
     }
   }
   return result;
@@ -123,17 +95,28 @@ std::list<QgsLegendLayer*> QgsLegendGroup::legendLayers()
 
 void QgsLegendGroup::updateCheckState()
 {
-  std::list<QgsLegendLayer*> llayers = legendLayers();
-  if ( llayers.size() == 0 )
+  QList<QgsLegendItem *> elements;
+
+  for ( int i = 0; i < childCount(); i++ )
   {
-    return;
+    QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( child( i ) );
+
+    if ( !li )
+      continue;
+
+    if ( dynamic_cast<QgsLegendGroup *>( li ) || dynamic_cast<QgsLegendLayer *>( li ) )
+    {
+      elements << li;
+    }
   }
 
-  std::list<QgsLegendLayer*>::iterator iter = llayers.begin();
-  Qt::CheckState theState = ( *iter )->checkState( 0 );
-  for ( ; iter != llayers.end(); ++iter )
+  if ( elements.isEmpty() )
+    return;
+
+  Qt::CheckState theState = elements[0]->checkState( 0 );
+  foreach( QgsLegendItem *li, elements )
   {
-    if ( theState != ( *iter )->checkState( 0 ) )
+    if ( theState != li->checkState( 0 ) )
     {
       theState = Qt::PartiallyChecked;
       break;

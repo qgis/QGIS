@@ -20,10 +20,9 @@
 #ifndef QGSLEGEND_H
 #define QGSLEGEND_H
 
-#include <deque>
-#include <map>
-#include <set>
 #include <QTreeWidget>
+#include <QPair>
+#include <set>
 
 class QgsLegendGroup;
 class QgsLegendLayer;
@@ -88,7 +87,6 @@ class QgsLegend : public QTreeWidget
     // Previous location raised a warning in msvc as the forward
     // declaration was public while the definition was private
     class QgsLegendPixmaps;
-
 
   public:
     /*! Constructor.
@@ -162,7 +160,7 @@ class QgsLegend : public QTreeWidget
     void removeItem( QTreeWidgetItem* item );
 
     /**Returns the ids of the layers contained in this legend. The order is bottom->top*/
-    std::deque<QString> layerIDs();
+    QStringList layerIDs();
 
     /**Updates layer set of map canvas*/
     void updateMapCanvasLayerSet();
@@ -191,8 +189,9 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
-
     void updateCheckStates( QTreeWidgetItem* item, Qt::CheckState state ) { item->setData( 0, Qt::UserRole, state ); }
+
+    void updateGroupCheckStates( QTreeWidgetItem *item );
 
   public slots:
 
@@ -270,6 +269,7 @@ class QgsLegend : public QTreeWidget
 
     /** Remove selected layers */
     void removeSelectedLayers();
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -312,13 +312,6 @@ class QgsLegend : public QTreeWidget
     void mouseReleaseEvent( QMouseEvent * e );
     void mouseDoubleClickEvent( QMouseEvent* e );
 
-    /**Stores the necessary information about the position of an item in the hierarchy. Afterwards,
-    this item may be moved back to the original position with resetToInitialPosition()*/
-    void storeInitialPosition( QTreeWidgetItem* li );
-
-    /**Moves an item back to the position where storeInitialPosition has been called*/
-    void resetToInitialPosition( QTreeWidgetItem* li );
-
     /**Returns the legend layer to which a map layer belongs to*/
     QgsLegendLayer* findLegendLayer( const QString& layerKey );
 
@@ -334,18 +327,23 @@ class QgsLegend : public QTreeWidget
     /**This function compares the layer order before a drag with the current layer ordering and triggers a canvas repaint if it has changed*/
     bool checkLayerOrderUpdate();
 
-    /**The target that the mouse is over when dragging */
+    // mouse is pressed
+    bool mMousePressedFlag;
+
+    // position of mouse when it is pressed at the start of a drag event.
+    QPoint mLastPressPos;
+
+    // layer our prior to move
+    QStringList mLayersPriorToMove;
+
+    // keep track of the items being dragged
+    QList< QTreeWidgetItem * > mItemsBeingMoved;
+
+    // The target that the mouse is over when dragging
     QTreeWidgetItem *mDropTarget;
 
-    enum DROP_ACTION_TYPE
-    {
-      BEFORE,
-      AFTER,
-      INTO_GROUP,
-      NO_ACTION
-    };
-    /** Set when mouse is moved over different kind of items, depending opn what they accept() */
-    DROP_ACTION_TYPE mDropAction;
+    // The action when the mouse is released
+    enum { BEFORE, INSERT, AFTER } mDropAction;
 
     /** Hide the line that indicates insertion position */
     void hideLine();
@@ -374,8 +372,8 @@ class QgsLegend : public QTreeWidget
     void expandAll();
     /**Sets all listview items to closed*/
     void collapseAll();
-    /**Just for a test*/
     void handleItemChange( QTreeWidgetItem* item, int row );
+    void propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
     /**Calls openPersistentEditor for the current item*/
@@ -384,6 +382,8 @@ class QgsLegend : public QTreeWidget
     void makeToTopLevelItem();
 
   private:
+    bool readXML( QgsLegendGroup *parent, const QDomNode &node );
+    bool writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDocument &document );
 
     /*! Prevent the copying of QgsLegends
     * @todo See if this is really required - we may want multiple map, canvas and
@@ -397,38 +397,6 @@ class QgsLegend : public QTreeWidget
              legend support at some stage in the future.
      */
     QgsLegend & operator=( QgsLegend const & );
-
-    /*!
-     * Position of mouse when it is pressed at the start of a drag event.
-     */
-    QPoint mLastPressPos;
-
-    /**True if the mouse is pressed*/
-    bool mMousePressedFlag;
-
-    /// keep track of the Item being dragged
-    QTreeWidgetItem* mItemBeingMoved;
-
-    /*!
-     * Position in the list of the item being moved as it was at the start of a drag event.
-     * An item at the top of the list will be 0 and each successive item below it
-     * will be 1,2 3 etc... regardless of nesting level.
-     */
-    int mItemBeingMovedOrigPos;
-
-    /**Information needed by 'storeInitialPosition' and 'resetToInitialPosition'*/
-    enum HIERARCHY_POSITION_TYPE
-    {
-      FIRST_ITEM,
-      FIRST_CHILD,
-      YOUNGER_SIBLING
-    };
-    HIERARCHY_POSITION_TYPE mRestoreInformation;
-    QTreeWidgetItem* mRestoreItem;
-
-    /**Stores the layer ordering before a mouse Move. After the move, this is used to
-     decide if the mapcanvas really has to be refreshed*/
-    std::deque<QString> mLayersPriorToMove;
 
     /*!
      * A function to determine how far down in the list an item is (starting with one for the first Item).
@@ -471,6 +439,10 @@ class QgsLegend : public QTreeWidget
 
     //! Widget that holds the indicator line //
     QWidget *mInsertionLine;
+
+#ifdef QGISDEBUG
+    void showItem( QString msg, QTreeWidgetItem *item );
+#endif
 
   signals:
     void itemMoved( QModelIndex oldIndex, QModelIndex newIndex );

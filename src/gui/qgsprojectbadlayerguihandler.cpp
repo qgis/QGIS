@@ -13,10 +13,8 @@ QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 {
 }
 
-
 void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom )
 {
-
   QgsDebugMsg( QString( "%1 bad layers found" ).arg( layers.size() ) );
 
   // make sure we have arrow cursor (and not a wait cursor)
@@ -38,7 +36,6 @@ void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDom
 
   QApplication::restoreOverrideCursor();
 }
-
 
 QgsProjectBadLayerGuiHandler::DataType QgsProjectBadLayerGuiHandler::dataType( QDomNode & layerNode )
 {

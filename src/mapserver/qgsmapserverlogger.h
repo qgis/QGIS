@@ -22,7 +22,7 @@
 #include <QTextStream>
 
 #ifdef QGSMSDEBUG
-#define QgsMSDebugMsg(str) QgsMapServerLogger::instance()->printMessage(str);
+#define QgsMSDebugMsg(str) QgsMapServerLogger::instance()->printMessage(__FILE__, __FUNCTION__, __LINE__, str);
 #else
 #define QgsMSDebugMsg(str)
 #endif
@@ -41,6 +41,10 @@ class QgsMapServerLogger
     void printMessage( const QString& message );
     /**Prints only one char*/
     void printChar( QChar c );
+#ifdef QGSMSDEBUG
+    /**Print a message to the Logfile*/
+    void printMessage( const char *file, const char *function, int line, const QString& message );
+#endif
   private:
     static QgsMapServerLogger* mInstance;
     QgsMapServerLogger();

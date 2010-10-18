@@ -170,18 +170,18 @@ int main( int argc, char * argv[] )
     {
       if ( strcmp( requestMethod, "POST" ) == 0 )
       {
-        QgsMSDebugMsg( "qgis_wms_serv.cpp: Creating QgsSOAPRequestHandler" )
+        QgsMSDebugMsg( "Creating QgsSOAPRequestHandler" )
         theRequestHandler = new QgsSOAPRequestHandler();
       }
       else
       {
-        QgsMSDebugMsg( "qgis_wms_serv.cpp: Creating QgsGetRequestHandler" )
+        QgsMSDebugMsg( "Creating QgsGetRequestHandler" )
         theRequestHandler = new QgsGetRequestHandler();
       }
     }
     else
     {
-      QgsMSDebugMsg( "qgis_wms_serv.cpp: Creating QgsGetRequestHandler" )
+      QgsMSDebugMsg( "Creating QgsGetRequestHandler" )
       theRequestHandler = new QgsGetRequestHandler();
     }
 
@@ -193,7 +193,7 @@ int main( int argc, char * argv[] )
     }
     catch ( QgsMapServiceException& e )
     {
-      QgsMSDebugMsg( "qgis_wms_serv.cpp: An exception was thrown during input parsing" )
+      QgsMSDebugMsg( "An exception was thrown during input parsing" )
       theRequestHandler->sendServiceException( e );
       continue;
     }
@@ -209,6 +209,7 @@ int main( int argc, char * argv[] )
     QgsConfigParser* adminConfigParser = configCache.searchConfiguration( configFilePath );
     if ( !adminConfigParser )
     {
+      QgsMSDebugMsg( "parse error on config file " + configFilePath );
       theRequestHandler->sendServiceException( QgsMapServiceException( "", "Configuration file problem" ) );
       continue;
     }
@@ -221,7 +222,7 @@ int main( int argc, char * argv[] )
     if ( serviceIt == parameterMap.end() )
     {
       //tell the user that service parameter is mandatory
-      QgsMSDebugMsg( "qgis_wms_serv.cpp: unable to find 'SERVICE' parameter, exiting..." )
+      QgsMSDebugMsg( "unable to find 'SERVICE' parameter, exiting..." )
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
@@ -246,7 +247,7 @@ int main( int argc, char * argv[] )
     if ( requestIt == parameterMap.end() )
     {
       //do some error handling
-      QgsMSDebugMsg( "qgis_wms_serv.cpp: unable to find 'REQUEST' parameter, exiting..." )
+      QgsMSDebugMsg( "unable to find 'REQUEST' parameter, exiting..." )
       theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
       delete theRequestHandler;
       delete theServer;
@@ -267,7 +268,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      QgsMSDebugMsg( "qgis_wms_serv.cpp: sending GetCapabilities response" )
+      QgsMSDebugMsg( "sending GetCapabilities response" )
       theRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
       delete theRequestHandler;
       delete theServer;
@@ -291,13 +292,13 @@ int main( int argc, char * argv[] )
 
       if ( result )
       {
-        QgsMSDebugMsg( "qgis_wms_serv.cpp: Sending GetMap response" )
+        QgsMSDebugMsg( "Sending GetMap response" )
         theRequestHandler->sendGetMapResponse( serviceIt->second, result );
       }
       else
       {
         //do some error handling
-        QgsMSDebugMsg( "qgis_wms_serv.cpp: result image is 0" )
+        QgsMSDebugMsg( "result image is 0" )
       }
       delete result;
       delete theRequestHandler;
@@ -367,13 +368,13 @@ int main( int argc, char * argv[] )
 
       if ( result )
       {
-        QgsMSDebugMsg( "qgis_wms_serv.cpp: Sending GetLegendGraphics response" )
+        QgsMSDebugMsg( "Sending GetLegendGraphics response" )
         //sending is the same for GetMap and GetLegendGraphics
         theRequestHandler->sendGetMapResponse( serviceIt->second, result );
       }
       else
       {
-        QgsMSDebugMsg( "qgis_wms_serv.cpp: Error, 0 image in GetLegendGraphics" )
+        QgsMSDebugMsg( "Error, 0 image in GetLegendGraphics" )
       }
       delete result;
       delete theRequestHandler;
