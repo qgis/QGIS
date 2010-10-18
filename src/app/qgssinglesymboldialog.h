@@ -75,7 +75,7 @@ class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBa
     void selectOutlineColor();
     void selectFillColor();
     void selectTextureImage();
-    void symbolChanged( QListWidgetItem * current, QListWidgetItem * previous );
+    void symbolChanged( const QModelIndex &current, const QModelIndex &previous );
   private:
     /** Default constructor is private, do not use this */
     QgsSingleSymbolDialog();
