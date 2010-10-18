@@ -15,15 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <cassert>
 #include "qgscoordinatetransform.h"
+#include "qgsmessageoutput.h"
 #include "qgslogger.h"
 
 //qt includes
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
-#include "qgslogger.h"
+#include <QSettings>
+#include <QStringList>
+#include <QFileInfo>
+#include <QSet>
 
 extern "C"
 {
@@ -33,10 +36,7 @@ extern "C"
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
 
-
-
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceCRS(), mDestCRS()
-
 {
   setFinder();
 }
@@ -45,6 +45,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     const QgsCoordinateReferenceSystem& dest )
 {
   setFinder();
+
   mSourceCRS = source;
   mDestCRS = dest;
   initialise();
@@ -315,7 +316,7 @@ void QgsCoordinateTransform::transformInPlace( std::vector<double>& x,
   if ( mShortCircuit || !mInitialisedFlag )
     return;
 
-  assert( x.size() == y.size() );
+  Q_ASSERT( x.size() == y.size() );
 
   // Apparently, if one has a std::vector, it is valid to use the
   // address of the first element in the vector as a pointer to an
@@ -457,8 +458,8 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   }
   else
   {
-    assert( mSourceProjection != 0 );
-    assert( mDestinationProjection != 0 );
+    Q_ASSERT( mSourceProjection != 0 );
+    Q_ASSERT( mDestinationProjection != 0 );
     projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );
     dir = tr( "forward transform" );
   }
@@ -531,7 +532,6 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
 
 bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 {
-
   QDomElement myNodeElement = theNode.toElement();
   QDomElement myTransformElement  = theDoc.createElement( "coordinatetransform" );
 
@@ -548,29 +548,51 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   return true;
 }
 
-const char *finder( const char *name )
-{
-  QString proj;
-#ifdef WIN32
-  proj = QApplication::applicationDirPath()
-         + "/share/proj/" + QString( name );
-#endif
-  return proj.toUtf8();
-}
-
 void QgsCoordinateTransform::setFinder()
 {
-#ifdef WIN32
-  // Attention! It should be possible to set PROJ_LIB
-  // but it can happen that it was previously set by installer
-  // (version 0.7) and the old installation was deleted
-
-  // Another problem: PROJ checks if pj_finder was set before
-  // PROJ_LIB environment variable. pj_finder is probably set in
-  // GRASS gproj library when plugin is loaded, consequently
-  // PROJ_LIB is ignored
-
   pj_set_finder( finder );
-#endif
 }
 
+const char *QgsCoordinateTransform::finder( const char *name )
+{
+  QSettings settings;
+  QStringList paths = settings.value( "projSearchPaths" ).toStringList();
+
+  if ( getenv( "PROJ_LIB" ) )
+  {
+    paths << getenv( "PROJ_LIB" );
+  }
+
+#ifdef WIN32
+  paths << QApplication::applicationDirPath() + "/share/proj";
+#endif
+
+  foreach( QString path, paths )
+  {
+    QFileInfo fi( QString( "%1/%2" ).arg( path ).arg( name ) );
+    if ( fi.exists() )
+      return fi.canonicalFilePath().toUtf8();
+  }
+
+  if ( QString( name ).endsWith( ".gsb", Qt::CaseInsensitive ) )
+  {
+    static QSet<QString> missing;
+
+    if ( !missing.contains( name ) )
+    {
+      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+      output->setTitle( "Grid transformation missing" );
+      output->setMessage( tr( "PROJ.4 file %1 not found in any of these directories:\n\n"
+                              "%2\n\n"
+                              "Note: This message won't reappear for this file in this session." )
+                          .arg( name )
+                          .arg( paths.join( "\n" ) ),
+                          QgsMessageOutput::MessageText );
+      output->showMessage();
+    }
+
+    missing << name;
+  }
+
+  return name;
+}
