@@ -284,6 +284,7 @@ void QgsQueryBuilder::on_btnOr_clicked()
 void QgsQueryBuilder::clear()
 {
   txtSQL->clear();
+  mLayer->setSubsetString( "" );
 }
 
 void QgsQueryBuilder::on_btnILike_clicked()

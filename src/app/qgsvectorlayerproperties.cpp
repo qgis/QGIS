@@ -289,6 +289,12 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
 void QgsVectorLayerProperties::toggleEditing()
 {
   emit toggleEditing( layer );
+
+  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() && !layer->isEditable() );
+  if ( layer->isEditable() )
+  {
+    pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
+  }
 }
 
 void QgsVectorLayerProperties::attributeAdded( int idx )
@@ -462,7 +468,11 @@ void QgsVectorLayerProperties::reset( void )
   // on the builder. If the ability to enter a query directly into the box is required,
   // a mechanism to check it must be implemented.
   txtSubsetSQL->setEnabled( false );
-  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() );
+  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() && !layer->isEditable() );
+  if ( layer->isEditable() )
+  {
+    pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
+  }
 
   //get field list for display field combo
   const QgsFieldMap& myFields = layer->pendingFields();
