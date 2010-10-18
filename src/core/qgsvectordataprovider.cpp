@@ -26,9 +26,9 @@
 #include "qgslogger.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
-    : QgsDataProvider( uri ),
-    mCacheMinMaxDirty( true ),
-    mFetchFeaturesWithoutGeom( true )
+    : QgsDataProvider( uri )
+    , mCacheMinMaxDirty( true )
+    , mFetchFeaturesWithoutGeom( true )
 {
   QSettings settings;
   setEncoding( settings.value( "/UI/encoding", QString( "System" ) ).toString() );
