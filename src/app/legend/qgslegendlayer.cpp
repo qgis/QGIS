@@ -57,8 +57,19 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     mLyr( layer )
 {
   mType = LEGEND_LAYER;
-  setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+
+  Qt::ItemFlags flags = Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
+  {
+    flags |= Qt::ItemIsUserCheckable;
+  }
+ 
+  setFlags( flags );
+
   setCheckState( 0, Qt::Checked );
+
   setText( 0, layer->name() );
   setupFont();
 
@@ -90,6 +101,14 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
 QgsLegendLayer::~QgsLegendLayer()
 {
   mType = LEGEND_LAYER;
+}
+
+void QgsLegendLayer::setCheckState( int column, Qt::CheckState state )
+{
+  if( flags() & Qt::ItemIsUserCheckable )
+  {
+    QTreeWidgetItem::setCheckState( column, state );
+  }
 }
 
 void QgsLegendLayer::setupFont() //private method

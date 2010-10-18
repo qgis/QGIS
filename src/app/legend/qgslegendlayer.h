@@ -73,6 +73,9 @@ class QgsLegendLayer : public QgsLegendItem
      the name can be passed to the constructor of QgsLegendLayer*/
     static QString nameFromLayer( QgsMapLayer* layer );
 
+    /** set check state, but only if user checkable */
+    void setCheckState( int column, Qt::CheckState state );
+
   public slots:
 
     /**Toggle show in overview*/
