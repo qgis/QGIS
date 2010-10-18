@@ -30,10 +30,47 @@
 #include <QPainter>
 #include <QImage>
 #include <QFileDialog>
-#include <QListWidgetItem>
 #include <QKeyEvent>
+#include <QAbstractListModel>
 
 #define DO_NOT_USE_STR "<off>"
+
+
+class QgsMarkerListModel : public QAbstractListModel
+{
+  public:
+    QgsMarkerListModel( QObject* parent ) : QAbstractListModel( parent )
+    {
+      mMarkers = QgsMarkerCatalogue::instance()->list();
+    }
+
+    int rowCount( const QModelIndex & parent = QModelIndex() ) const
+    {
+      return mMarkers.size();
+    }
+
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const
+    {
+      QString marker = mMarkers.at( index.row() );
+
+      if ( role == Qt::DecorationRole ) // icon
+      {
+        QPen pen( QColor( 0, 0, 255 ) );
+        QBrush brush( QColor( 220, 220, 220 ), Qt::SolidPattern );
+        return QPixmap::fromImage( QgsMarkerCatalogue::instance()->imageMarker( marker, 18, pen, brush ) );
+      }
+      else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
+      {
+        return marker;
+      }
+
+      return QVariant();
+    }
+
+  protected:
+    QStringList mMarkers;
+};
+
 
 QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer( 0 )
 {
@@ -71,8 +108,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
   connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( lstSymbols, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
-           this, SLOT( symbolChanged( QListWidgetItem *, QListWidgetItem * ) ) );
+  connect( lstSymbols, SIGNAL( currentChanged( const QModelIndex & , const QModelIndex & ) ),
+           this, SLOT( symbolChanged( const QModelIndex & , const QModelIndex & ) ) );
   connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mPointSizeUnitsCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mRotationClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
@@ -95,32 +132,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
 
 void QgsSingleSymbolDialog::refreshMarkers()
 {
-  lstSymbols->blockSignals( true );
-  lstSymbols->clear();
-
-  QPen pen( QColor( 0, 0, 255 ) );
-  QBrush brush( QColor( 220, 220, 220 ), Qt::SolidPattern );
-  int size = 18;
-  int myCounter = 0;
-  QStringList ml = QgsMarkerCatalogue::instance()->list();
-  for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it )
-  {
-    QPixmap myPixmap = QPixmap::fromImage( QgsMarkerCatalogue::instance()->imageMarker( *it, size, pen, brush ) );
-    QListWidgetItem * mypItem = new QListWidgetItem( lstSymbols );
-    QIcon myIcon;
-    myIcon.addPixmap( myPixmap );
-    mypItem->setIcon( myIcon );
-    mypItem->setText( "" );
-    mypItem->setToolTip( *it );
-    //store the symbol offset in the UserData role for later retrieval
-    mypItem->setData( Qt::UserRole, *it );
-    mypItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-    if ( mVectorLayer && mVectorLayer->geometryType() != QGis::Point )
-    {
-      break;
-    }
-    ++myCounter;
-  }
+  QgsMarkerListModel *m = new QgsMarkerListModel( lstSymbols );
+  lstSymbols->setModel( m );
 
   // Find out the numerical fields of mVectorLayer, and populate the ComboBoxes
   QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
@@ -283,9 +296,10 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
   //
   // Apply point symbol
   //
-  if ( lstSymbols->isEnabled() && lstSymbols->currentItem() )
+  if ( lstSymbols->isEnabled() && lstSymbols->currentIndex().isValid() )
   {
-    sy->setNamedPointSymbol( lstSymbols->currentItem()->data( Qt::UserRole ).toString() ) ;
+    QAbstractItemModel *m = lstSymbols->model();
+    sy->setNamedPointSymbol( m->data( lstSymbols->currentIndex(), Qt::UserRole ).toString() );
   }
 
   if ( mPointSizeSpinBox->isEnabled() )
@@ -376,12 +390,15 @@ void QgsSingleSymbolDialog::set( const QgsSymbol *sy )
 
   // Set point symbol
   QString mySymbolName = sy->pointSymbolName();
-  for ( int i = 0; i < lstSymbols->count(); ++i )
+
+  QAbstractItemModel *m = lstSymbols->model();
+  for ( int i = 0; i < m->rowCount(); i++ )
   {
-    if ( lstSymbols->item( i )->data( Qt::UserRole ).toString() == ( mySymbolName ) )
+    QModelIndex idx( m->index( i, 0 ) );
+    if ( m->data( idx, Qt::UserRole ).toString() == mySymbolName )
     {
-      lstSymbols->setCurrentItem( lstSymbols->item( i ) );
-      lstSymbols->item( i )->setBackground( QBrush( Qt::cyan ) );
+      lstSymbols->setCurrentIndex( idx );
+      // m->setData( idx, Qt::UserRole+1, Qt::cyan );
       break;
     }
   }
@@ -478,8 +495,13 @@ void QgsSingleSymbolDialog::updateSet( const QgsSymbol *sy )
   if ( mLabelEdit->isEnabled() && mLabelEdit->text() != sy->label() )
     mLabelEdit->setEnabled( false );
 
-  if ( lstSymbols->isEnabled() && lstSymbols->currentItem()->data( Qt::UserRole ).toString() != sy->pointSymbolName() )
-    lstSymbols->setEnabled( false );
+  if ( lstSymbols->isEnabled() && lstSymbols->currentIndex().isValid() )
+  {
+    QAbstractItemModel *m = lstSymbols->model();
+
+    if ( m->data( lstSymbols->currentIndex(), Qt::UserRole ).toString() != sy->pointSymbolName() )
+      lstSymbols->setEnabled( false );
+  }
 
   if ( mPointSizeSpinBox->isEnabled() && !doubleNear( mPointSizeSpinBox->value(), sy->pointSize() ) )
     mPointSizeSpinBox->setEnabled( false );
@@ -612,14 +634,12 @@ void QgsSingleSymbolDialog::setLabel( QString label )
   mLabelEdit->setText( label );
 }
 
-void QgsSingleSymbolDialog::symbolChanged
-( QListWidgetItem * current, QListWidgetItem * previous )
+void QgsSingleSymbolDialog::symbolChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  current->setBackground( QBrush( Qt::cyan ) );
-  if ( previous )
-  {
-    previous->setBackground( QBrush( Qt::white ) );
-  }
+  QAbstractItemModel *m = lstSymbols->model();
+  QgsDebugMsg( QString( "symbol changed to %1:%2" ).arg( current.row() ).arg( m->data( current, Qt::UserRole ).toString() ) );
+  // m->setData( current, Qt::UserRole+1, Qt::cyan );
+  // m->setData( prev, Qt::UserRole+1, Qt::white );
   emit settingsChanged();
 }
 
