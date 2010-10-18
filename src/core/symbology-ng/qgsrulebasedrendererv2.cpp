@@ -244,6 +244,28 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
 }
 
 
+QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconSize )
+{
+  QgsLegendSymbologyList lst;
+  for ( QList<Rule>::iterator it = mRules.begin(); it != mRules.end(); ++it )
+  {
+    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( it->symbol(), iconSize );
+    lst << qMakePair( it->filterExpression(), pix );
+  }
+  return lst;
+}
+
+QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems()
+{
+  QgsLegendSymbolList lst;
+  for ( QList<Rule>::iterator it = mRules.begin(); it != mRules.end(); ++it )
+  {
+    lst << qMakePair( it->filterExpression(), it->symbol() );
+  }
+  return lst;
+}
+
+
 QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
 {
   // load symbols

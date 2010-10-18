@@ -102,6 +102,13 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
 
+    //! return a list of symbology items for the legend
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+
+    //! return a list of item text / symbol
+    //! @note: this method was added in version 1.5
+    virtual QgsLegendSymbolList legendSymbolItems();
+
     /////
 
     //! return the total number of rules
