@@ -479,6 +479,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
+  mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
 
