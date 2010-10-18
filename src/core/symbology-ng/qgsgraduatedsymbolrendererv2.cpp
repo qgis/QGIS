@@ -351,8 +351,8 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
   // from the R statistical programming language.
   // Code ported from R implementation from 'labeling' R package
   //
-  // Computes a sequence of about 'classes' equally spaced 'round' values
-  // which cover the range of of values from 'minimum' to 'maximum'.
+  // Computes a sequence of about 'classes' equally spaced round values
+  // which cover the range of values from 'minimum' to 'maximum'.
   // The values are chosen so that they are 1, 2 or 5 times a power of 10.
 
   QList<double> breaks;
