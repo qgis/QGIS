@@ -554,6 +554,11 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 
 void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
 {
+  if ( geometryType() == QGis::WKBNoGeometry )
+  {
+    fetchGeometry = false;
+  }
+
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
@@ -748,10 +753,10 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRFeatureH feature = OGR_F_Create( fdef );
-  unsigned char* wkb = f.geometry()->asWkb();
 
-  if ( f.geometry()->wkbSize() > 0 )
+  if ( f.geometry() && f.geometry()->wkbSize() > 0 )
   {
+    unsigned char* wkb = f.geometry()->asWkb();
     OGRGeometryH geom = NULL;
 
     if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() )

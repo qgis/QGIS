@@ -236,6 +236,9 @@ QString QgsVectorLayer::providerType() const
  */
 void QgsVectorLayer::setDisplayField( QString fldName )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   // If fldName is provided, use it as the display field, otherwise
   // determine the field index for the feature column of the identify
   // dialog. We look for fields containing "name" first and second for
@@ -313,12 +316,15 @@ void QgsVectorLayer::setDisplayField( QString fldName )
 // This method will probably be removed again in the near future!
 void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   QgsDebugMsg( "Starting draw of labels" );
 
   if (( mRenderer || mRendererV2 ) && mLabelOn &&
-      ( !label()->scaleBasedVisibility() ||
-        ( label()->minScale() <= rendererContext.rendererScale() &&
-          rendererContext.rendererScale() <= label()->maxScale() ) ) )
+      ( !mLabel->scaleBasedVisibility() ||
+        ( mLabel->minScale() <= rendererContext.rendererScale() &&
+          rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
   {
     QgsAttributeList attributes;
     if ( mRenderer )
@@ -701,6 +707,9 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
 void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
@@ -763,6 +772,9 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
   QSettings settings;
@@ -898,6 +910,9 @@ void QgsVectorLayer::reload()
 
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return true;
+
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
@@ -1272,6 +1287,9 @@ const QgsRenderer* QgsVectorLayer::renderer() const
 
 void QgsVectorLayer::setRenderer( QgsRenderer * r )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   if ( r != mRenderer )
   {
     delete mRenderer;
@@ -1398,6 +1416,9 @@ long QgsVectorLayer::updateFeatureCount() const
 
 void QgsVectorLayer::updateExtents()
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   mLayerExtent.setMinimal();
 
   if ( !mDataProvider )
@@ -1778,7 +1799,9 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   // and add to the known added features.
   f.setFeatureId( addedIdLowWaterMark );
   editFeatureAdd( f );
-  mCachedGeometries[f.id()] = *f.geometry();
+
+  if ( f.geometry() )
+    mCachedGeometries[f.id()] = *f.geometry();
 
   setModified( true );
 
@@ -1793,6 +1816,9 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 
 bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int beforeVertex )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return false;
+
   if ( !mEditable )
   {
     return false;
@@ -1829,6 +1855,9 @@ bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int befo
 
 bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVertex )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return false;
+
   if ( !mEditable )
   {
     return false;
@@ -1866,6 +1895,9 @@ bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVert
 
 bool QgsVectorLayer::deleteVertex( int atFeatureId, int atVertex )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return false;
+
   if ( !mEditable )
   {
     return false;
@@ -1937,6 +1969,9 @@ bool QgsVectorLayer::deleteSelectedFeatures()
 
 int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 5;
+
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox;
@@ -1971,6 +2006,9 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
 
 int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 6;
+
   //number of selected features must be 1
 
   if ( mSelectedFeatureIds.size() < 1 )
@@ -2045,6 +2083,9 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
 
 int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 1;
+
   //look if geometry of selected feature already contains geometry changes
   QgsGeometryMap::iterator changedIt = mChangedGeometries.find( featureId );
   if ( changedIt != mChangedGeometries.end() )
@@ -2100,6 +2141,9 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
 
 int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 4;
+
   QgsFeatureList newFeatures; //store all the newly created features
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
@@ -2209,6 +2253,9 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
 int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 1;
+
   int returnValue = 0;
 
   //first test if geom really has type polygon or multipolygon
@@ -2241,6 +2288,9 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
 
 int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 1;
+
   if ( !geom )
   {
     return 1;
@@ -2345,6 +2395,9 @@ int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
 
 int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 1;
+
   QMultiMap<double, QgsSnappingResult> snapResults; //results from the snapper object
   //we also need to snap to vertex to make sure the vertex does not already exist in this geometry
   QMultiMap<double, QgsSnappingResult> vertexSnapResults;
@@ -2397,7 +2450,7 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
   return 0;
 }
 
-QgsLabel * QgsVectorLayer::label()
+QgsLabel *QgsVectorLayer::label()
 {
   return mLabel;
 }
@@ -2648,102 +2701,118 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // renderer specific settings
   QString errorMsg;
-  if ( geometryType() != QGis::NoGeometry )
-  {
-    if ( !writeSymbology( layer_node, document, errorMsg ) )
-    {
-      return false;
-    }
-  }
-  return true;
+  return writeSymbology( layer_node, document, errorMsg );
 } // bool QgsVectorLayer::writeXml
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
-  // try renderer v2 first
-  QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
-  if ( !rendererElement.isNull() )
+  if ( geometryType() != QGis::NoGeometry )
   {
-    // using renderer v2
-    setUsingRendererV2( true );
-
-    QgsFeatureRendererV2* r = QgsFeatureRendererV2::load( rendererElement );
-    if ( r == NULL )
-      return false;
-
-    setRendererV2( r );
-  }
-  else
-  {
-    // using renderer v1
-    setUsingRendererV2( false );
-
-    // create and bind a renderer to this layer
-
-    QDomNode singlenode = node.namedItem( "singlesymbol" );
-    QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
-    QDomNode continuousnode = node.namedItem( "continuoussymbol" );
-    QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
-
-    QgsRenderer * renderer = 0;
-    int returnCode = 1;
-
-    if ( !singlenode.isNull() )
+    // try renderer v2 first
+    QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
+    if ( !rendererElement.isNull() )
     {
-      renderer = new QgsSingleSymbolRenderer( geometryType() );
-      returnCode = renderer->readXML( singlenode, *this );
+      // using renderer v2
+      setUsingRendererV2( true );
+
+      QgsFeatureRendererV2* r = QgsFeatureRendererV2::load( rendererElement );
+      if ( r == NULL )
+        return false;
+
+      setRendererV2( r );
     }
-    else if ( !graduatednode.isNull() )
+    else
     {
-      renderer = new QgsGraduatedSymbolRenderer( geometryType() );
-      returnCode = renderer->readXML( graduatednode, *this );
-    }
-    else if ( !continuousnode.isNull() )
-    {
-      renderer = new QgsContinuousColorRenderer( geometryType() );
-      returnCode = renderer->readXML( continuousnode, *this );
-    }
-    else if ( !uniquevaluenode.isNull() )
-    {
-      renderer = new QgsUniqueValueRenderer( geometryType() );
-      returnCode = renderer->readXML( uniquevaluenode, *this );
+      // using renderer v1
+      setUsingRendererV2( false );
+
+      // create and bind a renderer to this layer
+
+      QDomNode singlenode = node.namedItem( "singlesymbol" );
+      QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
+      QDomNode continuousnode = node.namedItem( "continuoussymbol" );
+      QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
+
+      QgsRenderer * renderer = 0;
+      int returnCode = 1;
+
+      if ( !singlenode.isNull() )
+      {
+        renderer = new QgsSingleSymbolRenderer( geometryType() );
+        returnCode = renderer->readXML( singlenode, *this );
+      }
+      else if ( !graduatednode.isNull() )
+      {
+        renderer = new QgsGraduatedSymbolRenderer( geometryType() );
+        returnCode = renderer->readXML( graduatednode, *this );
+      }
+      else if ( !continuousnode.isNull() )
+      {
+        renderer = new QgsContinuousColorRenderer( geometryType() );
+        returnCode = renderer->readXML( continuousnode, *this );
+      }
+      else if ( !uniquevaluenode.isNull() )
+      {
+        renderer = new QgsUniqueValueRenderer( geometryType() );
+        returnCode = renderer->readXML( uniquevaluenode, *this );
+      }
+
+      if ( !renderer )
+      {
+        errorMessage = tr( "Unknown renderer" );
+        return false;
+      }
+
+      if ( returnCode == 1 )
+      {
+        errorMessage = tr( "No renderer object" ); delete renderer; return false;
+      }
+      else if ( returnCode == 2 )
+      {
+        errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+      }
+
+      mRenderer = renderer;
     }
 
-    if ( !renderer )
+    // get and set the display field if it exists.
+    QDomNode displayFieldNode = node.namedItem( "displayfield" );
+    if ( !displayFieldNode.isNull() )
     {
-      errorMessage = tr( "Unknown renderer" );
-      return false;
+      QDomElement e = displayFieldNode.toElement();
+      setDisplayField( e.text() );
     }
 
-    if ( returnCode == 1 )
+    // use scale dependent visibility flag
+    QDomElement e = node.toElement();
+    mLabel->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
+    mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
+    mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
+
+    // Test if labeling is on or off
+    QDomNode labelnode = node.namedItem( "label" );
+    QDomElement element = labelnode.toElement();
+    int hasLabelsEnabled = element.text().toInt();
+    if ( hasLabelsEnabled < 1 )
     {
-      errorMessage = tr( "No renderer object" ); delete renderer; return false;
+      enableLabels( false );
     }
-    else if ( returnCode == 2 )
+    else
     {
-      errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+      enableLabels( true );
     }
 
-    mRenderer = renderer;
+    QDomNode labelattributesnode = node.namedItem( "labelattributes" );
 
+    if ( !labelattributesnode.isNull() )
+    {
+      QgsDebugMsg( "calling readXML" );
+      mLabel->readXML( labelattributesnode );
+    }
   }
 
   // process the attribute actions
   mActions->readXML( node );
-
-  // get and set the display field if it exists.
-  QDomNode displayFieldNode = node.namedItem( "displayfield" );
-  if ( !displayFieldNode.isNull() )
-  {
-    QDomElement e = displayFieldNode.toElement();
-    setDisplayField( e.text() );
-  }
-
-  // use scale dependent visibility flag
-  QDomElement e = node.toElement();
-  label()->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
-  label()->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
-  label()->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
 
   mEditTypes.clear();
   QDomNode editTypesNode = node.namedItem( "edittypes" );
@@ -2825,73 +2894,91 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  // Test if labeling is on or off
-  QDomNode labelnode = node.namedItem( "label" );
-  QDomElement element = labelnode.toElement();
-  int hasLabelsEnabled = element.text().toInt();
-  if ( hasLabelsEnabled < 1 )
-  {
-    enableLabels( false );
-  }
-  else
-  {
-    enableLabels( true );
-  }
-
-  QDomNode labelattributesnode = node.namedItem( "labelattributes" );
-
-  if ( !labelattributesnode.isNull() )
-  {
-    QgsDebugMsg( "qgsvectorlayer calling label readXML routine" );
-    mLabel->readXML( labelattributesnode );
-  }
-
   return true;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
-  if ( mUsingRendererV2 )
-  {
-    QDomElement rendererElement = mRendererV2->save( doc );
-    node.appendChild( rendererElement );
-  }
-  else
-  {
-    //classification field(s)
-    QgsAttributeList attributes = mRenderer->classificationAttributes();
-    const QgsFieldMap providerFields = mDataProvider->fields();
-    for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-    {
-      QDomElement classificationElement = doc.createElement( "classificationattribute" );
-      QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
-      classificationElement.appendChild( classificationText );
-      node.appendChild( classificationElement );
-    }
+  QDomElement mapLayerNode = node.toElement();
 
-    // renderer settings
-    const QgsRenderer * myRenderer = renderer();
-    if ( myRenderer )
+  if ( geometryType() != QGis::NoGeometry )
+  {
+    if ( mUsingRendererV2 )
     {
-      if ( !myRenderer->writeXML( node, doc, *this ) )
-      {
-        errorMessage = tr( "renderer failed to save" );
-        return false;
-      }
+      QDomElement rendererElement = mRendererV2->save( doc );
+      node.appendChild( rendererElement );
     }
     else
     {
-      QgsDebugMsg( "no renderer" );
-      errorMessage = tr( "no renderer" );
-      return false;
-    }
-  }
+      // use scale dependent visibility flag
+      mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
+      mapLayerNode.setAttribute( "minLabelScale", mLabel->minScale() );
+      mapLayerNode.setAttribute( "maxLabelScale", mLabel->maxScale() );
 
-  // use scale dependent visibility flag
-  QDomElement mapLayerNode = node.toElement();
-  mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", label()->scaleBasedVisibility() ? 1 : 0 );
-  mapLayerNode.setAttribute( "minLabelScale", label()->minScale() );
-  mapLayerNode.setAttribute( "maxLabelScale", label()->maxScale() );
+      //classification field(s)
+      QgsAttributeList attributes = mRenderer->classificationAttributes();
+      const QgsFieldMap providerFields = mDataProvider->fields();
+      for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+      {
+        QDomElement classificationElement = doc.createElement( "classificationattribute" );
+        QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
+        classificationElement.appendChild( classificationText );
+        node.appendChild( classificationElement );
+      }
+
+      // renderer settings
+      const QgsRenderer * myRenderer = renderer();
+      if ( myRenderer )
+      {
+        if ( !myRenderer->writeXML( node, doc, *this ) )
+        {
+          errorMessage = tr( "renderer failed to save" );
+          return false;
+        }
+      }
+      else
+      {
+        QgsDebugMsg( "no renderer" );
+        errorMessage = tr( "no renderer" );
+        return false;
+      }
+    }
+
+    // add the display field
+    QDomElement dField  = doc.createElement( "displayfield" );
+    QDomText dFieldText = doc.createTextNode( displayField() );
+    dField.appendChild( dFieldText );
+    node.appendChild( dField );
+
+    // add label node
+    QDomElement labelElem = doc.createElement( "label" );
+    QDomText labelText = doc.createTextNode( "" );
+
+    if ( hasLabelsEnabled() )
+    {
+      labelText.setData( "1" );
+    }
+    else
+    {
+      labelText.setData( "0" );
+    }
+    labelElem.appendChild( labelText );
+
+    node.appendChild( labelElem );
+
+    // Now we get to do all that all over again for QgsLabel
+
+    QString fieldname = mLabel->labelField( QgsLabel::Text );
+    if ( fieldname != "" )
+    {
+      dField  = doc.createElement( "labelfield" );
+      dFieldText = doc.createTextNode( fieldname );
+      dField.appendChild( dFieldText );
+      node.appendChild( dField );
+    }
+
+    mLabel->writeXML( node, doc );
+  }
 
   //edit types
   if ( mEditTypes.size() > 0 )
@@ -2973,52 +3060,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     node.appendChild( aliasElem );
   }
 
-  // add the display field
-  QDomElement dField  = doc.createElement( "displayfield" );
-  QDomText dFieldText = doc.createTextNode( displayField() );
-  dField.appendChild( dFieldText );
-  node.appendChild( dField );
-
-  // add label node
-  QDomElement labelElem = doc.createElement( "label" );
-  QDomText labelText = doc.createTextNode( "" );
-
-  if ( hasLabelsEnabled() )
-  {
-    labelText.setData( "1" );
-  }
-  else
-  {
-    labelText.setData( "0" );
-  }
-  labelElem.appendChild( labelText );
-
-  node.appendChild( labelElem );
-
   // add attribute actions
   mActions->writeXML( node, doc );
-
-  // Now we get to do all that all over again for QgsLabel
-
-  // XXX Since this is largely a cut-n-paste from the previous, this
-  // XXX therefore becomes a candidate to be generalized into a separate
-  // XXX function.  I think.
-
-  const QgsLabel *myLabel = label();
-
-  if ( myLabel )
-  {
-    QString fieldname = myLabel->labelField( QgsLabel::Text );
-    if ( fieldname != "" )
-    {
-      dField  = doc.createElement( "labelfield" );
-      dFieldText = doc.createTextNode( fieldname );
-      dField.appendChild( dFieldText );
-      node.appendChild( dField );
-    }
-
-    myLabel->writeXML( node, doc );
-  }
 
   //save vector overlays (e.g. diagrams)
   QList<QgsVectorOverlay*>::const_iterator overlay_it = mOverlays.constBegin();
@@ -3036,7 +3079,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
 bool QgsVectorLayer::changeGeometry( int fid, QgsGeometry* geom )
 {
-  if ( !mEditable || !mDataProvider )
+  if ( !mEditable || !mDataProvider || geometryType() == QGis::NoGeometry )
   {
     return false;
   }
@@ -3674,6 +3717,9 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
 bool QgsVectorLayer::copySymbologySettings( const QgsMapLayer& other )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return false;
+
   const QgsVectorLayer* vl = qobject_cast<const QgsVectorLayer *>( &other );
 
   // exit if both vectorlayer are the same
@@ -3739,6 +3785,9 @@ bool QgsVectorLayer::hasCompatibleSymbology( const QgsMapLayer& other ) const
 
 bool QgsVectorLayer::snapPoint( QgsPoint& point, double tolerance )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return false;
+
   QMultiMap<double, QgsSnappingResult> snapResults;
   int result = snapWithContext( point, tolerance, snapResults, QgsSnapper::SnapToVertex );
 
@@ -3763,6 +3812,9 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 1;
+
   if ( snappingTolerance <= 0 || !mDataProvider )
   {
     return 1;
@@ -3869,6 +3921,9 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, 
 
 int QgsVectorLayer::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return 1;
+
   int returnval = 0;
   QgsPoint layerPoint;
 
@@ -4266,6 +4321,9 @@ QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
 }
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2* r )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   delete mRendererV2;
   mRendererV2 = r;
 }
@@ -4275,6 +4333,9 @@ bool QgsVectorLayer::isUsingRendererV2()
 }
 void QgsVectorLayer::setUsingRendererV2( bool usingRendererV2 )
 {
+  if ( geometryType() == QGis::NoGeometry )
+    return;
+
   mUsingRendererV2 = usingRendererV2;
 }
 
