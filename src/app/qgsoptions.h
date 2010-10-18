@@ -101,6 +101,12 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mBtnRemoveSVGPath_clicked();
 
+    /* Let the user add a path to the list of search paths used for finding PROJ.4 files. */
+    void on_mBtnAddProjPath_clicked();
+
+    /* Let the user remove a path to the list of search paths for finding PROJ.4 files. */
+    void on_mBtnRemoveProjPath_clicked();
+
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_mBrowseCacheDirectory_clicked();

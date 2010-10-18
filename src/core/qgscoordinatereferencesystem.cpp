@@ -1161,9 +1161,10 @@ int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
     // ... unfortunately it happens on Windows
     QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
     output->setTitle( "Error" );
-    output->setMessage( "Could not open CRS database " + path +
-                        "<br>Error(" + QString::number( myResult ) + "): " +
-                        QString( sqlite3_errmsg( *db ) ), QgsMessageOutput::MessageText );
+    output->setMessage( QObject::tr( "Could not open CRS database %1<br>Error(%2): %3" )
+                        .arg( path )
+                        .arg( myResult )
+                        .arg( sqlite3_errmsg( *db ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
   return myResult;

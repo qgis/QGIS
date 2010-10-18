@@ -256,9 +256,14 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     projPJ mDestinationProjection;
 
     /*!
-     * Finder for PROJ grid files.
+     * Set finder for PROJ grid files.
      */
     void setFinder();
+
+    /*!
+     * Finder for PROJ grid files.
+     */
+    static const char *finder( const char *name );
 };
 
 //! Output stream operator
@@ -271,45 +276,47 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransfor
   {
     //do nothing this is a dummy
   }
-  /*
-    if (r.isInitialised())
-    {
-      mySummary += "Yes";
-    }
-    else
-    {
-      mySummary += "No" ;
-    }
-    mySummary += "\n\tShort Circuit?  : " ;
-    if (r.isShortCircuited())
-    {
-      mySummary += "Yes";
-    }
-    else
-    {
-      mySummary += "No" ;
-    }
 
-    mySummary += "\n\tSource Spatial Ref Sys  : ";
-    if (r.sourceCrs())
-    {
-      mySummary << r.sourceCrs();
-    }
-    else
-    {
-      mySummary += "Undefined" ;
-    }
+#if 0
+  if ( r.isInitialised() )
+  {
+    mySummary += "Yes";
+  }
+  else
+  {
+    mySummary += "No" ;
+  }
+  mySummary += "\n\tShort Circuit?  : " ;
+  if ( r.isShortCircuited() )
+  {
+    mySummary += "Yes";
+  }
+  else
+  {
+    mySummary += "No" ;
+  }
 
-    mySummary += "\n\tDest Spatial Ref Sys  : " ;
-    if (r.destCRS())
-    {
-      mySummary << r.destCRS();
-    }
-    else
-    {
-      mySummary += "Undefined" ;
-    }
-  */
+  mySummary += "\n\tSource Spatial Ref Sys  : ";
+  if ( r.sourceCrs() )
+  {
+    mySummary << r.sourceCrs();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+
+  mySummary += "\n\tDest Spatial Ref Sys  : " ;
+  if ( r.destCRS() )
+  {
+    mySummary << r.destCRS();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+#endif
+
   mySummary += ( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
