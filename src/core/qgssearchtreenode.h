@@ -151,7 +151,7 @@ class CORE_EXPORT QgsSearchTreeNode
     bool checkAgainst( const QgsFieldMap& fields, QgsFeature &f );
 
     //! @note deprecated
-    bool checkAgainst( const QMap<int, QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
+    bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
     bool hasError() { return ( !mError.isEmpty() ); }
@@ -161,12 +161,17 @@ class CORE_EXPORT QgsSearchTreeNode
 
     //! wrapper around valueAgainst()
     //! @note added in 1.4
-    bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
-                   const QgsFieldMap& fields, QgsFeature &f );
+    bool getValue( QgsSearchTreeValue& value,
+                   QgsSearchTreeNode* node,
+                   const QgsFieldMap& fields,
+                   QgsFeature &f );
 
     //! @note deprecated
-    bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
-                   const QMap<int, QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
+    bool getValue( QgsSearchTreeValue& value,
+                   QgsSearchTreeNode* node,
+                   const QgsFieldMap &fields,
+                   const QgsAttributeMap &attributes,
+                   QgsGeometry* geom = 0 );
 
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
@@ -202,7 +207,7 @@ class CORE_EXPORT QgsSearchTreeNode
     QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, QgsFeature &f );
 
     //! @note deprecated
-    QgsSearchTreeValue valueAgainst( const QMap<int, QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
+    QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type
     void stripText();

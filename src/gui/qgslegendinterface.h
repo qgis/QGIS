@@ -74,7 +74,6 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     virtual bool isLayerVisible( QgsMapLayer * ml ) = 0;
 
   signals:
-
     //! emitted when a group index has changed
     void groupIndexChanged( int oldIndex, int newIndex );
 

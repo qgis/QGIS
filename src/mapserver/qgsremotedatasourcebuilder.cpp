@@ -37,7 +37,7 @@ QgsRemoteDataSourceBuilder::~QgsRemoteDataSourceBuilder()
 
 QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "QgsRDSBuilder::createMapLayer" );
+  QgsMSDebugMsg( "entering." );
   QgsMapLayer* theLayer = 0;
   if ( elem.tagName() == "RemoteRDS" )
   {
@@ -56,7 +56,7 @@ QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem
 
 QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDomElement& remoteRDSElem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "QgsRDSBuilder::rasterLayerFromRemoteRDS" );
+  QgsMSDebugMsg( "entering." );
   //load file with QgsHttpTransaction or QgsFtpTransaction
   QByteArray fileContents;
   QString uri = remoteRDSElem.text();

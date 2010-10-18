@@ -48,9 +48,6 @@ class QgsLegendLayer : public QgsLegendItem
     QgsLegendLayer( QgsMapLayer* layer );
     ~QgsLegendLayer();
 
-    bool isLeafNode();
-    QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
-    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
     /**Returns the map layer associated the item*/
     QgsMapLayer* layer();
     QgsMapCanvasLayer& canvasLayer();

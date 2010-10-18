@@ -6,17 +6,12 @@ IF (NOT FCGI_FOUND)
   MESSAGE (SEND_ERROR "Fast CGI dependency was not found!")
 ENDIF (NOT FCGI_FOUND)
 
-# We need to define the qgis base dir so we can pass it 
-# into the main entry point for the app so that at 
-# runtime it can find plugins and srs.db etc
-ADD_DEFINITIONS(-DQGIS_LIB_DIR="\\"${QGIS_LIB_DIR}\\"")
-
-#MH: for this we need to locate the headers of the diagram and interpolation plugin
-#ADD_DEFINITIONS(-DDIAGRAMSERVER=1)
+ADD_DEFINITIONS(-DDIAGRAMSERVER=1)
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   ADD_DEFINITIONS(-DQGSMSDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+
 ########################################################
 # Files
 
@@ -49,6 +44,15 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsmsutils.cpp
+
+  ../plugins/diagram_overlay/qgsdiagramcategory.cpp
+  ../plugins/diagram_overlay/qgsdiagramfactory.cpp
+  ../plugins/diagram_overlay/qgswkndiagramfactory.cpp
+  ../plugins/diagram_overlay/qgsbardiagramfactory.cpp
+  ../plugins/diagram_overlay/qgspiediagramfactory.cpp
+  ../plugins/diagram_overlay/qgssvgdiagramfactory.cpp
+  ../plugins/diagram_overlay/qgsdiagramoverlay.cpp
+  ../plugins/diagram_overlay/qgsdiagramrenderer.cpp
   )
 
 # SET (qgis_mapserv_UIS 
@@ -93,6 +97,7 @@ INCLUDE_DIRECTORIES(
      ../core/symbology-ng
      ../core/composer
      ../analysis/interpolation
+     ../plugins/diagram_overlay
      .
 )
 

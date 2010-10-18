@@ -57,3 +57,13 @@ void QgsMapServerLogger::printChar( QChar c )
 {
   mTextStream << c;
 }
+
+#ifdef QGSMSDEBUG
+void QgsMapServerLogger::printMessage( const char *file, const char *function, int line, const QString& message )
+{
+  mTextStream
+  << QString( "%1: %2: (%3) " ).arg( file ).arg( function ).arg( line )
+  << message
+  << endl;
+}
+#endif

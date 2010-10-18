@@ -22,7 +22,10 @@
 #include <sqlite3.h>
 
 
-QgsConfigParser::QgsConfigParser(): mFallbackParser( 0 ), mScaleDenominator( 0 ), mOutputUnits( QgsMapRenderer::Millimeters )
+QgsConfigParser::QgsConfigParser()
+    : mFallbackParser( 0 )
+    , mScaleDenominator( 0 )
+    , mOutputUnits( QgsMapRenderer::Millimeters )
 {
   setDefaultLegendSettings();
 }
@@ -61,7 +64,10 @@ void QgsConfigParser::addExternalGMLData( const QString& layerName, QDomDocument
   mExternalGMLDatasets.insert( layerName, gmlDoc );
 }
 
-void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const
+void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
+    QDomDocument& doc,
+    const QgsRectangle& layerExtent,
+    const QgsCoordinateReferenceSystem& layerCRS ) const
 {
   if ( layerElem.isNull() )
   {

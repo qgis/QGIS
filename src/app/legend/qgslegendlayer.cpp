@@ -99,48 +99,6 @@ void QgsLegendLayer::setupFont() //private method
   setFont( 0, myFont );
 }
 
-bool QgsLegendLayer::isLeafNode()
-{
-  return false;
-}
-
-QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept( LEGEND_ITEM_TYPE type )
-{
-  if ( type == LEGEND_LAYER || type == LEGEND_GROUP )
-  {
-    return REORDER;
-  }
-  else
-  {
-    return NO_ACTION;
-  }
-}
-
-QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept( const QgsLegendItem* li ) const
-{
-  if ( li && li != this )
-  {
-    LEGEND_ITEM_TYPE type = li->type();
-    if ( type == LEGEND_LAYER )
-    {
-      //if(parent() == li->parent())
-      //{
-      return REORDER;
-      //}
-    }
-    else if ( type == LEGEND_GROUP )
-    {
-      //only parent legend layers can change positions with groups
-      if ( parent() == 0 )
-      {
-        return REORDER;
-      }
-    }
-  }
-  return NO_ACTION;
-}
-
-
 QgsMapLayer* QgsLegendLayer::layer()
 {
   return mLyr.layer();
@@ -456,7 +414,8 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       saveSelectionAsAction->setEnabled( false );
     }
 
-    theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() )
+      theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     theMenu.addSeparator();
   }

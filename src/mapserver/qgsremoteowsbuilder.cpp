@@ -145,7 +145,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
 
 QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "Entering QgsRemoteOWSBuilder::::wmsLayerFromUrl" )
+  QgsMSDebugMsg( "Entering" )
   QgsRasterLayer* result = 0;
   QString baseUrl, format, crs;
   QStringList layerList, styleList;
@@ -219,7 +219,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
 
 QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "Entering QgsRemoteOWSBuilder::wcsLayerFromUrl" )
+  QgsMSDebugMsg( "Entering" )
 
   //write server url and coverage name to a temporary file
   QString fileName = createTempFile();

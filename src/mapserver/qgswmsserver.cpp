@@ -45,7 +45,10 @@
 #include <QTextStream>
 #include <QDir>
 
-QgsWMSServer::QgsWMSServer( std::map<QString, QString> parameters, QgsMapRenderer* renderer ): mParameterMap( parameters ), mConfigParser( 0 ), mMapRenderer( renderer )
+QgsWMSServer::QgsWMSServer( std::map<QString, QString> parameters, QgsMapRenderer* renderer )
+    : mParameterMap( parameters )
+    , mConfigParser( 0 )
+    , mMapRenderer( renderer )
 {
 }
 
@@ -59,7 +62,7 @@ QgsWMSServer::QgsWMSServer()
 
 QDomDocument QgsWMSServer::getCapabilities()
 {
-  QgsMSDebugMsg( "Entering QgsWMSServer::getCapabilities" )
+  QgsMSDebugMsg( "Entering." )
   QDomDocument doc;
   //wms:WMS_Capabilities element
   QDomElement wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
@@ -73,7 +76,7 @@ QDomDocument QgsWMSServer::getCapabilities()
   if ( !wmsService.open( QIODevice::ReadOnly ) )
   {
     //throw an exception...
-    QgsMSDebugMsg( "qgissoaprequesthandler.cpp: external wms service capabilities not found" )
+    QgsMSDebugMsg( "external wms service capabilities not found" )
   }
   else
   {
@@ -82,7 +85,7 @@ QDomDocument QgsWMSServer::getCapabilities()
     int errorLineNo;
     if ( !externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
     {
-      QgsMSDebugMsg( "qgissoaprequesthandler.cpp: parse error at setting content of external wms service capabilities: "\
+      QgsMSDebugMsg( "parse error at setting content of external wms service capabilities: "
                      + parseError + " at line " + QString::number( errorLineNo ) )
       wmsService.close();
     }
@@ -197,9 +200,6 @@ QDomDocument QgsWMSServer::getCapabilities()
   getFeatureInfoElem.appendChild( getFeatureInfoDhcTypeElement );
   requestElement.appendChild( getFeatureInfoElem );
 
-
-
-
   //Exception element is mandatory
   QDomElement exceptionElement = doc.createElement( "Exception" );
   QDomElement exFormatElement = doc.createElement( "Format" );
@@ -209,9 +209,9 @@ QDomDocument QgsWMSServer::getCapabilities()
   capabilityElement.appendChild( exceptionElement );
 
   //add the xml content for the individual layers/styles
-  QgsMSDebugMsg( "Entering layersAndStylesCapabilities" )
+  QgsMSDebugMsg( "calling layersAndStylesCapabilities" )
   mConfigParser->layersAndStylesCapabilities( capabilityElement, doc );
-  QgsMSDebugMsg( "Entering layersAndStylesCapabilities" )
+  QgsMSDebugMsg( "layersAndStylesCapabilities returned" )
 
   //for debugging: save the document to disk
   QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
@@ -234,7 +234,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsMSDebugMsg( "QgsWMSServer: error reading layers and styles" )
+    QgsMSDebugMsg( "error reading layers and styles" )
     return 0;
   }
 
@@ -291,7 +291,7 @@ QImage* QgsWMSServer::getLegendGraphics()
     QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
     if ( layerItem )
     {
-      drawLegendLayerItem( layerItem, 0, maxX, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace, \
+      drawLegendLayerItem( layerItem, 0, maxX, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace,
                            iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor, theImage->dotsPerMeterX() * 0.0254 );
     }
   }
@@ -310,7 +310,7 @@ QImage* QgsWMSServer::getLegendGraphics()
     QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
     if ( layerItem )
     {
-      drawLegendLayerItem( layerItem, &p, maxX, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace, \
+      drawLegendLayerItem( layerItem, &p, maxX, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace,
                            iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor, theImage->dotsPerMeterX() * 0.0254 );
     }
   }
@@ -342,7 +342,7 @@ QDomDocument QgsWMSServer::getStyle()
 
 QImage* QgsWMSServer::getMap()
 {
-  QgsMSDebugMsg( "Entering QgsWMSServer::getMap" )
+  QgsMSDebugMsg( "Entering" )
   if ( !mConfigParser )
   {
     QgsMSDebugMsg( "Error: mSLDParser is 0" )
@@ -360,7 +360,7 @@ QImage* QgsWMSServer::getMap()
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsMSDebugMsg( "QgsWMSServer: error reading layers and styles" )
+    QgsMSDebugMsg( "error reading layers and styles" )
     return 0;
   }
 
@@ -654,7 +654,9 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
   std::map<QString, QString>::const_iterator formatIt = mParameterMap.find( "FORMAT" );
   if ( formatIt != mParameterMap.end() )
   {
-    if ( formatIt->second.compare( "jpg", Qt::CaseInsensitive ) == 0 || formatIt->second.compare( "jpeg", Qt::CaseInsensitive ) == 0 || formatIt->second.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 )
+    if ( formatIt->second.compare( "jpg", Qt::CaseInsensitive ) == 0
+         || formatIt->second.compare( "jpeg", Qt::CaseInsensitive ) == 0
+         || formatIt->second.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 )
     {
       jpeg = true;
     }
@@ -877,7 +879,7 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
   return 0;
 }
 
-int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint& layerCoords, QgsMapRenderer* mapRender, \
+int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint& layerCoords, QgsMapRenderer* mapRender,
     QgsMapLayer* layer ) const
 {
   if ( !mapRender || !layer || !mapRender->coordinateTransform() )
@@ -892,8 +894,14 @@ int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint& layerCoor
   return 0;
 }
 
-int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint& infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender, \
-    QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes ) const
+int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
+    const QgsPoint& infoPoint,
+    int nFeatures,
+    QDomDocument& infoDocument,
+    QDomElement& layerElement,
+    QgsMapRenderer* mapRender,
+    QMap<int, QString>& aliasMap,
+    QSet<QString>& hiddenAttributes ) const
 {
   if ( !layer || !mapRender )
   {
@@ -904,7 +912,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPo
   QgsRectangle mapRect = mapRender->extent();
   QgsRectangle layerRect = mapRender->mapToLayerCoordinates( layer, mapRect );
   double searchRadius = ( layerRect.xMaximum() - layerRect.xMinimum() ) / 200;
-  QgsRectangle searchRect( infoPoint.x() - searchRadius, infoPoint.y() - searchRadius, \
+  QgsRectangle searchRect( infoPoint.x() - searchRadius, infoPoint.y() - searchRadius,
                            infoPoint.x() + searchRadius, infoPoint.y() + searchRadius );
 
   //do a select with searchRect and go through all the features
@@ -972,7 +980,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPo
   return 0;
 }
 
-int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint& infoPoint, QDomDocument& infoDocument, QDomElement& layerElement ) const
+int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
+    const QgsPoint& infoPoint,
+    QDomDocument& infoDocument,
+    QDomElement& layerElement ) const
 {
   if ( !layer )
   {
@@ -992,7 +1003,9 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPo
   return 0;
 }
 
-QStringList QgsWMSServer::layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS ) const
+QStringList QgsWMSServer::layerSet( const QStringList& layersList,
+                                    const QStringList& stylesList,
+                                    const QgsCoordinateReferenceSystem& destCRS ) const
 {
   QStringList layerKeys;
   QStringList::const_iterator llstIt;
@@ -1047,9 +1060,9 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList, const QString
   return layerKeys;
 }
 
-void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxX, double& currentY, const QFont& layerFont, \
-                                        const QFont& itemFont, double boxSpace, double layerSpace, double symbolSpace, \
-                                        double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, \
+void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxX, double& currentY, const QFont& layerFont,
+                                        const QFont& itemFont, double boxSpace, double layerSpace, double symbolSpace,
+                                        double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor,
                                         double dpi ) const
 {
   if ( !item )
@@ -1139,7 +1152,7 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     {
       p->save();
       p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-      p->drawText(( boxSpace + currentSymbolWidth + iconLabelSpace ) * fontOversamplingFactor, \
+      p->drawText(( boxSpace + currentSymbolWidth + iconLabelSpace ) * fontOversamplingFactor,
                   ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
       p->restore();
     }
@@ -1155,7 +1168,7 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
   }
 }
 
-void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity, \
+void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity,
                                      double dpi, double yDownShift ) const
 {
   if ( !p )
@@ -1263,7 +1276,7 @@ void QgsWMSServer::drawLineSymbol( QPainter* p, QgsSymbol* s, double boxSpace, d
   p->restore();
 }
 
-void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, \
+void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth,
                                        double symbolHeight, double dpi, double yDownShift ) const
 {
   if ( !p )
@@ -1314,7 +1327,8 @@ void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, d
   p->setPen( QPen( Qt::NoPen ) );
 
   QgsRasterLayer::DrawingStyle drawingStyle = layer->drawingStyle();
-  if ( drawingStyle == QgsRasterLayer::SingleBandGray || drawingStyle == QgsRasterLayer::PalettedSingleBandGray \
+  if ( drawingStyle == QgsRasterLayer::SingleBandGray
+       || drawingStyle == QgsRasterLayer::PalettedSingleBandGray
        || drawingStyle == QgsRasterLayer::MultiBandSingleGandGray )
   {
     int grayValue = 0;

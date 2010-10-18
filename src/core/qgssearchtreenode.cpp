@@ -375,7 +375,7 @@ bool QgsSearchTreeNode::needsGeometry()
   }
 }
 
-bool QgsSearchTreeNode::checkAgainst( const QMap<int, QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
+bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap &attributes, QgsGeometry* geom )
 {
   QgsFeature f;
   f.setAttributeMap( attributes );
@@ -524,7 +524,11 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
   return false;
 }
 
-bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
+bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value,
+                                  QgsSearchTreeNode* node,
+                                  const QgsFieldMap &fields,
+                                  const QgsAttributeMap &attributes,
+                                  QgsGeometry* geom )
 {
   QgsFeature f;
   f.setAttributeMap( attributes );
@@ -533,7 +537,10 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* 
   return getValue( value, node, fields, f );
 }
 
-bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, QgsFeature &f )
+bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value,
+                                  QgsSearchTreeNode* node,
+                                  const QgsFieldMap& fields,
+                                  QgsFeature &f )
 {
   value = node->valueAgainst( fields, f );
   if ( value.isError() )
@@ -563,7 +570,9 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* 
   return true;
 }
 
-QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom )
+QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields,
+    const QgsAttributeMap &attributes,
+    QgsGeometry* geom )
 {
   QgsFeature f;
   f.setAttributeMap( attributes );

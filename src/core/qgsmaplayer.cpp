@@ -101,10 +101,10 @@ QString QgsMapLayer::getLayerID() const
 }
 
 /** Write property of QString layerName. */
-void QgsMapLayer::setLayerName( const QString & _newVal )
+void QgsMapLayer::setLayerName( const QString & name )
 {
-  QgsDebugMsg( "new name is '" + _newVal + "'" );
-  mLayerName = capitaliseLayerName( _newVal );
+  QgsDebugMsg( "new name is '" + name + "'" );
+  mLayerName = capitaliseLayerName( name );
   emit layerNameChanged();
 }
 
@@ -763,7 +763,6 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
       }
       else
       {
-        // try an update
         theResultFlag = false;
         myErrorMessage = tr( "The style %1 could not be inserted into database." ).arg( theURI );
       }

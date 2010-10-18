@@ -24,7 +24,7 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
   if ( qs )
   {
     queryString = QString( qs );
-    QgsMSDebugMsg( "qgsgetrequesthandler.cpp: query string is: " + queryString )
+    QgsMSDebugMsg( "query string is: " + queryString )
   }
   else
   {
@@ -80,7 +80,7 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
 
     }
     parameters.insert( std::make_pair( key.toUpper(), value ) );
-    QgsMSDebugMsg( "qgsgetrequesthandler.cpp: inserting pair " + key.toUpper() + " // " + value + " into the parameter map" )
+    QgsMSDebugMsg( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" )
   }
 
   //feature info format?
@@ -160,7 +160,6 @@ void QgsGetRequestHandler::sendGetStyleResponse( const QDomDocument& doc ) const
 void QgsGetRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const
 {
   QByteArray ba;
-  QgsMSDebugMsg( "In sendGetFeatureInfoResponse" )
   QgsMSDebugMsg( "Info format is:" + infoFormat )
 
   if ( infoFormat == "text/xml" )
