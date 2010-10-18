@@ -80,6 +80,7 @@
     <file>themes/newgis/mIconLineLayer.png</file>
     <file>themes/newgis/mIconPointLayer.png</file>
     <file>themes/newgis/mIconPolygonLayer.png</file>
+    <file>themes/newgis/mIconTableLayer.png</file>
     <file>themes/default/cap_flat.png</file>
     <file>themes/default/cap_round.png</file>
     <file>themes/default/cap_square.png</file>
@@ -229,6 +230,7 @@
     <file>themes/default/mIconNext.png</file>
     <file>themes/default/mIconNoPyramid.png</file>
     <file>themes/default/mIconPointLayer.png</file>
+    <file>themes/default/mIconTableLayer.png</file>
     <file>themes/default/mIconPolygonLayer.png</file>
     <file>themes/default/mIconPrevious.png</file>
     <file>themes/default/mIconProjectionDisabled.png</file>
