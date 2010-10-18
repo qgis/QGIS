@@ -322,16 +322,19 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   QList<double> breaks;
 
   int n = values.count();
-  double q, a, aa, r, Xq;
-  for ( int i = 0; i < ( classes - 1 ); i++ )
+  double Xq = n > 0 ? values[0] : 0.0;
+
+  for ( int i = 1; i < classes; i++ )
   {
-    q = ( i + 1 ) / ( double ) classes;
-    a = q * n;
-    aa = ( int )( q * n );
+    if( n > 1 )
+    {
+      double q = i  / ( double ) classes;
+      double a = q * (n-1);
+      int aa = ( int )( a );
 
-    r = a - aa;
-    Xq = ( 1 - r ) * values[aa] + r * values[aa+1];
-
+      double r = a - aa;
+      Xq = ( 1 - r ) * values[aa] + r * values[aa+1];
+    }
     breaks.append( Xq );
   }
 
