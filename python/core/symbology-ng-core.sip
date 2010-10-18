@@ -324,11 +324,19 @@ public:
 
   bool updateRangeSymbol(int rangeIndex, QgsSymbolV2* symbol /Transfer/);
   bool updateRangeLabel(int rangeIndex, QString label);
+  bool updateRangeUpperValue( int rangeIndex, double value );
+  bool updateRangeLowerValue( int rangeIndex, double value );
+
+  void addClass( QgsSymbolV2* symbol );
+  void deleteClass( int idx );
 
   enum Mode
   {
     EqualInterval,
     Quantile,
+    Jenks,
+    StdDev,
+    Pretty,
     Custom
   };
 
@@ -341,7 +349,7 @@ public:
                   int classes,
                   Mode mode,
                   QgsSymbolV2* symbol,
-                  QgsVectorColorRampV2* ramp);
+                  QgsVectorColorRampV2* ramp) /Factory/;
 
   //! create a renderer from XML element
   static QgsFeatureRendererV2* load(QDomElement& symbologyElem) /Factory/;
