@@ -146,15 +146,18 @@ class TestQgsVectorLayer: public QObject
   {
     QgsVectorDataProvider * myProvider = mpNonSpatialLayer->dataProvider();
     QgsFeature f;
+    QgsAttributeList myList;
+    myList << 0 << 1 << 2 << 3;
     int myCount = 0;
-    myProvider->select();
+    myProvider->select( myList );
     while ( myProvider->nextFeature( f ) )
     {
       qDebug("Getting feature from provider");
       myCount++;
     }
-    QVERIFY( myCount > 10);
+    QVERIFY( myCount == 3 );
   };
+
   void QgsVectorLayerstorageType()
   {
 
