@@ -267,6 +267,7 @@ QString QgsGraduatedSymbolRendererV2::dump()
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
 {
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrName, mRanges );
+  r->setMode( mMode );
   if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
   if ( mSourceColorRamp )
