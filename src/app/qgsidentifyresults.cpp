@@ -214,27 +214,33 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer, int fid,
     }
   }
 
-  QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
-  actionItem->setData( 0, Qt::UserRole, "actions" );
-  featItem->addChild( actionItem );
-
-  QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
-  editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
-  editItem->setData( 0, Qt::UserRole, "edit" );
-  actionItem->addChild( editItem );
-
-  for ( int i = 0; i < vlayer->actions()->size(); i++ )
+  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() )
   {
-    const QgsAction &action = vlayer->actions()->at( i );
+    QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
+    actionItem->setData( 0, Qt::UserRole, "actions" );
+    featItem->addChild( actionItem );
 
-    if ( !action.runable() )
-      continue;
+    if ( vlayer->pendingFields().size() > 0 )
+    {
+      QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
+      editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+      editItem->setData( 0, Qt::UserRole, "edit" );
+      actionItem->addChild( editItem );
+    }
 
-    QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
-    twi->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
-    twi->setData( 0, Qt::UserRole, "action" );
-    twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
-    actionItem->addChild( twi );
+    for ( int i = 0; i < vlayer->actions()->size(); i++ )
+    {
+      const QgsAction &action = vlayer->actions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
+      twi->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
+      twi->setData( 0, Qt::UserRole, "action" );
+      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      actionItem->addChild( twi );
+    }
   }
 
   highlightFeature( featItem );

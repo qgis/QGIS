@@ -303,11 +303,14 @@ int QgsAttributeDialog::exec()
 
 void QgsAttributeDialog::show()
 {
-  mDialog->setAttribute( Qt::WA_DeleteOnClose );
-  mDialog->show();
-  mDialog->raise();
-  mDialog->activateWindow();
-  mDialog->installEventFilter( this );
+  if ( mDialog )
+  {
+    mDialog->setAttribute( Qt::WA_DeleteOnClose );
+    mDialog->show();
+    mDialog->raise();
+    mDialog->activateWindow();
+    mDialog->installEventFilter( this );
+  }
 }
 
 void QgsAttributeDialog::saveGeometry()
