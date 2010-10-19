@@ -1897,19 +1897,19 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>変換 - srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>画像座標(ピクセル)は整数値でなければいけません.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation>変換 - prjwin</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>画像座標(地理座標)は数値でなければいけません.</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
@@ -2583,23 +2583,23 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="154"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="170"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
-        <translation type="unfinished"></translation>
+        <translation>リサイズイメージの比率. この値はピクセルサイズ/イメージ解像度にしたがって変わります.25%を指定するとイメージのピクセルは４倍になります.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize:</source>
-        <translation type="unfinished"></translation>
+        <translation>出力サイズ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="186"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="282"/>
         <source>Assign a specified nodata value to output bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>出力バンドのためのデータ無しの値をアサインする.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="196"/>
@@ -2607,59 +2607,61 @@ Do you want terminate it anyway?</source>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>1バンドでカラーテーブルを利用しているデータセットを3(RGB)または4(RGBA)バンドのデータセットとして表示する.
+JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデータセットの出力ドライバに利用すると便利です.
+グレイ値（GDAL1.7.0以上でサポート）はグレイレベルのカラーデーブルで構成されているデータセットをグレイインデクスドデータセットとして表示可能にします.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <source>Expand:</source>
-        <translation type="unfinished"></translation>
+        <translation>拡張:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
         <source>Gray</source>
-        <translation type="unfinished">グレー</translation>
+        <translation>グレー</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="219"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="224"/>
         <source>RGBA</source>
-        <translation type="unfinished"></translation>
+        <translation>RGBA</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="232"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="242"/>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished"></translation>
+        <translation>コピーする元領域のイメージサブウィンドウをピクセル/ラインの位置で選択します（Xオフセット Yオフセット Xサイズ Yサイズを入力して下さい)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="235"/>
         <source>Srcwin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Src領域:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="249"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="259"/>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
-        <translation type="unfinished"></translation>
+        <translation>コピーする元領域のイメージサブウィンドウを（Src領域:と同じように）選択します しかし角はジオレファレンスされた座標で指定してください（左上x 左上Y 右下x 右下y の座標を入力して下さい)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="252"/>
         <source>Prjwin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prj領域:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="266"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>このファイルの全てのサブデータセットを個別の出力ファイルにコピーする.HDFやOGDIのようなサブデータセットを持つ形式で利用する.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="269"/>
         <source>Sds</source>
-        <translation type="unfinished"></translation>
+        <translation>サブデータセット</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="103"/>
@@ -3871,14 +3873,17 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <name>PythonConsole</name>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished">Pythonコンソール</translation>
+        <translation>Pythonコンソール</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this console
 use qgis.utils.iface object (instance of QgisInterface class).
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>このコンソールからQuantum GIS環境にアクセスするためには
+qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス）を利用して下さい.
+
+</translation>
     </message>
 </context>
 <context>
@@ -3970,7 +3975,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="233"/>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"></translation>
+        <translation>投影変換要求を行うためには少なくとも4個の対応点が必要です.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
@@ -4611,7 +4616,8 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="54"/>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation>マウスで入力した座標のCRSが異なります</translation>
+        <translatorcomment>修正しました20100802</translatorcomment>
+        <translation>異なるCRSの座標をマウスで取得します</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="39"/>
@@ -4997,7 +5003,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="269"/>
         <source>created field %1 not found (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>作成されたフィールド %1 が見つかりません(OGRエラー:%2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="509"/>
@@ -5171,22 +5177,22 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="39"/>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>アクティブなベクタレイヤがありません</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="40"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">地物を選択するためには凡例のベクタレイヤ名をクリックして選択する必要があります</translation>
+        <translation>地物を選択するためには凡例のベクタレイヤ名をクリックして選択する必要があります</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="116"/>
         <source>CRS Exception</source>
-        <translation type="unfinished">CRSエラー</translation>
+        <translation>CRSエラー</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished">選択した領域がレイヤの座標系を越えている</translation>
+        <translation>選択した領域がレイヤの座標系を越えている.</translation>
     </message>
 </context>
 <context>
@@ -6712,25 +6718,25 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="888"/>
         <location filename="../src/app/qgisapp.cpp" line="890"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>長方形領域による地物選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="894"/>
         <location filename="../src/app/qgisapp.cpp" line="896"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリゴンによる地物選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="900"/>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished"></translation>
+        <translation>フリーハンドによる地物選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="906"/>
         <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>Select features by radius</source>
-        <translation type="unfinished"></translation>
+        <translation>半径指定による地物選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="948"/>
@@ -6965,7 +6971,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1702"/>
         <source>Select Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>選択ツール</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1779"/>
@@ -7065,17 +7071,17 @@ This copy of QGIS writes debugging output.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2758"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>追加するラスタレイヤの選択...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2763"/>
         <source>Raster</source>
-        <translation type="unfinished">ラスタ</translation>
+        <translation>ラスタ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2797"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>追加するベクタレイヤの選択...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3426"/>
@@ -8090,7 +8096,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="151"/>
         <source> (long)</source>
-        <translation type="unfinished"></translation>
+        <translation>(long)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="156"/>
@@ -8862,7 +8868,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="164"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>アドバンスト</translation>
     </message>
 </context>
 <context>
@@ -8880,12 +8886,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Image too big</source>
-        <translation type="unfinished"></translation>
+        <translation>イメージが大きすぎます</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1x%2ピクセルのイメージ作成に失敗しました  エキスポートが中断しました.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
@@ -8931,17 +8937,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
         <source>Image too large</source>
-        <translation type="unfinished"></translation>
+        <translation>イメージが大きすぎます</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1x%2ピクセルの画像生成に失敗しました &apos; ラスタとしてプリントする？&apos;オプション無しで再実行しますか?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1x%2の画像を作るためには約%3MBのメモリーが必要です 実行しますか?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
@@ -9492,42 +9498,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="84"/>
         <source>Horizontal Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>水平方向配置:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="93"/>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>左</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="100"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>中央</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="107"/>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>右</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="117"/>
         <source>Vertical Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直方向配置:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="123"/>
         <source>Top</source>
-        <translation type="unfinished">一番上</translation>
+        <translation>上部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="130"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>中央部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="137"/>
         <source>Bottom</source>
-        <translation type="unfinished">一番下</translation>
+        <translation>底部</translation>
     </message>
 </context>
 <context>
@@ -12056,7 +12062,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="275"/>
         <source>rownum</source>
-        <translation type="unfinished"></translation>
+        <translation>行数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="285"/>
@@ -13370,7 +13376,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1789"/>
         <source>Projective</source>
-        <translation type="unfinished"></translation>
+        <translation>投影</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1791"/>
@@ -13735,7 +13741,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="179"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>アドバンスト</translation>
     </message>
 </context>
 <context>
@@ -15016,7 +15022,8 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="47"/>
         <source>Manual</source>
-        <translation>手動</translation>
+        <translatorcomment>1.5での翻訳失敗を修正</translatorcomment>
+        <translation>マニュアル</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="116"/>
@@ -16506,7 +16513,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="207"/>
         <source>(Derived)</source>
-        <translation>（由来する）</translation>
+        <translation>（継承している属性）</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="387"/>
@@ -17098,7 +17105,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="28"/>
         <source>Label settings</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベル設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="34"/>
@@ -17320,7 +17327,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="677"/>
         <source>multiline labels</source>
-        <translation type="unfinished"></translation>
+        <translation>複数行のラベル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="686"/>
@@ -17340,52 +17347,52 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="740"/>
         <source>Data defined settings</source>
-        <translation type="unfinished"></translation>
+        <translation>データ定義設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="752"/>
         <source>Font properties</source>
-        <translation type="unfinished"></translation>
+        <translation>フォントプロパティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="770"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>強調</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="793"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>イタリック</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="803"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>下線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="813"/>
         <source>Font family</source>
-        <translation type="unfinished">フォントファミリー</translation>
+        <translation>フォントファミリー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="823"/>
         <source>Strikeout</source>
-        <translation type="unfinished">取り消し線</translation>
+        <translation>取り消し線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="835"/>
         <source>Buffer properties</source>
-        <translation type="unfinished"></translation>
+        <translation>縁取りのプロパティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="843"/>
         <source>Buffer size</source>
-        <translation type="unfinished">バッファのサイズ</translation>
+        <translation>縁取りのサイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="853"/>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation>縁取り色</translation>
     </message>
 </context>
 <context>
@@ -17441,7 +17448,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="402"/>
         <source>&amp;Stretch using current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の領域を使って伸ばす(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="407"/>
@@ -18794,7 +18801,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
-        <translation type="unfinished"></translation>
+        <translation>もしサービスでベーシック認証が必要な場合ユーザー名とパスワードを入力して下さい</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
@@ -19472,7 +19479,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>ロードするレイヤを選択して下さい</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="43"/>
@@ -20008,7 +20015,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
         <source>Create raster icons in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>凡例にのせるラスタアイコンを作ります</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="399"/>
@@ -20925,7 +20932,7 @@ The database said:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="705"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished"></translation>
+        <translation>データベース接続は成功しました.しかしアクセス可能なテーブルを特定できません.</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="765"/>
@@ -20943,7 +20950,7 @@ The error message from the database was:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="791"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>待機中</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="803"/>
@@ -24482,19 +24489,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="20"/>
         <source>Rotation field</source>
-        <translation type="unfinished">回転フィールド</translation>
+        <translation>回転フィールド</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="21"/>
         <source>Size scale field</source>
-        <translation type="unfinished">サイズ縮尺フィールド</translation>
+        <translation>サイズ縮尺フィールド</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="32"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="71"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="91"/>
         <source>- no field -</source>
-        <translation type="unfinished">- 無フィールド -</translation>
+        <translation>- 無フィールド -</translation>
     </message>
 </context>
 <context>
@@ -26698,7 +26705,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="39"/>
         <source>Projective</source>
-        <translation type="unfinished"></translation>
+        <translation>投影変換</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="40"/>
@@ -27902,7 +27909,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2215"/>
         <source>Error</source>
-        <translation type="unfinished">エラー</translation>
+        <translation>エラー</translation>
     </message>
 </context>
 <context>
@@ -27919,22 +27926,22 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>No Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤがありません</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>capabilities document contained no layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>capabilitiesドキュメントにレイヤ情報がありません.</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="281"/>
         <source>Capabilities document is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Capabilitiesドキュメントが正しくありません</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="286"/>
         <source>GetCapabilities Error</source>
-        <translation type="unfinished"></translation>
+        <translation>GetCapabilitiesエラー</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="301"/>
@@ -28556,7 +28563,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="871"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished"></translation>
+        <translation>capabilitiesドキュメントの中身がありません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="983"/>
@@ -28565,7 +28572,10 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS capabilitiesを取得できません %1 行 %2 カラム %3
+多分WMSサーバーのURLが間違っています
+レスポンスは以下の通りです.
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1006"/>
@@ -28574,7 +28584,11 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS capabilitiesを期待された形式（DTD)で取得できませんでした: %1や%2がありません.
+多分WMSサーバーのURLが間違っていると思われます.
+タグ%3
+レスポンスは以下のとおりです.
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1847"/>
@@ -28583,12 +28597,15 @@ Response was:
 Response was:
 
 %5</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2でWMSサービスエクセプションを取得できませんでした.行 %3 カラム %4
+
+レスポンスは以下のとおりです.
+%5</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
         <source>Request contains a format not offered by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>リクエストにはサーバーで提供されない形式が含まれています.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2198"/>
