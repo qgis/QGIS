@@ -3685,7 +3685,7 @@ void QgsRasterLayer::thumbnailAsImage( QImage * thepImage )
   //TODO: This should be depreciated and a new function written that just returns a new QImage, it will be safer
   if ( 0 == thepImage ) { return; }
 
-  thepImage->fill(Qt::white); //defaults to white
+  thepImage->fill( Qt::white ); //defaults to white
 
   // Raster providers are disabled (for the moment)
   if ( mProviderKey.isEmpty() )
@@ -5367,6 +5367,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
   //if none exists....
   if ( !mCRS->isValid() )
   {
+    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS->validate();
   }
 
