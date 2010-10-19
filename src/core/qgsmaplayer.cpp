@@ -186,8 +186,12 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   // Make it the saved CRS to have WMS layer projected correctly.
   // We will still overwrite whatever GDAL etc picks up anyway
   // further down this function.
+  mnl = layer_node.namedItem( "layername" );
+  mne = mnl.toElement();
+
   QDomNode srsNode = layer_node.namedItem( "srs" );
   mCRS->readXML( srsNode );
+  mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
   mCRS->validate();
   savedCRS = *mCRS;
 
