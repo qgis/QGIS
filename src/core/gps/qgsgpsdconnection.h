@@ -18,7 +18,6 @@
 #ifndef QGSGPSDCONNECTION_H
 #define QGSGPSDCONNECTION_H
 
-#include "qgsgpsdconnection.h"
 #include "qgsnmeaconnection.h"
 
 #include <QAbstractSocket>

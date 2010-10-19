@@ -6942,18 +6942,6 @@ This copy of QGIS has been built with SpatiaLite support (%1).</source>
 Diese QGIS-Kopie enthält SpatiaLite-Unterstützung (%1).</translation>
     </message>
     <message>
-        <source>
-This copy of QGIS has been built with QWT support (%1).</source>
-        <translation type="obsolete">
-Diese QGIS-Kopie wurde mit QWT-Unterstützung (%1) erzeugt.</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built without QWT support.</source>
-        <translation type="obsolete">
-Diese QGIS-Kopie wurde ohne QWT-Unterstützung erzeugt.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2490"/>
         <source>
 This copy of QGIS writes debugging output.</source>
@@ -8315,22 +8303,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeSelectionDialog</name>
     <message>
-        <source>Attribute</source>
-        <translation type="obsolete">Attribut</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Alias</translation>
-    </message>
-    <message>
-        <source>Select all</source>
-        <translation type="obsolete">Alles auswählen</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Löschen</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="71"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="149"/>
@@ -8418,11 +8390,6 @@ p, li { white-space: pre-wrap; }
             <numerusform>Attributtabelle - %1 (%n Objekte gefunden)</numerusform>
         </translation>
     </message>
-    <message>
-        <source>Attribute table - %3 :: %1 / %2 features(s) selected</source>
-        <comment>feature count</comment>
-        <translation type="obsolete">Attributetabelle - %3 :: %1 / %2 Objekte</translation>
-    </message>
     <message numerus="yes">
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="144"/>
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
@@ -8481,10 +8448,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="66"/>
         <source>Opens the search query builder</source>
         <translation>Öffnet den Abfrageeditor</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Hilfe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="99"/>
@@ -8597,10 +8560,6 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Suchen</translation>
     </message>
     <message>
-        <source>Show selected records only</source>
-        <translation type="obsolete">Nur gewählte Datensätze zeigen</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="69"/>
         <source>Advanced search</source>
         <translation>Erweiterte Suche</translation>
@@ -8609,10 +8568,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="249"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Search selected records only</source>
-        <translation type="obsolete">Nur ausgewählte Datensätze durchsuchen</translation>
     </message>
 </context>
 <context>
@@ -11200,7 +11155,7 @@ Note: This message won&apos;t reappear for this file in this session.</source>
 
 %2
 
-Hinweis: Diese Nachricht für dies Datei in dieser Sitzung nicht erneut angezeigt.</translation>
+Hinweis: Diese Nachricht wird in dieser Sitzung für diese Datei nicht erneut angezeigt.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="419"/>
@@ -12130,14 +12085,6 @@ p, li { white-space: pre-wrap; }
         <source>Could not add the new field to the provider.</source>
         <translation>Konnte neues Feld nicht hinzufügen.</translation>
     </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>An error occured while evaluating the calculation string.</source>
-        <translation type="obsolete">Fehler beim Überprüfen des Berechnungsausdrucks.</translation>
-    </message>
 </context>
 <context>
     <name>QgsFieldCalculatorBase</name>
@@ -12713,10 +12660,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="254"/>
         <source>Reset current feature</source>
         <translation>Aktuelles Objekt zurücksetzen</translation>
-    </message>
-    <message>
-        <source>GPS device port</source>
-        <translation type="obsolete">GPS-Geräteport</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="297"/>
@@ -17886,52 +17829,52 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsLegendLayer</name>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="364"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="383"/>
         <source>&amp;Zoom to layer extent</source>
         <translation>Auf die Layerausdehnung &amp;zoomen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="367"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="386"/>
         <source>&amp;Zoom to best scale (100%)</source>
         <translation>&amp;Auf besten Maßstab zoomen (100%)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="372"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="391"/>
         <source>&amp;Stretch using current extent</source>
         <translation>Auf aktuelle Ausdehnung &amp;strecken</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="377"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="396"/>
         <source>&amp;Show in overview</source>
         <translation>&amp;In der Übersicht anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="384"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="403"/>
         <source>&amp;Remove</source>
         <translation>&amp;Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="393"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="412"/>
         <source>&amp;Open attribute table</source>
         <translation>&amp;Attributtabelle öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="408"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="427"/>
         <source>Save as...</source>
         <translation>Speichern als...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="411"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="430"/>
         <source>Save selection as...</source>
         <translation>Auswahl speichern als...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="418"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="437"/>
         <source>&amp;Query...</source>
         <translation>&amp;Abfrage...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="425"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="444"/>
         <source>&amp;Properties</source>
         <translation>&amp;Eigenschaften</translation>
     </message>
@@ -23344,22 +23287,6 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
-        <source>Invalid Query</source>
-        <translation type="obsolete">Ungültige Abfrage</translation>
-    </message>
-    <message>
-        <source>Setting the query failed</source>
-        <translation type="obsolete">Setzen der Abfrage gescheitert</translation>
-    </message>
-    <message>
-        <source>No Query</source>
-        <translation type="obsolete">Keine Abfrage</translation>
-    </message>
-    <message>
-        <source>You must create a query before you can test it</source>
-        <translation type="obsolete">Sie müssen eine Anfrage erstellen bevor Sie sie testen können</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="151"/>
         <source>Query Result</source>
         <translation>Abfrageergebnis</translation>
@@ -24828,26 +24755,6 @@ p, li { white-space: pre-wrap; }
         <translation>Pyramidenauflösungen</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1794"/>
         <source>Build pyramids internally if possible</source>
         <translation>Pyramiden wenn möglich intern erzeugen</translation>
@@ -24891,38 +24798,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1498"/>
         <source>No Data</source>
         <translation>Kein Datum</translation>
-    </message>
-    <message>
-        <source>Chart Type</source>
-        <translation type="obsolete">Diagrammtyp</translation>
-    </message>
-    <message>
-        <source>Line graph</source>
-        <translation type="obsolete">Kurvendiagramm</translation>
-    </message>
-    <message>
-        <source>Bar chart</source>
-        <translation type="obsolete">Balkendiagramm</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Optionen</translation>
-    </message>
-    <message>
-        <source>Column count</source>
-        <translation type="obsolete">Spaltenanzahl</translation>
-    </message>
-    <message>
-        <source>Out of range OK?</source>
-        <translation type="obsolete">Bereichsüberschreitung erlaubt?</translation>
-    </message>
-    <message>
-        <source>Allow approximation</source>
-        <translation type="obsolete">Approximation erlauben</translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation type="obsolete">Aktualisieren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="31"/>
@@ -32176,10 +32051,6 @@ Erweiterung wird nicht aktiviert.</translation>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export vector</source>
         <translation>Vektor exportieren</translation>
-    </message>
-    <message>
-        <source>Export vector table</source>
-        <translation type="obsolete">Vektortabelle exportieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
