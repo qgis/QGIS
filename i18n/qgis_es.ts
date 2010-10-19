@@ -635,7 +635,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="26"/>
         <source>Area</source>
-        <translation type="unfinished">Área</translation>
+        <translation>Área</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
@@ -1803,7 +1803,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Las coordenadas de la imagen (píxeles) deben ser números enteros.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
@@ -1811,7 +1811,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Las coordenadas de la imagen (geográficas) deben ser números.</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
@@ -2577,17 +2577,17 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="154"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="170"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porcentaje para cambiar el tamaño de imagen. Esto cambiará el tamaño de píxel/resolución de la imagen: 25% creará una imagen con píxeles 4x más grandes.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamañó de salida:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="186"/>
@@ -2601,27 +2601,29 @@ Do you want terminate it anyway?</source>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Para exponer un conjunto de datos con una banda con una tabla de color como un conjunto de datos con 3 (RGB) o 4 (RGBA) bandas.
+Útil para controladores de salida tales como JPEG, JPEG2000, MrSID, ECW que no admiten conjuntos indexados de colores.
+El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una tabla de color que sólo contiene tonos de gris a un conjunto de datos de gris indexado.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <source>Expand:</source>
-        <translation type="unfinished"></translation>
+        <translation>Expandir:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
         <source>Gray</source>
-        <translation type="unfinished">Gris</translation>
+        <translation>Gris</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="219"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="224"/>
         <source>RGBA</source>
-        <translation type="unfinished"></translation>
+        <translation>RGBA</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="232"/>
@@ -3865,14 +3867,17 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     <name>PythonConsole</name>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished">Consola de Python</translation>
+        <translation>Consola de Python</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this console
 use qgis.utils.iface object (instance of QgisInterface class).
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Para acceder al entorno de Quantum GIS desde esta consola
+use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
+
+</translation>
     </message>
 </context>
 <context>
@@ -3976,7 +3981,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="233"/>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar una transformación proyectiva requiere al menos 4 puntos correspondientes.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
@@ -4994,7 +4999,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="269"/>
         <source>created field %1 not found (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>no se encuentra el campo creado %1 (error de OGR: %2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="509"/>
@@ -5168,22 +5173,22 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="39"/>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguna capa vectorial activa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="40"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Para seleccionar objetos espaciales debe elegir una capa vectorial haciendo clic en su nombre en la leyenda</translation>
+        <translation>Para seleccionar objetos espaciales debe elegir una capa vectorial haciendo clic en su nombre en la leyenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="116"/>
         <source>CRS Exception</source>
-        <translation type="unfinished">Excepción de SRC</translation>
+        <translation>Excepción de SRC</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished">La selección se extiende más allá del sistema de coordenadas de la capa.</translation>
+        <translation>La selección se extiende más allá del sistema de coordenadas de la capa.</translation>
     </message>
 </context>
 <context>
@@ -6649,25 +6654,25 @@ Por favor, contacte con los desarrolladores.</translation>
         <location filename="../src/app/qgisapp.cpp" line="888"/>
         <location filename="../src/app/qgisapp.cpp" line="890"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar objetos espaciales por rectángulo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="894"/>
         <location filename="../src/app/qgisapp.cpp" line="896"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar objetos espaciales por polígono</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="900"/>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar objetos espaciales a mano alzada</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="906"/>
         <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>Select features by radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar objetos espaciales por radio</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="948"/>
@@ -6907,7 +6912,7 @@ Por favor, contacte con los desarrolladores.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1702"/>
         <source>Select Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Herramientas de selección</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1779"/>
@@ -7264,17 +7269,17 @@ Esta copia de QGIS se ha compilado con soporte para SpatialLite (%1).</translati
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2758"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar capas ráster a añadir...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2763"/>
         <source>Raster</source>
-        <translation type="unfinished">Ráster</translation>
+        <translation>Ráster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2797"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, seleccione una capa vectorial primero.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3895"/>
@@ -7325,7 +7330,7 @@ Esta copia de QGIS se ha compilado con soporte para SpatialLite (%1).</translati
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2713"/>
         <source>%1 doesn&apos;t have any layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 no tiene ninguna capa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3600"/>
@@ -8827,7 +8832,7 @@ El error fue: %2</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="164"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avanzado</translation>
+        <translation>Avanzado</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="54"/>
@@ -8885,12 +8890,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Image too big</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagen demasiado grande</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la creación de la imangen con %1x%2 píxeles. Exportación abortada.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
@@ -8936,17 +8941,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
         <source>Image too large</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagen demasiado grande</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la creación de la imangen con %1x%2 píxeles. ¿Reintentar sin «Imprimir como ráster»?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>Para crear una imagen %1x%2 se necesitan cerca de %3 MB de memoria. ¿Proceder?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
@@ -9492,42 +9497,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="84"/>
         <source>Horizontal Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineación horizontal:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="93"/>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="100"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="107"/>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="117"/>
         <source>Vertical Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineación vertical:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="123"/>
         <source>Top</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="130"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Medio</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="137"/>
         <source>Bottom</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="64"/>
@@ -12348,7 +12353,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="600"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="609"/>
@@ -12759,22 +12764,22 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="334"/>
         <source>Waypoints from a route</source>
-        <translation type="unfinished"></translation>
+        <translation>Waypoints de una ruta</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="335"/>
         <source>Waypoints from a track</source>
-        <translation type="unfinished"></translation>
+        <translation>Waypoints de una traza</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="336"/>
         <source>Route from waypoints</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta de waypoints</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="337"/>
         <source>Track from waypoints</source>
-        <translation type="unfinished"></translation>
+        <translation>Traza de waypoints</translation>
     </message>
 </context>
 <context>
@@ -13712,7 +13717,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="179"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avanzado</translation>
+        <translation>Avanzado</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="52"/>
@@ -17114,7 +17119,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="28"/>
         <source>Label settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de etiquetas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="34"/>
@@ -17336,7 +17341,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="677"/>
         <source>multiline labels</source>
-        <translation type="unfinished"></translation>
+        <translation>etiquetas multilínea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="686"/>
@@ -17356,37 +17361,37 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="740"/>
         <source>Data defined settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración definida por datos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="752"/>
         <source>Font properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades del tipo de letra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="770"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Negrita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="793"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursiva</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="803"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Subrayado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="813"/>
         <source>Font family</source>
-        <translation type="unfinished">Familia de tipo de letra</translation>
+        <translation>Familia de tipo de letra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="823"/>
         <source>Strikeout</source>
-        <translation type="unfinished">Tachado</translation>
+        <translation>Tachado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="835"/>
@@ -17396,12 +17401,12 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="843"/>
         <source>Buffer size</source>
-        <translation type="unfinished">Tamaño de buffer</translation>
+        <translation>Tamaño de buffer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="853"/>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de buffer</translation>
     </message>
 </context>
 <context>
@@ -17457,7 +17462,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="402"/>
         <source>&amp;Stretch using current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;stirar usando extensión actual</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="407"/>
@@ -17825,7 +17830,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="84"/>
@@ -17935,7 +17940,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
@@ -17989,7 +17994,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="51"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="66"/>
@@ -18191,7 +18196,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="66"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="157"/>
@@ -18247,7 +18252,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
@@ -18356,7 +18361,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="78"/>
@@ -18821,7 +18826,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
-        <translation type="unfinished"></translation>
+        <translation>Si el servicio requiere una autenticación básica, introduzca un nombre de usuario y contraseña opcional</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="97"/>
@@ -19489,7 +19494,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar capas a cargar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="43"/>
@@ -20030,7 +20035,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
         <source>Create raster icons in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear iconos de ráster en el panel capas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="399"/>
@@ -20944,7 +20949,7 @@ La base de datos dijo:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="705"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished"></translation>
+        <translation>La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="765"/>
@@ -20962,7 +20967,7 @@ El mensaje de error de la base de datos fue:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="791"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>Esperando</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="803"/>
