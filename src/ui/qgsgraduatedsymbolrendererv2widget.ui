@@ -86,7 +86,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QComboBox" name="cboGraduatedColorRamp"/>
+      <widget class="QgsColorRampComboBox" name="cboGraduatedColorRamp"/>
      </item>
      <item row="2" column="3">
       <widget class="QLabel" name="label_8">
@@ -199,6 +199,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorRampComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscolorrampcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cboGraduatedColumn</tabstop>
   <tabstop>btnChangeGraduatedSymbol</tabstop>

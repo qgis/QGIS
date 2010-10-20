@@ -2,6 +2,7 @@
 SET(QGIS_GUI_SRCS
 
 symbology-ng/qgsbrushstylecombobox.cpp
+symbology-ng/qgscolorrampcombobox.cpp
 symbology-ng/qgsdashspacedialog.cpp
 symbology-ng/qgspenstylecombobox.cpp
 symbology-ng/qgssymbollayerv2widget.cpp
@@ -73,6 +74,7 @@ symbology-ng/qgssymbolv2selectordialog.h
 symbology-ng/qgsvectorgradientcolorrampv2dialog.h
 symbology-ng/qgsvectorrandomcolorrampv2dialog.h
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
+symbology-ng/qgscolorrampcombobox.h
 symbology-ng/characterwidget.h
 symbology-ng/qgspenstylecombobox.h
 symbology-ng/qgsbrushstylecombobox.h

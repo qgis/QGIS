@@ -25,12 +25,12 @@ QgsRendererV2Widget* QgsGraduatedSymbolRendererV2Widget::create( QgsVectorLayer*
 }
 
 QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+  : QgsRendererV2Widget( layer, style )
 {
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
-  if ( !renderer || renderer->type() != "graduatedSymbol" )
+  if( !renderer || renderer->type() != "graduatedSymbol" )
   {
     // we're not going to use it - so let's delete the renderer
     delete renderer;
@@ -46,7 +46,9 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   setupUi( this );
 
   populateColumns();
-  populateColorRamps();
+
+  cboGraduatedColorRamp->populate( mStyle );
+
   QStandardItemModel* mg = new QStandardItemModel( this );
   QStringList labels;
   labels << tr( "Range" ) << tr( "Label" );
@@ -96,9 +98,9 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   populateRanges();
 
   // update UI from the graduated renderer (update combo boxes, view)
-  if ( mRenderer->mode() < cboGraduatedMode->count() )
+  if( mRenderer->mode() < cboGraduatedMode->count() )
     cboGraduatedMode->setCurrentIndex( mRenderer->mode() );
-  if ( mRenderer->ranges().count() )
+  if( mRenderer->ranges().count() )
     spinGraduatedClasses->setValue( mRenderer->ranges().count() );
 
   // set column
@@ -109,7 +111,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
 
   // set source symbol
-  if ( mRenderer->sourceSymbol() )
+  if( mRenderer->sourceSymbol() )
   {
     delete mGraduatedSymbol;
     mGraduatedSymbol = mRenderer->sourceSymbol()->clone();
@@ -117,15 +119,9 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   }
 
   // set source color ramp
-  if ( mRenderer->sourceColorRamp() )
+  if( mRenderer->sourceColorRamp() )
   {
-    QSize rampIconSize( 50, 16 );
-    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( mRenderer->sourceColorRamp(), rampIconSize );
-    if ( cboGraduatedColorRamp->itemText( 0 ) == "[source]" )
-      cboGraduatedColorRamp->setItemIcon( 0, icon );
-    else
-      cboGraduatedColorRamp->insertItem( 0, icon, "[source]" );
-    cboGraduatedColorRamp->setCurrentIndex( 0 );
+    cboGraduatedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
   }
 
 }
@@ -137,9 +133,9 @@ void QgsGraduatedSymbolRendererV2Widget::populateColumns()
   cboGraduatedColumn->clear();
   const QgsFieldMap& flds = mLayer->pendingFields();
   QgsFieldMap::ConstIterator it = flds.begin();
-  for ( ; it != flds.end(); ++it )
+  for( ; it != flds.end(); ++it )
   {
-    if ( it->type() == QVariant::Double || it->type() == QVariant::Int )
+    if( it->type() == QVariant::Double || it->type() == QVariant::Int )
       cboGraduatedColumn->addItem( it->name() );
   }
 }
@@ -150,39 +146,17 @@ void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged()
 }
 
 
-void QgsGraduatedSymbolRendererV2Widget::populateColorRamps()
-{
-  QSize rampIconSize( 50, 16 );
-  cboGraduatedColorRamp->setIconSize( rampIconSize );
-
-  QStringList rampNames = mStyle->colorRampNames();
-  for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
-  {
-    QgsVectorColorRampV2* ramp = mStyle->colorRamp( *it );
-    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, rampIconSize );
-    cboGraduatedColorRamp->addItem( icon, *it );
-    delete ramp;
-  }
-}
-
-
-
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 {
   QString attrName = cboGraduatedColumn->currentText();
 
   int classes = spinGraduatedClasses->value();
 
-  QgsVectorColorRampV2* ramp = NULL;
-  QString rampName = cboGraduatedColorRamp->currentText();
-  if ( rampName == "[source]" )
-    ramp = mRenderer->sourceColorRamp()->clone();
-  else
-    ramp = mStyle->colorRamp( rampName );
+  QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
 
-  if ( ramp == NULL )
+  if( ramp == NULL )
   {
-    if ( cboGraduatedColorRamp->count() == 0 )
+    if( cboGraduatedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
     else
       QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
@@ -190,13 +164,13 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   }
 
   QgsGraduatedSymbolRendererV2::Mode mode;
-  if ( cboGraduatedMode->currentIndex() == 0 )
+  if( cboGraduatedMode->currentIndex() == 0 )
     mode = QgsGraduatedSymbolRendererV2::EqualInterval;
-  else if ( cboGraduatedMode->currentIndex() == 2 )
+  else if( cboGraduatedMode->currentIndex() == 2 )
     mode = QgsGraduatedSymbolRendererV2::Jenks;
-  else if ( cboGraduatedMode->currentIndex() == 3 )
+  else if( cboGraduatedMode->currentIndex() == 3 )
     mode = QgsGraduatedSymbolRendererV2::StdDev;
-  else if ( cboGraduatedMode->currentIndex() == 4 )
+  else if( cboGraduatedMode->currentIndex() == 4 )
     mode = QgsGraduatedSymbolRendererV2::Pretty;
   else // default should be quantile for now
     mode = QgsGraduatedSymbolRendererV2::Quantile;
@@ -212,7 +186,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
   QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, this );
-  if ( !dlg.exec() )
+  if( !dlg.exec() )
     return;
 
   updateGraduatedSymbolIcon();
@@ -240,7 +214,7 @@ void QgsGraduatedSymbolRendererV2Widget::populateRanges()
 
   int i, count = mRenderer->ranges().count();
 
-  for ( i = 0; i < count; i++ )
+  for( i = 0; i < count; i++ )
   {
     const QgsRendererRangeV2& range = mRenderer->ranges()[i];
     QString rangeStr = QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 );
@@ -268,7 +242,7 @@ void QgsGraduatedSymbolRendererV2Widget::populateRanges()
 int QgsRendererV2PropertiesDialog::currentRangeRow()
 {
   QModelIndex idx = viewGraduated->selectionModel()->currentIndex();
-  if ( !idx.isValid() )
+  if( !idx.isValid() )
     return -1;
   return idx.row();
 }
@@ -276,15 +250,15 @@ int QgsRendererV2PropertiesDialog::currentRangeRow()
 
 void QgsGraduatedSymbolRendererV2Widget::rangesDoubleClicked( const QModelIndex & idx )
 {
-  if ( idx.isValid() && idx.column() == 0 )
+  if( idx.isValid() && idx.column() == 0 )
     changeRangeSymbol( idx.row() );
-  if ( idx.isValid() && idx.column() == 1 )
+  if( idx.isValid() && idx.column() == 1 )
     changeRange( idx.row() );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx )
 {
-  if ( !idx.isValid() )
+  if( !idx.isValid() )
     mRowSelected = -1;
   else
     mRowSelected = idx.row();
@@ -295,7 +269,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, this );
-  if ( !dlg.exec() )
+  if( !dlg.exec() )
   {
     delete newSymbol;
     return;
@@ -314,7 +288,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   dialog.setLowerValue( QString( "%1" ).arg( range.lowerValue() ) );
   dialog.setUpperValue( QString( "%1" ).arg( range.upperValue() ) );
 
-  if ( dialog.exec() == QDialog::Accepted )
+  if( dialog.exec() == QDialog::Accepted )
   {
     double lowerValue = dialog.lowerValue().toDouble();
     double upperValue = dialog.upperValue().toDouble();
@@ -341,7 +315,7 @@ void QgsGraduatedSymbolRendererV2Widget::deleteCurrentClass()
 
 void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * item )
 {
-  if ( item->column() == 2 )
+  if( item->column() == 2 )
   {
     QString label = item->text();
     int idx = item->row();
