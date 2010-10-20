@@ -45,6 +45,8 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
     void on_mTransparencySlider_valueChanged( int value );
 
+    void openStyleManager();
+
   signals:
     void symbolModified();
 

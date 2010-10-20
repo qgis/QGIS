@@ -2,6 +2,7 @@
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgssymbolv2propertiesdialog.h"
+#include "qgsstylev2managerdialog.h"
 
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -34,7 +35,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   }
 
   connect( btnSymbolProperties, SIGNAL( clicked() ), this, SLOT( changeSymbolProperties() ) );
-
+  connect( btnStyleManager, SIGNAL( clicked() ), SLOT( openStyleManager() ) );
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
@@ -275,4 +276,12 @@ QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
     btnAdvanced->show();
   }
   return mAdvancedMenu;
+}
+
+void QgsSymbolV2SelectorDialog::openStyleManager()
+{
+  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  dlg.exec();
+
+  populateSymbolView();
 }
