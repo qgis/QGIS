@@ -16,6 +16,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
   public:
     QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent = NULL );
 
+    //! open add color ramp dialog, return color ramp's name if the ramp has been added
+    static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style );
+
   public slots:
     void addItem();
     void editItem();

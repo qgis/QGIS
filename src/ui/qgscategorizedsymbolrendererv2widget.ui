@@ -78,7 +78,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cboCategorizedColorRamp">
+      <widget class="QgsColorRampComboBox" name="cboCategorizedColorRamp">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -169,6 +169,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorRampComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscolorrampcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cboCategorizedColumn</tabstop>
   <tabstop>btnChangeCategorizedSymbol</tabstop>
