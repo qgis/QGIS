@@ -123,6 +123,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWid
   chkMergeLines->setChecked( lyr.mergeLines );
   chkMultiLine->setChecked( lyr.multiLineLabels );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
+  chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
 
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
   chkScaleBasedVisibility->setChecked( scaleBased );
@@ -139,7 +140,19 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWid
 
   btnTextColor->setColor( lyr.textColor );
   btnBufferColor->setColor( lyr.bufferColor );
-  updateFont( lyr.textFont );
+
+  if ( lyr.fontSizeInMapUnits )
+  {
+    mFontSizeUnitComboBox->setCurrentIndex( 1 );
+  }
+  else
+  {
+    mFontSizeUnitComboBox->setCurrentIndex( 0 );
+  }
+
+  QFont textFont = lyr.textFont;
+  updateFont( textFont );
+  mFontSizeSpinBox->setValue( textFont.pointSizeF() );
   updateUi();
 
   updateOptions();
@@ -238,7 +251,17 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     lyr.bufferSize = 0;
   }
+  if ( chkAddDirectionSymbol->isChecked() )
+  {
+    lyr.addDirectionSymbol = true;
+  }
+  else
+  {
+    lyr.addDirectionSymbol = false;
+  }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
+  lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
+
 
   //data defined labeling
   setDataDefinedProperty( mSizeAttributeComboBox, QgsPalLayerSettings::Size, lyr );
@@ -250,6 +273,12 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mFontFamilyAttributeComboBox, QgsPalLayerSettings::Family, lyr );
   setDataDefinedProperty( mBufferSizeAttributeComboBox, QgsPalLayerSettings:: BufferSize, lyr );
   setDataDefinedProperty( mBufferColorAttributeComboBox, QgsPalLayerSettings::BufferColor, lyr );
+  setDataDefinedProperty( mXCoordinateComboBox, QgsPalLayerSettings::PositionX, lyr );
+  setDataDefinedProperty( mYCoordinateComboBox, QgsPalLayerSettings::PositionY, lyr );
+  setDataDefinedProperty( mHorizontalAlignmentComboBox, QgsPalLayerSettings::Hali, lyr );
+  setDataDefinedProperty( mVerticalAlignmentComboBox, QgsPalLayerSettings::Vali, lyr );
+  setDataDefinedProperty( mLabelDistanceComboBox, QgsPalLayerSettings::LabelDistance, lyr );
+  setDataDefinedProperty( mRotationComboBox, QgsPalLayerSettings::Rotation, lyr );
 
   return lyr;
 }
@@ -308,6 +337,12 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mFontFamilyAttributeComboBox;
   comboList << mBufferSizeAttributeComboBox;
   comboList << mBufferColorAttributeComboBox;
+  comboList << mXCoordinateComboBox;
+  comboList << mYCoordinateComboBox;
+  comboList << mHorizontalAlignmentComboBox;
+  comboList << mVerticalAlignmentComboBox;
+  comboList << mLabelDistanceComboBox;
+  comboList << mRotationComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -335,6 +370,12 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mFontFamilyAttributeComboBox, s, QgsPalLayerSettings::Family );
   setCurrentComboValue( mBufferSizeAttributeComboBox, s , QgsPalLayerSettings::BufferSize );
   setCurrentComboValue( mBufferColorAttributeComboBox, s, QgsPalLayerSettings::BufferColor );
+  setCurrentComboValue( mXCoordinateComboBox, s, QgsPalLayerSettings::PositionX );
+  setCurrentComboValue( mYCoordinateComboBox, s, QgsPalLayerSettings::PositionY );
+  setCurrentComboValue( mHorizontalAlignmentComboBox, s, QgsPalLayerSettings::Hali );
+  setCurrentComboValue( mVerticalAlignmentComboBox, s, QgsPalLayerSettings::Vali );
+  setCurrentComboValue( mLabelDistanceComboBox, s, QgsPalLayerSettings::LabelDistance );
+  setCurrentComboValue( mRotationComboBox, s, QgsPalLayerSettings::Rotation );
 }
 
 void QgsLabelingGui::changeTextColor()
@@ -352,14 +393,21 @@ void QgsLabelingGui::changeTextFont()
   bool ok;
   QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), this );
   if ( ok )
+  {
     updateFont( font );
+  }
+  mFontSizeSpinBox->setValue( font.pointSizeF() );
 }
 
 void QgsLabelingGui::updateFont( QFont font )
 {
-  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSize() ).arg( tr( "pt" ) ) );
+  QString fontSizeUnitString = tr( "pt" );
+  if ( mFontSizeUnitComboBox->currentIndex() == 1 )
+  {
+    fontSizeUnitString = tr( "map units" );
+  }
+  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSize() ).arg( fontSizeUnitString ) );
   lblFontPreview->setFont( font );
-
   updatePreview();
 }
 
@@ -417,4 +465,58 @@ void QgsLabelingGui::updateOptions()
   {
     stackedOptions->setCurrentWidget( pageOptionsEmpty );
   }
+}
+
+void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
+{
+  QFont font = lblFontPreview->font();
+  font.setPointSizeF( d );
+  lblFontPreview->setFont( font );
+  updateFont( font );
+}
+
+void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
+{
+  updateFont( lblFontPreview->font() );
+}
+
+void QgsLabelingGui::on_mXCoordinateComboBox_currentIndexChanged( const QString & text )
+{
+  if ( text.isEmpty() ) //no data defined alignment without data defined position
+  {
+    disableDataDefinedAlignment();
+  }
+  else if ( !mYCoordinateComboBox->currentText().isEmpty() )
+  {
+    enableDataDefinedAlignment();
+  }
+}
+
+void QgsLabelingGui::on_mYCoordinateComboBox_currentIndexChanged( const QString & text )
+{
+  if ( text.isEmpty() ) //no data defined alignment without data defined position
+  {
+    disableDataDefinedAlignment();
+  }
+  else if ( !mXCoordinateComboBox->currentText().isEmpty() )
+  {
+    enableDataDefinedAlignment();
+  }
+}
+
+void QgsLabelingGui::disableDataDefinedAlignment()
+{
+  mHorizontalAlignmentComboBox->setCurrentIndex( mHorizontalAlignmentComboBox->findText( "" ) );
+  mHorizontalAlignmentComboBox->setEnabled( false );
+  mVerticalAlignmentComboBox->setCurrentIndex( mVerticalAlignmentComboBox->findText( "" ) );
+  mVerticalAlignmentComboBox->setEnabled( false );
+  mRotationComboBox->setCurrentIndex( mRotationComboBox->findText( "" ) );
+  mRotationComboBox->setEnabled( false );
+}
+
+void QgsLabelingGui::enableDataDefinedAlignment()
+{
+  mHorizontalAlignmentComboBox->setEnabled( true );
+  mVerticalAlignmentComboBox->setEnabled( true );
+  mRotationComboBox->setEnabled( true );
 }

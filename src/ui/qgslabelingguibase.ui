@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>496</width>
-    <height>659</height>
+    <width>504</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -396,7 +396,7 @@
               </item>
              </layout>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label_29">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -412,7 +412,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_16">
               <item>
                <widget class="QgsColorButton" name="btnTextColor">
@@ -445,7 +445,7 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="label_30">
               <property name="text">
                <string>Buffer</string>
@@ -455,7 +455,7 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="3" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_17">
               <item>
                <widget class="QCheckBox" name="chkBuffer">
@@ -512,7 +512,7 @@
               </item>
              </layout>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="label_33">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -528,8 +528,14 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="5" column="1">
              <widget class="QgsLabelPreview" name="lblFontPreview">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>30</width>
@@ -544,12 +550,44 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0" colspan="2">
+            <item row="4" column="0" colspan="2">
              <widget class="Line" name="line_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="mFontSizeLabel">
+              <property name="text">
+               <string>Font size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
+                <property name="maximum">
+                 <double>999999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="mFontSizeUnitComboBox">
+                <item>
+                 <property name="text">
+                  <string>In points</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>In map units</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -678,7 +716,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
+       <item row="8" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_19">
          <item>
           <widget class="QLabel" name="label_19">
@@ -696,7 +734,7 @@
          </item>
         </layout>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_20">
          <item>
           <widget class="QCheckBox" name="chkNoObstacle">
@@ -733,13 +771,20 @@
          </item>
         </layout>
        </item>
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="chkAddDirectionSymbol">
+         <property name="text">
+          <string>add direction symbol</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
        <string>Data defined settings</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
+      <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QGroupBox" name="mFontAttributePropertiesGroupBox">
          <property name="sizePolicy">
@@ -753,78 +798,74 @@
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_11">
-            <item row="0" column="0">
-             <widget class="QLabel" name="mSizeLabel">
-              <property name="text">
-               <string>Size</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="mSizeAttributeComboBox"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="mBoldLabel">
-              <property name="text">
-               <string>Bold</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="mBoldAttributeComboBox"/>
-            </item>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="mColorAttributeComboBox"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="mColorLabel">
-              <property name="text">
-               <string>Color</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QComboBox" name="mItalicAttributeComboBox"/>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="mItalicLabel">
-              <property name="text">
-               <string>Italic</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QComboBox" name="mUnderlineAttributeComboBox"/>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="mUnderlineLabel">
-              <property name="text">
-               <string>Underline</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QComboBox" name="mFontFamilyAttributeComboBox"/>
-            </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="mFontFamilyLabel">
-              <property name="text">
-               <string>Font family</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QComboBox" name="mStrikeoutAttributeComboBox"/>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="mStrikeoutLabel">
-              <property name="text">
-               <string>Strikeout</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QLabel" name="mSizeLabel">
+            <property name="text">
+             <string>Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mSizeAttributeComboBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mColorLabel">
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mColorAttributeComboBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mBoldLabel">
+            <property name="text">
+             <string>Bold</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mBoldAttributeComboBox"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mItalicLabel">
+            <property name="text">
+             <string>Italic</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="mItalicAttributeComboBox"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mUnderlineLabel">
+            <property name="text">
+             <string>Underline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="mUnderlineAttributeComboBox"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="mStrikeoutLabel">
+            <property name="text">
+             <string>Strikeout</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="mStrikeoutAttributeComboBox"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="mFontFamilyLabel">
+            <property name="text">
+             <string>Font family</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QComboBox" name="mFontFamilyAttributeComboBox"/>
           </item>
          </layout>
         </widget>
@@ -834,35 +875,100 @@
          <property name="title">
           <string>Buffer properties</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
-             <widget class="QLabel" name="mBufferSizeLabel">
-              <property name="text">
-               <string>Buffer size</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="mBufferSizeAttributeComboBox"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="mBufferColorLabel">
-              <property name="text">
-               <string>Buffer color</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="mBufferColorAttributeComboBox"/>
-            </item>
-           </layout>
+           <widget class="QLabel" name="mBufferSizeLabel">
+            <property name="text">
+             <string>Buffer size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mBufferSizeAttributeComboBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mBufferColorLabel">
+            <property name="text">
+             <string>Buffer color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mBufferColorAttributeComboBox"/>
           </item>
          </layout>
         </widget>
        </item>
        <item row="2" column="0">
+        <widget class="QGroupBox" name="mPositionAttributeGroupBox">
+         <property name="title">
+          <string>Position</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="1" column="0">
+           <widget class="QLabel" name="mXCoordinateLabel">
+            <property name="text">
+             <string>X Coordinate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mXCoordinateComboBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mYCoordinateLabel">
+            <property name="text">
+             <string>Y Coordinate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mYCoordinateComboBox"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mHorizontalAlignmentLabel">
+            <property name="text">
+             <string>Horizontal alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="mHorizontalAlignmentComboBox"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mVerticalAlignmentLabel">
+            <property name="text">
+             <string>Vertical alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="mVerticalAlignmentComboBox"/>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="mRotationComboBox"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="mRotationLabel">
+            <property name="text">
+             <string>Rotation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mLabelDistanceComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mLabelDistanceLabel">
+            <property name="text">
+             <string>Label distance</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

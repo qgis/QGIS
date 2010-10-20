@@ -74,6 +74,11 @@ namespace pal
       LabelPosition* nextPart;
       int partId;
 
+      //True if label direction is the same as line / polygon ring direction.
+      //Could be used by the application to draw a directional arrow ('<' or '>')
+      //if the layer arrangement is P_LINE
+      bool reversed;
+
       bool isInConflictSinglePart( LabelPosition* lp );
       bool isInConflictMultiPart( LabelPosition* lp );
 
@@ -93,7 +98,7 @@ namespace pal
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature );
+                     FeaturePart *feature, bool isReversed = false );
 
       /** copy constructor */
       LabelPosition( const LabelPosition& other );
@@ -190,6 +195,7 @@ namespace pal
        * \return alpha to rotate text (in rad)
        */
       double getAlpha() const;
+      bool getReversed() const { return reversed; }
 
       void print();
 

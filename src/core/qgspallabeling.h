@@ -83,6 +83,12 @@ class CORE_EXPORT QgsPalLayerSettings
       Family,
       BufferSize,
       BufferColor,
+      PositionX, //x-coordinate data defined label position
+      PositionY, //y-coordinate data defined label position
+      Hali, //horizontal alignment for data defined label position (Left, Center, Right)
+      Vali, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
+      LabelDistance,
+      Rotation //data defined rotation (only usefull in connection with data defined position)
     };
 
     QString fieldName;
@@ -103,6 +109,10 @@ class CORE_EXPORT QgsPalLayerSettings
     bool mergeLines;
     bool multiLineLabels; //draw labels on multiple lines if they contain '\n'
     double minFeatureSize; // minimum feature size to be labelled (in mm)
+    // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
+    // Works only if Placement == Line
+    bool addDirectionSymbol;
+    bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
 
     // called from register feature hook
     void calculateLabelSize( const QFontMetrics* fm, QString text, double& labelX, double& labelY );
@@ -130,7 +140,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**Stores field indices for data defined layer properties*/
     QMap< DataDefinedProperties, int > dataDefinedProperties;
 
-    /**Calculates pixel size (considering scale factors and oversampling)
+    /**Calculates pixel size (considering output size should be in pixel or map units, scale factors and oversampling)
      @param size size to convert
      @param c rendercontext
      @return font pixel size*/

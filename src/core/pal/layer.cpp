@@ -226,7 +226,8 @@ namespace pal
 
 
 
-  bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText )
+  bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText,
+                               double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle )
   {
     if ( !geom_id || label_x < 0 || label_y < 0 )
       return false;
@@ -245,6 +246,14 @@ namespace pal
     GEOSGeometry *the_geom = userGeom->getGeosGeometry();
 
     Feature* f = new Feature( this, geom_id, userGeom, label_x, label_y );
+    if ( fixedPos )
+    {
+      f->setFixedPosition( labelPosX, labelPosY );
+    }
+    if ( fixedAngle )
+    {
+      f->setFixedAngle( angle );
+    }
 
     bool first_feat = true;
 
@@ -316,7 +325,7 @@ namespace pal
     modMutex->unlock();
 
     // if using only biggest parts...
-    if ( mode == LabelPerFeature && biggest_part != NULL )
+    if (( mode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )
     {
       addFeaturePart( biggest_part, labelText );
       first_feat = false;
