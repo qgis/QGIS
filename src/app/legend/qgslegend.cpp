@@ -321,9 +321,10 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
   updateLineWidget();
   scrollToItem( item );
 
+  mDropTarget = 0;
+
   if ( item )
   {
-    mDropTarget = item;
     showItem( "moveMoveEvent" , item );
 
     QgsLegendItem  *litem = dynamic_cast<QgsLegendGroup *>( item );
@@ -341,6 +342,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
         showLine( line_y, line_left );
         setCursor( QCursor( Qt::SizeVerCursor ) );
 
+        mDropTarget = item;
         mDropAction = BEFORE;
       }
       else // below center of item
@@ -354,6 +356,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
           showLine( line_y, line_left );
           setCursor( QCursor( Qt::SizeVerCursor ) );
 
+          mDropTarget = item;
           mDropAction = INSERT;
         }
         else
@@ -362,6 +365,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
           showLine( line_y, line_left );
           setCursor( QCursor( Qt::SizeVerCursor ) );
 
+          mDropTarget = item;
           mDropAction = AFTER;
         }
       }
@@ -389,7 +393,6 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
   else
   {
     QgsDebugMsg( "No item here" );
-    mDropTarget = NULL;
     setCursor( QCursor( Qt::ForbiddenCursor ) );
   }
 }
