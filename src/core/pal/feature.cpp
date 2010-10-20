@@ -61,7 +61,7 @@
 namespace pal
 {
   Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
-      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL )
+      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ), fixedRotation( false )
   {
     uid = new char[strlen( geom_id ) +1];
     strcpy( uid, geom_id );
@@ -599,11 +599,11 @@ namespace pal
           reversed = ( alpha >= M_PI / 2 || alpha < -M_PI / 2 );
 
         if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
-          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, reversed ) ); // Line
         if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ) , by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this ) );   // Line
+          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ) , by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, reversed ) );   // Line
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, reversed ) ); // Line
       }
       else if ( f->layer->arrangement == P_HORIZ )
       {
@@ -1245,40 +1245,54 @@ namespace pal
 
     double delta = bbox_max[0] - bbox_min[0];
 
-    switch ( type )
+    if ( f->fixedPosition() )
     {
-      case GEOS_POINT:
-        if ( f->layer->getArrangement() == P_POINT_OVER )
-          nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta );
-        else
-          nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta );
-        break;
-      case GEOS_LINESTRING:
-        if ( f->layer->getArrangement() == P_CURVED )
-          nbp = setPositionForLineCurved( lPos, mapShape );
-        else
-          nbp = setPositionForLine( scale, lPos, mapShape, delta );
-        break;
-
-      case GEOS_POLYGON:
-        switch ( f->layer->getArrangement() )
-        {
-          case P_POINT:
-          case P_POINT_OVER:
-            double cx, cy;
-            mapShape->getCentroid( cx, cy );
-            if ( f->layer->getArrangement() == P_POINT_OVER )
-              nbp = setPositionOverPoint( cx, cy, scale, lPos, delta );
-            else
-              nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
-            break;
-          case P_LINE:
+      nbp = 1;
+      *lPos = new LabelPosition *[nbp];
+      double angle = 0.0;
+      if ( f->fixedRotation )
+      {
+        angle = f->fixedAngle;
+      }
+      ( *lPos )[0] = new LabelPosition( 0, f->fixedPosX, f->fixedPosY, f->label_x, f->label_y, angle, 0.0,  this );
+    }
+    else
+    {
+      switch ( type )
+      {
+        case GEOS_POINT:
+          if ( f->layer->getArrangement() == P_POINT_OVER )
+            nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta );
+          else
+            nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta );
+          break;
+        case GEOS_LINESTRING:
+          if ( f->layer->getArrangement() == P_CURVED )
+            nbp = setPositionForLineCurved( lPos, mapShape );
+          else
             nbp = setPositionForLine( scale, lPos, mapShape, delta );
-            break;
-          default:
-            nbp = setPositionForPolygon( scale, lPos, mapShape, delta );
-            break;
-        }
+          break;
+
+        case GEOS_POLYGON:
+          switch ( f->layer->getArrangement() )
+          {
+            case P_POINT:
+            case P_POINT_OVER:
+              double cx, cy;
+              mapShape->getCentroid( cx, cy );
+              if ( f->layer->getArrangement() == P_POINT_OVER )
+                nbp = setPositionOverPoint( cx, cy, scale, lPos, delta );
+              else
+                nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
+              break;
+            case P_LINE:
+              nbp = setPositionForLine( scale, lPos, mapShape, delta );
+              break;
+            default:
+              nbp = setPositionForPolygon( scale, lPos, mapShape, delta );
+              break;
+          }
+      }
     }
 
     int rnbp = nbp;

@@ -54,8 +54,8 @@
 
 namespace pal
 {
-  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature )
-      : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart( NULL ), partId( -1 )
+  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed )
+      : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart( NULL ), partId( -1 ), reversed( isReversed )
   {
 
     // alpha take his value bw 0 and 2*pi rad

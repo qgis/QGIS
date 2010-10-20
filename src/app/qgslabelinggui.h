@@ -45,6 +45,11 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
     void updatePreview();
     void updateOptions();
 
+    void on_mFontSizeSpinBox_valueChanged( double d );
+    void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
+    void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
+
   protected:
     void populatePlacementMethods();
     void populateFieldNames();
@@ -57,6 +62,9 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
   private:
     QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
+
+    void disableDataDefinedAlignment();
+    void enableDataDefinedAlignment();
 };
 
 #endif

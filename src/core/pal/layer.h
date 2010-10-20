@@ -283,12 +283,16 @@ namespace pal
        * @param label_x label width
        * @param label_y label height
        * @param userGeom user's geometry that implements the PalGeometry interface
+       * @param labelPosX x position of the label (in case of fixed label position)
+       * @param labelPosY y position of the label (in case of fixed label position)
+       * @param fixedPos true if a single fixed position for this label is needed
        *
        * @throws PalException::FeatureExists
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1, const char* labelText = NULL );
+      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
+                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0, bool fixedPos = false, double angle = 0.0, bool fixedAngle = false );
 
       /** return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );
