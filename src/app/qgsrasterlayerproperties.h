@@ -26,12 +26,10 @@
 #include "qgscolorrampshader.h"
 #include "qgscontexthelp.h"
 
-class QVBoxLayout;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsPixelSelectorTool;
-class QwtPlot;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -221,8 +219,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     QgsMapCanvas* mMapCanvas;
     QgsPixelSelectorTool* mPixelSelectorTool;
-    QwtPlot * mpPlot;
-    QVBoxLayout *mpHistogramLayout;
 };
 
 /**

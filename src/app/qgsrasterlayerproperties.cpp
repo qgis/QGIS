@@ -66,8 +66,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     : QDialog( parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
-    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ),
-    mpPlot( 0 )
+    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
 {
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
   mGrayMinimumMaximumEstimated = true;
@@ -276,9 +275,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   listWidget->setCurrentRow( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
-  mpHistogramLayout = new QVBoxLayout( mChartWidget );
-  mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
-  mChartWidget->setLayout( mpHistogramLayout );
+  int myHistogramTab = 6;
+  if ( tabBar->currentIndex() == myHistogramTab )
+  {
+    refreshHistogram();
+  }
 } // QgsRasterLayerProperties ctor
 
 
@@ -1855,18 +1856,13 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 
 void QgsRasterLayerProperties::refreshHistogram()
 {
-  if ( mpPlot != 0 )
-  {
-    delete mpPlot;
-  }
+  mpPlot->clear();
   mHistogramProgress->show();
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsDebugMsg( "entered." );
-  mpPlot = new QwtPlot( mChartWidget );
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
-  mpHistogramLayout->addWidget( mpPlot );
   mpPlot->setTitle( QObject::tr( "Raster Histogram") );
   mpPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
   // Set axis titles

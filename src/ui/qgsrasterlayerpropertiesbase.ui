@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>755</width>
-    <height>618</height>
+    <height>605</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,7 +66,7 @@
    <item row="0" column="1" colspan="4">
     <widget class="QStackedWidget" name="tabBar">
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tabPageSymbology">
       <layout class="QGridLayout">
@@ -1765,6 +1765,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
@@ -1834,30 +1835,17 @@ p, li { white-space: pre-wrap; }
      </widget>
      <widget class="QWidget" name="tabPageHistogram">
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0" colspan="3">
-        <widget class="QWidget" name="mChartWidget" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
+       <item row="0" column="0" colspan="2">
+        <widget class="QwtPlot" name="mpPlot"/>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="0">
         <widget class="QProgressBar" name="mHistogramProgress">
          <property name="value">
           <number>0</number>
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="1" column="1">
         <widget class="QToolButton" name="mSaveAsImageButton">
          <property name="text">
           <string>Save as image...</string>
@@ -2046,6 +2034,13 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabBar</tabstop>
   <tabstop>cboRed</tabstop>
