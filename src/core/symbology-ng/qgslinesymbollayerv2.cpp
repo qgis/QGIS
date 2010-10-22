@@ -458,7 +458,7 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   QPointF p2 = points.at( cnt - 1 );
   double angle = _calculateAngle( p1.x(), p1.y(), p2.x(), p2.y() );
 
-  double size = 6;
+  double size = context.outputLineWidth( 2 );
   double angle1 = angle + M_PI / 6;
   double angle2 = angle - M_PI / 6;
 
