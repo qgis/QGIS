@@ -169,9 +169,10 @@ void QgsSymbolV2PropertiesDialog::populateLayerTypes()
 void QgsSymbolV2PropertiesDialog::updateUi()
 {
   int row = currentRowIndex();
+  int count = listLayers->model()->rowCount();
   btnUp->setEnabled( row > 0 );
-  btnDown->setEnabled( row < listLayers->model()->rowCount() - 1 && row != -1 );
-  btnRemoveLayer->setEnabled( row != -1 );
+  btnDown->setEnabled( row < count - 1 && row != -1 );
+  btnRemoveLayer->setEnabled( count > 1 && row != -1 );
 }
 
 void QgsSymbolV2PropertiesDialog::updatePreview()
