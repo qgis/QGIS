@@ -772,6 +772,9 @@
 		7223B79C0F96A9BF00D905B4 /* qgsoracleconnect_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7790F969A9D00D905B4 /* qgsoracleconnect_ui.h */; };
 		7223B79D0F96A9BF00D905B4 /* qgsselectgeoraster_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */; };
 		7223B79E0F96AA2000D905B4 /* oracleplugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7750F969A9D00D905B4 /* oracleplugin.qrc */; };
+		7223E3761271352D007E454B /* qgscolorrampcombobox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7223E37412713510007E454B /* qgscolorrampcombobox.cpp */; };
+		7223E3771271352D007E454B /* qgscolorrampcombobox.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223E37512713510007E454B /* qgscolorrampcombobox.h */; };
+		7223E3781271355C007E454B /* QgsAttributeTableDialog-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7223E373127134DF007E454B /* QgsAttributeTableDialog-es_ES */; };
 		7224A24E0FEA732A004E87E3 /* qgsmaptoolnodetool.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */; };
 		7225EF8B10B229FA00D23EA2 /* qgscategorizedsymbolrendererv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF6D10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.cpp */; };
 		7225EF8C10B229FA00D23EA2 /* qgsfillsymbollayerv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7010B2298A00D23EA2 /* qgsfillsymbollayerv2.cpp */; };
@@ -3701,6 +3704,7 @@
 				721D945911CE911900714113 /* MapServerExport-pl_PL in Copy - context_help */,
 				721D945A11CE911900714113 /* QgsAttributeTableDialog-de_DE in Copy - context_help */,
 				721D945B11CE911900714113 /* QgsAttributeTableDialog-en_US in Copy - context_help */,
+				7223E3781271355C007E454B /* QgsAttributeTableDialog-es_ES in Copy - context_help */,
 				721D945C11CE911900714113 /* QgsAttributeTableDialog-fr_FR in Copy - context_help */,
 				721D945D11CE911900714113 /* QgsAttributeTableDialog-it_IT in Copy - context_help */,
 				721D945E11CE911900714113 /* QgsAttributeTableDialog-ja_JP in Copy - context_help */,
@@ -6081,6 +6085,9 @@
 		7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsselectgeoraster_ui.h; path = ../../src/plugins/oracle_raster/qgsselectgeoraster_ui.h; sourceTree = SOURCE_ROOT; };
 		7223B77D0F969A9D00D905B4 /* qgsselectgeorasterbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsselectgeorasterbase.ui; path = ../../src/plugins/oracle_raster/qgsselectgeorasterbase.ui; sourceTree = SOURCE_ROOT; };
 		7223B78D0F96A96500D905B4 /* liboracleplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = liboracleplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		7223E373127134DF007E454B /* QgsAttributeTableDialog-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-es_ES"; path = "../../resources/context_help/QgsAttributeTableDialog-es_ES"; sourceTree = SOURCE_ROOT; };
+		7223E37412713510007E454B /* qgscolorrampcombobox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscolorrampcombobox.cpp; path = "../../src/gui/symbology-ng/qgscolorrampcombobox.cpp"; sourceTree = SOURCE_ROOT; };
+		7223E37512713510007E454B /* qgscolorrampcombobox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscolorrampcombobox.h; path = "../../src/gui/symbology-ng/qgscolorrampcombobox.h"; sourceTree = SOURCE_ROOT; };
 		7225EF0310B225DD00D23EA2 /* symbology-ng-gui.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "symbology-ng-gui.sip"; path = "../../python/gui/symbology-ng-gui.sip"; sourceTree = SOURCE_ROOT; };
 		7225EF0410B2260200D23EA2 /* symbology-ng-core.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "symbology-ng-core.sip"; path = "../../python/core/symbology-ng-core.sip"; sourceTree = SOURCE_ROOT; };
 		7225EF0510B2261C00D23EA2 /* qgsattributeaction.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsattributeaction.sip; path = ../../python/core/qgsattributeaction.sip; sourceTree = SOURCE_ROOT; };
@@ -11221,6 +11228,8 @@
 				7225EF3310B2275E00D23EA2 /* qgsbrushstylecombobox.h */,
 				7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */,
 				7225EF3510B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.h */,
+				7223E37412713510007E454B /* qgscolorrampcombobox.cpp */,
+				7223E37512713510007E454B /* qgscolorrampcombobox.h */,
 				72E35C901104BFFE00B0EA85 /* qgsdashspacedialog.cpp */,
 				72E35C911104BFFE00B0EA85 /* qgsdashspacedialog.h */,
 				7225EF3610B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp */,
@@ -11982,6 +11991,7 @@
 				721D939F11CE90DE00714113 /* MapServerExport-pl_PL */,
 				721D93A011CE90DE00714113 /* QgsAttributeTableDialog-de_DE */,
 				721D93A111CE90DE00714113 /* QgsAttributeTableDialog-en_US */,
+				7223E373127134DF007E454B /* QgsAttributeTableDialog-es_ES */,
 				721D93A211CE90DE00714113 /* QgsAttributeTableDialog-fr_FR */,
 				721D93A311CE90DE00714113 /* QgsAttributeTableDialog-it_IT */,
 				721D93A411CE90DE00714113 /* QgsAttributeTableDialog-ja_JP */,
@@ -15951,6 +15961,8 @@
 				72F70B1011848BA2001369AD /* qgspenstylecombobox.h in Sources */,
 				721D951511CE945A00714113 /* qgsrulebasedrendererv2widget.cpp in Sources */,
 				721D951611CE945A00714113 /* qgsrulebasedrendererv2widget.h in Sources */,
+				7223E3761271352D007E454B /* qgscolorrampcombobox.cpp in Sources */,
+				7223E3771271352D007E454B /* qgscolorrampcombobox.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
