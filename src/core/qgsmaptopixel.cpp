@@ -36,7 +36,7 @@ QgsMapToPixel::~QgsMapToPixel()
 {
 }
 
-QgsPoint QgsMapToPixel::toMapPoint( int x, int y ) const
+QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
 {
   double mx = x * mMapUnitsPerPixel + xMin;
   double my = -1 * (( y - yMax ) * mMapUnitsPerPixel - yMin );
@@ -50,6 +50,11 @@ QgsPoint QgsMapToPixel::toMapCoordinates( QPoint p ) const
 }
 
 QgsPoint QgsMapToPixel::toMapCoordinates( int x, int y ) const
+{
+  return toMapPoint( x, y );
+}
+
+QgsPoint QgsMapToPixel::toMapCoordinatesF( double x, double y ) const
 {
   return toMapPoint( x, y );
 }

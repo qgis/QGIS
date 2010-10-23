@@ -75,13 +75,18 @@ class CORE_EXPORT QgsMapToPixel
                            std::vector<double>& y ) const;
 
     QgsPoint toMapCoordinates( int x, int y ) const;
+
+    /*! Transform device coordinates to map (world) coordinates
+      @note: this method was added in version 1.6*/
+    QgsPoint toMapCoordinatesF( double x, double y ) const;
+
     /*! Tranform device coordinates to map (world)  coordinates
     * @param p Point to be converted to map cooordinates
     * @return QgsPoint in map coorndiates
     */
     QgsPoint toMapCoordinates( QPoint p ) const;
 
-    QgsPoint toMapPoint( int x, int y ) const;
+    QgsPoint toMapPoint( double x, double y ) const;
     /*! Set map units per pixel
     * @param mapUnitsPerPixel Map units per pixel
     */
