@@ -78,19 +78,19 @@ class QgsPalGeometry : public PalGeometry
     const char* strId() { return mStrId.data(); }
     QString text() { return mText; }
 
-    pal::LabelInfo* info( QFontMetrics* fm, const QgsMapToPixel* xform, double fontScale )
+    pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale )
     {
       if ( mInfo ) return mInfo;
 
       // create label info!
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
-      QgsPoint ptSize = xform->toMapCoordinates( 0, ( int )( -fm->height() / fontScale ) );
+      QgsPoint ptSize = xform->toMapCoordinatesF( 0.0, -fm->height() / fontScale );
 
       mInfo = new pal::LabelInfo( mText.count(), ptSize.y() - ptZero.y() );
       for ( int i = 0; i < mText.count(); i++ )
       {
         mInfo->char_info[i].chr = mText[i].unicode();
-        ptSize = xform->toMapCoordinates(( int )( fm->width( mText[i] ) / fontScale ) , 0 );
+        ptSize = xform->toMapCoordinatesF( fm->width( mText[i] ) / fontScale , 0.0 );
         mInfo->char_info[i].width = ptSize.x() - ptZero.x();
       }
       return mInfo;
@@ -365,7 +365,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeo
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetrics* fm, QString text, double& labelX, double& labelY )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY )
 {
   if ( !fm )
   {
@@ -426,7 +426,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       }
       labelFont.setPixelSize( sizeToPixel( sizeDouble, context ) );
     }
-    QFontMetrics labelFontMetrics( labelFont );
+    QFontMetricsF labelFontMetrics( labelFont );
     calculateLabelSize( &labelFontMetrics, labelText, labelX, labelY );
   }
   else
@@ -704,7 +704,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;
   lyr.fieldIndex = fldIndex;
-  lyr.fontMetrics = new QFontMetrics( lyr.textFont );
+  lyr.fontMetrics = new QFontMetricsF( lyr.textFont );
 
   lyr.xform = mMapRenderer->coordinateTransform();
   if ( mMapRenderer->hasCrsTransformEnabled() )

@@ -21,6 +21,7 @@
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
+class QFontMetricsF;
 class QPainter;
 class QgsMapRenderer;
 class QgsRectangle;
@@ -115,7 +116,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
 
     // called from register feature hook
-    void calculateLabelSize( const QFontMetrics* fm, QString text, double& labelX, double& labelY );
+    void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
 
     // implementation of register feature hook
     void registerFeature( QgsFeature& f, const QgsRenderContext& context );
@@ -131,7 +132,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // temporary stuff: set when layer gets prepared
     pal::Layer* palLayer;
     int fieldIndex;
-    QFontMetrics* fontMetrics;
+    QFontMetricsF* fontMetrics;
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;

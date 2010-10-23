@@ -53,6 +53,11 @@ class QgsMapToPixel
 		//	  std::vector<double>& y);
 
     QgsPoint toMapCoordinates(int x, int y);
+
+     /*! Transform device coordinates to map (world) coordinates
+      @note: this method was added in version 1.6*/
+    QgsPoint toMapCoordinatesF( double x, double y ) const;
+
      /*! Tranform device coordinates to map (world)  coordinates
     * @param p Point to be converted to map cooordinates
     * @return QgsPoint in map coorndiates
