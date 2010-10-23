@@ -64,8 +64,6 @@ if(-f "../addons/bin/lti_dsdk_dll.dll") {
 	getDeps("gdal16-mrsid")
 }
 
-delete $pkgs{"qgis-dev"};
-
 
 foreach my $p ( keys %pkgs ) {
 	$f = "$root/$file{$p}";
