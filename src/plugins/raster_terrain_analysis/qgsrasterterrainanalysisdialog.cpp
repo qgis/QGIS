@@ -57,7 +57,7 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( QgisInterface* i
     if ( driver != NULL )
     {
       char** driverMetadata = GDALGetMetadata( driver, NULL );
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, true ) )
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
       {
         mOutputFormatComboBox->addItem( GDALGetDriverLongName( driver ), QVariant( GDALGetDriverShortName( driver ) ) );
 
@@ -191,8 +191,8 @@ void QgsRasterTerrainAnalysisDialog::on_mOutputLayerLineEdit_textChanged( const 
     return;
   }
 
-  QFileInfo fileInfo( text );
-  if ( mInputLayerComboBox->count() > 0 && fileInfo.dir().exists() )
+  QString outputPath = QFileInfo( text ).absolutePath();
+  if ( mInputLayerComboBox->count() > 0 && QFileInfo( outputPath ).isWritable() )
   {
     okButton->setEnabled( true );
   }
