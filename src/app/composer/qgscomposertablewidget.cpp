@@ -66,7 +66,6 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   mLayerComboBox->blockSignals( false );
 
   updateGuiElements();
-  blockAllSignals( false );
 
   if ( mComposerTable )
   {
