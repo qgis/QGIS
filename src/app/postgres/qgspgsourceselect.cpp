@@ -548,7 +548,10 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( mProxyModel.mapToSource( index ) ), "querybuilder", "postgres" );
+  QModelIndex idx = mProxyModel.mapToSource( index );
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDbTableModel::dbtmTable ) )->text();
+
+  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, "postgres" );
 
   if ( !vlayer->isValid() )
   {

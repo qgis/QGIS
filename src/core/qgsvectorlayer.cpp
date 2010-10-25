@@ -4150,8 +4150,15 @@ void QgsVectorLayer::setCoordinateSystem()
   //we only nee to do that if the srs is not alreay valid
   if ( !mCRS->isValid() )
   {
-    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
-    mCRS->validate();
+    if ( geometryType() != QGis::NoGeometry )
+    {
+      mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
+      mCRS->validate();
+    }
+    else
+    {
+      mCRS->createFromProj4( GEOPROJ4 );
+    }
   }
 }
 
