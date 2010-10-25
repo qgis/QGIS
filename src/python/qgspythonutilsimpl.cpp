@@ -139,11 +139,21 @@ void QgsPythonUtilsImpl::uninstallErrorHook()
 
 bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
 {
+  // acquire global interpreter lock to ensure we are in a consistent state
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
   // TODO: convert special characters from unicode strings u"..." to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
   PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
-  return ( PyErr_Occurred() == 0 );
+
+  bool res = ( PyErr_Occurred() == 0 );
+
+  // we are done calling python API, release global interpreter lock
+  PyGILState_Release( gstate );
+
+  return res;
 }
 
 bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError )
@@ -184,6 +194,9 @@ QString QgsPythonUtilsImpl::getTraceback()
 {
 #define TRACEBACK_FETCH_ERROR(what) {errMsg = what; goto done;}
 
+  // acquire global interpreter lock to ensure we are in a consistent state
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
 
   QString errMsg;
   QString result;
@@ -249,6 +262,9 @@ done:
   Py_XDECREF( traceback );
   Py_XDECREF( type );
 
+  // we are done calling python API, release global interpreter lock
+  PyGILState_Release( gstate );
+
   return result;
 }
 
@@ -276,8 +292,15 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject* obj )
 
 bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
 {
+  // acquire global interpreter lock to ensure we are in a consistent state
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
   if ( !PyErr_Occurred() )
+  {
+    PyGILState_Release( gstate );
     return false;
+  }
 
   PyObject* err_type;
   PyObject* err_value;
@@ -301,6 +324,9 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
   Py_XDECREF( err_type );
   Py_XDECREF( err_value );
   Py_XDECREF( err_tb );
+
+  // we are done calling python API, release global interpreter lock
+  PyGILState_Release( gstate );
 
   return true;
 }
@@ -369,16 +395,22 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
 
 bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
 {
+  // acquire global interpreter lock to ensure we are in a consistent state
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
   PyObject* res = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
+  bool success = ( res != NULL );
 
   // TODO: error handling
 
-  if ( res != NULL )
-  {
+  if ( success )
     result = PyObjectToQString( res );
-    return true;
-  }
-  return false;
+
+  // we are done calling python API, release global interpreter lock
+  PyGILState_Release( gstate );
+
+  return success;
 }
 
 
