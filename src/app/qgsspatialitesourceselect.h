@@ -117,6 +117,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     /**Checks if this layer has been declared HIDDEN*/
     bool isDeclaredHidden( sqlite3 * handle, QString table, QString geom );
 
+    /**Checks if this layer is a RasterLite-1 datasource*/
+    bool isRasterlite1Datasource( sqlite3 * handle, const char * table );
+
     /**cleaning well-formatted SQL strings*/
     QString quotedValue( QString value ) const;
 

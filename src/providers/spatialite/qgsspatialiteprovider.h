@@ -257,6 +257,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
@@ -265,6 +266,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
        * Flag indicating if the layer data source is a valid SpatiaLite layer
        */
     bool valid;
+    /** 
+       * Flag indicating if the layer data source is based on a query 
+       */ 
+    bool isQuery; 
     /**
        * Flag indicating if the layer data source is based on a plain Table
        */
@@ -289,6 +294,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Name of the table with no schema
      */
     QString mTableName;
+    /**
+       * Name of the table or subquery
+       */
+    QString mQuery;
     /**
        * Name of the primary key column in the table
        */
@@ -363,6 +372,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getTableGeometryDetails();
     bool getViewGeometryDetails();
     bool getVShapeGeometryDetails();
+    bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
 
