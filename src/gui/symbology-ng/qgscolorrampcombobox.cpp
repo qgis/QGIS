@@ -8,7 +8,7 @@
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 
 QgsColorRampComboBox::QgsColorRampComboBox( QWidget *parent ) :
-  QComboBox( parent ), mStyle( NULL ), mSourceColorRamp( NULL )
+    QComboBox( parent ), mStyle( NULL ), mSourceColorRamp( NULL )
 {
 }
 
@@ -19,7 +19,7 @@ QgsColorRampComboBox::~QgsColorRampComboBox()
 
 void QgsColorRampComboBox::populate( QgsStyleV2* style )
 {
-  if( count() != 0 )
+  if ( count() != 0 )
     return; // already populated!
 
   mStyle = style;
@@ -27,7 +27,7 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
   setIconSize( rampIconSize );
 
   QStringList rampNames = mStyle->colorRampNames();
-  for( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
+  for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
     QgsVectorColorRampV2* ramp = style->colorRamp( *it );
     QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, rampIconSize );
@@ -44,7 +44,7 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
 QgsVectorColorRampV2* QgsColorRampComboBox::currentColorRamp()
 {
   QString rampName = currentText();
-  if( rampName == "[source]" && mSourceColorRamp )
+  if ( rampName == "[source]" && mSourceColorRamp )
     return mSourceColorRamp->clone();
   else
     return mStyle->colorRamp( rampName );
@@ -55,7 +55,7 @@ void QgsColorRampComboBox::setSourceColorRamp( QgsVectorColorRampV2* sourceRamp 
   mSourceColorRamp = sourceRamp->clone();
 
   QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( mSourceColorRamp, rampIconSize );
-  if( itemText( 0 ) == "[source]" )
+  if ( itemText( 0 ) == "[source]" )
     setItemIcon( 0, icon );
   else
     insertItem( 0, icon, "[source]" );
@@ -64,12 +64,12 @@ void QgsColorRampComboBox::setSourceColorRamp( QgsVectorColorRampV2* sourceRamp 
 
 void QgsColorRampComboBox::colorRampChanged( int index )
 {
-  if( index != count() - 1 )
+  if ( index != count() - 1 )
     return;
 
   // last item: "new color ramp..."
   QString rampName = QgsStyleV2ManagerDialog::addColorRampStatic( this, mStyle );
-  if( rampName.isEmpty() )
+  if ( rampName.isEmpty() )
     return;
 
   // put newly added ramp into the combo

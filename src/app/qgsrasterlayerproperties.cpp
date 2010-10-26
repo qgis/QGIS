@@ -205,7 +205,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   pbtnLoadColorMapFromFile->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
 
   mSaveAsImageButton->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
-  
+
   mMapCanvas = theCanvas;
   mPixelSelectorTool = 0;
   if ( mMapCanvas )
@@ -1863,16 +1863,16 @@ void QgsRasterLayerProperties::refreshHistogram()
   QgsDebugMsg( "entered." );
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
-  mpPlot->setTitle( QObject::tr( "Raster Histogram") );
+  mpPlot->setTitle( QObject::tr( "Raster Histogram" ) );
   mpPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
   // Set axis titles
-  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr("Pixel Value") );
-  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr("Frequency") );
+  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Pixel Value" ) );
+  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Frequency" ) );
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
   // x axis scale only set after computing global min/max across bands (see below)
   // add a grid
   QwtPlotGrid * myGrid = new QwtPlotGrid();
-  myGrid->attach(mpPlot);
+  myGrid->attach( mpPlot );
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected
   // layer. Currently the hist is hardcoded
@@ -1921,8 +1921,8 @@ void QgsRasterLayerProperties::refreshHistogram()
       myX2Data.append( double( myBin ) );
       myY2Data.append( double( myBinValue ) );
     }
-    mypCurve->setData(myX2Data,myY2Data);
-    mypCurve->attach(mpPlot);
+    mypCurve->setData( myX2Data, myY2Data );
+    mypCurve->attach( mpPlot );
     if ( myFirstIteration || myGlobalMin < myRasterBandStats.minimumValue )
     {
       myGlobalMin = myRasterBandStats.minimumValue;
@@ -1936,13 +1936,13 @@ void QgsRasterLayerProperties::refreshHistogram()
   // for x axis use band pixel values rather than gdal hist. bin values
   // subtract -0.5 to prevent rounding errors
   // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
-  mpPlot->setAxisScale ( QwtPlot::xBottom, 
-      myGlobalMin - 0.5, 
-      myGlobalMax + 0.5 ); 
+  mpPlot->setAxisScale( QwtPlot::xBottom,
+                        myGlobalMin - 0.5,
+                        myGlobalMax + 0.5 );
   mpPlot->replot();
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   mHistogramProgress->hide();
-  mpPlot->canvas()->setCursor(Qt::ArrowCursor);
+  mpPlot->canvas()->setCursor( Qt::ArrowCursor );
   QApplication::restoreOverrideCursor();
 }
 
@@ -1952,18 +1952,18 @@ void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
   {
     return;
   }
-  
-  QPixmap myPixmap(600, 600);
-  myPixmap.fill(Qt::white); // Qt::transparent ?
+
+  QPixmap myPixmap( 600, 600 );
+  myPixmap.fill( Qt::white ); // Qt::transparent ?
 
   QwtPlotPrintFilter myFilter;
   int myOptions = QwtPlotPrintFilter::PrintAll;
   myOptions &= ~QwtPlotPrintFilter::PrintBackground;
   myOptions |= QwtPlotPrintFilter::PrintFrameWithScales;
-  myFilter.setOptions(myOptions);
+  myFilter.setOptions( myOptions );
 
-  mpPlot->print(myPixmap, myFilter);
-  QPair< QString,QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  mpPlot->print( myPixmap, myFilter );
+  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != "" )
   {
     myPixmap.save( myFileNameAndFilter.first );

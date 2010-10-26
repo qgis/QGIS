@@ -76,7 +76,7 @@ namespace QgisGui
       QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
       bool cancelAll = false );
 
-  /** A helper function to get an image name from the user. It will nicely 
+  /** A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
    * @param QWidget - widget that should act as the parent for the file dialog
    * @param QString the message to display to the user
@@ -84,8 +84,8 @@ namespace QgisGui
    * the file type
    * @note added in 1.6
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName(  QWidget * theParent, QString theMessage  );
-  
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage );
+
   /**
 
     Convenience function for readily creating file filters.

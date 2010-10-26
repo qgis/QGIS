@@ -186,8 +186,9 @@ void QgsSpatiaLiteProvider::loadFields()
             fieldType = QVariant::Int;
           }
           else if ( strcasecmp( type, "real" ) == 0 ||
-               strcasecmp( type, "double" ) == 0 ||
-               strcasecmp( type, "double precision" ) == 0 || strcasecmp( type, "float" ) == 0 )
+                    strcasecmp( type, "double" ) == 0 ||
+                    strcasecmp( type, "double precision" ) == 0 ||
+                    strcasecmp( type, "float" ) == 0 )
           {
             fieldType = QVariant::Double;
           }
@@ -198,72 +199,73 @@ void QgsSpatiaLiteProvider::loadFields()
     }
     sqlite3_free_table( results );
   }
-  else 
-  { 
-    sql = QString( "select * from %1 limit 1" ).arg( mQuery ); 
+  else
+  {
+    sql = QString( "select * from %1 limit 1" ).arg( mQuery );
 
-    if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK ) 
-    { 
-      // some error occurred 
-      QgsDebugMsg( QString( "SQLite error: %1\n\nSQL: %2" ) 
-                   .arg( sql ) 
-                   .arg( QString::fromUtf8( sqlite3_errmsg( sqliteHandle ) ) ) ); 
-      return; 
-    } 
+    if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
+    {
+      // some error occurred
+      QgsDebugMsg( QString( "SQLite error: %1\n\nSQL: %2" )
+                   .arg( sql )
+                   .arg( QString::fromUtf8( sqlite3_errmsg( sqliteHandle ) ) ) );
+      return;
+    }
 
-    ret = sqlite3_step( stmt ); 
-    if ( ret == SQLITE_DONE ) 
-    { 
-      // there are no rows to fetch 
-      sqlite3_finalize( stmt ); 
-      return; 
-    } 
+    ret = sqlite3_step( stmt );
+    if ( ret == SQLITE_DONE )
+    {
+      // there are no rows to fetch
+      sqlite3_finalize( stmt );
+      return;
+    }
 
-    if ( ret == SQLITE_ROW ) 
-    { 
-    // one valid row has been fetched from the result set 
-      columns = sqlite3_column_count( stmt ); 
-      for ( i = 0; i < columns; i++ ) 
-      { 
-        QString name = QString::fromUtf8( sqlite3_column_name( stmt, i ) ); 
-        const char *type = sqlite3_column_decltype( stmt, i ); 
-        if ( type == NULL ) 
-            type = "TEXT"; 
+    if ( ret == SQLITE_ROW )
+    {
+      // one valid row has been fetched from the result set
+      columns = sqlite3_column_count( stmt );
+      for ( i = 0; i < columns; i++ )
+      {
+        QString name = QString::fromUtf8( sqlite3_column_name( stmt, i ) );
+        const char *type = sqlite3_column_decltype( stmt, i );
+        if ( type == NULL )
+          type = "TEXT";
 
-        if ( name != mPrimaryKey ) 
-        { 
-          pkCount++; 
-          pkName = name; 
-        } 
+        if ( name != mPrimaryKey )
+        {
+          pkCount++;
+          pkName = name;
+        }
 
-        if ( name != mGeometryColumn ) 
-        { 
-          // for sure any SQLite value can be represented as SQLITE_TEXT 
-          QVariant::Type fieldType = QVariant::String; 
+        if ( name != mGeometryColumn )
+        {
+          // for sure any SQLite value can be represented as SQLITE_TEXT
+          QVariant::Type fieldType = QVariant::String;
 
-          // making some assumptions in order to guess a more realistic type 
-          if ( strcasecmp( type, "int" ) == 0 || 
-               strcasecmp( type, "integer" ) == 0 || 
-               strcasecmp( type, "bigint" ) == 0 || 
-               strcasecmp( type, "smallint" ) == 0 || 
-               strcasecmp( type, "tinyint" ) == 0 || 
-               strcasecmp( type, "boolean" ) == 0 ) 
-          { 
-            fieldType = QVariant::Int; 
-          } 
-          else if ( strcasecmp( type, "real" ) == 0 || 
-                    strcasecmp( type, "double" ) == 0 || 
-                    strcasecmp( type, "double precision" ) == 0 || strcasecmp( type, "float" ) == 0 ) 
-          { 
-            fieldType = QVariant::Double; 
-          } 
+          // making some assumptions in order to guess a more realistic type
+          if ( strcasecmp( type, "int" ) == 0 ||
+               strcasecmp( type, "integer" ) == 0 ||
+               strcasecmp( type, "bigint" ) == 0 ||
+               strcasecmp( type, "smallint" ) == 0 ||
+               strcasecmp( type, "tinyint" ) == 0 ||
+               strcasecmp( type, "boolean" ) == 0 )
+          {
+            fieldType = QVariant::Int;
+          }
+          else if ( strcasecmp( type, "real" ) == 0 ||
+                    strcasecmp( type, "double" ) == 0 ||
+                    strcasecmp( type, "double precision" ) == 0 ||
+                    strcasecmp( type, "float" ) == 0 )
+          {
+            fieldType = QVariant::Double;
+          }
 
-          attributeFields.insert( fldNo++, QgsField( name, fieldType, type, 0, 0, "" ) ); 
-        } 
-      } 
-    } 
-    sqlite3_finalize( stmt ); 
-  } 
+          attributeFields.insert( fldNo++, QgsField( name, fieldType, type, 0, 0, "" ) );
+        }
+      }
+    }
+    sqlite3_finalize( stmt );
+  }
 
   if ( pkCount == 1 )
   {
@@ -295,9 +297,9 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
 
   feature.setValid( false );
 
-  QString primaryKey = !isQuery ? "ROWID" : quotedIdentifier( mPrimaryKey ); 
+  QString primaryKey = !isQuery ? "ROWID" : quotedIdentifier( mPrimaryKey );
 
-  QString sql = QString( "SELECT %1" ).arg( primaryKey ); 
+  QString sql = QString( "SELECT %1" ).arg( primaryKey );
   for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
   {
     const QgsField & fld = field( *it );
@@ -308,10 +310,10 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
   {
     sql += QString( ", AsBinary(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
   }
-  sql += QString( " FROM %1 WHERE %2 = %3" ) 
-         .arg( mQuery ) 
-         .arg( primaryKey ) 
-         .arg( featureId ); 
+  sql += QString( " FROM %1 WHERE %2 = %3" )
+         .arg( mQuery )
+         .arg( primaryKey )
+         .arg( featureId );
 
   if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
   {
@@ -601,9 +603,9 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
     sqliteStatement = NULL;
   }
 
-  QString primaryKey = !isQuery ? "ROWID" : quotedIdentifier( mPrimaryKey ); 
+  QString primaryKey = !isQuery ? "ROWID" : quotedIdentifier( mPrimaryKey );
 
-  QString sql = QString( "SELECT %1" ).arg( primaryKey ); 
+  QString sql = QString( "SELECT %1" ).arg( primaryKey );
   for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
   {
     const QgsField & fld = field( *it );
@@ -650,10 +652,10 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
         mbrFilter += QString( "ymin <= %1 AND " ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
         mbrFilter += QString( "ymax >= %1" ).arg( QString::number( rect.yMinimum(), 'f', 6 ) );
         QString idxName = QString( "idx_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
-        whereClause += QString( "%1 IN (SELECT pkid FROM %2 WHERE %3)" ) 
-                       .arg( quotedIdentifier( primaryKey ) ) 
-                       .arg( quotedIdentifier( idxName ) ) 
-                       .arg( mbrFilter ); 
+        whereClause += QString( "%1 IN (SELECT pkid FROM %2 WHERE %3)" )
+                       .arg( quotedIdentifier( primaryKey ) )
+                       .arg( quotedIdentifier( idxName ) )
+                       .arg( mbrFilter );
       }
       else if ( spatialIndexMbrCache )
       {
@@ -663,10 +665,10 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
                       arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
                       arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
         QString idxName = QString( "cache_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
-        whereClause += QString( "%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))" ) 
-                       .arg( quotedIdentifier( primaryKey ) ) 
-                       .arg( quotedIdentifier( idxName ) ) 
-                       .arg( mbr ); 
+        whereClause += QString( "%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))" )
+                       .arg( quotedIdentifier( primaryKey ) )
+                       .arg( quotedIdentifier( idxName ) )
+                       .arg( mbr );
       }
       else
       {
@@ -798,7 +800,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   // get the field name
   const QgsField & fld = field( index );
 
-  QString sql = QString( "SELECT Min(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery ); 
+  QString sql = QString( "SELECT Min(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
@@ -853,7 +855,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
   // get the field name
   const QgsField & fld = field( index );
 
-  QString sql = QString( "SELECT Max(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery ); 
+  QString sql = QString( "SELECT Max(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
@@ -906,7 +908,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   // get the field name
   const QgsField & fld = field( index );
 
-  sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery ); 
+  sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
@@ -1682,48 +1684,48 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   }
   sqlite3_free_table( results );
 
-  // checking if this one is a select query 
-  if ( mQuery.startsWith( "(select", Qt::CaseInsensitive ) && 
-       mQuery.endsWith( ")" ) ) 
-  { 
-    // get a new alias for the subquery 
-    int index = 0; 
-    QString alias; 
-    QRegExp regex; 
-    do 
-    { 
-      alias = QString( "subQuery_%1" ).arg( QString::number( index++ ) ); 
-      QString pattern = QString( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) ); 
-      regex.setPattern( pattern ); 
-      regex.setCaseSensitivity( Qt::CaseInsensitive ); 
-    } 
-    while ( mQuery.contains( regex ) ); 
+  // checking if this one is a select query
+  if ( mQuery.startsWith( "(select", Qt::CaseInsensitive ) &&
+       mQuery.endsWith( ")" ) )
+  {
+    // get a new alias for the subquery
+    int index = 0;
+    QString alias;
+    QRegExp regex;
+    do
+    {
+      alias = QString( "subQuery_%1" ).arg( QString::number( index++ ) );
+      QString pattern = QString( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      regex.setPattern( pattern );
+      regex.setCaseSensitivity( Qt::CaseInsensitive );
+    }
+    while ( mQuery.contains( regex ) );
 
-    // convert the custom query into a subquery 
-    mQuery = QString( "%1 as %2" ) 
-             .arg( mQuery ) 
-             .arg( quotedIdentifier( alias ) ); 
+    // convert the custom query into a subquery
+    mQuery = QString( "%1 as %2" )
+             .arg( mQuery )
+             .arg( quotedIdentifier( alias ) );
 
-    sql = QString( "SELECT 0 FROM %1 LIMIT 1" ).arg( mQuery ); 
-    ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg ); 
-    if ( ret == SQLITE_OK && rows == 1 ) 
-    { 
-      isQuery = true; 
-      mReadOnly = true; 
-      count++; 
-    } 
-    if ( errMsg ) 
-    { 
-      QgsDebugMsg( QString( "sqlite error %1 [%2]" ).arg( sql ).arg( errMsg ) ); 
-      sqlite3_free( errMsg ); 
-      errMsg = 0; 
-    } 
-    sqlite3_free_table( results ); 
-  } 
-  else 
-  { 
-    mQuery = quotedIdentifier( mTableName ); 
-  } 
+    sql = QString( "SELECT 0 FROM %1 LIMIT 1" ).arg( mQuery );
+    ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+    if ( ret == SQLITE_OK && rows == 1 )
+    {
+      isQuery = true;
+      mReadOnly = true;
+      count++;
+    }
+    if ( errMsg )
+    {
+      QgsDebugMsg( QString( "sqlite error %1 [%2]" ).arg( sql ).arg( errMsg ) );
+      sqlite3_free( errMsg );
+      errMsg = 0;
+    }
+    sqlite3_free_table( results );
+  }
+  else
+  {
+    mQuery = quotedIdentifier( mTableName );
+  }
 
 // checking for validity
   return count == 1;
@@ -1738,8 +1740,8 @@ bool QgsSpatiaLiteProvider::getGeometryDetails()
     ret = getViewGeometryDetails();
   if ( mVShapeBased )
     ret = getVShapeGeometryDetails();
-  if ( isQuery ) 
-    ret = getQueryGeometryDetails(); 
+  if ( isQuery )
+    ret = getQueryGeometryDetails();
   return ret;
 }
 
@@ -1978,122 +1980,122 @@ error:
   return false;
 }
 
-bool QgsSpatiaLiteProvider::getQueryGeometryDetails() 
-{ 
-  int ret; 
-  int i; 
-  char **results; 
-  int rows; 
-  int columns; 
-  char *errMsg = NULL; 
- 
-  QString fType( "" ); 
-  QString xSrid( "" ); 
- 
-  // get stuff from the relevant column instead. This may (will?) 
-  // fail if there is no data in the relevant table. 
-  QString sql = QString( "select srid(%1), geometrytype(%1) from %2" ) 
-        .arg( quotedIdentifier( mGeometryColumn ) ) 
-        .arg( mQuery ); 
- 
-  //it is possible that the where clause restricts the feature type 
-  if ( !mSubsetString.isEmpty() ) 
-  { 
-    sql += " WHERE " + mSubsetString; 
-  } 
- 
-  sql += " limit 1"; 
- 
-  ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg ); 
-  if ( ret != SQLITE_OK ) 
-    goto error; 
-  if ( rows < 1 ) 
-    ; 
-  else 
-  { 
-    for ( i = 1; i <= rows; i++ ) 
-    { 
-      xSrid = results[( i * columns ) + 0]; 
-      fType = results[( i * columns ) + 1]; 
-    } 
-  } 
-  sqlite3_free_table( results ); 
- 
-  if ( !xSrid.isEmpty() && !fType.isEmpty() ) 
-  { 
-    if ( fType == "GEOMETRY" ) 
-    { 
-      // check to see if there is a unique geometry type 
-      sql = QString( "select distinct " 
-                     "case" 
-                     " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'" 
-                     " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'" 
-                     " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'" 
-                     " end " 
-                     "from %2" ) 
-            .arg( quotedIdentifier( mGeometryColumn ) ) 
-            .arg( mQuery ); 
- 
-      if ( !mSubsetString.isEmpty() ) 
-        sql += " where " + mSubsetString; 
- 
-      ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg ); 
-      if ( ret != SQLITE_OK ) 
-        goto error; 
-      if ( rows != 1 ) 
-        ; 
-      else 
-      { 
-        for ( i = 1; i <= rows; i++ ) 
-        { 
-          fType = results[( 1 * columns ) + 0]; 
-        } 
-      } 
-      sqlite3_free_table( results ); 
-    } 
- 
-    if ( fType == "POINT" ) 
-    { 
-      geomType = QGis::WKBPoint; 
-    } 
-    else if ( fType == "MULTIPOINT" ) 
-    { 
-      geomType = QGis::WKBMultiPoint; 
-    } 
-    else if ( fType == "LINESTRING" ) 
-    { 
-      geomType = QGis::WKBLineString; 
-    } 
-    else if ( fType == "MULTILINESTRING" ) 
-    { 
-      geomType = QGis::WKBMultiLineString; 
-    } 
-    else if ( fType == "POLYGON" ) 
-    { 
-      geomType = QGis::WKBPolygon; 
-    } 
-    else if ( fType == "MULTIPOLYGON" ) 
-    { 
-      geomType = QGis::WKBMultiPolygon; 
-    } 
-    mSrid = xSrid.toInt(); 
-  } 
- 
-  if ( geomType == QGis::WKBUnknown || mSrid < 0 ) 
-    goto error; 
- 
-  return getSridDetails(); 
- 
-error: 
-  // unexpected error 
-  if ( errMsg != NULL ) 
-  { 
-    QgsDebugMsg( QString( "SQL error: %1\n\n%2" ).arg( sql ).arg( errMsg ? QString::fromUtf8( errMsg ) : "unknown cause" ) ); 
-    sqlite3_free( errMsg ); 
-  } 
-  return false; 
-} 
- 
+bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
+{
+  int ret;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+
+  QString fType( "" );
+  QString xSrid( "" );
+
+  // get stuff from the relevant column instead. This may (will?)
+  // fail if there is no data in the relevant table.
+  QString sql = QString( "select srid(%1), geometrytype(%1) from %2" )
+                .arg( quotedIdentifier( mGeometryColumn ) )
+                .arg( mQuery );
+
+  //it is possible that the where clause restricts the feature type
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += " WHERE " + mSubsetString;
+  }
+
+  sql += " limit 1";
+
+  ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret != SQLITE_OK )
+    goto error;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    for ( i = 1; i <= rows; i++ )
+    {
+      xSrid = results[( i * columns ) + 0];
+      fType = results[( i * columns ) + 1];
+    }
+  }
+  sqlite3_free_table( results );
+
+  if ( !xSrid.isEmpty() && !fType.isEmpty() )
+  {
+    if ( fType == "GEOMETRY" )
+    {
+      // check to see if there is a unique geometry type
+      sql = QString( "select distinct "
+                     "case"
+                     " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                     " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                     " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                     " end "
+                     "from %2" )
+            .arg( quotedIdentifier( mGeometryColumn ) )
+            .arg( mQuery );
+
+      if ( !mSubsetString.isEmpty() )
+        sql += " where " + mSubsetString;
+
+      ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+      if ( ret != SQLITE_OK )
+        goto error;
+      if ( rows != 1 )
+        ;
+      else
+      {
+        for ( i = 1; i <= rows; i++ )
+        {
+          fType = results[( 1 * columns ) + 0];
+        }
+      }
+      sqlite3_free_table( results );
+    }
+
+    if ( fType == "POINT" )
+    {
+      geomType = QGis::WKBPoint;
+    }
+    else if ( fType == "MULTIPOINT" )
+    {
+      geomType = QGis::WKBMultiPoint;
+    }
+    else if ( fType == "LINESTRING" )
+    {
+      geomType = QGis::WKBLineString;
+    }
+    else if ( fType == "MULTILINESTRING" )
+    {
+      geomType = QGis::WKBMultiLineString;
+    }
+    else if ( fType == "POLYGON" )
+    {
+      geomType = QGis::WKBPolygon;
+    }
+    else if ( fType == "MULTIPOLYGON" )
+    {
+      geomType = QGis::WKBMultiPolygon;
+    }
+    mSrid = xSrid.toInt();
+  }
+
+  if ( geomType == QGis::WKBUnknown || mSrid < 0 )
+    goto error;
+
+  return getSridDetails();
+
+error:
+  // unexpected error
+  if ( errMsg != NULL )
+  {
+    QgsDebugMsg( QString( "SQL error: %1\n\n%2" ).arg( sql ).arg( errMsg ? QString::fromUtf8( errMsg ) : "unknown cause" ) );
+    sqlite3_free( errMsg );
+  }
+  return false;
+}
+
 bool QgsSpatiaLiteProvider::getSridDetails()
 {
   int ret;
@@ -2140,9 +2142,9 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   int columns;
   char *errMsg = NULL;
 
-  QString sql = QString( "SELECT Min(MbrMinX(%1)), Min(MbrMinY(%1)), " 
-                         "Max(MbrMaxX(%1)), Max(MbrMaxY(%1)), Count(*) " "FROM %2" ) 
-                .arg( quotedIdentifier( mGeometryColumn ) ) 
+  QString sql = QString( "SELECT Min(MbrMinX(%1)), Min(MbrMinY(%1)), "
+                         "Max(MbrMaxX(%1)), Max(MbrMaxY(%1)), Count(*) " "FROM %2" )
+                .arg( quotedIdentifier( mGeometryColumn ) )
                 .arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )

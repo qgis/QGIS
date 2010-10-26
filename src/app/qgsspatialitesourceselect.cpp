@@ -700,7 +700,7 @@ bool QgsSpatiaLiteSourceSelect::checkVirtsGeometryColumns( sqlite3 * handle )
   return exists;
 }
 
-bool QgsSpatiaLiteSourceSelect::isRasterlite1Datasource (sqlite3 * handle, const char *table)
+bool QgsSpatiaLiteSourceSelect::isRasterlite1Datasource( sqlite3 * handle, const char *table )
 {
 // testing for RasterLite-1 datasources
   int ret;
@@ -713,12 +713,12 @@ bool QgsSpatiaLiteSourceSelect::isRasterlite1Datasource (sqlite3 * handle, const
   char table_raster[4192];
   char sql[4192];
 
-  strcpy ( table_raster, table );
+  strcpy( table_raster, table );
   len =  strlen( table_raster );
-  if (strlen( table_raster ) < 9)
-      return false;
-  if (strcmp( table_raster + len - 9, "_metadata" ) != 0)
-      return false;
+  if ( strlen( table_raster ) < 9 )
+    return false;
+  if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
+    return false;
   // ok, possible candidate
   strcpy( table_raster + len - 9, "_rasters" );
 

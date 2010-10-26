@@ -619,7 +619,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
     void thumbnailAsPixmap( QPixmap * theQPixmap );
-    /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer 
+    /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
      * @note added in QGIS 1.6
      * */
     void thumbnailAsImage( QImage * thepImage );
