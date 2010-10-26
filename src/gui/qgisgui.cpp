@@ -38,7 +38,7 @@ namespace QgisGui
 
     haveLastUsedFilter = settings.contains( "/UI/" + filterName );
     QString lastUsedFilter = settings.value( "/UI/" + filterName,
-        QVariant( QString::null ) ).toString();
+                             QVariant( QString::null ) ).toString();
 
     QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
@@ -129,8 +129,8 @@ namespace QgisGui
 
     //create a file dialog using the the filter list generated above
     std::auto_ptr < QFileDialog > myQFileDialog( new QFileDialog( theParent,
-          QObject::tr( "Choose a file name to save the map image as" ),
-          myLastUsedDir, myFilters ) );
+        QObject::tr( "Choose a file name to save the map image as" ),
+        myLastUsedDir, myFilters ) );
 
     // allow for selection of more than one file
     myQFileDialog->setFileMode( QFileDialog::AnyFile );
@@ -168,7 +168,7 @@ namespace QgisGui
     myPair.first = myOutputFileName;
     myPair.second = myFilterMap[myFilterString];
     return myPair;
-  } // 
+  } //
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {

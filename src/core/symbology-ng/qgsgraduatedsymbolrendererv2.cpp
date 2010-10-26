@@ -327,10 +327,10 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
 
   for ( int i = 1; i < classes; i++ )
   {
-    if( n > 1 )
+    if ( n > 1 )
     {
       double q = i  / ( double ) classes;
-      double a = q * (n-1);
+      double a = q * ( n - 1 );
       int aa = ( int )( a );
 
       double r = a - aa;

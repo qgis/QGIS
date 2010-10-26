@@ -61,11 +61,11 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
   Qt::ItemFlags flags = Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
+  if ( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
   {
     flags |= Qt::ItemIsUserCheckable;
   }
- 
+
   setFlags( flags );
 
   setCheckState( 0, Qt::Checked );
@@ -105,7 +105,7 @@ QgsLegendLayer::~QgsLegendLayer()
 
 void QgsLegendLayer::setCheckState( int column, Qt::CheckState state )
 {
-  if( flags() & Qt::ItemIsUserCheckable )
+  if ( flags() & Qt::ItemIsUserCheckable )
   {
     QTreeWidgetItem::setCheckState( column, state );
   }
