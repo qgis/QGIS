@@ -507,6 +507,8 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
+      if ( isRasterlite1Datasource( handle, results[( i * columns ) + 0] ) )
+        continue;
       QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
       QString column = QString::fromUtf8( results[( i * columns ) + 1] );
       QString type = results[( i * columns ) + 2];
@@ -678,6 +680,52 @@ bool QgsSpatiaLiteSourceSelect::checkVirtsGeometryColumns( sqlite3 * handle )
   QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'virts_geometry_columns'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, NULL );
+  if ( ret != SQLITE_OK )
+    return false;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    for ( i = 1; i <= rows; i++ )
+    {
+      if ( results[( i * columns ) + 0] != NULL )
+      {
+        const char *name = results[( i * columns ) + 0];
+        if ( name )
+          exists = true;
+      }
+    }
+  }
+  sqlite3_free_table( results );
+  return exists;
+}
+
+bool QgsSpatiaLiteSourceSelect::isRasterlite1Datasource (sqlite3 * handle, const char *table)
+{
+// testing for RasterLite-1 datasources
+  int ret;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+  bool exists = false;
+  int len;
+  char table_raster[4192];
+  char sql[4192];
+
+  strcpy ( table_raster, table );
+  len =  strlen( table_raster );
+  if (strlen( table_raster ) < 9)
+      return false;
+  if (strcmp( table_raster + len - 9, "_metadata" ) != 0)
+      return false;
+  // ok, possible candidate
+  strcpy( table_raster + len - 9, "_rasters" );
+
+  // checking if the related "_RASTERS table exists
+  sprintf( sql, "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%s'", table_raster );
+
+  ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, NULL );
   if ( ret != SQLITE_OK )
     return false;
   if ( rows < 1 )
