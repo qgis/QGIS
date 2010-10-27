@@ -85,15 +85,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
   }
 
-  //local directories to search when looking for an PROJ.4 file with a given basename
-  foreach( QString path, settings.value( "projSearchPaths" ).toStringList() )
-  {
-    QListWidgetItem* newItem = new QListWidgetItem( mListProjPaths );
-    newItem->setText( path );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListProjPaths->addItem( newItem );
-  }
-
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
 
@@ -472,13 +463,6 @@ void QgsOptions::saveOptions()
     myPaths += mListSVGPaths->item( i )->text();
   }
   settings.setValue( "svg/searchPathsForSVG", myPaths );
-
-  QStringList paths;
-  for ( int i = 0; i < mListProjPaths->count(); ++i )
-  {
-    paths << mListProjPaths->item( i )->text();
-  }
-  settings.setValue( "projSearchPaths", paths );
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
@@ -887,33 +871,6 @@ void QgsOptions::on_mBtnRemoveSVGPath_clicked()
   QListWidgetItem* itemToRemove = mListSVGPaths->takeItem( currentRow );
   delete itemToRemove;
 }
-
-void QgsOptions::on_mBtnAddProjPath_clicked()
-{
-  QString myDir = QFileDialog::getExistingDirectory(
-                    this,
-                    tr( "Choose a directory" ),
-                    QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
-                  );
-
-  if ( ! myDir.isEmpty() )
-  {
-    QListWidgetItem* newItem = new QListWidgetItem( mListProjPaths );
-    newItem->setText( myDir );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListProjPaths->addItem( newItem );
-    mListProjPaths->setCurrentItem( newItem );
-  }
-}
-
-void QgsOptions::on_mBtnRemoveProjPath_clicked()
-{
-  int currentRow = mListProjPaths->currentRow();
-  QListWidgetItem* itemToRemove = mListProjPaths->takeItem( currentRow );
-  delete itemToRemove;
-}
-
 
 void QgsOptions::on_mAddUrlPushButton_clicked()
 {
