@@ -22,13 +22,10 @@ IF(WIN32)
   ENDIF (MINGW)
 
   IF (MSVC)
-    SET (
-       GEOS_INCLUDE_DIR 
-       "$ENV{LIB_DIR}/include"
-       CACHE STRING INTERNAL
-       )
+    FIND_PATH(GEOS_INCLUDE_DIR geos_c.h $ENV{LIB_DIR}/include $ENV{INCLUDE})
     FIND_LIBRARY(GEOS_LIBRARY NAMES geos geos_c_i PATHS 
-      "$ENV{LIB_DIR}/lib"
+      "$ENV{LIB}/lib"
+      $ENV{LIB}
       #mingw
       c:/msys/local/lib
       NO_DEFAULT_PATH

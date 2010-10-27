@@ -19,6 +19,7 @@
 # searching for the same item do nothing. 
 FIND_PATH(ICONV_INCLUDE_DIR iconv.h
   "$ENV{LIB_DIR}/include"
+  $ENV{INCLUDE}
   /usr/local/include
   /usr/include
   #mingw
@@ -29,6 +30,7 @@ FIND_PATH(ICONV_INCLUDE_DIR iconv.h)
 
 FIND_LIBRARY(ICONV_LIBRARY NAMES iconv PATHS
   "$ENV{LIB_DIR}/lib"
+  $ENV{LIB}
   /usr/local/lib
   /usr/lib
   #mingw

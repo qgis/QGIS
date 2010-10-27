@@ -23,13 +23,9 @@ IF(WIN32)
   ENDIF (MINGW)
 
   IF (MSVC)
-    SET (
-       GDAL_INCLUDE_DIR 
-       "$ENV{LIB_DIR}/include/gdal"
-       CACHE STRING INTERNAL
-       )
+    FIND_PATH(GDAL_INCLUDE_DIR gdal.h "$ENV{LIB_DIR}/include/gdal" $ENV{INCLUDE})
     FIND_LIBRARY(GDAL_LIBRARY NAMES gdal gdal_i PATHS 
-      "$ENV{LIB_DIR}/lib" /usr/lib c:/msys/local/lib)
+	    "$ENV{LIB_DIR}/lib" $ENV{LIB} /usr/lib c:/msys/local/lib)
     IF (GDAL_LIBRARY)
       SET (
          GDAL_LIBRARY;odbc32;odbccp32 
