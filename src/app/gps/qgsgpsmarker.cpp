@@ -24,7 +24,7 @@
 
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
   mWgs84CRS.createFromEpsg( 4326 );
@@ -38,10 +38,17 @@ void QgsGpsMarker::setSize( int theSize )
 void QgsGpsMarker::setCenter( const QgsPoint& point )
 {
   //transform to map crs
-  if ( mMapCanvas && mMapCanvas->mapRenderer() )
+  if( mMapCanvas && mMapCanvas->mapRenderer() )
   {
     QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapRenderer()->destinationSrs() );
-    mCenter = t.transform( point );
+    try
+    {
+      mCenter = t.transform( point );
+    }
+    catch( QgsCsException e ) //silently ignore transformation exceptions
+    {
+      return;
+    }
   }
   else
   {
@@ -55,7 +62,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
 void QgsGpsMarker::paint( QPainter* p )
 {
   QSvgRenderer mySVG;
-  if ( !mySVG.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) ) )
+  if( !mySVG.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) ) )
   {
     qDebug( "GPS marker not found!" );
     return;
@@ -68,7 +75,7 @@ void QgsGpsMarker::paint( QPainter* p )
 QRectF QgsGpsMarker::boundingRect() const
 {
   float myHalfSize = mSize / 2.0;
-  return QRectF( -myHalfSize, -myHalfSize, 2.0*myHalfSize, 2.0*myHalfSize );
+  return QRectF( -myHalfSize, -myHalfSize, 2.0 * myHalfSize, 2.0 * myHalfSize );
 }
 
 void QgsGpsMarker::updatePosition()
