@@ -256,14 +256,9 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     projPJ mDestinationProjection;
 
     /*!
-     * Set finder for PROJ grid files.
-     */
-    void setFinder();
-
-    /*!
      * Finder for PROJ grid files.
      */
-    static const char *finder( const char *name );
+    void setFinder();
 };
 
 //! Output stream operator

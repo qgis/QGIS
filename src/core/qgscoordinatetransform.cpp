@@ -23,10 +23,7 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
-#include <QSettings>
-#include <QStringList>
-#include <QFileInfo>
-#include <QSet>
+#include "qgslogger.h"
 
 extern "C"
 {
@@ -548,51 +545,28 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   return true;
 }
 
-void QgsCoordinateTransform::setFinder()
+const char *finder( const char *name )
 {
-  pj_set_finder( finder );
+  QString proj;
+#ifdef WIN32
+  proj = QApplication::applicationDirPath()
+         + "/share/proj/" + QString( name );
+#endif
+  return proj.toUtf8();
 }
 
-const char *QgsCoordinateTransform::finder( const char *name )
+void QgsCoordinateTransform::setFinder()
 {
-  QSettings settings;
-  QStringList paths = settings.value( "projSearchPaths" ).toStringList();
-
-  if ( getenv( "PROJ_LIB" ) )
-  {
-    paths << getenv( "PROJ_LIB" );
-  }
-
 #ifdef WIN32
-  paths << QApplication::applicationDirPath() + "/share/proj";
+  // Attention! It should be possible to set PROJ_LIB
+  // but it can happen that it was previously set by installer
+  // (version 0.7) and the old installation was deleted
+
+  // Another problem: PROJ checks if pj_finder was set before
+  // PROJ_LIB environment variable. pj_finder is probably set in
+  // GRASS gproj library when plugin is loaded, consequently
+  // PROJ_LIB is ignored
+
+  pj_set_finder( finder );
 #endif
-
-  foreach( QString path, paths )
-  {
-    QFileInfo fi( QString( "%1/%2" ).arg( path ).arg( name ) );
-    if ( fi.exists() )
-      return fi.canonicalFilePath().toUtf8();
-  }
-
-  if ( QString( name ).endsWith( ".gsb", Qt::CaseInsensitive ) )
-  {
-    static QSet<QString> missing;
-
-    if ( !missing.contains( name ) )
-    {
-      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-      output->setTitle( "Grid transformation missing" );
-      output->setMessage( tr( "PROJ.4 file %1 not found in any of these directories:\n\n"
-                              "%2\n\n"
-                              "Note: This message won't reappear for this file in this session." )
-                          .arg( name )
-                          .arg( paths.join( "\n" ) ),
-                          QgsMessageOutput::MessageText );
-      output->showMessage();
-    }
-
-    missing << name;
-  }
-
-  return name;
 }
