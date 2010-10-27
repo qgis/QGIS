@@ -1,0 +1,36 @@
+
+= Overview = 
+
+QGIS, like a number of major projects (eg. KDE 4.0), uses CMake
+(http://www.cmake.org) for building from source.
+
+Following a summary of the required dependencies for building:
+
+Required build tools:
+
+- CMake >= 2.6.0
+- Flex
+- Bison
+-
+
+Required build deps:
+
+- Qt >= 4.4.0
+- Proj >= 4.4.x
+- GEOS >= 3.0
+- Sqlite3 >= 3.0.0
+- GDAL/OGR >= 1.4.x
+- Qwt >= 5.0
+-
+
+Optional dependencies:
+
+- for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
+- for georeferencer - GSL >= 1.8
+- for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
+- for gps plugin - expat >= 1.95 and gpsbabel
+- for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
+- for python support - SIP >= 4.8, PyQt >= must match Qt version
+- for qgis mapserver - FastCGI
+-
+

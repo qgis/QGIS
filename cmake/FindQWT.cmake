@@ -19,12 +19,14 @@ FIND_PATH(QWT_INCLUDE_DIR qwt.h
   /usr/include
   /usr/local/include
   "$ENV{LIB_DIR}/include" 
+  "$ENV{INCLUDE}" 
   PATH_SUFFIXES qwt-qt4 qwt
   )
-FIND_LIBRARY(QWT_LIBRARY qwt PATHS 
+FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwtn5 PATHS 
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib" 
+  "$ENV{LIB}/lib" 
   )
 IF (NOT QWT_LIBRARY)
   # try using ubuntu lib naming
@@ -32,6 +34,7 @@ IF (NOT QWT_LIBRARY)
     /usr/lib
     /usr/local/lib
     "$ENV{LIB_DIR}/lib" 
+    "$ENV{LIB}/lib" 
     )
 ENDIF (NOT QWT_LIBRARY)
 
