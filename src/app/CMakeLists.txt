@@ -72,6 +72,7 @@ SET(QGIS_APP_SRCS
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
   qgsprojectproperties.cpp
+  qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
   qgstextannotationdialog.cpp
@@ -204,6 +205,7 @@ SET (QGIS_APP_MOC_HDRS
   qgspastetransformations.h
   qgspluginmanager.h
   qgsprojectproperties.h
+  qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
   qgssearchquerybuilder.h
   qgstextannotationdialog.h
@@ -325,6 +327,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
+  ../analysis/raster
   ../core
   ../core/gps ../core/gps/qextserialport
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
@@ -376,6 +379,7 @@ TARGET_LINK_LIBRARIES(qgis
   ${QT_QTMAIN_LIBRARY} 
   qgis_core
   qgis_gui
+  qgis_analysis
 )
 
 IF( WIN32 )

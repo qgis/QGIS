@@ -29,10 +29,18 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsslopefilter.cpp
   raster/qgsaspectfilter.cpp
   raster/qgstotalcurvaturefilter.cpp
+  raster/qgsrastercalcnode.cpp
+  raster/qgsrastercalculator.cpp
+  raster/qgsrastermatrix.cpp
   vector/qgsgeometryanalyzer.cpp
   vector/qgszonalstatistics.cpp
   vector/qgsoverlayanalyzer.cpp
 )
+
+INCLUDE_DIRECTORIES(BEFORE raster)
+ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
+
+ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 
 SET(QGIS_ANALYSIS_MOC_HDRS
 )
@@ -45,6 +53,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/renderer
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/spatialindex
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   interpolation
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
