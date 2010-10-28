@@ -53,7 +53,7 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - sip
 -
 
-This will also selected more packages that above packages depend on.
+This will also select packages the above packages depend on.
 
 Additionally QGIS also needs the include file ``unistd.h``, which normally
 doesn't exist on Windows.  It's shipped with Flex/Bison in ``GnuWin32\include``

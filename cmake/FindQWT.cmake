@@ -22,7 +22,7 @@ FIND_PATH(QWT_INCLUDE_DIR qwt.h
   "$ENV{INCLUDE}" 
   PATH_SUFFIXES qwt-qt4 qwt
   )
-FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwtn5 PATHS 
+FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwt5 PATHS 
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib" 
