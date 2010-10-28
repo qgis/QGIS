@@ -47,3 +47,30 @@ MACRO(ADD_FLEX_FILES _sources )
       SET(${_sources} ${${_sources}} ${_out} )
    ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_FLEX_FILES)
+
+
+MACRO(ADD_FLEX_FILES_PREFIX _sources prefix )
+    FIND_FLEX()
+
+    FOREACH (_current_FILE ${ARGN})
+      GET_FILENAME_COMPONENT(_in ${_current_FILE} ABSOLUTE)
+      GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
+
+      SET(_out ${CMAKE_CURRENT_BINARY_DIR}/flex_${_basename}.cpp)
+
+
+      # -d option for flex means that it will produce output to stderr while analyzing 
+
+      ADD_CUSTOM_COMMAND(
+         OUTPUT ${_out}
+         COMMAND ${FLEX_EXECUTABLE}
+         ARGS
+	 -P ${prefix}
+         -o${_out} -d
+         ${_in}
+         DEPENDS ${_in}
+      )
+
+      SET(${_sources} ${${_sources}} ${_out} )
+   ENDFOREACH (_current_FILE)
+ENDMACRO(ADD_FLEX_FILES_PREFIX)

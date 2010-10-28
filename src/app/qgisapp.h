@@ -520,6 +520,9 @@ class QgisApp : public QMainWindow
     void fileNew();
     //! As above but allows forcing without prompt
     void fileNew( bool thePromptToSaveFlag );
+    //! Calculate new rasters from existing ones
+    void showRasterCalculator();
+
     //! Create a new empty vector layer
     void newVectorLayer();
 #ifdef HAVE_SPATIALITE
@@ -927,6 +930,7 @@ class QgisApp : public QMainWindow
 
     QAction *mActionNewVectorLayer;
     QAction *mActionNewSpatialiteLayer;
+    QAction *mActionShowRasterCalculator;
     QAction *mActionAddOgrLayer;
     QAction *mActionAddRasterLayer;
     QAction *mActionAddPgLayer;
