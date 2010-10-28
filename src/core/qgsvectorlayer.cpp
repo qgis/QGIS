@@ -1610,7 +1610,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
 
             for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
             {
-              if ( fid != it->id() )
+              if ( fid == it->id() )
               {
                 found = true;
                 f.setAttributeMap( it->attributeMap() );
