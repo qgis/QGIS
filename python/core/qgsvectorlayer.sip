@@ -313,6 +313,10 @@ public:
   /** Returns true if the provider is in editing mode */
   virtual bool isEditable() const;
 
+  /** Returns true if the provider is in read-only mode
+    @note added in version 1.6 */
+  virtual bool isReadOnly() const;
+
   /** Returns true if the provider has been modified since the last commit */
   virtual bool isModified() const;
 
@@ -353,6 +357,11 @@ public:
 
   /** returns feature count after commit */
   int pendingFeatureCount();
+
+  /** Make layer read-only (editing disabled) or not
+    @return false if the layer is in editing yet
+    @note added in version 1.6 */
+  bool setReadOnly( bool readonly = true );
   
   /** Sets whether some features are modified or not */
   void setModified(bool modified = TRUE, bool onlyGeometryWasModified = FALSE);
