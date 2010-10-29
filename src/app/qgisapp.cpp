@@ -4724,7 +4724,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   bool res = true;
 
-  if( !vlayer->isEditable() )
+  if( !vlayer->isEditable() && !vlayer->isReadOnly() )
   {
     vlayer->startEditing();
     if( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
@@ -5927,7 +5927,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //start editing/stop editing
       if( dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
-        mActionToggleEditing->setEnabled( true );
+        mActionToggleEditing->setEnabled( !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
         mActionSaveEdits->setEnabled( vlayer->isEditable() );
       }

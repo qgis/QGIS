@@ -358,6 +358,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
 
+    /** Returns true if the provider is in read-only mode */
+    virtual bool isReadOnly() const;
+
     /** Returns true if the provider has been modified since the last commit */
     virtual bool isModified() const;
 
@@ -401,6 +404,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** returns feature count after commit */
     int pendingFeatureCount();
+
+    /** Make layer read-only (editing disabled) or not
+     *  @return false if the layer is in editing yet
+     */
+    bool setReadOnly( bool readonly = true );
 
     /** Sets whether some features are modified or not */
     void setModified( bool modified = true, bool onlyGeometryWasModified = false );
@@ -707,6 +715,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Flag indicating whether the layer is in editing mode or not */
     bool mEditable;
+
+    /** Flag indicating whether the layer is in read-only mode (editing disabled) or not */
+    bool mReadOnly;
 
     /** Flag indicating whether the layer has been modified since the last commit */
     bool mModified;

@@ -100,6 +100,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mDataProvider( NULL ),
     mProviderKey( providerKey ),
     mEditable( false ),
+    mReadOnly( false ),
     mModified( false ),
     mMaxUpdatedIndex( -1 ),
     mActiveCommand( NULL ),
@@ -2483,6 +2484,11 @@ bool QgsVectorLayer::startEditing()
     return false;
   }
 
+  if ( mReadOnly )
+  {
+    return false;
+  }
+
   if ( mEditable )
   {
     // editing already underway
@@ -4202,6 +4208,21 @@ const QString QgsVectorLayer::displayField() const
 bool QgsVectorLayer::isEditable() const
 {
   return ( mEditable && mDataProvider );
+}
+
+bool QgsVectorLayer::isReadOnly() const
+{
+  return mReadOnly;
+}
+
+bool QgsVectorLayer::setReadOnly( bool readonly )
+{
+  // exit if the layer is in editing mode
+  if ( readonly && mEditable )
+    return false;
+
+  mReadOnly = readonly;
+  return true;
 }
 
 bool QgsVectorLayer::isModified() const
