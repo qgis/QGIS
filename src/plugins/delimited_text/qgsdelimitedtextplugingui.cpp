@@ -123,7 +123,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   if ( QFile::exists( txtFilePath->text() ) )
   {
     QFile *file = new QFile( txtFilePath->text() );
-    if ( file->open( QIODevice::ReadOnly | QIODevice::Text ) )
+    if ( file->open( QIODevice::ReadOnly ) )
     {
       // clear the field lists
       cmbXField->clear();
@@ -211,12 +211,12 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       txtSample->insertPlainText( line + "\n" );
       // put a few more lines into the sample box
       int counter = 0;
-      line = QgsDelimitedTextPluginGui::readLine( stream );
+      line = readLine( stream );
       while ( !line.isEmpty() && ( counter < 20 ) )
       {
         txtSample->insertPlainText( line + "\n" );
         counter++;
-        line = QgsDelimitedTextPluginGui::readLine( stream );
+        line = readLine( stream );
       }
       // close the file
       file->close();
@@ -259,51 +259,27 @@ void QgsDelimitedTextPluginGui::on_txtDelimiter_textChanged( const QString & tex
   }
 }
 
-QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
+QString QgsDelimitedTextPluginGui::readLine( QTextStream &stream )
 {
-  QString buffer( "" );
-  QString c;
+  QString buffer;
 
-  // Strip leading newlines
+  while ( !stream.atEnd() )
+  {
+    QChar c = stream.read( 1 ).at( 0 );
 
-  c = stream.read( 1 );
-  if ( c == NULL || c.size() == 0 )
-  {
-    // Reach end of file
-    return buffer;
-  }
-  while ( c == ( char * )"\r" || c == ( char * )"\n" )
-  {
-    c = stream.read( 1 );
-    if ( c == NULL || c.size() == 0 )
+    if ( c == '\r' || c == '\n' )
     {
-      // Reach end of file
-      return buffer;
+      if ( buffer.isEmpty() )
+      {
+        // skip leading CR / LF
+        continue;
+      }
+
+      break;
     }
-  }
-
-  // First non-newline character
-  buffer.append( c );
-
-  c = stream.read( 1 );
-  if ( c == NULL || c.size() == 0 )
-  {
-    // Reach end of file
-    return buffer;
-  }
-
-  while ( !( c == ( char * )"\r" || c == ( char * )"\n" ) )
-  {
 
     buffer.append( c );
-    c = stream.read( 1 );
-    if ( c == NULL || c.size() == 0 )
-    {
-      // Reach end of file
-      return buffer;
-    }
   }
 
   return buffer;
-
 }

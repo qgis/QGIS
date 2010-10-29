@@ -221,6 +221,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QGis::WkbType mWkbType; //can be WKBPoint or NoGeometry
 
+    QString readLine( QTextStream *stream );
     QStringList splitLine( QString line );
-
 };
