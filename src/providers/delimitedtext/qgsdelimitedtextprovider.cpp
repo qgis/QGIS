@@ -44,6 +44,31 @@ static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
 
+QString QgsDelimitedTextProvider::readLine( QTextStream *stream )
+{
+  QString buffer;
+
+  while ( !stream->atEnd() )
+  {
+    QChar c = stream->read( 1 ).at( 0 );
+
+    if ( c == '\r' || c == '\n' )
+    {
+      if ( buffer.isEmpty() )
+      {
+        // skip leading CR / LF
+        continue;
+      }
+
+      break;
+    }
+
+    buffer.append( c );
+  }
+
+  return buffer;
+}
+
 QStringList QgsDelimitedTextProvider::splitLine( QString line )
 {
   QgsDebugMsg( "Attempting to split the input line: " + line + " using delimiter " + mDelimiter );
@@ -192,7 +217,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   while ( !mStream->atEnd() )
   {
     lineNumber++;
-    line = mStream->readLine(); // line of text excluding '\n', default local 8 bit encoding.
+    line = readLine( mStream ); // line of text excluding '\n', default local 8 bit encoding.
     if ( !hasFields )
     {
       // Get the fields from the header row and store them in the
@@ -267,7 +292,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
           mExtent.combineExtentWith( x, y );
         }
         else
-        { // Extent for the first point is just the first point
+        {
+          // Extent for the first point is just the first point
           mExtent.set( x, y, x, y );
           firstPoint = false;
         }
@@ -335,7 +361,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
   {
     double x = 0.0;
     double y = 0.0;
-    QString line = mStream->readLine(); // Default local 8 bit encoding
+    QString line = readLine( mStream ); // Default local 8 bit encoding
 
     // lex the tokens from the current data line
     QStringList tokens = splitLine( line );
@@ -531,7 +557,7 @@ void QgsDelimitedTextProvider::rewind()
   // Skip ahead one line since first record is always assumed to be
   // the header record
   mStream->seek( 0 );
-  mStream->readLine();
+  readLine( mStream );
 }
 
 bool QgsDelimitedTextProvider::isValid()
