@@ -4110,7 +4110,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="188"/>
         <source>Add Delimited Text Layer</source>
-        <translation>Layer aus Textdatei laden</translation>
+        <translation type="unfinished">Textdatei als Layer importieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
@@ -11609,13 +11609,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="101"/>
         <source>&amp;Add Delimited Text Layer</source>
-        <translation>Getrennte Textd&amp;atei hinzufügen</translation>
+        <translation type="unfinished">Textd&amp;atei als Layer importieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="110"/>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="144"/>
         <source>&amp;Delimited text</source>
-        <translation>&amp;Getrennter Text</translation>
+        <translation type="unfinished">Text&amp;datei importieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="56"/>
@@ -11625,7 +11625,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation>Eine Textdatei dem Kartenfenster als Layer hinzufügen. Die Datei muss eine Kopfzeile mit Spaltennamen enthalten. X- und Y-Spalten mit dezimalen Koordinaten sind unbedingt erforderlich.</translation>
+        <translation type="unfinished">Eine Textdatei als Layer hinzufügen. Die Datei muss eine Kopfzeile mit Spaltennamen enthalten. X- und Y-Spalten mit dezimalen Koordinaten sind unbedingt erforderlich.</translation>
     </message>
 </context>
 <context>
@@ -11666,7 +11666,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="14"/>
         <source>Create a Layer from a Delimited Text File</source>
-        <translation>Textdatei aus Layer erzeugen</translation>
+        <translation type="unfinished">Textdatei als Layer importieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="65"/>
