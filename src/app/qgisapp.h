@@ -436,6 +436,9 @@ class QgisApp : public QMainWindow
     //! update default action of toolbutton
     void toolButtonActionTriggered( QAction * );
 
+    //! layer selection changed
+    void legendLayerSelectionChanged( void );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
