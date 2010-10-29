@@ -2058,6 +2058,8 @@ void QgisApp::setupConnections()
   // connect legend signals
   connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
+  connect( mMapLegend, SIGNAL( itemSelectionChanged() ),
+           this, SLOT( legendLayerSelectionChanged() ) );
   connect( mMapLegend, SIGNAL( zOrderChanged() ),
            this, SLOT( markDirty() ) );
 
@@ -5837,10 +5839,13 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   activateDeactivateLayerRelatedActions( layer );
 }
 
+void QgisApp::legendLayerSelectionChanged( void )
+{
+  mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
+}
+
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 {
-  mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedItems().size() > 0 );
-
   if( !layer )
   {
     mActionSelect->setEnabled( false );
