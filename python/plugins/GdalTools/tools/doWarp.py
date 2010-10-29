@@ -44,6 +44,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         ]
       )
 
+      self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillSourceSRSEditDefault)
       self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFile)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
       self.connect(self.selectSourceSRSButton, SIGNAL("clicked()"), self.fillSourceSRSEdit)
@@ -100,11 +101,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      # get SRS for source file if necessary and possible
-      self.sourceSRSEdit.setText( Utils.getRasterSRS( self, inputFile ) )
-
       self.inputLayerCombo.setCurrentIndex(-1)
       self.inputLayerCombo.setEditText(inputFile)
+
+      # get SRS for source file if necessary and possible
+      self.refreshSourceSRS()
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -144,6 +145,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if dialog.exec_():
         self.sourceSRSEdit.setText(dialog.getProjection())
 
+  def fillSourceSRSEditDefault(self, index):
+      if index < 0:
+        return
+      self.refreshSourceSRS()
+
+  def refreshSourceSRS(self):
+      crs = Utils.getRasterSRS( self, self.getInputFileName() )
+      self.sourceSRSEdit.setText( crs )
+      self.sourceSRSCheck.setChecked( not crs.isEmpty() )
+
   def fillTargetSRSEdit(self):
       dialog = SRSDialog( "Select the target SRS" )
       if dialog.exec_():
@@ -164,7 +175,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         arguments << "-wm"
         arguments << str(self.cacheSpin.value())
       if self.resizeGroupBox.isChecked():
-       	arguments << "-ts"
+        arguments << "-ts"
         arguments << str( self.widthSpin.value() )
         arguments << str( self.heightSpin.value() )
       if self.multithreadCheck.isChecked():

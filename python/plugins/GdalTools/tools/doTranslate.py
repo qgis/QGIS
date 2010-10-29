@@ -114,11 +114,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
-      # get SRS for target file if necessary and possible
-      self.targetSRSEdit.setText( Utils.getRasterSRS( self, inputFile ) )
-
       self.inputLayerCombo.setCurrentIndex(-1)
       self.inputLayerCombo.setEditText( inputFile )
+
+      # get SRS for target file if necessary and possible
+      self.refreshTargetSRS()
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Translate" ))
@@ -154,9 +154,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.outputFileEdit.setText( outputDir )
 
   def fillTargetSRSEditDefault(self, index):
-      if index >= 0 and index in self.layers:
-        layer = self.layers[index]
-        self.targetSRSEdit.setText("EPSG:" + str(layer.srs().epsg()))
+      if index < 0:
+        return
+      self.refreshTargetSRS()
+
+  def refreshTargetSRS(self):
+      self.targetSRSEdit.setText( Utils.getRasterSRS( self, self.getInputFileName() ) )
 
   def fillTargetSRSEdit(self):
       dialog = SRSDialog( "Select the target SRS" )
