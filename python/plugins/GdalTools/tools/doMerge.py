@@ -18,6 +18,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       BasePluginWidget.__init__(self, self.iface, "gdal_merge.py")
 
       self.outputFormat = Utils.fillRasterOutputFormat()
+      self.extent = None
 
       self.setParamsStatus(
         [
@@ -33,6 +34,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.connect(self.selectInputFilesButton, SIGNAL("clicked()"), self.fillInputFilesEdit)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect(self.intersectCheck, SIGNAL("stateChanged(int)"), self.refreshExtent)
 
   def fillInputFilesEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -42,13 +44,27 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.inputFilesEdit.setText(files.join(","))
+      self.intersectCheck.setEnabled( files.count() > 1 )
+      self.refreshExtent()
 
+  def refreshExtent(self):
+      files = self.inputFilesEdit.text().split( "," )
       if files.count() < 2:
         self.intersectCheck.setChecked( False )
-        self.intersectCheck.setEnabled( False )
-      else:
-        self.intersectCheck.setEnabled( True )
-        (self.xmax, self.ymax, self.xmin, self.ymin) = self.getExtent()
+        self.extent = None
+        return
+
+      self.extent = self.getExtent()
+      self.someValueChanged()
+
+      if not self.intersectCheck.isChecked():
+        return
+
+      if self.extent == None:
+        QMessageBox.warning( self, self.tr( "Error retrieving the extent" ), self.tr( 'GDAL was unable to retrieve the extent from any file. \nThe "Use intersected extent" option will be unchecked.' ) )
+        self.intersectCheck.setChecked( False )
+      elif self.extent.isEmpty():
+        QMessageBox.warning( self, self.tr( "Empty extent" ), self.tr( 'The computed extent is empty. \nDisable the "Use intersected extent" option to have a nonempty output.' ) )
  
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -63,8 +79,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def getArguments(self):
       arguments = QStringList()
       if self.intersectCheck.isChecked():
-        arguments << "-ul_lr"
-        arguments << str( self.xmin ) << str( self.ymax ) << str( self.xmax ) << str( self.ymin )
+        if self.extent != None:
+          arguments << "-ul_lr"
+          arguments << str( self.extent.xMinimum() )
+          arguments << str( self.extent.yMaximum() )
+          arguments << str( self.extent.xMaximum() )
+          arguments << str( self.extent.yMinimum() )
       if self.noDataCheck.isChecked():
         arguments << "-n"
         arguments << str(self.noDataSpin.value())
@@ -117,21 +137,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
     files = self.inputFilesEdit.text().split( "," )
 
     i = 0
-    while i < files.count():
-      if i == 0:
-        rect1 = self.getRectangle( files[ 0 ] )
-        rect2 = self.getRectangle( files[ 1 ] )
-        res = rect1.intersect( rect2 )
-        rect1 = res
-        i = 2
+    res = rect2 = None
+    for fileName in files:
+      if res == None:
+        res = self.getRectangle( fileName )
         continue
-      rect2 = self.getRectangle( files[ i ] )
-      res = rect1.intersect( rect2 )
-      i = i + 1
+      rect2 = self.getRectangle( fileName )
+      if rect2 == None:
+        continue
+      res = res.intersect( rect2 )
 
-    xMax = res.xMaximum()
-    xMin = res.xMinimum()
-    yMax = res.yMaximum()
-    yMin = res.yMinimum()
-
-    return ( xMax, yMax, xMin, yMin )
+    return res
