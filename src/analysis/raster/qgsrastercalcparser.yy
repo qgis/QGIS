@@ -104,7 +104,7 @@ void joinTmpNodes(QgsRasterCalcNode* parent, QgsRasterCalcNode* left, QgsRasterC
 }
 
 
-QgsRasterCalcNode* parseRasterCalcString(const QString& str, QString& parserErrorMsg)
+QgsRasterCalcNode* localParseRasterCalcString(const QString& str, QString& parserErrorMsg)
 {
   // list should be empty when starting
   Q_ASSERT(gTmpNodes.count() == 0);

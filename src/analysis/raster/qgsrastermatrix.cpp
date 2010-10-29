@@ -42,7 +42,7 @@ QgsRasterMatrix::~QgsRasterMatrix()
   delete[] mData;
 }
 
-QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix& m )
+QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix & m )
 {
   delete[] mData;
   mColumns = m.nColumns();
@@ -95,16 +95,16 @@ bool QgsRasterMatrix::power( const QgsRasterMatrix& other )
 
 bool QgsRasterMatrix::squareRoot()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     double value = mData[i];
-    if( value >= 0 )
+    if ( value >= 0 )
     {
       mData[i] = sqrt( value );
     }
@@ -118,13 +118,13 @@ bool QgsRasterMatrix::squareRoot()
 
 bool QgsRasterMatrix::sinus()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     mData[i] = sin( mData[i] );
   }
@@ -133,13 +133,13 @@ bool QgsRasterMatrix::sinus()
 
 bool QgsRasterMatrix::asinus()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     mData[i] = asin( mData[i] );
   }
@@ -148,13 +148,13 @@ bool QgsRasterMatrix::asinus()
 
 bool QgsRasterMatrix::cosinus()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     mData[i] = cos( mData[i] );
   }
@@ -163,13 +163,13 @@ bool QgsRasterMatrix::cosinus()
 
 bool QgsRasterMatrix::acosinus()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     mData[i] = acos( mData[i] );
   }
@@ -178,13 +178,13 @@ bool QgsRasterMatrix::acosinus()
 
 bool QgsRasterMatrix::tangens()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     mData[i] = tan( mData[i] );
   }
@@ -193,13 +193,13 @@ bool QgsRasterMatrix::tangens()
 
 bool QgsRasterMatrix::atangens()
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     mData[i] = atan( mData[i] );
   }
@@ -208,9 +208,9 @@ bool QgsRasterMatrix::atangens()
 
 bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other )
 {
-  if( isNumber() && other.isNumber() )
+  if ( isNumber() && other.isNumber() )
   {
-    switch( op )
+    switch ( op )
     {
       case opPLUS:
         mData[0] = number() + other.number();
@@ -222,7 +222,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         mData[0] = number() * other.number();
         break;
       case opDIV:
-        if( other.number() == 0 )
+        if ( other.number() == 0 )
         {
           mData[0] = -10000;
         }
@@ -232,47 +232,47 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         }
         break;
       case opPOW:
-        if( !testPowerValidity( mData[0], other.number() ) )
+        if ( !testPowerValidity( mData[0], ( float ) other.number() ) )
         {
           mData[0] = -10000;
         }
         else
         {
-          mData[0] = pow( mData[0], other.number() );
+          mData[0] = pow( mData[0], ( float ) other.number() );
         }
         break;
     }
     return true;
   }
   //two matrices
-  if( !isNumber() && !other.isNumber() )
+  if ( !isNumber() && !other.isNumber() )
   {
     float* matrix = other.mData;
     int nEntries = mColumns * mRows;
-    switch( op )
+    switch ( op )
     {
       case opPLUS:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = mData[i] + matrix[i];
         }
         break;
       case opMINUS:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = mData[i] - matrix[i];
         }
         break;
       case opMUL:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = mData[i] * matrix[i];
         }
         break;
       case opDIV:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
-          if( matrix[i] == 0 )
+          if ( matrix[i] == 0 )
           {
             mData[i] = -10000;
           }
@@ -283,9 +283,9 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         }
         break;
       case opPOW:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
-          if( !testPowerValidity( mData[i], matrix[i] ) )
+          if ( !testPowerValidity( mData[i], matrix[i] ) )
           {
             mData[i] = -10000;
           }
@@ -299,7 +299,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     return true;
   }
   double value = 0;
-  if( isNumber() )
+  if ( isNumber() )
   {
     float* matrix = other.mData;
     int nEntries = other.nColumns() * other.nRows();
@@ -307,30 +307,30 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     delete[] mData;
     mData = new float[nEntries]; mColumns = other.nColumns(); mRows = other.nRows();
 
-    switch( op )
+    switch ( op )
     {
       case opPLUS:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = value + matrix[i];
         }
         break;
       case opMINUS:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = value - matrix[i];
         }
         break;
       case opMUL:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = value * matrix[i];
         }
         break;
       case opDIV:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
-          if( matrix[i] == 0 )
+          if ( matrix[i] == 0 )
           {
             mData[i] = -10000;
           }
@@ -341,15 +341,15 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         }
         break;
       case opPOW:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
-          if( !testPowerValidity( value, matrix[i] ) )
+          if ( !testPowerValidity( value, matrix[i] ) )
           {
             mData[i] = -10000;
           }
           else
           {
-            mData[i] = pow( value, matrix[i] );
+            mData[i] = pow(( float ) value, matrix[i] );
           }
         }
         break;
@@ -359,52 +359,52 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   {
     value = other.number();
     int nEntries = mColumns * mRows;
-    switch( op )
+    switch ( op )
     {
       case opPLUS:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = mData[i] + value;
         }
         break;
       case opMINUS:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = mData[i] - value;
         }
         break;
       case opMUL:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
           mData[i] = mData[i] * value;
         }
         break;
       case opDIV:
-        if( value == 0 )
+        if ( value == 0 )
         {
-          for( int i = 0; i < nEntries; ++i )
+          for ( int i = 0; i < nEntries; ++i )
           {
             mData[i] = -10000;
           }
         }
         else
         {
-          for( int i = 0; i < nEntries; ++i )
+          for ( int i = 0; i < nEntries; ++i )
           {
             mData[i] = mData[i] / value;
           }
         }
         break;
       case opPOW:
-        for( int i = 0; i < nEntries; ++i )
+        for ( int i = 0; i < nEntries; ++i )
         {
-          if( !testPowerValidity( mData[i], value ) )
+          if ( !testPowerValidity( mData[i], value ) )
           {
             mData[i] = -10000;
           }
           else
           {
-            mData[i] = pow( mData[i], value );
+            mData[i] = pow( mData[i], ( float ) value );
           }
         }
         break;
@@ -415,7 +415,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power )
 {
-  if(( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
+  if (( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
   {
     return false;
   }

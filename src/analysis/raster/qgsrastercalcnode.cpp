@@ -18,11 +18,11 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName ): mType( tRaste
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
 {
-  if( mLeft )
+  if ( mLeft )
   {
     delete mLeft;
   }
-  if( mRight )
+  if ( mRight )
   {
     delete mRight;
   }
@@ -33,10 +33,10 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   //if type is raster ref: return a copy of the corresponding matrix
 
   //if type is operator, call the proper matrix operations
-  if( mType == tRasterRef )
+  if ( mType == tRasterRef )
   {
     QMap<QString, QgsRasterMatrix*>::iterator it = rasterData.find( mRasterName );
-    if( it == rasterData.end() )
+    if ( it == rasterData.end() )
     {
       return false;
     }
@@ -47,20 +47,20 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     result.setData(( *it )->nColumns(), ( *it )->nRows(), data );
     return true;
   }
-  else if( mType == tOperator )
+  else if ( mType == tOperator )
   {
     QgsRasterMatrix leftMatrix, rightMatrix;
     QgsRasterMatrix resultMatrix;
-    if( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
+    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
     {
       return false;
     }
-    if( mRight && !mRight->calculate( rasterData, rightMatrix ) )
+    if ( mRight && !mRight->calculate( rasterData, rightMatrix ) )
     {
       return false;
     }
 
-    switch( mOperator )
+    switch ( mOperator )
     {
       case opPLUS:
         leftMatrix.add( rightMatrix );
@@ -106,7 +106,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     result.setData( newNColumns, newNRows, leftMatrix.takeData() );
     return true;
   }
-  else if( mType == tNumber )
+  else if ( mType == tNumber )
   {
     float* data = new float[1];
     data[0] = mNumber;
@@ -116,4 +116,9 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   return false;
 }
 
+QgsRasterCalcNode* QgsRasterCalcNode::parseRasterCalcString( const QString& str, QString& parserErrorMsg )
+{
+  extern QgsRasterCalcNode* localParseRasterCalcString( const QString& str, QString& parserErrorMsg );
+  return localParseRasterCalcString( str, parserErrorMsg );
+}
 

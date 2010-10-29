@@ -93,4 +93,4 @@ MACRO(ADD_BISON_FILES_PREFIX _sources prefix)
 
     SET(${_sources} ${${_sources}} ${_out} )
   ENDFOREACH (_current_FILE)
-ENDMACRO(ADD_BISON_FILES)
+ENDMACRO(ADD_BISON_FILES_PREFIX)

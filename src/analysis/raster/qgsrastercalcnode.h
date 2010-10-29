@@ -66,6 +66,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     /**Calculates result (might be real matrix or single number)*/
     bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const;
 
+    static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg );
+
   private:
     Type mType;
     QgsRasterCalcNode* mLeft;
@@ -75,5 +77,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     double mNumber;
     Operator mOperator;
 };
+
 
 #endif // QGSRASTERCALCNODE_H
