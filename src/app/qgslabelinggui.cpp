@@ -406,7 +406,7 @@ void QgsLabelingGui::updateFont( QFont font )
   {
     fontSizeUnitString = tr( "map units" );
   }
-  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSize() ).arg( fontSizeUnitString ) );
+  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSizeF() ).arg( fontSizeUnitString ) );
   lblFontPreview->setFont( font );
   updatePreview();
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>504</width>
-    <height>686</height>
+    <width>515</width>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -568,6 +568,9 @@
              <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
                <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
+                <property name="decimals">
+                 <number>4</number>
+                </property>
                 <property name="maximum">
                  <double>999999999.000000000000000</double>
                 </property>
