@@ -65,12 +65,12 @@ MACRO(ADD_FLEX_FILES_PREFIX _sources prefix )
          OUTPUT ${_out}
          COMMAND ${FLEX_EXECUTABLE}
          ARGS
-	 -P ${prefix}
+         -P${prefix}
          -o${_out} -d
          ${_in}
          DEPENDS ${_in}
       )
 
       SET(${_sources} ${${_sources}} ${_out} )
-   ENDFOREACH (_current_FILE)
+    ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_FLEX_FILES_PREFIX)
