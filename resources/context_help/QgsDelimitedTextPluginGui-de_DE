@@ -1,5 +1,5 @@
-<h3>Layer aus Textdatei laden</h3>
-Läd und stell Textdatei in CSV-Format, die x- und y-Koordinaten haben, dar. 
+<h3>Textdatei als Layer importiere</h3>
+Lädt und stellt eine Textdatei im CSV-Format, die x- und y-Koordinaten hat, dar. 
 <p>
 <p>
 <a href="#re">Anforderungen</a><br/>
@@ -11,9 +11,9 @@ Läd und stell Textdatei in CSV-Format, die x- und y-Koordinaten haben, dar.
 </a>
 Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten: 
 <ol>
-<li>Eine Titelzeile mit den Namen der Fehler. Dies muß die erste Zeile der Textdatei sein.</li>
-<li>Die Titelzeile muss ein X und ein Y-Feld enthalten. Diese Fehler können beliebige Namen haben.</li>
-<li>Die <B>x-</B> und <B>y-</B>Koordinaten müssen als Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
+<li>Eine Titelzeile mit den Namen der Felder. Dies muß die erste Zeile der Textdatei sein.</li>
+<li>Die Titelzeile muss ein X-Feld und ein Y-Feld enthalten. Diese Felder können beliebige Namen haben.</li>
+<li>Die <B>x-</B> und <B>y-</B>Koordinaten müssen als (Dezimal)Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
 </ol>
 <a name="example">
 <h4>Beispiel einer gültigen Textdatei</h4> 
@@ -28,7 +28,7 @@ X;Y;HOEHE<br/>
 </a>
 <ol>
 <li>Der Beispieltext nutzt <b>;</b> als Trennzeichen. Jedes andere Zeichen kann als Trennzeichen benutzt werden.</li>
-<li>Die erste Zeile ist die Titelzeile. Es enthält die Fehler X, Y und HOEHE.</li>
+<li>Die erste Zeile ist die Titelzeile. Sie enthält die Felder X, Y und HOEHE.</li>
 <li>Es werden keine Anführungszeichen (") benutzt, um die Textfelder zu trennen.</li>
 <li>Die X-Koordinaten sind im Feld X.</li>
 <li>Die Y-Koordinaten sind im Feld Y.</li>
