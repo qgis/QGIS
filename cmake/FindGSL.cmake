@@ -60,7 +60,6 @@ ELSE(WIN32)
         FIND_LIBRARY(GSL_LIBRARIES GSL)
         IF (GSL_LIBRARIES)
           # they're all the same in a framework
-          SET (GSL_PREFIX ${GSL_LIBRARIES})
           SET (GSL_INCLUDE_DIR ${GSL_LIBRARIES}/Headers CACHE PATH "Path to GSL header files.")
           SET (GSL_CONFIG ${GSL_LIBRARIES}/Programs/gsl-config CACHE FILEPATH "Path to gsl-config.")
         ENDIF (GSL_LIBRARIES)
