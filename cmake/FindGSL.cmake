@@ -22,7 +22,6 @@
 ## --------------------------------
 ##
 
-
 IF(WIN32)
 
   SET(GSL_MINGW_PREFIX "c:/msys/local" )
@@ -62,14 +61,14 @@ ELSE(WIN32)
         IF (GSL_LIBRARIES)
           # they're all the same in a framework
           SET (GSL_PREFIX ${GSL_LIBRARIES})
-          SET (GSL_INCLUDE_DIR ${GSL_LIBRARIES}/Headers CACHE PATH "Path to a file.")
-          SET (GSL_CONFIG ${GSL_LIBRARIES}/Programs/gsl-config CACHE FILEPATH "Path to a program.")
+          SET (GSL_INCLUDE_DIR ${GSL_LIBRARIES}/Headers CACHE PATH "Path to GSL header files.")
+          SET (GSL_CONFIG ${GSL_LIBRARIES}/Programs/gsl-config CACHE FILEPATH "Path to gsl-config.")
         ENDIF (GSL_LIBRARIES)
         SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
       ENDIF ()
     ENDIF (APPLE)
     
-    IF (NOT GSL_INCLUDE_DIR AND NOT GSL_LIBRARIES AND NOT GSL_CONFIG)
+    IF (NOT GSL_INCLUDE_DIR OR NOT GSL_LIBRARIES OR NOT GSL_CONFIG)
       # didn't find OS X framework, or was set by user
       SET(GSL_CONFIG_PREFER_PATH "$ENV{GSL_HOME}/bin" CACHE STRING "preferred path to GSL (gsl-config)")
       FIND_PROGRAM(GSL_CONFIG gsl-config
@@ -129,7 +128,7 @@ ELSE(WIN32)
       ELSE(GSL_CONFIG)
         MESSAGE("FindGSL.cmake: gsl-config not found. Please set it manually. GSL_CONFIG=${GSL_CONFIG}")
       ENDIF(GSL_CONFIG)
-    ENDIF (NOT GSL_INCLUDE_DIR AND NOT GSL_LIBRARIES AND NOT GSL_CONFIG)
+    ENDIF (NOT GSL_INCLUDE_DIR OR NOT GSL_LIBRARIES OR NOT GSL_CONFIG)
   ENDIF(UNIX)
 ENDIF(WIN32)
 
