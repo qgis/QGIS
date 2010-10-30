@@ -85,13 +85,14 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
   //
   QPushButton * btnSelectAll = new QPushButton( tr( "&Select All" ) );
   QPushButton * btnClearAll = new QPushButton( tr( "&Clear All" ) );
-  btnSelectAll->setDefault( true );
   buttonBox->addButton( btnSelectAll, QDialogButtonBox::ActionRole );
   buttonBox->addButton( btnClearAll, QDialogButtonBox::ActionRole );
   // connect the slot up to catch when a bookmark is deleted
   connect( btnSelectAll, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   // connect the slot up to catch when a bookmark is zoomed to
   connect( btnClearAll, SIGNAL( clicked() ), this, SLOT( clearAll() ) );
+
+  leFilter->setFocus( Qt::MouseFocusReason );
 
   qRegisterMetaType<QgsDetailedItemData>();
 
