@@ -17,7 +17,6 @@ from ui_OsmDownloadDlg import Ui_OsmDownloadDlg
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *
-from PyQt4 import *
 from time import *
 from qgis.core import *
 
