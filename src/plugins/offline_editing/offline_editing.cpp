@@ -370,19 +370,28 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
   // add geometry column
   QString geomType = "";
-  switch ( layer->geometryType() )
+  switch ( layer->wkbType() )
   {
-    case QGis::Point:
+    case QGis::WKBPoint:
       geomType = "POINT";
       break;
-    case QGis::Line:
+    case QGis::WKBMultiPoint:
+      geomType = "MULTIPOINT";
+      break;
+    case QGis::WKBLineString:
       geomType = "LINESTRING";
       break;
-    case QGis::Polygon:
+    case QGis::WKBMultiLineString:
+      geomType = "MULTILINESTRING";
+      break;
+    case QGis::WKBPolygon:
       geomType = "POLYGON";
       break;
+    case QGis::WKBMultiPolygon:
+      geomType = "MULTIPOLYGON";
+      break;
     default:
-      showWarning( tr( "Unknown QGIS geometry type %1" ).arg( layer->geometryType() ) );
+      showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
       break;
   };
   QString sqlAddGeom = QString( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', 2)" )
