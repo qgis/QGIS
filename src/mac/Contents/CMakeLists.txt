@@ -10,6 +10,8 @@ ADD_CUSTOM_TARGET(Info.plist ALL
     -D CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
     -D SOURCE_DIR=${CMAKE_SOURCE_DIR}
     -D VERSION=${COMPLETE_VERSION_WITH_RELEASE_NAME}
+    -D VERSION_NUM=${COMPLETE_VERSION}
+    -D APP_NAME=${QGIS_APP_NAME}
     -P ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.cmake)
 
 #############################################################

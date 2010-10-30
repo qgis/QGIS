@@ -19,14 +19,26 @@
 # searching for the same item do nothing. 
 
 # try to use framework on mac
+# want clean framework path, not unix compatibility path
 IF (APPLE)
-  SET (PROJ_MAC_INC_PATH /Library/Frameworks/PROJ.framework/Headers)
+  IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
+      OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
+      OR NOT CMAKE_FIND_FRAMEWORK)
+    SET (CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
+    SET (CMAKE_FIND_FRAMEWORK "ONLY" CACHE STRING "" FORCE)
+    #FIND_PATH(PROJ_INCLUDE_DIR PROJ/proj_api.h)
+    FIND_LIBRARY(PROJ_LIBRARY PROJ)
+    IF (PROJ_LIBRARY)
+      # FIND_PATH doesn't add "Headers" for a framework
+      SET (PROJ_INCLUDE_DIR ${PROJ_LIBRARY}/Headers CACHE PATH "Path to a file.")
+    ENDIF (PROJ_LIBRARY)
+    SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
+  ENDIF ()
 ENDIF (APPLE)
 
 FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
   "$ENV{LIB_DIR}/include/proj"
   "$ENV{LIB_DIR}/include"
-  ${PROJ_MAC_INC_PATH}
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH

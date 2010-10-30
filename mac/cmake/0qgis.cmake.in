@@ -1,0 +1,71 @@
+# 0qgis - fixup install_names for @loader_path
+# ! cmakecache vars not available to external scripts
+#   so we configure it first to do substitutions
+#   make sure to use @varname@
+
+# kill boolean warnings
+CMAKE_POLICY (SET CMP0012 NEW)
+
+SET (QAPPDIRC "@QGIS_MACAPP_PREFIX@")
+SET (QAPPDIR "@CMAKE_INSTALL_PREFIX@")
+SET (QFWDIR "${QAPPDIR}/@QGIS_FW_SUBDIR@")
+SET (QBINDIR "${QAPPDIR}/@QGIS_BIN_SUBDIR@")
+SET (QCGIDIR "${QAPPDIR}/@QGIS_CGIBIN_SUBDIR@")
+SET (QLIBDIR "${QAPPDIR}/@QGIS_LIB_SUBDIR@")
+SET (QLIBXDIR "${QAPPDIR}/@QGIS_LIBEXEC_SUBDIR@")
+SET (QDATADIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@")
+SET (QPLUGDIR "${QAPPDIR}/@QGIS_PLUGIN_SUBDIR@")
+SET (QGISPYDIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@/python")
+# Qt framework version is major version
+SET (QT_FWVER @QT_VERSION_MAJOR@)
+
+# so config-file doesn't try to replace @
+SET (ATEXECUTABLE "@executable_path")
+SET (ATLOADER "@loader_path")
+
+# message only if verbose makefiles (use for install_name_tool echos)
+FUNCTION (MYMESSAGE MSG)
+	IF (@CMAKE_VERBOSE_MAKEFILE@)
+        MESSAGE (STATUS "${MSG}")
+	ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+ENDFUNCTION (MYMESSAGE)
+
+# isntall_name_tool -change CHANGE CHANGETO CHANGEBIN
+FUNCTION (INSTALLNAMETOOL_CHANGE CHANGE CHANGETO CHANGEBIN)
+	MYMESSAGE ("install_name_tool -change ${CHANGE} ${CHANGETO} \"${CHANGEBIN}\"")
+	EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
+ENDFUNCTION (INSTALLNAMETOOL_CHANGE)
+
+FILE (GLOB QGLIBLIST RELATIVE ${QLIBDIR} ${QLIBDIR}/libqgis*.dylib)
+FILE (GLOB QGPLUGLIST ${QPLUGDIR}/*.so)
+FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
+
+# assume all install_names start with CMAKE_INSTALL_NAME_DIR
+# so we don't have to extract it from binaries
+# leave main qgis executable and qgis_help with executable_paths
+
+IF (@OSX_HAVE_LOADERPATH@)
+	MESSAGE (STATUS "Updating QGIS library paths...")
+	# inter-library links - do all combos, many will be noops
+    FOREACH (QL ${QGLIBLIST})
+    	FOREACH (QLL ${QGLIBLIST})
+        	INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATLOADER}/${QLL} "${QLIBDIR}/${QL}")
+	    ENDFOREACH (QLL)
+    ENDFOREACH (QL)
+    # plugins
+    FOREACH (QP ${QGPLUGLIST})
+    	FOREACH (QLL ${QGLIBLIST})
+        	INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${QLL} "${QP}")
+	    ENDFOREACH (QLL)
+    ENDFOREACH (QP)
+    # qgis python
+    FOREACH (PG ${QGPYLIST})
+    	FOREACH (QLL ${QGLIBLIST})
+        	INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATLOADER}/../../@QGIS_DATA_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${QLL} "${PG}")
+	    ENDFOREACH (QLL)
+    ENDFOREACH (PG)
+    # qgis-mapserver
+	FOREACH (QLL ${QGLIBLIST})
+		INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATEXECUTABLE}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${QLL} "${QCGIDIR}/qgis_mapserv.fcgi")
+	ENDFOREACH (QLL)
+ENDIF (@OSX_HAVE_LOADERPATH@)

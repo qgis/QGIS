@@ -19,11 +19,28 @@
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing. 
 
+# try to use sqlite framework on mac
+# want clean framework path, not unix compatibility path
+IF (APPLE)
+  IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
+      OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
+      OR NOT CMAKE_FIND_FRAMEWORK)
+    SET (CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
+    SET (CMAKE_FIND_FRAMEWORK "ONLY" CACHE STRING "" FORCE)
+    FIND_PATH(SPATIALITE_INCLUDE_DIR SQLite3/spatialite.h)
+    # if no spatialite header, we don't want sqlite find below to succeed
+    IF (SPATIALITE_INCLUDE_DIR)
+      FIND_LIBRARY(SPATIALITE_LIBRARY SQLite3)
+      # FIND_PATH doesn't add "Headers" for a framework
+      SET (SPATIALITE_INCLUDE_DIR ${SPATIALITE_LIBRARY}/Headers CACHE PATH "Path to a file." FORCE)
+    ENDIF (SPATIALITE_INCLUDE_DIR)
+    SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
+  ENDIF ()
+ENDIF (APPLE)
+
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/spatialite"
-  # try to use SQLite3 framework on mac, should be set from SQLite3 check
-  ${SQLITE3_MAC_INC_PATH}
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
