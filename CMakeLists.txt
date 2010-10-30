@@ -5,6 +5,11 @@ SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINO
 SET(RELEASE_NAME "Trunk")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
+IF (APPLE)
+  SET(QGIS_APP_NAME "QGIS")
+ELSE (APPLE)
+  SET(QGIS_APP_NAME "qgis")
+ENDIF (APPLE)
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
@@ -268,14 +273,43 @@ ELSE (WIN32)
 
   IF (APPLE)
     # for Mac OS X, everything is put inside an application bundle
-    SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
+    SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
+    SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
     # path for library references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
+    # 4 bundling levels, each includes previous
+    #   0  nothing
+    #   1  Qt frameworks
+    #   2  non-system libraries, "standard"
+    #   3  non-system frameworks, "standalone"
+    SET (QGIS_MACAPP_BUNDLE 0 CACHE STRING "What to bundle into app package")
+    # if we have @loader_path, >=OSX 10.5 (darwin 9+)
+    IF (CMAKE_SYSTEM_VERSION VERSION_GREATER 9.0.0 OR CMAKE_SYSTEM_VERSION VERSION_EQUAL 9.0.0)
+        SET (OSX_HAVE_LOADERPATH 1)
+    ELSE ()
+        SET (OSX_HAVE_LOADERPATH 0)
+    ENDIF ()
     #this will define ${APP_SERVICES_LIBRARY}
     FIND_LIBRARY(APP_SERVICES_LIBRARY ApplicationServices )
-  ENDIF (APPLE)
 
-  # common for MAC and UNIX
+    SET (DEFAULT_BIN_SUBDIR      bin)
+    SET (QGIS_BIN_SUBDIR_REV     ..)
+    SET (DEFAULT_CGIBIN_SUBDIR   fcgi-bin)
+    SET (QGIS_CGIBIN_SUBDIR_REV  ..)
+    SET (DEFAULT_LIB_SUBDIR      lib)
+    SET (QGIS_LIB_SUBDIR_REV     ..)
+    SET (QGIS_FW_SUBDIR          ../Frameworks)
+    SET (QGIS_FW_SUBDIR_REV      ../MacOS)
+    SET (DEFAULT_DATA_SUBDIR     ../Resources)
+    SET (QGIS_DATA_SUBDIR_REV    ../MacOS)
+    SET (DEFAULT_LIBEXEC_SUBDIR  lib/qgis)
+    SET (QGIS_LIBEXEC_SUBDIR_REV ../..)
+    SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
+    SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
+    SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
+
+  ELSE (APPLE)
+    # UNIX
   SET (DEFAULT_BIN_SUBDIR     bin)
   SET (DEFAULT_CGIBIN_SUBDIR  bin)
   SET (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
@@ -283,6 +317,7 @@ ELSE (WIN32)
   SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
   SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
   SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
+  ENDIF (APPLE)
 
 ENDIF (WIN32)
 
@@ -334,7 +369,7 @@ SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory wh
 
 # mark *_SUBDIR variables as advanced as this is not something
 # that an average user would use
-MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
+MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
 
 # full paths for the installation
 SET (QGIS_BIN_DIR     ${QGIS_BIN_SUBDIR})
@@ -442,6 +477,11 @@ IF (ENABLE_TESTS)
   SUBDIRS(tests)
 ENDIF (ENABLE_TESTS)
 
+IF (APPLE)
+  # must be last for install, so install_name_tool can do its work
+  SUBDIRS (mac)
+ENDIF (APPLE)
+
 #############################################################
 # install stuff
 
@@ -449,11 +489,10 @@ INSTALL (FILES AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS INSTALL CODING
          DESTINATION ${QGIS_DATA_DIR}/doc)
 
 # manual page - makes sense only on unix systems
-IF (UNIX)
+IF (UNIX AND NOT APPLE)
   INSTALL (FILES qgis.1 qgis_help.1
            DESTINATION ${QGIS_MANUAL_DIR}/man1)
-ENDIF (UNIX)
-
+ENDIF (UNIX AND NOT APPLE)
 
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ

@@ -41,6 +41,7 @@ ELSE(SIP_VERSION)
     STRING(REGEX REPLACE ".*\nsip_bin:([^\n]+).*$" "\\1" SIP_BINARY_PATH ${sip_config})
     STRING(REGEX REPLACE ".*\ndefault_sip_dir:([^\n]+).*$" "\\1" SIP_DEFAULT_SIP_DIR ${sip_config})
     STRING(REGEX REPLACE ".*\nsip_inc_dir:([^\n]+).*$" "\\1" SIP_INCLUDE_DIR ${sip_config})
+    STRING(REGEX REPLACE ".*\nsip_mod_dir:([^\n]+).*$" "\\1" SIP_MOD_DIR ${sip_config})
     SET(SIP_FOUND TRUE)
   ENDIF(sip_config)
 

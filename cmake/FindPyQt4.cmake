@@ -37,6 +37,7 @@ ELSE(EXISTS PYQT4_VERSION)
     STRING(REGEX REPLACE ".*\npyqt_version_num:([^\n]+).*$" "\\1" PYQT4_VERSION_NUM ${pyqt_config})
     STRING(REGEX REPLACE ".*\npyqt_sip_dir:([^\n]+).*$" "\\1" PYQT4_SIP_DIR ${pyqt_config})
     STRING(REGEX REPLACE ".*\npyqt_sip_flags:([^\n]+).*$" "\\1" PYQT4_SIP_FLAGS ${pyqt_config})
+    STRING(REGEX REPLACE ".*\npyqt_bin_dir:([^\n]+).*$" "\\1" PYQT4_BIN_DIR ${pyqt_config})
 
     SET(PYQT4_FOUND TRUE)
   ENDIF(pyqt_config)
