@@ -16,7 +16,6 @@ from ui_OsmLoadDlg import Ui_OsmLoadDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import *
 from sip import unwrapinstance
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsRectangle
 from sip import *

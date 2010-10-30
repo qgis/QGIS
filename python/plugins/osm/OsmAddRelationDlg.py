@@ -12,7 +12,6 @@ from map_tools.OsmIdentifyMT import OsmIdentifyMT
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import *
 from sip import unwrapinstance
 from qgis.core import *
 from qgis.gui import *
