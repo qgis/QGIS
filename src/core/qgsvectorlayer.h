@@ -170,18 +170,30 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Sets the renderer. If a renderer is already present, it is deleted */
     void setRenderer( QgsRenderer * r );
 
-    /** Return renderer V2. Added in QGIS 1.4 */
+    /** Return renderer V2.
+     * @note added in 1.4 */
     QgsFeatureRendererV2* rendererV2();
-    /** Set renderer V2. Added in QGIS 1.4 */
+    /** Set renderer V2.
+     * @note ddded in 1.4
+     */
     void setRendererV2( QgsFeatureRendererV2* r );
-    /** Return whether using renderer V2. Added in QGIS 1.4 */
+    /** Return whether using renderer V2.
+     * @note added in 1.4
+     */
     bool isUsingRendererV2();
-    /** set whether to use renderer V2 for drawing. Added in QGIS 1.4 */
+    /** set whether to use renderer V2 for drawing.
+     * @note added in 1.4
+     */
     void setUsingRendererV2( bool usingRendererV2 );
 
-    /** Draw layer with renderer V2. Added in QGIS 1.4 */
+    /** Draw layer with renderer V2.
+     * @note added in 1.4
+     */
     void drawRendererV2( QgsRenderContext& rendererContext, bool labeling );
-    /** Draw layer with renderer V2 using symbol levels. Added in QGIS 1.4 */
+
+    /** Draw layer with renderer V2 using symbol levels.
+     * @note added in 1.4
+     */
     void drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling );
 
     /** Returns point, line or polygon */
@@ -248,11 +260,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual QString subsetString();
 
+    /**
+     * Select features with or without attributes in a given window.
+     * @param fetchAttributes indizes of attributes to fetch
+     * @param rect window (QgsRectangle() for all)
+     * @param fetchGeometry fetch features with geometry
+     * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
+     */
     void select( QgsAttributeList fetchAttributes,
                  QgsRectangle rect = QgsRectangle(),
                  bool fetchGeometry = true,
                  bool useIntersect = false );
 
+    /**
+     * fetch a feature (after select)
+     * @param feature buffer to read the feature into
+     * @return true, if a feature was fetched, false, if there are no more features
+     */
     bool nextFeature( QgsFeature& feature );
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
@@ -358,7 +382,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
 
-    /** Returns true if the provider is in read-only mode */
+    /** Returns true if the provider is in read-only mode
+     * @note added in 1.6 */
     virtual bool isReadOnly() const;
 
     /** Returns true if the provider has been modified since the last commit */
@@ -407,6 +432,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet
+     *  @note added in 1.6
      */
     bool setReadOnly( bool readonly = true );
 
