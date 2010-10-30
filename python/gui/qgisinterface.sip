@@ -277,5 +277,26 @@ class QgisInterface : QObject
     /**This signal is emitted when QGIS' initialization is complete 
        @note added in version 1.6*/ 
     void initializationCompleted(); 
+
+    /** emitted when a project file is successfully read
+        @note
+        This is useful for plug-ins that store properties with project files.  A
+        plug-in can connect to this signal.  When it is emitted, the plug-in
+        knows to then check the project properties for any relevant state.
+
+        Added in v1.6
+     */
+    void projectRead();
+    /** emitted when starting an entirely new project
+        @note
+        This is similar to projectRead(); plug-ins might want to be notified
+        that they're in a new project.  Yes, projectRead() could have been
+        overloaded to be used in the case of new projects instead.  However,
+        it's probably more semantically correct to have an entirely separate
+        signal for when this happens.
+
+        Added in v1.6
+      */
+     void newProjectCreated();
 };
 

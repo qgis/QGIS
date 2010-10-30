@@ -52,6 +52,10 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
   connect( qgis, SIGNAL( initializationCompleted() ),
            this, SIGNAL( initializationCompleted() ) );
+  connect( qgis, SIGNAL( newProject() ),
+           this, SIGNAL( newProjectCreated() ) );
+  connect( qgis, SIGNAL( projectRead() ),
+           this, SIGNAL( projectRead() ) );
 }
 
 QgisAppInterface::~QgisAppInterface()
