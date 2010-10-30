@@ -7,36 +7,26 @@
 # Once run this will define: 
 # 
 # QWT_FOUND       = system has QWT lib
-#
 # QWT_LIBRARY     = full path to the QWT library
-#
-# QWT_INCLUDE_DIR      = where to find headers 
+# QWT_INCLUDE_DIR = where to find headers 
 #
 
 
 #MESSAGE("Searching for QWT")
-FIND_PATH(QWT_INCLUDE_DIR qwt.h 
+FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
   /usr/include
   /usr/local/include
   "$ENV{LIB_DIR}/include" 
   "$ENV{INCLUDE}" 
   PATH_SUFFIXES qwt-qt4 qwt
   )
-FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwt5 PATHS 
+
+FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwt5 qwt-qt4 qwt5-qt4 PATHS 
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib" 
   "$ENV{LIB}/lib" 
   )
-IF (NOT QWT_LIBRARY)
-  # try using ubuntu lib naming
-  FIND_LIBRARY(QWT_LIBRARY qwt-qt4 PATHS 
-    /usr/lib
-    /usr/local/lib
-    "$ENV{LIB_DIR}/lib" 
-    "$ENV{LIB}/lib" 
-    )
-ENDIF (NOT QWT_LIBRARY)
 
 IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)
   SET(QWT_FOUND TRUE)
