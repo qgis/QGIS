@@ -840,6 +840,8 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
       int level = sym->symbolLayer( j )->renderingPass();
+      if ( level < 0 || level >= 1000 ) // ignore invalid levels
+        continue;
       QgsSymbolV2LevelItem item( sym, j );
       while ( level >= levels.count() ) // append new empty levels
         levels.append( QgsSymbolV2Level() );

@@ -6,11 +6,54 @@
 #include "qgssymbolv2.h"
 
 #include <QTableWidgetItem>
+#include <QItemDelegate>
+#include <QSpinBox>
+
+// delegate used from Qt Spin Box example
+class SpinBoxDelegate : public QItemDelegate
+{
+public:
+  SpinBoxDelegate(QObject *parent = 0) : QItemDelegate(parent) {}
+
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/) const
+    {
+        QSpinBox *editor = new QSpinBox(parent);
+        editor->setMinimum(0);
+        editor->setMaximum(999);
+        return editor;
+    }
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const
+    {
+        int value = index.model()->data(index, Qt::EditRole).toInt();
+        QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+        spinBox->setValue(value);
+    }
+
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+    {
+        QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+        spinBox->interpretText();
+        int value = spinBox->value();
+
+        model->setData(index, value, Qt::EditRole);
+    }
+
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/) const
+    {
+        editor->setGeometry(option.rect);
+    }
+
+};
+
+////////////////
 
 QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent )
     : QDialog( parent ), mSymbols( symbols )
 {
   setupUi( this );
+
+  tableLevels->setItemDelegate( new SpinBoxDelegate(this) );
 
   chkEnable->setChecked( usingSymbolLevels );
 
