@@ -1,32 +1,35 @@
 
-= MacOS X: building using frameworks and cmake or Xcode =
+= MacOS X: building using frameworks and Cmake =
 
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-The base system here is Mac OS X 10.4 (__Tiger__). Included are a few notes
-for building on Mac OS X 10.5 (__Leopard__) and 10.6 (__Snow Leopard__). 
+The base system here is Mac OS X 10.4 (__Tiger__), with a single architecture build.
+Included are a few notes for building on Mac OS X 10.5 (__Leopard__) and 10.6 (__Snow Leopard__).
+Make sure to read each section completely before typing the first command you see.
 
-__Snow Leopard note:__ A cmake/qt/sip bug currently exists where a 32-bit
-cmake build fails to provide python bindings. This means that python plugin support
-is currently lacking for 32-bit builds using cmake in Snow Leopard. See the Xcode
-build method to if you require python support.
+__General note on Terminal usage:__  When I say "cd" to a folder in a Terminal,
+it means type "cd " (without the quotes, make sure to type a space after) and
+then type the path to said folder, then <return>.  A simple way to do this without having to know
+and type the full path is, after type the "cd " part, drag the folder (use the icon
+in its window title bar, or drag a folder from within a window) from the Desktop
+to the Terminal, then tap <return>.
 
-== Install Xcode ==
-
-I recommend to get the latest Xcode dmg from the Apple XDC Web site 
-(http:/developer.apple.com). The Mac system install disks come with a copy of
-Xcode, but it's likely out of date.
-Install Xcode after the ~1gb download is complete.
-
-/!\ Note: It may be that you need to create some symlinks after installing 
-Xcode (in particular if you are using Xcode 2.5 on Tiger):
+__Parallel Compilation:__ On multiprocessor/multicore Macs, it's possible to speed
+up compilation, but it's not automatic.  Whenever you type "make" (but NOT "make install"),
+instead type:
 
 ```
-cd /Developer/SDKs/MacOSX10.4u.sdk/usr/
-sudo mv local/ local_
-sudo ln -s /usr/local/ local
+make -j [n]
 ```
+
+Replace [n] with the number of cores and/or processors your Mac has.  On recent
+models with hyperthreading processors this can be double the physical count of
+processors and cores.
+
+ie: Mac Pro "8 Core" model (2 quad core processors) = 8
+
+ie: Macbook Pro i5 (hyperthreading) = 2 cores X 2 = 4
 
 == Install Qt4 from .dmg ==
 
@@ -36,6 +39,9 @@ __Snow Leopard note:__ If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
+
+__PPC note:__ There appear to be issues with Qt Cocoa on PPC Macs.  QT Carbon
+is recommended on PPC Macs.
 
 ``` 
 http://qt.nokia.com/downloads
@@ -48,8 +54,8 @@ Once downloaded open the dmg and run the installer. Note you need admin
 privileges to install.
 
 __Qt note:__ Starting in Qt 4.4, libQtCLucene was added, and in 4.5
-libQtUiTools was added, both in /usr/lib.  When using a system SDK (which will
-happen in the Xcode build), these libraries will not be found.  To fix this problem,
+libQtUiTools was added, both in /usr/lib.  When using a system SDK
+these libraries will not be found.  To fix this problem,
 add symlinks to /usr/local:
 
 ```
@@ -127,7 +133,7 @@ __Leopard and Snow Leopard note:__ Leopard and Snow Leopard include a usable
 Python 2.5 and 2.6, respectively. So there is no need to install Python on
 Leopard and Snow Leopard. You can still install Python from python.org if preferred.
 
-Make sure you install at least the latest Python 2.5 from 
+If installing from python.org, make sure you install at least the latest Python 2.x from 
 
 ```
 http://www.python.org/download/
@@ -144,7 +150,8 @@ http://www.riverbankcomputing.com/software/sip/download
 ```
 
 Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
-and (this installs by default into the Python framework, and is appropriate only for python.org Python installs):
+and (this installs by default into the Python framework, and is appropriate only for 
+python.org Python installs):
 
 ``` 
 python configure.py 
@@ -192,20 +199,23 @@ http://www.riverbankcomputing.com/software/pyqt/download
 ```
 
 Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
-and (this installs by default into the Python framework, and is appropriate only for python.org Python installs):
+and (this installs by default into the Python framework, and is appropriate only for
+python.org Python installs):
 
 ``` 
 python configure.py 
 yes 
 ```
 
-There is a problem with the configuration that needs to be fixed now (it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
+There is a problem with the configuration that needs to be fixed now
+(it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
 
 ```
     'qt_dir': '/usr',
 ```
 
-Then continue with compilation and installation:
+Then continue with compilation and installation (this is a good place to use
+parallel compilation, if you can):
 
 ```
 make 
@@ -255,8 +265,10 @@ http://pyqwt.sourceforge.net/
 ```
 
 Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
+Normal compilation does both Qwt and PyQwt at the same time, but Qwt is staically linked
+into PyQwt, and Qgis can't use it.  So, we need to split the build.
 
-Now, first edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
+First edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
 you don't get a bloated debug static library (too bad they are not configurable from
 qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
 line, within an 'else' block, and change 'debug' to 'release'.  Like so:
@@ -273,6 +285,12 @@ Also uncomment (remove # prefix) the line 'CONFIG += QwtDll'.  Like so:
 CONFIG           += QwtDll
 ```
 
+If you are building for Qt Carbon 32bit on Snow Leopard, add a line at the bottom:
+
+```
+CONFIG += x86
+```
+
 Save and close.
 
 Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and install:
@@ -281,6 +299,8 @@ Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and
 qmake -spec macx-g++
 make
 sudo make install
+sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib \
+/usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
 ```
 
 The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is the 
@@ -297,11 +317,6 @@ sudo make install
 ```
 
 Make sure to use the qwt install path from the Qwt build above.
-
-Finally, if you run into problems with the library not being properly linked after you build qgis, you may need to fix that as follows and then rebuild qgis (this is not needed when bundling all Qt/PyQt related components, which is recommended, and default in the Xcode build):
-```
-sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
-```
 
 __Snow Leopard note__
 
@@ -441,37 +456,23 @@ I suggest you press 'p' to accept the key permanently.
 
 == Configure the build ==
 
-There are 2 different methods to build QGIS: the traditional CMake method,
-and the new Xcode project (starting with QGIS 1.1). The Xcode project has
-additional bundling steps, though some optional QGIS features must be explicitly
-stated in a user configuration file. The CMake build handles optional features,
-and some bundling steps are available with scripts in the mac directory.
-
-=== Configure the CMake build ===
-
 CMake supports out of source build so we will create a 'build' dir for the
 build process. OS X uses ${HOME}/Applications as a standard user app folder (it gives it the system app folder icon).
 If you have the correct permissions you may want to build
 straight into your /Applications folder. The instructions below assume you are
-building into a pre-existing ${HOME}/Applications directory ...
+building into a pre-existing ${HOME}/Applications directory.
+In a Terminal cd to the qgis source folder previously downloaded, then:
 
 ```
-cd qgis
 mkdir build
 cd build
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release ..
-```
-
-To use the application build of GRASS on OSX, you can optionally use the
-following cmake invocation (minimum GRASS 6.3 required, substitute the GRASS
-version as required):
-
-```
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
--D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
 ..
 ```
+
+This will automatically find and use the previously installed frameworks, and the GRASS
+application if installed.
 
 Or, to use a Unix-style build of GRASS, use the following cmake invocation
 (minimum GRASS version as stated in the Qgis requirements, substitute the GRASS
@@ -479,24 +480,13 @@ path and version as required):
 
 ```
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D GRASS_INCLUDE_DIR=/user/local/grass-6.4.0/include \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
 -D GRASS_PREFIX=/user/local/grass-6.4.0 \
 ..
 ```
 
-__Leopard note:__ To find the custom install of SIP on Leopard, add
-'-D SIP_BINARY_PATH=/usr/local/bin/sip' to the cmake commands above,
-before the '..' at the end, ie:
-
-```
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D SIP_BINARY_PATH=/usr/local/bin/sip \
-..
-```
-
-__Snow Leopard note:__ To handle the appropriate version of Qt (32-bit or 64-bit), you will need to invoke cmake based on which version of Qt you installed.  Also, SIP/PyQt detection will fail for 32bit because Python runs 64bit.
-
-For 32-bit Qt (Carbon) with GRASS-6.4, create a 32bit python script and add arch flags to the configuration:
+__Snow Leopard note:__ To handle 32-bit Qt (Carbon), create a 32bit python wrapper
+script and add arch flags to the configuration:
 
 ```
 sudo cat >/usr/local/bin/python32 <<EOF
@@ -507,44 +497,27 @@ EOF
 sudo chmod +x /usr/local/bin/python32
 
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D SIP_BINARY_PATH=/usr/local/bin/sip \
--D CMAKE_CXX_FLAGS="-arch i386" -D CMAKE_OSX_ARCHITECTURES=i386 \
--D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
--D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
--D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
 ..
 ```
 
-For 64-bit Qt (Cocoa) with GRASS-6.4:
+__Bundling note:__ Older Qt versions may have problems with some Qt plugins and Qgis.
+The way to handle this is bundle Qt inside the Qgis application.  You can do this now
+or wait to see if there are immediate crahses when running Qgis.  It's also a good
+idea to bundle Qt if you need to copy Qgis to other Macs (where you would have to
+install Xcode just so Qt would install!).
+
+To bundle Qt, add the following line before the last line in the above cmake configurations:
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D SIP_BINARY_PATH=/usr/local/bin/sip \
--D CMAKE_CXX_FLAGS="-arch x86_64" -D CMAKE_OSX_ARCHITECTURES=x86_64 \
--D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
--D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
-..
+-D QGIS_MACAPP_BUNDLE=1 \
 ```
-
-=== Configure the Xcode build ===
-
-In the mac/xcode folder in the source, duplicate the 'qgis_user-template.xcconfig'
-file and name it 'qgis_user.xcconfig'. A default build will use the KyngChaos
-frameworks, Postgres, GRASS 6.4, the python.org Python 2.5 (for Tiger)
-or the system Python (for Leopard and Snow Leopard) and extra dependencies
-as described above, and compile for the current OSX architecture and version, so no
-extra configuration is necessary.
-
-See the mac/xcode/readme.rtf for details, if you need to customize the build.
-The default build will also bundle the Qt frameworks, Postgres library, and
-other dependency libraries to create a self-contained package. The KyngChaos
-frameworks and GRASS application are not bundled.
 
 == Building ==
 
-=== Building with Cmake ===
-
-Now we can start the build process:
+Now we can start the build process (remember the parallel compilation note at
+the beginning, this is a good place to use it, if you can):
 
 ``` 
 make 
@@ -556,30 +529,8 @@ If all built without errors you can then install it:
 make install 
 ```
 
-or, for a Unix-style build
+or, for a /Applications build:
+
 ```
 sudo make install
 ```
-
-=== Building with Xcode ===
-
-Open the Xcode project file in the mac/xcode directory. Select 'Release' build
-configuration and select the 'Full Qgis' target, then build. If you use ccache,
-there have been compilation problems reported, so it is suggested that you disable
-ccache support.
-
-Alternatively, from within the mac/xcode directory, build with the command:
-
-```
-xcodebuild
-```
-
-The Qgis application will be found in the 'build/$SDKSYS/Release' folder
-in the xcode folder, where $SDKSYS is the system you configured for in your
-qgis_user.xcconfig. Copy this to whereever you like.
-
-== Running and packaging ==
-
-To run QGIS you need to at the minimum copy the dlls from c:\dev\cpp\qgislibs-release\bin 
-into the c:\program files\qgisX.X.X directory.
-
