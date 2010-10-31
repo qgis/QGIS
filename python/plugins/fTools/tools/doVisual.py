@@ -441,36 +441,16 @@ class visualThread( QThread ):
       geom = QgsGeometry( feat.geometry() )
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nElement += 1
-      if geom.isMultipart():
-        polygons = geom.asMultiPolygon()
-        for polygon in polygons:
-          if not self.isHoleNested( polygon ):
-            lstErrors.append( self.tr( "Feature %1 contains an unnested hole" ).arg( unicode( feat.id() ) ) )
-            count += 1
-          if not self.isPolygonClosed( polygon ):
-            lstErrors.append( self.tr( "Feature %1 is not closed" ).arg( unicode( feat.id() ) ) )
-            count += 1
-          if self.isSelfIntersecting( polygon ):
-            lstErrors.append( self.tr( "Feature %1 is self intersecting" ).arg( unicode( feat.id() ) ) )
-            count += 1
-          if not self.isCorrectOrientation( polygon ):
-            lstErrors.append( self.tr( "Feature %1 has incorrect node ordering" ).arg( unicode( feat.id() ) ) )
-            count += 1
-          
-      else:
-        geom = geom.asPolygon()
-        if not self.isHoleNested( geom ):
-          lstErrors.append( self.tr( "Feature %1 contains an unnested hole" ).arg( unicode( feat.id() ) ) )
-          count += 1
-        if not self.isPolygonClosed( geom ):
-          lstErrors.append( self.tr( "Feature %1 is not closed" ).arg( unicode( feat.id() ) ) )
-          count += 1
-        if self.isSelfIntersecting( geom ):
-          lstErrors.append( self.tr( "Feature %1 is self intersecting" ).arg( unicode( feat.id() ) ) )
-          count += 1
-        if not self.isCorrectOrientation( geom ):
-          lstErrors.append( self.tr( "Feature %1 has incorrect node ordering" ).arg( unicode( feat.id() ) ) )
-          count += 1
+
+      errors = geom.validateGeometry()
+      if len(errors) > 0:
+        lstErrors.append( self.tr( "Feature %1 has %2 errors:" ).arg( feat.id() ).arg( uni
+	for e in errors:
+	  if e.hasWhere():
+	    lstErrors.append( self.tr( "Feature %1: %2 [%3]" ).arg( feat.id() ).arg( e.what() ).arg( e.where() ) )
+          else:
+	    lstErrors.append( self.tr( "Feature %1: %2 [%3]" ).arg( feat.id() ).arg( e.what() ).arg( e.where() ) )
+
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
     return ( lstErrors, count )
 

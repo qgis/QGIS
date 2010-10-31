@@ -378,16 +378,17 @@ not disjoint with existing polygons of the feature*/
 
     class Error
     {
-      Error( QString m );
-      Error( QString m, QgsPoint p );
-      QString what();
-      QgsPoint where();
-      bool hasWhere();
+      public:
+        Error( QString m );
+        Error( QString m, QgsPoint p );
+        QString what();
+        QgsPoint where();
+        bool hasWhere();
     };
     
     /** Validate geometry and produce a list of geometry errors
      * @note python binding added in 1.6
      **/
-    void validateGeometry( QList<QgsGeometry::Error> &errors );
+    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/ );
 }; // class QgsGeometry
 
