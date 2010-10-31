@@ -15,13 +15,13 @@ def name():
   return "Plugin Installer"
 
 def version():
-  return "Version 1.0.12"
+  return "Version 1.1"
 
 def description():
   return "Downloads and installs QGIS python plugins"
 
 def qgisMinimumVersion():
-  return "0.9"
+  return "1.0"
 
 def authorName():
   return "Matthew Perry, Borys Jurgiel"

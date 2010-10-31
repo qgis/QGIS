@@ -27,10 +27,7 @@ class InstallerPlugin():
   def __init__(self, iface):
     self.iface = iface
     setIface(self.iface) #pass self.iface to installer_data module (needed for plugin loading & testing)
-    if QGIS_MAJOR_VER: # new plugin API
-      self.mainWindow = self.iface.mainWindow
-    else: # old plugin API
-      self.mainWindow = self.iface.getMainWindow
+    self.mainWindow = self.iface.mainWindow
     self.guiDlg = None
 
 
@@ -43,9 +40,6 @@ class InstallerPlugin():
   # ----------------------------------------- #
   def getThemeIcon(self, theName):
     """ get the icon from the best available theme """
-    if not QGIS_MAJOR_VER: # QGIS 0.x
-      return QIcon(":/plugins/installer/" + theName)
-
     myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName;
     myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName;
     myQrcPath = ":/plugins/installer/" + theName;
@@ -65,12 +59,8 @@ class InstallerPlugin():
     self.action = QAction(self.getThemeIcon("plugin_installer.png"), QCoreApplication.translate("QgsPluginInstaller","Fetch Python Plugins..."), self.mainWindow())
     self.action.setWhatsThis(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     self.action.setStatusTip(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
-    if QGIS_MAJOR_VER: # new plugin API
-      nextAction = self.iface.actionManagePlugins()
-      self.iface.pluginMenu().insertAction(nextAction,self.action)
-    else: # old plugin API
-      nextAction = self.mainWindow().menuBar().actions()[4].menu().actions()[1]
-      self.mainWindow().menuBar().actions()[4].menu().insertAction(nextAction,self.action)
+    nextAction = self.iface.actionManagePlugins()
+    self.iface.pluginMenu().insertAction(nextAction,self.action)
     QObject.connect(self.action, SIGNAL("triggered()"), self.run)
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
     self.statusLabel = None
@@ -90,7 +80,7 @@ class InstallerPlugin():
         repositories.setRepositoryData(key,"state",3)
 
     for i in plugins.obsoletePlugins:
-      QMessageBox.warning(self.mainWindow(), QCoreApplication.translate("QgsPluginInstaller","QGIS Plugin Conflict:")+" "+plugins.localCache[i]["name"], QCoreApplication.translate("QgsPluginInstaller","The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS."))
+      QMessageBox.warning(self.mainWindow(), QCoreApplication.translate("QgsPluginInstaller","QGIS Plugin Conflict:")+" "+plugins.localCache[i]["name"], "<b>"+ plugins.localCache[i]["name"] + "</b><br/><br/>" + QCoreApplication.translate("QgsPluginInstaller","The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS."))
 
 
   # ----------------------------------------- #
@@ -123,10 +113,7 @@ class InstallerPlugin():
     # kill pending http requests
     for key in repositories.all():
       repositories.killConnection(key)
-    if QGIS_MAJOR_VER: # new plugin API
-      self.iface.pluginMenu().removeAction(self.action)
-    else: # old plugin API
-      self.mainWindow().menuBar().actions()[4].menu().removeAction(self.action)
+    self.iface.pluginMenu().removeAction(self.action)
     if self.statusLabel:
       self.mainWindow().statusBar().removeWidget(self.statusLabel)
     if self.guiDlg:
