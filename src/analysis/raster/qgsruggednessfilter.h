@@ -20,7 +20,8 @@
 
 #include "qgsninecellfilter.h"
 
-/**Calculates the ruggedness index based on a 3x3 moving window*/
+/**Calculates the ruggedness index based on a 3x3 moving window.
+  Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies topographic heterogeneity*/
 class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 {
   public:
