@@ -44,7 +44,7 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - expat
 - fcgi
 - gdal17
-- grass-devel-vc
+- grass
 - gsl-devel
 - iconv
 - pyqt4

@@ -19,6 +19,10 @@ These instructions should work fine if this is a system that has already been
 in use for a while, you may need to just skip those steps which are irrelevant
 to you.
 
+/!\ **Note:** Refer to the section ''Building Debian packages'' for building 
+debian packages.  Unless you plan to develop on QGIS, that is probably the
+easiest option to compile and install QGIS.
+
 == Prepare apt ==
 
 The packages qgis depends on to build are available in the "universe" component
@@ -37,13 +41,20 @@ sudo apt-get update
 ```
 
 
-== Install Qt4 ==
+== Install build dependencies ==
 
-``` 
-sudo apt-get install libqt4-core libqt4-debug  \
-libqt4-dev libqt4-gui libqt4-qt3support libqt4-sql lsb-qt4 qt4-designer \
-qt4-dev-tools qt4-doc qt4-qtconfig uim-qt gcc libapt-pkg-perl resolvconf
-```
+|| Distribution | install command for packages |
+| hardy | ``apt-get install  bison cmake fcgi-dev flex grass-dev libexpat1-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4`` |
+| intrepid | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libqwt5-qt4-dev libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4`` |
+| jaunty | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libqwt5-qt4-dev libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4`` |
+| karmic | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libqwt5-qt4-dev libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4`` |
+| lenny | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-dev libqwt5-qt4-dev libsqlite3-dev pkg-config proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4-dev sip4`` |
+| lucid | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev`` |
+| maverick | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqtwebkit-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev`` |
+| sid | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev`` |
+| squeeze | ``apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev`` |
+
+(extracted from the respective control files in ``debian/``)
 
 /!\ **A Special Note:** If you are following this set of instructions on
 a system where you already have Qt3 development tools installed, there will
@@ -81,37 +92,10 @@ sudo update-alternatives --config linguist
 Use the simple command line dialog that appears after running each of the
 above commands to select the Qt4 version of the relevant applications.
 
-== Install additional software dependencies required by QGIS ==
-
-``` 
-sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj \
-libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
-libgsl0-dev g++ libjasper-dev libtiff4-dev subversion \
-libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags \
-python-qt4 python-qt4-dev python-sip4 sip4 python-sip4-dev
-```
-
-/!\ Debian users should use libgdal-dev above rather
-
 /!\ **Note:** For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
 distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
 language bindings you may need to build and install those packages from source.
 
-If you do not have cmake installed already:
-```
-sudo apt-get install cmake
-```
-
-== GRASS Specific Steps ==
-
-/!\ **Note:** If you don't need to build with GRASS support,  you can
-skip this section.
-
-Now you can install grass from dapper:
-
-```
-sudo apt-get install grass libgrass-dev 
-```
 
 == Setup ccache (Optional) ==
 
@@ -175,8 +159,6 @@ Error validating server certificate for 'https://svn.qgis.org:443':
 ```
 
 == Starting the compile ==
-
-/!\ **Note:** The next section describes howto build debian packages
 
 I compile my development version of QGIS into my ~/apps directory to avoid
 conflicts with Ubuntu packages that may be under /usr. This way for example
@@ -426,7 +408,8 @@ For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/
 Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
 
 ``` 
-CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config --with-python=/usr/bin/python2.5-config
+CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
+--with-python=/usr/bin/python2.5-config
 ```
 
 The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also http://trac.osgeo.org/grass/ticket/869
