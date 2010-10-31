@@ -192,6 +192,13 @@ class CORE_EXPORT QgsApplication: public QApplication
      */
     static void registerOgrDrivers();
 
+    /**Converts absolute path to path relative to target
+      @note: this method was added in version 1.6*/
+    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
+    /**Converts path relative to target to an absolute path
+      @note: this method was added in version 1.6*/
+    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
+
   private:
     static QString mPrefixPath;
     static QString mPluginPath;
