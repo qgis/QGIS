@@ -1,6 +1,7 @@
 #include "qgsfillsymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 
+#include "qgsapplication.h"
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 
@@ -158,7 +159,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   }
   if ( properties.contains( "svgFile" ) )
   {
-    svgFilePath = QgsProject::instance()->readPath( properties["svgFile"] );
+    svgFilePath = QgsApplication::relativePathToAbsolutePath( properties["svgFile"], QgsApplication::svgPath() );
   }
 
   if ( !svgFilePath.isEmpty() )
@@ -264,7 +265,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   QgsStringMap map;
   if ( !mSvgFilePath.isEmpty() )
   {
-    map.insert( "svgFile", QgsProject::instance()->writePath( mSvgFilePath ) );
+    map.insert( "svgFile", QgsApplication::absolutePathToRelativePath( mSvgFilePath, QgsApplication::svgPath() ) );
   }
   else
   {

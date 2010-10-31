@@ -482,3 +482,113 @@ void QgsApplication::registerOgrDrivers()
     OGRRegisterAll();
   }
 }
+
+QString QgsApplication::absolutePathToRelativePath( const QString& apath, const QString& targetPath )
+{
+#if defined( Q_OS_WIN )
+  const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+
+  aPath.replace( "\\", "/" );
+  if ( aPath.startsWith( "//" ) )
+  {
+    // keep UNC prefix
+    aPath = "\\\\" + aPath.mid( 2 );
+  }
+
+  targetPath.replace( "\\", "/" );
+  if ( targetPath.startsWith( "//" ) )
+  {
+    // keep UNC prefix
+    targetPath = "\\\\" + targetPath.mid( 2 );
+  }
+#else
+  const Qt::CaseSensitivity cs = Qt::CaseSensitive;
+#endif
+
+  QStringList targetElems = targetPath.split( "/", QString::SkipEmptyParts );
+  QStringList aPathElems = apath.split( "/", QString::SkipEmptyParts );
+
+  targetElems.removeAll( "." );
+  aPathElems.removeAll( "." );
+
+  // remove common part
+  int n = 0;
+  while ( aPathElems.size() > 0 &&
+          targetElems.size() > 0 &&
+          aPathElems[0].compare( targetElems[0], cs ) == 0 )
+  {
+    aPathElems.removeFirst();
+    targetElems.removeFirst();
+    n++;
+  }
+
+  if ( n == 0 )
+  {
+    // no common parts; might not even by a file
+    return apath;
+  }
+
+  if ( targetElems.size() > 0 )
+  {
+    // go up to the common directory
+    for ( int i = 0; i < targetElems.size(); i++ )
+    {
+      aPathElems.insert( 0, ".." );
+    }
+  }
+  else
+  {
+    // let it start with . nevertheless,
+    // so relative path always start with either ./ or ../
+    aPathElems.insert( 0, "." );
+  }
+
+  return aPathElems.join( "/" );
+}
+
+QString QgsApplication::relativePathToAbsolutePath( const QString& rpath, const QString& targetPath )
+{
+  // relative path should always start with ./ or ../
+  if ( !rpath.startsWith( "./" ) && !rpath.startsWith( "../" ) )
+  {
+    return rpath;
+  }
+
+#if defined(Q_OS_WIN)
+  rPath.replace( "\\", "/" );
+  targetPath.replace( "\\", "/" );
+
+  bool uncPath = targetPath.startsWith( "//" );
+#endif
+
+  QStringList srcElems = rpath.split( "/", QString::SkipEmptyParts );
+  QStringList targetElems = targetPath.split( "/", QString::SkipEmptyParts );
+
+#if defined(Q_OS_WIN)
+  if ( uncPath )
+  {
+    targetElems.insert( 0, "" );
+    targetElems.insert( 0, "" );
+  }
+#endif
+
+  // append source path elements
+  targetElems << srcElems;
+  targetElems.removeAll( "." );
+
+  // resolve ..
+  int pos;
+  while (( pos = targetElems.indexOf( ".." ) ) > 0 )
+  {
+    // remove preceding element and ..
+    targetElems.removeAt( pos - 1 );
+    targetElems.removeAt( pos - 1 );
+  }
+
+#if !defined(Q_OS_WIN)
+  // make path absolute
+  targetElems.prepend( "" );
+#endif
+
+  return targetElems.join( "/" );
+}
