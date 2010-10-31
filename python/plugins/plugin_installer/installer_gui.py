@@ -290,8 +290,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       index = intervals.index(interval)
     else:
       index = 1
-    if QGIS_VER[0] == "0":
-      self.label_2.setText("<b>Note: This functionality requires QGIS 1.0</b>")
     self.comboInterval.setCurrentIndex(index)
     self.populateMostWidgets()
 
@@ -362,7 +360,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if plugins.isThereAnythingNew():
       self.comboFilter2.addItem(self.tr("upgradeable and news"))
     #set configuration widgets (dependent on the repository list)
-    if len(repositories.all()) == 1 or QGIS_VER[0] == "0":
+    if len(repositories.all()) == 1:
       self.radioPluginType0.setEnabled(False)
       self.radioPluginType1.setEnabled(False)
       self.radioPluginType2.setEnabled(False)
@@ -372,9 +370,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       self.radioPluginType2.setEnabled(True)
     settings = QSettings()
     (i, ok) = settings.value(settingsGroup+"/allowedPluginType", QVariant(2)).toInt()
-    if QGIS_VER[0] == "0":
-      self.radioPluginType1.setChecked(Qt.Checked)
-    elif i == 1 or len(repositories.all()) == 1:
+    if i == 1 or len(repositories.all()) == 1:
       self.radioPluginType0.setChecked(Qt.Checked)
     elif i == 3:
       self.radioPluginType2.setChecked(Qt.Checked)
@@ -617,7 +613,14 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             startPlugin(plugin["localdir"])
           else: infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
         else:
-          infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
+          if QGIS_15: # plugins can be reloaded on the fly in QGIS  >= 1.5
+            settings = QSettings()
+            if key != 'plugin_installer' and settings.value("/PythonPlugins/"+key).toBool(): # plugin will be reloaded on the fly only if currently loaded
+              infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Plugin reinstalled successfully"))
+              reloadPlugin(key)
+            else:
+              infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
+          else: infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
       else:
         if plugin["error"] == "incompatible":
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
