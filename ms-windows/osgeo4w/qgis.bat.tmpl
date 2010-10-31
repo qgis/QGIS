@@ -3,6 +3,7 @@
 SET OSGEO4W_ROOT=@osgeo4w@
 call "%OSGEO4W_ROOT%"\bin\o4w_env.bat
 call "%OSGEO4W_ROOT%"\bin\gdal17.bat
+call "%OSGEO4W_ROOT%"\bin\grass-env.bat
 @echo off
 path %PATH%;%GISBASE%\bin
 start "Quantum GIS" /B "%OSGEO4W_ROOT%"\apps\@package@\bin\qgis.exe %*
