@@ -430,6 +430,9 @@ class CORE_EXPORT QgsGeometry
         bool hasWhere() { return hasLocation; }
     };
 
+    /** Validate geometry and produce a list of geometry errors
+     * @note added in 1.5
+     **/
     void validateGeometry( QList<Error> &errors );
 
     static void validatePolyline( QList<Error> &errors, int i, QgsPolyline polyline, bool ring = false );

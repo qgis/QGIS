@@ -15,7 +15,7 @@ typedef QVector< QVector<QgsPoint> > QgsMultiPolyline;
 typedef QVector< QVector< QVector<QgsPoint> > > QgsMultiPolygon;
 
 typedef unsigned int size_t;
-    
+
 class QgsGeometry
 {
 %TypeHeaderCode
@@ -376,5 +376,18 @@ not disjoint with existing polygons of the feature*/
      */
     int avoidIntersections();
 
+    class Error
+    {
+      Error( QString m );
+      Error( QString m, QgsPoint p );
+      QString what();
+      QgsPoint where();
+      bool hasWhere();
+    };
+    
+    /** Validate geometry and produce a list of geometry errors
+     * @note python binding added in 1.6
+     **/
+    void validateGeometry( QList<QgsGeometry::Error> &errors );
 }; // class QgsGeometry
 
