@@ -289,7 +289,10 @@ In MSYS console go to the directory where you've unpacked or checked out sources
 Run these commands:
 ```
 export PATH="/usr/local/bin:/usr/local/lib:$PATH"
-./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg --without-tiff --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-pgsql-libs=/local/pgsql/lib --with-opengl=windows --with-fftw --with-freetype --with-freetype-includes=/mingw/include/freetype2 --without-x --without-tcltk --enable-x11=no --enable-shared=yes --with-proj-share=/usr/local/share/proj
+./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg \
+--without-tiff --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-pgsql-libs=/local/pgsql/lib --with-opengl=windows --with-fftw \
+--with-freetype --with-freetype-includes=/mingw/include/freetype2 --without-x --without-tcltk --enable-x11=no --enable-shared=yes \
+--with-proj-share=/usr/local/share/proj
 make
 make install
 ```
