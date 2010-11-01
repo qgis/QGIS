@@ -3,8 +3,8 @@
 
 <qgisgrassmodule label="Projection conversion of vector" module="v.proj">
 	<option key="input" />
-	<option key="dbase" />
-	<option key="location" />
 	<option key="mapset" />
-	<option key="output" />
+	<option key="location" />
+	<option key="output" label="Name for output vector map (optional)" />
+        <option key="dbase" label="Path to GRASS database of input location (optional)" /> 
 </qgisgrassmodule>
