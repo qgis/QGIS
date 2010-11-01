@@ -30,13 +30,32 @@ using namespace osgEarth;
 using namespace osgEarth::Drivers;
 
 
-QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface ) : TileSource(), mQGisIface(theQgisInterface)
+QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface ) : TileSource(), mQGisIface(theQgisInterface), mCoordTranform(0)
 {
 }
 
 void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const Profile* overrideProfile)
 {
     setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
+    QgsMapRenderer* mainRenderer = mQGisIface->mapCanvas()->mapRenderer();
+    mMapRenderer = new QgsMapRenderer();
+
+    long epsgGlobe = 4326;
+    if (mainRenderer->destinationSrs().epsg() != epsgGlobe)
+    {
+      QgsCoordinateReferenceSystem srcCRS;
+      srcCRS.createFromEpsg(mainRenderer->destinationSrs().epsg()); //FIXME: crs from canvas or first layer?
+      QgsCoordinateReferenceSystem destCRS;
+      destCRS.createFromEpsg(epsgGlobe);
+      //QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
+      mMapRenderer->setDestinationSrs(destCRS);
+      mMapRenderer->setProjectionsEnabled(true);
+      mCoordTranform = new QgsCoordinateTransform( srcCRS, destCRS );
+    }
+    mMapRenderer->setOutputUnits(mainRenderer->outputUnits());
+    mMapRenderer->setMapUnits( QGis::Degrees );
+
+    mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 }
 
 osg::Image* QgsOsgEarthTileSource::createImage( const TileKey* key,
@@ -68,18 +87,12 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey* key,
         }
 
         QgsMapRenderer* mainRenderer = mQGisIface->mapCanvas()->mapRenderer();
-        mMapRenderer = new QgsMapRenderer();
         mMapRenderer->setLayerSet(mainRenderer->layerSet());
-        mMapRenderer->setOutputUnits(mainRenderer->outputUnits());
 
-        if(configureMapRender( qImage) != 0)
-        {
-            return 0;
-        }
+        mMapRenderer->setOutputSize(QSize(qImage->width(), qImage->height()), qImage->logicalDpiX());
+
         QgsRectangle mapExtent(xmin, ymin, xmax, ymax);
         mMapRenderer->setExtent(mapExtent);
-
-        mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
         QPainter thePainter(qImage);
         //thePainter.setRenderHint(QPainter::Antialiasing); //make it look nicer
@@ -103,48 +116,6 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey* key,
         return ImageUtils::createEmptyImage();
     }
     return image.release();
-}
-
-int QgsOsgEarthTileSource::configureMapRender( const QPaintDevice* paintDevice ) const
-{
-    if(!mMapRenderer || !paintDevice)
-    {
-      return 1; //paint device is needed for height, width, dpi
-    }
-
-    mMapRenderer->setOutputSize(QSize(paintDevice->width(), paintDevice->height()), paintDevice->logicalDpiX());
-
-    QGis::UnitType mapUnits = QGis::Degrees;
-
-    QgsCoordinateReferenceSystem outputCRS;
-
-    if(true) //TODO
-    {
-        //disable on the fly projection
-        QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",0);
-    }
-    else
-    {
-        //enable on the fly projection
-        QgsDebugMsg("enable on the fly projection");
-        QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
-
-        long epsgId = 4326;
-
-        //destination SRS
-        //outputCRS = QgsEPSGCache::instance()->searchCRS( epsgId );
-        if( !outputCRS.isValid() )
-        {
-            QgsDebugMsg("Error, could not create output CRS from EPSG");
-            return 5;
-        }
-        mMapRenderer->setDestinationSrs(outputCRS);
-        mMapRenderer->setProjectionsEnabled(true);
-        mapUnits = outputCRS.mapUnits();
-    }
-    mMapRenderer->setMapUnits( mapUnits );
-
-    return 0;
 }
 
 QImage* QgsOsgEarthTileSource::createImage( int width, int height ) const
@@ -193,5 +164,6 @@ bool QgsOsgEarthTileSource::intersects(const TileKey* key)
     double xmin, ymin, xmax, ymax;
     key->getGeoExtent().getBounds(xmin, ymin, xmax, ymax);
     QgsRectangle extent = mQGisIface->mapCanvas()->fullExtent();
+    if (mCoordTranform) extent = mCoordTranform->transformBoundingBox(extent);
     return ! ( xmin >= extent.xMaximum() || xmax <= extent.xMinimum() || ymin >= extent.yMaximum() || ymax <= extent.yMinimum() );
 }

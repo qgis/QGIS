@@ -45,12 +45,12 @@ namespace osgEarth { namespace Drivers
 
 private:
 
-    int configureMapRender( const QPaintDevice* paintDevice ) const;
     QImage* createImage( int width, int height ) const;
     bool intersects(const TileKey* key);
 
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
+    QgsCoordinateTransform *mCoordTranform;
     QgsMapRenderer* mMapRenderer;
 
     };
