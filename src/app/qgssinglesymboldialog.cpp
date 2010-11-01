@@ -108,8 +108,6 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
   connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( lstSymbols, SIGNAL( currentChanged( const QModelIndex & , const QModelIndex & ) ),
-           this, SLOT( symbolChanged( const QModelIndex & , const QModelIndex & ) ) );
   connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mPointSizeUnitsCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mRotationClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
@@ -134,6 +132,9 @@ void QgsSingleSymbolDialog::refreshMarkers()
 {
   QgsMarkerListModel *m = new QgsMarkerListModel( lstSymbols );
   lstSymbols->setModel( m );
+
+  connect( lstSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
+           this, SLOT( symbolChanged( const QModelIndex &, const QModelIndex & ) ) );
 
   // Find out the numerical fields of mVectorLayer, and populate the ComboBoxes
   QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
@@ -639,7 +640,7 @@ void QgsSingleSymbolDialog::symbolChanged( const QModelIndex &current, const QMo
   QAbstractItemModel *m = lstSymbols->model();
   QgsDebugMsg( QString( "symbol changed to %1:%2" ).arg( current.row() ).arg( m->data( current, Qt::UserRole ).toString() ) );
   // m->setData( current, Qt::UserRole+1, Qt::cyan );
-  // m->setData( prev, Qt::UserRole+1, Qt::white );
+  // m->setData( previous, Qt::UserRole+1, Qt::white );
   emit settingsChanged();
 }
 
