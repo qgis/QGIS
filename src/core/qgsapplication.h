@@ -194,10 +194,10 @@ class CORE_EXPORT QgsApplication: public QApplication
 
     /**Converts absolute path to path relative to target
       @note: this method was added in version 1.6*/
-    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
+    static QString absolutePathToRelativePath( QString apath, QString targetPath );
     /**Converts path relative to target to an absolute path
       @note: this method was added in version 1.6*/
-    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
+    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
   private:
     static QString mPrefixPath;
