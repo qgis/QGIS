@@ -1618,6 +1618,24 @@ Vai vēlies to apturēt?</translation>
         <source>Image coordinates (geographic) must be numbers.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error retrieving the extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL was unable to retrieve the extent from any file. 
+The &quot;Use intersected extent&quot; option will be unchecked.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The computed extent is empty. 
+Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsOptionsTable</name>
@@ -2193,6 +2211,45 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Sds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove all overviews.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In order to generate external overview (for GeoTIFF especially).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create external overviews in TIFF format, compressed using JPEG.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overviews in TIFF format with JPEG compression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For JPEG compressed external overviews, 
+the JPEG quality can be set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>JPEG Quality (1-100):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alternate overview format using Erdas Imagine format, 
+placing the overviews in an associated .aux file 
+suitable for direct use with Imagine,ArcGIS, GDAL.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Imagine format (.aux file)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4155,6 +4212,67 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Raster Histogram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pixel Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not retrieve value of list value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid feature geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature geometry not imported (OGR error: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature creation error (OGR error: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature write errors:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stopping after %1 errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Only %1 of %2 features written.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save the map image as</source>
+        <translation type="unfinished">Izvēlieties faila nosaukumu ar kādu saglabāt kartes attēlu</translation>
+    </message>
+    <message>
+        <source>OfflineEditing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow offline editing and synchronizing with database</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -4516,16 +4634,16 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Remove Layer</source>
-        <translation>Noņemt slāni</translation>
+        <translation type="obsolete">Noņemt slāni</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
-        <translation>Ctrl+D</translation>
+        <translation type="obsolete">Ctrl+D</translation>
     </message>
     <message>
         <source>Remove a Layer</source>
-        <translation>Noņem slāni</translation>
+        <translation type="obsolete">Noņem slāni</translation>
     </message>
     <message>
         <source>Show all layers in the overview map</source>
@@ -5195,239 +5313,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     </message>
     <message>
         <source>Whats new in Version 1.5.0 &apos;Tethys&apos;?</source>
-        <translation>Kas jauns 1.5.0 &apos;Tethys&apos; versijā?</translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This release includes over 350 bug fixes, over 40 new features. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Main GUI</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is a new angle measuring tool that allows you to interactively measure angles against the map backdrop.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Live GPS Tracking tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User configurable WMS search server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow editing of invalid geometry in node tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SVG fill symbol layer for polygon textures</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Font marker symbol layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS to crash during startup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow hiding of deprecated CRSes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow saving vector layers as ogr vector files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster provider: reduce debugging noise</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow adding parts to multi points and lines</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text and form annotation tools are now in gui and app</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added possibility to place a set of default composer templates in pkgDataPath/composer_templates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gradient color ramps now support multiple stops - for adding intermediate colors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Center map if user clicks into the map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New plugin for carrying out spatial selections</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data-defined size and rotation for single symbol renderer in symbology-ng</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IdentifyAsHtml to raster layer and use it in identify</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export legend groups and layers with legendinterface and use this information to display groups in the composer legend.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show selected feature count in status bar </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Query option added to layer menu to subset vector layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Option to label only selected features (on the &apos;old&apos; labelling tool)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load/save queries created in the query builder.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Manual adding of categories in symbology-ng.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Georeferencer: possibility to configure if residuals should be showed in pixels or map units</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delimited text provider: allow empty values in numeric columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added rule-based renderer for symbology-ng</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ability to create spatial lite databases from within QGIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inclusion of GDAL Raster tools plugin into QGIS core</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New python console (with history)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add validation to capture tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow postgres layers without saved username &amp;amp; password by asking for credentials</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support NULL values in search strings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Optionally add new layers to the selected group</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map composer can add attribute tables in layouts. It is possibile to show only visible features in composer table or all features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Identify tool attribute form now non-modal in view mode (since r12796)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Identified features&apos; highlight disappear when window is deactivate or closed and reappears when reactivated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS and WMS-C Support</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS-C support, new spatial authorities, wms selection improvements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS provider makes requests asynchronously through QNetworkAccessManager now</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS selection allows inserting of all layers of a branch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS has support for more MIME types</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added load/save to WMS dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS-C scale slider gui added and more selection improvements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>API Updates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QgsDataProvider &amp;amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow opening layer properties from plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support for custom plugin layers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow refreshing of plugins programmatically</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support for custom plugin directories using the QGIS_PLUGINPATH environment variable. More paths can be passed, separated by semicolon.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Legend interface added to retrieve layers in legend order</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support more GEOS operators</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kas jauns 1.5.0 &apos;Tethys&apos; versijā?</translation>
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
@@ -6026,16 +5912,6 @@ This copy of QGIS has been built without PostgreSQL support.</source>
     </message>
     <message>
         <source>
-This copy of QGIS has been built with QWT support (%1).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built without QWT support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
 This copy of QGIS writes debugging output.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6043,10 +5919,6 @@ This copy of QGIS writes debugging output.</source>
         <source></source>
         <comment>Tile scale slider</comment>
         <translation></translation>
-    </message>
-    <message>
-        <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>%1 doesn&apos;t have any layers</source>
@@ -6069,10 +5941,6 @@ This copy of QGIS writes debugging output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select raster layers to add...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6084,12 +5952,221 @@ This copy of QGIS writes debugging output.</source>
         <source>Select vector layers to add...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Raster calculator ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+D</source>
+        <comment>Remove Layer(s)</comment>
+        <translation type="unfinished">Ctrl+D</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure</source>
+        <translation type="unfinished">Mērīt</translation>
+    </message>
+    <message>
+        <source>
+This copy of QGIS has been built with QWT %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General Improvements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added gpsd support to live gps tracking.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin has been included that allows for offline editing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update srs.db to include grid reference.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Georeferencer has had many tidy ups and improvements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support for long int in attribute dialog and editor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read More.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select and measure toolbar flyouts and submenus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table of contents (TOC) improvements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labelling (New generation only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data defined label position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line wrapping, data defined font and buffer settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer properties and symbology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved loading speed of the symbol properties dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use size scale also for line symbols to modify line width.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow creation of color ramps in vector color ramp combo box.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer items can now be deleted with the backspace key.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculating...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort...</source>
+        <translation type="unfinished">Atcelt...</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
     <message>
         <source>QGIS</source>
         <translation>QGIS</translation>
+    </message>
+</context>
+<context>
+    <name>QgisAppInterface</name>
+    <message>
+        <source>Feature form edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run actions</source>
+        <translation type="unfinished">Startēt darbību</translation>
     </message>
 </context>
 <context>
@@ -6509,10 +6586,33 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeSelectionDialog</name>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished">Atribūts</translation>
+        <translation type="obsolete">Atribūts</translation>
     </message>
     <message>
-        <source>Alias</source>
+        <source>Clear</source>
+        <translation type="obsolete">Attīrīt</translation>
+    </message>
+    <message>
+        <source>Ascending</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Descending</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeSelectionDialogBase</name>
+    <message>
+        <source>Select attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Attribute&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Alias&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6522,6 +6622,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Clear</source>
         <translation type="unfinished">Attīrīt</translation>
+    </message>
+    <message>
+        <source>Sorting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column</source>
+        <translation type="unfinished">Kolonna</translation>
+    </message>
+    <message>
+        <source>Ascending</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6636,7 +6748,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Show selected records only</source>
-        <translation>Rādīt tikai atlasītos ierakstus</translation>
+        <translation type="obsolete">Rādīt tikai atlasītos ierakstus</translation>
     </message>
     <message>
         <source>Advanced search</source>
@@ -6648,7 +6760,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search selected records only</source>
-        <translation>Meklēt tikai izvēlētajos ierakstos</translation>
+        <translation type="obsolete">Meklēt tikai izvēlētajos ierakstos</translation>
     </message>
     <message>
         <source>Opens the search query builder</source>
@@ -6664,7 +6776,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Help</source>
-        <translation>Palīdzība</translation>
+        <translation type="obsolete">Palīdzība</translation>
     </message>
     <message>
         <source>Attribute table - %1 (No matching features)</source>
@@ -6685,6 +6797,31 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The attribute(s) could not be deleted</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search selected only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Case sensitive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
+        <comment>feature count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -7074,6 +7211,13 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorRampComboBox</name>
+    <message>
+        <source>New color ramp...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9439,11 +9583,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error</source>
-        <translation>Kļūda</translation>
-    </message>
-    <message>
-        <source>An error occured while evaluating the calculation string.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda</translation>
     </message>
 </context>
 <context>
@@ -9584,6 +9724,10 @@ p, li { white-space: pre-wrap; }
         <source>rownum</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>||</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsFormAnnotationDialog</name>
@@ -9627,6 +9771,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remove</source>
         <translation>Noņemt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSDetector</name>
+    <message>
+        <source>local gpsd</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9889,10 +10040,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>GPS device port</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Autodetect</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9950,6 +10097,30 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation type="unfinished">Ports</translation>
+    </message>
+    <message>
+        <source>Host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ddddd; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to gpsd</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10276,6 +10447,105 @@ Lūdzu izvēlēties derīgu.</translation>
     </message>
 </context>
 <context>
+    <name>QgsGeorefConfigDialog</name>
+    <message>
+        <source>A5 (148x210 mm)</source>
+        <translation type="unfinished">A5 (148x210 mm)</translation>
+    </message>
+    <message>
+        <source>A4 (210x297 mm)</source>
+        <translation type="unfinished">A4 (210x297 mm)</translation>
+    </message>
+    <message>
+        <source>A3 (297x420 mm)</source>
+        <translation type="unfinished">A3 (297x420 mm)</translation>
+    </message>
+    <message>
+        <source>A2 (420x594 mm)</source>
+        <translation type="unfinished">A2 (420x594 mm)</translation>
+    </message>
+    <message>
+        <source>A1 (594x841 mm)</source>
+        <translation type="unfinished">A1 (594x841 mm)</translation>
+    </message>
+    <message>
+        <source>A0 (841x1189 mm)</source>
+        <translation type="unfinished">A0 (841x1189 mm)</translation>
+    </message>
+    <message>
+        <source>B5 (176 x 250 mm)</source>
+        <translation type="unfinished">B5 (176 x 250 mm)</translation>
+    </message>
+    <message>
+        <source>B4 (250 x 353 mm)</source>
+        <translation type="unfinished">B4 (250 x 353 mm)</translation>
+    </message>
+    <message>
+        <source>B3 (353 x 500 mm)</source>
+        <translation type="unfinished">B3 (353 x 500 mm)</translation>
+    </message>
+    <message>
+        <source>B2 (500 x 707 mm)</source>
+        <translation type="unfinished">B2 (500 x 707 mm)</translation>
+    </message>
+    <message>
+        <source>B1 (707 x 1000 mm)</source>
+        <translation type="unfinished">B1 (707 x 1000 mm)</translation>
+    </message>
+    <message>
+        <source>B0 (1000 x 1414 mm)</source>
+        <translation type="unfinished">B0 (1000 x 1414 mm)</translation>
+    </message>
+    <message>
+        <source>Legal (8.5x14 inches)</source>
+        <translation type="unfinished">Legal (8.5x14 collas)</translation>
+    </message>
+    <message>
+        <source>ANSI A (Letter; 8.5x11 inches)</source>
+        <translation type="unfinished">ANSI A (Vēstule; 8.5x11 collas)</translation>
+    </message>
+    <message>
+        <source>ANSI B (Tabloid; 11x17 inches)</source>
+        <translation type="unfinished">ANSI B (Tabloīds; 11x17 collas)</translation>
+    </message>
+    <message>
+        <source>ANSI C (17x22 inches)</source>
+        <translation type="unfinished">ANSI C (17x22 collas)</translation>
+    </message>
+    <message>
+        <source>ANSI D (22x34 inches)</source>
+        <translation type="unfinished">ANSI D (22x34 collas)</translation>
+    </message>
+    <message>
+        <source>ANSI E (34x44 inches)</source>
+        <translation type="unfinished">ANSI E (34x44 collas)</translation>
+    </message>
+    <message>
+        <source>Arch A (9x12 inches)</source>
+        <translation type="unfinished">Arch A (9x12 collas)</translation>
+    </message>
+    <message>
+        <source>Arch B (12x18 inches)</source>
+        <translation type="unfinished">Arch B (12x18 collas)</translation>
+    </message>
+    <message>
+        <source>Arch C (18x24 inches)</source>
+        <translation type="unfinished">Arch C (18x24 collas)</translation>
+    </message>
+    <message>
+        <source>Arch D (24x36 inches)</source>
+        <translation type="unfinished">Arch D (24x36 collas)</translation>
+    </message>
+    <message>
+        <source>Arch E (36x48 inches)</source>
+        <translation type="unfinished">Arch E (36x48 collas)</translation>
+    </message>
+    <message>
+        <source>Arch E1 (30x42 inches)</source>
+        <translation type="unfinished">Arch E1 (30x42 collas)</translation>
+    </message>
+</context>
+<context>
     <name>QgsGeorefConfigDialogBase</name>
     <message>
         <source>Configure Georeferencer</source>
@@ -10323,6 +10593,14 @@ Lūdzu izvēlēties derīgu.</translation>
     </message>
     <message>
         <source>Use map units if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PDF map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper size</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10856,6 +11134,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Natural Breaks (Jenks)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard Deviation</source>
+        <translation type="unfinished">Standarta novirze</translation>
+    </message>
+    <message>
+        <source>Pretty Breaks</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13194,6 +13484,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Close</source>
         <translation>Aizvērt</translation>
     </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Platums</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Augstums</translation>
+    </message>
 </context>
 <context>
     <name>QgsLUDialogBase</name>
@@ -13446,6 +13744,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>pt</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished">kartes vienības</translation>
+    </message>
 </context>
 <context>
     <name>QgsLabelingGuiBase</name>
@@ -13679,6 +13981,42 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Buffer color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font size</source>
+        <translation type="unfinished">Fonta izmērs</translation>
+    </message>
+    <message>
+        <source>In points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In map units</source>
+        <translation type="unfinished">Kartes vienībās</translation>
+    </message>
+    <message>
+        <source>add direction symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished">Novietojums</translation>
+    </message>
+    <message>
+        <source>X Coordinate</source>
+        <translation type="unfinished">X koordināta</translation>
+    </message>
+    <message>
+        <source>Y Coordinate</source>
+        <translation type="unfinished">Y koordināta</translation>
+    </message>
+    <message>
+        <source>Horizontal alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical alignment</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13985,6 +14323,10 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
         <translation>KĻŪDA: Neizdevās izveidot noklusējuma stila failu %1. Pārbaudiet tiesības un mēģiniet vēlreiz.</translation>
+    </message>
+    <message>
+        <source>Specify CRS for layer %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15337,6 +15679,144 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsOfflineEditing</name>
+    <message>
+        <source>Could not open the spatialite database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not copy the template database to new location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown data type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS wkbType %1 not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m features copied</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m features processed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m fields added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m features added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m features removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m feature updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m feature geometry updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline Editing Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open the spatialite logging database</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOfflineEditingPlugin</name>
+    <message>
+        <source>Convert to offline project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create offline copies of selected layers and save as offline project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Offline Editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Synchronize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Synchronize offline project with remote layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOfflineEditingPluginGui</name>
+    <message>
+        <source>Select target database for offline data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SpatiaLite DB(*.sqlite);;All files(*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline Editing Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converting to offline project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline database file &apos;%1&apos; exists. Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOfflineEditingPluginGuiBase</name>
+    <message>
+        <source>Create offline project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation type="unfinished">Pārlūkot...</translation>
+    </message>
+    <message>
+        <source>Select remote layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOfflineEditingProgressDialog</name>
+    <message>
+        <source>Layer %1 of %2..</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOfflineEditingProgressDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Dialogs</translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished">TekstaBirka</translation>
+    </message>
+</context>
+<context>
     <name>QgsOgrProvider</name>
     <message>
         <source>Whole number (integer)</source>
@@ -16030,6 +16510,14 @@ p, li { white-space: pre-wrap; }
         <source>Create raster icons in legend</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Decimal places</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep base unit</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOraclePlugin</name>
@@ -16367,6 +16855,10 @@ Papildus kļūdas informācija:
         <source>Only look in the &apos;public&apos; schema</source>
         <translation type="unfinished">Meklēt tikai &apos;public&apos; shēmā</translation>
     </message>
+    <message>
+        <source>Allow geometryless tables</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPgSourceSelect</name>
@@ -16493,6 +16985,10 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
         <source>Waiting</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>No geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPgSourceSelectBase</name>
@@ -16597,6 +17093,14 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Installer update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has been updated. Please restart QGIS prior to using it</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17677,6 +18181,14 @@ Result: %3 (%4)</source>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Project File Read Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 at line %2 column %3</source>
+        <translation type="unfinished">%1 līnijā %2 kolonnā %3</translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectBadLayerGuiHandler</name>
@@ -17954,19 +18466,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Invalid Query</source>
-        <translation>Nederīgs vaicājums</translation>
-    </message>
-    <message>
-        <source>Setting the query failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nederīgs vaicājums</translation>
     </message>
     <message>
         <source>No Query</source>
-        <translation>Nav vaicājums</translation>
+        <translation type="obsolete">Nav vaicājums</translation>
     </message>
     <message>
         <source>You must create a query before you can test it</source>
-        <translation>Pirms pārbaudi, izveido vaicājumu</translation>
+        <translation type="obsolete">Pirms pārbaudi, izveido vaicājumu</translation>
     </message>
     <message>
         <source>Query Result</source>
@@ -18184,6 +18692,144 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRasterCalcDialog</name>
+    <message>
+        <source>Enter result file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterCalcDialogBase</name>
+    <message>
+        <source>Raster calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster bands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Result layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer</source>
+        <translation type="unfinished">Izvades slānis</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Current layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X min</source>
+        <translation type="unfinished">X min</translation>
+    </message>
+    <message>
+        <source>XMax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y min</source>
+        <translation type="unfinished">Y min</translation>
+    </message>
+    <message>
+        <source>Y max</source>
+        <translation type="unfinished">Y max</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished">Kolonnas</translation>
+    </message>
+    <message>
+        <source>Rows</source>
+        <translation type="unfinished">Rindas</translation>
+    </message>
+    <message>
+        <source>Output format</source>
+        <translation type="unfinished">Izvades formats</translation>
+    </message>
+    <message>
+        <source>Add result to project</source>
+        <translation type="unfinished">Rezultātus pievienot projektam</translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished">Operatori</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished">*</translation>
+    </message>
+    <message>
+        <source>sqrt</source>
+        <translation type="unfinished">sqrt</translation>
+    </message>
+    <message>
+        <source>sin</source>
+        <translation type="unfinished">sin</translation>
+    </message>
+    <message>
+        <source>^</source>
+        <translation type="unfinished">^</translation>
+    </message>
+    <message>
+        <source>acos</source>
+        <translation type="unfinished">acos</translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation type="unfinished">(</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished">/</translation>
+    </message>
+    <message>
+        <source>cos</source>
+        <translation type="unfinished">cos</translation>
+    </message>
+    <message>
+        <source>asin</source>
+        <translation type="unfinished">asin</translation>
+    </message>
+    <message>
+        <source>tan</source>
+        <translation type="unfinished">tan</translation>
+    </message>
+    <message>
+        <source>atan</source>
+        <translation type="unfinished">atan</translation>
+    </message>
+    <message>
+        <source>)</source>
+        <translation type="unfinished">)</translation>
+    </message>
+    <message>
+        <source>Raster calculator expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRasterLayer</name>
     <message>
         <source>Not Set</source>
@@ -18371,6 +19017,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify CRS for layer %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18674,6 +19324,18 @@ p, li { white-space: pre-wrap; }
         <source>Unknown style format: %1</source>
         <translation>Nezināms stila formāts: %1</translation>
     </message>
+    <message>
+        <source>Band %1</source>
+        <translation type="unfinished">Kanāls %1</translation>
+    </message>
+    <message>
+        <source>Choose a file name to save the map image as</source>
+        <translation type="unfinished">Izvēlieties faila nosaukumu ar kādu saglabāt kartes attēlu</translation>
+    </message>
+    <message>
+        <source>out of extent</source>
+        <translation type="unfinished">ārpus apjoma</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -18723,15 +19385,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Options</source>
-        <translation>Parametri</translation>
+        <translation type="obsolete">Parametri</translation>
     </message>
     <message>
         <source>Chart Type</source>
-        <translation>Grafika tips</translation>
+        <translation type="obsolete">Grafika tips</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Atsvaidzināt</translation>
+        <translation type="obsolete">Atsvaidzināt</translation>
     </message>
     <message>
         <source>Max</source>
@@ -19007,23 +19669,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line graph</source>
-        <translation>Līniju</translation>
+        <translation type="obsolete">Līniju</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation>Stabiņu</translation>
+        <translation type="obsolete">Stabiņu</translation>
     </message>
     <message>
         <source>Column count</source>
-        <translation>Kolonnu skaits</translation>
+        <translation type="obsolete">Kolonnu skaits</translation>
     </message>
     <message>
         <source>Out of range OK?</source>
-        <translation>Iekļaut ārpusreģiona datus?</translation>
+        <translation type="obsolete">Iekļaut ārpusreģiona datus?</translation>
     </message>
     <message>
         <source>Allow approximation</source>
-        <translation>Atļaut noapaļošanu</translation>
+        <translation type="obsolete">Atļaut noapaļošanu</translation>
     </message>
     <message>
         <source>Restore Default Style</source>
@@ -19098,19 +19760,31 @@ p, li { white-space: pre-wrap; }
         <translation>Piezīmes</translation>
     </message>
     <message>
+        <source>Build pyramids internally if possible</source>
+        <translation>Ja ir iespējams veidot iekšējās piramīdas</translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Build pyramids internally if possible</source>
-        <translation>Ja ir iespējams veidot iekšējās piramīdas</translation>
+        <source>Save as image...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20874,6 +21548,10 @@ Do you want to overwrite the [%2] relation?</source>
         <source>Symbols from style</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Style manager...</source>
+        <translation type="unfinished">Stila pārvaldnieks...</translation>
+    </message>
 </context>
 <context>
     <name>QgsTINInterpolatorDialog</name>
@@ -21122,6 +21800,10 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Projective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate pdf map:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21443,6 +22125,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Unknown renderer</source>
         <translation>Nezināms renderētājs</translation>
     </message>
+    <message>
+        <source>Specify CRS for layer %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerProperties</name>
@@ -21714,6 +22400,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
         <translation>Vai vēlies izmantot jauno simboloģijas dzinēju šim slānim?</translation>
     </message>
+    <message>
+        <source>Stop editing mode to enable this.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -21914,6 +22604,18 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Format</source>
         <translation>Formāts</translation>
+    </message>
+    <message>
+        <source>OGR creation options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data source</source>
+        <translation type="unfinished">Datu avots</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Slānis</translation>
     </message>
 </context>
 <context>
@@ -24868,10 +25570,6 @@ Spraudnis netiks ieslēgts.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Export vector table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Export vector to DXF</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25817,6 +26515,102 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Zero-crossing edge detection raster function for image processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a raster to vector within GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a vector to raster within GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new GRASS location and transfer data into it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new GRASS location from metadata file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new GRASS location from raster data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new GRASS location from vector data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new location from .prj (WKT) file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export from GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export raster from GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector from GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export vector table from GRASS to database format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from database into GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import into GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import raster into GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import raster into GRASS from QGIS view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import raster into GRASS from external data sources in GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector into GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector into GRASS from QGIS view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import vector into GRASS from external data sources in GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name for output vector map (optional)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name for the output raster map (optional)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to GRASS database of input location (optional)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Register external data sources in GRASS</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
