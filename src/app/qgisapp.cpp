@@ -2507,16 +2507,12 @@ void QgisApp::about()
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h2>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h2>";
-    whatsNew +=  "<h2>" + tr( "Whats new in Version 1.6.0 'Capiapó'?" ) + "</h2>";
+    whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.6.0 'Capiapó'?" ) + "</h2>";
     whatsNew +=  "<p>";
-    whatsNew +=  tr( "Please note that this is a release in our 'cutting edge' release series. As" );
-    whatsNew +=  tr( "such it contains new features and extends the programmatic interface over QGIS" );
-    whatsNew +=  tr( "1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases. " );
+    whatsNew +=  tr( "Please note that this is a release in our 'cutting edge' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases." );
     whatsNew +=  "</p>";
     whatsNew +=  "<p>";
-    whatsNew +=  tr( "This release includes over 177 bug fixes and many new features and enhancements. " );
-    whatsNew +=  tr( "Once again it is impossible to document everything here that has changed so we will " );
-    whatsNew +=  tr( "just provide a bullet list of key new features here." );
+    whatsNew +=  tr( "This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here." );
     whatsNew +=  "</p>";
 
     whatsNew +=  "<h3>" + tr( "General Improvements" ) + "</h3>";
@@ -2524,10 +2520,10 @@ void QgisApp::about()
     whatsNew +=  "<li>" + tr( "Added gpsd support to live gps tracking." ) + "</li>";
     whatsNew +=  "<li>" + tr( "A new plugin has been included that allows for offline editing." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features." ) + "</li>";
-    whatsNew +=  "<li>" + tr( "Allow user specific PROJ.4 search paths and update srs.db to include grid reference." ) + "</li>";
+    whatsNew +=  "<li>" + tr( "Update srs.db to include grid reference." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Added a native (C++) raster calculator implementation which can deal with large rasters efficiently." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted." ) + "</li>";
-    whatsNew +=  "<li>" + tr( "Many improvements and new operators to the vector attribute table field calculator including field concatenation, row counter etc." ) + "</li>";
+    whatsNew +=  "<li>" + tr( "Many improvements and new operators to the field calculator including field concatenation, row counter etc." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Experimental WFS-T support. Additionally ported wfs to network manager." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Georeferencer has had many tidy ups and improvements." ) + "</li>";
@@ -2542,18 +2538,18 @@ void QgisApp::about()
     whatsNew +=  "<h3>" + tr( "Table of contents (TOC) improvements" ) + "</h3>";
     whatsNew +=  "<ul>";
     whatsNew +=  "  <li>" + tr( "Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent." ) + "</li>";
-    whatsNew +=  "  <li>" + tr( "When writing shape files using the table of contents context menu's 'Save as' option, you can now specify OGR creation options." ) + "</li>";
-    whatsNew +=  "  <li>" + tr( "In the table of contents, it is now possible to select and remove several layers at once." ) + "</li>";
+    whatsNew +=  "  <li>" + tr( "When writing vector files using the table of contents context menu's 'Save as' option, you can now specify OGR creation options." ) + "</li>";
+    whatsNew +=  "  <li>" + tr( "In the table of contents, it is now possible to select and remove or move several layers at once." ) + "</li>";
     whatsNew +=  "</ul>";
 
     whatsNew +=  "<h3>" + tr( "Labelling (New generation only)" ) + "</h3>";
     whatsNew +=  "<ul>";
-    whatsNew +=  "  <li>" + tr( "Data defined label position in labeling-ng." ) + "</li>";
-    whatsNew +=  "  <li>" + tr( "Line wrapping, data defined font and buffer settings for labeling-ng." ) + "</li>";
+    whatsNew +=  "  <li>" + tr( "Data defined label position." ) + "</li>";
+    whatsNew +=  "  <li>" + tr( "Line wrapping, data defined font and buffer settings." ) + "</li>";
     whatsNew +=  "</ul>";
     whatsNew +=  "<h3>" + tr( "Layer properties and symbology" ) + "</h3>";
     whatsNew +=  "<ul>";
-    whatsNew +=  "  <li>" + tr( "Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). " ) + "<a href=\"http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/\">" + tr( "Read More" ) + "</a></li>";
+    whatsNew +=  "  <li>" + tr( "Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). " ) + "<a href=\"http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/\">" + tr( "Read More." ) + "</a></li>";
     whatsNew +=  "  <li>" + tr( "Improved loading speed of the symbol properties dialog." ) + "</li>";
     whatsNew +=  "  <li>" + tr( "Data-defined rotation and size for categorized and graduated renderer (symbology-ng)." ) + "</li>";
     whatsNew +=  "  <li>" + tr( "Use size scale also for line symbols to modify line width." ) + "</li>";
