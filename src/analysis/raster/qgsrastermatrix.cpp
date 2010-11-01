@@ -93,6 +93,36 @@ bool QgsRasterMatrix::power( const QgsRasterMatrix& other )
   return twoArgumentOperation( opPOW, other );
 }
 
+bool QgsRasterMatrix::equal( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opEQ, other );
+}
+
+bool QgsRasterMatrix::notEqual( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opNE, other );
+}
+
+bool QgsRasterMatrix::greaterThan( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opGT, other );
+}
+
+bool QgsRasterMatrix::lesserThan( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opLT, other );
+}
+
+bool QgsRasterMatrix::greaterEqual( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opGE, other );
+}
+
+bool QgsRasterMatrix::lesserEqual( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opLE, other );
+}
+
 bool QgsRasterMatrix::squareRoot()
 {
   if ( !mData )
@@ -241,6 +271,24 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           mData[0] = pow( mData[0], ( float ) other.number() );
         }
         break;
+      case opEQ:
+        mData[0] = ( mData[0] == other.number() ? 1 : 0 );
+        break;
+      case opNE:
+        mData[0] = ( mData[0] == other.number() ? 0 : 1 );
+        break;
+      case opGT:
+        mData[0] = ( mData[0] > other.number() ? 1 : 0 );
+        break;
+      case opLT:
+        mData[0] = ( mData[0] < other.number() ? 1 : 0 );
+        break;
+      case opGE:
+        mData[0] = ( mData[0] >= other.number() ? 1 : 0 );
+        break;
+      case opLE:
+        mData[0] = ( mData[0] <= other.number() ? 1 : 0 );
+        break;
     }
     return true;
   }
@@ -293,6 +341,42 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           {
             mData[i] = pow( mData[i], matrix[i] );
           }
+        }
+        break;
+      case opEQ:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] == matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opNE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] == matrix[i] ? 0 : 1 );
+        }
+        break;
+      case opGT:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] > matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opLT:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] < matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opGE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] >= matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opLE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] <= matrix[i] ? 1 : 0 );
         }
         break;
     }
@@ -353,9 +437,45 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           }
         }
         break;
+      case opEQ:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( value == matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opNE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( value == matrix[i] ? 0 : 1 );
+        }
+        break;
+      case opGT:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( value > matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opLT:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( value < matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opGE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( value >= matrix[i] ? 1 : 0 );
+        }
+        break;
+      case opLE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( value <= matrix[i] ? 1 : 0 );
+        }
+        break;
     }
   }
-  else
+  else //this matrix is a real matrix and the other a number
   {
     value = other.number();
     int nEntries = mColumns * mRows;
@@ -406,6 +526,42 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           {
             mData[i] = pow( mData[i], ( float ) value );
           }
+        }
+        break;
+      case opEQ:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] == value ? 1 : 0 );
+        }
+        break;
+      case opNE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] == value ? 0 : 1 );
+        }
+        break;
+      case opGT:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] > value ? 1 : 0 );
+        }
+        break;
+      case opLT:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] < value ? 1 : 0 );
+        }
+        break;
+      case opGE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] >= value ? 1 : 0 );
+        }
+        break;
+      case opLE:
+        for ( int i = 0; i < nEntries; ++i )
+        {
+          mData[i] = ( mData[i] <= value ? 1 : 0 );
         }
         break;
     }

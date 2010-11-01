@@ -77,6 +77,24 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
       case opPOW:
         leftMatrix.power( rightMatrix );
         break;
+      case opEQ:
+        leftMatrix.equal( rightMatrix );
+        break;
+      case opNE:
+        leftMatrix.notEqual( rightMatrix );
+        break;
+      case opGT:
+        leftMatrix.greaterThan( rightMatrix );
+        break;
+      case opLT:
+        leftMatrix.lesserThan( rightMatrix );
+        break;
+      case opGE:
+        leftMatrix.greaterEqual( rightMatrix );
+        break;
+      case opLE:
+        leftMatrix.lesserEqual( rightMatrix );
+        break;
       case opSQRT:
         leftMatrix.squareRoot();
         break;
@@ -118,7 +136,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
 
 QgsRasterCalcNode* QgsRasterCalcNode::parseRasterCalcString( const QString& str, QString& parserErrorMsg )
 {
-  extern QgsRasterCalcNode* localParseRasterCalcString( const QString& str, QString& parserErrorMsg );
+  extern QgsRasterCalcNode* localParseRasterCalcString( const QString & str, QString & parserErrorMsg );
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 

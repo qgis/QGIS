@@ -29,6 +29,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opMUL,
       opDIV,
       opPOW,
+      opEQ,         // =
+      opNE,         // != resp. <>
+      opGT,         // >
+      opLT,         // <
+      opGE,         // >=
+      opLE,         // <=
     };
 
     enum OneArgOperator
@@ -39,7 +45,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opTAN,
       opASIN,
       opACOS,
-      opATAN
+      opATAN,
     };
 
     /**Takes ownership of data array*/
@@ -70,6 +76,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool multiply( const QgsRasterMatrix& other );
     bool divide( const QgsRasterMatrix& other );
     bool power( const QgsRasterMatrix& other );
+    bool equal( const QgsRasterMatrix& other );
+    bool notEqual( const QgsRasterMatrix& other );
+    bool greaterThan( const QgsRasterMatrix& other );
+    bool lesserThan( const QgsRasterMatrix& other );
+    bool greaterEqual( const QgsRasterMatrix& other );
+    bool lesserEqual( const QgsRasterMatrix& other );
 
     bool squareRoot();
     bool sinus();
