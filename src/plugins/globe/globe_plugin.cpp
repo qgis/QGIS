@@ -23,6 +23,7 @@
 #include <qgisinterface.h>
 #include <qgisgui.h>
 #include <qgslogger.h>
+#include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 
 #include <QAction>
@@ -102,7 +103,7 @@ void GlobePlugin::run()
 
   // read base layers from earth file
   EarthFile earthFile;
-  if ( !earthFile.readXML( "/home/pi/devel/gis/qgis/src/plugins/globe/globe.earth" ) )
+  if ( !earthFile.readXML( QString("%1/%2").arg(QgsApplication::pkgDataPath()).arg("globe/globe.earth").toStdString() ) )
   {
     return;
   }
