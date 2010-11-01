@@ -260,8 +260,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.treePlugins, SIGNAL("itemSelectionChanged()"), self.pluginTreeClicked)
     self.connect(self.treeRepositories, SIGNAL("itemSelectionChanged()"), self.repositoryTreeClicked)
     # buttons
-    self.connect(self.buttonInstall, SIGNAL("clicked()"), self.installPlugin)
-    self.connect(self.buttonUninstall, SIGNAL("clicked()"), self.uninstallPlugin)
+    self.connect(self.buttonInstall, SIGNAL("clicked()"), self.installPluginClicked)
+    self.connect(self.buttonUninstall, SIGNAL("clicked()"), self.uninstallPluginClicked)
     self.buttonInstall.setEnabled(False)
     self.buttonUninstall.setEnabled(False)
     self.buttonHelp.setEnabled(QGIS_14)
@@ -564,12 +564,25 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
 
 
   # ----------------------------------------- #
-  def installPlugin(self):
-    """ install currently selected plugin """
+  def installPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    infoString = ('','')
     key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    self.installPlugin(key)
+
+
+  # ----------------------------------------- #
+  def uninstallPluginClicked(self):
+    if not self.treePlugins.currentItem():
+      return
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    self.uninstallPlugin(key)
+
+
+# ----------------------------------------- #
+  def installPlugin(self, key):
+    """ install currently selected plugin """
+    infoString = ('','')
     plugin = plugins.all()[key]
     previousStatus = plugin["status"]
     if not plugin:
@@ -666,11 +679,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
 
 
   # ----------------------------------------- #
-  def uninstallPlugin(self):
+  def uninstallPlugin(self,key):
     """ uninstall currently selected plugin """
-    if not self.treePlugins.currentItem():
-      return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
     plugin = plugins.all()[key]
     if not plugin:
       return
