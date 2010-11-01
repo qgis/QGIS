@@ -794,12 +794,12 @@ QPair<QString, QString> QgsVectorFileWriter::nameAndGlob( QString driverName )
   }
   else if ( driverName.startsWith( "GML" ) )
   {
-    longName = "Geography Markup Language";
+    longName = "Geography Markup Language (GML)";
     glob = "*.gml";
   }
   else if ( driverName.startsWith( "GMT" ) )
   {
-    longName = "Generic Mapping Tools";
+    longName = "Generic Mapping Tools (GMT)";
     glob = "*.gmt";
   }
   else if ( driverName.startsWith( "GPX" ) )
@@ -819,7 +819,7 @@ QPair<QString, QString> QgsVectorFileWriter::nameAndGlob( QString driverName )
   }
   else if ( driverName.startsWith( "KML" ) )
   {
-    longName = "Keyhole Markup Language";
+    longName = "Keyhole Markup Language (KML)";
     glob = "*.kml" ;
   }
   else if ( driverName.startsWith( "MapInfo File" ) )
@@ -839,7 +839,7 @@ QPair<QString, QString> QgsVectorFileWriter::nameAndGlob( QString driverName )
   }
   else if ( driverName.startsWith( "SDTS" ) )
   {
-    longName = "Spatial Data Transfer Standard";
+    longName = "Spatial Data Transfer Standard (SDTS)";
     glob = "*catd.ddf";
   }
   else if ( driverName.startsWith( "SQLite" ) )
