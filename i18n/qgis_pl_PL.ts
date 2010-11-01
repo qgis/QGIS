@@ -1858,19 +1858,19 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przelicz -srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Współrzędne obrazu (piksele) muszą być wyrażone liczbami całkowitymi.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przelicz -prjwin</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Współrzędne obrazu (geograficzne) muszą być wyrażone liczbami.</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
@@ -2045,7 +2045,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="93"/>
         <source>&amp;Resolution:</source>
-        <translation>&amp;Rozdzielczość:</translation>
+        <translation>Ro&amp;zdzielczość:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="128"/>
@@ -2545,23 +2545,24 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="154"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="170"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Procent powiększenia obrazu zmieni odpowiednio rozmiar piksela/rozdzielczość obrazu: 25% powiększy piksele 4x.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Powiększenie? M.</translatorcomment>
+        <translation type="unfinished">Przeskalowanie:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="186"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="282"/>
         <source>Assign a specified nodata value to output bands.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Określ wartość braku danych kanałów wyjściowych.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="196"/>
@@ -2574,7 +2575,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <source>Expand:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rozciągnij:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
@@ -2584,18 +2585,19 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="219"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="224"/>
         <source>RGBA</source>
-        <translation type="unfinished"></translation>
+        <translation>RGBA</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="232"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="242"/>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>do poprawki M.</translatorcomment>
+        <translation type="unfinished">Wybiera do kopiowania subokno z wejściowego obrazu, bazując na lokalizacji pikselalub linii. (Wprowadź Xoff Yoff Xsize Ysize)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="235"/>
@@ -2616,12 +2618,12 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="266"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiuje wszystkie warstwy tego pliku do oddzielnych plików. Stosuje się dla formatów obsługujących warstwy (HDF, OGDI).</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="269"/>
         <source>Sds</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rozdziel na warstwy</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="103"/>
@@ -3830,7 +3832,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <name>PythonConsole</name>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished">Konsola Pythona</translation>
+        <translation>Konsola Pythona</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this console
@@ -3932,7 +3934,7 @@ qgis.utils.iface (instancję klasy QgisInterface).
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="233"/>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transformacja wymaga co majmniej czterech punktów.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
@@ -4966,7 +4968,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="269"/>
         <source>created field %1 not found (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>nie znaleziono utworzonego zbioru %1 (błąd OGR: %2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="509"/>
@@ -5142,12 +5144,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="39"/>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak aktywnej warstwy wektorowej</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="40"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Aby wskazać obiekty, najpierw należy wybrać warstwę wektorową z legendy</translation>
+        <translation>Aby wybrać obiekty, najpierw należy wskazać warstwę wektorową w oknie legendy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="116"/>
@@ -5157,7 +5159,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="117"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished">Wybór wykracza poza układ współrzędnych warstwy.</translation>
+        <translation>Wybór wykracza poza układ współrzędnych warstwy.</translation>
     </message>
 </context>
 <context>
@@ -6665,25 +6667,25 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="888"/>
         <location filename="../src/app/qgisapp.cpp" line="890"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz obiekty prostokątem</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="894"/>
         <location filename="../src/app/qgisapp.cpp" line="896"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz obiekty wielobokiem</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="900"/>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz obiekty zaznaczeniem</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="906"/>
         <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>Select features by radius</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz obiekty okręgiem</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="934"/>
