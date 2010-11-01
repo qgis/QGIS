@@ -55,6 +55,11 @@
 %type <node> root
 %type <node> raster_exp
 
+%left NE
+%left GE
+%left LE
+
+%left '=' '<' '>'
 %left '+' '-'
 %left '*' '/'
 %left '^'
@@ -66,6 +71,12 @@ root: raster_exp{}
 
 raster_exp:
   FUNCTION '(' raster_exp ')'   { $$ = new QgsRasterCalcNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
+  | raster_exp '=' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opEQ, $1, $3 ); joinTmpNodes($$,$1,$3); }
+  | raster_exp NE raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opNE, $1, $3 ); joinTmpNodes($$,$1,$3); }
+  | raster_exp '>' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opGT, $1, $3 ); joinTmpNodes($$, $1, $3); }
+  | raster_exp '<' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opLT, $1, $3 ); joinTmpNodes($$, $1, $3); }
+  | raster_exp GE raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opGE, $1, $3 ); joinTmpNodes($$, $1, $3); }
+  | raster_exp LE raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opLE, $1, $3 ); joinTmpNodes($$, $1, $3); }
   | raster_exp '^' raster_exp   { $$ = new QgsRasterCalcNode(QgsRasterCalcNode::opPOW, $1, $3); joinTmpNodes($$,$1,$3); }
   | raster_exp '*' raster_exp   { $$ = new QgsRasterCalcNode(QgsRasterCalcNode::opMUL, $1, $3); joinTmpNodes($$,$1,$3); }
   | raster_exp '/' raster_exp   { $$ = new QgsRasterCalcNode(QgsRasterCalcNode::opDIV, $1, $3); joinTmpNodes($$,$1,$3); }
