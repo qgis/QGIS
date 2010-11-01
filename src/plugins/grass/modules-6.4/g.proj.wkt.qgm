@@ -4,5 +4,5 @@
 <qgisgrassmodule label="Create new location from .prj (WKT) file" module="g.proj">
 	<flag key="c" answer="on" hidden="yes" />
 	<file key="wkt"/>
-	<file key="location"/>
+	<option key="location"/>
 </qgisgrassmodule>

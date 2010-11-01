@@ -51,7 +51,6 @@
 					<grass name="r.in.aster"/>
 					<grass name="r.in.wms"/>
 				</section>
-
 			</section>
 			<section label="Import vector into GRASS">
 				<section label="Import vector into GRASS from QGIS view">
@@ -73,7 +72,7 @@
 					<grass name="v.in.gns"/>
 				</section>
 			</section>
-<section label="Import from database into GRASS">
+			<section label="Import from database into GRASS">
 				<grass name="db.in.ogr"/>
 			</section>
 		</section>
