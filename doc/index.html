@@ -22,6 +22,75 @@
 -->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
+<h2>Whats new in Version 1.6.0 'Capiapó'?</h2>
+
+<p>
+Please note that this is a release in our 'cutting edge' release series. As
+such it contains new features and extends the programmatic interface over QGIS
+1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases. 
+</p>
+<p>
+This release includes over 177 bug fixes and many new features and enhancements. 
+Once again it is impossible to document everything here that has changed so we will 
+just provide a bullet list of key new features here.
+</p>
+
+<h3>General Improvements</h3>
+<ul>
+<li>Added gpsd support to live gps tracking.</li>
+<li>A new plugin has been included that allows for offline editing.</li>
+<li>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</li>
+<li>Allow user specific PROJ.4 search paths and update srs.db to include grid reference.</li>
+<li>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</li>
+<li>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</li>
+<li>Many improvements and new operators to the vector attribute table field calculator including field concatenation, row counter etc.</li>
+<li>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</li>
+<li>Experimental WFS-T support. Additionally ported wfs to network manager.</li>
+<li>Georeferencer has had many tidy ups and improvements.</li>
+<li>Support for long int in attribute dialog and editor.</li>
+<li>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol. <a href="http://linfiniti.com/2010/08/qgis-mapserver-a-wms-server-for-the-masses/">Read More</a></li>
+<li>Select and measure toolbar flyouts and submenus.</li>
+<li>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</li>
+<li>Added search string support for feature ids ($id) and various other search related improvements.</li>
+<li>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</li>
+</ul>
+
+<h3>Table of contents (TOC) improvements</h3>
+<ul>
+  <li>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</li>
+  <li>When writing shape files using the table of contents context menu's 'Save as' option, you can now specify OGR creation options.</li>
+  <li>In the table of contents, it is now possible to select and remove several layers at once.</li>
+</ul>
+
+<h3>Labelling (New generation only)</h3>
+<ul>
+  <li>Data defined label position in labeling-ng.</li>
+  <li>Line wrapping, data defined font and buffer settings for labeling-ng.</li>
+</ul>
+<h3>Layer properties and symbology</h3>
+<ul>
+  <li>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). <a href="http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/">Read More</a></li>
+  <li>Improved loading speed of the symbol properties dialog.</li>
+  <li>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</li>
+  <li>Use size scale also for line symbols to modify line width.</li>
+  <li>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</li>
+  <li>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</li>
+  <li>Allow creation of color ramps in vector color ramp combo box.</li>
+  <li>Added "style manager..." button to symbol selector so that users will find the style manager more easily.</li>
+</ul>
+
+<h3>Map Composer</h3>
+<ul>
+  <li>add capability to show and manipulate composer item width/ height in item position dialog.</li>
+  <li>Composer items can now be deleted with the backspace key.</li>
+  <li>Sorting for composer attribute table (several columns and ascending / descending).</li>
+</ul>
+:
+
+:
+
+:
+
 
 <h2>Whats new in Version 1.5.0 'Tethys'?</h2>
 
