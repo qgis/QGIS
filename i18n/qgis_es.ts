@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="111"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Carácter: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
     </message>
 </context>
 <context>
@@ -1858,30 +1858,32 @@ Do you want terminate it anyway?</source>
         <translation>Copiar</translation>
     </message>
     <message>
+        <source>Error retrieving the extent</source>
+        <translation>Error al recuperar la extensión</translation>
+    </message>
+    <message>
+        <source>GDAL was unable to retrieve the extent from any file. 
+The &quot;Use intersected extent&quot; option will be unchecked.</source>
+        <translation>GDAL no pudo recuperra la extensión de ningún archivo. 
+Se desmarcará la opción &quot;Usar extensión de la intersección&quot;.</translation>
+    </message>
+    <message>
+        <source>Empty extent</source>
+        <translation>Extensión vacía</translation>
+    </message>
+    <message>
+        <source>The computed extent is empty. 
+Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
+        <translation>La extensión procesada está vacía. 
+Desactive la opción &quot;Usar extensión de la intersección&quot; para obtener una salida no vacía.</translation>
+    </message>
+    <message>
         <source>Copy all</source>
         <translation>Copiar todo</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
         <translation>Seleccionar el archivo a analizar</translation>
-    </message>
-    <message>
-        <source>Error retrieving the extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GDAL was unable to retrieve the extent from any file. 
-The &quot;Use intersected extent&quot; option will be unchecked.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The computed extent is empty. 
-Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select the input file</source>
@@ -2652,7 +2654,7 @@ adecuado para uso directo con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize:</source>
-        <translation>Tamañó de salida:</translation>
+        <translation>Tamaño de salida:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
@@ -2699,7 +2701,7 @@ El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="232"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="242"/>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona una subventana de la imagen de origen para copiar, basada en la localización de píxel/línea (Introducir Xoff Yoff Xsize Ysize)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="235"/>
@@ -2710,7 +2712,7 @@ El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="249"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="259"/>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona una subventana de la imagen de origen para copiar (como srcwin), pero con las esquinas dadas en coordenadas georreferenciadas (Introducir XSupIzq, YSupIzq, XInfDcha, YInfDcha)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="252"/>
@@ -2720,12 +2722,12 @@ El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="266"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar todos los subconjuntos de datos de este archivo a arhivos individuales de salida. Usar con formatos como HDF o OGDI que tienen subconjuntos de datos.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="269"/>
         <source>Sds</source>
-        <translation type="unfinished"></translation>
+        <translation>SCD</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="103"/>
@@ -4015,7 +4017,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="468"/>
         <source>Could not retrieve value of list value</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo obtener el valor de la lista de valores</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="521"/>
@@ -4898,7 +4900,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1164"/>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir la base de datos de SRC %1 &lt;br&gt;Error(%2): %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1228"/>
@@ -5086,23 +5088,23 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="403"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo invariante no válido para el campo %1[%2]: recibido %3 con tipo %4</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="419"/>
         <source>Invalid feature geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometría de objeto espacial no válida</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="442"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="458"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometría de objeto espacial no importada (error de OGR: %1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="472"/>
         <source>Feature creation error (OGR error: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de creación de objeto espacial (error de OGR: %1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="599"/>
@@ -5112,18 +5114,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="615"/>
         <source>Feature write errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Errores de escritura de objeto espacial:</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="625"/>
         <source>Stopping after %1 errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Se detiene después de %1 errores</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="644"/>
         <source>
 Only %1 of %2 features written.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Sólo se han escrito %1 de %2 objetos espaciales.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="60"/>
@@ -5312,32 +5315,32 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1866"/>
         <source>Raster Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Histograma ráster</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1869"/>
         <source>Pixel Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de píxel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1870"/>
         <source>Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Frecuencia</translation>
     </message>
     <message>
         <location filename="../src/gui/qgisgui.cpp" line="132"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished">Seleccione un nombre de archivo para guardar la imagen del mapa</translation>
+        <translation>Seleccione un nombre de archivo para guardar la imagen del mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="31"/>
         <source>OfflineEditing</source>
-        <translation type="unfinished"></translation>
+        <translation>EdiciónFueraDeLínea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="32"/>
         <source>Allow offline editing and synchronizing with database</source>
-        <translation type="unfinished"></translation>
+        <translation>Permite la edición no en línea y la sincronización con la base de datos</translation>
     </message>
 </context>
 <context>
@@ -6201,7 +6204,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Raster calculator ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculadora ráster...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1017"/>
@@ -6262,13 +6265,13 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
         <location filename="../src/app/qgisapp.cpp" line="1072"/>
         <location filename="../src/app/qgisapp.cpp" line="1074"/>
         <source>Remove Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar capa(s)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1073"/>
         <source>Ctrl+D</source>
         <comment>Remove Layer(s)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+B</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1078"/>
@@ -6298,12 +6301,12 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1459"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1469"/>
         <source>Measure</source>
-        <translation type="unfinished">Medida</translation>
+        <translation>Medir</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2285"/>
@@ -6327,108 +6330,121 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
         <location filename="../src/app/qgisapp.cpp" line="2496"/>
         <source>
 This copy of QGIS has been built with QWT %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <location filename="../src/app/qgisapp.cpp" line="2510"/>
-        <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Esta copia de QGIS se ha compilado con QWT %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2512"/>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
-        <translation type="unfinished"></translation>
+        <source>Whats new in Version 1.6.0 &apos;CapiapÃ³&apos;?</source>
+        <translation type="obsolete">¿Qué hay de nuevo en la versión 1.6.0 &quot;Copiapó&quot;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2515"/>
-        <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As</source>
+        <translation type="obsolete">Por favor, tenga en cuenta que esta es una versión de nuestra serie &quot;último grito&quot;. Como </translation>
+    </message>
+    <message>
+        <source>such it contains new features and extends the programmatic interface over QGIS</source>
+        <translation type="obsolete">tal contiene nuevas características y extiende la interfaz de programación sobre QGIS</translation>
+    </message>
+    <message>
+        <source>1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases. </source>
+        <translation type="obsolete">1.0.x y QGIS 1.5.0. Recomendamos usar esta versión sobre otras anteriores. </translation>
+    </message>
+    <message>
+        <source>This release includes over 177 bug fixes and many new features and enhancements. </source>
+        <translation type="obsolete">Esta versión incluye la corrección de más de 177 errores y muchas funciones nuevas y mejoras. </translation>
+    </message>
+    <message>
+        <source>Once again it is impossible to document everything here that has changed so we will </source>
+        <translation type="obsolete">Una vez más es imposible documentar aquí cada cambio, así que </translation>
+    </message>
+    <message>
+        <source>just provide a bullet list of key new features here.</source>
+        <translation type="obsolete">sólo proporcionaremos una lista escueta de las principales funciones nuevas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2518"/>
         <source>General Improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mejoras generales</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2520"/>
         <source>Added gpsd support to live gps tracking.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida capacidad gpsd para trazado gps en vivo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2521"/>
         <source>A new plugin has been included that allows for offline editing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha incluido un complemento nuevo que permite la edición fuera de línea.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2522"/>
         <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>La calculadora de campos ahora inserta un valor NULO en caso de error en el cálculo de un objeto espacial, en vez de detenerse y revertir los cálculos de todos los objetos espaciales.</translatorcomment>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2523"/>
-        <source>Update srs.db to include grid reference.</source>
-        <translation type="unfinished"></translation>
+        <source>Allow user specific PROJ.4 search paths and update srs.db to include grid reference.</source>
+        <translation type="obsolete">Permite rutas de búsqueda de PROJ.4 específicas del usuario y actualiza la srs.db para incluir referencia de rejilla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2524"/>
         <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida una calculadora ráster nativa (C++) que puede manejar grandes ráster de forma eficiente.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2525"/>
         <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Interacción mejorada con controles de extensión en la barra de estado, de forma que el contenido del control se pueda copiar y pegar.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2526"/>
-        <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
-        <translation type="unfinished"></translation>
+        <source>Many improvements and new operators to the vector attribute table field calculator including field concatenation, row counter etc.</source>
+        <translation type="obsolete">Muchas mejoras y operadores nuevos en la calculadora de campos de la tabla de atributos vectorial, incluyendo concatenación de campos, cuenta de filas, etc.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2527"/>
         <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida opción --configpath que sobreescribe la ruta predeterminada (~/.qgis) para configuración del usuario y fuerza a QSettings a usar este directorio también. Esto permite a los usuarios, por ejemplo, llevar la instalación de QGIS en un pendrive junto con todos los complementos y la configuración.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2528"/>
         <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidad WFS-T experimental. De forma adicional, portado WFS al adminitrador de red.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2529"/>
         <source>Georeferencer has had many tidy ups and improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>El georreferenciador ha sufrido muchas mejoras y limpieza.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2530"/>
         <source>Support for long int in attribute dialog and editor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidad para enteros largos en el diálogo de atributos y editor.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
         <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha incorporado el proyecto Mapserver de QGIS al repositorio SVN principal y se están haciendo disponibles los paquetes QGIS Mapserver le permite servir su archivo de proyecto de QGIS através del protocolo WMS de OGC.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
         <location filename="../src/app/qgisapp.cpp" line="2552"/>
         <source>Read More.</source>
-        <translation type="unfinished"></translation>
+        <translation>Leer más.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2532"/>
         <source>Select and measure toolbar flyouts and submenus.</source>
-        <translation type="unfinished"></translation>
+        <translation>Herramientas seleccionar y medir desplegables y con submenús.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2533"/>
         <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha añadido capacidad para tablas no espaciales (actualmente OGR, texto delimitado y PostgreSQL). Estas tablas se pueden usar ojear los campos o explorarse de forma general y editarse usando la vista de la tabla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2534"/>
         <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida capacidad de búsqueda de cadenas para ID de objetos espaciales ($id) y otras mejoras relacionadas con búsquedas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2535"/>
@@ -6438,42 +6454,38 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2538"/>
         <source>Table of contents (TOC) improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mejoras en el panel Capas</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2540"/>
         <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida una nueva opción al menú de leyenda ráster que estirará la capa actual usando los valores mínimo y máximo de píxel de la extensión actual.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2541"/>
-        <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
-        <translation type="unfinished"></translation>
+        <source>When writing shape files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
+        <translation type="obsolete">Cuando se escribe un archivo shape usando la opción «Guardar como» del menú contextual del panel Capas, ahora se pueden especificar las opciones de creación de OGR.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2542"/>
-        <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
-        <translation type="unfinished"></translation>
+        <source>In the table of contents, it is now possible to select and remove several layers at once.</source>
+        <translation type="obsolete">Ahora es posible seleccionar varias capaz a la vez en el panel Capas y eliminarlas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2545"/>
         <source>Labelling (New generation only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquetado (sólo Nueva generación)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2547"/>
-        <source>Data defined label position.</source>
-        <translation type="unfinished"></translation>
+        <source>Data defined label position in labeling-ng.</source>
+        <translation type="obsolete">Posición de etiquetas definida por datos en Etiquetado-NG.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2548"/>
-        <source>Line wrapping, data defined font and buffer settings.</source>
-        <translation type="unfinished"></translation>
+        <source>Line wrapping, data defined font and buffer settings for labeling-ng.</source>
+        <translation type="obsolete">Envoltura de líneas, tipo de letra definida por datos y configuración de buffer para Etiquetado-NG.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2550"/>
         <source>Layer properties and symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de capa y simbología</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2552"/>
@@ -6481,59 +6493,63 @@ This copy of QGIS has been built with QWT %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Read More</source>
+        <translation type="obsolete">Leer más</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="2553"/>
         <source>Improved loading speed of the symbol properties dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mejorada la velocidad de carga del diálogo de propiedades de símbolos.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2554"/>
         <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotación y tamaño definido por datos para renderizador categorizado y graduado (Simbología-NG).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2555"/>
         <source>Use size scale also for line symbols to modify line width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar escala de tamaño también para símbolos de línea para modificar la anchura de línea.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2556"/>
         <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reemplazada la implementación de histograma ráster por una basada en Qwt. Añadida opción para guardar histograma como archivo de imagen. Mostrar valores reales de píxel en eje X del histograma ráster.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2557"/>
         <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida capacidad para seleccionar píxeles de la vista del mapa de forma interactiva para poblar la tabla de transparencia en el diálogo de propiedades de capa ráster.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2558"/>
         <source>Allow creation of color ramps in vector color ramp combo box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir la creación de rampas de color en el cuadro combinado de rampa de color vectorial.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2559"/>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadido botón «administrador de estilos...» al selector de símbolos de forma que los usuarios encontrarán el administrador de estilos más fácilmente.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2562"/>
         <source>Map Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Diseñador de mapas</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2564"/>
         <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadida capacidad para mostrar y manipular anchura/altura de elementos del diseñador en el diálogo de posición del elemento.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2565"/>
         <source>Composer items can now be deleted with the backspace key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Los elementos del diseñador ahora se pueden borrar con la tecla retroceso.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2566"/>
         <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordenación para tabla de atributos del diseñador (varias columnas y ascendente/descendente).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2867"/>
@@ -6555,12 +6571,12 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3204"/>
         <source>Calculating...</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculando...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3204"/>
         <source>Abort...</source>
-        <translation type="unfinished">Cancelar...</translation>
+        <translation>Cancelar...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3229"/>
@@ -7655,6 +7671,51 @@ Esta copia de QGIS se ha compilado con soporte para SpatialLite (%1).</translati
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Seleccione un nombre de archivo para guardar el archivo de proyecto de QGIS</translation>
     </message>
+    <message utf8="true">
+        <location filename="../src/app/qgisapp.cpp" line="2510"/>
+        <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2512"/>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2515"/>
+        <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2523"/>
+        <source>Update srs.db to include grid reference.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2526"/>
+        <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2541"/>
+        <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2542"/>
+        <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2547"/>
+        <source>Data defined label position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2548"/>
+        <source>Line wrapping, data defined font and buffer settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2687"/>
         <source>%1 doesn&apos;t have any layers</source>
@@ -7983,7 +8044,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     <message>
         <location filename="../src/app/qgisappinterface.cpp" line="395"/>
         <source>Run actions</source>
-        <translation type="unfinished">Ejecutar acciones</translation>
+        <translation>Ejecutar acciones</translation>
     </message>
 </context>
 <context>
@@ -8439,7 +8500,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="151"/>
         <source> (long)</source>
-        <translation type="unfinished"></translation>
+        <translation> (largo)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="156"/>
@@ -8528,13 +8589,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="149"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Ascendente</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="71"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="77"/>
         <source>Descending</source>
-        <translation type="unfinished"></translation>
+        <translation>Descendente</translation>
     </message>
 </context>
 <context>
@@ -8542,42 +8603,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="14"/>
         <source>Select attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar atributos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="31"/>
         <source>&lt;b&gt;Attribute&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Atributo&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="44"/>
         <source>&lt;b&gt;Alias&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Alias&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="56"/>
         <source>Select all</source>
-        <translation type="unfinished">Seleccionar todo</translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="63"/>
         <source>Clear</source>
-        <translation type="unfinished">Limpiar</translation>
+        <translation>Limpiar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="83"/>
         <source>Sorting</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordenar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="144"/>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="149"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Ascendente</translation>
     </message>
 </context>
 <context>
@@ -8595,8 +8656,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="144"/>
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Tabla de atributos - %1 :: %n / %2 objeto(s) espacial(es) seleccionados</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -8647,22 +8708,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="29"/>
         <source>Show selected only</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar sólo seleccionados</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="36"/>
         <source>Search selected only</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar sólo en seleccionados</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="43"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Distinguir mayúsculas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="88"/>
         <source>?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="99"/>
@@ -9298,7 +9359,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="40"/>
         <source>New color ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nueva rampa de color...</translation>
     </message>
 </context>
 <context>
@@ -20200,17 +20261,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="86"/>
         <source>Could not open the spatialite database</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir la base de datos de SpatialLite</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="279"/>
         <source>Could not copy the template database to new location</source>
-        <translation type="unfinished">No se pudo copiar la plantilla de la base de datos a la nueva localización</translation>
+        <translation>No se pudo copiar la plantilla de la base de datos a la nueva localización</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="363"/>
         <source>Unknown data type %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de dato %1 desconocido</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="394"/>
@@ -20220,48 +20281,48 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="457"/>
         <source>%v / %m features copied</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m objetos espaciales copiados</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="482"/>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="655"/>
         <source>%v / %m features processed</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m objetos espaciales procesados</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="531"/>
         <source>%v / %m fields added</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m campos añadidos</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="569"/>
         <source>%v / %m features added</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m objetos espaciales añadidos</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="598"/>
         <source>%v / %m features removed</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m objetos espaciales eliminados</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="615"/>
         <source>%v / %m feature updates</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m actualizaciones de objetos espaciales</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="634"/>
         <source>%v / %m feature geometry updates</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m actualizaciones de geometría de objetos espaciales</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="726"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Complemento de edición fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="738"/>
         <source>Could not open the spatialite logging database</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir la base de datos de conexiones de SpatialLite</translation>
     </message>
 </context>
 <context>
@@ -20269,28 +20330,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="56"/>
         <source>Convert to offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir en proyecto fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="58"/>
         <source>Create offline copies of selected layers and save as offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear copiar fuera de línea de las capas seleccionadas y guardar como proyecto fuera de linea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="63"/>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="70"/>
         <source>&amp;Offline Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Edici&amp;on fuera de linea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="66"/>
         <source>Synchronize</source>
-        <translation type="unfinished"></translation>
+        <translation>Sincronizar</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="67"/>
         <source>Synchronize offline project with remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sincronizar proyecto fuera de línea con capas remotas</translation>
     </message>
 </context>
 <context>
@@ -20308,7 +20369,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="93"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Complemento de edición fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="94"/>
