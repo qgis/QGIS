@@ -79,5 +79,5 @@ void QgsGLWidgetAdapter::mouseMoveEvent( QMouseEvent* event )
 
 void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 {
-    _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN);
+    _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_DOWN : osgGA::GUIEventAdapter::SCROLL_UP);
 }
