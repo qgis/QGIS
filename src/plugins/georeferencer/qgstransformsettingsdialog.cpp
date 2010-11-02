@@ -156,7 +156,7 @@ void QgsTransformSettingsDialog::changeEvent( QEvent *e )
 void QgsTransformSettingsDialog::accept()
 {
   int minGCPpoints;
-  if ( checkGCPpoints( cmbTransformType->currentIndex(), minGCPpoints ) )
+  if ( checkGCPpoints( cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt(), minGCPpoints ) )
   {
     if ( leOutputRaster->text().isEmpty() )
     {
