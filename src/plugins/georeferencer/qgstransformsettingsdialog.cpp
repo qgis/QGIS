@@ -152,7 +152,6 @@ void QgsTransformSettingsDialog::changeEvent( QEvent *e )
   }
 }
 
-#include <QDebug>
 void QgsTransformSettingsDialog::accept()
 {
   int minGCPpoints;
