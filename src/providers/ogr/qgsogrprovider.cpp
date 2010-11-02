@@ -1665,6 +1665,13 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   //create the attribute fields
 
   QTextCodec* codec = QTextCodec::codecForName( encoding.toLocal8Bit().data() );
+  if ( !codec )
+  {
+    // fall back to "System" codec
+    codec = QTextCodec::codecForLocale();
+    Q_ASSERT( codec );
+  }
+
 
   for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
