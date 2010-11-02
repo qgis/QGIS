@@ -435,6 +435,16 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 
     OGRGeometryH mGeom2 = createEmptyGeometry( geom->wkbType() );
 
+    if ( !mGeom2 )
+    {
+      QgsDebugMsg( QString( "Failed to create empty geometry for type %1 (OGR error: %2)" ).arg( geom->wkbType() ).arg( CPLGetLastErrorMsg() ) );
+      mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      mError = ErrFeatureWriteFailed;
+      OGR_F_Destroy( poFeature );
+      return false;
+    }
+
     OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
     if ( err != OGRERR_NONE )
     {
