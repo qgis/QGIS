@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QAbstractListModel>
+#include <QPixmapCache>
 
 #define DO_NOT_USE_STR "<off>"
 
@@ -55,9 +56,17 @@ class QgsMarkerListModel : public QAbstractListModel
 
       if ( role == Qt::DecorationRole ) // icon
       {
-        QPen pen( QColor( 0, 0, 255 ) );
-        QBrush brush( QColor( 220, 220, 220 ), Qt::SolidPattern );
-        return QPixmap::fromImage( QgsMarkerCatalogue::instance()->imageMarker( marker, 18, pen, brush ) );
+        QPixmap pixmap;
+
+        if ( !QPixmapCache::find( "ssd_" + marker, pixmap ) )
+        {
+          QPen pen( QColor( 0, 0, 255 ) );
+          QBrush brush( QColor( 220, 220, 220 ), Qt::SolidPattern );
+          pixmap = QPixmap::fromImage( QgsMarkerCatalogue::instance()->imageMarker( marker, 18, pen, brush ) );
+          QPixmapCache::insert( "ssd_" + marker, pixmap );
+        }
+
+        return pixmap;
       }
       else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
       {
