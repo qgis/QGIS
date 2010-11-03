@@ -106,23 +106,27 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
 
   const QgsFieldMap &fields = mLayer->pendingFields();
 
-  for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+  for ( int i = 0; i < 4; i++ )
   {
-    QgsFieldMap::const_iterator fit = fields.find( it.key() );
-    if ( fit == fields.constEnd() )
-      continue;
+    for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+    {
+      QgsFieldMap::const_iterator fit = fields.find( it.key() );
+      if ( fit == fields.constEnd() )
+        continue;
 
-    // Check for a replace a quoted version and a non-quoted version.
-    QString to_replace_1 = "[%" + fit->name() + "]";
-    QString to_replace_2 = "%" + fit->name();
-    QString to_replace_3 = "%" + mLayer->attributeDisplayName( it.key() );
-    QString to_replace_4 = "[%" + mLayer->attributeDisplayName( it.key() ) + "]";
+      QString to_replace;
+      switch ( i )
+      {
+        case 0: to_replace = "[%" + fit->name() + "]"; break;
+        case 1: to_replace = "[%" + mLayer->attributeDisplayName( it.key() ) + "]"; break;
+        case 2: to_replace = "%" + fit->name(); break;
+        case 3: to_replace = "%" + mLayer->attributeDisplayName( it.key() ); break;
+      }
 
-    expanded_action = expanded_action.replace( to_replace_1, it.value().toString() );
-    expanded_action = expanded_action.replace( to_replace_2, it.value().toString() );
-    expanded_action = expanded_action.replace( to_replace_3, it.value().toString() );
-    expanded_action = expanded_action.replace( to_replace_4, it.value().toString() );
+      expanded_action = expanded_action.replace( to_replace, it.value().toString() );
+    }
   }
+
 
   return expanded_action;
 }
