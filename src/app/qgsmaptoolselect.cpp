@@ -29,7 +29,7 @@
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+  : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
 }
@@ -37,7 +37,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
 void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == NULL )
+  if( vlayer == NULL )
   {
     return;
   }
@@ -46,9 +46,8 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
   QgsGeometry* selectGeom = rubberBand.asGeometry();
-  bool addSelection = e->modifiers() & Qt::ControlModifier ? true : false;
-  bool substractSelection = e->modifiers() & Qt::ShiftModifier ? true : false;
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, addSelection, substractSelection, true );
+  bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
   delete selectGeom;
   rubberBand.reset( true );
 }

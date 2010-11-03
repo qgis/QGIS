@@ -81,8 +81,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
 void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     QgsGeometry* selectGeometry,
     bool doContains,
-    bool addSelection,
-    bool substractSelection,
+    bool doDifference,
     bool singleSelect )
 {
   if( selectGeometry->type() != QGis::Polygon )
@@ -124,8 +123,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
   QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
   QgsDebugMsg( "doContains: " + QString( doContains ? "T" : "F" ) );
-  QgsDebugMsg( "addSelection: " + QString( addSelection ? "T" : "F" ) );
-  QgsDebugMsg( "substractSelection: " + QString( substractSelection ? "T" : "F" ) );
+  QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
   vlayer->select( QgsAttributeList(), selectGeomTrans.boundingBox(), true, true );
 
@@ -161,20 +159,10 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     newSelectedFeatures.insert( closestFeatureId );
   }
 
-  QgsDebugMsg( "Number of selected features: " + QString::number( newSelectedFeatures.size() ) );
+  QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
 
   QgsFeatureIds layerSelectedFeatures;
-  if( addSelection )
-  {
-    layerSelectedFeatures = vlayer->selectedFeaturesIds();
-    QgsFeatureIds::const_iterator i = newSelectedFeatures.constEnd();
-    while( i != newSelectedFeatures.constBegin() )
-    {
-      --i;
-      layerSelectedFeatures.insert( *i );
-    }
-  }
-  else if( substractSelection )
+  if( doDifference )
   {
     layerSelectedFeatures = vlayer->selectedFeaturesIds();
     QgsFeatureIds::const_iterator i = newSelectedFeatures.constEnd();
@@ -184,6 +172,10 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
       if( layerSelectedFeatures.contains( *i ) )
       {
         layerSelectedFeatures.remove( *i );
+      }
+      else
+      {
+        layerSelectedFeatures.insert( *i );
       }
     }
   }
@@ -198,8 +190,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
 
 void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e )
 {
-  bool doContains = e->modifiers() & Qt::AltModifier ? true : false;
-  bool addSelection = e->modifiers() & Qt::ControlModifier ? true : false;
-  bool substractSelection = e->modifiers() & Qt::ShiftModifier ? true : false;
-  setSelectFeatures( canvas, selectGeometry, doContains, addSelection, substractSelection );
+  bool doContains = e->modifiers() & Qt::ShiftModifier ? true : false;
+  bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+  setSelectFeatures( canvas, selectGeometry, doContains, doDifference );
 }
