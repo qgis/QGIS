@@ -109,6 +109,9 @@
             <property name="resizeMode">
              <enum>QListView::Adjust</enum>
             </property>
+            <property name="layoutMode">
+             <enum>QListView::Batched</enum>
+            </property>
             <property name="viewMode">
              <enum>QListView::IconMode</enum>
             </property>
