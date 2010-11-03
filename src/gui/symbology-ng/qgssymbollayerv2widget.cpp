@@ -438,6 +438,7 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( QWidget* paren
 
 #include <QTime>
 #include <QAbstractListModel>
+#include <QPixmapCache>
 
 class QgsSvgListModel : public QAbstractListModel
 {
@@ -458,16 +459,22 @@ class QgsSvgListModel : public QAbstractListModel
 
       if ( role == Qt::DecorationRole ) // icon
       {
-        QSvgRenderer renderer;
-        QPainter painter;
 
-        // render SVG file
-        renderer.load( entry );
-        QPixmap pixmap( QSize( 24, 24 ) );
-        pixmap.fill();
-        painter.begin( &pixmap );
-        renderer.render( &painter );
-        painter.end();
+        QPixmap pixmap;
+        if ( !QPixmapCache::find( entry, pixmap ) )
+        {
+          // render SVG file
+          QSvgRenderer renderer;
+          QPainter painter;
+          renderer.load( entry );
+          pixmap = QPixmap( QSize( 24, 24 ) );
+          pixmap.fill();
+          painter.begin( &pixmap );
+          renderer.render( &painter );
+          painter.end();
+
+          QPixmapCache::insert( entry, pixmap );
+        }
 
         return pixmap;
       }

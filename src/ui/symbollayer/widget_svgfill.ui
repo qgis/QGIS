@@ -55,8 +55,14 @@
      <property name="flow">
       <enum>QListView::LeftToRight</enum>
      </property>
+     <property name="layoutMode">
+      <enum>QListView::Batched</enum>
+     </property>
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
