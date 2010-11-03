@@ -27852,12 +27852,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="22"/>
         <source>Transformation type:</source>
-        <translation>Rodzaj transformacji:</translation>
+        <translation type="unfinished">Rodzaj transformacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="39"/>
         <source>Resampling method:</source>
-        <translation>Metoda resamplingu:</translation>
+        <translation type="unfinished">Metoda resamplingu</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="53"/>
@@ -27903,7 +27903,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="101"/>
         <source>Output raster:</source>
-        <translation>Raster wynikowy:</translation>
+        <translation type="unfinished">Raster wynikowy</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="113"/>
@@ -27916,12 +27916,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
         <source>Target SRS:</source>
-        <translation>Układ współrzędnych:</translation>
+        <translation type="unfinished">Układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
         <source>Generate pdf report:</source>
-        <translation>Raport pdf:</translation>
+        <translation type="unfinished">Utwórz raport w pdf</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="164"/>
@@ -27946,7 +27946,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="227"/>
         <source>Generate pdf map:</source>
-        <translation>Generuj mapę pdf:</translation>
+        <translation>Generuj mapę pdf</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="250"/>
@@ -28327,7 +28327,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="4163"/>
         <source>Specify CRS for layer %1</source>
-        <translation>Podaj układ współrzędnych dla warstwy %1</translation>
+        <translation>Określ układ współrzędnych dla warstwy %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2770"/>
@@ -29063,12 +29063,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>capabilities document contained no layers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">dokument &quot;capabilities&quot; nie zawierał żadnych warstw.</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="281"/>
         <source>Capabilities document is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dokument &quot;capabilities&quot; jest niepoprawny</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="286"/>
@@ -29769,7 +29769,7 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="871"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">pusty dokument &quot;capabilities&quot;</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="983"/>
@@ -29801,7 +29801,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
         <source>Request contains a format not offered by the server.</source>
-        <translation>Zapytanie zawiera format nie udostępniany przez serwer.</translation>
+        <translation>Zapytanie żąda formatu nie oferowanego przez serwer.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2178"/>
@@ -30000,12 +30000,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="934"/>
         <source>empty of capabilities: %1</source>
-        <translation>Brak Capabilities: %1</translation>
+        <translation type="unfinished">Brak &quot;capabilities&quot;: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="940"/>
         <source>Download of capabilities failed: %1</source>
-        <translation>Pobieranie Capabilities nie powiodło się: %1</translation>
+        <translation type="unfinished">Pobieranie &quot;capabilities&quot; nie powiodło się: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="952"/>
