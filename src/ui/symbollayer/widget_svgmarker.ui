@@ -141,6 +141,9 @@
      <property name="movement">
       <enum>QListView::Static</enum>
      </property>
+     <property name="layoutMode">
+      <enum>QListView::Batched</enum>
+     </property>
      <property name="spacing">
       <number>2</number>
      </property>
@@ -152,6 +155,9 @@
      </property>
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>true</bool>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
