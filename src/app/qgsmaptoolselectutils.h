@@ -40,17 +40,14 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     @param doContains Features will only be selected if contained within the
     selection rubber band.
-    @param addSelection New selected features will be added to the layer's
-    currently selected features.
-    @param substractSelection New selected features will be subtracted from
-    the layer's currently selected features.
+    @param doDifference Take the symmetric difference of the the current selected
+    features and the new features found within the provided selectGeometry.
     @param singleSelect Only selects the closest feature to the selectGeometry.
   */
   void setSelectFeatures( QgsMapCanvas* canvas,
                           QgsGeometry* selectGeometry,
                           bool doContains = true,
-                          bool addSelection = false,
-                          bool substractSelection = false,
+                          bool doDifference = false,
                           bool singleSelect = false );
 
   /**
