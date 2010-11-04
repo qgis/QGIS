@@ -28,7 +28,8 @@ QgsRasterMatrix::QgsRasterMatrix(): mColumns( 0 ), mRows( 0 ), mData( 0 )
 {
 }
 
-QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, float* data ): mColumns( nCols ), mRows( nRows ), mData( data )
+QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue ):
+  mColumns( nCols ), mRows( nRows ), mData( data ), mNodataValue( nodataValue )
 {
 }
 
@@ -50,15 +51,17 @@ QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix & m )
   int nEntries = mColumns * mRows;
   mData = new float[nEntries];
   memcpy( mData, m.mData, sizeof( float ) * nEntries );
+  mNodataValue = m.nodataValue();
   return *this;
 }
 
-void QgsRasterMatrix::setData( int cols, int rows, float* data )
+void QgsRasterMatrix::setData( int cols, int rows, float* data, double nodataValue )
 {
   delete[] mData;
   mColumns = cols;
   mRows = rows;
   mData = data;
+  mNodataValue = nodataValue;
 }
 
 float* QgsRasterMatrix::takeData()
@@ -125,122 +128,100 @@ bool QgsRasterMatrix::lesserEqual( const QgsRasterMatrix& other )
 
 bool QgsRasterMatrix::squareRoot()
 {
-  if ( !mData )
-  {
-    return false;
-  }
-
-  int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
-  {
-    double value = mData[i];
-    if ( value >= 0 )
-    {
-      mData[i] = sqrt( value );
-    }
-    else
-    {
-      mData[i] = -10000; //no complex numbers
-    }
-  }
-  return true;
+  return oneArgumentOperation( opSQRT );
 }
 
 bool QgsRasterMatrix::sinus()
 {
-  if ( !mData )
-  {
-    return false;
-  }
-
-  int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
-  {
-    mData[i] = sin( mData[i] );
-  }
-  return true;
+  return oneArgumentOperation( opSIN );
 }
 
 bool QgsRasterMatrix::asinus()
 {
-  if ( !mData )
-  {
-    return false;
-  }
-
-  int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
-  {
-    mData[i] = asin( mData[i] );
-  }
-  return true;
+  return oneArgumentOperation( opASIN );
 }
 
 bool QgsRasterMatrix::cosinus()
 {
-  if ( !mData )
-  {
-    return false;
-  }
-
-  int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
-  {
-    mData[i] = cos( mData[i] );
-  }
-  return true;
+  return oneArgumentOperation( opCOS );
 }
 
 bool QgsRasterMatrix::acosinus()
 {
-  if ( !mData )
-  {
-    return false;
-  }
-
-  int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
-  {
-    mData[i] = acos( mData[i] );
-  }
-  return true;
+  return oneArgumentOperation( opACOS );
 }
 
 bool QgsRasterMatrix::tangens()
 {
-  if ( !mData )
-  {
-    return false;
-  }
-
-  int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
-  {
-    mData[i] = tan( mData[i] );
-  }
-  return true;
+  return oneArgumentOperation( opTAN );
 }
 
 bool QgsRasterMatrix::atangens()
 {
-  if ( !mData )
+  return oneArgumentOperation( opATAN );
+}
+
+bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
+{
+  if( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
-  for ( int i = 0; i < nEntries; ++i )
+  double value;
+  for( int i = 0; i < nEntries; ++i )
   {
-    mData[i] = atan( mData[i] );
+    value = mData[i];
+    if( value != mNodataValue )
+    {
+      switch( op )
+      {
+        case opSQRT:
+          if( value < 0 ) //no complex numbers
+          {
+            mData[i] = mNodataValue;
+          }
+          else
+          {
+            mData[i] = sqrt( value );
+          }
+          break;
+        case opSIN:
+          mData[i] = sin( value );
+          break;
+        case opCOS:
+          mData[i] = cos( value );
+          break;
+        case opTAN:
+          mData[i] = tan( value );
+          break;
+        case opASIN:
+          mData[i] = asin( value );
+          break;
+        case opACOS:
+          mData[i] = acos( value );
+          break;
+        case opATAN:
+          mData[i] = atan( value );
+          break;
+      }
+    }
   }
   return true;
 }
 
 bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other )
 {
-  if ( isNumber() && other.isNumber() )
+  if( isNumber() && other.isNumber() )  //operation on two 1x1 matrices
   {
-    switch ( op )
+    //operations with nodata values always generate nodata
+    if( mData[0] == mNodataValue || other.number() == other.nodataValue() )
+    {
+      mData[0] = mNodataValue;
+      return true;
+    }
+    switch( op )
     {
       case opPLUS:
         mData[0] = number() + other.number();
@@ -252,9 +233,9 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         mData[0] = number() * other.number();
         break;
       case opDIV:
-        if ( other.number() == 0 )
+        if( other.number() == 0 )
         {
-          mData[0] = -10000;
+          mData[0] = mNodataValue;
         }
         else
         {
@@ -262,9 +243,9 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         }
         break;
       case opPOW:
-        if ( !testPowerValidity( mData[0], ( float ) other.number() ) )
+        if( !testPowerValidity( mData[0], ( float ) other.number() ) )
         {
-          mData[0] = -10000;
+          mData[0] = mNodataValue;
         }
         else
         {
@@ -292,286 +273,237 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     }
     return true;
   }
+
   //two matrices
-  if ( !isNumber() && !other.isNumber() )
+  if( !isNumber() && !other.isNumber() )
   {
     float* matrix = other.mData;
     int nEntries = mColumns * mRows;
-    switch ( op )
+    double value1, value2;
+
+    for( int i = 0; i < nEntries; ++i )
     {
-      case opPLUS:
-        for ( int i = 0; i < nEntries; ++i )
+      value1 = mData[i]; value2 = matrix[i];
+      if( value1 == mNodataValue || value2 == other.mNodataValue )
+      {
+        mData[i] = mNodataValue;
+      }
+      else
+      {
+        switch( op )
         {
-          mData[i] = mData[i] + matrix[i];
+          case opPLUS:
+            mData[i] = value1 + value2;
+            break;
+          case opMINUS:
+            mData[i] = value1 - value2;
+            break;
+          case opMUL:
+            mData[i] = value1 * value2;
+            break;
+          case opDIV:
+            if( value2 == 0 )
+            {
+              mData[i] = mNodataValue;
+            }
+            else
+            {
+              mData[i] = value1 / value2;
+            }
+            break;
+          case opPOW:
+            if( !testPowerValidity( value1, value2 ) )
+            {
+              mData[i] = mNodataValue;
+            }
+            else
+            {
+              mData[i] = pow( value1, value2 );
+            }
+            break;
+          case opEQ:
+            mData[i] = ( value1 == value2 ? 1 : 0 );
+            break;
+          case opNE:
+            mData[i] = ( value1 == value2 ? 0 : 1 );
+            break;
+          case opGT:
+            mData[i] = ( value1 > value2 ? 1 : 0 );
+            break;
+          case opLT:
+            mData[i] = ( value1 < value2 ? 1 : 0 );
+            break;
+          case opGE:
+            mData[i] = ( value1 >= value2 ? 1 : 0 );
+            break;
+          case opLE:
+            mData[i] = ( value1 <= value2 ? 1 : 0 );
+            break;
         }
-        break;
-      case opMINUS:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = mData[i] - matrix[i];
-        }
-        break;
-      case opMUL:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = mData[i] * matrix[i];
-        }
-        break;
-      case opDIV:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          if ( matrix[i] == 0 )
-          {
-            mData[i] = -10000;
-          }
-          else
-          {
-            mData[i] = mData[i] / matrix[i];
-          }
-        }
-        break;
-      case opPOW:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          if ( !testPowerValidity( mData[i], matrix[i] ) )
-          {
-            mData[i] = -10000;
-          }
-          else
-          {
-            mData[i] = pow( mData[i], matrix[i] );
-          }
-        }
-        break;
-      case opEQ:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = ( mData[i] == matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opNE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = ( mData[i] == matrix[i] ? 0 : 1 );
-        }
-        break;
-      case opGT:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = ( mData[i] > matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opLT:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = ( mData[i] < matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opGE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = ( mData[i] >= matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opLE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          mData[i] = ( mData[i] <= matrix[i] ? 1 : 0 );
-        }
-        break;
+      }
     }
     return true;
   }
-  double value = 0;
-  if ( isNumber() )
+
+  //this matrix is a single number and the other one a real matrix
+  if( isNumber() )
   {
     float* matrix = other.mData;
     int nEntries = other.nColumns() * other.nRows();
-    value = mData[0];
+    double value = mData[0];
     delete[] mData;
     mData = new float[nEntries]; mColumns = other.nColumns(); mRows = other.nRows();
+    mNodataValue = other.nodataValue();
 
-    switch ( op )
+    if( value == mNodataValue )
     {
-      case opPLUS:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+      for( int i = 0; i < nEntries; ++i )
+      {
+        mData[i] = mNodataValue;
+      }
+      return true;
+    }
+
+    for( int i = 0; i < nEntries; ++i )
+    {
+      if( matrix[i] == other.mNodataValue )
+      {
+        mData[i] = mNodataValue;
+        continue;
+      }
+
+      switch( op )
+      {
+        case opPLUS:
           mData[i] = value + matrix[i];
-        }
-        break;
-      case opMINUS:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opMINUS:
           mData[i] = value - matrix[i];
-        }
-        break;
-      case opMUL:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opMUL:
           mData[i] = value * matrix[i];
-        }
-        break;
-      case opDIV:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          if ( matrix[i] == 0 )
+          break;
+        case opDIV:
+          if( matrix[i] == 0 )
           {
-            mData[i] = -10000;
+            mData[i] = mNodataValue;
           }
           else
           {
             mData[i] = value / matrix[i];
           }
-        }
-        break;
-      case opPOW:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          if ( !testPowerValidity( value, matrix[i] ) )
+          break;
+        case opPOW:
+          if( !testPowerValidity( value, matrix[i] ) )
           {
-            mData[i] = -10000;
+            mData[i] = mNodataValue;
           }
           else
           {
             mData[i] = pow(( float ) value, matrix[i] );
           }
-        }
-        break;
-      case opEQ:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opEQ:
           mData[i] = ( value == matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opNE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opNE:
           mData[i] = ( value == matrix[i] ? 0 : 1 );
-        }
-        break;
-      case opGT:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opGT:
           mData[i] = ( value > matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opLT:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opLT:
           mData[i] = ( value < matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opGE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opGE:
           mData[i] = ( value >= matrix[i] ? 1 : 0 );
-        }
-        break;
-      case opLE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opLE:
           mData[i] = ( value <= matrix[i] ? 1 : 0 );
-        }
-        break;
+          break;
+      }
     }
+    return true;
   }
   else //this matrix is a real matrix and the other a number
   {
-    value = other.number();
+    double value = other.number();
     int nEntries = mColumns * mRows;
-    switch ( op )
+
+    if( other.number() == other.mNodataValue )
     {
-      case opPLUS:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+      for( int i = 0; i < nEntries; ++i )
+      {
+        mData[i] = mNodataValue;
+      }
+      return true;
+    }
+
+    for( int i = 0; i < nEntries; ++i )
+    {
+      if( mData[i] == mNodataValue )
+      {
+        continue;
+      }
+
+      switch( op )
+      {
+        case opPLUS:
           mData[i] = mData[i] + value;
-        }
-        break;
-      case opMINUS:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opMINUS:
           mData[i] = mData[i] - value;
-        }
-        break;
-      case opMUL:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opMUL:
           mData[i] = mData[i] * value;
-        }
-        break;
-      case opDIV:
-        if ( value == 0 )
-        {
-          for ( int i = 0; i < nEntries; ++i )
+          break;
+        case opDIV:
+          if( value == 0 )
           {
-            mData[i] = -10000;
+            mData[i] = mNodataValue;
           }
-        }
-        else
-        {
-          for ( int i = 0; i < nEntries; ++i )
+          else
           {
             mData[i] = mData[i] / value;
           }
-        }
-        break;
-      case opPOW:
-        for ( int i = 0; i < nEntries; ++i )
-        {
-          if ( !testPowerValidity( mData[i], value ) )
+          break;
+        case opPOW:
+          if( !testPowerValidity( mData[i], value ) )
           {
-            mData[i] = -10000;
+            mData[i] = mNodataValue;
           }
           else
           {
             mData[i] = pow( mData[i], ( float ) value );
           }
-        }
-        break;
-      case opEQ:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opEQ:
           mData[i] = ( mData[i] == value ? 1 : 0 );
-        }
-        break;
-      case opNE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opNE:
           mData[i] = ( mData[i] == value ? 0 : 1 );
-        }
-        break;
-      case opGT:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opGT:
           mData[i] = ( mData[i] > value ? 1 : 0 );
-        }
-        break;
-      case opLT:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opLT:
           mData[i] = ( mData[i] < value ? 1 : 0 );
-        }
-        break;
-      case opGE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opGE:
           mData[i] = ( mData[i] >= value ? 1 : 0 );
-        }
-        break;
-      case opLE:
-        for ( int i = 0; i < nEntries; ++i )
-        {
+          break;
+        case opLE:
           mData[i] = ( mData[i] <= value ? 1 : 0 );
-        }
-        break;
+          break;
+      }
     }
+    return true;
   }
-  return true;
 }
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power )
 {
-  if (( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
+  if(( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
   {
     return false;
   }

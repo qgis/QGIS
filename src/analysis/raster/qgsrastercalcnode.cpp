@@ -1,4 +1,5 @@
 #include "qgsrastercalcnode.h"
+#include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode(): mLeft( 0 ), mRight( 0 ), mRasterMatrix( 0 ), mNumber( 0 )
 {
@@ -18,11 +19,11 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName ): mType( tRaste
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
 {
-  if ( mLeft )
+  if( mLeft )
   {
     delete mLeft;
   }
-  if ( mRight )
+  if( mRight )
   {
     delete mRight;
   }
@@ -33,10 +34,10 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   //if type is raster ref: return a copy of the corresponding matrix
 
   //if type is operator, call the proper matrix operations
-  if ( mType == tRasterRef )
+  if( mType == tRasterRef )
   {
     QMap<QString, QgsRasterMatrix*>::iterator it = rasterData.find( mRasterName );
-    if ( it == rasterData.end() )
+    if( it == rasterData.end() )
     {
       return false;
     }
@@ -44,23 +45,23 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     int nEntries = ( *it )->nColumns() * ( *it )->nRows();
     float* data = new float[nEntries];
     memcpy( data, ( *it )->data(), nEntries * sizeof( float ) );
-    result.setData(( *it )->nColumns(), ( *it )->nRows(), data );
+    result.setData(( *it )->nColumns(), ( *it )->nRows(), data, ( *it )->nodataValue() );
     return true;
   }
-  else if ( mType == tOperator )
+  else if( mType == tOperator )
   {
     QgsRasterMatrix leftMatrix, rightMatrix;
     QgsRasterMatrix resultMatrix;
-    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
+    if( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
     {
       return false;
     }
-    if ( mRight && !mRight->calculate( rasterData, rightMatrix ) )
+    if( mRight && !mRight->calculate( rasterData, rightMatrix ) )
     {
       return false;
     }
 
-    switch ( mOperator )
+    switch( mOperator )
     {
       case opPLUS:
         leftMatrix.add( rightMatrix );
@@ -121,14 +122,14 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     }
     int newNColumns = leftMatrix.nColumns();
     int newNRows = leftMatrix.nRows();
-    result.setData( newNColumns, newNRows, leftMatrix.takeData() );
+    result.setData( newNColumns, newNRows, leftMatrix.takeData(), leftMatrix.nodataValue() );
     return true;
   }
-  else if ( mType == tNumber )
+  else if( mType == tNumber )
   {
     float* data = new float[1];
     data[0] = mNumber;
-    result.setData( 1, 1, data );
+    result.setData( 1, 1, data, -FLT_MAX );
     return true;
   }
   return false;
