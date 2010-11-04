@@ -84,7 +84,6 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   }
   GDALDatasetH outputDataset = openOutputFile( outputDriver );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset, 1 );
-  int nodataSuccess;
 
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
@@ -127,7 +126,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
       bool resultIsNumber = resultMatrix.isNumber();
       float* calcData;
 
-      if( resultIsNumber ) //scalar result. Insert number for every pixel
+      if( resultIsNumber )  //scalar result. Insert number for every pixel
       {
         calcData = new float[mNumOutputColumns];
         for( int j = 0; j < mNumOutputColumns; ++j )
