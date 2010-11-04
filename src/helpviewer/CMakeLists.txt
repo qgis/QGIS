@@ -100,8 +100,8 @@ SET_TARGET_PROPERTIES(qgis_help PROPERTIES
 IF (APPLE)
   INSTALL (TARGETS qgis_help BUNDLE DESTINATION ${QGIS_BIN_DIR})
   # needed because global install_name prefix is for main qgis app
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${CMAKE_INSTALL_NAME_DIR}/libqgis_core.${COMPLETE_VERSION}.dylib @executable_path/../../../../lib/libqgis_core.${COMPLETE_VERSION}.dylib \"${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/MacOS/qgis_help\")")
-  INSTALL (CODE "EXECUTE_PROCESS (COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/Frameworks\")")
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${CMAKE_INSTALL_NAME_DIR}/libqgis_core.${COMPLETE_VERSION}.dylib @executable_path/../../../../lib/libqgis_core.${COMPLETE_VERSION}.dylib \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/MacOS/qgis_help\")")
+  INSTALL (CODE "EXECUTE_PROCESS (COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/Frameworks\")")
 ELSE (APPLE)
   INSTALL (TARGETS qgis_help RUNTIME DESTINATION ${QGIS_BIN_DIR})
 ENDIF (APPLE)
