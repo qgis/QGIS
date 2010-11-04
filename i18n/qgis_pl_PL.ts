@@ -2197,7 +2197,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
         <source>Grid</source>
-        <translation>Siatka</translation>
+        <translation>Grid</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
@@ -21909,8 +21909,7 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     </message>
     <message>
         <source>QGIS Plugin Installer update</source>
-        <translatorcomment>na pewno? R.</translatorcomment>
-        <translation type="unfinished">Aktualizacja instalatora wtyczek QGIS</translation>
+        <translation>Aktualizacja instalatora wtyczek QGIS</translation>
     </message>
     <message>
         <source>The Plugin Installer has been updated. Please restart QGIS prior to using it</source>
