@@ -218,6 +218,9 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   {
     lineNumber++;
     line = readLine( mStream ); // line of text excluding '\n', default local 8 bit encoding.
+    if ( line.isEmpty() )
+      continue;
+
     if ( !hasFields )
     {
       // Get the fields from the header row and store them in the
@@ -362,6 +365,8 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     double x = 0.0;
     double y = 0.0;
     QString line = readLine( mStream ); // Default local 8 bit encoding
+    if ( line.isEmpty() )
+      continue;
 
     // lex the tokens from the current data line
     QStringList tokens = splitLine( line );
