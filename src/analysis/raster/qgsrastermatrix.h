@@ -50,7 +50,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     /**Takes ownership of data array*/
     QgsRasterMatrix();
-    QgsRasterMatrix( int nCols, int nRows, float* data );
+    QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue );
     QgsRasterMatrix( const QgsRasterMatrix& m );
     ~QgsRasterMatrix();
 
@@ -63,10 +63,13 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     /**Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
     float* takeData();
 
-    void setData( int cols, int rows, float* data );
+    void setData( int cols, int rows, float* data, double nodataValue );
 
     int nColumns() const { return mColumns; }
     int nRows() const { return mRows; }
+
+    double nodataValue() const { return mNodataValue; }
+    void setNodataValue( double d ) { mNodataValue = d; }
 
     QgsRasterMatrix& operator=( const QgsRasterMatrix& m );
     /**Adds another matrix to this one*/
@@ -95,9 +98,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     int mColumns;
     int mRows;
     float* mData;
+    double mNodataValue;
 
-    /**+,-,*,/,^*/
+    /**+,-,*,/,^,<,>,<=,>=,=,!=*/
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other );
+    /*sqrt, sin, cos, tan, asin, acos, atan*/
+    bool oneArgumentOperation( OneArgOperator op );
     bool testPowerValidity( double base, double power );
 };
 
