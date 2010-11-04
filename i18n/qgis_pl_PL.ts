@@ -1442,7 +1442,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation>Zbuduj wirtualny raster (VRT) z listy plików</translation>
+        <translation>Buduje wirtualny raster z listy plików (gdalbuildvrt)</translation>
     </message>
     <message>
         <source>Contour</source>
@@ -1450,7 +1450,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation>Generuje warstwice wektorowe z DEM</translation>
+        <translation>Generuje warstwice wektorowe z DEM (gdal_contour)</translation>
     </message>
     <message>
         <source>Rasterize</source>
@@ -1458,7 +1458,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation>Wpisuje obiekty wektorowe na raster</translation>
+        <translation>Wpisuje obiekty wektorowe na raster (gdal_rasterize)</translation>
     </message>
     <message>
         <source>Polygonize</source>
@@ -1466,7 +1466,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation>Generuje wektorowe poligony z rastra</translation>
+        <translation>Generuje wektorowe poligony z rastra (gdal_polygonize)</translation>
     </message>
     <message>
         <source>Merge</source>
@@ -1474,7 +1474,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation>Generuje mozaikę z podanych obrazów</translation>
+        <translation>Generuje mozaikę z podanych obrazów (gdal_merge)</translation>
     </message>
     <message>
         <source>Sieve</source>
@@ -1482,7 +1482,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation>Usuwa małe poligony rastrowe</translation>
+        <translation>Usuwa małe poligony rastrowe (gdal_sieve)</translation>
     </message>
     <message>
         <source>Proximity</source>
@@ -1490,7 +1490,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation>Generuje rastrową mapę sąsiedztwa</translation>
+        <translation>Generuje rastrową mapę sąsiedztwa (gdal_proximity)</translation>
     </message>
     <message>
         <source>Near black</source>
@@ -1498,7 +1498,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation>Konwertuje prawie czarne oraz prawie białe na skrajne wartości</translation>
+        <translation>Konwertuje prawie czarne oraz prawie białe na skrajne wartości (nearblack)</translation>
     </message>
     <message>
         <source>Warp</source>
@@ -1506,7 +1506,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation>Dokonuje reprojekcji obrazu do nowego układu współrzędnych</translation>
+        <translation>Dokonuje reprojekcji obrazu do nowego układu współrzędnych (gdalwarp)</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -1514,7 +1514,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation>Tworzy raster z rozproszonych punktów</translation>
+        <translation>Tworzy raster z rozproszonych punktów (gdal_grid)</translation>
     </message>
     <message>
         <source>Translate</source>
@@ -1522,7 +1522,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation>Konwertuje dane rastrowe między różnymi formatami</translation>
+        <translation>Konwertuje dane rastrowe między różnymi formatami (gdal_translate)</translation>
     </message>
     <message>
         <source>Information</source>
@@ -1530,7 +1530,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation>Wyświetla informacje o zbiorze rastrowym</translation>
+        <translation>Wyświetla informacje o zbiorze rastrowym (gdalinfo)</translation>
     </message>
     <message>
         <source>Assign projection</source>
@@ -1538,7 +1538,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation>Dodaje do rastra informacje o odwzorowaniu</translation>
+        <translation>Dodaje do rastra informacje o odwzorowaniu (gdalwarp)</translation>
     </message>
     <message>
         <source>Build overviews</source>
@@ -1546,7 +1546,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation>Generuje lub re-generuje piramidę</translation>
+        <translation>Generuje lub re-generuje piramidę (gdaladdo)</translation>
     </message>
     <message>
         <source>Clipper</source>
