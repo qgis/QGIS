@@ -124,12 +124,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
     info = QString( arr ).split( "\n" )
     ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
     lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
-    ul = ulCoord.split( " " )
-    lr = lrCoord.split( " " )
-    xUL = ul[ 3 ].replace( ",", "" ).toDouble() [ 0 ]
-    yUL = ul[ 4 ].replace( ")", "" ).toDouble()[ 0 ]
-    xLR = lr[ 3 ].replace( ",", "" ).toDouble()[ 0 ]
-    yLR = lr[ 4 ].replace( ")", "" ).toDouble()[ 0 ]
+    ulCoord = ulCoord[ulCoord.indexOf( "(" ) + 1 : ulCoord.indexOf( ")" ) - 1].split( "," )
+    lrCoord = lrCoord[lrCoord.indexOf( "(" ) + 1 : lrCoord.indexOf( ")" ) - 1].split( "," )
+    xUL = ulCoord[0].toDouble()[0]
+    yUL = ulCoord[1].toDouble()[0]
+    xLR = lrCoord[0].toDouble()[0]
+    yLR = lrCoord[1].toDouble()[0]
 
     return QgsRectangle( xUL, yLR, xLR, yUL )
 
