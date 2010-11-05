@@ -61,8 +61,8 @@ and needs to be copied into the ``VC\include`` directory of your Visual C++
 installation.
 
 Earlier versions of this document also covered how to build all above
-dependencies.  If you're interested in that, check history of this page in Wiki
-or the SVN.
+dependencies.  If you're interested in that, check the history of this page in the Wiki
+or the SVN repository.
 
 === Setting up the Visual Studio project with CMake ===
 
@@ -130,3 +130,9 @@ CMAKE_INSTALL_PREFIX variable in cmake-gui).
 You will also either need to add all the dependency DLLs to the QGIS install
 directory or add their respective directories to your PATH.
 
+=== Packaging ===
+
+The packaging process is currently not documented, for now please take a look 
+at:
+
+//ms-windows/osgeo4w/package.cmd//

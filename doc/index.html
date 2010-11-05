@@ -1,563 +1,2101 @@
-<html>
-  <head>
-    <LINK REL="STYLESHEET" HREF="qgisdoc.css">
-  </head>
-  <body>
-    <table>
-      <tr>
-        <td>
-          <a href="http://qgis.org"><img src="images/qgis_new_80pct.png" border=0></a>
-  </td>
-  <td valign="center">
-    <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 1.5.0 <i>Tethys</i></span><br>
-    <span class="warning">Please read this entire document for important information about this release.</span><br>
-    <span class="warning">You find a <a href="http://www.qgis.org/en/documentation/manuals.html">PDF manual of the current version</a> on the QGIS website.</span>
-  </td>
-</tr>
-</table>
-<!-- comment out the links so you'll read the whole thing - we hope
-<a href="install.pdf" class="bar">Installation Guide</a>&nbsp;&nbsp;
-<a href="userguide.pdf" class="bar">User Guide</a><br>
--->
-<!-- This documentation describes the Quantum GIS (QGIS) application. More
-information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 1.6.0 'CapiapÃ³'?</h2>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<TITLE>Quantum GIS (QGIS)</TITLE>
 
-<p>
-Please note that this is a release in our 'cutting edge' release series. As
-such it contains new features and extends the programmatic interface over QGIS
-1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases. 
-</p>
-<p>
-This release includes over 177 bug fixes and many new features and enhancements. 
-Once again it is impossible to document everything here that has changed so we will 
-just provide a bullet list of key new features here.
-</p>
+<!-- Included style.css -->
+<STYLE TYPE="text/css">
+body {
+  padding: 2em 1em 2em 70px;
+  margin: 0;
+  font-family: sans-serif;
+  color: black;
+  background: white;
+}
+:link { color: #00C; background: transparent }
+:visited { color: #609; background: transparent }
+a:active { color: #C00; background: transparent }
 
-<h3>General Improvements</h3>
-<ul>
-<li>Added gpsd support to live gps tracking.</li>
-<li>A new plugin has been included that allows for offline editing.</li>
-<li>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</li>
-<li>Allow user specific PROJ.4 search paths and update srs.db to include grid reference.</li>
-<li>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</li>
-<li>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</li>
-<li>Many improvements and new operators to the vector attribute table field calculator including field concatenation, row counter etc.</li>
-<li>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</li>
-<li>Experimental WFS-T support. Additionally ported wfs to network manager.</li>
-<li>Georeferencer has had many tidy ups and improvements.</li>
-<li>Support for long int in attribute dialog and editor.</li>
-<li>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol. <a href="http://linfiniti.com/2010/08/qgis-mapserver-a-wms-server-for-the-masses/">Read More</a></li>
-<li>Select and measure toolbar flyouts and submenus.</li>
-<li>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</li>
-<li>Added search string support for feature ids ($id) and various other search related improvements.</li>
-<li>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</li>
-</ul>
-
-<h3>Table of contents (TOC) improvements</h3>
-<ul>
-  <li>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</li>
-  <li>When writing shape files using the table of contents context menu's 'Save as' option, you can now specify OGR creation options.</li>
-  <li>In the table of contents, it is now possible to select and remove several layers at once.</li>
-</ul>
-
-<h3>Labelling (New generation only)</h3>
-<ul>
-  <li>Data defined label position in labeling-ng.</li>
-  <li>Line wrapping, data defined font and buffer settings for labeling-ng.</li>
-</ul>
-<h3>Layer properties and symbology</h3>
-<ul>
-  <li>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). <a href="http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/">Read More</a></li>
-  <li>Improved loading speed of the symbol properties dialog.</li>
-  <li>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</li>
-  <li>Use size scale also for line symbols to modify line width.</li>
-  <li>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</li>
-  <li>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</li>
-  <li>Allow creation of color ramps in vector color ramp combo box.</li>
-  <li>Added "style manager..." button to symbol selector so that users will find the style manager more easily.</li>
-</ul>
-
-<h3>Map Composer</h3>
-<ul>
-  <li>add capability to show and manipulate composer item width/ height in item position dialog.</li>
-  <li>Composer items can now be deleted with the backspace key.</li>
-  <li>Sorting for composer attribute table (several columns and ascending / descending).</li>
-</ul>
+a:link img, a:visited img { border-style: none } 
 
 
-<h2>Whats new in Version 1.5.0?</h2>
+h1, h2, h3, h4, h5, h6 { text-align: left }
+h1, h2, h3 { color: #005A9C; background: white }
+h1 { font: 170% sans-serif }
+h2 { font: 140% sans-serif }
+h3 { font: 120% sans-serif }
+h4 { font: bold 100% sans-serif }
+h5 { font: italic 100% sans-serif }
+h6 { font: small-caps 100% sans-serif }
 
-<p>
-Please note that this is a release in our 'cutting edge' release series. As
-such it contains new features and extends the programmatic interface over QGIS
-1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and
-long term support is more important to you then cool new and untested features,
-we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x
-release series. In all other cases we recommend that you use this version.
-</p>
-<p>
-This release includes over 350 bug fixes, over 40 new features. 
-Once again it is impossible to document everything here that has changed so we will 
-just provide a bullet list of key new features here.
-</p>
-
-<h3>Main GUI</h3>
-
-<ul>
-  <li>There is a new angle measuring tool that allows you to interactively measure angles against the map backdrop.</li>
-  <li>Live GPS Tracking tool</li>
-  <li>User configurable WMS search server</li>
-  <li>Allow editing of invalid geometry in node tool</li>
-  <li>Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well</li>
-  <li>SVG fill symbol layer for polygon textures</li>
-  <li>Font marker symbol layer</li>
-  <li>Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS      to crash during startup</li>
-  <li>Allow hiding of deprecated CRSes</li>
-  <li>Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points</li>
-  <li>Allow saving vector layers as ogr vector files</li>
-  <li>Raster provider: reduce debugging noise</li>
-  <li>Allow adding parts to multi points and lines</li>
-  <li>Text and form annotation tools are now in gui and app</li>
-  <li>Added possibility to place a set of default composer templates in pkgDataPath/composer_templates</li>
-  <li>Gradient color ramps now support multiple stops - for adding intermediate colors</li>
-  <li>Center map if user clicks into the map</li>
-  <li>New plugin for carrying out spatial selections</li>
-  <li>Data-defined size and rotation for single symbol renderer in symbology-ng</li>
-  <li>IdentifyAsHtml to raster layer and use it in identify</li>
-  <li>Export legend groups and layers with legendinterface and use this information to display groups in the composer legend.</li>
-  <li>Show selected feature count in status bar </li>
-  <li>Query option added to layer menu to subset vector layers</li>
-  <li>Option to label only selected features (on the 'old' labelling tool)</li>
-  <li>Load/save queries created in the query builder.</li>
-  <li>Manual adding of categories in symbology-ng.</li>
-  <li>Georeferencer: possibility to configure if residuals should be showed in pixels or map units</li>
-  <li>Delimited text provider: allow empty values in numeric columns</li>
-  <li>Added rule-based renderer for symbology-ng</li>
-  <li>Ability to create spatial lite databases from within QGIS</li>
-  <li>Inclusion of GDAL Raster tools plugin into QGIS core</li>
-  <li>New python console (with history)</li>
-  <li>Add validation to capture tool</li>
-  <li>Allow postgres layers without saved username &amp; password by asking for credentials</li>
-  <li>Support NULL values in search strings</li>
-  <li>Optionally add new layers to the selected group</li>
-  <li>Map composer can add attribute Tables in layouts. It is possibile to show only visible features in composer table or all features</li>
-  <li>Identify tool attribute form now non-modal in view mode (since r12796)</li>
-  <li>Identified features' highlight disappear when window is deactivate or closed and reappears when reactivated.</li>
-</ul>
-
-<h3>WMS and WMS-C Support</h3>
-<ul>
-  <li>WMS-C support, new spatial authorities, wms selection improvements</li>
-  <li>Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db</li>
-  <li>WWM provider makes requests asynchronously through QNetworkAccessManager now</li>
-  <li>WMS selection allows inserting of all layers of a branch</li>
-  <li>WMS has support for more mime types</li>
-  <li>Added load/save to WMS dialog</li>
-  <li>WMS-C scale slider gui added and more selection improvements</li>
-</ul>
-
-<h3>API Updates</h3>
-<ul>
-  <li>QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</li>
-  <li>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</li>
-
-  <li>Allow opening layer properties from plugins</li>
-  <li>Support for custom plugin layers.</li>
-  <li>Allow refreshing of plugins programmatically</li>
-  <li>Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon.</li>
-  <li>Legend interface added to retrieve layers in legend order</li>
-  <li>Support more GEOS operators</li>
-</ul>
-
-<h2>Whats new in Version 1.4.0 'Enceladus'?</h2>
-
-<p>
-Please note that this is a release in our 'cutting edge' release series. As
-such it contains new features and extends the programmatic interface over QGIS
-1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and
-long term support is more important to you then cool new and untested features,
-we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x
-release series. In all other cases we recommend that you use this version.
-</p>
-<p>
-This release includes around 200 bug fixes, nearly 30 new features and has had
-a lot of love and attention poured in to it to take our favourite desktop GIS
-application another step on the road to GIS nirvana! So much has happened in
-the 3 months since our last release that it is impossible to document
-everything here. Instead we will just highlight a couple of important new
-features for you.
-</p>
-<p>
-Probably the biggest new feature is the addition of the new vector symbology
-infrastructure. This is provided alongside the old implementation - you can
-switch using a button in the vector layer properties dialog. It does't replace
-the old symbology implementation completely yet because there are various isues
-that need to be resolved and a large amount of testinhen it is considered
-ready.
-</p>
-<p>
-QGIS now has a field calculator, accessible via a button in the attribute
-section of the vector properties, and from the attribute table user interface.
-You can use feature length, feature area, string concatenation and type
-conversions in the field calculator, as well as field values.
-</p>
-<p>
-The map composer has had a lot of attention. A grid can now be added to
-composer maps. Composer maps can now be rotated in the layout. The limitation
-of a single map layout per project has been removed. A new composer manager
-dialog has been added to manage the existing composer instances. The composer
-widget property sheets have been completely overhauled to use less screen space 
-</p>
-<p>
-Various parts of the user interface have been overhauled with the goal of
-improving consistency and to improve support for netbooks and other smaller
-screen devices. Loading and saving of shortcuts. Position can now be displayed
-as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex
-buttons are now removed and the node tool is moved from the advanced editing
-toolbar to the standard editing toolbar. The identification tool has also
-undergone numerous improvements.
-</p>
-<p>
-A render caching capability has been added to QGIS. This speeds up common
-operations such as layer re-ordering, changing symbology, WMS / WFS client,
-hiding / showing layers and opens the door for future enhancements such as
-threaded rendering and pre-compositing layer cache manipulation. Note that it
-is disabled by default, and can be enabled in the options dialog.
-</p>
-<p>
-User defined SVG search paths are now added to the options dialog.
-</p>
-<p>
-When creating a new shapefile, you can now specify its CRS. Also the avoid
-intersections option for polygons is now also possible with background layers.
-</p>
-<p>
-For power users, you can now create customizable attribute forms using Qt
-Designer dialog UIs.
-</p>
+pre { margin-left: 2em;
+      border: 1;
+      padding: 4px;
+      background: #ececec; }
+pre, code { font-family: monospace } 
 
 
+</STYLE>
 
-<h2>Whats new in Version 1.3.0 'Mimas'?</h2>
-<p>
-This release includes over 30 bug fixes and several useful new features:
-</p>
+</HEAD>
+<BODY>
 
-<p>OSM plugin &amp; provider updates:</p>
-<ul>
-  <li>new OSM style files.</li>
-  <li>new icons.</li>
-  <li>dialog text updated and completed.</li>
-  <li>"Saving OSM into file" functionality was improvements.</li>
-  <li>fixed some problems with encoding... ascii to utf-8.</li>
-  <li>all OSM layers are automatically removed after disabling OSM plugin in plugin manager.</li>
-  <li>other OSM related bugfixes.</li>
-</ul>
+<DIV CLASS="header" ID="header">
+<H1>Quantum GIS (QGIS)</H1>
+<H3>Building QGIS from source - step by step</H3>
+</DIV>
 
-<p>Other notable features and improvements in this release</p>
-<ul>
-  <li>Marker size is now configurable when editing a layer.</li>
-  <li>Incorporation of the analysis library into the mainstream release.</li>
-  <li>Identify features across multiple layers.</li>
-  <li>Added a new plugin for carrying out raster terrain analysis (computing slope
-      aspect, steepness etc).</li>
-  <li>A reshape tool to apply to line/polygon geometries. The part of a geometry
-     between the first and last intersection of the reshape line will be replaced.</li>
-  <li>Added snapping to current layer in measure dialog.</li>
-  <li>Added ability to select the primary key for views.</li>
-  <li>Zoom to a coordinate by entering it in the status bar coordinate display.</li>
-</ul>
+<DIV CLASS="body" ID="body">
+<P>
+Last update: 20101105
+Last change: 20101028
+</P>
+<DIV CLASS="toc" ID="toc">
+  <OL>
+  <LI><A HREF="#toc1">Introduction</A>
+  <LI><A HREF="#toc2">Overview</A>
+  <LI><A HREF="#toc3">Building on GNU/Linux</A>
+    <UL>
+    <LI><A HREF="#toc4">3.1. Building QGIS with Qt 4.x</A>
+    <LI><A HREF="#toc5">3.2. Prepare apt</A>
+    <LI><A HREF="#toc6">3.3. Install build dependencies</A>
+    <LI><A HREF="#toc7">3.4. Setup ccache (Optional)</A>
+    <LI><A HREF="#toc8">3.5. Prepare your development environment</A>
+    <LI><A HREF="#toc9">3.6. Check out the QGIS Source Code</A>
+    <LI><A HREF="#toc10">3.7. Starting the compile</A>
+    <LI><A HREF="#toc11">3.8. Building Debian packages</A>
+    <LI><A HREF="#toc12">3.9. Running QGIS</A>
+    <LI><A HREF="#toc13">3.10. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support</A>
+    </UL>
+  <LI><A HREF="#toc14">Building on Windows</A>
+    <UL>
+    <LI><A HREF="#toc15">4.1. Building with Microsoft Visual Studio</A>
+    <LI><A HREF="#toc16">4.2. Building using MinGW</A>
+    <LI><A HREF="#toc17">4.3. Creation of MSYS environment for compilation of Quantum GIS</A>
+    </UL>
+  <LI><A HREF="#toc18">MacOS X: building using frameworks and Cmake</A>
+    <UL>
+    <LI><A HREF="#toc19">5.1. Install Qt4 from .dmg</A>
+    <LI><A HREF="#toc20">5.2. Install development frameworks for QGIS dependencies</A>
+    <LI><A HREF="#toc21">5.3. Install CMake for OSX</A>
+    <LI><A HREF="#toc22">5.4. Install subversion for OSX</A>
+    <LI><A HREF="#toc23">5.5. Check out QGIS from SVN</A>
+    <LI><A HREF="#toc24">5.6. Configure the build</A>
+    <LI><A HREF="#toc25">5.7. Building</A>
+    </UL>
+  <LI><A HREF="#toc26">Authors and Acknowledgments</A>
+  </OL>
 
-<h2>Whats new in Version 1.2.0?</h2>
-<p>
-This release includes over 140 bug fixes and enhancements 
-over the QGIS 1.1.0 release. In addition we have added 
-the following new features:
-</p>
-<pre>
-Editing:
+</DIV>
+<P></P>
+<A NAME="toc1"></A>
+<H1>1. Introduction</H1>
+<P>
+This document is the original installation guide of the described software 
+Quantum GIS. The software and hardware descriptions named in this 
+document are in most cases registered trademarks and are therefore subject 
+to the legal requirements. Quantum GIS is subject to the GNU General Public 
+License. Find more information on the Quantum GIS Homepage:
+<A HREF="http://www.qgis.org">http://www.qgis.org</A>
+</P>
+<P>
+The details, that are given in this document have been written and verified 
+to the best of knowledge and responsibility of the editors. Nevertheless, 
+mistakes concerning the content are possible. Therefore, all data are not 
+liable to any duties or guarantees. The editors and publishers do not take 
+any responsibility or liability for failures and their consequences. You are 
+always welcome for indicating possible mistakes.
+</P>
+<P>
+You can download this document as part of the Quantum GIS 'User and 
+Installation Guide' in HTML and PDF format via <A HREF="http://www.qgis.org">http://www.qgis.org</A>. A current 
+version is also available at the wiki, see:
+<A HREF="http://www.qgis.org/wiki/Installation_Guide">http://www.qgis.org/wiki/Installation_Guide</A> 
+</P>
+<P>
+Translations of this document can also be downloaded at the documentation area 
+of the Quantum GIS project at <A HREF="http://www.qgis.org">http://www.qgis.org</A>. More information is 
+available via <A HREF="http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner">http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner</A>. 
+</P>
+<P>
+Please visit <A HREF="http://qgis.org">http://qgis.org</A> for information on joining our mailing lists 
+and getting involved in the project further.
+</P>
+<P>
+/!\ <B>Note to document writers:</B> Please use this document as the central
+place for describing build procedures. Please do not remove this notice. 
+</P>
+<P>
+/!\ <B>Note to document writers:</B> This documented is generated from 
+doc/INSTALL.t2t - if you need to edit this document, be sure to edit that 
+file rather than the generated INSTALL document found in the root of the 
+source directory.
+</P>
+<A NAME="toc2"></A>
+<H1>2. Overview</H1>
+<P>
+QGIS, like a number of major projects (eg. KDE 4.0), uses CMake
+(<A HREF="http://www.cmake.org">http://www.cmake.org</A>) for building from source.
+</P>
+<P>
+Following a summary of the required dependencies for building:
+</P>
+<P>
+Required build tools:
+</P>
+<UL>
+<LI>CMake &gt;= 2.6.0
+<LI>Flex
+<LI>Bison
+</UL>
 
-Editing functionality in QGIS has had a major update in this release. This
-includes the addition of new vector editing tools:
+<P></P>
+<P>
+Required build deps:
+</P>
+<UL>
+<LI>Qt &gt;= 4.4.0
+<LI>Proj &gt;= 4.4.x
+<LI>GEOS &gt;= 3.0
+<LI>Sqlite3 &gt;= 3.0.0
+<LI>GDAL/OGR &gt;= 1.4.x
+<LI>Qwt &gt;= 5.0
+</UL>
 
-- delete part of multipart feature
-- delete hole from polygon
-- simplify feature
-- Added a new "node" tool (in advanced digitizing toolbar).
-- New functionality for merging features
-- Added undo/redo functionality for vector layer editing.
-- Added option to show only markers of selected features in editing mode.
-- Change layer's icon in legend to reflext that the layer is editable.
+<P></P>
+<P>
+Optional dependencies:
+</P>
+<UL>
+<LI>for GRASS plugin - GRASS &gt;= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
+<LI>for georeferencer - GSL &gt;= 1.8
+<LI>for postgis support and SPIT plugin - PostgreSQL &gt;= 8.0.x
+<LI>for gps plugin - expat &gt;= 1.95 and gpsbabel
+<LI>for mapserver export and PyQGIS - Python &gt;= 2.3 (2.5+ preferred)
+<LI>for python support - SIP &gt;= 4.8, PyQt &gt;= must match Qt version
+<LI>for qgis mapserver - FastCGI
+</UL>
 
-In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
-and there is a new dock widget displaying undo stack of active layer.
+<P></P>
+<A NAME="toc3"></A>
+<H1>3. Building on GNU/Linux</H1>
+<A NAME="toc4"></A>
+<H2>3.1. Building QGIS with Qt 4.x</H2>
+<P>
+<B>Requires:</B> Ubuntu / Debian derived distro
+</P>
+<P>
+These notes are for Ubuntu - other versions and Debian derived distros may
+require slight variations in package names.
+</P>
+<P>
+These notes are for if you want to build QGIS from source. One of the major
+aims here is to show how this can be done using binary packages for <B>*all*</B>
+dependencies - building only the core QGIS stuff from source. I prefer this
+approach because it means we can leave the business of managing system packages
+to apt and only concern ourselves with coding QGIS! 
+</P>
+<P>
+This document assumes you have made a fresh install and have a 'clean' system.
+These instructions should work fine if this is a system that has already been
+in use for a while, you may need to just skip those steps which are irrelevant
+to you.
+</P>
+<P>
+/!\ <B>Note:</B> Refer to the section ''Building Debian packages'' for building 
+debian packages.  Unless you plan to develop on QGIS, that is probably the
+easiest option to compile and install QGIS.
+</P>
+<A NAME="toc5"></A>
+<H2>3.2. Prepare apt</H2>
+<P>
+The packages qgis depends on to build are available in the "universe" component
+of Ubuntu. This is not activated by default, so you need to activate it:
+</P>
+<P>
+1. Edit your /etc/apt/sources.list file.  
+2. Uncomment the all the lines starting with "deb"
+</P>
+<P>
+Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
+all dependencies to be met.
+</P>
+<P>
+Now update your local sources database:
+</P>
+<div class="code"><PRE>
+sudo apt-get update 
+</PRE></div>
+<P></P>
+<A NAME="toc6"></A>
+<H2>3.3. Install build dependencies</H2>
+<TABLE BORDER="1">
+<TR>
+<TH>Distribution</TH>
+<TH>install command for packages</TH>
+</TR>
+<TR>
+<TD>hardy</TD>
+<TD><CODE>apt-get install  bison cmake fcgi-dev flex grass-dev libexpat1-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4</CODE></TD>
+</TR>
+<TR>
+<TD>intrepid</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libqwt5-qt4-dev libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4</CODE></TD>
+</TR>
+<TR>
+<TD>jaunty</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libqwt5-qt4-dev libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4</CODE></TD>
+</TR>
+<TR>
+<TD>karmic</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-core libqt4-dev libqt4-gui libqt4-sql libqwt5-qt4-dev libsqlite3-dev proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4 python-sip4-dev sip4</CODE></TD>
+</TR>
+<TR>
+<TD>lenny</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-dev libqwt5-qt4-dev libsqlite3-dev pkg-config proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4-dev sip4</CODE></TD>
+</TR>
+<TR>
+<TD>lucid</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev</CODE></TD>
+</TR>
+<TR>
+<TD>maverick</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqtwebkit-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev</CODE></TD>
+</TR>
+<TR>
+<TD>sid</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev</CODE></TD>
+</TR>
+<TR>
+<TD>squeeze</TD>
+<TD><CODE>apt-get install  bison cmake flex grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev</CODE></TD>
+</TR>
+</TABLE>
 
-About the node tool: It resembles a tool for editing paths by nodes that is
-present in every vector editor. How does it work (in QGIS)? Click on a
-feature, its nodes will be marked by small rectangles. Clicking and dragging a
-node moves it. Double clicking a segment will add a new node. Pressing delete
-key will remove active node. It's possible to select more active nodes at
-once: by clicking and dragging a rectangle. It's possible to select a segment's
-adjacent nodes by clicking on the segment. It's possible to add/remove active
-nodes by using Ctrl when clicking a node or dragging a rectangle
+<P>
+(extracted from the respective control files in <CODE>debian/</CODE>)
+</P>
+<P>
+/!\ <B>A Special Note:</B> If you are following this set of instructions on
+a system where you already have Qt3 development tools installed, there will
+be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
+point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
+designed to live alongside each other. This means that for example if you
+have them both installed you will have three qmake exe's:
+</P>
+<div class="code"><PRE>
+/usr/bin/qmake -&gt; /etc/alternatives/qmake 
+/usr/bin/qmake-qt3
+/usr/bin/qmake-qt4 
+</PRE></div>
+<P></P>
+<P>
+The same applies to all other Qt binaries. You will notice above that the
+canonical 'qmake' is managed by apt alternatives, so before we start to
+build QGIS, we need to make Qt4 the default. To return Qt3 to default later
+you can use this same process.
+</P>
+<P>
+You can use apt alternatives to correct this so that the Qt4 version of
+applications is used in all cases:
+</P>
+<div class="code"><PRE>
+sudo update-alternatives --config qmake
+sudo update-alternatives --config uic 
+sudo update-alternatives --config designer 
+sudo update-alternatives --config assistant 
+sudo update-alternatives --config qtconfig 
+sudo update-alternatives --config moc 
+sudo update-alternatives --config lupdate 
+sudo update-alternatives --config lrelease 
+sudo update-alternatives --config linguist 
+</PRE></div>
+<P></P>
+<P>
+Use the simple command line dialog that appears after running each of the
+above commands to select the Qt4 version of the relevant applications.
+</P>
+<P>
+/!\ <B>Note:</B> For python language bindings SIP &gt;= 4.5 and PyQt4 &gt;= 4.1 is required! Some stable GNU/Linux
+distributions (e.g. Debian or SuSE) only provide SIP &lt; 4.5 and PyQt4 &lt; 4.1. To include support for python 
+language bindings you may need to build and install those packages from source.
+</P>
+<A NAME="toc7"></A>
+<H2>3.4. Setup ccache (Optional)</H2>
+<P>
+You should also setup ccache to speed up compile times:
+</P>
+<div class="code"><PRE>
+cd /usr/local/bin 
+sudo ln -s /usr/bin/ccache gcc 
+sudo ln -s /usr/bin/ccache g++ 
+</PRE></div>
+<P></P>
+<A NAME="toc8"></A>
+<H2>3.5. Prepare your development environment</H2>
+<P>
+As a convention I do all my development work in $HOME/dev/&lt;language&gt;, so in
+this case we will create a work environment for C++ development work like
+this:
+</P>
+<div class="code"><PRE>
+mkdir -p ${HOME}/dev/cpp 
+cd ${HOME}/dev/cpp 
+</PRE></div>
+<P></P>
+<P>
+This directory path will be assumed for all instructions that follow.
+</P>
+<A NAME="toc9"></A>
+<H2>3.6. Check out the QGIS Source Code</H2>
+<P>
+There are two ways the source can be checked out. Use the anonymous method
+if you do not have edit privaleges for the QGIS source repository, or use
+  the developer checkout if you have permissions to commit source code
+  changes.
+</P>
+<P>
+1. Anonymous Checkout
+</P>
+<div class="code"><PRE>
+cd ${HOME}/dev/cpp 
+svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
+</PRE></div>
+<P></P>
+<P>
+2. Developer Checkout
+</P>
+<div class="code"><PRE>
+cd ${HOME}/dev/cpp 
+svn co --username &lt;yourusername&gt; https://svn.osgeo.org/qgis/trunk/qgis qgis 
+</PRE></div>
+<P></P>
+<P>
+The first time you check out the source you will be prompted to accept the
+qgis.org certificate. Press 'p' to accept it permanently:
+</P>
+<div class="code"><PRE>
+Error validating server certificate for 'https://svn.qgis.org:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!  Certificate
+     information:
+   - Hostname: svn.qgis.org
+   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+   - Fingerprint:
+     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
+     accept (t)emporarily or accept (p)ermanently?  
+</PRE></div>
+<P></P>
+<A NAME="toc10"></A>
+<H2>3.7. Starting the compile</H2>
+<P>
+I compile my development version of QGIS into my ~/apps directory to avoid
+conflicts with Ubuntu packages that may be under /usr. This way for example
+you can use the binary packages of QGIS on your system along side with your
+development version. I suggest you do something similar:
+</P>
+<div class="code"><PRE>
+mkdir -p ${HOME}/apps 
+</PRE></div>
+<P></P>
+<P>
+Now we create a build directory and run ccmake:
+</P>
+<div class="code"><PRE>
+cd qgis
+mkdir build
+cd build
+ccmake ..
+</PRE></div>
+<P></P>
+<P>
+When you run ccmake (note the .. is required!), a menu will appear where 
+you can configure various aspects of the build. If you do not have root
+access or do not want to overwrite existing QGIS installs (by your
+packagemanager for example), set the CMAKE_BUILD_PREFIX to somewhere you
+have write access to (I usually use /home/timlinux/apps). Now press
+'c' to configure, 'e' to dismiss any error messages that may appear.
+and 'g' to generate the make files. Note that sometimes 'c' needs to 
+be pressed several times before the 'g' option becomes available.
+After the 'g' generation is complete, press 'q' to exit the ccmake 
+interactive dialog.
+</P>
+<P>
+Now on with the build:
+</P>
+<div class="code"><PRE>
+make
+make install
+</PRE></div>
+<P></P>
+<P>
+It may take a little while to build depending on your platform.
+</P>
+<A NAME="toc11"></A>
+<H2>3.8. Building Debian packages</H2>
+<P>
+Instead of creating a personal installation as in the previous step you can
+also create debian package.  This is done from the qgis root directory, where
+you'll find a debian directory.
+</P>
+<P>
+First you need to install the debian packaging tools once:
+</P>
+<div class="code"><PRE>
+apt-get install build-essential
+</PRE></div>
+<P></P>
+<P>
+First you need to create an changelog entry for your distribution. For example for Ubuntu Lucid:
+</P>
+<div class="code"><PRE>
+dch -l ~lucid  --force-distribution --distribution lucid "lucid build"
+</PRE></div>
+<P></P>
+<P>
+The QGIS packages will be created with:
+</P>
+<div class="code"><PRE>
+dpkg-buildpackage -us -uc -b
+</PRE></div>
+<P></P>
+<P>
+/!\ <B>Note:</B> If <CODE>dpkg-buildpackage</CODE> complains about unmet build dependencies
+you can install them using <CODE>apt-get</CODE> and re-run the command.
+</P>
+<P>
+/!\ <B>Note:</B> If you have <CODE>libqgis1-dev</CODE> installed, you need to remove it first
+using <CODE>dpkg -r libqgis1-dev</CODE>.  Otherwise <CODE>dpkg-buildpackage</CODE> will complain about a
+build conflict.
+</P>
+<P>
+The packages are created in the parent directory (ie. one level up).
+Install them using dpkg.  E.g.:
+</P>
+<div class="code"><PRE>
+sudo debi
+</PRE></div>
+<P></P>
+<A NAME="toc12"></A>
+<H2>3.9. Running QGIS</H2>
+<P>
+Now you can try to run QGIS:
+</P>
+<div class="code"><PRE>
+$HOME/apps/bin/qgis 
+</PRE></div>
+<P></P>
+<P>
+If all has worked properly the QGIS application should start up and appear
+on your screen.
+</P>
+<A NAME="toc13"></A>
+<H2>3.10. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support</H2>
+<P>
+The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If you want 
+to use different versions of the software (gdal, grass, qgis), just make the 
+necessary adjustments to the following code. This guide assumes that you don't have 
+installed any previous version of gdal, grass and qgis.
+</P>
+<H3>3.10.1. Step 1: install base packages</H3>
+<P>
+First you need to install the necessary packages required to download the source 
+code and compile it. Open the terminal and issue the following command:
+</P>
+<div class="code"><PRE>
+sudo apt-get install build-essential g++ subversion
+</PRE></div>
+<P></P>
+<H3>3.10.2. Step 2: compile and install the ecw libraries</H3>
+<P>
+Go to the ERDAS web site <A HREF="http://www.erdas.com/">http://www.erdas.com/</A> and follow the links
+"'''products --&gt; ECW JPEG2000 Codec SDK --&gt; downloads'''" 
+then download the "'''Image Compression SDK Source Code 3.3'''" (you'll need to make a registration 
+and accept a license).
+</P>
+<P>
+Uncompress the arquive in a proper location (this guide assumes 
+that all the downloaded source code will be placed in the user home) 
+and the enter the newly created folder
+</P>
+<div class="code"><PRE>
+cd /libecwj2-3.3
+</PRE></div>
+<P></P>
+<P>
+Compile the code with the standard commands
+</P>
+<div class="code"><PRE>
+./configure
+</PRE></div>
+<P></P>
+<P>
+then
+</P>
+<div class="code"><PRE>
+make
+</PRE></div>
+<P></P>
+<P>
+then
+</P>
+<div class="code"><PRE>
+sudo make install
+</PRE></div>
+<P></P>
+<P>
+leave the folder 
+</P>
+<div class="code"><PRE>
+cd ..
+</PRE></div>
+<P></P>
+<H3>3.10.3. Step 3: download the MrSID binaries</H3>
+<P>
+Go to the LIZARDTECH web site <A HREF="http://www.lizardtech.com/">http://www.lizardtech.com/</A> and follow the links
+"'''download --&gt; Developer SDKs'''", 
+then download the "'''GeoExpress SDK for Linux (x86) - gcc 4.1 32-bit'''"
+(you'll need to make a registration and accept a license).
+</P>
+<P>
+Uncompress the downloaded file. The resulting directory name should be similar to "Geo_DSDK-7.0.0.2167"
+</P>
+<H3>3.10.4. Step 4: compile and install the gdal libraries</H3>
+<P>
+Download the latest gdal source code
+</P>
+<div class="code"><PRE>
+svn checkout https://svn.osgeo.org/gdal/trunk/gdal gdal
+</PRE></div>
+<P></P>
+<P>
+then copy a few files from the MrSID binaries folder to the folder with the gdal source code
+('''replace "USERNAME" with your actual account username''')
+</P>
+<div class="code"><PRE>
+cp /home/USERNAME/Geo_DSDK-7.0.0.2167/include/*.* /home/USERNAME/gdal/frmts/mrsid/
+</PRE></div>
+<P></P>
+<P>
+enter the gdal source code folder
+</P>
+<div class="code"><PRE>
+cd /gdal
+</PRE></div>
+<P></P>
+<P>
+and run configure with a few specific parameters
+</P>
+<div class="code"><PRE>
+./configure --without-grass --with-mrsid=../Geo_DSDK-7.0.0.2167 --without-jp2mrsid
+</PRE></div>
+<P></P>
+<P>
+at the end of the configuration process you should read something like
+</P>
+<div class="code"><PRE>
+...
+GRASS support:             no
+...
+...
+...
+ECW support:               yes
+MrSID support              yes			
+...
+</PRE></div>
+<P></P>
+<P>
+then compile normally
+</P>
+<div class="code"><PRE>
+make
+</PRE></div>
+<P></P>
+<P>
+and
+</P>
+<div class="code"><PRE>
+sudo make install
+</PRE></div>
+<P></P>
+<P>
+finish the process by creating the necessary links to the most recent shared libraries
+</P>
+<div class="code"><PRE>
+sudo ldconfig
+</PRE></div>
+<P></P>
+<P>
+at this point you may want to check if gdal was compiled correctly with MrSID and ECW
+support by issuing one (or both) of the following commands
+</P>
+<div class="code"><PRE>
+gdalinfo --formats | grep 'ECW'
+</PRE></div>
+<P></P>
+<div class="code"><PRE>
+gdalinfo --formats | grep 'SID'
+</PRE></div>
+<P></P>
+<P>
+leave the folder 
+</P>
+<div class="code"><PRE>
+cd ..
+</PRE></div>
+<P></P>
+<H3>3.10.5. Step 5: compile and install GRASS</H3>
+<P>
+Before downloading and compile GRASS source code you need to install a few
+other libraries and programs. We can do this trough apt
+</P>
+<div class="code"><PRE>
+sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
+tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
+libgdal1-dev proj libjpeg62-dev libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake \
+python-dev python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev libxmu6 \
+libqt4-dev libgsl0-dev python-qt4 swig python-wxversion python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev \
+tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
+</PRE></div>
+<P></P>
+<P>
+At this point we can get the GRASS source code: you may want to download it
+trough svn or maybe you want just to download the latest available source code arquive.
+For example the GRASS 6.4rc4 is available at <A HREF="http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz">http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz</A>
+</P>
+<P>
+Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
+</P>
+<div class="code"><PRE>
+CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
+--with-python=/usr/bin/python2.5-config
+</PRE></div>
+<P></P>
+<P>
+The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also <A HREF="http://trac.osgeo.org/grass/ticket/869">http://trac.osgeo.org/grass/ticket/869</A>
+</P>
+<P>
+Then as usual (it will take a while)
+</P>
+<div class="code"><PRE>
+make
+</PRE></div>
+<P></P>
+<P>
+and
+</P>
+<div class="code"><PRE>
+sudo make install
+</PRE></div>
+<P></P>
+<P>
+leave the folder 
+</P>
+<div class="code"><PRE>
+cd ..
+</PRE></div>
+<P></P>
+<P>
+you have now compiled and installed GRASS (also with the new wxpyhton interface) so you
+may want to give it a try
+</P>
+<div class="code"><PRE>
+grass64 -wxpython
+</PRE></div>
+<P></P>
+<H3>3.10.6. Step 6: compile and install QGIS</H3>
+<P>
+As for GRASS you can obtain the QGIS source code from different sources,
+for instance from svn or just by downloading one of the source code arquives available
+at <A HREF="http://www.qgis.org/download/sources.html">http://www.qgis.org/download/sources.html</A>
+</P>
+<P>
+For example download the QGIS 1.1.0 source code here <A HREF="http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz">http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz</A>
+</P>
+<P>
+uncompress the arquive and enter the newly created folder
+</P>
+<div class="code"><PRE>
+cd /qgis_1.1.0
+</PRE></div>
+<P></P>
+<P>
+then run ccmake
+</P>
+<div class="code"><PRE>
+ccmake .
+</PRE></div>
+<P></P>
+<P>
+press the "c" key, then when the option list will appear we need to manually
+configure the "GRASS_PREFIX" parameter. Scroll down until the "GRASS_PREFIX" will appear, 
+press enter and manually set it to
+</P>
+<div class="code"><PRE>
+/usr/local/grass-6.4.0RC4
+</PRE></div>
+<P></P>
+<P>
+then press enter again.
+</P>
+<P>
+Press the "c" again and the option "Press [g] to generate and exit" will appear.
+Press the "g" key to generate and exit.
+</P>
+<P>
+then as usual (it will take a while)
+</P>
+<div class="code"><PRE>
+make
+</PRE></div>
+<P></P>
+<P>
+and
+</P>
+<div class="code"><PRE>
+sudo make install
+</PRE></div>
+<P></P>
+<P>
+At the end of the process you should have QGIS and GRASS working with MrSID and ECW
+raster format support.
+</P>
+<P>
+To run QGIS just use this command 
+</P>
+<div class="code"><PRE>
+qgis
+</PRE></div>
+<P></P>
+<A NAME="toc14"></A>
+<H1>4. Building on Windows</H1>
+<A NAME="toc15"></A>
+<H2>4.1. Building with Microsoft Visual Studio</H2>
+<P>
+This section describes how to build QGIS using Visual Studio on Windows.  This
+is currently also who the binary QGIS packages are made (earlier versions used
+MinGW).
+</P>
+<P>
+This section describes the setup required to allow Visual Studio to be used to
+build QGIS. 
+</P>
+<H3>4.1.1. Visual C++ Express Edition</H3>
+<P>
+The free (as in free beer) Express Edition installer is available under:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe">http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+The optional products are not necessary.  In the process the Windows SDKs for
+Visual Studio 2008 will also be downloaded and installed.
+</P>
+<P>
+You also need the Microsoft Windows Server® 2003 R2 Platform SDK (for setupapi):
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe">http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+You only need Microsoft Windows Core SDK / Build Environment (x86 32-Bit).
+</P>
+<H3>4.1.2. Other tools and dependencies</H3>
+<P>
+Download and install following packages:
+</P>
+<TABLE BORDER="1">
+<TR>
+<TH>Tool</TH>
+<TH>Website</TH>
+</TR>
+<TR>
+<TD>CMake</TD>
+<TD><A HREF="http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe">http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe</A></TD>
+</TR>
+<TR>
+<TD>Flex</TD>
+<TD><A HREF="http://gnuwin32.sourceforge.net/downlinks/flex.php">http://gnuwin32.sourceforge.net/downlinks/flex.php</A></TD>
+</TR>
+<TR>
+<TD>Bison</TD>
+<TD><A HREF="http://gnuwin32.sourceforge.net/downlinks/bison.php">http://gnuwin32.sourceforge.net/downlinks/bison.php</A></TD>
+</TR>
+<TR>
+<TD>SVN</TD>
+<TD><A HREF="http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download">http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download</A></TD>
+</TR>
+<TR>
+<TD>OSGeo4W</TD>
+<TD><A HREF="http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe">http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe</A></TD>
+</TR>
+</TABLE>
 
-We recommend that you turn off vertex markers in QGIS options when working with
-this tool: the redraws are much faster and the map is not cluttered with
-markers. 
+<P>
+OSGeo4W does not only provide ready packages for the current QGIS release and
+nightly builds of the trunk, but also offers most of the dependencies needs to
+build it.
+</P>
+<P>
+For the QGIS build you need to install following packages from OSGeo4W (select
+<I>Advanced Installation</I>):
+</P>
+<UL>
+<LI>expat
+<LI>fcgi
+<LI>gdal17
+<LI>grass
+<LI>gsl-devel
+<LI>iconv
+<LI>pyqt4
+<LI>qt4-devel
+<LI>qwt5-devel-qt4
+<LI>sip
+</UL>
 
-Keyboard shortcuts:
+<P></P>
+<P>
+This will also select packages the above packages depend on.
+</P>
+<P>
+Additionally QGIS also needs the include file <CODE>unistd.h</CODE>, which normally
+doesn't exist on Windows.  It's shipped with Flex/Bison in <CODE>GnuWin32\include</CODE>
+and needs to be copied into the <CODE>VC\include</CODE> directory of your Visual C++
+installation.
+</P>
+<P>
+Earlier versions of this document also covered how to build all above
+dependencies.  If you're interested in that, check the history of this page in the Wiki
+or the SVN repository.
+</P>
+<H3>4.1.3. Setting up the Visual Studio project with CMake</H3>
+<P>
+To start a command prompt with an environment that both has the VC++ and the OSGeo4W
+variables create the following batch file (assuming the above packages were
+installed in the default locations):
+</P>
+<div class="code"><PRE>
+@echo off
+path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin;%PROGRAMFILES%\subversion\bin;%PROGRAMFILES%\GnuWin32\bin
+set PYTHONPATH=
 
-New feature: configure shortcuts for actions within main window of qgis!
-See menu Setting->Configure shortcuts
+set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
+call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
-Map Composer:
+set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft Platform SDK for Windows Server 2003 R2\include
+set LIB=%LIB%;%PROGRAMFILES%\Microsoft Platform SDK for Windows Server 2003 R2\lib
 
-It is now possible to lock/unlock composer item positions by right mouse click.
-The width and height of the composer map will now remain fixed if user sets the
-composer map extent to the map canvas extent. possibility to display
-current date in composer label by typing (d 'June' yyyy) or similar.
-It is now possible to keep the current layers in a composer map even if further
-layers are added to the main map. Export to PDF in composer is now possible.
+set OSGEO4W_ROOT=C:\OSGeo4W
+call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
-Attribute tables:
+@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.0
+@set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\gdal-17\include;%OSGEO4W_ROOT%\include
+@set LIB=%LIB%;%OSGEO4W_ROOT%\apps\gdal-17\lib;%OSGEO4W_ROOT%\lib
 
-It is now possible to search the attribute table within selected records only.
-General speedups have been made on the attribute table. Setting of field width
-and precision when adding attributes is now possible. Handling of attribute
-types in WFS provider has bee improved.
+@cmd
+</PRE></div>
+<P></P>
+<P>
+Start the batch file and on the command prompt checkout the QGIS source from
+svn to the source directory <CODE>qgis-trunk</CODE>:
+</P>
+<div class="code"><PRE>
+svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
+</PRE></div>
+<P></P>
+<P>
+Create a 'build' directory somewhere. This will be where all the build output
+will be generated.
+</P>
+<P>
+Now run <CODE>cmake-gui</CODE> and in the <I>Where is the source code:</I> box, browse to
+the top level QGIS directory.
+</P>
+<P>
+In the <I>Where to build the binaries:</I> box, browse to the 'build' directory you
+created.
+</P>
+<P>
+Hit <CODE>Configure</CODE> to start the configuration and select <CODE>Visual Studio 9 2008</CODE>
+and keep <CODE>native compilers</CODE> and click <CODE>Finish</CODE>.
+</P>
+<P>
+The configuration should complete without any further questions and allow you to
+click <CODE>Generate</CODE>.
+</P>
+<P>
+Now close <CODE>cmake-gui</CODE> and continue on the command prompt by starting
+<CODE>vcexpress</CODE>.  Use File / Open / Project/Solutions and open the
+qgis-x.y.z.sln File in your project directory.
+</P>
+<P>
+You probably want to change the <CODE>Solution Configuration</CODE> from <CODE>Debug</CODE>
+to <CODE>RelWithDebInfo</CODE> (Release with Debug Info)  or <CODE>Release</CODE> before you
+build QGIS using the ALL_BUILD target.
+</P>
+<P>
+After the build completed you should install QGIS using the INSTALL target.
+</P>
+<P>
+Install QGIS by building the INSTALL project. By default this will install to
+c:\Program Files\qgis&lt;version&gt; (this can be changed by changing the
+CMAKE_INSTALL_PREFIX variable in cmake-gui). 
+</P>
+<P>
+You will also either need to add all the dependency DLLs to the QGIS install
+directory or add their respective directories to your PATH.
+</P>
+<H3>4.1.4. Packaging</H3>
+<P>
+The packaging process is currently not documented, for now please take a look 
+at:
+</P>
+<P>
+<I>ms-windows/osgeo4w/package.cmd</I>
+</P>
+<A NAME="toc16"></A>
+<H2>4.2. Building using MinGW</H2>
+<P>
+<B>Note:</B> This section might be outdated as nowadays Visual C++ is use to build
+the "official" packages.
+</P>
+<P>
+<B>Note:</B> For a detailed account of building all the dependencies yourself you
+can visit Marco Pasetti's website here:
+</P>
+<P>
+<A HREF="http://www.webalice.it/marco.pasetti/qgis+grass/BuildFromSource.html">http://www.webalice.it/marco.pasetti/qgis+grass/BuildFromSource.html</A>
+</P>
+<P>
+Read on to use the simplified approach with pre-built libraries...
+</P>
+<H3>4.2.1. MSYS</H3>
+<P>
+MSYS provides a unix style build environment under windows. We have created a
+zip archive that contains just about all dependencies.
+</P>
+<P>
+Get this: 
+</P>
+<P>
+<A HREF="http://download.osgeo.org/qgis/win32/msys.zip">http://download.osgeo.org/qgis/win32/msys.zip</A>
+</P>
+<P>
+and unpack to c:\msys
+</P>
+<P>
+If you wish to prepare your msys environment yourself rather than using 
+our pre-made one, detailed instructions are provided elsewhere in this
+document.
+</P>
+<H3>4.2.2. Qt</H3>
+<P>
+Download Qt opensource precompiled edition exe and install (including the
+download and install of mingw) from here:
+</P>
+<P>
+<A HREF="http://qt.nokia.com/downloads/">http://qt.nokia.com/downloads/</A>
+</P>
+<P>
+When the installer will ask for MinGW, you don't need to download and install
+it, just point the installer to c:\msys\mingw
+</P>
+<P>
+When Qt installation is complete:
+</P>
+<P>
+Edit C:\Qt\4.7.0\bin\qtvars.bat and add the following lines:
+</P>
+<div class="code"><PRE>
+set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
+set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
+</PRE></div>
+<P></P>
+<P>
+I suggest you also add C:\Qt\4.7.0\bin\ to your Environment Variables Path in
+the windows system preferences.
+</P>
+<P>
+If you plan to do some debugging, you'll need to compile debug version of Qt:
+C:\Qt\4.7.0\bin\qtvars.bat compile_debug
+</P>
+<P>
+Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
+this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
+compile the debug version you have to go out of src directory and execute the
+following command:
+</P>
+<div class="code"><PRE>
+c:\Qt\4.7.0 make 
+</PRE></div>
+<P></P>
+<H3>4.2.3. Flex and Bison</H3>
+<P>
+Get Flex
+<A HREF="http://sourceforge.net/project/showfiles.php?group_id=23617&amp;package_id=16424">http://sourceforge.net/project/showfiles.php?group_id=23617&amp;package_id=16424</A>
+(the zip bin) and extract it into c:\msys\mingw\bin
+</P>
+<H3>4.2.4. Python stuff (optional)</H3>
+<P>
+Follow this section in case you would like to use Python bindings for QGIS.  To
+be able to compile bindings, you need to compile SIP and PyQt4 from sources as
+their installer doesn't include some development files which are necessary.
+</P>
+<H4>4.2.4.1. Download and install Python - use Windows installer</H4>
+<P>
+(It doesn't matter to what folder you'll install it)
+</P>
+<P>
+<A HREF="http://python.org/download/">http://python.org/download/</A>
+</P>
+<H4>4.2.4.2. Download SIP and PyQt4 sources</H4>
+<P>
+<A HREF="http://www.riverbankcomputing.com/software/sip/download">http://www.riverbankcomputing.com/software/sip/download</A>
+<A HREF="http://www.riverbankcomputing.com/software/pyqt/download">http://www.riverbankcomputing.com/software/pyqt/download</A>
+</P>
+<P>
+Extract each of the above zip files in a temporary directory. Make sure
+to get versions that match your current Qt installed version.
+</P>
+<H4>4.2.4.3. Compile SIP</H4>
+<div class="code"><PRE>
+c:\Qt\4.7.0\bin\qtvars.bat 
+python configure.py -p win32-g++ 
+make 
+make install 
+</PRE></div>
+<P></P>
+<H4>4.2.4.4. Compile PyQt</H4>
+<div class="code"><PRE>
+c:\Qt\4.7.0\bin\qtvars.bat 
+python configure.py 
+make 
+make install 
+</PRE></div>
+<P></P>
+<H4>4.2.4.5. Final python notes</H4>
+<P>
+/!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
+successfull install, they're not needed anymore.
+</P>
+<H3>4.2.5. Subversion</H3>
+<P>
+In order to check out QGIS sources from the repository, you need Subversion
+client. This installer should work fine:
+</P>
+<P>
+<A HREF="http://www.sliksvn.com/pub/Slik-Subversion-1.6.13-win32.msi">http://www.sliksvn.com/pub/Slik-Subversion-1.6.13-win32.msi</A>
+</P>
+<H3>4.2.6. CMake</H3>
+<P>
+CMake is build system used by Quantum GIS. Download it from here:
+</P>
+<P>
+<A HREF="http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe">http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe</A>
+</P>
+<H3>4.2.7. QGIS</H3>
+<P>
+Start a cmd.exe window ( Start -&gt; Run -&gt; cmd.exe ) Create development 
+directory and move into it
+</P>
+<div class="code"><PRE>
+md c:\dev\cpp 
+cd c:\dev\cpp 
+</PRE></div>
+<P></P>
+<P>
+Check out sources from SVN:
+</P>
+<P>
+For svn trunk:
+</P>
+<div class="code"><PRE>
+svn co https://svn.osgeo.org/qgis/trunk/qgis 
+</PRE></div>
+<P></P>
+<P>
+For svn 1.5 branch
+</P>
+<div class="code"><PRE>
+svn co https://svn.osgeo.org/qgis/branches/Release-1_5_0 qgis1.5.0
+</PRE></div>
+<P></P>
+<H3>4.2.8. Compiling</H3>
+<P>
+As a background read the generic building with CMake notes at the end of 
+this document.
+</P>
+<P>
+Start a cmd.exe window ( Start -&gt; Run -&gt; cmd.exe ) if you don't have one
+already.  Add paths to compiler and our MSYS environment:
+</P>
+<div class="code"><PRE>
+c:\Qt\4.7.0\bin\qtvars.bat 
+</PRE></div>
+<P></P>
+<P>
+For ease of use add c:\Qt\4.7.0\bin\ to your system path in system
+properties so you can just type qtvars.bat when you open the cmd console.
+Create build directory and set it as current directory:
+</P>
+<div class="code"><PRE>
+cd c:\dev\cpp\qgis 
+md build 
+cd build 
+</PRE></div>
+<P></P>
+<H3>4.2.9. Configuration</H3>
+<div class="code"><PRE>
+cmakesetup ..  
+</PRE></div>
+<P></P>
+<P>
+<B>Note:</B> You must include the '..' above.
+</P>
+<P>
+Click 'Configure' button.  When asked, you should choose 'MinGW Makefiles' as
+generator.
+</P>
+<P>
+There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
+platform, use 'MSYS Makefiles' generator instead.
+</P>
+<P>
+All dependencies should be picked up automatically, if you have set up the
+Paths correctly. The only thing you need to change is the installation
+destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
+</P>
+<P>
+For compatibility with NSIS packaging scripts I recommend to leave the install
+prefix to its default c:\program files\
+</P>
+<P>
+When configuration is done, click 'OK' to exit the setup utility.
+</P>
+<H3>4.2.10. Compilation and installation</H3>
+<div class="code"><PRE>
+ make make install 
+</PRE></div>
+<P></P>
+<H3>4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)</H3>
+<P>
+Make sure to copy all .dll:s needed to the same directory as the qgis.exe
+binary is installed to, if not already done so, otherwise QGIS will complain
+about missing libraries when started.
+</P>
+<P>
+A possibility is to run qgis.exe when your path contains c:\msys\local\bin and
+c:\msys\local\lib directories, so the DLLs will be used from that place.
+</P>
+<H3>4.2.12. Create the installation package: (optional)</H3>
+<P>
+Download and install NSIS from (<A HREF="http://nsis.sourceforge.net/Main_Page">http://nsis.sourceforge.net/Main_Page</A>)
+</P>
+<P>
+Now using windows explorer, enter the win_build directory in your QGIS source
+tree. Read the READMEfile there and follow the instructions. Next right click
+on qgis.nsi and choose the option 'Compile NSIS Script'. 
+</P>
+<A NAME="toc17"></A>
+<H2>4.3. Creation of MSYS environment for compilation of Quantum GIS</H2>
+<H3>4.3.1. Initial setup</H3>
+<H4>4.3.1.1. MSYS</H4>
+<P>
+This is the environment that supplies many utilities from UNIX world in Windows and is needed
+by many dependencies to be able to compile.
+</P>
+<P>
+Download from here:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://puzzle.dl.sourceforge.net/sourceforge/mingw/MSYS-1.0.11-2004.04.30-1.exe">http://puzzle.dl.sourceforge.net/sourceforge/mingw/MSYS-1.0.11-2004.04.30-1.exe</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Install to <CODE>c:\msys</CODE>
+</P>
+<P>
+All stuff we're going to compile is going to get to this directory (resp. its subdirs).
+</P>
+<H4>4.3.1.2. MinGW</H4>
+<P>
+Download from here:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://puzzle.dl.sourceforge.net/sourceforge/mingw/MinGW-5.1.3.exe">http://puzzle.dl.sourceforge.net/sourceforge/mingw/MinGW-5.1.3.exe</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Install to <CODE>c:\msys\mingw</CODE>
+</P>
+<P>
+It suffices to download and install only <CODE>g++</CODE> and <CODE>mingw-make</CODE> components.
+</P>
+<H4>4.3.1.3. Flex and Bison</H4>
+<P>
+Flex and Bison are tools for generation of parsers, they're needed for GRASS and also QGIS compilation.
+</P>
+<P>
+Download the following packages:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://gnuwin32.sourceforge.net/downlinks/flex-bin-zip.php">http://gnuwin32.sourceforge.net/downlinks/flex-bin-zip.php</A>
+	</BLOCKQUOTE>
+<P></P>
+	<BLOCKQUOTE>
+	<A HREF="http://gnuwin32.sourceforge.net/downlinks/bison-bin-zip.php">http://gnuwin32.sourceforge.net/downlinks/bison-bin-zip.php</A>
+	</BLOCKQUOTE>
+<P></P>
+	<BLOCKQUOTE>
+	<A HREF="http://gnuwin32.sourceforge.net/downlinks/bison-dep-zip.php">http://gnuwin32.sourceforge.net/downlinks/bison-dep-zip.php</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Unpack them all to <CODE>c:\msys\local</CODE>
+</P>
+<H3>4.3.2. Installing dependencies</H3>
+<H4>4.3.2.1. Getting ready</H4>
+<P>
+Paul Kelly did a great job and prepared a package of precompiled libraries for GRASS.
+The package currently includes:
+</P>
+<UL>
+<LI>zlib-1.2.3
+<LI>libpng-1.2.16-noconfig
+<LI>xdr-4.0-mingw2
+<LI>freetype-2.3.4
+<LI>fftw-2.1.5
+<LI>PDCurses-3.1
+<LI>proj-4.5.0
+<LI>gdal-1.4.1
+</UL>
 
-Attribute aliases for vector layers are now available. The aliases are shown
-instead of the original field names in the info tool and attribute table to
-make things easier for end users. There is now a GUI for setting edit widgets
-for layer attributes.  A new dialog allows loading a value map from a layer
-(could be non-spatial table too!).  The edit widgets settings will also now
-be respected in the attribute table.
+<P>
+It's available for download here:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://www.stjohnspoint.co.uk/grass/wingrass-extralibs.tar.gz">http://www.stjohnspoint.co.uk/grass/wingrass-extralibs.tar.gz</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Moreover he also left the notes how to compile it (for those interested):
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://www.stjohnspoint.co.uk/grass/README.extralibs">http://www.stjohnspoint.co.uk/grass/README.extralibs</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Unpack the whole package to <CODE>c:\msys\local</CODE>
+</P>
+<H4>4.3.2.2. GRASS</H4>
+<P>
+Grab sources from CVS or use a weekly snapshot, see:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://grass.itc.it/devel/cvs.php">http://grass.itc.it/devel/cvs.php</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+In MSYS console go to the directory where you've unpacked or checked out sources
+(e.g. <CODE>c:\msys\local\src\grass-6.3.cvs</CODE>)
+</P>
+<P>
+Run these commands:
+</P>
+<div class="code"><PRE>
+export PATH="/usr/local/bin:/usr/local/lib:$PATH"
+./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg \
+--without-tiff --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-pgsql-libs=/local/pgsql/lib --with-opengl=windows --with-fftw \
+--with-freetype --with-freetype-includes=/mingw/include/freetype2 --without-x --without-tcltk --enable-x11=no --enable-shared=yes \
+--with-proj-share=/usr/local/share/proj
+make
+make install
+</PRE></div>
+<P></P>
+<P>
+It should get installed to <CODE>c:\msys\local\grass-6.3.cvs</CODE>
+</P>
+<P>
+By the way, these pages might be useful:
+</P>
+<UL>
+<LI><A HREF="http://grass.gdf-hannover.de/wiki/WinGRASS_Current_Status">http://grass.gdf-hannover.de/wiki/WinGRASS_Current_Status</A>
+<LI><A HREF="http://geni.ath.cx/grass.html">http://geni.ath.cx/grass.html</A>
+</UL>
 
-Plugins:
+<H4>4.3.2.3. GEOS</H4>
+<P>
+Download the sources:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://geos.refractions.net/geos-2.2.3.tar.bz2">http://geos.refractions.net/geos-2.2.3.tar.bz2</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Unpack to e.g. <CODE>c:\msys\local\src</CODE>
+</P>
+<P>
+To compile, I had to patch the sources: in file <CODE>source/headers/timeval.h</CODE> line 13.
+Change it from:
+</P>
+<div class="code"><PRE>
+#ifdef _WIN32
+</PRE></div>
+<P>
+to:
+</P>
+<div class="code"><PRE>
+#if defined(_WIN32) &amp;&amp; defined(_MSC_VER)
+</PRE></div>
+<P></P>
+<P>
+Now, in MSYS console, go to the source directory and run:
+</P>
+<div class="code"><PRE>
+./configure --prefix=/usr/local
+make
+make install
+</PRE></div>
+<P></P>
+<H4>4.3.2.4. SQLITE</H4>
+<P>
+You can use precompiled DLL, no need to compile from source:
+</P>
+<P>
+Download this archive:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://www.sqlite.org/sqlitedll-3_3_17.zip">http://www.sqlite.org/sqlitedll-3_3_17.zip</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+and copy sqlite3.dll from it to <CODE>c:\msys\local\lib</CODE>
+</P>
+<P>
+Then download this archive:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://www.sqlite.org/sqlite-source-3_3_17.zip">http://www.sqlite.org/sqlite-source-3_3_17.zip</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+and copy sqlite3.h to <CODE>c:\msys\local\include</CODE>
+</P>
+<H4>4.3.2.5. GSL</H4>
+<P>
+Download sources:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz">ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Unpack to <CODE>c:\msys\local\src</CODE>
+</P>
+<P>
+Run from MSYS console in the source directory:
+</P>
+<div class="code"><PRE>
+./configure
+make
+make install
+</PRE></div>
+<P></P>
+<H4>4.3.2.6. EXPAT</H4>
+<P>
+Download sources:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.0.tar.gz">http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.0.tar.gz</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Unpack to <CODE>c:\msys\local\src</CODE>
+</P>
+<P>
+Run from MSYS console in the source directory:
+</P>
+<div class="code"><PRE>
+./configure
+make
+make install
+</PRE></div>
+<P></P>
+<H4>4.3.2.7. POSTGRES</H4>
+<P>
+We're going to use precompiled binaries. Use the link below for download:
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://wwwmaster.postgresql.org/download/mirrors-ftp?file=%2Fbinary%2Fv8.2.4%2Fwin32%2Fpostgresql-8.2.4-1-binaries-no-installer.zip">http://wwwmaster.postgresql.org/download/mirrors-ftp?file=%2Fbinary%2Fv8.2.4%2Fwin32%2Fpostgresql-8.2.4-1-binaries-no-installer.zip</A>
+	</BLOCKQUOTE>
+<P></P>
+<P>
+copy contents of pgsql directory from the archive to <CODE>c:\msys\local</CODE>
+</P>
+<H3>4.3.3. Cleanup</H3>
+<P>
+We're done with preparation of MSYS environment. Now you can delete all stuff in <CODE>c:\msys\local\src</CODE> - it takes quite a lot
+of space and it's not necessary at all.
+</P>
+<A NAME="toc18"></A>
+<H1>5. MacOS X: building using frameworks and Cmake</H1>
+<P>
+In this approach I will try to avoid as much as possible building dependencies
+from source and rather use frameworks wherever possible.
+</P>
+<P>
+The base system here is Mac OS X 10.4 (<U>Tiger</U>), with a single architecture build.
+Included are a few notes for building on Mac OS X 10.5 (<U>Leopard</U>) and 10.6 (<U>Snow Leopard</U>).
+Make sure to read each section completely before typing the first command you see.
+</P>
+<P>
+<U>General note on Terminal usage:</U>  When I say "cd" to a folder in a Terminal,
+it means type "cd " (without the quotes, make sure to type a space after) and
+then type the path to said folder, then &lt;return&gt;.  A simple way to do this without having to know
+and type the full path is, after type the "cd " part, drag the folder (use the icon
+in its window title bar, or drag a folder from within a window) from the Desktop
+to the Terminal, then tap &lt;return&gt;.
+</P>
+<P>
+<U>Parallel Compilation:</U> On multiprocessor/multicore Macs, it's possible to speed
+up compilation, but it's not automatic.  Whenever you type "make" (but NOT "make install"),
+instead type:
+</P>
+<div class="code"><PRE>
+make -j [n]
+</PRE></div>
+<P></P>
+<P>
+Replace [n] with the number of cores and/or processors your Mac has.  On recent
+models with hyperthreading processors this can be double the physical count of
+processors and cores.
+</P>
+<P>
+ie: Mac Pro "8 Core" model (2 quad core processors) = 8
+</P>
+<P>
+ie: Macbook Pro i5 (hyperthreading) = 2 cores X 2 = 4
+</P>
+<A NAME="toc19"></A>
+<H2>5.1. Install Qt4 from .dmg</H2>
+<P>
+You need a minimum of Qt-4.4.0. I suggest getting the latest.
+</P>
+<P>
+<U>Snow Leopard note:</U> If you are building on Snow Leopard, you will need to
+decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
+support in the Qt Cocoa branch. Appropriate installers are available for both
+as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
+</P>
+<P>
+<U>PPC note:</U> There appear to be issues with Qt Cocoa on PPC Macs.  QT Carbon
+is recommended on PPC Macs.
+</P>
+<div class="code"><PRE>
+http://qt.nokia.com/downloads
+</PRE></div>
+<P></P>
+<P>
+If you want debug frameworks, Qt also provides a dmg with these.  These are in
+addition to the non-debug frameworks.
+</P>
+<P>
+Once downloaded open the dmg and run the installer. Note you need admin
+privileges to install.
+</P>
+<P>
+<U>Qt note:</U> Starting in Qt 4.4, libQtCLucene was added, and in 4.5
+libQtUiTools was added, both in /usr/lib.  When using a system SDK
+these libraries will not be found.  To fix this problem,
+add symlinks to /usr/local:
+</P>
+<div class="code"><PRE>
+sudo ln -s /usr/lib/libQtUiTools.a /usr/local/lib/
+sudo ln -s /usr/lib/libQtCLucene.dylib /usr/local/lib/
+</PRE></div>
+<P></P>
+<P>
+These should then be found automatically on Leopard and above.  Earlier systems
+may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
+CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
+</P>
+<A NAME="toc20"></A>
+<H2>5.2. Install development frameworks for QGIS dependencies</H2>
+<P>
+Download William Kyngesburye's excellent GDAL Complete package that includes
+PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.  There is also
+a GSL framework.
+</P>
+<div class="code"><PRE>
+http://www.kyngchaos.com/wiki/software/frameworks
+</PRE></div>
+<P></P>
+<P>
+Once downloaded, open and install the frameworks.
+</P>
+<P>
+William provides an additional installer package for Postgresql (for PostGIS support).
+Qgis just needs the libpq client library, so unless you want to setup the full
+Postgres + PostGIS server, all you need is the client-only package.
+It's available here:
+</P>
+<div class="code"><PRE>
+http://www.kyngchaos.com/wiki/software/postgres 
+</PRE></div>
+<P></P>
+<P>
+Also available is a GRASS application:
+</P>
+<div class="code"><PRE>
+http://www.kyngchaos.com/wiki/software/grass
+</PRE></div>
+<P></P>
+<H3>5.2.1. Additional Dependencies: General compatibility note</H3>
+<P>
+There are some additional dependencies that, at the time of writing, are not
+provided as frameworks or installers so we will need to build these from source.
+If you are wanting to build Qgis as a 64-bit application, you will need to 
+provide the appropriate build commands to produce 64-bit support in dependencies.
+Likewise, for 32-bit support on Snow Leopard, you will need to override the
+default system architecture, which is 64-bit, according to instructions for
+individual dependency packages.
+</P>
+<P>
+Stable release versions are preferred.  Beta and other development versions may
+have problems and you are on your own with those.
+</P>
+<H3>5.2.2. Additional Dependencies: Expat</H3>
+<P>
+<U>Snow Leopard note:</U> Snow Leopard includes a usable expat, so this step is 
+not necessary on Snow Leopard.
+</P>
+<P>
+Get the expat sources:
+</P>
+<div class="code"><PRE>
+http://sourceforge.net/project/showfiles.php?group_id=10127 
+</PRE></div>
+<P></P>
+<P>
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the source folder and:
+</P>
+<div class="code"><PRE>
+./configure
+make 
+sudo make install 
+</PRE></div>
+<P></P>
+<H3>5.2.3. Additional Dependencies: Python</H3>
+<P>
+<U>Leopard and Snow Leopard note:</U> Leopard and Snow Leopard include a usable
+Python 2.5 and 2.6, respectively. So there is no need to install Python on
+Leopard and Snow Leopard. You can still install Python from python.org if preferred.
+</P>
+<P>
+If installing from python.org, make sure you install at least the latest Python 2.x from 
+</P>
+<div class="code"><PRE>
+http://www.python.org/download/
+</PRE></div>
+<P></P>
+<P>
+Python 3 is a major change, and may have compatibility issues, so try it at your own risk.
+</P>
+<H3>5.2.4. Additional Dependencies: SIP</H3>
+<P>
+Retrieve the python bindings toolkit SIP from
+</P>
+<div class="code"><PRE>
+http://www.riverbankcomputing.com/software/sip/download
+</PRE></div>
+<P></P>
+<P>
+Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
+and (this installs by default into the Python framework, and is appropriate only for 
+python.org Python installs):
+</P>
+<div class="code"><PRE>
+python configure.py 
+make 
+sudo make install 
+</PRE></div>
+<P></P>
+<P>
+<U>Leopard notes</U>
+</P>
+<P>
+If building on Leopard, using Leopard's bundled Python, SIP wants to install in the
+system path -- this is not a good idea.  Use this configure command instead of the 
+basic configure above:
+</P>
+<div class="code"><PRE>
+python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip -s MacOSX10.5.sdk
+</PRE></div>
+<P></P>
+<P>
+<U>Snow Leopard notes</U>
+</P>
+<P>
+Similar to Leopard, you should install outside the system Python path.
+Also, you need to specify the architecture you want (requires at least SIP 4.9),
+and make sure to run the versioned python binary (this one responds to the
+'arch' command, 'python' does not). If you are using 32-bit Qt (Qt Carbon):
+</P>
+<div class="code"><PRE>
+python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=i386 -s MacOSX10.6.sdk
+</PRE></div>
+<P></P>
+<P>
+For 64-bit Qt (Qt Cocoa), use this configure line:
+</P>
+<div class="code"><PRE>
+python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.6.sdk
+</PRE></div>
+<P></P>
+<H3>5.2.5. Additional Dependencies: PyQt</H3>
+<P>
+Retrieve the python bindings toolkit for Qt from
+</P>
+<div class="code"><PRE>
+http://www.riverbankcomputing.com/software/pyqt/download
+</PRE></div>
+<P></P>
+<P>
+Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
+and (this installs by default into the Python framework, and is appropriate only for
+python.org Python installs):
+</P>
+<div class="code"><PRE>
+python configure.py 
+yes 
+</PRE></div>
+<P></P>
+<P>
+There is a problem with the configuration that needs to be fixed now
+(it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
+</P>
+<div class="code"><PRE>
+    'qt_dir': '/usr',
+</PRE></div>
+<P></P>
+<P>
+Then continue with compilation and installation (this is a good place to use
+parallel compilation, if you can):
+</P>
+<div class="code"><PRE>
+make 
+sudo make install 
+</PRE></div>
+<P></P>
+<P>
+<U>Leopard notes</U>
+</P>
+<P>
+If building on Leopard, using Leopard's bundled Python, PyQt wants to install
+in the system path -- this is not a good idea.  Use this configure command
+instead of the basic configure above:
+</P>
+<div class="code"><PRE>
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+</PRE></div>
+<P></P>
+<P>
+If there is a problem with undefined symbols in QtOpenGL on Leopard, edit
+QtOpenGL/makefile and add -undefined dynamic_lookup to LFLAGS.
+Then make again.
+</P>
+<P>
+<U>Snow Leopard notes</U>
+</P>
+<P>
+Similar to Leopard, you should install outside the system Python path.
+Also, you need to specify the architecture you want (requires at least PyQt 4.6),
+and make sure to run the versioned python binary (this one responds to the
+'arch' command, which is important for pyuic4, 'python' does not).
+If you are using 32-bit Qt (Qt Carbon):
+</P>
+<div class="code"><PRE>
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+</PRE></div>
+<P></P>
+<P>
+For 64-bit Qt (Qt Cocoa), use this configure line:
+</P>
+<div class="code"><PRE>
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+</PRE></div>
+<P></P>
+<H3>5.2.6. Additional Dependencies: Qwt/PyQwt</H3>
+<P>
+The GPS tracking feature uses Qwt.  Some popular 3rd-party plugins use PyQwt.
+You can take care of both with the PyQwt source from:
+</P>
+<div class="code"><PRE>
+http://pyqwt.sourceforge.net/
+</PRE></div>
+<P></P>
+<P>
+Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
+Normal compilation does both Qwt and PyQwt at the same time, but Qwt is staically linked
+into PyQwt, and Qgis can't use it.  So, we need to split the build.
+</P>
+<P>
+First edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
+you don't get a bloated debug static library (too bad they are not configurable from
+qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
+line, within an 'else' block, and change 'debug' to 'release'.  Like so:
+</P>
+<div class="code"><PRE>
+    else {
+        CONFIG           += release     # release/debug
+    }
+</PRE></div>
+<P></P>
+<P>
+Also uncomment (remove # prefix) the line 'CONFIG += QwtDll'.  Like so:
+</P>
+<div class="code"><PRE>
+CONFIG           += QwtDll
+</PRE></div>
+<P></P>
+<P>
+If you are building for Qt Carbon 32bit on Snow Leopard, add a line at the bottom:
+</P>
+<div class="code"><PRE>
+CONFIG += x86
+</PRE></div>
+<P></P>
+<P>
+Save and close.
+</P>
+<P>
+Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and install:
+</P>
+<div class="code"><PRE>
+qmake -spec macx-g++
+make
+sudo make install
+sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib \
+/usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
+</PRE></div>
+<P></P>
+<P>
+The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is the 
+minor.point version, and it may be an SVN version).  Remember this for QGIS and PyQwt configuration.
+</P>
+<P>
+Now for PyQwt.  Still in the Terminal:
+</P>
+<div class="code"><PRE>
+cd ../configure
+python configure.py --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
+--extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
+make
+sudo make install
+</PRE></div>
+<P></P>
+<P>
+Make sure to use the qwt install path from the Qwt build above.
+</P>
+<P>
+<U>Snow Leopard note</U>
+</P>
+<P>
+If using Qt Carbon, you need to specify which architectures to build, otherwise
+it will default to a combination that does not work (ie x86_64 for a Carbon Qt).
+This is not needed for Qt Cocoa. Configure as follows:
+</P>
+<div class="code"><PRE>
+python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
+--extra-lflags="-arch i386" --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
+--extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
+</PRE></div>
+<P></P>
+<H3>5.2.7. Additional Dependencies: Bison</H3>
+<P>
+<U>Leopard and Snow Leopard note:</U> Leopard and Snow Leopard include Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
+</P>
+<P>
+The version of bison available by default on Mac OS X 10.4 is too old so you need to
+get a more recent one on your system. Download at least version 2.3 from:
+</P>
+<div class="code"><PRE>
+ftp.gnu.org/gnu/bison/
+</PRE></div>
+<P></P>
+<P>
+Now build and install it to a prefix of /usr/local.Ê Double-click the source
+tarball to unpack it, then cd to the source folder and:
+</P>
+<div class="code"><PRE>
+./configure --prefix=/usr/local 
+make
+sudo make install 
+</PRE></div>
+<P></P>
+<A NAME="toc21"></A>
+<H2>5.3. Install CMake for OSX</H2>
+<P>
+(Only needed for a cmake build.)
+</P>
+<P>
+Get the latest source release from here:
+</P>
+<div class="code"><PRE>
+http://www.cmake.org/cmake/resources/software.html
+</PRE></div>
+<P></P>
+<P>
+Binary installers are available for OS X, but they are not recommended
+(2.4 versions install in /usr instead of /usr/local, and 2.6 versions are a
+strange application). Instead, download the source, double-click the source tarball,
+then cd to the source folder and:
+</P>
+<div class="code"><PRE>
+./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
+make
+sudo make install
+</PRE></div>
+<P></P>
+<A NAME="toc22"></A>
+<H2>5.4. Install subversion for OSX</H2>
+<P>
+<U>Leopard and Snow Leopard note:</U> Leopard and Snow Leopard (Xcode 3+)
+include SVN, so this step can be skipped on Leopard and Snow Leopard.
+</P>
+<P>
+The [<A HREF="http://sourceforge.net/projects/macsvn/MacSVN">http://sourceforge.net/projects/macsvn/MacSVN</A>] project has a downloadable
+build of svn. If you are a GUI inclined person you may want to grab their gui
+client too. Get the command line client here:
+</P>
+<div class="code"><PRE>
+curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Subversion_1.4.2.zip 
+</PRE></div>
+<P></P>
+<P>
+Once downloaded open the zip file and run the installer.
+</P>
+<P>
+You also need to install BerkleyDB available from the same
+<A HREF="website">http://sourceforge.net/projects/macsvn/</A>. At the time of writing the
+file was here:
+</P>
+<div class="code"><PRE>
+curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Berkeley_DB_4.5.20.zip 
+</PRE></div>
+<P></P>
+<P>
+Once again unzip this and run the installer therein.
+</P>
+<P>
+Lastly we need to ensure that the svn commandline executeable is in the path.
+Add the following line to the end of /etc/bashrc using sudo:
+</P>
+<div class="code"><PRE>
+sudo vim /etc/bashrc 
+</PRE></div>
+<P></P>
+<P>
+And add this line to the bottom before saving and quiting:
+</P>
+<div class="code"><PRE>
+export PATH=/usr/local/bin:$PATH:/usr/local/pgsql/bin 
+</PRE></div>
+<P></P>
+<P>
+/usr/local/bin needs to be first in the path so that the newer bison (that will
+be built from source further down) is found before the bison (which is very
+old) that is installed by MacOSX
+</P>
+<P>
+Now close and reopen your shell to get the updated vars.
+</P>
+<A NAME="toc23"></A>
+<H2>5.5. Check out QGIS from SVN</H2>
+<P>
+Now we are going to check out the sources for QGIS. First we will create a
+directory for working in (or some folder of your choice):
+</P>
+<div class="code"><PRE>
+mkdir -p ~/dev/cpp cd ~/dev/cpp 
+</PRE></div>
+<P></P>
+<P>
+Now we check out the sources:
+</P>
+<P>
+Trunk:
+</P>
+<div class="code"><PRE>
+svn co https://svn.osgeo.org/qgis/trunk/qgis qgis 
+</PRE></div>
+<P></P>
+<P>
+For a release branch version x.y.z:
+</P>
+<div class="code"><PRE>
+svn co https://svn.qgis.org/qgis/branches/Release-x_y_z qgis-x.y.z
+</PRE></div>
+<P></P>
+<P>
+The first time you check out QGIS sources you will probably get a message like
+this:
+</P>
+<div class="code"><PRE>
+ Error validating server certificate for 'https://svn.qgis.org:443':
+ - The certificate is not issued by a trusted authority. Use the fingerprint to
+   validate the certificate manually!  Certificate information:
+ - Hostname: svn.qgis.org
+ - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+ - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+ - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+   (R)eject, accept (t)emporarily or accept (p)ermanently?  
+</PRE></div>
+<P></P>
+<P>
+I suggest you press 'p' to accept the key permanently.
+</P>
+<A NAME="toc24"></A>
+<H2>5.6. Configure the build</H2>
+<P>
+CMake supports out of source build so we will create a 'build' dir for the
+build process. OS X uses ${HOME}/Applications as a standard user app folder (it gives it the system app folder icon).
+If you have the correct permissions you may want to build
+straight into your /Applications folder. The instructions below assume you are
+building into a pre-existing ${HOME}/Applications directory.
+In a Terminal cd to the qgis source folder previously downloaded, then:
+</P>
+<div class="code"><PRE>
+mkdir build
+cd build
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+..
+</PRE></div>
+<P></P>
+<P>
+This will automatically find and use the previously installed frameworks, and the GRASS
+application if installed.
+</P>
+<P>
+Or, to use a Unix-style build of GRASS, use the following cmake invocation
+(minimum GRASS version as stated in the Qgis requirements, substitute the GRASS
+path and version as required):
+</P>
+<div class="code"><PRE>
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D GRASS_PREFIX=/user/local/grass-6.4.0 \
+..
+</PRE></div>
+<P></P>
+<P>
+<U>Snow Leopard note:</U> To handle 32-bit Qt (Carbon), create a 32bit python wrapper
+script and add arch flags to the configuration:
+</P>
+<div class="code"><PRE>
+sudo cat &gt;/usr/local/bin/python32 &lt;&lt;EOF
+#!/bin/sh
+exec arch -i386 /usr/bin/python2.6 \${1+"\$@"}
+EOF
 
-- The order of layers in the WMS dialog can now be changed.
-- The eVis plugin, version 1.1.0, has been added to the QGIS project and
-  included as a standard plugin. More information about eVis can be found here:
-  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
-- The interpolation plugin now has the ability to use line layers as constrains
-  for triangulation in interpolation plugin. You can also now save the
-  triangulation to shape file.
-- An new OpenStreetMap provider and plugin have been added to QGIS.
+sudo chmod +x /usr/local/bin/python32
 
-Projects Management:
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
+..
+</PRE></div>
+<P></P>
+<P>
+<U>Bundling note:</U> Older Qt versions may have problems with some Qt plugins and Qgis.
+The way to handle this is bundle Qt inside the Qgis application.  You can do this now
+or wait to see if there are immediate crahses when running Qgis.  It's also a good
+idea to bundle Qt if you need to copy Qgis to other Macs (where you would have to
+install Xcode just so Qt would install!).
+</P>
+<P>
+To bundle Qt, add the following line before the last line in the above cmake configurations:
+</P>
+<div class="code"><PRE>
+-D QGIS_MACAPP_BUNDLE=1 \
+</PRE></div>
+<P></P>
+<A NAME="toc25"></A>
+<H2>5.7. Building</H2>
+<P>
+Now we can start the build process (remember the parallel compilation note at
+the beginning, this is a good place to use it, if you can):
+</P>
+<div class="code"><PRE>
+make 
+</PRE></div>
+<P></P>
+<P>
+If all built without errors you can then install it:
+</P>
+<div class="code"><PRE>
+make install 
+</PRE></div>
+<P></P>
+<P>
+or, for a /Applications build:
+</P>
+<div class="code"><PRE>
+sudo make install
+</PRE></div>
+<P></P>
+<A NAME="toc26"></A>
+<H1>6. Authors and Acknowledgments</H1>
+<P>
+The following people have contributed to this document:
+</P>
+<UL>
+<LI>Windows MINGW Section
+ <UL>
+ <LI>Tim Sutton, Godofredo Contreras 2006
+ <LI>CMake additions Magnus Homann 2007
+ <LI>Python additions Martin Dobias 2007
+ <LI>With thanks to Tisham Dhar for preparing the initial msys environment
+ <P></P>
+ </UL>
+<LI>Windows MSVC Section (Detailed install)
+ <UL>
+ <LI>David Willis 2007
+ <LI>MSVC install additions Tim Sutton 2007
+ <LI>PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
+ <P></P>
+ </UL>
+<LI>Windows MSVC Section (Simplified install)
+ <UL>
+ <LI>Tim Sutton 2007
+ <LI>Juergen Fischer 2007
+ <LI>Florian Hillen 2010
+ <P></P>
+ </UL>
+<LI>OSX Section
+ <UL>
+ <LI>Tim Sutton 2007
+ <LI>With special thanks to Tom Elwertowski and William Kyngesburye
+ <P></P>
+ </UL>
+<LI>GNU/Linux Section
+ <UL>
+ <LI>Tim Sutton 2006
+ <LI>Debian package section: Juergen Fischer 2008
+ </UL>
+</UL>
 
-QGIS now includes support for  project relative position of file data sources
-and svgs. The saving of relative paths of file data sources is optional.
+</DIV>
 
-PostGIS & the PostgreSQL Provider:
-
-You can now select the SSL mode when adding a new DB connection. Turning off
-SSL encryption can greatly improve performance of PostGIS data loading where
-connection security is not required. Support has been added for more native
-types and for setting of column comments.
-
-Symbology enhancements:
-
-- allow refresh of symbols via popup menu on the renderer's symbol selection
-- add support for data defined symbol(name)s
-- add support for font symbol markers (only data defined - no gui yet)
-- add symbol size in map units (ie. symbols that keep the size in mapunits
-  independent of the mapscale)
-
-Command line arguments:
-
-Added command line argument support on windows.
-Enhancement of command line arguments:
-- allow given snapshot sizes
-- allow suppression of splash screen
-- capture map decorations from plugins on snapshots
-
-Grass:
-
-There is a new GRASS shell. Also there have been many cleanups and consistency
-updates.
-</pre>
-
-<h2>Whats new in Version 1.1.0?</h2>
-<p>
-This release includes many bug fixes and enchancements 
-over the QGIS 1.0.0 release. In addition we have added 
-the following new features:
-</p>
-<ul>
-  <li>
-  Updates to translations.
-  </li>
-  <li>
-  Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.
-  </li>
-  <li>
-  Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.
-  </li>
-  <li>
- Improvements to Debian packaging to better support Debian standard requirements.
-  </li>
-  <li>
-  Support usb: as a GPS device under Linux.
-  </li>
-  <li>
-  WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.
-  </li>
-  <li>
-   Added svg point symbols symbols from Matt Amos (with his permission).
-  </li>
-  <li>
-  Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.
-  </li>
-  <li>
-  Improvements the PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.
-  </li>
-  <li>
-  Mapserver Export improvements for continuous color support.
-  </li>
-  <li>
-  Added tools menu - the fTools plugins are now part of the core QGIS plugins and will always be installed by default. 
-  </li>
-  <li>
- Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.
-  </li>
-  <li>
-  When using File - Save as image, the saved image is now georeferenced.
-  </li>
-  <li>
-  Projection selector now includes quick selection of recently used CRS's.
-  </li>
-  <li>
-  Continuous color renderer supports point symbols now too.
-  </li>
-  <li>
-  Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.
-  </li>
-  <li>
-  Updates and cleanups to the GRASS toolbox.
-  </li>
-  <li>
-  Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.
-  </li>
-  <li>
-  The middle mouse button can now be used for panning. 
-  </li>
-  <li>
-  A new, faster attribute table implementation.
-  </li>
-  <li>
-  Numerous cleanups to the user interface.
-  </li>
-  <li>
-  A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.
-  </li>
-  <li>
-  Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.
-  </li>
-</ul>
-<h2>Whats new in Version 1.0.0?</h2>
-<p>
-</p>
-This release includes over 265 bug fixes and enchancements 
-over the QGIS 0.11.0 release. In addition we have added 
-the following new features:
-<ul>
-  <li>
-    HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome
-  </li>
-  <li>
-    Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.
-  </li>
-  <li>
-    Advanced topological editing of vector data.
-  </li>
-  <li>
-    Single click selection of vector features.
-  </li>
-  <li>
-    Many improvements to raster rendering and support for building pyramids external to the raster file.
-  </li>
-  <li>
-    Overhaul of the map composer for much improved printing support.
-  </li>
-  <li>
-    A new 'coordinate capture' plugin was added that lets you click on the map and then cut & paste the coordinates to and from the clipboard
-  </li>
-  <li>
-    A new plugin for converting between OGR supported formats was added.
-  </li>
-  <li>
-    A new plugin for converting from DXF files to shapefiles was added.
-  </li>
-  <li>
-    A new plugin was added for interpolating point features into ASCII grid layers.
-  </li>
-  <li>
-    The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.
-  </li>
-  <li>
-    Plugin toolbar positions are now correctly saved when the application is closed.
-  </li>
-  <li>
-    In the WMS client, WMS standards support has been improved.
-  </li>
-  <li>
-    Complete API revision - we now have a stable API following well defined naming conventions.
-  </li>
-  <li>
-    Ported all GDAL/OGR and GEOS usage to use C APIs only.
-  </li>
-</ul>
-
-
-<dl><dt><span class="subheader">Special Requirements
-    <ul class="normal">
-      <li><a href="http://www.trolltech.com/developer/downloads/qt/index">Qt 4.3.0</a> is required. 
-    <li>The <a href="http://expat.sourceforge.net/">Expat XML Parser</a> is required for the GPS plugin. This vastly improves the speed and memory management when loading GPX files.
-    <li>The raster georeferencer plugin requires the <a href="http://www.gnu.org/software/gsl/">GNU Scientfic Library</a> (GSL).
-    </ul>
-    <span class="normal">
-    GSL and Expat are optional and required only if you want to use the georeferencer or GPS plugins respectively. SQLite is always required.
-  </span>
-  </dl>
-<dl><dt><span class="subheader">Known Issues in this Release
-    <dd>
-    General
-    <ul class="normal">
-    <li>Some internationalization (translation) files may be incomplete.
-    <li>QGIS is not bug free - we make no assertions as to its fitness for
-        use for any particular purpose. Use entirely at your own risk.
-    </ul>
-
-    </dd>
-    <dd>
-    OS X Specific
-    <ul class="normal">
-      <li>Due to a limitation in the Quicktime graphics engine, there is a limit on the number points allowed per feature. See the Readme that comes with the OS X dmg
-    </ul>
-    </dd>
-    <dd>
-    Windows
-    <ul class="normal">
-      <li> GRASS included with windows build is from : GRASS 6.3
-    </ul>
-    </dd>
-    </dt>
-  </dl>
-  <dl><dt><span class="subheader">Reporting Bugs
-      <dd>
-      If think you have found a bug, please consider reporting it to the development team. The steps to report a bug are:
-      <ol class="normal">
-        <li>Go to the Bug Tracker at <a href="https://trac.osgeo.org/qgis">https://svn.qgis.org/trac</a>
-        <li>Read <a href="https://trac.osgeo.org/qgis/wiki/UsingTracWithQuantumGis">Using Trac With QGIS</a> to learn about the submission process
-        <li>Review the list of current issues to make sure your bug has not already been submitted. If it has, review the submission and see if there is anything you can add to the bug report to aid the developers
-        <li>If your bug has not been reported, create a new ticket, making sure to either login to trac or provide your email address. Tickets lacking contact information are subject to deletion.
-      </ol>
-      </dd>
-      </dt>
-      <dl><dt><span class="subheader">User, Installation and Coding Guide
-          <dd>The QGIS manual is the definitive guide to using QGIS including installation and coding instructions (be sure to read this!). A current version of the QGIS manual and translations are provided at <a href="http://qgis.osgeo.org/en/documentation/manuals.html">http://qgis.osgeo.org/en/documentation/manuals.html</a>. Older versions are available at <a href="http://download.osgeo.org/qgis/doc/manual/">http://download.osgeo.org/qgis/doc/manual/</a>."
-  </body>
-</html>
+<!-- html code generated by txt2tags 2.5 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags -o index.html -t html INSTALL.t2t -->
+</BODY></HTML>
