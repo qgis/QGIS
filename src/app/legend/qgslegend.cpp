@@ -48,10 +48,10 @@ static const char *const ident_ = "$Id$";
 const int AUTOSCROLL_MARGIN = 16;
 
 QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
-    : QTreeWidget( parent )
-    , mMousePressedFlag( false )
-    , mMapCanvas( canvas )
-    , mMinimumIconSize( 20, 20 )
+  : QTreeWidget( parent )
+  , mMousePressedFlag( false )
+  , mMapCanvas( canvas )
+  , mMinimumIconSize( 20, 20 )
 {
   setObjectName( name );
 
@@ -161,7 +161,6 @@ int QgsLegend::addGroup( QString name, bool expand )
   else
     group = new QgsLegendGroup( this, name );
 
-  group->setData( 0, Qt::UserRole, Qt::Checked );
   QModelIndex groupIndex = indexFromItem( group );
   setExpanded( groupIndex, expand );
   setCurrentItem( group );
@@ -235,7 +234,6 @@ void QgsLegend::removeLayer( QString layerId )
         delete ll;
         break;
       }
-
     }
   }
 
@@ -280,14 +278,14 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     QgsDebugMsg( "layers prior to move: " + mLayersPriorToMove.join( ", " ) );
 
     // record which items were selected and hide them
-    foreach( QTreeWidgetItem *item, selectedItems() )
+    foreach( QTreeWidgetItem * item, selectedItems() )
     {
       item->setHidden( true );
       mItemsBeingMoved << item;
     }
 
     // remove and unhide items, whose parent is already to be moved
-    foreach( QTreeWidgetItem *item, mItemsBeingMoved )
+    foreach( QTreeWidgetItem * item, mItemsBeingMoved )
     {
       QTreeWidgetItem *parent = item->parent();
 
@@ -423,7 +421,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   hideLine();
 
   // unhide
-  foreach( QTreeWidgetItem *item, mItemsBeingMoved )
+  foreach( QTreeWidgetItem * item, mItemsBeingMoved )
   {
     item->setHidden( false );
   }
@@ -441,7 +439,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
         showItem( "prev sibling", mDropTarget );
 
-        foreach( QTreeWidgetItem *item, mItemsBeingMoved )
+        foreach( QTreeWidgetItem * item, mItemsBeingMoved )
         {
           moveItem( item, mDropTarget );
           mDropTarget = item;
@@ -468,7 +466,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
     {
       showItem( "drop after", mDropTarget );
 
-      foreach( QTreeWidgetItem *item, mItemsBeingMoved )
+      foreach( QTreeWidgetItem * item, mItemsBeingMoved )
       {
         moveItem( item, mDropTarget );
         mDropTarget = item;
@@ -479,7 +477,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
     {
       showItem( "insert into", mDropTarget );
 
-      foreach( QTreeWidgetItem *item, mItemsBeingMoved )
+      foreach( QTreeWidgetItem * item, mItemsBeingMoved )
       {
         insertItem( item, mDropTarget );
       }
@@ -592,12 +590,10 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   if ( llayer->isVisible() )
   {
     llayer->setCheckState( 0, Qt::Checked );
-    llayer->setData( 0, Qt::UserRole, Qt::Checked );
   }
   else
   {
     llayer->setCheckState( 0, Qt::Unchecked );
-    llayer->setData( 0, Qt::UserRole, Qt::Unchecked );
   }
   blockSignals( false );
 
@@ -677,7 +673,7 @@ QList<QgsMapLayer *> QgsLegend::selectedLayers()
 {
   QList<QgsMapLayer *> layers;
 
-  foreach( QTreeWidgetItem *item, selectedItems() )
+  foreach( QTreeWidgetItem * item, selectedItems() )
   {
     QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
     if ( ll )
@@ -803,7 +799,7 @@ bool QgsLegend::writeXML( QDomNode &legendnode, QDomDocument &document )
 
 bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDocument &document )
 {
-  foreach( QTreeWidgetItem *currentItem, items )
+  foreach( QTreeWidgetItem * currentItem, items )
   {
     QgsLegendItem *item = dynamic_cast<QgsLegendItem *>( currentItem );
     if ( !item )
@@ -944,17 +940,14 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       if ( checked == "Qt::Checked" )
       {
         theGroup->setCheckState( 0, Qt::Checked );
-        theGroup->setData( 0, Qt::UserRole, Qt::Checked );
       }
       else if ( checked == "Qt::Unchecked" )
       {
         theGroup->setCheckState( 0, Qt::Unchecked );
-        theGroup->setData( 0, Qt::UserRole, Qt::Checked );
       }
       else if ( checked == "Qt::PartiallyChecked" )
       {
         theGroup->setCheckState( 0, Qt::PartiallyChecked );
-        theGroup->setData( 0, Qt::UserRole, Qt::PartiallyChecked );
       }
       blockSignals( false );
 
@@ -1070,13 +1063,11 @@ QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpe
   {
     ll->setVisible( true );
     ll->setCheckState( 0, Qt::Checked );
-    ll->setData( 0, Qt::UserRole, Qt::Checked );
   }
   else if ( checked == "Qt::Unchecked" )
   {
     ll->setVisible( false );
     ll->setCheckState( 0, Qt::Unchecked );
-    ll->setData( 0, Qt::UserRole, Qt::Unchecked );
   }
   blockSignals( false );
 
@@ -1535,13 +1526,22 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   if ( item->data( 0, Qt::UserRole ).toInt() == item->checkState( 0 ) )
     return;
 
+  saveCheckStates( invisibleRootItem() );
+
   bool renderFlagState = mMapCanvas->renderFlag();
   if ( renderFlagState )
     mMapCanvas->setRenderFlag( false );
 
-  foreach( QTreeWidgetItem *i, selectedItems() )
+  if ( !item->isSelected() )
   {
-    propagateItemChange( i, item->checkState( 0 ) );
+    propagateItemChange( item, item->checkState( 0 ) );
+  }
+  else
+  {
+    foreach( QTreeWidgetItem * i, selectedItems() )
+    {
+      propagateItemChange( i, item->checkState( 0 ) );
+    }
   }
 
   // update layer set
@@ -1551,6 +1551,16 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   // off, as turning it on causes a refresh.
   if ( renderFlagState )
     mMapCanvas->setRenderFlag( true );
+}
+
+void QgsLegend::saveCheckStates( QTreeWidgetItem *item )
+{
+  for ( int i = 0; i < item->childCount(); i++ )
+  {
+    QTreeWidgetItem *child = item->child( i );
+    child->setData( 0, Qt::UserRole, child->checkState( 0 ) );
+    saveCheckStates( child );
+  }
 }
 
 void QgsLegend::propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state )
@@ -1588,8 +1598,6 @@ void QgsLegend::propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state
           items << lg->child( i );
       }
     }
-
-    item->setData( 0, Qt::UserRole, state );
   }
 
   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
@@ -1597,8 +1605,7 @@ void QgsLegend::propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state
   {
     blockSignals( true );
     ll->setCheckState( 0, state );
-    blockSignals( false );
-    ll->setData( 0, Qt::UserRole, ll->checkState( 0 ) );
+
     if ( ll->layer() )
     {
       ll->setVisible( state == Qt::Checked );
@@ -1608,11 +1615,10 @@ void QgsLegend::propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state
     while ( lg )
     {
       lg->updateCheckState();
-      lg->setData( 0, Qt::UserRole, lg->checkState( 0 ) );
       lg = dynamic_cast<QgsLegendGroup*>( lg->parent() );
     }
-    //update check state of the legend group
-    item->setData( 0, Qt::UserRole, state );
+
+    blockSignals( false );
   }
 }
 
@@ -1820,7 +1826,7 @@ void QgsLegend::removeSelectedLayers()
   if ( renderFlagState )
     mMapCanvas->setRenderFlag( false );
 
-  foreach( QTreeWidgetItem *item, selectedItems() )
+  foreach( QTreeWidgetItem * item, selectedItems() )
   {
     QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
     if ( lg )
