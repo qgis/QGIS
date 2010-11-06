@@ -374,7 +374,7 @@
     <file>themes/gis/plugins/copyright_label.png</file>
     <file>themes/gis/plugins/delimited_text.png</file>
     <file>themes/gis/plugins/dxf2shp_converter.png</file>
-    <file>themes/gis/plugins/georeferencer.png</file>
+    <file>themes/gis/plugins/mGeorefRun.png</file>
     <file>themes/gis/plugins/gps_importer.png</file>
     <file>themes/gis/plugins/interpolation.png</file>
     <file>themes/gis/plugins/mapserver_export.png</file>
