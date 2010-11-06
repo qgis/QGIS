@@ -44,8 +44,10 @@
 #include <osgEarth/TileSource>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
+#include "Controls"
 
 using namespace osgEarth::Drivers;
+using namespace osgEarthUtil::Controls2;
 
 
 //static const char * const sIdent = "$Id: plugin.cpp 9327 2008-09-14 11:18:44Z jef $";
@@ -87,6 +89,15 @@ void GlobePlugin::initGui()
           this, SLOT( layersChanged() ) );
 }
 
+struct MyClickHandler : public ControlEventHandler
+{
+    void onClick( Control* control, int mouseButtonMask )
+    {
+        OE_NOTICE << "Thank you for clicking on " << typeid(control).name()
+                  << std::endl;
+    }
+};
+
 void GlobePlugin::run()
 {
 #ifdef QGISDEBUG
@@ -115,15 +126,49 @@ void GlobePlugin::run()
   mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
   map->addMapLayer( mQgisMapLayer );
 
+  osg::Group* root = new osg::Group();
+
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map );
+  root->addChild( mMapNode );
 
-  viewer.setSceneData( mMapNode );
+  // create a surface to house the controls
+  ControlCanvas* cs = new ControlCanvas( &viewer );
+  root->addChild( cs );
+
+  viewer.setSceneData( root );
 
   // Set a home viewpoint
   manip->setHomeViewpoint(
     osgEarthUtil::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
     1.0 );
+
+  // a centered hbox container along the bottom on the screen.
+  {
+      HBox* bottom = new HBox();
+      bottom->setFrame( new RoundedFrame() );
+      bottom->getFrame()->setBackColor(0,0,0,0.5);
+      bottom->setMargin( 10 );
+      bottom->setSpacing( 145 );
+      bottom->setVertAlign( Control::ALIGN_BOTTOM );
+      bottom->setHorizAlign( Control::ALIGN_CENTER );
+
+      for( int i=0; i<4; ++i )
+      {
+          LabelControl* label = new LabelControl();
+          std::stringstream buf;
+          buf << "Label_" << i;
+          label->setText( buf.str() );
+          label->setMargin( 10 );
+          label->setBackColor( 1,1,1,0.4 );
+          bottom->addControl( label );
+
+          label->setActiveColor(1,.3,.3,1);
+          label->addEventHandler( new MyClickHandler );
+      }
+
+      cs->addControl( bottom );
+  }
 
   // add our fly-to handler
   viewer.addEventHandler(new FlyToExtentHandler( manip, mQGisIface ));
