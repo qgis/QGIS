@@ -25,7 +25,7 @@
 #include <QIcon>
 
 QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
-    : QgsLegendItem( theItem, theName )
+  : QgsLegendItem( theItem, theName )
 {
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -34,7 +34,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   setIcon( 0, myIcon );
 }
 QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
-    : QgsLegendItem( theListView, theString )
+  : QgsLegendItem( theListView, theString )
 {
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -114,7 +114,7 @@ void QgsLegendGroup::updateCheckState()
     return;
 
   Qt::CheckState theState = elements[0]->checkState( 0 );
-  foreach( QgsLegendItem *li, elements )
+  foreach( QgsLegendItem * li, elements )
   {
     if ( theState != li->checkState( 0 ) )
     {
@@ -125,8 +125,6 @@ void QgsLegendGroup::updateCheckState()
 
   if ( theState != checkState( 0 ) )
   {
-    treeWidget()->blockSignals( true );
     setCheckState( 0, theState );
-    treeWidget()->blockSignals( false );
   }
 }

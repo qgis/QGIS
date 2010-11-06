@@ -419,6 +419,9 @@ class QgsLegend : public QTreeWidget
     /**QgsLegend does not set the icon with/height to values lower than the minimum icon size*/
     QSize mMinimumIconSize;
 
+    /** save item check states */
+    void saveCheckStates( QTreeWidgetItem *item );
+
     /** structure which holds pixmap which are used in legend */
     class QgsLegendPixmaps
     {
