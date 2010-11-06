@@ -1862,7 +1862,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation type="unfinished">Współrzędne obrazu (piksele) muszą być wyrażone liczbami całkowitymi.</translation>
+        <translation>Współrzędne obrazu (piksele) muszą być wyrażone liczbami całkowitymi.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
@@ -1870,7 +1870,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
-        <translation type="unfinished">Współrzędne obrazu (geograficzne) muszą być wyrażone liczbami.</translation>
+        <translation>Współrzędne obrazu (geograficzne) muszą być wyrażone liczbami.</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
@@ -2409,39 +2409,40 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
         <source>Remove all overviews.</source>
-        <translation>Usuń wszystkie podglądy.</translation>
+        <translation>Usuwa wszystkie podglądy.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="128"/>
         <source>Clean</source>
-        <translation>Wyczyść</translation>
+        <translation>Wyczyść podglądy</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="135"/>
         <source>In order to generate external overview (for GeoTIFF especially).</source>
-        <translation>Generowanie podglądów zewnętrznych (szczególnie dla GeoTIFF).</translation>
+        <translation>Aby wygenerować zewnętrzne podglądy (przydatne głównie dla GeoTIFF).</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="138"/>
         <source>Open in read-only mode</source>
-        <translation>Otwórz źródło tylko do odczytu (generuj zewnętrzne piramidy)</translation>
+        <translatorcomment>skróciłam, bo się nie mieściło w oknie. Wyjaśnienie jest i tak w dymku</translatorcomment>
+        <translation>Otwórz źródło tylko do odczytu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="145"/>
         <source>Create external overviews in TIFF format, compressed using JPEG.</source>
-        <translation type="unfinished">Stwórz zewnętrzny podglądy w formacie TIFF, skompresowane z użyciem JPEG.</translation>
+        <translation>Tworzy zewnętrzne podglądy w formacie TIFF z kompresją JPEG.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="148"/>
         <source>Overviews in TIFF format with JPEG compression</source>
-        <translation type="unfinished">Podgląd w formacie TIFF z kompresją JPEG</translation>
+        <translation>Podgląd w formacie TIFF z kompresją JPEG</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="182"/>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="202"/>
         <source>For JPEG compressed external overviews, 
 the JPEG quality can be set.</source>
-        <translation type="unfinished">Dla formatu JPEG skompresowany podgląd zewnętrzny, 
+        <translation>Skompresowany podgląd zewnętrzny dla formatu JPEG, 
 z możliwością zdefiniowania jakości.</translation>
     </message>
     <message>
@@ -2617,13 +2618,13 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="154"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="170"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
-        <translation type="unfinished">Procent powiększenia obrazu zmieni odpowiednio rozmiar piksela/rozdzielczość obrazu: 25% powiększy piksele 4x.</translation>
+        <translation>Procent powiększenia obrazu; zmieni odpowiednio rozmiar piksela/rozdzielczość obrazu, np.: 25% powiększy piksele 4x.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize:</source>
         <translatorcomment>Powiększenie? M.</translatorcomment>
-        <translation type="unfinished">Przeskalowanie:</translation>
+        <translation>Przeskalowanie:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
@@ -2634,7 +2635,7 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="186"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="282"/>
         <source>Assign a specified nodata value to output bands.</source>
-        <translation type="unfinished">Określ wartość braku danych kanałów wyjściowych.</translation>
+        <translation>Określ wartość braku danych kanałów wyjściowych.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="196"/>
@@ -2690,12 +2691,12 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="266"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished">Kopiuje wszystkie warstwy tego pliku do oddzielnych plików. Stosuje się dla formatów obsługujących warstwy (HDF, OGDI).</translation>
+        <translation>Kopiuje wszystkie warstwy tego pliku do oddzielnych plików. Stosuje się dla formatów obsługujących warstwy (HDF, OGDI).</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="269"/>
         <source>Sds</source>
-        <translation type="unfinished">Rozdziel na warstwy</translation>
+        <translation>Warstwy do plików</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="103"/>
@@ -7520,12 +7521,12 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1078"/>
         <source>Tile scale slider</source>
-        <translation type="unfinished">Suwak skali kafla</translation>
+        <translation>Suwak skali kafla</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1080"/>
         <source>Show tile scale slider</source>
-        <translation type="unfinished">Pokaż suwak skali kafla</translation>
+        <translation>Pokaż suwak skali kafla</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1217"/>
@@ -7661,7 +7662,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
         <location filename="../src/app/qgisapp.cpp" line="2552"/>
         <source>Read More.</source>
-        <translation type="unfinished"></translation>
+        <translation>Więcej informacji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2532"/>
@@ -7766,7 +7767,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2562"/>
         <source>Map Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompozytor wydruków</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2564"/>
@@ -7776,12 +7777,13 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2565"/>
         <source>Composer items can now be deleted with the backspace key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zawartość kompozytora wydruków może być teraz usuwana za pomocą klawisza &quot;backspace&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2566"/>
         <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>do skończenia</translatorcomment>
+        <translation type="unfinished">Sortowanie tabeli atrybutów w kompozytorze wydruków .</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2694"/>
@@ -8654,7 +8656,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="43"/>
         <source>Case sensitive</source>
         <translatorcomment>czy tej opisy mieszczą się ???!!! R.</translatorcomment>
-        <translation type="unfinished">Uwzględniaj wielkość liter</translation>
+        <translation>Uwzględniaj wielkość liter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="66"/>
@@ -22850,7 +22852,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="59"/>
         <source>Displacement circles</source>
-        <translation type="unfinished">Krąg przemieszczeń</translation>
+        <translation>Krąg przemieszczeń</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="67"/>
@@ -22865,12 +22867,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="105"/>
         <source>Circle radius modification:</source>
-        <translation type="unfinished">Modyfikacja promienia:</translation>
+        <translation>Modyfikacja promienia:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="123"/>
         <source>Point distance tolerance:</source>
-        <translation type="unfinished">Tolerancja odległości:</translation>
+        <translation>Tolerancja odległości punktów:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="145"/>
@@ -24991,6 +24993,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translatorcomment>dlaczego to jest w tłumaczeniach?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -29062,12 +29065,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
         <source>capabilities document contained no layers.</source>
-        <translation type="unfinished">dokument &quot;capabilities&quot; nie zawierał żadnych warstw.</translation>
+        <translation>dokument &quot;capabilities&quot; nie zawierał żadnych warstw.</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="281"/>
         <source>Capabilities document is not valid</source>
-        <translation type="unfinished">Dokument &quot;capabilities&quot; jest niepoprawny</translation>
+        <translation>Dokument &quot;capabilities&quot; jest niepoprawny</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="286"/>
@@ -29768,7 +29771,7 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="871"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished">pusty dokument &quot;capabilities&quot;</translation>
+        <translation>pusty dokument &quot;capabilities&quot;</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="983"/>
