@@ -3840,7 +3840,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 use qgis.utils.iface object (instance of QgisInterface class).
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在此主控台存取Quantum GIS環境
+請使用 qgis.utils.iface物件 (取代 QgisInterface類別)。</translation>
     </message>
 </context>
 <context>
@@ -6428,7 +6429,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Raster calculator ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像運算...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1016"/>
@@ -6459,13 +6460,13 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1056"/>
         <source>Save edits to current layer, but continue editing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">儲存編輯結果至目前圖層，且繼續編輯</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1072"/>
         <location filename="../src/app/qgisapp.cpp" line="1074"/>
         <source>Remove Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除圖層</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1073"/>
@@ -6588,7 +6589,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1459"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1469"/>
@@ -6777,7 +6778,7 @@ This copy of QGIS writes debugging output.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2545"/>
         <source>Labelling (New generation only)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標記 僅新版使用)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2547"/>
@@ -6837,7 +6838,7 @@ This copy of QGIS writes debugging output.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2562"/>
         <source>Map Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地圖設計</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2564"/>
@@ -7213,7 +7214,7 @@ This copy of QGIS has been built with SpatiaLite support (%1).</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2687"/>
         <source>%1 doesn&apos;t have any layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 沒有任何圖層</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3916"/>
@@ -7223,7 +7224,7 @@ This copy of QGIS has been built with SpatiaLite support (%1).</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3916"/>
         <source>Export to vector file has been completed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">完成匯出向量檔案</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3921"/>
@@ -7234,7 +7235,8 @@ This copy of QGIS has been built with SpatiaLite support (%1).</source>
         <location filename="../src/app/qgisapp.cpp" line="3922"/>
         <source>Export to vector file failed.
 Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">匯出向量檔案失敗
+錯誤: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3984"/>
@@ -8277,17 +8279,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="29"/>
         <source>Show selected only</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅顯示選取</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="36"/>
         <source>Search selected only</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅搜尋選取</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="43"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">大小寫視為相異</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="88"/>
@@ -8409,7 +8411,7 @@ p, li { white-space: pre-wrap; }
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
+            <numerusform>屬性表格 - %1 :: %n / %2 圖徵已選取</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -9790,7 +9792,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="65"/>
         <source>Empty composer</source>
-        <translation type="unfinished">清空所有設計</translation>
+        <translation type="unfinished">無設計</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="135"/>
@@ -17371,12 +17373,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="28"/>
         <source>Label settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標記設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="34"/>
         <source>Label this layer</source>
-        <translation type="unfinished">此圖層使用標記</translation>
+        <translation type="unfinished">標記此圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="43"/>
@@ -17610,7 +17612,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="718"/>
         <source>multiline labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">多行標記</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="727"/>
@@ -17630,32 +17632,32 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="780"/>
         <source>add direction symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增方向符號</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="788"/>
         <source>Data defined settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">預先定義設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="800"/>
         <source>Font properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">字體屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="826"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">粗體</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="836"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">斜體</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="846"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">底線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="866"/>
@@ -17680,12 +17682,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="934"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平對齊</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="944"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">垂直對齊</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="856"/>
@@ -17695,7 +17697,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="879"/>
         <source>Buffer properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輪廓屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="885"/>
@@ -17705,7 +17707,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="895"/>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輪廓顏色</translation>
     </message>
 </context>
 <context>
@@ -17761,7 +17763,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="391"/>
         <source>&amp;Stretch using current extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用目前範圍延展(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="396"/>
@@ -19107,7 +19109,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">如果伺服器需要基本認證，請輸入使用者名稱與密碼</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
@@ -19409,7 +19411,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="178"/>
         <source>Multiline</source>
-        <translation type="unfinished">多個線形</translation>
+        <translation type="unfinished">多線段</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="185"/>
@@ -20440,7 +20442,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
         <source>Create raster icons in legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在圖例中建立影像圖示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="420"/>
@@ -20495,12 +20497,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="794"/>
         <source>Decimal places</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">十進位位數</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="804"/>
         <source>Keep base unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">保留基本單位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="854"/>
@@ -23439,17 +23441,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="14"/>
         <source>Raster calculator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像運算</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="20"/>
         <source>Raster bands</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像波段</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="32"/>
         <source>Result layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結果圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="38"/>
@@ -23464,27 +23466,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="70"/>
         <source>Current layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目前圖層範圍</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="92"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最小值</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="109"/>
         <source>XMax</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最大值</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="126"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最小值</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="143"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最大值</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="160"/>
@@ -23494,7 +23496,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="174"/>
         <source>Rows</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">列</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="190"/>
@@ -23584,7 +23586,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="317"/>
         <source>Raster calculator expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像運算表示式</translation>
     </message>
 </context>
 <context>
@@ -24121,7 +24123,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2052"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2598"/>
         <source>Import Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">匯入錯誤</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2259"/>
@@ -25819,7 +25821,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="369"/>
         <source>Area scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">面積比例</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="155"/>
@@ -28365,7 +28367,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
         <source>Original CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">原有 CRS</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="96"/>
@@ -28375,7 +28377,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="108"/>
         <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取向量檔案的坐標參考系統。資料點將會由目前的坐標參考系統轉換至新的坐標系統。</translation>
     </message>
 </context>
 <context>
@@ -28414,7 +28416,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="107"/>
         <source>OGR creation options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OGR 建立選項</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="119"/>
@@ -30096,7 +30098,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="77"/>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished">Dxf轉Shape檔格式</translation>
+        <translation type="unfinished">]Dxf轉Shape檔格式</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="84"/>
@@ -31148,7 +31150,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3d Visualization</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">3D視覺化</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
@@ -31498,7 +31500,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
         <source>Convert coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">坐標轉換</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
@@ -31613,7 +31615,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create new GRASS location and transfer data into it</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立新的GRASS位置與匯入資料</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
@@ -32148,7 +32150,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>File management</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">檔案管理</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
@@ -32253,7 +32255,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
         <source>Imagery</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
@@ -32428,7 +32430,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Import vector</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">匯入向量資料</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
@@ -32708,7 +32710,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Projection management</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">投影管理</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
@@ -32733,7 +32735,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Raster</source>
-        <translation type="unfinished">影像</translation>
+        <translation type="unfinished">網格Label影像</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
@@ -32833,7 +32835,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Region settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">視域設定</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
@@ -33168,7 +33170,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
         <source>Text file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">純文字檔</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
@@ -33203,7 +33205,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="420"/>
         <source>Transform image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像正射化</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="421"/>
