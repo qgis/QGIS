@@ -7615,7 +7615,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2523"/>
         <source>Update srs.db to include grid reference.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaktualizowano srs.db o odniesienie do grid.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2524"/>
@@ -7712,12 +7712,12 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2547"/>
         <source>Data defined label position.</source>
-        <translation>Lokalizacja etykier oparta na danych.</translation>
+        <translation>Lokalizacja etykiet oparta na danych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2548"/>
         <source>Line wrapping, data defined font and buffer settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zawijanie wierszy, czcionka i ustawienia buforowania definiowane na podstawie atrybutów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2550"/>
@@ -7727,7 +7727,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2552"/>
         <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trzy nowe metody klasyfikacji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2553"/>
@@ -7782,8 +7782,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2566"/>
         <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
-        <translatorcomment>do skończenia</translatorcomment>
-        <translation type="unfinished">Sortowanie tabeli atrybutów w kompozytorze wydruków .</translation>
+        <translation>Sortowanie tabeli atrybutów w kompozytorze wydruków (po wielu kolumnach oraz rosnąco / malejąco).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2694"/>
@@ -12746,7 +12745,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="600"/>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation type="unfinished">Dodawanie obiektów do warstw z wieloczęściowymi geometriami nie jest jeszcze obsługiwane. Proszę wybrać inną edytowalną, płaską warstwę i spróbować ponownie.</translation>
+        <translation>Dodawanie obiektów do warstw z wieloczęściowymi geometriami nie jest jeszcze obsługiwane. Proszę wybrać inną edytowalną, płaską warstwę i spróbować ponownie.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="612"/>
@@ -17910,7 +17909,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="563"/>
         <source>Font size</source>
-        <translation>Rozmiar czcionki</translation>
+        <translation>Rozmiar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="583"/>
@@ -17990,7 +17989,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="780"/>
         <source>add direction symbol</source>
-        <translation>dodaj symbol kierunku</translation>
+        <translation>Dodaj symbol kierunku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="788"/>
@@ -30002,12 +30001,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="934"/>
         <source>empty of capabilities: %1</source>
-        <translation type="unfinished">Brak &quot;capabilities&quot;: %1</translation>
+        <translation>Brak &quot;capabilities&quot;: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="940"/>
         <source>Download of capabilities failed: %1</source>
-        <translation type="unfinished">Pobieranie &quot;capabilities&quot; nie powiodło się: %1</translation>
+        <translation>Pobieranie &quot;capabilities&quot; nie powiodło się: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="952"/>
@@ -33038,7 +33037,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Import raster into GRASS from external data sources in GRASS</source>
-        <translation type="unfinished">Importuj raster do GRASS z zewnętrznego źródła danych</translation>
+        <translation>Importuj raster do GRASS z zewnętrznego źródła danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
@@ -33068,7 +33067,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Import vector into GRASS from external data sources in GRASS</source>
-        <translation type="unfinished">Importuj wektor do GRASS z zewnętrznego źródła danych </translation>
+        <translation>Importuj wektor do GRASS z zewnętrznego źródła danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
@@ -33923,7 +33922,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="441"/>
         <source>Write only features link to a record</source>
-        <translation type="unfinished">Zapisz w atrybutach tylko link do obiektu</translation>
+        <translation>Zapisz w atrybutach tylko link do obiektu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
