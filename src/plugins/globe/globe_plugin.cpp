@@ -108,6 +108,10 @@ void GlobePlugin::run()
 
   viewer.show();
 
+#ifdef GLOBE_OSG_STANDALONE_VIEWER
+  osgViewer::Viewer viewer;
+#endif
+
   // install the programmable manipulator.
   osgEarthUtil::EarthManipulator* manip = new osgEarthUtil::EarthManipulator();
   viewer.setCameraManipulator( manip );
@@ -177,6 +181,10 @@ void GlobePlugin::run()
   viewer.addEventHandler(new osgViewer::StatsHandler());
   viewer.addEventHandler(new osgViewer::WindowSizeHandler());
   viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
+
+#ifdef GLOBE_OSG_STANDALONE_VIEWER
+  viewer.run();
+#endif
 }
 
 void GlobePlugin::extentsChanged()
