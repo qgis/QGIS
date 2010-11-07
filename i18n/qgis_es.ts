@@ -7674,47 +7674,47 @@ Esta copia de QGIS se ha compilado con soporte para SpatialLite (%1).</translati
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="2510"/>
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Qué hay de nuevo en la versión 1.6.0 &quot;Copiapó&quot;?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2512"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, tenga en cuenta que esta es una versión de nuestra serie &quot;último grito&quot;.Como tal contiene nuevas características y extiende la interfaz de programación sobre QGIS 1.0.x y QGIS 1.5.0.Le recomendamos que use esta versión en vez de versiones anteriores.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2515"/>
         <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta versión incluye la corrección de más de 177 errores y muchas características nuevas y mejoras. Una vez más es imposible documentar aquí cada cambio, así que sólo proporcionaremos una lista escueta de las principales funciones nuevas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2523"/>
         <source>Update srs.db to include grid reference.</source>
-        <translation type="unfinished"></translation>
+        <translation>srs.db actualizada para incluir referencias de cuadrícula.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2526"/>
         <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muchas mejoras y operadores nuevos en la calculadora de campos, incluyendo concatenación de campos, cuenta de filas, etc.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2541"/>
         <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Al escribir archivos vectoriales usando la opción «Guardar como» del menú contextual del panel Capas, ahora se pueden especificar las opciones de creación de OGR.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2542"/>
         <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ahora es posible seleccionar varias capaz a la vez en el panel Capas y eliminarlas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2547"/>
         <source>Data defined label position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Posición de etiquetas definida por datos.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2548"/>
         <source>Line wrapping, data defined font and buffer settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoltura de líneas, tipo de letra definida por datos y configuración de buffer.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2687"/>
@@ -12557,7 +12557,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="282"/>
         <source>||</source>
-        <translation type="unfinished"></translation>
+        <translation>||</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="292"/>
@@ -20359,27 +20359,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="75"/>
         <source>Select target database for offline data</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar base de datos objetivo para datos fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="77"/>
         <source>SpatiaLite DB(*.sqlite);;All files(*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de datos SpatiaLite(*.sqlite);;Todos los archivos(*.*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="93"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished">Complemento de edición fuera de línea</translation>
+        <translation>Complemento de edición fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="94"/>
         <source>Converting to offline project.</source>
-        <translation type="unfinished"></translation>
+        <translation>Convirtiendo a proyecto fuera de línea.</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="95"/>
         <source>Offline database file &apos;%1&apos; exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo de base de datos &apos;%1&apos; ya existe. Sobreescribir?</translation>
     </message>
 </context>
 <context>
@@ -20387,22 +20387,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="14"/>
         <source>Create offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear proyecto fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="27"/>
         <source>Offline data</source>
-        <translation type="unfinished"></translation>
+        <translation>Datos fuera de línea</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="41"/>
         <source>Browse...</source>
-        <translation type="unfinished">Explorar...</translation>
+        <translation>Explorar...</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="52"/>
         <source>Select remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar capas remotas</translation>
     </message>
 </context>
 <context>
@@ -21031,12 +21031,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="794"/>
         <source>Decimal places</source>
-        <translation type="unfinished"></translation>
+        <translation>Lugares decimales</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="804"/>
         <source>Keep base unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Mantener unidad base</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="854"/>
@@ -22006,11 +22006,11 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>QGIS Plugin Installer update</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualización del Instalador de complementos de QGIS</translation>
     </message>
     <message>
         <source>The Plugin Installer has been updated. Please restart QGIS prior to using it</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha actualizado el Instalador de complementos. Por favor, reinicie QGIS antes de usarlo.</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
@@ -23982,17 +23982,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="219"/>
         <source>Enter result file</source>
-        <translation type="unfinished">introduzca archivo de resultado</translation>
+        <translation>introduzca archivo de resultado</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="260"/>
         <source>Expression valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión válida</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="269"/>
         <source>Expression invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión no válida</translation>
     </message>
 </context>
 <context>
@@ -24000,152 +24000,152 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="14"/>
         <source>Raster calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculadora ráster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="20"/>
         <source>Raster bands</source>
-        <translation type="unfinished"></translation>
+        <translation>Bandas ráster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="32"/>
         <source>Result layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de resultado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="38"/>
         <source>Output layer</source>
-        <translation type="unfinished">Capa de salida</translation>
+        <translation>Capa de salida</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="63"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="70"/>
         <source>Current layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensión de la capa actual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="92"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>X mín</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="109"/>
         <source>XMax</source>
-        <translation type="unfinished"></translation>
+        <translation>X Máx</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="126"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y mín</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="143"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y máx</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="160"/>
         <source>Columns</source>
-        <translation type="unfinished">Columnas</translation>
+        <translation>Columnas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="174"/>
         <source>Rows</source>
-        <translation type="unfinished">Filas</translation>
+        <translation>Filas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="190"/>
         <source>Output format</source>
-        <translation type="unfinished">Formato de salida</translation>
+        <translation>Formato de salida</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="200"/>
         <source>Add result to project</source>
-        <translation type="unfinished">Añadir resultados al proyecto</translation>
+        <translation>Añadir resultados al proyecto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="210"/>
         <source>Operators</source>
-        <translation type="unfinished">Operadores</translation>
+        <translation>Operadores</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="216"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="223"/>
         <source>*</source>
-        <translation type="unfinished">*</translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="230"/>
         <source>sqrt</source>
-        <translation type="unfinished">raíz cuadrada</translation>
+        <translation>raíz cuadrada</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="237"/>
         <source>sin</source>
-        <translation type="unfinished">sen</translation>
+        <translation>sen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="244"/>
         <source>^</source>
-        <translation type="unfinished">^</translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="251"/>
         <source>acos</source>
-        <translation type="unfinished">arcos</translation>
+        <translation>arcos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="258"/>
         <source>(</source>
-        <translation type="unfinished">(</translation>
+        <translation>(</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="265"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="272"/>
         <source>/</source>
-        <translation type="unfinished">/</translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="279"/>
         <source>cos</source>
-        <translation type="unfinished">cos</translation>
+        <translation>cos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="286"/>
         <source>asin</source>
-        <translation type="unfinished">arcsen</translation>
+        <translation>arcsen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="293"/>
         <source>tan</source>
-        <translation type="unfinished">tan</translation>
+        <translation>tan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="300"/>
         <source>atan</source>
-        <translation type="unfinished">arctan</translation>
+        <translation>arctan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="307"/>
         <source>)</source>
-        <translation type="unfinished">)</translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="317"/>
         <source>Raster calculator expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión de la calculadora de campos</translation>
     </message>
 </context>
 <context>
@@ -28055,7 +28055,7 @@ para este archivo shape en la lista de archivos del diálogo principal.
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="227"/>
         <source>Generate pdf map:</source>
-        <translation type="unfinished"></translation>
+        <translation>Generar mapa pdf:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="250"/>
@@ -29803,7 +29803,11 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudieron obtener las capacidades WMS: %1 en la línea %2 columna %3
+Esto se debe probablemente a una URL incorrecta del servidor WMS.
+La respuesta fue:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1006"/>
@@ -29812,7 +29816,11 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudieron obtener las capacidades WMS en el formato esperado (DTD): no se encontró ningún %1 o %2.
+Esto puede deberse a una URL incorrecta del servidor WMS.
+Etiqueta: %3
+La respuesta fue:
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1840"/>
@@ -29821,7 +29829,11 @@ Response was:
 Response was:
 
 %5</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo obtener una excepción del servicio WMS en %1: %2 en la línea %3 columna %4
+
+La respuesta fue:
+
+%5</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
@@ -32166,7 +32178,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert a raster to vector within GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir un ráster a vectorial dentro de GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
@@ -32176,7 +32188,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert a vector to raster within GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir un vectorial a ráster dentro de GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
@@ -32286,7 +32298,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
         <source>Create and/or modify raster support files</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear y/o modificar archivos de soporte ráster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
@@ -32311,22 +32323,22 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create new GRASS location and transfer data into it</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva localización de GRASS y transferir datos a ella</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create new GRASS location from metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva localización de GRASS a partir de archivo de metadatos</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create new GRASS location from raster data</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva localización de GRASS a partir de datos ráster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create new GRASS location from vector data</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva localización de GRASS a partir de datos vectoriales</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
@@ -32336,7 +32348,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create new location from .prj (WKT) file</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva localización de GRASS a partir de archivo .prj (WKT)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
@@ -32661,7 +32673,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar desde GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
@@ -32676,7 +32688,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
         <source>Export raster from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar ráster desde GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
@@ -32701,7 +32713,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar ráster a archivo de mapa GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
@@ -32726,7 +32738,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar ráster a Lenguaje de Modelado de Realidad Virtual (VRML)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
@@ -32760,12 +32772,12 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export vector from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar vectorial desde GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export vector table from GRASS to database format</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar tabla de vectorial desde GRASS a formato de base de datos</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
@@ -32850,7 +32862,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>File management</source>
-        <translation type="unfinished"></translation>
+        <translation>Administración de archivos</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
@@ -32905,7 +32917,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
         <source>Gaussian kernel density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densidad de núcleo gausiano</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
@@ -32995,7 +33007,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
@@ -33055,7 +33067,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import from database into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar de base de datos a GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
@@ -33065,7 +33077,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa a GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
@@ -33115,12 +33127,12 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Import raster into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar ráster a GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Import raster into GRASS from QGIS view</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar ráster a GRASS desde la vista de QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
@@ -33145,12 +33157,12 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Import vector into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar vectorial a GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Import vector into GRASS from QGIS view</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar vectorial a GRASS desde la vista de QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
@@ -33295,12 +33307,12 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Name for output vector map (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre para el mapa vectorial de salida (opcional)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
         <source>Name for the output raster map (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre para el mapa ráster de salida (opcional)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
@@ -33370,7 +33382,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Path to GRASS database of input location (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta a la base de datos de GRASS para la localización de entrada (opcional)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
@@ -33540,7 +33552,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
         <source>Register external data sources in GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrar fuentes de datos externa en GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
@@ -33595,7 +33607,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar pequeñas áreas, se elimina el contorno más largo con área adyacente</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
@@ -33890,7 +33902,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Trace a flow through an elevation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Trazar un flujo a través de un modelo de elevaciones</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
