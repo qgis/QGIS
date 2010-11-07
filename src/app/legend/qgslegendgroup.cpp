@@ -93,7 +93,7 @@ QList<QgsLegendLayer*> QgsLegendGroup::legendLayers( bool recurse )
   return result;
 }
 
-void QgsLegendGroup::updateCheckState()
+Qt::CheckState QgsLegendGroup::pendingCheckState()
 {
   QList<QgsLegendItem *> elements;
 
@@ -111,7 +111,7 @@ void QgsLegendGroup::updateCheckState()
   }
 
   if ( elements.isEmpty() )
-    return;
+    return Qt::PartiallyChecked;
 
   Qt::CheckState theState = elements[0]->checkState( 0 );
   foreach( QgsLegendItem * li, elements )
@@ -123,8 +123,5 @@ void QgsLegendGroup::updateCheckState()
     }
   }
 
-  if ( theState != checkState( 0 ) )
-  {
-    setCheckState( 0, theState );
-  }
+  return theState;
 }

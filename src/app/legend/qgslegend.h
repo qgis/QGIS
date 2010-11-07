@@ -189,10 +189,6 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
-    void updateCheckStates( QTreeWidgetItem* item, Qt::CheckState state ) { item->setData( 0, Qt::UserRole, state ); }
-
-    void updateGroupCheckStates( QTreeWidgetItem *item );
-
   public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -373,7 +369,6 @@ class QgsLegend : public QTreeWidget
     /**Sets all listview items to closed*/
     void collapseAll();
     void handleItemChange( QTreeWidgetItem* item, int row );
-    void propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
     /**Calls openPersistentEditor for the current item*/
@@ -419,8 +414,7 @@ class QgsLegend : public QTreeWidget
     /**QgsLegend does not set the icon with/height to values lower than the minimum icon size*/
     QSize mMinimumIconSize;
 
-    /** save item check states */
-    void saveCheckStates( QTreeWidgetItem *item );
+    bool mChanging;
 
     /** structure which holds pixmap which are used in legend */
     class QgsLegendPixmaps
@@ -446,6 +440,8 @@ class QgsLegend : public QTreeWidget
 #ifdef QGISDEBUG
     void showItem( QString msg, QTreeWidgetItem *item );
 #endif
+
+    void updateGroupCheckStates( QTreeWidgetItem *item );
 
   signals:
     void itemMoved( QModelIndex oldIndex, QModelIndex newIndex );

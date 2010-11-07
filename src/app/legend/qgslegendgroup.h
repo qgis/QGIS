@@ -40,8 +40,8 @@ class QgsLegendGroup : public QgsLegendItem
     bool insert( QgsLegendItem* theItem );
     /**Returns all legend layers under this group (including those of subgroups by default)*/
     QList<QgsLegendLayer*> legendLayers( bool recurse = true );
-    /**Goes through all the legendlayers and sets check state to checked/partially checked/unchecked*/
-    void updateCheckState();
+
+    Qt::CheckState pendingCheckState();
 };
 
 #endif

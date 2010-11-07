@@ -52,6 +52,7 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
   , mMousePressedFlag( false )
   , mMapCanvas( canvas )
   , mMinimumIconSize( 20, 20 )
+  , mChanging( false )
 {
   setObjectName( name );
 
@@ -145,6 +146,7 @@ void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetI
   {
     mMapCanvas->setCurrentLayer( layer );
   }
+
   emit currentLayerChanged( layer );
 }
 
@@ -406,7 +408,13 @@ void QgsLegend::updateGroupCheckStates( QTreeWidgetItem *item )
     updateGroupCheckStates( item->child( i ) );
   }
 
-  lg->updateCheckState();
+  Qt::CheckState theState = lg->pendingCheckState();
+  if ( theState != lg->checkState( 0 ) )
+  {
+    blockSignals( true );
+    lg->setCheckState( 0, theState );
+    blockSignals( false );
+  }
 }
 
 void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
@@ -587,14 +595,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
   //set the correct check states
   blockSignals( true );
-  if ( llayer->isVisible() )
-  {
-    llayer->setCheckState( 0, Qt::Checked );
-  }
-  else
-  {
-    llayer->setCheckState( 0, Qt::Unchecked );
-  }
+  llayer->setCheckState( 0, llayer->isVisible() ? Qt::Checked : Qt::Unchecked );
   blockSignals( false );
 
   QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
@@ -1507,119 +1508,106 @@ void QgsLegend::removePixmapHeightValue( int height )
 }
 
 
-void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
+void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
 {
   if ( !item )
   {
     return;
   }
 
-  //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
-  // TODO: is this still necessary?
-  QgsLegendLayer* theLegendLayer = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
-  if ( theLegendLayer )
-  {
-    theLegendLayer->layer()->setLayerName( theLegendLayer->text( 0 ) );
-  }
+  QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+  QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( item );
 
-  // has the checkState changed?
-  if ( item->data( 0, Qt::UserRole ).toInt() == item->checkState( 0 ) )
+  if ( !ll && !lg )
+  {
     return;
-
-  saveCheckStates( invisibleRootItem() );
-
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
-
-  if ( !item->isSelected() )
-  {
-    propagateItemChange( item, item->checkState( 0 ) );
   }
+
+#ifdef QGISDEBUG
+  if ( item->checkState( 0 ) == Qt::Checked )
+    showItem( "handleItemChange[checked]", item );
+  else if ( item->checkState( 0 ) == Qt::Unchecked )
+    showItem( "handleItemChange[unchecked]", item );
+  else if ( item->checkState( 0 ) == Qt::PartiallyChecked )
+    showItem( "handleItemChange[partially]", item );
   else
-  {
-    foreach( QTreeWidgetItem * i, selectedItems() )
-    {
-      propagateItemChange( i, item->checkState( 0 ) );
-    }
-  }
+    showItem( "handleItemChange[?]", item );
+#endif
 
-  // update layer set
-  updateMapCanvasLayerSet();
-
-  // If it was on, turn it back on, otherwise leave it
-  // off, as turning it on causes a refresh.
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
-}
-
-void QgsLegend::saveCheckStates( QTreeWidgetItem *item )
-{
-  for ( int i = 0; i < item->childCount(); i++ )
-  {
-    QTreeWidgetItem *child = item->child( i );
-    child->setData( 0, Qt::UserRole, child->checkState( 0 ) );
-    saveCheckStates( child );
-  }
-}
-
-void QgsLegend::propagateItemChange( QTreeWidgetItem *item, Qt::CheckState state )
-{
-  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item ); //item is a legend group
-  if ( lg )
-  {
-    QList<QTreeWidgetItem *> items;
-    items << item;
-    while ( !items.isEmpty() )
-    {
-      QTreeWidgetItem *litem = items.takeFirst();
-
-      QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( litem );
-      if ( ll )
-      {
-        blockSignals( true );
-        ll->setCheckState( 0, state );
-        blockSignals( false );
-
-        if ( ll->layer() )
-        {
-          ll->setVisible( lg->checkState( 0 ) == Qt::Checked );
-        }
-      }
-
-      QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( litem );
-      if ( lg )
-      {
-        blockSignals( true );
-        lg->setCheckState( 0, state );
-        blockSignals( false );
-
-        for ( int i = 0; i < lg->childCount(); i++ )
-          items << lg->child( i );
-      }
-    }
-  }
-
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
   if ( ll )
   {
-    blockSignals( true );
-    ll->setCheckState( 0, state );
-
-    if ( ll->layer() )
-    {
-      ll->setVisible( state == Qt::Checked );
-    }
-
-    QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup*>( ll->parent() );
-    while ( lg )
-    {
-      lg->updateCheckState();
-      lg = dynamic_cast<QgsLegendGroup*>( lg->parent() );
-    }
-
-    blockSignals( false );
+    //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
+    // TODO: is this still necessary?
+    ll->layer()->setLayerName( ll->text( 0 ) );
   }
+
+  bool renderFlagState;
+  bool changing = mChanging;
+  mChanging = true;
+
+  if ( !changing )
+  {
+    renderFlagState = mMapCanvas->renderFlag();
+    if ( renderFlagState )
+      mMapCanvas->setRenderFlag( false );
+
+    if ( item->isSelected() )
+    {
+      foreach( QTreeWidgetItem * i, selectedItems() )
+      {
+        if ( i != item )
+        {
+          i->setCheckState( 0, item->checkState( 0 ) );
+        }
+      }
+    }
+  }
+
+  if ( ll )
+  {
+    ll->setVisible( ll->checkState( 0 ) == Qt::Checked );
+  }
+
+  if ( lg && lg->checkState( 0 ) != Qt::PartiallyChecked )
+  {
+    Qt::CheckState theState = lg->checkState( 0 );
+    for ( int i = 0; i < item->childCount(); i++ )
+    {
+      QTreeWidgetItem *child = item->child( i );
+      if ( child->checkState( 0 ) != item->checkState( 0 ) )
+        child->setCheckState( 0, theState );
+    }
+  }
+
+  // propagate updates to upper groups
+  for (
+    QgsLegendGroup *plg = dynamic_cast<QgsLegendGroup *>( item->parent() );
+    plg;
+    plg = dynamic_cast<QgsLegendGroup *>( plg->parent() )
+  )
+  {
+    Qt::CheckState theState = plg->pendingCheckState();
+
+    if ( theState != plg->checkState( 0 ) )
+    {
+      blockSignals( true );
+      plg->setCheckState( 0, theState );
+      blockSignals( false );
+    }
+  }
+
+  if ( !changing )
+  {
+    // update layer set
+    updateMapCanvasLayerSet();
+
+    // If it was on, turn it back on, otherwise leave it
+    // off, as turning it on causes a refresh.
+    if ( renderFlagState )
+      mMapCanvas->setRenderFlag( true );
+  }
+
+  mChanging = changing;
 }
 
 void QgsLegend::openEditor()
