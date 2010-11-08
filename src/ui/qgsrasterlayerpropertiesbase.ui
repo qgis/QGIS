@@ -66,7 +66,7 @@
    <item row="0" column="1" colspan="4">
     <widget class="QStackedWidget" name="tabBar">
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabPageSymbology">
       <layout class="QGridLayout">
