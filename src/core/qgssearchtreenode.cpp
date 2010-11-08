@@ -115,8 +115,10 @@ QgsSearchTreeNode::QgsSearchTreeNode( const QgsSearchTreeNode& node )
   else
     mRight = NULL;
 
-  foreach( QgsSearchTreeNode *lnode, node.mNodeList )
-  mNodeList.append( new QgsSearchTreeNode( *lnode ) );
+  foreach( QgsSearchTreeNode * lnode, node.mNodeList )
+  {
+    mNodeList.append( new QgsSearchTreeNode( *lnode ) );
+  }
 
   init();
 }
@@ -209,7 +211,8 @@ QString QgsSearchTreeNode::makeSearchString()
     if ( mOp == opSQRT || mOp == opSIN || mOp == opCOS || mOp == opTAN ||
          mOp == opASIN || mOp == opACOS || mOp == opATAN ||
          mOp == opTOINT || mOp == opTOREAL || mOp == opTOSTRING ||
-         mOp == opLOWER || mOp == opUPPER )
+         mOp == opLOWER || mOp == opUPPER || mOp == opSTRLEN ||
+         mOp == opATAN2 || mOp == opREPLACE || mOp == opSUBSTR )
     {
       // functions
       switch ( mOp )
@@ -226,6 +229,10 @@ QString QgsSearchTreeNode::makeSearchString()
         case opTOSTRING: str += "to string"; break;
         case opLOWER: str += "lower"; break;
         case opUPPER: str += "upper"; break;
+        case opATAN2: str += "atan2"; break;
+        case opSTRLEN: str += "length"; break;
+        case opREPLACE: str += "replace"; break;
+        case opSUBSTR: str += "substr"; break;
         default: str += "?";
       }
       // currently all functions take one parameter
@@ -306,7 +313,7 @@ QString QgsSearchTreeNode::makeSearchString()
   else if ( mType == tNodeList )
   {
     QStringList items;
-    foreach( QgsSearchTreeNode *node, mNodeList )
+    foreach( QgsSearchTreeNode * node, mNodeList )
     {
       items << node->makeSearchString();
     }
@@ -461,7 +468,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
         return false;
       }
 
-      foreach( QgsSearchTreeNode *node, mRight->mNodeList )
+      foreach( QgsSearchTreeNode * node, mRight->mNodeList )
       {
         if ( !getValue( value2, node, fields, f ) )
         {
@@ -480,7 +487,6 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
 
       return mOp == opNOTIN;
     }
-    break;
 
     case opRegexp:
     case opLike:
@@ -545,7 +551,7 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value,
   value = node->valueAgainst( fields, f );
   if ( value.isError() )
   {
-    switch (( int )value.number() )
+    switch (( int ) value.number() )
     {
       case 1:
         mError = QObject::tr( "Referenced column wasn't found: %1" ).arg( value.string() );
@@ -587,7 +593,6 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
 
   switch ( mType )
   {
-
     case tNumber:
       QgsDebugMsgLevel( "number: " + QString::number( mNumber ), 2 );
       return QgsSearchTreeValue( mNumber );
@@ -637,13 +642,23 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
     // arithmetic operators
     case tOperator:
     {
-      QgsSearchTreeValue value1, value2;
+      QgsSearchTreeValue value1, value2, value3;
       if ( mLeft )
       {
-        if ( !getValue( value1, mLeft, fields, f ) ) return value1;
+        if ( mLeft->type() != tNodeList )
+        {
+          if ( !getValue( value1, mLeft, fields, f ) ) return value1;
+        }
+        else
+        {
+          if ( mLeft->mNodeList.size() > 0 && !getValue( value1, mLeft->mNodeList[0], fields, f ) ) return value1;
+          if ( mLeft->mNodeList.size() > 1 && !getValue( value2, mLeft->mNodeList[1], fields, f ) ) return value2;
+          if ( mLeft->mNodeList.size() > 2 && !getValue( value3, mLeft->mNodeList[2], fields, f ) ) return value3;
+        }
       }
       if ( mRight )
       {
+        Q_ASSERT( !mLeft || mLeft->type() != tNodeList );
         if ( !getValue( value2, mRight, fields, f ) ) return value2;
       }
 
@@ -716,6 +731,23 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         }
       }
 
+      // string operations
+      switch ( mOp )
+      {
+        case opLOWER:
+          return QgsSearchTreeValue( value1.string().toLower() );
+        case opUPPER:
+          return QgsSearchTreeValue( value1.string().toUpper() );
+        case opSTRLEN:
+          return QgsSearchTreeValue( value1.string().length() );
+        case opREPLACE:
+          return QgsSearchTreeValue( value1.string().replace( value2.string(), value3.string() ) );
+        case opSUBSTR:
+          return QgsSearchTreeValue( value1.string().mid( value2.number() - 1, value3.number() ) );
+        default:
+          break;
+      }
+
       // for other operators, convert strings to numbers if needed
       double val1, val2;
       if ( value1.isNumeric() )
@@ -740,8 +772,6 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
             return QgsSearchTreeValue( 2, "" ); // division by zero
           else
             return QgsSearchTreeValue( val1 / val2 );
-        default:
-          return QgsSearchTreeValue( 3, QString::number( mOp ) ); // unknown operator
         case opPOW:
           if (( val1 == 0 && val2 < 0 ) || ( val2 < 0 && ( val2 - floor( val2 ) ) > 0 ) )
           {
@@ -762,16 +792,17 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
           return QgsSearchTreeValue( acos( val1 ) );
         case opATAN:
           return QgsSearchTreeValue( atan( val1 ) );
+        case opATAN2:
+          return QgsSearchTreeValue( atan2( val1, val2 ) );
         case opTOINT:
           return QgsSearchTreeValue( int( val1 ) );
         case opTOREAL:
           return QgsSearchTreeValue( val1 );
         case opTOSTRING:
           return QgsSearchTreeValue( QString::number( val1 ) );
-        case opLOWER:
-          return QgsSearchTreeValue( value1.string().toLower() );
-        case opUPPER:
-          return QgsSearchTreeValue( value1.string().toUpper() );
+
+        default:
+          return QgsSearchTreeValue( 3, QString::number( mOp ) ); // unknown operator
       }
     }
 
@@ -806,8 +837,10 @@ void QgsSearchTreeNode::append( QgsSearchTreeNode *node )
 
 void QgsSearchTreeNode::append( QList<QgsSearchTreeNode *> nodes )
 {
-  foreach( QgsSearchTreeNode *node, nodes )
-  mNodeList.append( node );
+  foreach( QgsSearchTreeNode * node, nodes )
+  {
+    mNodeList.append( node );
+  }
 }
 
 int QgsSearchTreeValue::compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2, Qt::CaseSensitivity cs )

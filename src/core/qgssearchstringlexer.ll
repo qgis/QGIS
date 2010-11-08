@@ -83,18 +83,24 @@ string      "'"{str_char}*"'"
 "LIKE" { yylval.op = QgsSearchTreeNode::opLike; return COMPARISON; }
 "ILIKE" { yylval.op = QgsSearchTreeNode::opILike; return COMPARISON; }
 
-"sqrt" { yylval.op = QgsSearchTreeNode::opSQRT; return FUNCTION;}
-"sin"  { yylval.op = QgsSearchTreeNode::opSIN; return FUNCTION;}
-"cos"  { yylval.op = QgsSearchTreeNode::opCOS; return FUNCTION;}
-"tan"  { yylval.op = QgsSearchTreeNode::opTAN; return FUNCTION;}
-"asin" { yylval.op = QgsSearchTreeNode::opASIN; return FUNCTION;}
-"acos" { yylval.op = QgsSearchTreeNode::opACOS; return FUNCTION;}
-"atan" { yylval.op = QgsSearchTreeNode::opATAN; return FUNCTION;}
-"to int" { yylval.op = QgsSearchTreeNode::opTOINT; return FUNCTION;}
-"to real" { yylval.op = QgsSearchTreeNode::opTOREAL; return FUNCTION;}
-"to string" { yylval.op = QgsSearchTreeNode::opTOSTRING; return FUNCTION;}
-"lower" { yylval.op = QgsSearchTreeNode::opLOWER; return FUNCTION;}
-"upper" { yylval.op = QgsSearchTreeNode::opUPPER; return FUNCTION;}
+"sqrt" { yylval.op = QgsSearchTreeNode::opSQRT; return FUNCTION1;}
+"sin"  { yylval.op = QgsSearchTreeNode::opSIN; return FUNCTION1;}
+"cos"  { yylval.op = QgsSearchTreeNode::opCOS; return FUNCTION1;}
+"tan"  { yylval.op = QgsSearchTreeNode::opTAN; return FUNCTION1;}
+"asin" { yylval.op = QgsSearchTreeNode::opASIN; return FUNCTION1;}
+"acos" { yylval.op = QgsSearchTreeNode::opACOS; return FUNCTION1;}
+"atan" { yylval.op = QgsSearchTreeNode::opATAN; return FUNCTION1;}
+"to int" { yylval.op = QgsSearchTreeNode::opTOINT; return FUNCTION1;}
+"to real" { yylval.op = QgsSearchTreeNode::opTOREAL; return FUNCTION1;}
+"to string" { yylval.op = QgsSearchTreeNode::opTOSTRING; return FUNCTION1;}
+"lower" { yylval.op = QgsSearchTreeNode::opLOWER; return FUNCTION1;}
+"upper" { yylval.op = QgsSearchTreeNode::opUPPER; return FUNCTION1;}
+"length" { yylval.op = QgsSearchTreeNode::opSTRLEN; return FUNCTION1;}
+
+"atan2" { yylval.op = QgsSearchTreeNode::opATAN2; return FUNCTION2;}
+
+"replace" { yylval.op = QgsSearchTreeNode::opREPLACE; return FUNCTION3;}
+"substr" { yylval.op = QgsSearchTreeNode::opSUBSTR; return FUNCTION3;}
 
 "||"   { return CONCAT; }
 

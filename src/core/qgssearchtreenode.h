@@ -74,6 +74,7 @@ class CORE_EXPORT QgsSearchTreeNode
       opASIN,
       opACOS,
       opATAN,
+      opATAN2,
 
       // conversion
       opTOINT,
@@ -106,6 +107,9 @@ class CORE_EXPORT QgsSearchTreeNode
       opCONCAT,
       opLOWER,
       opUPPER,
+      opREPLACE,
+      opSTRLEN,
+      opSUBSTR,
 
       opROWNUM
     };

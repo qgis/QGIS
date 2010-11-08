@@ -61,7 +61,9 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 
 %token <number> NUMBER
 %token <op> COMPARISON
-%token <op> FUNCTION
+%token <op> FUNCTION1
+%token <op> FUNCTION2
+%token <op> FUNCTION3
 %token CONCAT
 %token IS
 %token IN
@@ -135,11 +137,28 @@ comp_predicate:
 
 scalar_exp_list:
       scalar_exp_list ',' scalar_exp { $$ = $1; $1->append($3); joinTmpNodes($1,$1,$3); }
-    | scalar_exp                     { $$ = new QgsSearchTreeNode( QgsSearchTreeNode::tNodeList ); $$->append($1); joinTmpNodes($$,$1,0); }
+    | scalar_exp
+      {
+        $$ = new QgsSearchTreeNode( QgsSearchTreeNode::tNodeList );
+        $$->append($1);
+        joinTmpNodes($$,$1,0);
+      }
     ;
 
 scalar_exp:
-      FUNCTION '(' scalar_exp ')' { $$ = new QgsSearchTreeNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
+      FUNCTION1 '(' scalar_exp ')'                 { $$ = new QgsSearchTreeNode($1, $3, 0); joinTmpNodes($$, $3, 0); }
+    | FUNCTION2 '(' scalar_exp ',' scalar_exp ')' { $$ = new QgsSearchTreeNode($1, $3, $5); joinTmpNodes($$, $3, $5); }
+    | FUNCTION3 '(' scalar_exp ',' scalar_exp ',' scalar_exp ')'
+      {
+        QgsSearchTreeNode *args = new QgsSearchTreeNode( QgsSearchTreeNode::tNodeList );
+	args->append($3);
+	args->append($5);
+	args->append($7);
+
+	$$ = new QgsSearchTreeNode($1, args, 0);
+        joinTmpNodes($$, $3, $5);
+        joinTmpNodes($$, $$, $7);
+      }
     | scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '*' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMUL,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '/' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opDIV,  $1, $3); joinTmpNodes($$,$1,$3); }

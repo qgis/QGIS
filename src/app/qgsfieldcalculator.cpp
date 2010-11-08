@@ -36,8 +36,6 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
   mOuputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
-
-
   //disable ok button until there is text for output field and expression
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
