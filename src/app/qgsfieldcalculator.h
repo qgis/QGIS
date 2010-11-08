@@ -17,6 +17,7 @@
 #define QGSFIELDCALCULATOR_H
 
 #include "ui_qgsfieldcalculatorbase.h"
+#include "qgscontexthelp.h"
 
 class QgsVectorLayer;
 
@@ -60,6 +61,8 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
     void on_mExpressionTextEdit_textChanged();
     void on_mOutputFieldTypeComboBox_activated( int index );
+
+    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
     //default constructor forbidden
