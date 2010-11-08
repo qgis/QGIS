@@ -558,14 +558,14 @@ class geometryThread( QThread ):
     return True
 
   def simpleMeasure( self, inGeom ):
-    if inGeom.wkbType() == QGis.WKBPoint:
+    if inGeom.wkbType() in (QGis.WKBPoint, QGis.WKBPoint25D):
       pt = QgsPoint()
       pt = inGeom.asPoint()
       attr1 = pt.x()
       attr2 = pt.y()
     else:
       measure = QgsDistanceArea()
-      attr1 = measure.measure(inGeom)      
+      attr1 = measure.measure(inGeom)
       if inGeom.type() == QGis.Polygon:
         attr2 = self.perimMeasure( inGeom, measure )
       else:
