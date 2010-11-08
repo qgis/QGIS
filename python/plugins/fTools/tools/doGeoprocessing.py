@@ -156,13 +156,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     self.inShapeA.clear()
     self.inShapeB.clear()
 
-    if self.myFunction == 5 or self.myFunction == 8 or self.myFunction == 3:
-      myListA = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
-      myListB = ftools_utils.getLayerNames( [ QGis.Polygon ] )
-    elif self.myFunction == 7 or self.myFunction == 6:
-      myListA = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] ) # added points and lines to test
-      myListB = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] ) # added points and lines to test
-    elif self.myFunction == 4:
+    if self.myFunction == 4:
       myListA = ftools_utils.getLayerNames( [ QGis.Polygon ] )
       myListB = []
     else:
@@ -1053,80 +1047,110 @@ class geoprocessingThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     vproviderA.rewind()
+    count = 0
     while vproviderA.nextFeature( inFeatA ):
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nElement += 1
       found = False
       geom = QgsGeometry( inFeatA.geometry() )
-      diffGeom = QgsGeometry( inFeatA.geometry() )
+      diff_geom = QgsGeometry( geom )
       atMapA = inFeatA.attributeMap()
       intersects = indexA.intersects( geom.boundingBox() )
-      if len( intersects ) <= 0:
+      if len( intersects ) < 1:
         try:
           outFeat.setGeometry( geom )
           outFeat.setAttributeMap( atMapA )
           writer.addFeature( outFeat )
         except:
           FEATURE_EXCEPT = False
-          continue
+          # this really shouldn't happen, as we 
+          # haven't edited the input geom at all
+          # continue
       else:
         for id in intersects:
+          count += 1
           vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
           atMapB = inFeatB.attributeMap()
           tmpGeom = QgsGeometry( inFeatB.geometry() )
           try:
             if geom.intersects( tmpGeom ):
               found = True
-              diff_geom = QgsGeometry( geom.difference( tmpGeom ) )
-              int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-              if int_geom.wkbType() == 7:
-                int_com = geom.combine( tmpGeom )
-                int_sym = geom.symDifference( tmpGeom )
-                int_geom = QgsGeometry( int_com.difference( int_sym ) )
+              int_geom = geom.intersection( tmpGeom )
+              if int_geom is None:
+                GEOS_EXCEPT = False
+                # There was a problem creating the intersection
+                int_geom = QgsGeometry()
+              else:
+                int_geom = QgsGeometry(int_geom)
+              if diff_geom.intersects( tmpGeom ):
+                diff_geom = diff_geom.difference( tmpGeom )
+                if diff_geom is None:
+                  # It's possible there was an error here?
+                  diff_geom = QgsGeometry()
+                else:
+                  diff_geom = QgsGeometry(diff_geom)
+              if int_geom.wkbType() == 0:
+              # intersection produced different geomety types
+                temp_list = int_geom.asGeometryCollection()
+                for i in temp_list:
+                  if i.type() == geom.type():
+                      int_geom = QgsGeometry( i )
               try:
                 outFeat.setGeometry( int_geom )
                 outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+#                print int_geom.wkbType()
                 writer.addFeature( outFeat )
-              except:
+              except Exception, err:
+#                print str(err)
                 FEATURE_EXCEPT = False
-                continue
-            else:
-              try:
-                outFeat.setGeometry( geom )
-                outFeat.setAttributeMap( atMapA )
-                writer.addFeature( outFeat )
-              except:
-                FEATURE_EXCEPT = False
-                continue
-          except:
+#            else:
+#              # this only happends if the bounding box 
+#              # intersects, but the geometry doesn't
+#              try:
+#                outFeat.setGeometry( geom )
+#                outFeat.setAttributeMap( atMapA )
+#                print geom.wkbType()
+#                writer.addFeature( outFeat )
+#              except:
+##                # also shoudn't ever happen
+#                FEATURE_EXCEPT = False
+#              pass
+          except Exception, err:
+#            print str(err)
             GEOS_EXCEPT = False
             found = False
-            continue
         if found:
           try:
+            if diff_geom.wkbType() == 0:
+              temp_list = diff_geom.asGeometryCollection()
+              for i in temp_list:
+                if i.type() == geom.type():
+                    diff_geom = QgsGeometry( i )
             outFeat.setGeometry( diff_geom )
             outFeat.setAttributeMap( atMapA )
+#            print diff_geom.wkbType()
             writer.addFeature( outFeat )
-          except:
+          except Exception, err:
+#            print str(err)
             FEATURE_EXCEPT = False
-            continue
+#            continue
     length = len( vproviderA.fields().values() )
     vproviderB.rewind()
     while vproviderB.nextFeature( inFeatA ):
-      add = True
+      add = False
       geom = QgsGeometry( inFeatA.geometry() )
       diff_geom = QgsGeometry( geom )
       atMap = inFeatA.attributeMap().values()
       atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
       intersects = indexB.intersects( geom.boundingBox() )
-      if len(intersects) <= 0:
+      if len(intersects) < 1:
         try:
-          outFeat.setGeometry( diff_geom )
+          outFeat.setGeometry( geom )
           outFeat.setAttributeMap( atMap )
           writer.addFeature( outFeat )
-        except:
+        except Exception, err:
+#          print str(err)
           FEATURE_EXCEPT = False
-          continue
       else:
         for id in intersects:
           vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
@@ -1134,19 +1158,21 @@ class geoprocessingThread( QThread ):
           tmpGeom = QgsGeometry( inFeatB.geometry() )
           try:
             if diff_geom.intersects( tmpGeom ):
+              add = True
               diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-          except:
+          except Exception, err:
+#            print str(err)
             add = False
             GEOS_EXCEPT = False
-            break
         if add:
           try:
             outFeat.setGeometry( diff_geom )
-            outFeat.setAttributeMap( atMap )
+            outFeat.setAttributeMap( atMapB )
             writer.addFeature( outFeat )
-          except:
+          except Exception, err:
+#            print str(err)
             FEATURE_EXCEPT = False
-            continue
+#            continue
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
       nElement += 1
     del writer
