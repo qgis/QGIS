@@ -351,7 +351,11 @@ void QgsWFSData::endElement( const XML_Char* el )
       {
         //error
       }
-      *mWkbType = QGis::WKBPoint;
+
+      if ( *mWkbType != QGis::WKBMultiPoint ) //keep multitype in case of geometry type mix
+      {
+        *mWkbType = QGis::WKBPoint;
+      }
     }
     else //multipoint, add WKB as fragment
     {
@@ -386,7 +390,11 @@ void QgsWFSData::endElement( const XML_Char* el )
       {
         //error
       }
-      *mWkbType = QGis::WKBLineString;
+
+      if ( *mWkbType != QGis::WKBMultiLineString )//keep multitype in case of geometry type mix
+      {
+        *mWkbType = QGis::WKBLineString;
+      }
     }
     else //multiline, add WKB as fragment
     {
@@ -424,7 +432,10 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
-    *mWkbType = QGis::WKBPolygon;
+    if ( *mWkbType != QGis::WKBMultiPolygon )//keep multitype in case of geometry type mix
+    {
+      *mWkbType = QGis::WKBPolygon;
+    }
     if ( mParseModeStack.top() != QgsWFSData::multiPolygon )
     {
       createPolygonFromFragments();
@@ -432,6 +443,7 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPoint" )
   {
+    *mWkbType = QGis::WKBMultiPoint;
     if ( !mParseModeStack.empty() )
     {
       mParseModeStack.pop();
@@ -440,6 +452,7 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiLineString" )
   {
+    *mWkbType = QGis::WKBMultiLineString;
     if ( !mParseModeStack.empty() )
     {
       mParseModeStack.pop();
@@ -448,6 +461,7 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPolygon" )
   {
+    *mWkbType = QGis::WKBMultiPolygon;
     if ( !mParseModeStack.empty() )
     {
       mParseModeStack.pop();
