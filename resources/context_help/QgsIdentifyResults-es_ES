@@ -4,5 +4,7 @@ El diálogo de resultados muestra todos los objetos espaciales identificados den
 Para ver los resultados, expanda la información del objeto espacial haciendo clic en el signo más <label>+</label> a la izquierda de cada objeto.
 </p>
 <p>
-El radio de búsqueda se puede establecer en el diálogo de opciones <label>Configuración > Opciones</label>.
+El radio de búsqueda se puede establecer en el diálogo de opciones <label>Configuración > Opciones > Herramientas de mapa</label>, en la sección Identificar, como porcentaje del ancho del mapa. En esta sección también se pueden definir el modo para identificar la <label>Capa actual</label>, <label>De arriba a abajo, detenerse en el primero</label> o <label>De arriba a abajo</label>. <br>
+También se puede marcar la opción <label>Abrir formulario de objetos espaciales, si se identifica un solo objeto </label>.<br>
+Las capas identificables se pueden definir en el cuadro de diálogo Propiedades del Proyecto <label>Configuración > Propiedades del Proyecto > Capas identificables</label> donde se listan todos los nombres de las capas, junto con su tipo (vectorial, ráster, etc.) y la posibilidad de ser identificadas.
 </p>

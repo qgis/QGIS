@@ -1,0 +1,22 @@
+<h3>Crear nueva capa SpatiaLite</h3>
+Se puede usar este cuadro de diálogo para crear una nueva base de datos SpatiaLite y/o una capa vacía SpatiaLite para edición. Vea más adelante una explición de las entradas del cuadro de diálogo.
+<h4>Base de datos</h4>
+Elija la base de datos de la lista desplegable. Esta lista se crea desde sus conexiones guardadas de SpatiaLite. Si no tiene ninguna conexión guardada o si quiere crear una nueva base de datos, haga clic en el botón (<label>...</label>) a la derecha de la lista desplegable.
+<h4>Nombre de la capa</h4>
+Ingrese el nombre de la capa que desea crear. El nombre debe tener una sola palabra. Si lo desea puede utilizar guiones bajos en el nombre.
+<h4>Columna de geometría</h4>
+Ingrese el nombre de la columna de geometría o acepte el que viene por omisión.
+<h4>Tipo</h4>
+Elija el tipo de capa que desea crear. 
+<h4>SRID EPSG</h4>
+Ingrese el código EPSG para el ID de referencia espacial (SRID). Por omisión se seleccionará el SRID para WGS 84. Haga clic sobre el botón <label>Buscar SRID</label> para cambiar el sistema de referencia de coordenadas de la capa, si así se require. El SRID debe existir dentro de spatial_ref_sys en su base de datos SpatiaLite. Puede buscar el SRID utilizando concordancias parciales tanto en el nombre como en el SRID.
+<h4>Crear una clave primaria autonumérica</h4>
+Al hacer clic sobre esta casilla se agregará una clave primaria para la nueva capa. Este campo clave será autonumérico, lo que significa que no será necesario ingresar valores en él cuando agregue objetos a la tabla de atributos de la capa.
+<h4>Nuevo atributo</h4>
+Agregue los atributos necesarios haciendo clic en el botón <label>Añadir a la lista de atributos</label>, después de haber especificado un nombre y un tipo para el atributo. Sólo se admiten atributos de tipo real, entero y cadena (string).<br/>
+El ancho y la precisión son irrelevantes en una base de datos SpatiaLite, por lo que no se requiere especificarlos.
+<h4>Lista de atributos</h4>
+En esta sección se puede observar la lista de atributos. Para borrar uno de ellos, haga clic sobre él y seleccione el botón <label>Eliminar atributo seleccionado</label>.
+
+<p>
+Haga clic sobre <label>Aceptar</label> para crear la capa y cerrar el cuadro de diálogo. Al hacer clic sobre <label>Aplicar</label> también se crea la capa, pero se mantiene el cuadro de diálogo abierto, lo que permite crear más capas similares. <label>Cancelar</label> cerrará la capa sin cambios adicionales.

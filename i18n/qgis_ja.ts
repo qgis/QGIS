@@ -1240,7 +1240,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="158"/>
         <source>Press Ctrl+C to copy results to the clipboard</source>
-        <translation>Ctrl+Cを押して結果をクリップボードにコポーしてください</translation>
+        <translation>Ctrl+Cを押して結果をクリップボードにコピーしてください</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
@@ -20272,7 +20272,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="63"/>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="70"/>
         <source>&amp;Offline Editing</source>
-        <translation>オフライン編集&amp;O</translation>
+        <translation>オフライン編集(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="66"/>
@@ -20305,7 +20305,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="94"/>
         <source>Converting to offline project.</source>
-        <translation>オフラインプロジェクトに変換しています.</translation>
+        <translation>オフラインプロジェクトに変換します</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="95"/>
@@ -31728,7 +31728,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation>複数のshapeファイルを１つに結合します</translation>
+        <translation>複数のshapeファイルを１つに結合する</translation>
     </message>
     <message>
         <source>fTools Information</source>
