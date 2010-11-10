@@ -26,6 +26,7 @@ QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, con
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
     setFocusPolicy(Qt::ClickFocus);
+    setMouseTracking ( true );
 }
 
 void QgsGLWidgetAdapter::resizeGL( int width, int height )
