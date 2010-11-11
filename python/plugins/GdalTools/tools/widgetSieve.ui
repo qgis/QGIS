@@ -25,7 +25,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file:</string>
+        <string>&amp;Input file</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -62,7 +62,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file:</string>
+        <string>&amp;Output file</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -93,7 +93,7 @@
      <item row="2" column="0">
       <widget class="QCheckBox" name="thresholdCheck">
        <property name="text">
-        <string>&amp;Threshold:</string>
+        <string>&amp;Threshold</string>
        </property>
       </widget>
      </item>
@@ -107,7 +107,7 @@
      <item row="3" column="0">
       <widget class="QCheckBox" name="connectionsCheck">
        <property name="text">
-        <string>&amp;Pixel connections:</string>
+        <string>&amp;Pixel connections</string>
        </property>
       </widget>
      </item>

@@ -97,7 +97,7 @@
          <bool>false</bool>
         </property>
         <property name="text" >
-         <string>Import spatial reference system:</string>
+         <string>Import spatial reference system</string>
         </property>
        </widget>
       </item>

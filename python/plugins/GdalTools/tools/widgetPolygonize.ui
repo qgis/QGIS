@@ -25,7 +25,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file (raster):</string>
+        <string>&amp;Input file (raster)</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -62,7 +62,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file for polygons (shapefile):</string>
+        <string>&amp;Output file for polygons (shapefile)</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -93,7 +93,7 @@
      <item row="2" column="0">
       <widget class="QCheckBox" name="fieldCheck">
        <property name="text">
-        <string>&amp;Field name:</string>
+        <string>&amp;Field name</string>
        </property>
       </widget>
      </item>

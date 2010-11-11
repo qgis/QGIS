@@ -147,7 +147,7 @@
      <item>
       <widget class="QLabel" name="label_2" >
        <property name="text" >
-        <string>Output Shapefile:</string>
+        <string>Output Shapefile</string>
        </property>
       </widget>
      </item>
