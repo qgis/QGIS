@@ -5712,7 +5712,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3814"/>
         <source>Please select a vector layer first.</source>
-        <translation>Najpierw należy wybrać warstwę wektorową.</translation>
+        <translation type="unfinished">Wskaż warstwę wektorową.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3949"/>
