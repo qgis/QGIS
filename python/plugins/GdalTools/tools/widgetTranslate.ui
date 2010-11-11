@@ -32,7 +32,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>&amp;Input Layer:</string>
+        <string>&amp;Input Layer</string>
        </property>
        <property name="buddy">
         <cstring>inputLayerCombo</cstring>
@@ -69,7 +69,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file:</string>
+        <string>&amp;Output file</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -117,7 +117,7 @@
      <item row="3" column="0">
       <widget class="QCheckBox" name="targetSRSCheck">
        <property name="text">
-        <string>&amp;Target SRS:</string>
+        <string>&amp;Target SRS</string>
        </property>
       </widget>
      </item>
@@ -154,7 +154,7 @@
         <string>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</string>
        </property>
        <property name="text">
-        <string>Outsize:</string>
+        <string>Outsize</string>
        </property>
       </widget>
      </item>
@@ -186,7 +186,7 @@
         <string>Assign a specified nodata value to output bands.</string>
        </property>
        <property name="text">
-        <string>No data:</string>
+        <string>No data</string>
        </property>
       </widget>
      </item>
@@ -198,7 +198,7 @@ Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don't support 
 The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</string>
        </property>
        <property name="text">
-        <string>Expand:</string>
+        <string>Expand</string>
        </property>
       </widget>
      </item>
@@ -232,7 +232,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
         <string>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</string>
        </property>
        <property name="text">
-        <string>Srcwin:</string>
+        <string>Srcwin</string>
        </property>
       </widget>
      </item>
@@ -249,7 +249,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
         <string>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</string>
        </property>
        <property name="text">
-        <string>Prjwin:</string>
+        <string>Prjwin</string>
        </property>
       </widget>
      </item>
@@ -294,7 +294,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
    <item>
     <widget class="QGroupBox" name="creationGroupBox">
      <property name="title">
-      <string>&amp;Creation Options:</string>
+      <string>&amp;Creation Options</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

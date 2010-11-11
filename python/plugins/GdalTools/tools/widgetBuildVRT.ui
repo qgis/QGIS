@@ -28,7 +28,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input files:</string>
+        <string>&amp;Input files</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFilesButton</cstring>
@@ -59,7 +59,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file:</string>
+        <string>&amp;Output file</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -90,7 +90,7 @@
      <item row="2" column="0">
       <widget class="QCheckBox" name="resolutionCheck">
        <property name="text">
-        <string>&amp;Resolution:</string>
+        <string>&amp;Resolution</string>
        </property>
       </widget>
      </item>
@@ -125,7 +125,7 @@
      <item row="3" column="0">
       <widget class="QCheckBox" name="srcNoDataCheck">
        <property name="text">
-        <string>&amp;Source No Data:</string>
+        <string>&amp;Source No Data</string>
        </property>
       </widget>
      </item>

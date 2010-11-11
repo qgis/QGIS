@@ -32,7 +32,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file:</string>
+        <string>&amp;Input file</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -69,7 +69,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file:</string>
+        <string>&amp;Output file</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -100,7 +100,7 @@
      <item row="2" column="0">
       <widget class="QCheckBox" name="sourceSRSCheck">
        <property name="text">
-        <string>&amp;Source SRS:</string>
+        <string>&amp;Source SRS</string>
        </property>
       </widget>
      </item>
@@ -128,7 +128,7 @@
      <item row="3" column="0">
       <widget class="QCheckBox" name="targetSRSCheck">
        <property name="text">
-        <string>&amp;Target SRS:</string>
+        <string>&amp;Target SRS</string>
        </property>
       </widget>
      </item>
@@ -156,7 +156,7 @@
      <item row="4" column="0">
       <widget class="QCheckBox" name="resamplingCheck">
        <property name="text">
-        <string>&amp;Resampling method:</string>
+        <string>&amp;Resampling method</string>
        </property>
       </widget>
      </item>
@@ -202,7 +202,7 @@
      <item row="6" column="0">
       <widget class="QCheckBox" name="cacheCheck">
        <property name="text">
-        <string>&amp;Memory used for caching:</string>
+        <string>&amp;Memory used for caching</string>
        </property>
       </widget>
      </item>

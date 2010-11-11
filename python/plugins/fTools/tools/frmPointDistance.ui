@@ -108,7 +108,7 @@
       <item row="3" column="0" >
        <widget class="QCheckBox" name="chkNearest" >
         <property name="text" >
-         <string>Use only the nearest (k) target points:</string>
+         <string>Use only the nearest (k) target points</string>
         </property>
        </widget>
       </item>

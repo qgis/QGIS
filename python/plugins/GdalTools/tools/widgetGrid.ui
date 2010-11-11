@@ -25,7 +25,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file:</string>
+        <string>&amp;Input file</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -62,7 +62,7 @@
      <item row="1" column="0">
       <widget class="QCheckBox" name="zfieldCheck">
        <property name="text">
-        <string>&amp;Z Field:</string>
+        <string>&amp;Z Field</string>
        </property>
       </widget>
      </item>
@@ -72,7 +72,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file:</string>
+        <string>&amp;Output file</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -103,7 +103,7 @@
      <item row="3" column="0">
       <widget class="QCheckBox" name="algorithmCheck">
        <property name="text">
-        <string>&amp;Algorithm:</string>
+        <string>&amp;Algorithm</string>
        </property>
       </widget>
      </item>
@@ -154,7 +154,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Power:</string>
+            <string>Power</string>
            </property>
           </widget>
          </item>
@@ -168,7 +168,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Smoothing:</string>
+            <string>Smoothing</string>
            </property>
           </widget>
          </item>
@@ -185,7 +185,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Radius1:</string>
+            <string>Radius1</string>
            </property>
           </widget>
          </item>
@@ -202,7 +202,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Radius2:</string>
+            <string>Radius2</string>
            </property>
           </widget>
          </item>
@@ -219,7 +219,7 @@
          <item row="4" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Angle:</string>
+            <string>Angle</string>
            </property>
           </widget>
          </item>
@@ -236,7 +236,7 @@
          <item row="5" column="0">
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>Max points:</string>
+            <string>Max points</string>
            </property>
           </widget>
          </item>
@@ -250,7 +250,7 @@
          <item row="6" column="0">
           <widget class="QLabel" name="label_9">
            <property name="text">
-            <string>Min points:</string>
+            <string>Min points</string>
            </property>
           </widget>
          </item>
@@ -264,7 +264,7 @@
          <item row="7" column="0">
           <widget class="QLabel" name="label_10">
            <property name="text">
-            <string>No data:</string>
+            <string>No data</string>
            </property>
           </widget>
          </item>
@@ -298,7 +298,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_21">
            <property name="text">
-            <string>Radius1:</string>
+            <string>Radius1</string>
            </property>
           </widget>
          </item>
@@ -315,7 +315,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_19">
            <property name="text">
-            <string>Radius2:</string>
+            <string>Radius2</string>
            </property>
           </widget>
          </item>
@@ -332,7 +332,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_22">
            <property name="text">
-            <string>Angle:</string>
+            <string>Angle</string>
            </property>
           </widget>
          </item>
@@ -349,7 +349,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_20">
            <property name="text">
-            <string>Min points:</string>
+            <string>Min points</string>
            </property>
           </widget>
          </item>
@@ -363,7 +363,7 @@
          <item row="4" column="0">
           <widget class="QLabel" name="label_23">
            <property name="text">
-            <string>No data:</string>
+            <string>No data</string>
            </property>
           </widget>
          </item>
@@ -397,7 +397,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_26">
            <property name="text">
-            <string>Radius1:</string>
+            <string>Radius1</string>
            </property>
           </widget>
          </item>
@@ -414,7 +414,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_24">
            <property name="text">
-            <string>Radius2:</string>
+            <string>Radius2</string>
            </property>
           </widget>
          </item>
@@ -431,7 +431,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_27">
            <property name="text">
-            <string>Angle:</string>
+            <string>Angle</string>
            </property>
           </widget>
          </item>
@@ -448,7 +448,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_28">
            <property name="text">
-            <string>No data:</string>
+            <string>No data</string>
            </property>
           </widget>
          </item>
@@ -482,7 +482,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_25">
            <property name="text">
-            <string>Metrics:</string>
+            <string>Metrics</string>
            </property>
           </widget>
          </item>
@@ -508,7 +508,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_31">
            <property name="text">
-            <string>Radius1:</string>
+            <string>Radius1</string>
            </property>
           </widget>
          </item>
@@ -525,7 +525,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_29">
            <property name="text">
-            <string>Radius2:</string>
+            <string>Radius2</string>
            </property>
           </widget>
          </item>
@@ -542,7 +542,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_32">
            <property name="text">
-            <string>Angle:</string>
+            <string>Angle</string>
            </property>
           </widget>
          </item>
@@ -559,7 +559,7 @@
          <item row="4" column="0">
           <widget class="QLabel" name="label_30">
            <property name="text">
-            <string>Min points:</string>
+            <string>Min points</string>
            </property>
           </widget>
          </item>
@@ -573,7 +573,7 @@
          <item row="5" column="0">
           <widget class="QLabel" name="label_33">
            <property name="text">
-            <string>No data:</string>
+            <string>No data</string>
            </property>
           </widget>
          </item>

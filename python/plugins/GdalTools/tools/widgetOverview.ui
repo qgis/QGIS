@@ -32,7 +32,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file:</string>
+        <string>&amp;Input file</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -183,7 +183,7 @@
 the JPEG quality can be set.</string>
         </property>
         <property name="text">
-         <string>JPEG Quality (1-100):</string>
+         <string>JPEG Quality (1-100)</string>
         </property>
        </widget>
       </item>

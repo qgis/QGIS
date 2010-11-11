@@ -25,7 +25,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file:</string>
+        <string>&amp;Input file</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -62,7 +62,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file:</string>
+        <string>&amp;Output file</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
@@ -86,7 +86,7 @@
      <item row="2" column="0">
       <widget class="QCheckBox" name="valuesCheck">
        <property name="text">
-        <string>&amp;Values:</string>
+        <string>&amp;Values</string>
        </property>
       </widget>
      </item>
@@ -118,7 +118,7 @@
      <item row="3" column="0">
       <widget class="QCheckBox" name="distUnitsCheck">
        <property name="text">
-        <string>&amp;Dist units:</string>
+        <string>&amp;Dist units</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -142,7 +142,7 @@
      <item row="4" column="0">
       <widget class="QCheckBox" name="maxDistCheck">
        <property name="text">
-        <string>&amp;Max dist:</string>
+        <string>&amp;Max dist</string>
        </property>
       </widget>
      </item>
@@ -156,7 +156,7 @@
      <item row="5" column="0">
       <widget class="QCheckBox" name="noDataCheck">
        <property name="text">
-        <string>&amp;No data:</string>
+        <string>&amp;No data</string>
        </property>
       </widget>
      </item>
@@ -170,7 +170,7 @@
      <item row="6" column="0">
       <widget class="QCheckBox" name="fixedBufValCheck">
        <property name="text">
-        <string>&amp;Fixed buf val:</string>
+        <string>&amp;Fixed buf val</string>
        </property>
       </widget>
      </item>

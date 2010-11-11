@@ -25,7 +25,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Input file (shapefile):</string>
+        <string>&amp;Input file (shapefile)</string>
        </property>
        <property name="buddy">
         <cstring>selectInputFileButton</cstring>
@@ -62,7 +62,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>&amp;Attribute field:</string>
+        <string>&amp;Attribute field</string>
        </property>
        <property name="buddy">
         <cstring>attributeComboBox</cstring>
@@ -82,7 +82,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&amp;Output file for rasterized vectors (raster, must exists):</string>
+        <string>&amp;Output file for rasterized vectors (raster, must exists)</string>
        </property>
        <property name="buddy">
         <cstring>selectOutputFileButton</cstring>
