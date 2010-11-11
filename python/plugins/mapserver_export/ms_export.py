@@ -748,9 +748,10 @@ class Qgis2Map:
 
   def writeClassStyleContent(self, symbolNode, geometry):
     outlinecolor = self.getRgbFromNode(symbolNode, 'outlinecolor')
+    outlinestyle = self.getSymbolProperty(symbolNode, 'outlinestyle')
+    outlinewidth = self.getSizeStringFromNode(symbolNode, 'outlinewidth')
     fillcolor    = self.getRgbFromNode(symbolNode, 'fillcolor')
     pointsize    = self.getSizeStringFromNode(symbolNode, 'pointsize')
-    outlinewidth = self.getSizeStringFromNode(symbolNode, 'outlinewidth')
     fillpattern  = self.getSymbolProperty(symbolNode, 'fillpattern');
 
     class_def = "       STYLE\n"
@@ -769,7 +770,8 @@ class Qgis2Map:
         class_def += "         COLOR " + outlinecolor + "\n"
     # for POLYGON and POINT defined by COLOR from fillcolor and OUTLINECOLOR from outlinecolor
     else:
-        class_def += "         OUTLINECOLOR " + outlinecolor + "\n"
+        if 'NoPen' != outlinestyle:
+            class_def += "         OUTLINECOLOR " + outlinecolor + "\n"
         if 'NoBrush' != fillpattern:
             class_def += "         COLOR " + fillcolor + "\n"
 
