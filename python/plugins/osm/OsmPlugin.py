@@ -147,6 +147,7 @@ class OsmPlugin:
         """Function unloads the OSM Plugin.
         """
 
+        self.dbm.disconnectSignals()
         self.canvas.unsetMapTool(self.dockWidget.mapTool)
         del self.dockWidget.mapTool
         self.dockWidget.mapTool=None

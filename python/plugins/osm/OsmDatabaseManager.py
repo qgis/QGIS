@@ -55,6 +55,12 @@ class OsmDatabaseManager:
         QObject.connect(QgsMapLayerRegistry.instance(),SIGNAL("layerWillBeRemoved(QString)"),self.layerRemoved)
 
 
+    def disconnectSignals(self):
+        # disconnect layer changes signals
+        QObject.disconnect(self.plugin.iface,SIGNAL("currentLayerChanged(QgsMapLayer*)"),self.currLayerChanged)
+        QObject.disconnect(QgsMapLayerRegistry.instance(),SIGNAL("layerWillBeRemoved(QString)"),self.layerRemoved)
+        
+        
     def currLayerChanged(self,layer):
         """Function is called after currentLayerChanged(QgsMapLayer*) signal is emitted.
 
