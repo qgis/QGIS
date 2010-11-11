@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import text file" module="v.in.ascii">
+	<file key="input" label="Text file"/>
+	<option key="output"/>
+	<option key="format"/>
+        <option key="fs" label="Separator (| , \t etc.)" />
+	<option key="skip" label="Number of rows to be skipped"/>
+	<option key="x" label="Which column for the X coordinate? The first is 1"/>
+        <option key="y" label="Which column for the Y coordinate?"/>
+        <option key="z" label="Which column for the Z coordinate? If 0, z coordinate is not used"/>
+</qgisgrassmodule>

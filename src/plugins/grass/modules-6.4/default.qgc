@@ -64,6 +64,7 @@
                         	        <grass name="v.in.ogr.all.loc"/> 
 					<grass name="v.in.dxf"/>
 					<grass name="v.in.e00"/>
+					<grass name="v.in.ascii"/>
 					<grass name="v.in.mapgen"/>
 					<grass name="v.in.db"/>
 					<grass name="v.in.garmin"/>

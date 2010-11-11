@@ -4,7 +4,7 @@
 <qgisgrassmodule label="Cut network by cost isolines" module="v.net.iso">
 	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" />
 	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" />
-	<selection key="ccats" layerid="nodes" label="Cats" />
+	<selection key="ccats" layerid="nodes" label="Cats (select from the map or using their id)" />
 	<option key="costs" />
 	<option key="output" />
 </qgisgrassmodule>
