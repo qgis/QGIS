@@ -54,6 +54,16 @@ def setGdalPath( path ):
   settings = QSettings()
   settings.setValue( "/GdalTools/gdalPath", QVariant( path ) )
 
+# Retrieves GDAL help files location
+def getHelpPath():
+  settings = QSettings()
+  return settings.value( "/GdalTools/helpPath", QVariant( "" ) ).toString()
+
+# Stores GDAL help files location
+def setHelpPath( path ):
+  settings = QSettings()
+  settings.setValue( "/GdalTools/helpPath", QVariant( path ) )
+
 # Retrieves last used encoding from persistent settings
 def getLastUsedEncoding():
     settings = QSettings()

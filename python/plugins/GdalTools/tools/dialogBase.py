@@ -81,7 +81,11 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
   # show the online tool documentation in the default browser
   def onHelp(self):
-      url = QUrl("http://www.gdal.org/" + self.helpFileName)
+      helpPath = Utils.getHelpPath()
+      if helpPath.isEmpty():
+        url = QUrl("http://www.gdal.org/" + self.helpFileName)
+      else:
+        url = QUrl.fromLocalFile(helpPath + '/' + self.helpFileName)
       QDesktopServices.openUrl(url)
 
   def setCommandViewerEnabled(self, enable):
