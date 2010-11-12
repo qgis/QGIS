@@ -44,7 +44,9 @@ public:
                                             bool onlySelected = FALSE,
                                             QString *errorMessage = 0,
 					    const QStringList &datasourceOptions = QStringList(),
-					    const QStringList &layerOptions = QStringList() );
+					    const QStringList &layerOptions = QStringList(),
+                                            bool skipAttributeCreation = FALSE // added in 1.7
+                                            );
 
     /** create shapefile and initialize it */
     QgsVectorFileWriter(const QString& vectorFileName,

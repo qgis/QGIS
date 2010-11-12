@@ -78,7 +78,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                             bool onlySelected = false,
                                             QString *errorMessage = 0,
                                             const QStringList &datasourceOptions = QStringList(),  // added in 1.6
-                                            const QStringList &layerOptions = QStringList()  // added in 1.6
+                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
+                                            bool skipAttributeCreation = false // added in 1.6
                                           );
 
     /** create shapefile and initialize it */

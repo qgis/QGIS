@@ -40,6 +40,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
+    bool skipAttributeCreation() const;
 
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );
