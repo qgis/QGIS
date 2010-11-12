@@ -143,6 +143,7 @@ void QgsFieldCalculator::accept()
 
     //go through all the features and change the new attribute
     QgsFeature feature;
+    bool calculationSuccess = true;
 
     bool onlySelected = ( mOnlyUpdateSelectedCheckBox->checkState() == Qt::Checked );
     QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
@@ -171,7 +172,15 @@ void QgsFieldCalculator::accept()
       if ( value.isError() )
       {
         //insert NULL value for this feature and continue the calculation
-        mVectorLayer->changeAttributeValue( feature.id(), attributeId, QVariant(), false );
+        if( searchTree->errorMsg() == QObject::tr( "Division by zero." ) )
+        {
+          mVectorLayer->changeAttributeValue( feature.id(), attributeId, QVariant(), false );
+        }
+        else
+        {
+          calculationSuccess = false;
+          break;
+        }
       }
       else if ( value.isNumeric() )
       {
@@ -188,6 +197,14 @@ void QgsFieldCalculator::accept()
     // stop blocking layerModified signals and make sure that one layerModified signal is emitted
     mVectorLayer->blockSignals( false );
     mVectorLayer->setModified( true, false );
+
+    if ( !calculationSuccess )
+    {
+      QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string." ) );
+      mVectorLayer->destroyEditCommand();
+      return;
+    }
+
     mVectorLayer->endEditCommand();
   }
   QDialog::accept();
