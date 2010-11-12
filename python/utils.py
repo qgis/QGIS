@@ -22,7 +22,7 @@ def showException(type, value, tb, msg):
     msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
   txt = '<font color="red">%s</font><br><br>' % msg
   for s in lst:
-    txt += s
+    txt += s.decode('utf-8', 'replace')
   txt += '<br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python','Python version:'), sys.version)
   txt += '<br>%s<br>%s %s, %s<br><br>' % (QCoreApplication.translate('Python','QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME, QGis.QGIS_SVN_VERSION)
   txt += '%s %s' % (QCoreApplication.translate('Python','Python path:'), str(sys.path))
