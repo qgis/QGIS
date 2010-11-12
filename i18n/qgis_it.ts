@@ -2681,7 +2681,9 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Per esporre un set di dati monobanda con una tabella di colori come set di dati con 3 (RGB) o 4 (RGBA) bande. 
+Utile per i driver di output come JPEG, JPEG2000, MrSID, ECW che non supportano set di dati indicizzati per colore. 
+Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un set di dati con una tabella colore che contiene solo livelli di grigio ad un set di dati indicizzati sul grigio.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
@@ -2707,7 +2709,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="232"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="242"/>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli una sottofinestra da copiare dall&apos;immagine sorgente sulla base della posizione in pixel/linee. (Inserisci Xoff Yoff Xsize Ysize)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="235"/>
@@ -2718,7 +2720,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="249"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="259"/>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli una sottofinestra da copiare dall&apos;immagine sorgente (come -srcwin), ma con gli estremi in coordinate georiferite. (Inserisci ulx uly lrx lry)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="252"/>
@@ -2728,7 +2730,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="266"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia tutti i sottoinsiemi di dati di questo file in files separati. Usa con formati quali HDF o OGDI che hanno sottoinsiemi.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="269"/>
@@ -5089,7 +5091,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="403"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo di variante non valido per il campo %1[%2]: ricevuto %3 con tipo %4</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="419"/>
@@ -7322,12 +7324,12 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="2496"/>
         <source>
 This copy of QGIS has been built with QWT %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Questa copia di QGIS è stata compilata con QWT %1.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="2510"/>
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Cosa c&apos;è di nuovo nella Versione 1.6.0 &apos;Capiapó&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2512"/>
