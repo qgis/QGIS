@@ -10,4 +10,8 @@
 	<option key="x" label="Which column for the X coordinate? The first is 1"/>
         <option key="y" label="Which column for the Y coordinate?"/>
         <option key="z" label="Which column for the Z coordinate? If 0, z coordinate is not used"/>
+	<option key="cat" advanced="yes" />
+	<flag key="t" advanced="yes" />
+        <flag key="b" advanced="yes" />
+        <flag key="r" advanced="yes" />
 </qgisgrassmodule>
