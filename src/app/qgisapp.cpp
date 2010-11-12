@@ -1713,7 +1713,31 @@ void QgisApp::createToolBars()
   menu->addAction( mActionSelectPolygon );
   menu->addAction( mActionSelectFreehand );
   menu->addAction( mActionSelectRadius );
-  bt->setDefaultAction( mActionSelect );
+
+  QSettings settings;
+  switch( settings.value( "/UI/selectTool", 0 ).toInt() )
+  {
+    default:
+    case 0:
+      bt->setDefaultAction( mActionSelect );
+      break;
+
+    case 1:
+      bt->setDefaultAction( mActionSelectRectangle );
+      break;
+
+    case 2:
+      bt->setDefaultAction( mActionSelectPolygon );
+      break;
+
+    case 3:
+      bt->setDefaultAction( mActionSelectFreehand );
+      break;
+
+    case 4:
+      bt->setDefaultAction( mActionSelectRadius );
+      break;
+  }
   mAttributesToolBar->addWidget( bt );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
@@ -2528,7 +2552,7 @@ void QgisApp::about()
     whatsNew +=  "<li>" + tr( "Experimental WFS-T support. Additionally ported wfs to network manager." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Georeferencer has had many tidy ups and improvements." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Support for long int in attribute dialog and editor." ) + "</li>";
-    whatsNew +=  "<li>" + tr( "The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol." ) + " <a href=\"http://linfiniti.com/2010/08/qgis-mapserver-a-wms-server-for-the-masses/\">" + tr("Read More." ) + "</a></li>";
+    whatsNew +=  "<li>" + tr( "The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol." ) + " <a href=\"http://linfiniti.com/2010/08/qgis-mapserver-a-wms-server-for-the-masses/\">" + tr( "Read More." ) + "</a></li>";
     whatsNew +=  "<li>" + tr( "Select and measure toolbar flyouts and submenus." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view." ) + "</li>";
     whatsNew +=  "<li>" + tr( "Added search string support for feature ids ($id) and various other search related improvements." ) + "</li>";
@@ -6963,6 +6987,18 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
   QToolButton *bt = qobject_cast<QToolButton *>( sender() );
   if( !bt )
     return;
+
+  QSettings settings;
+  if( action == mActionSelect )
+    settings.setValue( "/UI/selectTool", 0 );
+  else if( action == mActionSelectRectangle )
+    settings.setValue( "/UI/selectTool", 1 );
+  else if( action == mActionSelectPolygon )
+    settings.setValue( "/UI/selectTool", 2 );
+  else if( action == mActionSelectFreehand )
+    settings.setValue( "/UI/selectTool", 3 );
+  else if( action == mActionSelectRadius )
+    settings.setValue( "/UI/selectTool", 4 );
 
   bt->setDefaultAction( action );
 }
