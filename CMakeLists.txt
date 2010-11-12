@@ -54,8 +54,8 @@ IF (WITH_GRASS)
   SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
 ENDIF (WITH_GRASS)
 
-# try to configure and build mapserver by default
-SET (WITH_MAPSERVER TRUE CACHE BOOL "Determines whether QGIS mapserver should be built")
+# mapserver by us disabled default because it needs FastCGI (which is optional dependency)
+SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should be built")
 
 # try to configure and build POSTGRESQL support
 SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
