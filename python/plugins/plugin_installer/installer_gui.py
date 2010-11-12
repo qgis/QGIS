@@ -260,6 +260,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.treePlugins, SIGNAL("itemSelectionChanged()"), self.pluginTreeClicked)
     self.connect(self.treeRepositories, SIGNAL("itemSelectionChanged()"), self.repositoryTreeClicked)
     # buttons
+    self.connect(self.buttonUpgradeAll, SIGNAL("clicked()"), self.upgradeAllClicked)
     self.connect(self.buttonInstall, SIGNAL("clicked()"), self.installPluginClicked)
     self.connect(self.buttonUninstall, SIGNAL("clicked()"), self.uninstallPluginClicked)
     self.buttonInstall.setEnabled(False)
@@ -517,10 +518,17 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       for p in plugins.all().values():
         if p["error"] == i:
           addItem(p)
+    n = 0 # displayed plugins count
+    self.upgradeablePlugins = [] # list of plugins able to update
     for i in orderValid:
       for p in plugins.all().values():
         if p["status"] == i and not p["error"]:
           addItem(p)
+          if p["status"] == "upgradeable": self.upgradeablePlugins += [p["localdir"]]
+          n +=1
+    self.setWindowTitle(self.tr("QGIS Python Plugin Installer") + self.tr(" - %d plugins available" % len(plugins.all())))
+    self.buttonUpgradeAll.setEnabled( len(self.upgradeablePlugins) )
+    
     # resize the columns
     for i in [0,1,2,3,4,5]:
       self.treePlugins.resizeColumnToContents(i)
@@ -564,6 +572,12 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
 
 
   # ----------------------------------------- #
+  def upgradeAllClicked(self):
+    for key in self.upgradeablePlugins:
+      self.installPlugin(key, quiet=True)
+
+
+  # ----------------------------------------- #
   def installPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
@@ -579,8 +593,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.uninstallPlugin(key)
 
 
-# ----------------------------------------- #
-  def installPlugin(self, key):
+  # ----------------------------------------- #
+  def installPlugin(self, key, quiet=False):
     """ install currently selected plugin """
     infoString = ('','')
     plugin = plugins.all()[key]
@@ -590,6 +604,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if plugin["status"] == "newer" and not plugin["error"]: # ask for confirmation if user downgrades an usable plugin
       if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
         return
+    
     dlg = QgsPluginInstallerInstallingDialog(self,plugin)
     dlg.exec_()
 
@@ -634,6 +649,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             else:
               infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
           else: infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
+        if quiet:
+          infoString = (None, None)
       else:
         if plugin["error"] == "incompatible":
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
