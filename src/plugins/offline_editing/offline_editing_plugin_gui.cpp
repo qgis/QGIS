@@ -21,6 +21,8 @@
 #include <qgscontexthelp.h>
 #include <qgsmaplayer.h>
 #include <qgsmaplayerregistry.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -39,15 +41,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/,
   mOfflineDbFile = "offline.sqlite";
   ui_offlineDataPath->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin() ; layer_it != mapLayers.end(); ++layer_it )
-  {
-    if ( layer_it.value()->type() == QgsMapLayer::VectorLayer )
-    {
-      QListWidgetItem* item = new QListWidgetItem( layer_it.value()->name(), ui_layerList );
-      item->setData( Qt::UserRole, QVariant( layer_it.key() ) );
-    }
-  }
+  updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
@@ -69,6 +63,36 @@ QStringList& QgsOfflineEditingPluginGui::selectedLayerIds()
   return mSelectedLayerIds;
 }
 
+void QgsOfflineEditingPluginGui::updateLayerList( bool filterEditableLayers )
+{
+  ui_layerList->clear();
+
+  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin() ; layer_it != mapLayers.end(); ++layer_it )
+  {
+    if ( layer_it.value()->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( layer_it.value() );
+
+      bool showLayer = true;
+      if ( filterEditableLayers )
+      {
+          int cap = layer->dataProvider()->capabilities();
+          showLayer = ( cap & QgsVectorDataProvider::AddFeatures ) &&
+                      ( cap & QgsVectorDataProvider::DeleteFeatures ) &&
+                      ( cap & QgsVectorDataProvider::ChangeAttributeValues ) &&
+                      ( cap & QgsVectorDataProvider::AddAttributes ) &&
+                      ( cap & QgsVectorDataProvider::ChangeGeometries );
+      }
+      if ( showLayer )
+      {
+          QListWidgetItem* item = new QListWidgetItem( layer->name(), ui_layerList );
+          item->setData( Qt::UserRole, QVariant( layer_it.key() ) );
+      }
+    }
+  }
+}
+
 void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this,
@@ -83,6 +107,11 @@ void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
     mOfflineDataPath = QFileInfo( fileName ).absolutePath();
     ui_offlineDataPath->setText( fileName );
   }
+}
+
+void QgsOfflineEditingPluginGui::on_checkboxShowEditableLayers_stateChanged( int state )
+{
+    updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
 }
 
 void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
