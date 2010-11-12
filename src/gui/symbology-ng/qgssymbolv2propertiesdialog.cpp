@@ -355,11 +355,16 @@ void QgsSymbolV2PropertiesDialog::removeLayer()
 {
   int idx = currentLayerIndex();
   if ( idx < 0 ) return;
+  int row = currentRowIndex();
   mSymbol->deleteSymbolLayer( idx );
 
   loadSymbol();
 
   updateUi();
+
+  // set previous layer as active
+  QModelIndex newIndex = listLayers->model()->index( qMin(row, mSymbol->symbolLayerCount()-1), 0 );
+  listLayers->setCurrentIndex( newIndex );
 }
 
 
