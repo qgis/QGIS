@@ -154,7 +154,18 @@ inline void QgsClipper::trimFeatureToBoundary(
 
   // and compare to the first point initially.
   for ( unsigned int i2 = 0; i2 < inX.size() ; ++i2 )
-  { // look at each edge of the polygon in turn
+  {
+    // look at each edge of the polygon in turn
+
+    //ignore segments with nan or inf coordinates
+    if ( isnan( inX[i2] ) || isnan( inY[i2] ) || isinf( inX[i2] ) || isinf( inY[i2] )
+         || isnan( inX[i1] ) || isnan( inY[i1] ) || isinf( inX[i1] ) || isinf( inY[i1] ) )
+    {
+      i1 = i2;
+      continue;
+    }
+
+
     if ( inside( inX[i2], inY[i2], b ) ) // end point of edge is inside boundary
     {
       if ( inside( inX[i1], inY[i1], b ) )
