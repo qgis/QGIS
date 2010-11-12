@@ -254,6 +254,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Sets canvas pointer (necessary to query and draw map canvas items)*/
     void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
 
+    void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
+    bool drawCanvasItems() const { return mDrawCanvasItems; }
+
   public slots:
 
     /**Called if map canvas has changed*/
@@ -351,6 +354,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**The length of the cross sides for mGridStyle Cross*/
     double mCrossLength;
     QGraphicsView* mMapCanvas;
+    /**True if annotation items, rubber band, etc. from the main canvas should be displayed*/
+    bool mDrawCanvasItems;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );

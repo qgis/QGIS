@@ -292,6 +292,16 @@ void QgsComposerMapWidget::updateGuiElements()
       mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
     }
 
+    //draw canvas items
+    if ( mComposerMap->drawCanvasItems() )
+    {
+      mDrawCanvasItemsCheckBox->setCheckState( Qt::Checked );
+    }
+    else
+    {
+      mDrawCanvasItemsCheckBox->setCheckState( Qt::Unchecked );
+    }
+
     //grid
     if ( mComposerMap->gridEnabled() )
     {
@@ -418,6 +428,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mDistanceToMapFrameSpinBox->blockSignals( b );
   mAnnotationDirectionComboBox->blockSignals( b );
   mCoordinatePrecisionSpinBox->blockSignals( b );
+  mDrawCanvasItemsCheckBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -459,6 +470,21 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
     mComposerMap->setLayerSet( emptyLayerSet );
     mComposerMap->setKeepLayerSet( false );
   }
+}
+
+void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setDrawCanvasItems( state == Qt::Checked );
+  mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
+  mComposerMap->setCacheUpdated( false );
+  mComposerMap->cache();
+  mComposerMap->update();
+  mUpdatePreviewButton->setEnabled( true );
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
