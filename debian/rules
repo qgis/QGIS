@@ -29,6 +29,7 @@ CMAKE_OPTS := \
 	-D BINDINGS_GLOBAL_INSTALL=TRUE \
 	-D PEDANTIC=TRUE \
 	-D WITH_SPATIALITE=TRUE \
+	-D WITH_MAPSERVER=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin
 
 ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick sid"))
