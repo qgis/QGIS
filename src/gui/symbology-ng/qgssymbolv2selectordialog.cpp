@@ -35,12 +35,13 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   }
 
   connect( btnSymbolProperties, SIGNAL( clicked() ), this, SLOT( changeSymbolProperties() ) );
+  connect( lblPreview, SIGNAL( clicked() ), this, SLOT( changeSymbolProperties() ) );
   connect( btnStyleManager, SIGNAL( clicked() ), SLOT( openStyleManager() ) );
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
   connect( viewSymbols, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
-
+  lblSymbolName->setText("");
   populateSymbolView();
   updateSymbolPreview();
   updateSymbolInfo();
@@ -81,7 +82,9 @@ void QgsSymbolV2SelectorDialog::populateSymbolView()
 
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( viewSymbols->model() );
   if ( !model )
+  {
     return;
+  }
   model->clear();
 
   QStringList names = mStyle->symbolNames();
@@ -94,6 +97,8 @@ void QgsSymbolV2SelectorDialog::populateSymbolView()
       continue;
     }
     QStandardItem* item = new QStandardItem( names[i] );
+    item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
+    item->setText(""); //set the text to nothing and show in label when clicked rather
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     // create preview icon
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
@@ -106,7 +111,8 @@ void QgsSymbolV2SelectorDialog::populateSymbolView()
 
 void QgsSymbolV2SelectorDialog::setSymbolFromStyle( const QModelIndex & index )
 {
-  QString symbolName = index.data().toString();
+  QString symbolName = index.data( Qt::UserRole ).toString();
+  lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
   QgsSymbolV2* s = mStyle->symbol( symbolName );
   // remove all symbol layers from original symbol
@@ -264,7 +270,7 @@ void QgsSymbolV2SelectorDialog::on_mTransparencySlider_valueChanged( int value )
 void QgsSymbolV2SelectorDialog::displayTransparency( double alpha )
 {
   double transparencyPercent = ( 1 - alpha ) * 100;
-  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg(( int ) transparencyPercent ) );
+  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg(( int ) transparencyPercent ) );
 }
 
 QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
