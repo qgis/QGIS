@@ -139,7 +139,7 @@ Base suffix. This identifies the class as a generated base class.
 
 
   Examples:
-    QgsPluginMangerBase
+    QgsPluginManagerBase
     QgsUserOptionsBase
 
 
@@ -303,6 +303,13 @@ Braces should start on the line following the expression:
     }
 
 
+There is a scripts/prepare-commit.sh that looks up the changed files and
+reindents them using astyle.  This should be run before committing.
+
+As newer versions of astyle indent differently than the version used to do a
+complete reindentation of the source, the script uses an old astyle version,
+that we include in our repository.
+
 
   1.8. API Compatibility
   ======================
@@ -348,10 +355,12 @@ errors, development time, and maintenance.
 
 
 This will:
-  * allow changes to be made in one location instead of in multiple places
-  * help prevent code bloat
-  * make it more difficult for multiple copies to evolve differences over time,
-    thus making it harder to understand and maintain for others
+
+- allow changes to be made in one location instead of in multiple places
+- help prevent code bloat
+- make it more difficult for multiple copies to evolve differences over time,
+  thus making it harder to understand and maintain for others
+
 
 
     1.9.2. Prefer Having Constants First in Predicates
@@ -660,7 +669,7 @@ a ticket in trac (https://trac.osgeo.org/qgis/) first and then attach you
 This makes it easier for us to apply the patches since we don't need to
 navigate to a specific place in the source tree to apply the patch. Also when I
 receive patches I usually evaluate them using kompare, and having the patch
-from the top level dir makes this much easier. Below is an example of you you
+from the top level dir makes this much easier. Below is an example of how you
 can include multiple changed files into your patch from the top level
 directory:
 
@@ -689,10 +698,10 @@ patch e.g.
 
 QGIS developers are busy folk. We do scan the incoming patches on bug reports
 but sometimes we miss things.  Don't be offended or alarmed. Try to identify a
-developer to help you - using the ["Project Organigram"] and contact them
+developer to help you - using the Project Organigram (http://www.qgis.org/wiki/Project_Organigram) and contact them
 asking them if they can look at your patch. If you don't get any response, you
 can escalate your query to one of the Project Steering Committee members
-(contact details also available on the ["Project Organigram"]).
+(contact details also available on the Project Organigram).
 
 
     2.6.5. Due Diligence
@@ -709,13 +718,13 @@ under the GPL.
 
 Write access to QGIS source tree is by invitation. Typically when a person
 submits several (there is no fixed number here) substantial patches that
-demonstrate basic competance and understanding of C++ and QGIS coding
+demonstrate basic competence and understanding of C++ and QGIS coding
 conventions, one of the PSC members or other existing developers can nominate
 that person to the PSC for granting of write access. The nominator should give
 a basic promotional paragraph of why they think that person should gain write
 access. In some cases we will grant write access to non C++ developers e.g. for
 translators and documentors.  In these cases, the person should still have
-demonstrated ability to submit patches and should ideally have submtted several
+demonstrated ability to submit patches and should ideally have submitted several
 substantial patches that demonstrate their understanding of modifying the code
 base without breaking things, etc.
 
