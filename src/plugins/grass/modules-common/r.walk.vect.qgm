@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Generate raster of cumulative cost of moving between vector points, based on elevation and friction input rasters" module="r.walk">
+<qgisgrassmodule label="Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector" module="r.walk">
 	<option key="elevation"/>
 	<option key="friction"/>
 	<option key="start_points"/>

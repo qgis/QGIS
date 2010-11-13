@@ -28,7 +28,7 @@
   <g
      id="layer1">
     <g
-       transform="translate(2,7.8666667)"
+       transform="matrix(2,0,0,2,-16,-2.9)"
        id="g3771"
        style="display:inline;enable-background:new">
       <path
@@ -64,31 +64,35 @@
          id="path3689"
          style="opacity:0.2;fill:#fcffff;fill-rule:evenodd;stroke:none" />
     </g>
-    <rect
-       width="11"
-       height="11"
-       ry="1.881395"
-       x="21"
-       y="21"
-       id="rect7388"
-       style="opacity:0.9;fill:#204a87;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline;enable-background:new" />
-    <path
-       d="m 21.5,26.999851 10,0 c 0,0 0,-1.099971 0,-3.299911 C 31.5,21.5 30.388888,21.5 26.5,21.5 c -3.888888,0 -5,0 -5,2.19994 0,2.19994 0.03588,3.351238 0,3.299911 z"
-       id="path4077"
-       style="opacity:0.3;fill:#fcffff;fill-rule:evenodd;stroke:none;display:inline;enable-background:new" />
-    <rect
-       width="5"
-       height="5"
-       x="24.5"
-       y="23.5"
-       id="rect5209"
-       style="opacity:0.8;fill:#fcffff;fill-opacity:1;fill-rule:evenodd;stroke:#505050;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-    <rect
-       width="5"
-       height="5"
-       x="22.5"
-       y="25.5"
-       id="rect5207"
-       style="opacity:0.8;fill:#fcffff;fill-opacity:1;fill-rule:evenodd;stroke:#505050;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <g
+       transform="matrix(1.5,0,0,1.5,-15.75,-15.75)"
+       id="g9627">
+      <rect
+         width="11"
+         height="11"
+         ry="1.881395"
+         x="21"
+         y="21"
+         id="rect7388"
+         style="opacity:0.9;fill:#204a87;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline;enable-background:new" />
+      <path
+         d="m 21.5,26.999851 10,0 c 0,0 0,-1.099971 0,-3.299911 C 31.5,21.5 30.388888,21.5 26.5,21.5 c -3.888888,0 -5,0 -5,2.19994 0,2.19994 0.03588,3.351238 0,3.299911 z"
+         id="path4077"
+         style="opacity:0.3;fill:#fcffff;fill-rule:evenodd;stroke:none;display:inline;enable-background:new" />
+      <rect
+         width="5"
+         height="5"
+         x="24.5"
+         y="23.5"
+         id="rect5209"
+         style="opacity:0.8;fill:#fcffff;fill-opacity:1;fill-rule:evenodd;stroke:#505050;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <rect
+         width="5"
+         height="5"
+         x="22.5"
+         y="25.5"
+         id="rect5207"
+         style="opacity:0.8;fill:#fcffff;fill-opacity:1;fill-rule:evenodd;stroke:#505050;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    </g>
   </g>
 </svg>
