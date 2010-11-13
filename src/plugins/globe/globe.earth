@@ -2,9 +2,11 @@
 
     <loading_policy mode="sequential"/>
 
+    <!--
     <image name="world" driver="gdal">
         <url>/usr/share/osgearth/data/world.tif</url>
     </image>
+    -->
 
     <!--
     <image name="tileservice" driver="tileservice">
@@ -22,7 +24,7 @@
     -->
     <!--
     <heightfield name="WorldWind bil" driver="worldwind">
-      <worldwind_cache>worldwind_SRTM</worldwind_cache>
+      <worldwind_cache>/home/pi/devel/gis/qgis/.qgis/cache/worldwind_srtm</worldwind_cache>
     </heightfield>
     -->
     <heightfield name="aster_dem" driver="gdal">
