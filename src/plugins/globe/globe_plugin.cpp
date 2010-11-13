@@ -141,7 +141,7 @@ void GlobePlugin::run()
 
   // Add QGIS layer to the map
   mTileSource = new QgsOsgEarthTileSource(mQGisIface);
-  mTileSource->initialize("", 0);
+  mTileSource->initialize("");
   mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
   map->addMapLayer( mQgisMapLayer );
 

@@ -30,11 +30,11 @@ using namespace osgEarth;
 using namespace osgEarth::Drivers;
 
 
-QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface ) : TileSource(), mQGisIface(theQgisInterface), mCoordTranform(0)
+QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const PluginOptions* options ) : TileSource(options), mQGisIface(theQgisInterface), mCoordTranform(0)
 {
 }
 
-void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const Profile* overrideProfile)
+void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const Profile* overrideProfile )
 {
     setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
     QgsMapRenderer* mainRenderer = mQGisIface->mapCanvas()->mapRenderer();

@@ -17,9 +17,9 @@ namespace osgEarth { namespace Drivers
     class QgsOsgEarthTileSource : public TileSource
     {
     public:
-        QgsOsgEarthTileSource( QgisInterface* theQgisInterface );
+        QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const PluginOptions* options = NULL );
 
-        void initialize( const std::string& referenceURI, const Profile* overrideProfile);
+        void initialize( const std::string& referenceURI, const Profile* overrideProfile = NULL );
 
         osg::Image* createImage( const TileKey* key,
                                 ProgressCallback* progress );
