@@ -1070,7 +1070,8 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       int width = ( int )( scale * br.width() );
       if ( width <= 0 ) width = height; // should not happen
       QPixmap pixmap( width, height );
-      pixmap.fill( QColor( 255, 255, 255 ) );
+      pixmap.fill( Qt::transparent );
+      //pixmap.fill( QColor( 255, 255, 255 ) );
       QPainter painter( &pixmap );
       painter.setRenderHint( QPainter::Antialiasing );
 
@@ -1118,10 +1119,11 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
   if ( pixmaps.size() > 2 ) width += plusWidth + 2 * buffer; // +
 
   QPixmap pixmap( width, height );
-  pixmap.fill( QColor( 255, 255, 255 ) );
+  pixmap.fill( Qt::transparent );
+  //pixmap.fill( QColor( 255, 255, 255 ) );
   QPainter painter( &pixmap );
 
-  QColor color( 200, 200, 200 );
+  QColor color( 255, 255, 255 );
   painter.setBrush( QBrush( color ) );
 
   painter.setRenderHint( QPainter::Antialiasing );
