@@ -389,7 +389,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   } //default is central point
 
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
-  listWidget->setCurrentRow( settings.value( "/Windows/Options/row" ).toInt() );
+  tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
 }
 
 //! Destructor
@@ -397,7 +397,7 @@ QgsOptions::~QgsOptions()
 {
   QSettings settings;
   settings.setValue( "/Windows/Options/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Options/row", listWidget->currentRow() );
+  settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
 }
 
 void QgsOptions::on_pbnSelectionColor_clicked()

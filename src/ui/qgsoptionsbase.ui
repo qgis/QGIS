@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>442</height>
+    <width>804</width>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,199 +20,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="minimumSize">
-      <size>
-       <width>110</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>110</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>64</width>
-       <height>64</height>
-      </size>
-     </property>
-     <property name="textElideMode">
-      <enum>Qt::ElideNone</enum>
-     </property>
-     <property name="flow">
-      <enum>QListView::TopToBottom</enum>
-     </property>
-     <property name="isWrapping" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="spacing">
-      <number>9</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::IconMode</enum>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="currentRow">
-      <number>0</number>
-     </property>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Rendering &amp; SVG</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Map tools</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Overlay</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Digitizing</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CRS</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Locale</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/locale.png</normaloff>:/images/themes/default/propertyicons/locale.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Network &amp; Proxy</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true"/>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="flags">
-       <set>NoItemFlags</set>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -222,12 +30,25 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="stackedWidgetPage1">
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
@@ -239,7 +60,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>530</width>
+            <width>746</width>
             <height>530</height>
            </rect>
           </property>
@@ -497,7 +318,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage2">
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Rendering</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_9">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_3">
@@ -509,8 +337,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>746</width>
+            <height>473</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -661,7 +489,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage3">
+     <widget class="QWidget" name="tabWidgetPage3" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Map tools</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea">
@@ -673,8 +508,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>746</width>
+            <height>490</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -934,7 +769,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage4">
+     <widget class="QWidget" name="tabWidgetPage4" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Overlays</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_11">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_4">
@@ -946,8 +788,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>762</width>
+            <height>448</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1002,7 +844,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage5">
+     <widget class="QWidget" name="tabWidgetPage5" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Digitizing</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_14">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_5">
@@ -1014,8 +863,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>762</width>
+            <height>448</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1289,7 +1138,7 @@
                  <string>Reuse last entered attribute values</string>
                 </property>
                 <property name="tristate">
-                  <bool>false</bool>
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -1325,7 +1174,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage6">
+     <widget class="QWidget" name="tabWidgetPage6" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>CRS</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_16">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_6">
@@ -1337,8 +1193,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>746</width>
+            <height>531</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1414,7 +1270,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage7">
+     <widget class="QWidget" name="tabWidgetPage7" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/locale.png</normaloff>:/images/themes/default/propertyicons/locale.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Locale</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_18">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_7">
@@ -1426,8 +1289,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>746</width>
+            <height>548</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1498,7 +1361,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage8">
+     <widget class="QWidget" name="tabWidgetPage8" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Network</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_19">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_8">
@@ -1510,8 +1380,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
-            <height>551</height>
+            <width>746</width>
+            <height>538</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -1696,9 +1566,6 @@
                <property name="text">
                 <string>WMS search address</string>
                </property>
-               <property name="buddy">
-                <cstring>leWmsSearch</cstring>
-               </property>
               </widget>
              </item>
              <item>
@@ -1743,7 +1610,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>stackedWidget</tabstop>
+  <tabstop>tabWidget</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
@@ -1832,22 +1699,6 @@
     <hint type="destinationlabel">
      <x>731</x>
      <y>353</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>listWidget</sender>
-   <signal>currentRowChanged(int)</signal>
-   <receiver>stackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>113</x>
-     <y>25</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>808</x>
-     <y>18</y>
     </hint>
    </hints>
   </connection>
