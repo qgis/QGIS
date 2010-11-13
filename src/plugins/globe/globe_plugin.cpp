@@ -120,13 +120,20 @@ void GlobePlugin::run()
 
   // read base layers from earth file
   EarthFile earthFile;
-  if ( !earthFile.readXML( QString("%1/%2").arg(QgsApplication::pkgDataPath()).arg("globe/globe.earth").toStdString() ) )
+  if ( !earthFile.readXML( QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/globe.earth" ).toStdString() ) )
   {
     return;
   }
 
-  // Add QGIS layer to the map.
   osg::ref_ptr<Map> map = earthFile.getMap();
+
+  // Add base image to the map
+  GDALOptions* opt = new GDALOptions();
+  opt->url() = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" ).toStdString();
+  osg::ref_ptr<MapLayer> layer = new ImageMapLayer( "World", opt );
+  map->addMapLayer( layer );
+
+  // Add QGIS layer to the map
   mTileSource = new QgsOsgEarthTileSource(mQGisIface);
   mTileSource->initialize("", 0);
   mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
