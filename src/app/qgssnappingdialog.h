@@ -20,16 +20,9 @@
 
 #include "ui_qgssnappingdialogbase.h"
 
-class QgsMapCanvas;
+class QDockWidget;
 
-struct LayerEntry
-{
-  bool checked;
-  int snapTo; //0 = to vertex, 1 = to segment, 2 = to vertex and to segment
-  QString layerName;
-  double tolerance;
-  int toleranceUnit; // 0 = map units, 1 = pixels
-};
+class QgsMapCanvas;
 
 /**A dialog to enter advanced editing properties, e.g. topological editing, snapping settings
 for the individual layers*/
@@ -38,23 +31,44 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     Q_OBJECT
 
   public:
-    /**Constructor
-     @param canvas pointer to the map canvas (for detecting which vector layers are loaded
-    @param settings existing snapping layer settings*/
-    QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings );
+
+    //! Returns the instance pointer, creating the object on the first call
+    //static QgsSnappingDialog * instance( QgsMapCanvas* canvas );
+    QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas );
     ~QgsSnappingDialog();
 
-    /**Returns the snapping settings per layer. Key of the map is the layer id and value the
-     corresponding layer entry*/
-    void layerSettings( QMap<QString, LayerEntry>& settings ) const;
+  public slots:
+    /**
+     * apply the changes
+     */
+    void apply();
+    /**
+     * update the Dialog
+     */
+    void update();
+
+
+
+  protected:
+    /**Constructor
+    @param canvas pointer to the map canvas (for detecting which vector layers are loaded
+    */
+    //QgsSnappingDialog( QgsMapCanvas* canvas );
+    /**
+     * Handle closing of the window
+     * @param event unused
+     */
+    void closeEvent( QCloseEvent* event );
+
 
   private:
     /**Default constructor forbidden*/
     QgsSnappingDialog();
+
     /**Used to query the loaded layers*/
     QgsMapCanvas* mMapCanvas;
-    /**Stores the layer ids from top to bottom*/
-    QStringList mLayerIds;
+
+    QDockWidget *mDock;
 };
 
 #endif

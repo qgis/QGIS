@@ -162,6 +162,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsattributeaction.h"
 #include "qgsgpsinformationwidget.h"
+#include "qgssnappingdialog.h"
 
 //
 // Gdal/Ogr includes
@@ -429,6 +430,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
+
+  mSnappingDialog = new QgsSnappingDialog( this,  mMapCanvas );
+  mSnappingDialog->setObjectName( "SnappingOption" );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
@@ -861,6 +865,11 @@ void QgisApp::createActions()
   mActionRotatePointSymbols->setStatusTip( tr( "Rotate Point Symbols" ) );
   connect( mActionRotatePointSymbols, SIGNAL( triggered() ), this, SLOT( rotatePointSymbols() ) );
   mActionRotatePointSymbols->setEnabled( false );
+
+  mActionSnappingOptions = new QAction( getThemeIcon( "mActionSnappingOptions.png" ), tr( "Snapping Options..." ), this );
+  shortcuts->registerAction( mActionSnappingOptions );
+  mActionSnappingOptions->setStatusTip( tr( "Manage the background snapping options" ) );
+  connect( mActionSnappingOptions, SIGNAL( triggered() ), this, SLOT( snappingOptions() ) );
 
   // View Menu Items
 
@@ -1440,6 +1449,14 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionMergeFeatureAttributes );
   mEditMenu->addAction( mActionNodeTool );
   mEditMenu->addAction( mActionRotatePointSymbols );
+
+  QSettings myQsettings;
+  bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
+  if ( !myDockFlag )
+  {
+    mActionEditSeparator4 = mEditMenu->addSeparator();
+    mEditMenu->addAction( mActionSnappingOptions );
+  }
 
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
@@ -4444,6 +4461,11 @@ void QgisApp::nodeTool()
 void QgisApp::rotatePointSymbols()
 {
   mMapCanvas->setMapTool( mMapTools.mRotatePointSymbolsTool );
+}
+
+void QgisApp::snappingOptions()
+{
+  mSnappingDialog->show();
 }
 
 void QgisApp::splitFeatures()

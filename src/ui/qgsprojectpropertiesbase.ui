@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
-    <height>525</height>
+    <width>555</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -301,13 +301,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="mSnappingOptionsPushButton">
-            <property name="text">
-             <string>Snapping options...</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -413,7 +406,6 @@
   <tabstop>spinBoxDP</tabstop>
   <tabstop>mEnableTopologicalEditingCheckBox</tabstop>
   <tabstop>mAvoidIntersectionsPushButton</tabstop>
-  <tabstop>mSnappingOptionsPushButton</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>tabWidget</tabstop>
