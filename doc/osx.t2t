@@ -468,6 +468,8 @@ mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 ..
 ```
 
@@ -481,6 +483,8 @@ path and version as required):
 ```
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D GRASS_PREFIX=/user/local/grass-6.4.0 \
 ..
 ```
@@ -498,13 +502,15 @@ sudo chmod +x /usr/local/bin/python32
 
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
 ..
 ```
 
 __Bundling note:__ Older Qt versions may have problems with some Qt plugins and Qgis.
-The way to handle this is bundle Qt inside the Qgis application.  You can do this now
-or wait to see if there are immediate crahses when running Qgis.  It's also a good
+The way to handle this is to bundle Qt inside the Qgis application.  You can do this now
+or wait to see if there are immediate crashes when running Qgis.  It's also a good
 idea to bundle Qt if you need to copy Qgis to other Macs (where you would have to
 install Xcode just so Qt would install!).
 
