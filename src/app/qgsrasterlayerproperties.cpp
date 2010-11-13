@@ -111,6 +111,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
   leMaximumScale->setText( QString::number( lyr->maximumScale(), 'f' ) );
   leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 1000, this ) );
 
   // build GUI components
   cboxColorMap->addItem( tr( "Grayscale" ) );
@@ -771,11 +772,11 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit
   if ( mRasterLayer->isNoDataValueValid() )
   {
-    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'f' ) );
   }
   else
   {
-    leNoDataValue->setText( "" );
+    leNoDataValue->insert( "" );
   }
 
   //restore colormap tab if the layer has custom classification
@@ -1176,11 +1177,11 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->resetNoDataValue();
     if ( mRasterLayer->isNoDataValueValid() )
     {
-      leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+      leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'f' ) );
     }
     else
     {
-      leNoDataValue->setText( "" );
+      leNoDataValue->clear();
     }
     chkboxResetNoDataValue->setChecked( false );
   }
