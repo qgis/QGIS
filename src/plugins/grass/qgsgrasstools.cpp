@@ -291,7 +291,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
 
         QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
         QString label = QgsGrassModule::label( path );
-        QPixmap pixmap = QgsGrassModule::pixmap( path, 25 );
+        QPixmap pixmap = QgsGrassModule::pixmap( path, 32 );
 
         item->setText( 0, name + " - " + label );
         item->setIcon( 0, QIcon( pixmap ) );

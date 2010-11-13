@@ -1144,7 +1144,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     plusPixmap = QPixmap::fromImage( img );
   }
 
-  int buffer = 10; // buffer around a sign
+  int buffer = height/3; // buffer around a sign
   if ( pixmaps.size() > 1 ) width += arrowWidth + 2 * buffer; // ->
   if ( pixmaps.size() > 2 ) width += plusWidth + 2 * buffer; // +
 
