@@ -113,6 +113,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 1000, this ) );
 
+  leRedMin->setValidator( new QDoubleValidator( this ) );
+  leRedMax->setValidator( new QDoubleValidator( this ) );
+  leBlueMin->setValidator( new QDoubleValidator( this ) );
+  leBlueMax->setValidator( new QDoubleValidator( this ) );
+  leGreenMin->setValidator( new QDoubleValidator( this ) );
+  leGreenMax->setValidator( new QDoubleValidator( this ) );
+  leGrayMin->setValidator( new QDoubleValidator( this ) );
+  leGrayMax->setValidator( new QDoubleValidator( this ) );
+
   // build GUI components
   cboxColorMap->addItem( tr( "Grayscale" ) );
   cboxColorMap->addItem( tr( "Pseudocolor" ) );
