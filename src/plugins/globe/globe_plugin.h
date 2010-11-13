@@ -50,7 +50,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! show the help document
     void help();
 
-    //!  Called when the main canvas is about to be rendered.
+    //!  Set HTTP proxy settings
+    void setupProxy();
+    //!  Called when the main canvas is about to be rendered
     void renderStarting();
     //!  Called when the main canvas has rendered.
     void renderComplete( QPainter * );
