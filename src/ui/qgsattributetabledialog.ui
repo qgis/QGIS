@@ -96,7 +96,7 @@
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton">
        <property name="toolTip">
-        <string>Unselect all</string>
+        <string>Unselect all (Ctrl+U)</string>
        </property>
        <property name="text">
         <string/>
@@ -112,14 +112,14 @@
         </size>
        </property>
        <property name="shortcut">
-        <string/>
+        <string>Ctrl+U</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mSelectedToTopButton">
        <property name="toolTip">
-        <string>Move selection to top</string>
+        <string>Move selection to top (Ctrl+T)</string>
        </property>
        <property name="text">
         <string/>
@@ -142,7 +142,7 @@
      <item>
       <widget class="QToolButton" name="mInvertSelectionButton">
        <property name="toolTip">
-        <string>Invert selection</string>
+        <string>Invert selection (Ctrl+S)</string>
        </property>
        <property name="text">
         <string/>
@@ -191,7 +191,7 @@
      <item>
       <widget class="QToolButton" name="mZoomMapToSelectedRowsButton">
        <property name="toolTip">
-        <string>Zoom map to the selected rows (Ctrl-J)</string>
+        <string>Zoom map to the selected rows (Ctrl+J)</string>
        </property>
        <property name="whatsThis">
         <string/>
@@ -217,7 +217,7 @@
      <item>
       <widget class="QToolButton" name="mToggleEditingButton">
        <property name="toolTip">
-        <string>Toggle editing mode</string>
+        <string>Toggle editing mode (Ctrl+E)</string>
        </property>
        <property name="whatsThis">
         <string/>
@@ -235,6 +235,9 @@
          <height>18</height>
         </size>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+E</string>
+       </property>
        <property name="checkable">
         <bool>true</bool>
        </property>
@@ -243,7 +246,7 @@
      <item>
       <widget class="QToolButton" name="mDeleteSelectedButton">
        <property name="toolTip">
-        <string>Delete selected features</string>
+        <string>Delete selected features (Ctrl+D)</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -258,12 +261,15 @@
          <height>18</height>
         </size>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+D</string>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mAddAttribute">
        <property name="toolTip">
-        <string>New column</string>
+        <string>New column (Ctrl+W)</string>
        </property>
        <property name="text">
         <string/>
@@ -278,12 +284,15 @@
          <height>18</height>
         </size>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+W</string>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mRemoveAttribute">
        <property name="toolTip">
-        <string>Delete column</string>
+        <string>Delete column (Ctrl+L)</string>
        </property>
        <property name="text">
         <string/>
@@ -298,12 +307,15 @@
          <height>18</height>
         </size>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+L</string>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mOpenFieldCalculator">
        <property name="toolTip">
-        <string>Open field calculator</string>
+        <string>Open field calculator (Ctrl+I)</string>
        </property>
        <property name="text">
         <string/>
@@ -317,6 +329,9 @@
          <width>18</width>
          <height>18</height>
         </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+I</string>
        </property>
       </widget>
      </item>
