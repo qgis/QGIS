@@ -46,7 +46,7 @@ import doGeometry, doGeoprocessing, doVisual
 import doIntersectLines, doJoinAttributes, doSelectByLocation, doVectorSplit, doMeanCoords
 import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints, doDefineProj
 import doReProject, doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
-import doAbout
+import doAbout, doValidate
 
 class fToolsPlugin:
   def __init__( self,iface ):
@@ -257,7 +257,8 @@ class fToolsPlugin:
     d.exec_()
 
   def docheckGeom( self ):
-    d = doVisual.VisualDialog( self.iface, 1 )
+    d = doValidate.ValidateDialog(self.iface)
+    d.show()
     d.exec_()
 
   def domultiToSingle( self ):
