@@ -1130,11 +1130,31 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     img = img.scaled( arrowWidth, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     arrowPixmap = QPixmap::fromImage( img );
   }
+  /*if ( iconsfi.exists() )
+  {
+    QSvgRenderer pic;
+    if ( pic.load( arrowPath ) )
+    {
+      QRect br( QPoint( 0, 0 ), pic.defaultSize() );
 
-  QString plusPath = iconsPath + "grass_plus.png";
+      double scale = 1. * height / br.height();
+
+      arrowWidth = ( int )( scale * br.width() );
+      if ( arrowWidth <= 0 ) arrowWidth = height; // should not happen
+      arrowPixmap = QPixmap( arrowWidth, height );
+      arrowPixmap.fill( Qt::transparent );
+      QPainter painter( &arrowPixmap );
+      painter.setRenderHint( QPainter::Antialiasing );
+
+      pic.render( &painter );
+      painter.end();
+    }
+  }*/
+
+  QString plusPath = iconsPath + "grass_plus.svg";
   QPixmap plusPixmap;
   iconsfi.setFile( plusPath );
-  if ( iconsfi.exists() && plusPixmap.load( plusPath, "PNG" ) )
+  /*if ( iconsfi.exists() && plusPixmap.load( plusPath, "PNG" ) )
   {
     double scale = 1. * height / plusPixmap.height();
     plusWidth = ( int )( scale * plusPixmap.width() );
@@ -1142,8 +1162,27 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     QImage img = plusPixmap.toImage();
     img = img.scaled( plusWidth, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     plusPixmap = QPixmap::fromImage( img );
-  }
+  }*/
+  if ( iconsfi.exists() )
+  {
+    QSvgRenderer pic;
+    if ( pic.load( plusPath ) )
+    {
+      QRect br( QPoint( 0, 0 ), pic.defaultSize() );
 
+      double scale = 1. * height / br.height();
+
+      plusWidth = ( int )( scale * br.width() );
+      if ( plusWidth <= 0 ) plusWidth = height; // should not happen
+      plusPixmap = QPixmap( plusWidth, height );
+      plusPixmap.fill( Qt::transparent );
+      QPainter painter( &plusPixmap );
+      painter.setRenderHint( QPainter::Antialiasing );
+
+      pic.render( &painter );
+      painter.end();
+    }
+  }
   int buffer = height/3; // buffer around a sign
   if ( pixmaps.size() > 1 ) width += arrowWidth + 2 * buffer; // ->
   if ( pixmaps.size() > 2 ) width += plusWidth + 2 * buffer; // +
