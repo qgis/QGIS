@@ -79,7 +79,7 @@ authorRepos  = [("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com"
                 ("CatAIS Repository",          "http://www.catais.org/qgis/plugins.xml", ""),
                 ("Faunalia Repository",        "http://www.faunalia.it/qgis/plugins.xml", "http://faunalia.it/qgis/plugins.xml"),
                 ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", ""),
-                ("Kappasys Repositoty",        "http://www.kappasys.org/qgis/plugins.xml", ""),
+                ("Kappasys Repository",        "http://www.kappasys.org/qgis/plugins.xml", ""),
                 ("Martin Dobias' Sandbox",     "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml", ""),
                 ("Marco Hugentobler's Repository","http://karlinapp.ethz.ch/python_plugins/python_plugins.xml", ""),
                 ("Sourcepole Repository",      "http://build.sourcepole.ch/qgis/plugins.xml", ""),
