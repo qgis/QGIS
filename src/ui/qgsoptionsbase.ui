@@ -1284,6 +1284,16 @@
              </property>
              <layout class="QHBoxLayout">
               <item>
+               <widget class="QCheckBox" name="chkReuseLastValues">
+                <property name="text">
+                 <string>Reuse last entered attribute values</string>
+                </property>
+                <property name="tristate">
+                  <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="chkDisableAttributeValuesDlg">
                 <property name="text">
                  <string>Suppress attributes pop-up windows after each created feature</string>

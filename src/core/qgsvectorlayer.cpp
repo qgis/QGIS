@@ -1130,7 +1130,7 @@ void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVecto
   {
     p.setPen( QColor( 50, 100, 120, 200 ) );
     p.setBrush( QColor( 200, 200, 210, 120 ) );
-    p.drawEllipse( x - m, y - m, m*2 + 1, m*2 + 1 );
+    p.drawEllipse( x - m, y - m, m * 2 + 1, m * 2 + 1 );
   }
   else if ( type == QgsVectorLayer::Cross )
   {
@@ -1358,7 +1358,7 @@ QGis::WkbType QgsVectorLayer::wkbType() const
 
 QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
 {
-  if ( mSelectedFeatureIds.size() == 0 )//no selected features
+  if ( mSelectedFeatureIds.size() == 0 ) //no selected features
   {
     return QgsRectangle( 0, 0, 0, 0 );
   }
@@ -2157,7 +2157,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   QgsFeatureList featureList;
   const QgsFeatureIds selectedIds = selectedFeaturesIds();
 
-  if ( selectedIds.size() > 0 )//consider only the selected features if there is a selection
+  if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
   {
     featureList = selectedFeatures();
   }
@@ -3838,8 +3838,6 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
   if ( mCachedGeometriesRect.contains( searchRect ) )
   {
-    QgsDebugMsg( "Using cached geometries for snapping." );
-
     QgsGeometryMap::iterator it = mCachedGeometries.begin();
     for ( ; it != mCachedGeometries.end() ; ++it )
     {
@@ -4046,8 +4044,8 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
       }
 
       //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
-      QPointF pt( x*renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
-                  y*renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
+      QPointF pt( x * renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
+                  y * renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
 
       p->save();
       //p->scale(markerScaleFactor,markerScaleFactor);
@@ -4082,8 +4080,8 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
         transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
         //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
         //QPointF pt(x/markerScaleFactor - (marker->width()/2),  y/markerScaleFactor - (marker->height()/2));
-        QPointF pt( x*renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
-                    y*renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
+        QPointF pt( x * renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
+                    y * renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
         //QPointF pt( x, y );
 
         // Work around a +/- 32768 limitation on coordinates

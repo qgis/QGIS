@@ -352,6 +352,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   }
   mMarkerSizeSpinBox->setValue( settings.value( "/qgis/digitizing/marker_size", 3 ).toInt() );
 
+  chkReuseLastValues->setChecked( settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool() );
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
 
 #ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing 
@@ -659,6 +660,7 @@ void QgsOptions::saveOptions()
   }
   settings.setValue( "/qgis/digitizing/marker_size", ( mMarkerSizeSpinBox->value() ) );
 
+  settings.setValue( "/qgis/digitizing/reuseLastValues", chkReuseLastValues->isChecked() );
   settings.setValue( "/qgis/digitizing/disable_enter_attribute_values_dialog", chkDisableAttributeValuesDlg->isChecked() );
 
   //
