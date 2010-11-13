@@ -160,7 +160,7 @@ void QgsSnappingDialog::update()
     cbxEnable->setChecked( enabledList[ idx ] == "enabled" );
     cbxSnapTo->setCurrentIndex( snapToList[idx].toInt() );
     leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
-    cbxUnits->setCurrentIndex( toleranceUnitList[i].toInt() );
+    cbxUnits->setCurrentIndex( toleranceUnitList[idx].toInt() );
   }
 
   if ( myDockFlag )
