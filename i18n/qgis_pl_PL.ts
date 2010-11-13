@@ -1105,7 +1105,43 @@ QGis developer and user communities
 Folks on #qgis at freenode.net
 All those who have reported bugs/fixes/suggestions/comments/etc.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Celem fTools jest dostaczenie zebranego zasobu dla często używanych zadań GIS opartych o wektory bez potrzeby użycia dodatkowego oprogramowanie, bibliotek lub innych kompleksowych prowizorycznych rozwiązań.
+
+fTools został zaprojektowany, aby zwiększyć funkcjonalność Quantum GIS używając tylko rdzenia QGIS i bibliotek języka python. Wprowadza on zestaw szybkich i funkcjonalnych funkcji do zarządzania i analizowania danych przestrzennych. Dodatkowo funkcje do przetwarzania danych geograficznych Dra Horsta Duestera i Stefana Zieglera zostały dołączone w celu dalszych usprawnień analiz GIS.
+
+Jeśil chciałbyś wysłać report o błędzie, miałbyś sugestię jak ulepszyć fTools lub miałbyś pytanie dotyczące narzędzi, proszę korzystać z adresu e-mail: carson.farmer@gmail.com
+
+INFORMACJE LICENCYJNE:
+fTools is copyright (C) 2009  Carson J.Q. Farmer
+Funkcje do geoprzetwarzania zaadaptowano z  &apos;Geoprocessing Plugin&apos;,
+(C) 2008 by Dr. Horst Duester, Stefan Ziegler
+
+licencjonowany na warunkach GNU GPL 2
+Ten program jest wolnym oprogramowaniem; możesz go rozprowadzać dalej i / lub modyfikować na warunkach GNU General Public License opublikowanej przez Free Software Foundation w wersji 2 tej Licencji lub (według twojego wyboru) którejś z późniejszych wersji.
+Ten program jest rozpowszechniany w nadziei, że będzie użyteczny, ale BEZ ŻADNEJ GWARANCJI, nawet domyślnej gwarancji przydatności do sprzedaży lub do określonego celu. Więcej informacji zawarte jest w GNU General Public License.
+Powinieneś otrzymać kopię GNU General Public License wraz z tym programem, a jeśli nie, napisz do Free Software Foundation, Inc, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Twórcy fTools:
+Carson J. Q. Farmer
+Alexander Bruy
+**Jeśli przyczyniłeś się do rozwoju kodu fTools i nie wspomniałem tu Twojego nazwiska, proszę o skontaktowanie się ze mną, abym mógł Cię dopisać.
+
+PODZIĘKOWANIA:
+Następujące osoby (czy o tym wiedzą, czy nie) współpracowały przy pracy nad nowymi pomysłami, tworzeniu pomocy, testowaniu, pisaniu kodu, i wytycznymi tego projektu. Chcę im za to podziękować.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jurgen E. Fischer
+Twórcy QGis i społeczność użytkowników
+Społeczność kanału #qgis na freenode.net
+Wszyscy, którzy zgłaszali błędy/poprawki/sugestie/komentarze etc.
+        </translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1900,7 +1936,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
         <source>GDAL was unable to retrieve the extent from any file. 
 The &quot;Use intersected extent&quot; option will be unchecked.</source>
         <translation type="unfinished">GDAL nie uzyskał informacji o zakresie z żadnego pliku.
-</translation>
+Opcja &quot;Użyj przecinającego się zakresu&quot; będzie niezaznaczona.</translation>
     </message>
     <message>
         <source>Empty extent</source>
@@ -1910,7 +1946,8 @@ The &quot;Use intersected extent&quot; option will be unchecked.</source>
     <message>
         <source>The computed extent is empty. 
 Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zakres obliczeniowy jest pusty.
+Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty wynik.</translation>
     </message>
     <message>
         <source>Select the input file</source>
@@ -7625,7 +7662,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2525"/>
         <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ulepszono interakcję z zakresami widgetu w pasku stanu. Teraz tekstowa zawartość widgetu może być kopiowana i wklejana.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2526"/>
@@ -7635,13 +7672,12 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2527"/>
         <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano opcję --configpath, która nadpisuje domyślną ścieżkę (~/.qgis) konfiguracji użytkownika i wymusza, aby QSettings także używało tej ścieżki. To umożliwia użytkownikowi np. przeniesienie instalacji QGIS na pendrive z wszystkimi wtyczkami i ustawieniami.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2528"/>
         <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
-        <translatorcomment>do uzupełnienia</translatorcomment>
-        <translation type="unfinished">Eksperymentalna obsługa WFS-T. </translation>
+        <translation type="unfinished">Eksperymentalna obsługa WFS-T. Dodatkowo przeniesono wfs do menadżera sieciowego.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2529"/>
@@ -7656,7 +7692,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
         <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Projekt QGIS Mapserver został włączony do głównego repozytorium SVN oraz udostępniono pakiety. QGIS Mapserver umożliwia udostępnianie projektów przez protokół OGC WMS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
@@ -7672,27 +7708,27 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2533"/>
         <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano wsparcie dla tabel bez danych przestrzennych (obecnie OGR, tekst rozdzielany i PostgreSQL). Tabele mogą być używane w wyszukiwaniach po polach oraz przeglądania i edytowania używając widoku tabeli.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2534"/>
         <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano wsparcie dla wyszukiwania ciągów znaków dla identyfikatorów obiektów ($id) i inne ulepszenia związane z opcją wyszukiwania.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2535"/>
         <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano metodę przeładowywania do warstw mapy i interfesju dostawcy. Teraz buforujący dostawcy (obecnie WMS i WFS) mogą zsynchronizować się ze zmianami w źródle danych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2538"/>
         <source>Table of contents (TOC) improvements</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zmiany w widoku listy warstw (TOC)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2540"/>
         <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano nową opcję do menu legendy warstwy rastrowej, która rozciąga kontrast aktywnej warstwy używając minimalnej i maksymalnej wartości pikseli aktualnego zakresu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2541"/>
@@ -7747,7 +7783,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2556"/>
         <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zastąpiono implementację histogramu warstwy rastrowej implementacją opartą o bibliotekę Qwt. Dodano opcję zapisywania histogramu do pliku graficznego. Pokazuje aktualne wartości pikseli na osi x histogramu warstwy rastrowej.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2557"/>
@@ -7762,7 +7798,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2559"/>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aby ułatwić dostęp do zarządzania stylem dodano nowy przycisk &quot;zarządzanie stylem&quot; we właściwościach warstwy na zakładce styl.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2562"/>
@@ -7772,7 +7808,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2564"/>
         <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">dodano opcję umożliwiającą oglądanie i zmianę szerokości i wysokości kompozytora elementów w oknie dialogowym obiektu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2565"/>
@@ -21580,7 +21616,15 @@ Rozszerzona informacja o błędzie:
 &lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Gdy warstwa jest ustawiana, różne metadane wymagane są dla tabeli PostGIS. Są to informacje takie jak ilość wierszy, typ geometryczny i zasięg przestrzenny danych w kolumnach z geometrią. Jeśli tabela zawiera dużo wierszy, określanie tych metadanych to zajęcie wymagające dużej ilości czasu.&lt;/p&gt;
+&lt;p&gt;Aktywując tę opcję są wykonywane następujące szybkie działania na metadanych:&lt;/p&gt;
+&lt;p&gt;1)Liczba wierszy jest określona ze statystyk otrzymanych z działającej funkcji analizowania tabeli PostgreSQL.&lt;/p&gt;
+&lt;p&gt;2)Zasięg przestrzenny danych tabeli jest zawsze określone przez funkcję PostGIS estimated_extend, nawet jeśli stosowany jest filtr warstw.&lt;/p&gt;
+&lt;p&gt;3)Jeśli typ geometryczny tabeli jest nieznany oraz nie jest wzięty wprost z kolumny z tabeli geometry_columns, jest wówczas określony przez pierwsze 100 wierszy z niepustą geometrią.&lt;.p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="248"/>
@@ -23031,7 +23075,12 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabela nie ma pól odpowiednich do użycia jako klucz.
+
+Quantum GIS wymaga, aby tabela posiadała pole typu 
+int4 z unikalnymi wartościami (co dotyczy także
+podstawowowego klucza), albo kolumnę oid PostrgreSQL lub kolumnę ctid
+z szesnastobitową liczbą.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1287"/>
@@ -23075,7 +23124,9 @@ column with a 16bit block number.
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Widok &apos;%1.%2.&apos; nie ma kolumny odpowiedniej do użycia jako unikalny klucz.
+Quantum GIS wymaga, żeby widok posiadał kolumnę, która może być użyta jako unikalny klucz. Kolumna ta powinna dziedziczyć z kolumny typu int4 i być podstawowym kluczem, powinna mieć ograniczenie unikalności lub być kolumną PostreSQL oid. Aby usprawnić działanie, kolumna powinna być także zaindeksowana.
+Widok, który został wybrany ma następujące kolumny, żadna z nich nie spełnia jednak powyższych warunków:</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1614"/>
@@ -29779,7 +29830,11 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otrzymać WMS capabilities: %1 w linii %2 kolumnie %3
+Może to być spowodowane niepoprawnym adresem URL Serwera WMS.
+Odpowiedź:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1006"/>
@@ -29788,7 +29843,11 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otrzymać WMS capabilities w oczekiwanym formacie (DTD): nie znaleziono %1 lub %2.
+Może to być spowodowane niepoprawnym adresem URL Serwera WMS.
+Znacznik:%3
+Odpowiedź:
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1840"/>
@@ -29797,7 +29856,11 @@ Response was:
 Response was:
 
 %5</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otrzymać WMS Service Exception dla %1:%2 w linii %3 kolumnie %4
+
+Odpowiedź:
+
+%5</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
@@ -31953,7 +32016,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oblicz objętość grup danych (clump) i stwórz warstwę wektorową z centroidami tych grup.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
@@ -32293,7 +32356,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create quantization file for floating-point raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Generuj plik kwantyzacji dla zmiennoprzecinkowej warstwy rastrowej</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
@@ -33022,7 +33085,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Import raster from coordinates using univariate statistics</source>
-        <translation type="unfinished">Importuj raster dla współrzędnych na podstawie statystyk</translation>
+        <translation type="unfinished">Importuj warstwę rastrową dla współrzędnych na podstawie jednowymiarowych statystyk</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
@@ -33137,7 +33200,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stwórz funkcją przypisującą odpowiednie wartości z elementów warstwy wejściowej do elementów warstwy wyjściowej.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
@@ -33427,7 +33490,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Recode raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przekodowany raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
@@ -33512,7 +33575,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Usuń wierzchołki w zadanej odległości od linii i granic. Granica jest usuwana tylko wtedy, gdy topologia nie jest zniszczona (nowy węzeł, zmienione przypisanie centroidu). Pierwszy i ostatni segment granicy nigdy się nie zmienia.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
@@ -33742,12 +33805,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabularyzuj wspólne wystąpienie (koincydencja) kategorii dla dwóch warstw rastrowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Weź dane wektorowe strumieni, przekształć je w warstwę rastrową i odejmij głębokość od wyjściowego DEM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
@@ -33927,7 +33990,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Funkcja rastrowa detekcji przejścia przez zero dla przetwarzania obrazów</translation>
     </message>
 </context>
 <context>
