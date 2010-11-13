@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Generate raster of cumulative cost of moving between vector points, based on elevation and friction input rasters" module="r.walk">
+	<option key="elevation"/>
+	<option key="friction"/>
+	<option key="start_points"/>
+	<option key="output"/>
+        <option key="stop_coordinate" advanced="yes"/>
+<!-- commented out until #3203 is fixed <option key="stop_points" hidden="no" advanced="yes"/> -->
+	<option key="max_cost" advanced="yes"/>
+	<option key="lambda" advanced="yes"/>
+	<option key="slope_factor" advanced="yes"/>
+	<option key="null_cost" advanced="yes"/>
+	<flag key="k" hidden="no"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+	<flag key="r" hidden="no" advanced="yes"/>
+</qgisgrassmodule>
