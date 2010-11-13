@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QCheckBox" name="mMapPositionFixedCheckBox">
      <property name="text">
-      <string>Map position fixed</string>
+      <string>Fixed map position</string>
      </property>
     </widget>
    </item>
