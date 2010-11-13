@@ -20,11 +20,11 @@
 //    mhadji@gmail.com
 
 #include <stdio.h>
-#include <unistd.h>
 
 #include <Tools.h>
 
 #ifdef WIN32
+#include <io.h>
 #include <fcntl.h>
 int mkstemp( char* prefix )
 {
