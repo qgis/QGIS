@@ -1,4 +1,4 @@
-SUBDIRS(core analysis ui gui app providers plugins helpviewer)
+SUBDIRS(astyle core analysis ui gui app providers plugins helpviewer)
 
 IF (WITH_BINDINGS)
   SUBDIRS(python)
