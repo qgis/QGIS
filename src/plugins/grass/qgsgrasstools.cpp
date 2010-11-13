@@ -79,7 +79,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
 
   mListView->setModel( mModelProxy );
   mListView->setItemDelegateForColumn( 0, new QgsDetailedItemDelegate() );
-  mListView->setUniformItemSizes( false );
+  //mListView->setUniformItemSizes( false );
   //mListView2 = new QListView(this);
   //mDockWidget = new QDockWidget(tr("Grass Tools"), 0);
   //mDockWidget->setWidget(mListView2);
@@ -315,7 +315,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
         myData.setDetail( label );
         myData.setIcon( pixmap );
         myData.setCheckable( false );
-        myData.setRenderAsWidget( true );
+        myData.setRenderAsWidget( false );
         QVariant myVariant = qVariantFromValue( myData );
         mypDetailItem->setData( myVariant, Qt::UserRole );
         mModelTools->appendRow( mypDetailItem );

@@ -1112,8 +1112,38 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
 
   if ( width <= 0 ) width = height; //should not happen
 
-  int plusWidth = 8; // +
-  int arrowWidth = 9; // ->
+  QString iconsPath = QgsApplication::pkgDataPath() + "/grass/modules/";
+  QFileInfo iconsfi( iconsPath );
+
+  int plusWidth = 8;
+  int arrowWidth = 9;
+
+  QString arrowPath = iconsPath + "grass_arrow.png";
+  QPixmap arrowPixmap;
+  iconsfi.setFile( arrowPath );
+  if ( iconsfi.exists() && arrowPixmap.load( arrowPath, "PNG" ) )
+  {
+    double scale = 1. * height / arrowPixmap.height();
+    arrowWidth = ( int )( scale * arrowPixmap.width() );
+
+    QImage img = arrowPixmap.toImage();
+    img = img.scaled( arrowWidth, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    arrowPixmap = QPixmap::fromImage( img );
+  }
+
+  QString plusPath = iconsPath + "grass_plus.png";
+  QPixmap plusPixmap;
+  iconsfi.setFile( plusPath );
+  if ( iconsfi.exists() && plusPixmap.load( plusPath, "PNG" ) )
+  {
+    double scale = 1. * height / plusPixmap.height();
+    plusWidth = ( int )( scale * plusPixmap.width() );
+
+    QImage img = plusPixmap.toImage();
+    img = img.scaled( plusWidth, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    plusPixmap = QPixmap::fromImage( img );
+  }
+
   int buffer = 10; // buffer around a sign
   if ( pixmaps.size() > 1 ) width += arrowWidth + 2 * buffer; // ->
   if ( pixmaps.size() > 2 ) width += plusWidth + 2 * buffer; // +
@@ -1123,8 +1153,8 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
   //pixmap.fill( QColor( 255, 255, 255 ) );
   QPainter painter( &pixmap );
 
-  QColor color( 255, 255, 255 );
-  painter.setBrush( QBrush( color ) );
+  //QColor color( 255, 255, 255 );
+  //painter.setBrush( QBrush( color ) );
 
   painter.setRenderHint( QPainter::Antialiasing );
 
@@ -1134,25 +1164,13 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     if ( i == 1 && pixmaps.size() == 3 )   // +
     {
       pos += buffer;
-
-      painter.setPen( QPen( color, 3 ) );
-      painter.drawLine( pos, height / 2, pos + plusWidth, height / 2 );
-      painter.drawLine( pos + plusWidth / 2, height / 2 - plusWidth / 2, pos + plusWidth / 2, height / 2 + plusWidth / 2 );
+      painter.drawPixmap( pos, 0, plusPixmap );
       pos += buffer + plusWidth;
     }
     if (( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
     {
       pos += buffer;
-      painter.setPen( QPen( color, 3 ) );
-      painter.drawLine( pos, height / 2, pos + arrowWidth - arrowWidth / 2, height / 2 );
-
-      QPolygon pa( 3 );
-      pa.setPoint( 0, pos + arrowWidth / 2 + 1, height / 2 - arrowWidth / 2 );
-      pa.setPoint( 1, pos + arrowWidth, height / 2 );
-      pa.setPoint( 2, pos + arrowWidth / 2 + 1, height / 2 + arrowWidth / 2 );
-      painter.setPen( QPen( color, 1 ) );
-      painter.drawPolygon( pa );
-
+      painter.drawPixmap( pos, 0, arrowPixmap );
       pos += buffer + arrowWidth;
     }
     painter.drawPixmap( pos, 0, pixmaps[i] );
