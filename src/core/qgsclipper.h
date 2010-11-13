@@ -20,12 +20,11 @@
 #ifndef QGSCLIPPER_H
 #define QGSCLIPPER_H
 
+#include "qgis.h"
 #include "qgspoint.h"
 
 #include <vector>
 #include <utility>
-#include <cmath>
-#include <iostream>
 
 /** \ingroup core
  * A class to trim lines and polygons to within a rectangular region.

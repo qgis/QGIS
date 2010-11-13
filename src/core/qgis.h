@@ -22,6 +22,16 @@
 #include <QString>
 #include <cfloat>
 
+#ifndef Q_OS_MACX
+#include <cmath>
+#else
+#include <math.h>
+#endif
+#ifdef WIN32
+#include <float.h>
+#define isnan(f) _isnan(f)
+#endif
+
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
  */
