@@ -178,13 +178,11 @@ void QgsAbout::init()
   if ( donorsFile.open( QIODevice::ReadOnly ) )
   {
     QString donorsHTML = ""
-                         + tr( "<p>The following individuals and institutions have contributed "
-                               "money to fund QGIS development and other project costs</p>" )
-                         + "<hr>"
-                         "<table width='100%'>"
-                         "<tr><th>" + tr( "Name" ) + "</th>"
-                         "<th>" + tr( "Website" ) + "</th></tr>";
-    QString website;
+                         + tr( "<p>For a list of individuals and institutions who have contributed "
+                               "money to fund QGIS development and other project costs see "
+                               "<a href=\"http://qgis.org/en/sponsorship/donors.html\">"
+                               "http://qgis.org/en/sponsorship/donors.html</a></p>" );
+    /*QString website;
     QTextStream donorsStream( &donorsFile );
     // Always use UTF-8
     donorsStream.setCodec( "UTF-8" );
@@ -208,7 +206,7 @@ void QgsAbout::init()
       // close the row
       donorsHTML += "</tr>";
     }
-    donorsHTML += "</table>";
+    donorsHTML += "</table>";*/
 
     QString myStyle = QgsApplication::reportStyleSheet();
     txtDonors->clear();
