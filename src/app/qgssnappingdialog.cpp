@@ -19,174 +19,203 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
 #include <QCheckBox>
 #include <QDoubleValidator>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QDockWidget>
 
-QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings ): mMapCanvas( canvas )
+
+class QgsSnappingDock : public QDockWidget
+{
+  public:
+    QgsSnappingDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+        : QDockWidget( title, parent, flags )
+    {
+      setObjectName( "Snapping Options" ); // set object name so the position can be saved
+    }
+
+    virtual void closeEvent( QCloseEvent * ev )
+    {
+      //deleteLater();
+    }
+
+};
+
+QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): QDialog( parent ), mMapCanvas( canvas )
 {
   setupUi( this );
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
-  //an entry for each layer
-  int nLayers = mMapCanvas->layerCount();
-  int nVectorLayers = 0;
-  //mLayerTableWidget->setRowCount(nLayers);
-
-  QgsMapLayer* currentLayer = 0;
-  QgsVectorLayer* currentVectorLayer = 0;
-  QString currentLayerName;
-  QMap<QString, LayerEntry >::const_iterator settingIt;
-  QTreeWidgetItem* newItem = 0;
-
-  if ( mMapCanvas )
+  QSettings myQsettings;
+  bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
+  if ( myDockFlag )
   {
-    for ( int i = 0; i < nLayers; ++i )
-    {
-      currentLayer = mMapCanvas->layer( i );
-      if ( currentLayer )
-      {
-        currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-        if ( currentVectorLayer )
-        {
-          //snap to layer yes/no
-          newItem = new QTreeWidgetItem( mLayerTreeWidget );
-          newItem->setText( 0, currentLayer->name() );
-          mLayerIds << currentLayer->getLayerID(); //store also the layer id
-          newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-          newItem->setCheckState( 0, Qt::Unchecked );
-
-          //snap to vertex/ snap to segment
-          QComboBox* snapToComboBox = new QComboBox( mLayerTreeWidget );
-          snapToComboBox->insertItem( 0, tr( "to vertex" ) );
-          snapToComboBox->insertItem( 1, tr( "to segment" ) );
-          snapToComboBox->insertItem( 2, tr( "to vertex and segment" ) );
-          mLayerTreeWidget->setItemWidget( newItem, 1, snapToComboBox );
-
-          //snapping tolerance
-          QLineEdit* snappingToleranceEdit = new QLineEdit( mLayerTreeWidget );
-          QDoubleValidator* validator = new QDoubleValidator( snappingToleranceEdit );
-          snappingToleranceEdit->setValidator( validator );
-          mLayerTreeWidget->setItemWidget( newItem, 2, snappingToleranceEdit );
-
-          //snap to vertex/ snap to segment
-          QComboBox* toleranceUnitsComboBox = new QComboBox( mLayerTreeWidget );
-          toleranceUnitsComboBox->insertItem( 0, tr( "map units" ) );
-          toleranceUnitsComboBox->insertItem( 1, tr( "pixels" ) );
-          mLayerTreeWidget->setItemWidget( newItem, 3, toleranceUnitsComboBox );
-
-          settingIt = settings.find( currentVectorLayer->getLayerID() );
-          if ( settingIt != settings.constEnd() )
-          {
-            snappingToleranceEdit->setText( QString::number( settingIt.value().tolerance ) );
-            int index;
-            if ( settingIt.value().snapTo == 0 )//to segment
-            {
-              index = snapToComboBox->findText( tr( "to vertex" ) );
-            }
-            else if ( settingIt.value().snapTo == 1 ) //to vertex
-            {
-              index = snapToComboBox->findText( tr( "to segment" ) );
-            }
-            else //to vertex and segment
-            {
-              index = snapToComboBox->findText( tr( "to vertex and segment" ) );
-            }
-            snapToComboBox->setCurrentIndex( index );
-            if ( settingIt.value().toleranceUnit == 0 )//map units
-            {
-              index = toleranceUnitsComboBox->findText( tr( "map units" ) );
-            }
-            else
-            {
-              index = toleranceUnitsComboBox->findText( tr( "pixels" ) );
-            }
-            toleranceUnitsComboBox->setCurrentIndex( index );
-            if ( settingIt.value().checked )
-            {
-              newItem->setCheckState( 0, Qt::Checked );
-            }
-          }
-          else //insert the default values
-          {
-            snappingToleranceEdit->setText( "0" );
-          }
-          ++nVectorLayers;
-        }
-      }
-    }
-    mLayerTreeWidget->resizeColumnToContents( 0 );
-    mLayerTreeWidget->setColumnWidth( 1, 200 );  //hardcoded for now
-    mLayerTreeWidget->resizeColumnToContents( 2 );
-    mLayerTreeWidget->resizeColumnToContents( 3 );
+    mDock = new QgsSnappingDock( tr( "Snapping Options" ), QgisApp::instance() );
+    mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
+    mDock->setWidget( this );
+    connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
+    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    mButtonBox->setVisible( false );
   }
+  else
+  {
+    connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( apply() ) );
+  }
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( update() ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( update() ) );
+
+  update();
+
+  mLayerTreeWidget->setHeaderLabels( QStringList() << "" );
+  mLayerTreeWidget->resizeColumnToContents( 0 );
+  mLayerTreeWidget->setColumnWidth( 1, 200 );  //hardcoded for now
+  mLayerTreeWidget->setColumnWidth( 2, 200 );  //hardcoded for now
+  mLayerTreeWidget->resizeColumnToContents( 3 );
+  mLayerTreeWidget->resizeColumnToContents( 4 );
+  mLayerTreeWidget->setSortingEnabled( true );
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
 {
-
 }
 
 QgsSnappingDialog::~QgsSnappingDialog()
 {
-
 }
 
-void QgsSnappingDialog::layerSettings( QMap<QString, LayerEntry>& settings ) const
+void QgsSnappingDialog::closeEvent( QCloseEvent* event )
 {
-  settings.clear();
+  QDialog::closeEvent( event );
 
-  int nRows = mLayerTreeWidget->topLevelItemCount();
-  QTreeWidgetItem* currentItem = 0;
-  QString layerId;
-  QString layerName;
-  QString snapToItemText;
-  QString toleranceItemText;
-  int snapTo;
-  int toleranceUnit;
-  double tolerance;
-  bool checked = false;
-
-  for ( int i = 0; i < nRows; ++i )
+  if ( mDock == NULL )
   {
-    currentItem = mLayerTreeWidget->topLevelItem( i );
+    QSettings settings;
+    settings.setValue( "/Windows/BetterSnapping/geometry", saveGeometry() );
+  }
+}
+
+
+void QgsSnappingDialog::update()
+{
+  if ( !mMapCanvas )
+    return;
+
+  QSettings myQsettings;
+  bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
+
+  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
+  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
+  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
+  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk );
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk );
+  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &snapToListOk );
+
+  mLayerTreeWidget->clear();
+
+  for ( int i = 0; i < mMapCanvas->layerCount(); ++i )
+  {
+    QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->layer( i ) );
+    if ( !currentVectorLayer )
+      continue;
+
+    //snap to layer yes/no
+    QTreeWidgetItem *item = new QTreeWidgetItem( mLayerTreeWidget );
+
+    QCheckBox *cbxEnable = new QCheckBox( mLayerTreeWidget );
+    mLayerTreeWidget->setItemWidget( item, 0, cbxEnable );
+    item->setData( 0, Qt::UserRole, currentVectorLayer->getLayerID() );
+
+    item->setText( 1, currentVectorLayer->name() );
+
+    //snap to vertex/ snap to segment
+    QComboBox *cbxSnapTo = new QComboBox( mLayerTreeWidget );
+    cbxSnapTo->insertItem( 0, tr( "to vertex" ) );
+    cbxSnapTo->insertItem( 1, tr( "to segment" ) );
+    cbxSnapTo->insertItem( 2, tr( "to vertex and segment" ) );
+    mLayerTreeWidget->setItemWidget( item, 2, cbxSnapTo );
+
+    //snapping tolerance
+    QLineEdit *leTolerance = new QLineEdit( mLayerTreeWidget );
+    QDoubleValidator *validator = new QDoubleValidator( leTolerance );
+    leTolerance->setValidator( validator );
+
+    mLayerTreeWidget->setItemWidget( item, 3, leTolerance );
+
+    //snap to vertex/ snap to segment
+    QComboBox *cbxUnits = new QComboBox( mLayerTreeWidget );
+    cbxUnits->insertItem( 0, tr( "map units" ) );
+    cbxUnits->insertItem( 1, tr( "pixels" ) );
+    mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
+
+    int idx = layerIdList.indexOf( currentVectorLayer->getLayerID() );
+    if ( idx < 0 )
+    {
+      // no settings for this layer yet
+      continue;
+    }
+
+    cbxEnable->setChecked( enabledList[ idx ] == "enabled" );
+    cbxSnapTo->setCurrentIndex( snapToList[idx].toInt() );
+    leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
+    cbxUnits->setCurrentIndex( toleranceUnitList[i].toInt() );
+  }
+
+  if ( myDockFlag )
+  {
+    for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
+    {
+      QTreeWidgetItem *item = mLayerTreeWidget->topLevelItem( i );
+      connect( mLayerTreeWidget->itemWidget( item, 0 ), SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+      connect( mLayerTreeWidget->itemWidget( item, 2 ), SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+      connect( mLayerTreeWidget->itemWidget( item, 3 ), SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+      connect( mLayerTreeWidget->itemWidget( item, 4 ), SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+    }
+  }
+}
+
+void QgsSnappingDialog::apply()
+{
+  QStringList layerIdList;
+  QStringList snapToList;
+  QStringList toleranceList;
+  QStringList enabledList;
+  QStringList toleranceUnitList;
+
+  for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
+  {
+    QTreeWidgetItem *currentItem = mLayerTreeWidget->topLevelItem( i );
     if ( !currentItem )
     {
       continue;
     }
 
-    //get layer id, to vertex/to segment and tolerance
-    layerName = currentItem->text( 0 );
-    layerId = mLayerIds.at( i );
-    checked = ( currentItem->checkState( 0 ) == Qt::Checked );
-    snapToItemText = (( QComboBox* )( mLayerTreeWidget->itemWidget( currentItem, 1 ) ) )->currentText();
-    toleranceItemText = (( QComboBox* )( mLayerTreeWidget->itemWidget( currentItem, 3 ) ) )->currentText();
+    layerIdList << currentItem->data( 0, Qt::UserRole ).toString();
+    enabledList << ( qobject_cast<QCheckBox*>( mLayerTreeWidget->itemWidget( currentItem, 0 ) )->isChecked() ? "enabled" : "disabled" );
+
+    QString snapToItemText = qobject_cast<QComboBox*>( mLayerTreeWidget->itemWidget( currentItem, 2 ) )->currentText();
     if ( snapToItemText == tr( "to vertex" ) )
     {
-      snapTo = 0;
+      snapToList << "to_vertex";
     }
     else if ( snapToItemText == tr( "to segment" ) )
     {
-      snapTo = 1;
+      snapToList << "to_segment";
     }
     else //to vertex and segment
     {
-      snapTo = 2;
+      snapToList << "to_vertex_and_segment";
     }
-    if ( toleranceItemText == tr( "map units" ) )
-    {
-      toleranceUnit = 0;
-    }
-    else //to vertex and segment
-    {
-      toleranceUnit = 1;
-    }
-    tolerance = (( QLineEdit* )( mLayerTreeWidget->itemWidget( currentItem, 2 ) ) )->text().toDouble();
-    LayerEntry newEntry;
-    newEntry.checked = checked; newEntry.snapTo = snapTo; newEntry.layerName = layerName;
-    newEntry.tolerance = tolerance; newEntry.toleranceUnit = toleranceUnit;
-    settings.insert( layerId, newEntry );
+
+    toleranceList << QString::number( qobject_cast<QLineEdit*>( mLayerTreeWidget->itemWidget( currentItem, 3 ) )->text().toDouble(), 'f' );
+    toleranceUnitList << QString::number( qobject_cast<QComboBox*>( mLayerTreeWidget->itemWidget( currentItem, 4 ) )->currentIndex() );
   }
+
+  QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnapToList", snapToList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
 }

@@ -67,6 +67,7 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
+class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
 #include <QMainWindow>
@@ -78,6 +79,7 @@ class QgsGPSInformationWidget;
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
+#include "qgssnappingdialog.h"
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -242,6 +244,8 @@ class QgisApp : public QMainWindow
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionEditSeparator2() { return mActionEditSeparator2; }
+    QAction *actionSnappingOptions() { return mActionSnappingOptions; }
+    QAction *actionEditSeparator4() { return mActionEditSeparator4; }
 
     QAction *actionPan() { return mActionPan; }
     QAction *actionZoomIn() { return mActionZoomIn; }
@@ -618,6 +622,8 @@ class QgisApp : public QMainWindow
     void nodeTool();
     //! activates the rotate points tool
     void rotatePointSymbols();
+    //! shows the snapping Options
+    void snappingOptions();
 
     //! activates the selection tool
     void select();
@@ -900,6 +906,8 @@ class QgisApp : public QMainWindow
     QAction *mActionNodeTool;
     QAction *mActionRotatePointSymbols;
     QAction *mActionEditSeparator3;
+    QAction *mActionSnappingOptions;
+    QAction *mActionEditSeparator4;
 
     QAction *mActionPan;
     QAction *mActionZoomIn;
@@ -1014,6 +1022,7 @@ class QgisApp : public QMainWindow
     QDockWidget *mOverviewDock;
     QDockWidget *mpTileScaleDock;
     QDockWidget *mpGpsDock;
+
 
 #ifdef Q_WS_MAC
     //! Window menu action to select this window
@@ -1164,6 +1173,8 @@ class QgisApp : public QMainWindow
     static QgisApp *smInstance;
 
     QgsUndoWidget* mUndoWidget;
+
+    QgsSnappingDialog* mSnappingDialog;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;

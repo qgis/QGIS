@@ -127,90 +127,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     }
   }
 
-  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
-  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk );
-  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &snapToListOk );
-
-  QStringList::const_iterator idIter = layerIdList.constBegin();
-  QStringList::const_iterator enabledIter = enabledList.constBegin();
-  QStringList::const_iterator tolIter = toleranceList.constBegin();
-  QStringList::const_iterator tolUnitIter = toleranceUnitList.constBegin();
-  QStringList::const_iterator snapToIter = snapToList.constBegin();
-
   QgsMapLayer* currentLayer = 0;
-
-  //create the new layer entries
-  for ( ; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++tolUnitIter, ++snapToIter )
-  {
-    if ( layerIdListOk )
-    {
-      currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
-    }
-    else
-    {
-      break;
-    }
-
-    if ( currentLayer )
-    {
-      LayerEntry newEntry;
-      newEntry.layerName = currentLayer->name();
-
-      newEntry.checked = false;
-      if ( enabledListOk && enabledIter != enabledList.constEnd() )
-      {
-        if (( *enabledIter ) == "enabled" )
-        {
-          newEntry.checked = true;
-        }
-      }
-
-      //snap to vertex / segment / vertex and segment
-      if ( snapToListOk && snapToIter != snapToList.constEnd() )
-      {
-        if (( *snapToIter ) == "to_vertex" )
-        {
-          newEntry.snapTo = 0;
-        }
-        else if (( *snapToIter ) == "to_segment" )
-        {
-          newEntry.snapTo = 1;
-        }
-        else //to vertex and segment
-        {
-          newEntry.snapTo = 2;
-        }
-      }
-      else
-      {
-        newEntry.snapTo = 0;
-      }
-
-      //snap tolerance
-      if ( toleranceListOk && tolIter != toleranceList.constEnd() )
-      {
-        newEntry.tolerance = tolIter->toDouble();
-      }
-      else
-      {
-        newEntry.tolerance = 0;
-      }
-
-      //snap tolerance unit
-      if ( toleranceUnitListOk && tolUnitIter != toleranceUnitList.constEnd() )
-      {
-        newEntry.toleranceUnit = tolUnitIter->toInt();
-      }
-      else
-      {
-        newEntry.toleranceUnit = 0;
-      }
-      mSnappingLayerSettings.insert( *idIter, newEntry );
-    }
-  }
 
   QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 
@@ -418,51 +335,6 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
 
 
-  QMap<QString, LayerEntry>::const_iterator layerEntryIt;
-
-  //store the layer snapping settings as string lists
-  QStringList layerIdList;
-  QStringList snapToList;
-  QStringList toleranceList;
-  QStringList enabledList;
-  QStringList toleranceUnitList;
-
-  for ( layerEntryIt = mSnappingLayerSettings.constBegin(); layerEntryIt != mSnappingLayerSettings.constEnd(); ++layerEntryIt )
-  {
-    layerIdList << layerEntryIt.key();
-    toleranceList << QString::number( layerEntryIt->tolerance, 'f' );
-    toleranceUnitList << QString::number(( int )layerEntryIt->toleranceUnit );
-    if ( layerEntryIt->checked )
-    {
-      enabledList << "enabled";
-    }
-    else
-    {
-      enabledList << "disabled";
-    }
-    if ( layerEntryIt->snapTo == 0 )
-    {
-      snapToList << "to_vertex";
-    }
-    else if ( layerEntryIt->snapTo == 1 )
-    {
-      snapToList << "to_segment";
-    }
-    else //to vertex and segment
-    {
-      snapToList << "to_vertex_and_segment";
-    }
-  }
-
-  if ( mSnappingLayerSettings.size() > 0 )
-  {
-    QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
-    QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnapToList", snapToList );
-    QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
-    QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
-    QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
-  }
-
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
@@ -517,15 +389,6 @@ void QgsProjectProperties::on_mAvoidIntersectionsPushButton_clicked()
   }
 }
 
-void QgsProjectProperties::on_mSnappingOptionsPushButton_clicked()
-{
-  QgsSnappingDialog d( mMapCanvas, mSnappingLayerSettings );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //retrieve the new layer snapping settings from the dialog
-    d.layerSettings( mSnappingLayerSettings );
-  }
-}
 
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {

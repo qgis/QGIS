@@ -247,9 +247,16 @@
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="cbxSnappingOptionsDocked">
+                <property name="text">
+                 <string>Open snapping options  in a dock window (QGIS restart required)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="cbxAttributeTableDocked">
                 <property name="text">
-                 <string>Open attribute table in a dock window</string>
+                 <string>Open attribute table in a dock window (QGIS restart required)</string>
                 </property>
                </widget>
               </item>

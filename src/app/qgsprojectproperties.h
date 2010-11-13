@@ -95,11 +95,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
       */
     void on_mAvoidIntersectionsPushButton_clicked();
 
-    /*!
-     * Slot to show dialog for the layer snapping options
-     */
-    void on_mSnappingOptionsPushButton_clicked();
-
     void on_cbxProjectionEnabled_stateChanged( int state );
 
     /*!
@@ -118,14 +113,8 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
   private:
     QgsMapCanvas* mMapCanvas;
 
-    /**Snapping settings to pass/read from QgsSnappingDialog.
-     Key is the layer id, the pair consists of snap to vertex = 0/snap to segment = 1,
-    snapping tolerance*/
-    QMap<QString, LayerEntry> mSnappingLayerSettings;
-
     /**Stores ids of layers where intersections of new polygons is considered. Is passed to / read from QgsAvoidIntersectionsDialog*/
     QSet<QString> mAvoidIntersectionsSettings;
-
 
     /*!
      * Function to save dialog window state
