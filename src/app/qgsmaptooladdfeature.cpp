@@ -31,10 +31,6 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-#ifdef Q_OS_WIN
-#include <qgisapp.h>
-#endif
-
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode tool ): QgsMapToolCapture( canvas, tool )
 {
 
@@ -45,8 +41,79 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 }
 
+bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
+{
+  bool res = false;
+  QgsVectorDataProvider* provider = vlayer->dataProvider();
+
+  QSettings settings;
+  bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
+  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+
+  // add the fields to the QgsFeature
+  const QgsFieldMap fields = vlayer->pendingFields();
+  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+  {
+    if ( reuseLastValues && mLastUsedValues.contains( vlayer ) && mLastUsedValues[ vlayer ].contains( it.key() ) )
+    {
+      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ vlayer ][ it.key()].toString() ).arg( it.key() ) );
+      f->addAttribute( it.key(), mLastUsedValues[ vlayer ][ it.key()] );
+    }
+    else
+    {
+      f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
+    }
+  }
+
+  // show the dialog to enter attribute values
+  bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", true ).toBool();
+  if ( isDisabledAttributeValuesDlg )
+  {
+    res = vlayer->addFeature( *f );
+  }
+  else
+  {
+    QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, f );
+
+    QgsAttributeMap origValues;
+    if ( reuseLastValues )
+      origValues = f->attributeMap();
+
+    if ( mypDialog->exec() )
+    {
+      if ( reuseLastValues )
+      {
+        for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+        {
+          const QgsAttributeMap &newValues = f->attributeMap();
+          if ( newValues.contains( it.key() )
+               && origValues.contains( it.key() )
+               && origValues[ it.key()] != newValues[ it.key()] )
+          {
+            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ vlayer ][ it.key()].toString() ).arg( it.key() ) );
+            mLastUsedValues[ vlayer ][ it.key()] = newValues[ it.key()];
+          }
+        }
+      }
+
+      res = vlayer->addFeature( *f );
+    }
+    else
+    {
+      QgsDebugMsg( "Adding feature to layer failed" );
+      res = false;
+    }
+
+    mypDialog->deleteLater();
+  }
+
+  return res;
+}
+
 void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 {
+  QgsDebugMsg( "entered." );
+
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
@@ -160,45 +227,21 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       f->setGeometryAndOwnership( &wkb[0], size );
-      // add the fields to the QgsFeature
-      const QgsFieldMap fields = vlayer->pendingFields();
-      for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
-      {
-        f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
-      }
 
       vlayer->beginEditCommand( tr( "Feature added" ) );
 
-      // show the dialog to enter attribute values
-      QSettings settings;
-      bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
-      if ( isDisabledAttributeValuesDlg )
+      if ( addFeature( vlayer, f ) )
       {
-        QgsDebugMsg( "Adding feature to layer" );
-        vlayer->addFeature( *f );
         vlayer->endEditCommand();
       }
       else
       {
-        QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, f );
-        if ( mypDialog->exec() )
-        {
-          QgsDebugMsg( "Adding feature to layer" );
-          vlayer->addFeature( *f );
-          vlayer->endEditCommand();
-        }
-        else
-        {
-          vlayer->destroyEditCommand();
-          QgsDebugMsg( "Adding feature to layer failed" );
-          delete f;
-        }
-        delete mypDialog;
+        delete f;
+        vlayer->destroyEditCommand();
       }
 
       mCanvas->refresh();
     }
-
   }
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
@@ -395,7 +438,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           position += sizeof( int );
           double x, y;
           QList<QgsPoint>::iterator it;
-          for ( it = begin(); it != end(); ++it )//add the captured points to the polygon
+          for ( it = begin(); it != end(); ++it ) //add the captured points to the polygon
           {
             QgsPoint savePoint = *it;
             x = savePoint.x();
@@ -441,53 +484,26 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           QMessageBox::critical( 0, tr( "Error" ), tr( "An error was reported during intersection removal" ) );
         }
-
-
       }
 
-      // add the fields to the QgsFeature
-      const QgsFieldMap fields = vlayer->pendingFields();
-      for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
-      {
-        f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
-      }
+      vlayer->beginEditCommand( tr( "Feature added" ) );
 
-      QSettings settings;
-      bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
-      if ( isDisabledAttributeValuesDlg )
+      if ( addFeature( vlayer, f ) )
       {
-        vlayer->beginEditCommand( tr( "Feature added" ) );
-        if ( vlayer->addFeature( *f ) )
+        //add points to other features to keep topology up-to-date
+        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+        if ( topologicalEditing )
         {
-          //add points to other features to keep topology up-to-date
-          int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-          if ( topologicalEditing )
-          {
-            vlayer->addTopologicalPoints( f->geometry() );
-          }
+          vlayer->addTopologicalPoints( f->geometry() );
         }
+
         vlayer->endEditCommand();
       }
       else
       {
-        QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
-        if ( mypDialog->exec() )
-        {
-          vlayer->beginEditCommand( tr( "Feature added" ) );
-          if ( vlayer->addFeature( *f ) )
-          {
-            //add points to other features to keep topology up-to-date
-            int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-            if ( topologicalEditing )
-            {
-              vlayer->addTopologicalPoints( f->geometry() );
-            }
-          }
-          vlayer->endEditCommand();
-        }
-        mypDialog->deleteLater();
+        delete f;
+        vlayer->destroyEditCommand();
       }
-      delete f;
 
       stopCapturing();
     }

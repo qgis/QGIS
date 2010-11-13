@@ -44,6 +44,7 @@
     <file>themes/newgis/mActionMeasure.png</file>
     <file>themes/newgis/mActionMeasureArea.png</file>
     <file>themes/newgis/mActionMergeFeatures.png</file>
+    <file>themes/newgis/mActionMergeFeatureAttributes.png</file>
     <file>themes/newgis/mActionMoveFeature.png</file>
     <file>themes/newgis/mActionMoveItemContent.png</file>
     <file>themes/newgis/mActionMoveVertex.png</file>
@@ -165,6 +166,7 @@
     <file>themes/default/mActionMeasureAngle.png</file>
     <file>themes/default/mActionMeasureArea.png</file>
     <file>themes/default/mActionMergeFeatures.png</file>
+    <file>themes/default/mActionMergeFeatureAttributes.png</file>
     <file>themes/default/mActionMoveFeature.png</file>
     <file>themes/default/mActionMoveItemContent.png</file>
     <file>themes/default/mActionMoveItemsToBottom.png</file>
@@ -332,6 +334,7 @@
     <file>themes/gis/mActionMeasureAngle.png</file>
     <file>themes/gis/mActionMeasureArea.png</file>
     <file>themes/gis/mActionMergeFeatures.png</file>
+    <file>themes/gis/mActionMergeFeatureAttributes.png</file>
     <file>themes/gis/mActionMoveFeature.png</file>
     <file>themes/gis/mActionMoveItemContent.png</file>
     <file>themes/gis/mActionMoveItemsToBottom.png</file>

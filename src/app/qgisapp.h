@@ -612,6 +612,8 @@ class QgisApp : public QMainWindow
     void deletePart();
     //! merges the selected features together
     void mergeSelectedFeatures();
+    //! merges the attributes of selected features
+    void mergeAttributesOfSelectedFeatures();
     //! provides operations with nodes
     void nodeTool();
     //! activates the rotate points tool
@@ -894,6 +896,7 @@ class QgisApp : public QMainWindow
     QAction *mActionDeleteRing;
     QAction *mActionDeletePart;
     QAction *mActionMergeFeatures;
+    QAction *mActionMergeFeatureAttributes;
     QAction *mActionNodeTool;
     QAction *mActionRotatePointSymbols;
     QAction *mActionEditSeparator3;
