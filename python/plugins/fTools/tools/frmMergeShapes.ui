@@ -7,13 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>377</width>
-    <height>246</height>
+    <height>273</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Merge shapefiles</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="chkListMode">
+     <property name="text">
+      <string>Select by layers in the folder</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
