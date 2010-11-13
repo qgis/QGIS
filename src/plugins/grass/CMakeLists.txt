@@ -173,6 +173,9 @@ FILE (GLOB GMLS *.gml)
 INSTALL (FILES ${GMLS} images/world.png
          DESTINATION ${QGIS_DATA_DIR}/grass)
 
+INSTALL (FILES themes/gis/grass_arrow.png themes/gis/grass_plus.png
+         DESTINATION ${QGIS_DATA_DIR}/grass/modules)
+
 INSTALL(TARGETS qgis.g.browser 
         RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/bin
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE

@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>350</width>
+    <height>350</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>350</width>
+    <height>350</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Grass Tools</string>
@@ -17,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="mTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="modulesTree">
       <attribute name="title">
@@ -51,9 +57,6 @@
       <layout class="QGridLayout">
        <item row="0" column="0">
         <widget class="QListView" name="mListView">
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
