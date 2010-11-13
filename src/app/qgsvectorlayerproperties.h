@@ -104,7 +104,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_tblAttributes_cellChanged( int row, int column );
     void on_mCalculateFieldButton_clicked();
     void on_pbnSelectEditForm_clicked();
-    void on_stackedWidget_currentChanged( int idx );
+    void on_tabWidget_currentChanged( int idx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void addAttribute();

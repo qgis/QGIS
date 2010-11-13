@@ -140,19 +140,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   for ( ; it != overlayPluginList.constEnd(); ++it )
   {
     QgsApplyDialog* d = ( *it )->dialog( lyr );
-    position = stackedWidget->insertWidget( stackedWidget->count(), qobject_cast<QDialog*>( d ) );
-    stackedWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
+    position = tabWidget->insertTab( tabWidget->count(), qobject_cast<QDialog*>( d ), QgisApp::getThemeIcon( "propertyicons/diagram.png" ), tr( "Overlay"));
+    tabWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
     mOverlayDialogs.push_back( d );
-    //shamelessly hard coded - what will we do if other types of layer plugins exist? TS
-    QListWidgetItem * mypItem = new QListWidgetItem( QgisApp::getThemeIcon( "propertyicons/diagram.png" ), ( *it )->name() );
-    listWidget->insertItem( stackedWidget->count() - 1, mypItem );
   }
 
-  stackedWidget->setCurrentIndex( 0 );
+  tabWidget->setCurrentIndex( 0 );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/VectorLayerProperties/geometry" ).toByteArray() );
-  listWidget->setCurrentRow( settings.value( "/Windows/VectorLayerProperties/row" ).toInt() );
+  tabWidget->setCurrentIndex( settings.value( "/Windows/VectorLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
 } // QgsVectorLayerProperties ctor
@@ -211,7 +208,7 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 
   QSettings settings;
   settings.setValue( "/Windows/VectorLayerProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/VectorLayerProperties/row", listWidget->currentRow() );
+  settings.setValue( "/Windows/VectorLayerProperties/row", tabWidget->currentIndex() );
 }
 
 void QgsVectorLayerProperties::attributeTypeDialog( )
@@ -1233,12 +1230,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   }
   else
   {
-    if ( listWidget->currentRow() == 0 )
+    if ( tabWidget->currentIndex() == 0 )
     {
-      listWidget->setCurrentRow( 1 );
+      tabWidget->setCurrentIndex( 1 );
     }
 
-    listWidget->setItemHidden( listWidget->item( 0 ), true ); // hide symbology item
+    tabWidget->setTabEnabled( 0, true ); // hide symbology item
   }
 
   if ( mRendererDialog )
@@ -1248,7 +1245,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   }
 }
 
-void QgsVectorLayerProperties::on_stackedWidget_currentChanged( int index )
+void QgsVectorLayerProperties::on_tabWidget_currentChanged( int index )
 {
   if ( index != 4 || mMetadataFilled )
     return;

@@ -21,168 +21,67 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="minimumSize">
-      <size>
-       <width>110</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>110</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>64</width>
-       <height>64</height>
-      </size>
-     </property>
-     <property name="textElideMode">
-      <enum>Qt::ElideNone</enum>
-     </property>
-     <property name="flow">
-      <enum>QListView::TopToBottom</enum>
-     </property>
-     <property name="isWrapping" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="spacing">
-      <number>9</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::IconMode</enum>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <property name="text">
-       <string>Symbology</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
+      <widget class="QPushButton" name="pbnLoadDefaultStyle">
+       <property name="text">
+        <string>Restore Default Style</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <property name="text">
-       <string>Labels</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
+      <widget class="QPushButton" name="pbnSaveDefaultStyle">
+       <property name="text">
+        <string>Save As Default</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <property name="text">
-       <string>Attributes</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
+      <widget class="QPushButton" name="pbnLoadStyle">
+       <property name="text">
+        <string>Load Style ...</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
+      <widget class="QPushButton" name="pbnSaveStyleAs">
+       <property name="text">
+        <string>Save Style ...</string>
+       </property>
+      </widget>
      </item>
-     <item>
-      <property name="text">
-       <string>Metadata</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Actions</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true"/>
-      </property>
-      <property name="flags">
-       <set>NoItemFlags</set>
-      </property>
-     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget">
+    <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="page_3">
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Style</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <widget class="QLabel" name="legendtypelabel">
@@ -200,9 +99,6 @@
          </property>
          <property name="text">
           <string>Legend type</string>
-         </property>
-         <property name="buddy">
-          <cstring>legendtypecombobox</cstring>
          </property>
         </widget>
        </item>
@@ -238,9 +134,6 @@
          </property>
          <property name="text">
           <string>Transparency</string>
-         </property>
-         <property name="buddy">
-          <cstring>sliderTransparency</cstring>
          </property>
         </widget>
        </item>
@@ -293,7 +186,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_4">
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Labels</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
         <widget class="QCheckBox" name="labelCheckBox">
@@ -329,7 +229,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_5">
+     <widget class="QWidget" name="tabWidgetPage3" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Fields</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QToolButton" name="mAddAttributeButton">
@@ -437,7 +344,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_6">
+     <widget class="QWidget" name="tabWidgetPage4" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <property name="margin">
         <number>0</number>
@@ -458,8 +372,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>514</width>
-            <height>378</height>
+            <width>624</width>
+            <height>412</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -473,9 +387,6 @@
                <widget class="QLabel" name="textLabel3">
                 <property name="text">
                  <string>Display name</string>
-                </property>
-                <property name="buddy">
-                 <cstring>txtDisplayName</cstring>
                 </property>
                </widget>
               </item>
@@ -492,9 +403,6 @@
                 </property>
                 <property name="text">
                  <string>Display field</string>
-                </property>
-                <property name="buddy">
-                 <cstring>displayFieldComboBox</cstring>
                 </property>
                </widget>
               </item>
@@ -655,7 +563,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_7">
+     <widget class="QWidget" name="tabWidgetPage5" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Metadata</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_8">
        <item row="0" column="0">
         <widget class="QTextEdit" name="teMetadata">
@@ -669,7 +584,14 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_8">
+     <widget class="QWidget" name="tabWidgetPage6" native="true">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Actions</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_9">
        <item row="0" column="0">
         <widget class="QFrame" name="actionOptionsFrame">
@@ -691,48 +613,6 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="pbnLoadDefaultStyle">
-       <property name="text">
-        <string>Restore Default Style</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveDefaultStyle">
-       <property name="text">
-        <string>Save As Default</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnLoadStyle">
-       <property name="text">
-        <string>Load Style ...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveStyleAs">
-       <property name="text">
-        <string>Save Style ...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -750,38 +630,5 @@
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>labelCheckBox</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>labelOptionsFrame</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>201</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>201</x>
-     <y>49</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>listWidget</sender>
-   <signal>currentRowChanged(int)</signal>
-   <receiver>stackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>99</x>
-     <y>10</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>754</x>
-     <y>12</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
