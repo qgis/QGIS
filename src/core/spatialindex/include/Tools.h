@@ -60,7 +60,6 @@ typedef unsigned __int8 uint8_t;
 #ifndef WIN32
 #include <sys/resource.h>
 #endif
-#include <unistd.h>
 
 #if HAVE_PTHREAD_H
 #include <pthread.h>
