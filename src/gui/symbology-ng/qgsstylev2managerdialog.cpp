@@ -168,21 +168,25 @@ QString QgsStyleV2ManagerDialog::currentItemName()
 
 void QgsStyleV2ManagerDialog::addItem()
 {
+  bool changed = false;
   if ( currentItemType() < 3 )
   {
-    addSymbol();
+    changed = addSymbol();
   }
   else if ( currentItemType() == 3 )
   {
-    addColorRamp();
+    changed = addColorRamp();
   }
   else
   {
     Q_ASSERT( 0 && "not implemented" );
   }
 
-  populateList();
-  populateTypes();
+  if ( changed )
+  {
+    populateList();
+    populateTypes();
+  }
 }
 
 bool QgsStyleV2ManagerDialog::addSymbol()
@@ -303,20 +307,22 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
 
 void QgsStyleV2ManagerDialog::editItem()
 {
+  bool changed = false;
   if ( currentItemType() < 3 )
   {
-    editSymbol();
+    changed = editSymbol();
   }
   else if ( currentItemType() == 3 )
   {
-    editColorRamp();
+    changed = editColorRamp();
   }
   else
   {
     Q_ASSERT( 0 && "not implemented" );
   }
 
-  populateList();
+  if ( changed )
+    populateList();
 }
 
 bool QgsStyleV2ManagerDialog::editSymbol()
@@ -392,21 +398,25 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
 
 void QgsStyleV2ManagerDialog::removeItem()
 {
+  bool changed = false;
   if ( currentItemType() < 3 )
   {
-    removeSymbol();
+    changed = removeSymbol();
   }
   else if ( currentItemType() == 3 )
   {
-    removeColorRamp();
+    changed = removeColorRamp();
   }
   else
   {
     Q_ASSERT( 0 && "not implemented" );
   }
 
-  populateList();
-  populateTypes();
+  if ( changed )
+  {
+    populateList();
+    populateTypes();
+  }
 }
 
 bool QgsStyleV2ManagerDialog::removeSymbol()
