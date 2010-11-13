@@ -32,6 +32,12 @@ class QAction;
 class QToolBar;
 class QgisInterface;
 
+namespace osgEarthUtil
+{
+  class ElevationManager;
+  class ObjectPlacer;
+};
+
 class GlobePlugin : public QObject, public QgisPlugin
 {
   Q_OBJECT
@@ -62,6 +68,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     void extentsChanged();
 
   private:
+    void placeNode( osg::Group* root, osg::Node* node, double lat, double lon, double alt = 0.0 );
+
     int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
@@ -77,6 +85,10 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarth::MapLayer* mQgisMapLayer;
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
+    //! Elevation manager
+    osgEarthUtil::ElevationManager* mElevationManager;
+    //! Object placer
+    osgEarthUtil::ObjectPlacer* mObjectPlacer;
 };
 
 

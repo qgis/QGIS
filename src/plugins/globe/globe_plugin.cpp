@@ -35,12 +35,16 @@
 #include <osgGA/StateSetManipulator>
 #include <osgGA/GUIEventHandler>
 
+#include <osg/MatrixTransform>
+#include <osg/ShapeDrawable>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgEarth/Notify>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarthUtil/EarthManipulator>
+#include <osgEarthUtil/ElevationManager>
+#include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/TileSource>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
@@ -62,7 +66,9 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     mQActionPointer( NULL ),
     viewer(),
     mQDockWidget( tr( "Globe" ) ),
-    mTileSource(0)
+    mTileSource(0),
+    mElevationManager( NULL ),
+    mObjectPlacer( NULL )
 {
 }
 
@@ -148,6 +154,52 @@ void GlobePlugin::run()
   // create a surface to house the controls
   ControlCanvas* cs = new ControlCanvas( &viewer );
   root->addChild( cs );
+
+  // model placement utils
+  mElevationManager = new osgEarthUtil::ElevationManager( mMapNode->getMap() );
+  mElevationManager->setTechnique( osgEarthUtil::ElevationManager::TECHNIQUE_GEOMETRIC );
+  mElevationManager->setMaxTilesToCache( 50 );
+
+  mObjectPlacer = new osgEarthUtil::ObjectPlacer( mMapNode );
+
+#if 0
+  // model placement test
+
+  // create simple tree model from primitives
+  osg::TessellationHints* hints = new osg::TessellationHints();
+  hints->setDetailRatio(0.1);
+
+  osg::Cylinder* cylinder = new osg::Cylinder( osg::Vec3(0 ,0, 5), 0.5, 10 );
+  osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable( cylinder, hints );
+  cylinderDrawable->setColor( osg::Vec4( 0.5, 0.25, 0.125, 1.0 ) );
+  osg::Geode* cylinderGeode = new osg::Geode();
+  cylinderGeode->addDrawable( cylinderDrawable );
+
+  osg::Cone* cone = new osg::Cone( osg::Vec3(0 ,0, 10), 4, 10 );
+  osg::ShapeDrawable* coneDrawable = new osg::ShapeDrawable( cone, hints );
+  coneDrawable->setColor( osg::Vec4( 0.0, 0.5, 0.0, 1.0 ) );
+  osg::Geode* coneGeode = new osg::Geode();
+  coneGeode->addDrawable( coneDrawable );
+
+  osg::Group* model = new osg::Group();
+  model->addChild( cylinderGeode );
+  model->addChild( coneGeode );
+
+  // place models on jittered grid
+  srand( 23 );
+  double lat = 47.235;
+  double lon = 9.36;
+  double gridSize = 0.001;
+  for( int i=0; i<10; i++ )
+  {
+    for( int j=0; j<10; j++ )
+    {
+      double dx = gridSize * ( rand()/( (double)RAND_MAX + 1.0 ) - 0.5 );
+      double dy = gridSize * ( rand()/( (double)RAND_MAX + 1.0 ) - 0.5 );
+      placeNode( root, model, lat + i * gridSize + dx, lon + j * gridSize + dy );
+    }
+  }
+#endif
 
   viewer.setSceneData( root );
 
@@ -265,6 +317,21 @@ void GlobePlugin::help()
 {
 }
 
+void GlobePlugin::placeNode( osg::Group* root, osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
+{
+  // get elevation
+  double elevation = 0.0;
+  double resolution = 0.0;
+  mElevationManager->getElevation( lon, lat, 0, NULL, elevation, resolution );
+
+  // place model
+  osg::Matrix mat;
+  mObjectPlacer->createPlacerMatrix( lat, lon, elevation + alt, mat );
+
+  osg::MatrixTransform* mt = new osg::MatrixTransform( mat );
+  mt->addChild( node );
+  root->addChild( mt );
+}
 
 bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 {
