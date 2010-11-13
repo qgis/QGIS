@@ -4,5 +4,6 @@
 <qgisgrassmodule label="Locate the closest points between objects in two raster maps" module="r.distance">
         <option key="maps" option="map1"/>
         <option key="maps" option="map2"/>
+	<option key="fs" advanced="yes"/> 
 </qgisgrassmodule>
 
