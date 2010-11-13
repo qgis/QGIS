@@ -28,7 +28,7 @@
   <g
      id="layer1">
     <path
-       d="m 18.5,8.5 0,5 -10,0 c -0.554,0 -1,0.446 -1,1 l 0,2 c 0,0.554 0.446,1 1,1 l 10,0 0,5 9,-7 -9,-7 z"
+       d="m 13.5,13.5 -5,0 c -0.554,0 -1,0.446 -1,1 l 0,2 c 0,0.554 0.446,1 1,1 l 10,0 0,5 9,-7 -9,-7 0,5 -4.955446,0"
        id="path2984"
        style="color:#000000;fill:#e9b96e;fill-opacity:1;fill-rule:nonzero;stroke:#c17d11;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
   </g>

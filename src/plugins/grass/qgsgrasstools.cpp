@@ -78,7 +78,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   mModelProxy->setFilterRole( Qt::UserRole + 2 );
 
   mListView->setModel( mModelProxy );
-  mListView->setItemDelegateForColumn( 0, new QgsDetailedItemDelegate() );
+  //mListView->setItemDelegateForColumn( 0, new QgsDetailedItemDelegate() );
   //mListView->setUniformItemSizes( false );
   //mListView2 = new QListView(this);
   //mDockWidget = new QDockWidget(tr("Grass Tools"), 0);
@@ -302,7 +302,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
         //
         // Experimental work by Tim - add this item to our list model
         //
-        QStandardItem * mypDetailItem = new QStandardItem( name );
+        QStandardItem * mypDetailItem = new QStandardItem( name + "\n" + label );
         mypDetailItem->setData( name, Qt::UserRole + 1 ); //for calling runModule later
         QString mySearchText = name + " - " + label;
         mypDetailItem->setData( mySearchText, Qt::UserRole + 2 ); //for filtering later
