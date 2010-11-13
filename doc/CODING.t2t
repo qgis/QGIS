@@ -235,6 +235,13 @@ Braces should start on the line following the expression:
   }
 ```
 
+There is a scripts/prepare-commit.sh that looks up the changed files and
+reindents them using astyle.  This should be run before committing.
+
+As newer versions of astyle indent differently than the version used to do a
+complete reindentation of the source, the script uses an old astyle version,
+that we include in our repository.
+
 == API Compatibility ==
 
 From QGIS 1.0 we will provide a stable, backwards compatible API. This will

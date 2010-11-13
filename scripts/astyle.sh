@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if ! type -p astyle >/dev/null; then
+ASTYLE=$(dirname $0)/astyle
+
+if ! type -p $ASTYLE >/dev/null; then
 	echo "astyle not found" >&2
 	exit 1	
 fi
@@ -43,5 +45,5 @@ for f in "$@"; do
 
 	flip -ub "$f" 
 	#qgsloggermig.pl "$f"
-	astyle $ARTISTIC_STYLE_OPTIONS "$f"
+	$ASTYLE $ARTISTIC_STYLE_OPTIONS "$f"
 done
