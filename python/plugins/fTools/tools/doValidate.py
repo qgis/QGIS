@@ -154,8 +154,13 @@ class validateThread( QThread ):
       layer = vlayer.selectedFeatures()
       nFeat = len(layer)
     else:
-      layer = vlayer
+      #layer = vlayer # requires SIP >= 4.9
+      layer = []
       layer.select([]) # select all features, and ignore attributes
+      ft = QgsFeature()
+      while vlayer.nextFeature(ft)
+        layer.append(ft)
+        ft = QgsFeature()
       nFeat = layer.featureCount()
     nElement = 0
     if nFeat > 0:
