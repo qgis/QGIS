@@ -1456,7 +1456,7 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation>Wybrany plik nie jest wspieranym formatem OGR</translation>
+        <translation type="unfinished">Wybrany plik nie jest obsługiwanym formatem OGR</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
@@ -1465,7 +1465,7 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation>Ta wersja GDAL Tools wymaga przynajmniej QGIS w wersji 1.0.0
+        <translation type="unfinished">Ta wersja GDAL Tools wymaga QGIS w wersji nie niższej niż 1.0.0
 Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
@@ -1854,7 +1854,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation>Wybierz pliki</translation>
+        <translation type="unfinished">Wybierz pliki do scalenia</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
@@ -2864,7 +2864,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation>Eksportuj/dodaj kolumnę geometrii</translation>
+        <translation type="unfinished">Eksportuj/Dodaj kolumnę geometrii</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -23373,7 +23373,7 @@ Poszukać brakujących warstw?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="207"/>
         <source>Degrees, Minutes, Seconds</source>
-        <translation>Stopnie, minuty sekundy</translation>
+        <translation type="unfinished">Stopnie, minuty, sekundy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="300"/>
@@ -29765,7 +29765,7 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2439"/>
         <source>Image Formats</source>
-        <translation>Formatu obrazów</translation>
+        <translation type="unfinished">Formaty obrazów</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2447"/>
@@ -30563,7 +30563,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="40"/>
         <source>Outline</source>
-        <translation>Obrys</translation>
+        <translation type="unfinished">Obramowanie</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="47"/>
@@ -30596,7 +30596,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="62"/>
         <source>Border color</source>
-        <translation>Kolor obrysu</translation>
+        <translation type="unfinished">Kolor obramowania</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
@@ -30679,7 +30679,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="22"/>
         <source>Border color</source>
-        <translation>Kolor obrysu</translation>
+        <translation type="unfinished">Kolor obramowania</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
@@ -30794,7 +30794,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="105"/>
         <source>Output file type</source>
-        <translation>Typ pliku docelowego</translation>
+        <translation type="unfinished">Typ pliku wyjściowego</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="111"/>
@@ -31070,7 +31070,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation>Wybierz typ bazy danych z rozwijanej listy obsługiwanych baz.</translation>
+        <translation>Wybierz typ bazy danych z rozwijalnej listy obsługiwanych baz.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
@@ -31207,7 +31207,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
         <source>Unable to connect to either the map canvas or application interface</source>
-        <translation>Nie można połączyć się z obszarem mapy ani interfejsem aplikacji</translation>
+        <translation type="unfinished">Nie można połączyć się z obszarem mapy lub interfejsem aplikacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="276"/>
@@ -31296,12 +31296,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation>Użyj listy rozwijanej do wyboru pola zawierającego ścieżkę dostępu do obrazu. Może to być ścieżka bezwzględną lub względna.</translation>
+        <translation type="unfinished">Użyj listy rozwijalnej do wyboru pola zawierającego ścieżkę dostępu do obrazu. Może to być ścieżka bezwzględną lub względna.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation>Przy sprawdzeniu, ścieżka dostępu do obrazu zostanie określona przez dodanie atrybutu wybranego pola z listy rozwijanej &quot;Atrybut zawierający ścieżkę do obrazu&quot; do &quot;Ścieżki bazowej&quot; zdefiniowanej poniżej.</translation>
+        <translation type="unfinished">Przy sprawdzeniu, ścieżka dostępu do obrazu zostanie określona przez dodanie atrybutu wybranego pola z listy rozwijalnej &quot;Atrybut zawierający ścieżkę do obrazu&quot; do &quot;Ścieżki bazowej&quot; zdefiniowanej poniżej.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
@@ -31332,7 +31332,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation>Użyj listy rozwijanej aby wybrać pole zawierające kierunek kompasu dla obrazu. Kierunek określa zwykle, w którą stronę skierowany był aparat przy wykonywaniu zdjęcia.</translation>
+        <translation type="unfinished">Użyj listy rozwijalnej aby wybrać pole zawierające kierunek kompasu dla obrazu. Kierunek określa zwykle, w którą stronę skierowany był aparat przy wykonywaniu zdjęcia.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
@@ -31357,7 +31357,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation>Użyj listy rozwijanej aby wybrać pole zawierające poprawki kierunku kompasu. Pozwoli to kompensować odchyłki (dopasowuj zapisane kierunki do prawdziwych kierunków północy wykorzystując kierunki magnetyczne). Odchyłki wschodnie powinny być wprowadzane ze znakiem dodatnim, zachodnie zaś z ujemnym.</translation>
+        <translation type="unfinished">Użyj listy rozwijalnej aby wybrać pole zawierające poprawki kierunku kompasu. Pozwoli to kompensować odchyłki (dopasowuj zapisane kierunki do prawdziwych kierunków północy wykorzystując kierunki magnetyczne). Odchyłki wschodnie powinny być wprowadzane ze znakiem dodatnim, zachodnie zaś z ujemnym.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
