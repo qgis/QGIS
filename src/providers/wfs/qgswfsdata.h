@@ -38,7 +38,6 @@ class QgsWFSData: public QObject
     QgsWFSData(
       const QString& uri,
       QgsRectangle* extent,
-      QgsCoordinateReferenceSystem* srs,
       QMap<int, QgsFeature* > &features,
       QMap<int, QString > &idMap,
       const QString& geometryAttribute,
@@ -144,8 +143,6 @@ class QgsWFSData: public QObject
     //results are members such that handler routines are able to manipulate them
     /**Bounding box of the layer*/
     QgsRectangle* mExtent;
-    /**Source srs of the layer*/
-    QgsCoordinateReferenceSystem* mSrs;
     /**The features of the layer*/
     QMap<int, QgsFeature* > &mFeatures;
     /**Stores the relation between provider ids and WFS server ids*/
