@@ -92,28 +92,11 @@ QgsGrassSelect::QgsGrassSelect( int type ): QgsGrassSelectBase()
   egisdbase->setText( lastGisdbase );
 
   setLocations();
-
-  restorePosition();
+  adjustSize();
 }
 
 QgsGrassSelect::~QgsGrassSelect()
 {
-  saveWindowLocation();
-}
-
-void QgsGrassSelect::restorePosition()
-{
-  //optionsFrame->adjustSize();
-  adjustSize();
-
-  QSettings settings;
-  restoreGeometry( settings.value( "/GRASS/windows/select/geometry" ).toByteArray() );
-}
-
-void QgsGrassSelect::saveWindowLocation()
-{
-  QSettings settings;
-  settings.setValue( "/GRASS/windows/select/geometry", saveGeometry() );
 }
 
 bool QgsGrassSelect::first = true;
@@ -493,8 +476,6 @@ void QgsGrassSelect::on_GisdbaseBrowse_clicked()
 
 void QgsGrassSelect::on_ok_clicked()
 {
-  saveWindowLocation();
-
   gisdbase = egisdbase->text();
   lastGisdbase = QString( gisdbase );
 
@@ -558,6 +539,5 @@ void QgsGrassSelect::on_ok_clicked()
 
 void QgsGrassSelect::on_cancel_clicked()
 {
-  saveWindowLocation();
   QDialog::reject();
 }
