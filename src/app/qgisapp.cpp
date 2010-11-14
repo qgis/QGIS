@@ -431,7 +431,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
-  mSnappingDialog = new QgsSnappingDialog( this,  mMapCanvas );
+  mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
@@ -1450,18 +1450,11 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionNodeTool );
   mEditMenu->addAction( mActionRotatePointSymbols );
 
-  QSettings myQsettings;
-  bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
-  if ( !myDockFlag )
-  {
-    mActionEditSeparator4 = mEditMenu->addSeparator();
-    mEditMenu->addAction( mActionSnappingOptions );
-  }
-
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
     mActionEditSeparator3 = mEditMenu->addSeparator();
     mEditMenu->addAction( mActionOptions );
+    mEditMenu->addAction( mActionSnappingOptions );
     mEditMenu->addAction( mActionConfigureShortcuts );
     mEditMenu->addAction( mActionStyleManagerV2 );
     mEditMenu->addAction( mActionCustomProjection );
@@ -1587,6 +1580,7 @@ void QgisApp::createMenus()
     mSettingsMenu->addAction( mActionStyleManagerV2 );
     mSettingsMenu->addAction( mActionConfigureShortcuts );
     mSettingsMenu->addAction( mActionOptions );
+    mSettingsMenu->addAction( mActionSnappingOptions );
   }
 #endif
 
@@ -1737,6 +1731,7 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionIdentify );
 
   QToolButton *bt = new QToolButton( mAttributesToolBar );
+  bt->setObjectName( "SelectTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelect );
   bt->addAction( mActionSelectRectangle );
@@ -1775,6 +1770,7 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionOpenTable );
 
   bt = new QToolButton( mAttributesToolBar );
+  bt->setObjectName( "MeasureTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionMeasure );
   bt->addAction( mActionMeasureArea );
@@ -1804,6 +1800,7 @@ void QgisApp::createToolBars()
 
   // Annotation tools
   bt = new QToolButton();
+  bt->setObjectName( "AnnotationTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
