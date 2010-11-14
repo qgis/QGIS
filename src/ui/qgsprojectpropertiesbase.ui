@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
+    <width>651</width>
     <height>538</height>
    </rect>
   </property>
@@ -25,7 +25,17 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
      <widget class="QWidget" name="tab1">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </attribute>
       <attribute name="title">
        <string>General</string>
       </attribute>
@@ -307,6 +317,10 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab2">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
+      </attribute>
       <attribute name="title">
        <string>Coordinate Reference System (CRS)</string>
       </attribute>
@@ -336,6 +350,10 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab3">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
+      </attribute>
       <attribute name="title">
        <string>Identifiable layers</string>
       </attribute>
@@ -411,7 +429,9 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>radManual</sender>
