@@ -282,7 +282,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
-  listWidget->setCurrentRow( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
+  tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
   int myHistogramTab = 6;
@@ -297,7 +297,7 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
   QSettings settings;
   settings.setValue( "/Windows/RasterLayerProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/RasterLayerProperties/row", listWidget->currentRow() );
+  settings.setValue( "/Windows/RasterLayerProperties/row", tabBar->currentIndex() );
   if ( mPixelSelectorTool )
   {
     delete mPixelSelectorTool;
@@ -529,26 +529,15 @@ void QgsRasterLayerProperties::sync()
 
   if ( mRasterLayerIsWms )
   {
-    QListWidgetItem *symbologyItem = listWidget->item( 0 );
-    QListWidgetItem *colormapItem = listWidget->item( 2 );
-    QListWidgetItem *metadataItem = listWidget->item( 4 );
-    QListWidgetItem *pyramidItem = listWidget->item( 5 );
-    QListWidgetItem *histogramItem = listWidget->item( 6 );
-
-    delete symbologyItem;
-    delete colormapItem;
-    delete pyramidItem;
-    delete histogramItem;
-
-    tabBar->removeWidget( tabPageSymbology );
-    tabBar->removeWidget( tabPageColormap );
-    tabBar->removeWidget( tabPagePyramids );
-    tabBar->removeWidget( tabPageHistogram );
+    delete tabPageSymbology;
+    delete tabPageColormap;
+    delete tabPagePyramids;
+    delete tabPageHistogram;
 
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
 
-    listWidget->setCurrentItem( metadataItem );
+    tabBar->setCurrentWidget( tabPageMetadata );
   }
 
 #if 0
@@ -601,29 +590,32 @@ void QgsRasterLayerProperties::sync()
       cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "User Defined" ) ) );
     }
   }
-  else
+  else if ( !mRasterLayerIsWms )
   {
     cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Grayscale" ) ) );
   }
 
-  //set whether the layer histogram should be inverted
-  if ( mRasterLayer->invertHistogram() )
+  if ( !mRasterLayerIsWms )
   {
-    cboxInvertColorMap->setChecked( true );
-  }
-  else
-  {
-    cboxInvertColorMap->setChecked( false );
-  }
+    //set whether the layer histogram should be inverted
+    if ( mRasterLayer->invertHistogram() )
+    {
+      cboxInvertColorMap->setChecked( true );
+    }
+    else
+    {
+      cboxInvertColorMap->setChecked( false );
+    }
 
-  //set the combos to the correct values
-  cboRed->setCurrentIndex( cboRed->findText( mRasterLayer->redBandName() ) );
-  cboGreen->setCurrentIndex( cboGreen->findText( mRasterLayer->greenBandName() ) );
-  cboBlue->setCurrentIndex( cboBlue->findText( mRasterLayer->blueBandName() ) );
-  cboGray->setCurrentIndex( cboGray->findText( mRasterLayer->grayBandName() ) );
+    //set the combos to the correct values
+    cboRed->setCurrentIndex( cboRed->findText( mRasterLayer->redBandName() ) );
+    cboGreen->setCurrentIndex( cboGreen->findText( mRasterLayer->greenBandName() ) );
+    cboBlue->setCurrentIndex( cboBlue->findText( mRasterLayer->blueBandName() ) );
+    cboGray->setCurrentIndex( cboGray->findText( mRasterLayer->grayBandName() ) );
 
-  //set the stdDevs and min max values
-  mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
+    //set the stdDevs and min max values
+    mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
+  }
   if ( mRasterLayerIsGdal && rbtnThreeBand->isChecked() )
   {
     mRGBMinimumMaximumEstimated = mRasterLayer->isRGBMinimumMaximumEstimated();
@@ -709,54 +701,57 @@ void QgsRasterLayerProperties::sync()
     setMinimumMaximumEstimateWarning();
   }
 
-  //set color scaling algorithm
-  if ( QgsContrastEnhancement::StretchToMinimumMaximum == mRasterLayer->contrastEnhancementAlgorithm() )
+  if ( !mRasterLayerIsWms )
   {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch To MinMax" ) ) );
-  }
-  else if ( QgsContrastEnhancement::StretchAndClipToMinimumMaximum == mRasterLayer->contrastEnhancementAlgorithm() )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch And Clip To MinMax" ) ) );
-  }
-  else if ( QgsContrastEnhancement::ClipToMinimumMaximum == mRasterLayer->contrastEnhancementAlgorithm() )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Clip To MinMax" ) ) );
-  }
-  else if ( QgsContrastEnhancement::UserDefinedEnhancement == mRasterLayer->contrastEnhancementAlgorithm() )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "User Defined" ) ) );
-  }
-  else
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "No Stretch" ) ) );
-  }
+    //set color scaling algorithm
+    if ( QgsContrastEnhancement::StretchToMinimumMaximum == mRasterLayer->contrastEnhancementAlgorithm() )
+    {
+      cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch To MinMax" ) ) );
+    }
+    else if ( QgsContrastEnhancement::StretchAndClipToMinimumMaximum == mRasterLayer->contrastEnhancementAlgorithm() )
+    {
+      cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch And Clip To MinMax" ) ) );
+    }
+    else if ( QgsContrastEnhancement::ClipToMinimumMaximum == mRasterLayer->contrastEnhancementAlgorithm() )
+    {
+      cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Clip To MinMax" ) ) );
+    }
+    else if ( QgsContrastEnhancement::UserDefinedEnhancement == mRasterLayer->contrastEnhancementAlgorithm() )
+    {
+      cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "User Defined" ) ) );
+    }
+    else
+    {
+      cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "No Stretch" ) ) );
+    }
 
-  //Display the current default contrast enhancement algorithm
-  mDefaultRedBand = myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt();
-  mDefaultGreenBand = myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt();
-  mDefaultBlueBand = myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt();
-  labelDefaultBandCombination->setText( tr( "Default R:%1 G:%2 B:%3" ).arg( mDefaultRedBand ) .arg( mDefaultGreenBand ) .arg( mDefaultBlueBand ) );
+    //Display the current default contrast enhancement algorithm
+    mDefaultRedBand = myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt();
+    mDefaultGreenBand = myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt();
+    mDefaultBlueBand = myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt();
+    labelDefaultBandCombination->setText( tr( "Default R:%1 G:%2 B:%3" ).arg( mDefaultRedBand ) .arg( mDefaultGreenBand ) .arg( mDefaultBlueBand ) );
 
-  mDefaultContrastEnhancementAlgorithm = myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
-  if ( mDefaultContrastEnhancementAlgorithm == "NoEnhancement" )
-  {
-    labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
-  }
-  if ( mDefaultContrastEnhancementAlgorithm == "StretchToMinimumMaximum" )
-  {
-    labelDefaultContrastEnhancementAlgorithm->setText( tr( "Stretch To MinMax" ) );
-  }
-  else if ( mDefaultContrastEnhancementAlgorithm == "StretchAndClipToMinimumMaximum" )
-  {
-    labelDefaultContrastEnhancementAlgorithm->setText( tr( "Stretch And Clip To MinMax" ) );
-  }
-  else if ( mDefaultContrastEnhancementAlgorithm == "ClipToMinimumMaximum" )
-  {
-    labelDefaultContrastEnhancementAlgorithm->setText( tr( "Clip To MinMax" ) );
-  }
-  else
-  {
-    labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
+    mDefaultContrastEnhancementAlgorithm = myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
+    if ( mDefaultContrastEnhancementAlgorithm == "NoEnhancement" )
+    {
+      labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
+    }
+    if ( mDefaultContrastEnhancementAlgorithm == "StretchToMinimumMaximum" )
+    {
+      labelDefaultContrastEnhancementAlgorithm->setText( tr( "Stretch To MinMax" ) );
+    }
+    else if ( mDefaultContrastEnhancementAlgorithm == "StretchAndClipToMinimumMaximum" )
+    {
+      labelDefaultContrastEnhancementAlgorithm->setText( tr( "Stretch And Clip To MinMax" ) );
+    }
+    else if ( mDefaultContrastEnhancementAlgorithm == "ClipToMinimumMaximum" )
+    {
+      labelDefaultContrastEnhancementAlgorithm->setText( tr( "Clip To MinMax" ) );
+    }
+    else
+    {
+      labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
+    }
   }
 
   QgsDebugMsg( "populate transparency tab" );
