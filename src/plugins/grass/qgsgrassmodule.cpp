@@ -305,7 +305,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     : QWidget( parent, f ),
     QgsGrassModuleOptions( tools, module, iface )
 {
-  QgsDebugMsg( "called." );
+  //QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
 
   // Attention!: sh.exe (MSYS) sets $0 in scripts to file name
@@ -1047,7 +1047,7 @@ QString QgsGrassModule::label( QString path )
 
 QPixmap QgsGrassModule::pixmap( QString path, int height )
 {
-  QgsDebugMsg( QString( "path = %1" ).arg( path ) );
+  //QgsDebugMsg( QString( "path = %1" ).arg( path ) );
 
   std::vector<QPixmap> pixmaps;
 
