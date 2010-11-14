@@ -18,6 +18,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
     self.mergeThread = None
     self.inputFiles = None
+    self.outFileName = None
 
     self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
     self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
@@ -95,6 +96,11 @@ class Dialog( QDialog, Ui_Dialog ):
         return
 
       self.progressFiles.setRange( 0, self.inputFiles.count() )
+
+    if self.outFileName is None:
+      QMessageBox.warning( self, self.tr( "No output file" ),
+        self.tr( "Please specify output file." ) )
+      return
 
     outFile = QFile( self.outFileName )
     if outFile.exists():
