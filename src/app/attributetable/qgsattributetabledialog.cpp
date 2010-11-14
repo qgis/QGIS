@@ -101,7 +101,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
-  mToggleEditingButton->setEnabled( canChangeAttributes );
+  mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
