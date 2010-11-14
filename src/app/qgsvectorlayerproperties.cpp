@@ -517,6 +517,7 @@ void QgsVectorLayerProperties::reset( void )
 
   loadRows();
   QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
+  QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
 } // reset()
 
 
@@ -1257,4 +1258,9 @@ void QgsVectorLayerProperties::on_tabWidget_currentChanged( int index )
   teMetadata->document()->setDefaultStyleSheet( myStyle );
   teMetadata->setHtml( metadata() );
   mMetadataFilled = true;
+}
+
+void QgsVectorLayerProperties::enableLabelOptions( bool theFlag )
+{
+  labelOptionsFrame->setEnabled( theFlag );
 }

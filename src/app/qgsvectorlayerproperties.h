@@ -107,6 +107,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_tabWidget_currentChanged( int idx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void enableLabelOptions( bool theFlag );
     void addAttribute();
     void deleteAttribute();
 
