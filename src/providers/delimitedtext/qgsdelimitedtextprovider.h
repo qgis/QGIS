@@ -201,6 +201,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     int mGeomType;
 
     long mNumberFeatures;
+    int mSkipLines;
 
     //! Storage for any lines in the file that couldn't be loaded
     QStringList mInvalidLines;

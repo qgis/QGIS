@@ -32,10 +32,9 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
 {
   setupUi( this );
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
-  pbnParse = buttonBox->addButton( tr( "Parse" ), QDialogButtonBox::ActionRole );
-  connect( pbnParse, SIGNAL( clicked() ), this, SLOT( pbnParse_clicked() ) );
-  connect( txtFilePath, SIGNAL( textChanged( const QString& ) ), this, SLOT( pbnParse_clicked() ) );
-  enableButtons();
+
+  enableAccept();
+
   // at startup, fetch the last used delimiter and directory from
   // settings
   QSettings settings;
@@ -43,21 +42,40 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   txtDelimiter->setText( settings.value( key + "/delimiter" ).toString() );
 
   // and how to use the delimiter
-  QString delimiterType = settings.value( key + "/delimiterType",
-                                          "plain" ).toString();
-  if ( delimiterType == "plain" )
+  QString delimiterType = settings.value( key + "/delimiterType", "plain" ).toString();
+  if ( delimiterType == "selection" )
+  {
+    delimiterSelection->setChecked( true );
+  }
+  else if ( delimiterType == "plain" )
   {
     delimiterPlain->setChecked( true );
-    delimiterRegexp->setChecked( false );
   }
   else
   {
-    delimiterPlain->setChecked( false );
     delimiterRegexp->setChecked( true );
   }
 
-  txtSample->setFixedHeight( 120 );
+  cmbXField->setDisabled( true );
+  cmbYField->setDisabled( true );
+
+  connect( txtFilePath, SIGNAL( textChanged( QString ) ), this, SLOT( enableAccept() ) );
+
+  connect( delimiterSelection, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+  connect( delimiterPlain, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+  connect( delimiterRegexp, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+
+  connect( cbxDelimSpace, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( cbxDelimTab, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( cbxDelimSemicolon, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( cbxDelimComma, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( cbxDelimColon, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
+
+  connect( txtDelimiter, SIGNAL( editingFinished() ), this, SLOT( enableAccept() ) );
+
+  connect( rowCounter, SIGNAL( valueChanged( int ) ), this, SLOT( enableAccept() ) );
 }
+
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
 }
@@ -66,25 +84,35 @@ void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }
-void QgsDelimitedTextPluginGui::pbnParse_clicked()
-{
-  updateFieldLists();
-}
+
 void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
 {
-  if ( txtLayerName->text().length() > 0 )
+  if ( !txtLayerName->text().isEmpty() )
   {
     //Build the delimited text URI from the user provided information
-    QString delimiterType = "plain";
-    if ( delimiterRegexp->isChecked() )
+    QString delimiterType;
+    if ( delimiterSelection->isChecked() )
+      delimiterType = "regexp";
+    else if ( delimiterPlain->isChecked() )
+      delimiterType = "plain";
+    else if ( delimiterRegexp->isChecked() )
       delimiterType = "regexp";
 
-    QString uri = QString( "%1?delimiter=%2&delimiterType=%3&xField=%4&yField=%5" )
+    QString uri = QString( "%1?delimiter=%2&delimiterType=%3" )
                   .arg( txtFilePath->text() )
                   .arg( txtDelimiter->text() )
-                  .arg( delimiterType )
-                  .arg( cmbXField->currentText() )
-                  .arg( cmbYField->currentText() );
+                  .arg( delimiterType );
+
+    if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
+    {
+      uri += QString( "&xField=%1&yField=%2" )
+             .arg( cmbXField->currentText() )
+             .arg( cmbYField->currentText() );
+    }
+
+    int skipLines = rowCounter->value();
+    if ( skipLines > 0 )
+      uri += QString( "&skipLines=%1" ).arg( skipLines );
 
     // add the layer to the map
     emit drawVectorLayer( uri, txtLayerName->text(), "delimitedtext" );
@@ -96,6 +124,8 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     QFileInfo fi( txtFilePath->text() );
     settings.setValue( key + "/text_path", fi.path() );
 
+    if ( delimiterSelection->isChecked() )
+      settings.setValue( key + "/delimiterType", "selection" );
     if ( delimiterPlain->isChecked() )
       settings.setValue( key + "/delimiterType", "plain" );
     else
@@ -114,120 +144,170 @@ void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
   reject();
 }
 
+QStringList QgsDelimitedTextPluginGui::splitLine( QString line )
+{
+  QStringList fieldList;
+  QString delimiter = txtDelimiter->text();
+
+  if ( delimiterPlain->isChecked() )
+  {
+    // convert \t to tabulator
+    delimiter = txtDelimiter->text();
+    delimiter.replace( "\\t", "\t" );
+    fieldList = line.split( delimiter );
+  }
+  else if ( delimiterSelection->isChecked() )
+  {
+    delimiter = "[";
+    if ( cbxDelimSpace->isChecked() ) delimiter += " ";
+    if ( cbxDelimTab->isChecked() ) delimiter += "\t";
+    if ( cbxDelimSemicolon->isChecked() ) delimiter += ";";
+    if ( cbxDelimComma->isChecked() ) delimiter += ",";
+    if ( cbxDelimColon->isChecked() ) delimiter += ":";
+    delimiter += "]";
+    txtDelimiter->setText( delimiter );
+    fieldList = line.split( QRegExp( delimiter ) );
+  }
+  else
+  {
+    QRegExp del( delimiter );
+    fieldList = line.split( QRegExp( delimiter ) );
+  }
+
+  return fieldList;
+}
+
 void QgsDelimitedTextPluginGui::updateFieldLists()
 {
   // Update the x and y field dropdown boxes
   QgsDebugMsg( "Updating field lists" );
-  // open the file
 
-  if ( QFile::exists( txtFilePath->text() ) )
+  disconnect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+  disconnect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+
+  QString columnX = cmbXField->currentText();
+  QString columnY = cmbYField->currentText();
+
+  // clear the field lists
+  cmbXField->clear();
+  cmbYField->clear();
+
+  cmbXField->setEnabled( false );
+  cmbYField->setEnabled( false );
+
+  QFile file( txtFilePath->text() );
+  if ( !file.open( QIODevice::ReadOnly ) )
+    return;
+
+  int skipLines = rowCounter->value();
+
+  QTextStream stream( &file );
+  QString line;
+  do
   {
-    QFile *file = new QFile( txtFilePath->text() );
-    if ( file->open( QIODevice::ReadOnly ) )
-    {
-      // clear the field lists
-      cmbXField->clear();
-      cmbYField->clear();
-      QTextStream stream( file );
-      QString line;
-      line = readLine( stream ); // line of text excluding '\n'
-      if ( txtDelimiter->text().length() > 0 )
-      {
-        QgsDebugMsg( QString( "Attempting to split the input line: %1 using delimiter %2" ).arg( line ).arg( txtDelimiter->text() ) );
-        QString delimiter = txtDelimiter->text();
+    line = readLine( stream ); // line of text excluding '\n'
+  }
+  while ( !line.isEmpty() && skipLines-- > 0 );
 
-        QStringList fieldList;
+  QgsDebugMsg( QString( "Attempting to split the input line: %1 using delimiter %2" ).arg( line ).arg( txtDelimiter->text() ) );
 
-        if ( delimiterPlain->isChecked() )
-        {
-          // convert \t to tabulator
-          delimiter.replace( "\\t", "\t" );
-          fieldList = line.split( delimiter );
-        }
-        else
-        {
-          QRegExp del( delimiter );
-          fieldList = line.split( QRegExp( delimiter ) );
-        }
+  QString delimiter = txtDelimiter->text();
 
-        QgsDebugMsg( QString( "Split line into %1 parts" ).arg( fieldList.size() ) );
-        //
-        // We don't know anything about a text based field other
-        // than its name. All fields are assumed to be text
-        foreach( QString field, fieldList )
-        {
-          if (( field.left( 1 ) == "'" || field.left( 1 ) == "\"" ) &&
-              field.left( 1 ) == field.right( 1 ) )
-            // eat quotes
-            field = field.mid( 1, field.length() - 2 );
+  QStringList fieldList = splitLine( line );
 
-          if ( field.length() == 0 )
-            // skip empty field names
-            continue;
+  QgsDebugMsg( QString( "Split line into %1 parts" ).arg( fieldList.size() ) );
 
-          cmbXField->addItem( field );
-          cmbYField->addItem( field );
-        }
+  //
+  // We don't know anything about a text based field other
+  // than its name. All fields are assumed to be text
+  foreach( QString field, fieldList )
+  {
+    if (( field.left( 1 ) == "'" || field.left( 1 ) == "\"" ) &&
+        field.left( 1 ) == field.right( 1 ) )
+      // eat quotes
+      field = field.mid( 1, field.length() - 2 );
 
-        //x/y fields might be missing
-        cmbXField->addItem( "" );
-        cmbYField->addItem( "" );
+    if ( field.length() == 0 )
+      // skip empty field names
+      continue;
 
-        // Have a go at setting the selected items in the X and Y
-        // combo boxes to something sensible.
-        int indexX = cmbXField->findText( "lon", Qt::MatchContains );
-        int indexY = cmbXField->findText( "lat", Qt::MatchContains );
-        if ( indexX != -1 && indexY != -1 )
-        {
-          cmbXField->setCurrentIndex( indexX );
-          cmbYField->setCurrentIndex( indexY );
-        }
-        else
-        {
-          indexX = cmbXField->findText( "x", Qt::MatchContains );
-          indexY = cmbXField->findText( "y", Qt::MatchContains );
-          //leave x- and y-field empty by default if no match found
-          if ( indexX == -1 )
-          {
-            indexX = cmbXField->findText( "" );
-          }
-          if ( indexY == -1 )
-          {
-            indexY = cmbYField->findText( "" );
-          }
-          cmbXField->setCurrentIndex( indexX );
-          cmbYField->setCurrentIndex( indexY );
-        }
-        // enable the buttons
-        enableButtons();
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "No delimiter" ), tr( "Please specify a delimiter prior to parsing the file" ) );
-      }
-      // clear the sample text box
-      txtSample->clear();
-      // put the header row in the sample box
-      txtSample->insertPlainText( line + "\n" );
-      // put a few more lines into the sample box
-      int counter = 0;
-      line = readLine( stream );
-      while ( !line.isEmpty() && ( counter < 20 ) )
-      {
-        txtSample->insertPlainText( line + "\n" );
-        counter++;
-        line = readLine( stream );
-      }
-      // close the file
-      file->close();
-      // put a default layer name in the text entry
-      QFileInfo finfo( txtFilePath->text() );
-      txtLayerName->setText( finfo.completeBaseName() );
-    }
-
+    cmbXField->addItem( field );
+    cmbYField->addItem( field );
   }
 
+  cmbXField->setEnabled( cmbXField->count() > 0 );
+  cmbYField->setEnabled( cmbYField->count() > 0 );
+
+  int indexX = -1;
+  if ( !columnX.isEmpty() )
+  {
+    indexX = cmbXField->findText( columnX );
+  }
+
+  if ( indexX < 0 )
+  {
+    indexX = cmbXField->findText( "lon", Qt::MatchContains );
+  }
+
+  if ( indexX < 0 )
+  {
+    indexX = cmbXField->findText( "x", Qt::MatchContains );
+  }
+
+  cmbXField->setCurrentIndex( indexX );
+
+  int indexY = -1;
+  if ( !columnY.isEmpty() )
+  {
+    indexY = cmbYField->findText( columnY );
+  }
+
+  if ( indexY < 0 )
+  {
+    indexY = cmbYField->findText( "lat", Qt::MatchContains );
+  }
+
+  if ( indexY < 0 )
+  {
+    indexY = cmbYField->findText( "y", Qt::MatchContains );
+  }
+
+  cmbYField->setCurrentIndex( indexY );
+
+  connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+
+  // clear the sample text box
+  tblSample->clear();
+
+  tblSample->setColumnCount( fieldList.size() );
+  tblSample->setHorizontalHeaderLabels( fieldList );
+
+  // put a few more lines into the sample box
+  int counter = 0;
+  line = readLine( stream );
+  while ( !line.isEmpty() && counter < 20 )
+  {
+    QStringList values = splitLine( line );
+
+    tblSample->setRowCount( counter + 1 );
+
+    for ( int i = 0; i < tblSample->columnCount(); i++ )
+    {
+      tblSample->setItem( counter, i, new QTableWidgetItem( i < values.size() ? values[i] : "" ) );
+    }
+
+    counter++;
+    line = readLine( stream );
+  }
+  // close the file
+  file.close();
+
+  // put a default layer name in the text entry
+  QFileInfo finfo( txtFilePath->text() );
+  txtLayerName->setText( finfo.completeBaseName() );
 }
+
 void QgsDelimitedTextPluginGui::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
@@ -242,21 +322,40 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
 
   // set path
   txtFilePath->setText( s );
-  // update the field drop-down boxes by parsing and splitting
-  // the header row
-  updateFieldLists();
 }
-void QgsDelimitedTextPluginGui::enableButtons()
+
+void QgsDelimitedTextPluginGui::enableAccept()
 {
-  pbnParse->setEnabled( txtDelimiter->text().length() > 0 && txtFilePath->text().length() > 0 );
-  pbnOK->setEnabled( txtDelimiter->text().length() > 0 && txtFilePath->text().length() > 0 );
-}
-void QgsDelimitedTextPluginGui::on_txtDelimiter_textChanged( const QString & text )
-{
-  if ( !text.isEmpty() )
+  bool enabled = false;
+
+  if ( txtFilePath->text().isEmpty() || !QFile( txtFilePath->text() ).exists() )
   {
-    pbnParse->setEnabled( true );
+    enabled = false;
   }
+  else if ( delimiterSelection->isChecked() )
+  {
+    enabled =
+      cbxDelimSpace->isChecked() ||
+      cbxDelimTab->isChecked() ||
+      cbxDelimSemicolon->isChecked() ||
+      cbxDelimComma->isChecked() ||
+      cbxDelimColon->isChecked();
+  }
+  else
+  {
+    enabled = !txtDelimiter->text().isEmpty();
+  }
+
+
+  if ( enabled )
+  {
+    updateFieldLists();
+
+    enabled = ( cmbXField->currentText().isEmpty() && cmbYField->currentText().isEmpty() )
+              || ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() && cmbXField->currentText() != cmbYField->currentText() );
+  }
+
+  pbnOK->setEnabled( enabled );
 }
 
 QString QgsDelimitedTextPluginGui::readLine( QTextStream &stream )
