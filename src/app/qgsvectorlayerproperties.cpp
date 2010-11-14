@@ -162,14 +162,14 @@ void QgsVectorLayerProperties::loadRows()
 
   tblAttributes->setColumnCount( attrColCount );
   tblAttributes->setRowCount( fields.size() );
-  tblAttributes->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "id" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "name" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "type" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "length" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "precision" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "comment" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "edit widget" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "alias" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
   tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
