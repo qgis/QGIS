@@ -172,6 +172,7 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   tblAttributes->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
+  tblAttributes->horizontalHeader()->setResizeMode(7,QHeaderView::Stretch);
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
   tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
 
