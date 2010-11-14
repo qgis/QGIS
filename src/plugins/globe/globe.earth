@@ -34,8 +34,6 @@
       <worldwind_cache>/home/pi/devel/gis/qgis/.qgis/cache/globe/worldwind_srtm</worldwind_cache>
       <cache_enabled>false</cache_enabled>
     </heightfield>
-    <vertical_scale>8</vertical_scale>
-    <skirt_ratio>0.01</skirt_ratio>
     -->
 
     <heightfield name="aster_dem" driver="gdal">

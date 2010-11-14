@@ -187,8 +187,8 @@ void GlobePlugin::run()
 
   // place models on jittered grid
   srand( 23 );
-  double lat = 47.235;
-  double lon = 9.36;
+  double lat = 47.1786;
+  double lon = 10.111;
   double gridSize = 0.001;
   for( int i=0; i<10; i++ )
   {
