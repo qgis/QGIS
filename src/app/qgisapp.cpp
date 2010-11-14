@@ -1737,13 +1737,12 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionIdentify );
 
   QToolButton *bt = new QToolButton( mAttributesToolBar );
-  QMenu *menu = new QMenu( bt );
-  bt->setMenu( menu );
-  menu->addAction( mActionSelect );
-  menu->addAction( mActionSelectRectangle );
-  menu->addAction( mActionSelectPolygon );
-  menu->addAction( mActionSelectFreehand );
-  menu->addAction( mActionSelectRadius );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionSelect );
+  bt->addAction( mActionSelectRectangle );
+  bt->addAction( mActionSelectPolygon );
+  bt->addAction( mActionSelectFreehand );
+  bt->addAction( mActionSelectRadius );
 
   QSettings settings;
   switch ( settings.value( "/UI/selectTool", 0 ).toInt() )
@@ -1776,12 +1775,25 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionOpenTable );
 
   bt = new QToolButton( mAttributesToolBar );
-  menu = new QMenu( bt );
-  bt->setMenu( menu );
-  menu->addAction( mActionMeasure );
-  menu->addAction( mActionMeasureArea );
-  menu->addAction( mActionMeasureAngle );
-  bt->setDefaultAction( mActionMeasure );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionMeasure );
+  bt->addAction( mActionMeasureArea );
+  bt->addAction( mActionMeasureAngle );
+  switch ( settings.value( "/UI/measureTool", 0 ).toInt() )
+  {
+    default:
+    case 0:
+      bt->setDefaultAction( mActionMeasure );
+      break;
+
+    case 1:
+      bt->setDefaultAction( mActionMeasureArea );
+      break;
+
+    case 2:
+      bt->setDefaultAction( mActionMeasureAngle );
+      break;
+  }
   mAttributesToolBar->addWidget( bt );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
@@ -1791,19 +1803,31 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionLabeling );
 
   // Annotation tools
-  QToolButton *annotationToolButton = new QToolButton();
-  annotationToolButton->setPopupMode( QToolButton::InstantPopup );
-  annotationToolButton->setAutoRaise( true );
-  annotationToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
-  annotationToolButton->setCheckable( true );
-  annotationToolButton->addAction( mActionTextAnnotation );
-  annotationToolButton->addAction( mActionFormAnnotation );
-  annotationToolButton->addAction( mActionAnnotation );
-  annotationToolButton->setDefaultAction( mActionTextAnnotation );
-  connect( annotationToolButton, SIGNAL( triggered( QAction* ) ),
-           annotationToolButton, SLOT( setDefaultAction( QAction* ) ) );
-  mAttributesToolBar->addWidget( annotationToolButton );
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionTextAnnotation );
+  bt->addAction( mActionFormAnnotation );
+  bt->addAction( mActionAnnotation );
+  switch ( settings.value( "/UI/annotationTool", 0 ).toInt() )
+  {
+    default:
+    case 0:
+      bt->setDefaultAction( mActionTextAnnotation );
+      break;
+
+    case 1:
+      bt->setDefaultAction( mActionFormAnnotation );
+      break;
+
+    case 2:
+      bt->setDefaultAction( mActionAnnotation );
+      break;
+  }
+  mAttributesToolBar->addWidget( bt );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   mToolbarMenu->addAction( mAttributesToolBar->toggleViewAction() );
+
   //
   // Plugins Toolbar
   mPluginToolBar = addToolBar( tr( "Plugins" ) );
@@ -7188,6 +7212,18 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/selectTool", 3 );
   else if ( action == mActionSelectRadius )
     settings.setValue( "/UI/selectTool", 4 );
+  else if ( action == mActionMeasure )
+    settings.setValue( "/UI/measureTool", 0 );
+  else if ( action == mActionMeasureArea )
+    settings.setValue( "/UI/measureTool", 1 );
+  else if ( action == mActionMeasureAngle )
+    settings.setValue( "/UI/measureTool", 2 );
+  else if ( action == mActionTextAnnotation )
+    settings.setValue( "/UI/annotationTool", 0 );
+  else if ( action == mActionFormAnnotation )
+    settings.setValue( "/UI/annotationTool", 1 );
+  else if ( action == mActionAnnotation )
+    settings.setValue( "/UI/annotationTool", 2 );
 
   bt->setDefaultAction( action );
 }
