@@ -510,6 +510,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( "QuantumGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS" );
+  QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 #ifdef Q_OS_MACX
   // Install OpenDocuments AppleEvent handler after application object is initialized
   // but before any other event handling (including dialogs or splash screens) occurs.
