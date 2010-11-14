@@ -52,12 +52,20 @@ class Dialog(QDialog, Ui_Dialog):
     QObject.connect(self.toolTable, SIGNAL("clicked()"), self.inFile)
     QObject.connect(self.rdoTable, SIGNAL("clicked()"), self.updateTableFields)
     QObject.connect(self.rdoVector, SIGNAL("clicked()"), self.jupdate)
+    QObject.connect(self.cmbEncoding, SIGNAL("currentIndexChanged(QString)"), 
+      self.updateTableFields)
     self.setWindowTitle( self.tr("Join attributes") )
     self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
     # populate layer list
     self.progressBar.setValue(0)
     mapCanvas = self.iface.mapCanvas()
     layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
+    encodings = QgsVectorDataProvider.availableEncodings()
+    self.cmbEncoding.addItems(encodings)
+    id = encodings.indexOf(QSettings().value( "/UI/encoding", "System").toString())
+    if id < 0:
+      id = len(encodings)-1
+    self.cmbEncoding.setCurrentIndex(id)
     self.inShape.addItems(layers)
     self.joinShape.addItems(layers)
 
@@ -103,7 +111,10 @@ class Dialog(QDialog, Ui_Dialog):
         useTable = True
       joinField = self.joinField.currentText()
       outPath = self.outShape.text()
-      res = self.compute(inName, inField, joinName, joinField, outPath, keep, useTable, self.progressBar)
+      encoding = self.cmbEncoding.currentText()
+      QSettings().setValue( "/UI/encoding", encoding)
+      res = self.compute(inName, inField, joinName, joinField, 
+      outPath, keep, useTable, encoding, self.progressBar)
       self.outShape.clear()
       if res:
         addToTOC = QMessageBox.question(self, self.tr("Join Attributes"),
@@ -146,6 +157,8 @@ class Dialog(QDialog, Ui_Dialog):
       joinName = joinInfo.completeBaseName()
       self.joinField.clear()
       changedLayer = QgsVectorLayer(joinPath, joinName, 'ogr')
+      encoding = self.cmbEncoding.currentText()
+      changedLayer.setProviderEncoding(encoding)
       try:
         changedField = ftools_utils.getFieldList(changedLayer)
       except:
@@ -154,7 +167,8 @@ class Dialog(QDialog, Ui_Dialog):
       for i in changedField:
         self.joinField.addItem(unicode(changedField[i].name()))
 
-  def compute(self, inName, inField, joinName, joinField, outName, keep, useTable, progressBar):
+  def compute(self, inName, inField, joinName, joinField, outName, 
+              keep, useTable, encoding, progressBar):
     layer1 = ftools_utils.getVectorLayerByName(inName)
     provider1 = layer1.dataProvider()
     allAttrs = provider1.attributeIndexes()
@@ -166,6 +180,7 @@ class Dialog(QDialog, Ui_Dialog):
       joinPath = joinInfo.absoluteFilePath()
       joinName = joinInfo.completeBaseName()
       layer2 = QgsVectorLayer(joinPath, joinName, 'ogr')
+      layer2.setProviderEncoding(encoding)
       useTable = False
     else:
       layer2 = ftools_utils.getVectorLayerByName(joinName)
