@@ -267,7 +267,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QLabel" name="textLabel3">
+           <widget class="QLabel" name="labelDP">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -452,7 +452,7 @@
   <connection>
    <sender>radManual</sender>
    <signal>clicked(bool)</signal>
-   <receiver>textLabel3</receiver>
+   <receiver>labelDP</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -484,7 +484,7 @@
   <connection>
    <sender>radAutomatic</sender>
    <signal>clicked(bool)</signal>
-   <receiver>textLabel3</receiver>
+   <receiver>labelDP</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
