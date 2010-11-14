@@ -397,11 +397,6 @@ void QgsFieldCalculator::on_mConcatButton_clicked()
   mExpressionTextEdit->insertPlainText( "||" );
 }
 
-void QgsFieldCalculator::on_mSamplePushButton_clicked()
-{
-  getFieldValues( 25 );
-}
-
 void QgsFieldCalculator::on_mAllPushButton_clicked()
 {
   getFieldValues( 0 );
@@ -504,3 +499,7 @@ void QgsFieldCalculator::setOkButtonState()
 }
 
 
+void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged(QListWidgetItem * current, QListWidgetItem * previous )
+{
+  getFieldValues( 25 );
+}

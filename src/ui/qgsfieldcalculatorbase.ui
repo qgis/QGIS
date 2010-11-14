@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>686</height>
+    <width>689</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,28 +15,31 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QCheckBox" name="mUpdateExistingFieldCheckBox">
-     <property name="text">
-      <string>Update existing field</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mExistingFieldComboBox"/>
-   </item>
-   <item row="1" column="0" colspan="2">
     <widget class="QCheckBox" name="mOnlyUpdateSelectedCheckBox">
      <property name="text">
       <string>Only update selected features</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
+   <item row="0" column="1">
+    <widget class="QCheckBox" name="mUpdateExistingFieldCheckBox">
+     <property name="text">
+      <string>Update existing field</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QComboBox" name="mExistingFieldComboBox"/>
+   </item>
+   <item row="1" column="0" colspan="3">
     <widget class="QGroupBox" name="mNewFieldGroupBox">
      <property name="title">
       <string>New field</string>
      </property>
      <layout class="QGridLayout">
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="mFieldNameLabel">
         <property name="text">
@@ -74,12 +77,22 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="mOuputFieldWidthSpinBox"/>
+       <widget class="QSpinBox" name="mOuputFieldWidthSpinBox">
+        <property name="toolTip">
+         <string>Width of complete output. For example 123,456 means 6 as field width.</string>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+       </widget>
       </item>
       <item row="2" column="2">
        <widget class="QLabel" name="mOutputFieldPrecisionLabel">
         <property name="text">
-         <string>Output field precision</string>
+         <string>Precision</string>
         </property>
         <property name="buddy">
          <cstring>mOutputFieldPrecisionSpinBox</cstring>
@@ -87,43 +100,9 @@
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="mFieldsGroupBox">
-     <property name="title">
-      <string>Fields</string>
-     </property>
-     <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="QListWidget" name="mFieldsListWidget"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QGroupBox" name="mValuesGroupBox">
-     <property name="title">
-      <string>Values</string>
-     </property>
-     <layout class="QGridLayout">
-      <item row="0" column="0" colspan="2">
-       <widget class="QListWidget" name="mValueListWidget"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mSamplePushButton">
-        <property name="text">
-         <string>Sample</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mAllPushButton">
-        <property name="text">
-         <string>All</string>
+       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox">
+        <property name="value">
+         <number>2</number>
         </property>
        </widget>
       </item>
@@ -136,6 +115,12 @@
       <string>Operators</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="mPlusPushButton">
         <property name="text">
@@ -309,19 +294,69 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QFrame" name="frame">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="1" rowspan="2" colspan="2">
+       <widget class="QFrame" name="mValuesFrame">
+        <layout class="QGridLayout">
+         <property name="leftMargin">
+          <number>9</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="mAllPushButton">
+           <property name="text">
+            <string>All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" rowspan="3">
+          <widget class="QListWidget" name="mValueListWidget"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QListWidget" name="mFieldsListWidget"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Fields</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Values</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>mValuesFrame</zorder>
+     <zorder>mFieldsListWidget</zorder>
+     <zorder>label</zorder>
+     <zorder>label_2</zorder>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>mUpdateExistingFieldCheckBox</tabstop>
-  <tabstop>mExistingFieldComboBox</tabstop>
-  <tabstop>mOnlyUpdateSelectedCheckBox</tabstop>
   <tabstop>mOutputFieldNameLineEdit</tabstop>
   <tabstop>mOutputFieldTypeComboBox</tabstop>
   <tabstop>mOuputFieldWidthSpinBox</tabstop>
   <tabstop>mOutputFieldPrecisionSpinBox</tabstop>
-  <tabstop>mFieldsListWidget</tabstop>
   <tabstop>mValueListWidget</tabstop>
-  <tabstop>mSamplePushButton</tabstop>
   <tabstop>mAllPushButton</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
@@ -355,8 +390,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>321</x>
-     <y>676</y>
+     <x>679</x>
+     <y>559</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -371,8 +406,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>321</x>
-     <y>676</y>
+     <x>679</x>
+     <y>559</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
