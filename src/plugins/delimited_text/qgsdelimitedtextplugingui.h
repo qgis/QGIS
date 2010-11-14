@@ -30,24 +30,24 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
 
-    static QString readLine( QTextStream & stream );
+    QString readLine( QTextStream & stream );
+    QStringList splitLine( QString line );
 
   private:
     void updateFieldLists();
     void getOpenFileName();
-    void enableButtons();
 
     QgisInterface * qI;
     QAbstractButton *pbnOK;
-    QAbstractButton *pbnParse;
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_btnBrowseForFile_clicked();
-    void on_txtDelimiter_textChanged( const QString & text );
-    void pbnParse_clicked();
+
+  public slots:
+    void enableAccept();
 
   signals:
     void drawRasterLayer( QString );

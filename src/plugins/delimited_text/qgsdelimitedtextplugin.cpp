@@ -124,7 +124,7 @@ void QgsDelimitedTextPlugin::run()
   connect( myQgsDelimitedTextPluginGui,
            SIGNAL( drawVectorLayer( QString, QString, QString ) ),
            this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
-  myQgsDelimitedTextPluginGui->show();
+  myQgsDelimitedTextPluginGui->exec();
 }
 //!draw a vector layer in the qui - intended to respond to signal
 //sent by diolog when it as finished creating a layer

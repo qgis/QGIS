@@ -151,12 +151,17 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QString xField = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
   temp = parameters.filter( "yField=" );
   QString yField = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
+  temp = parameters.filter( "skipLines=" );
+  QString skipLines = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "0";
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
   mFileName  = QUrl::fromPercentEncoding( mFileName.toUtf8() );
   mDelimiter = QUrl::fromPercentEncoding( mDelimiter.toUtf8() );
   mDelimiterType = QUrl::fromPercentEncoding( mDelimiterType.toUtf8() );
   xField    = QUrl::fromPercentEncoding( xField.toUtf8() );
   yField    = QUrl::fromPercentEncoding( yField.toUtf8() );
+  skipLines = QUrl::fromPercentEncoding( skipLines.toUtf8() );
+
+  mSkipLines = skipLines.toInt();
 
   QgsDebugMsg( "Data source uri is " + uri );
   QgsDebugMsg( "Delimited text file is: " + mFileName );
@@ -164,6 +169,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QgsDebugMsg( "Delimiter type is: " + mDelimiterType );
   QgsDebugMsg( "xField is: " + xField );
   QgsDebugMsg( "yField is: " + yField );
+  QgsDebugMsg( "skipLines is: " + QString::number( mSkipLines ) );
 
   // if delimiter contains some special characters, convert them
   if ( mDelimiterType == "regexp" )
@@ -221,6 +227,9 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     if ( line.isEmpty() )
       continue;
 
+    if ( lineNumber < mSkipLines + 1 )
+      continue;
+
     if ( !hasFields )
     {
       // Get the fields from the header row and store them in the
@@ -230,8 +239,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       // We don't know anything about a text based field other
       // than its name. All fields are assumed to be text
       int fieldPos = 0;
-      for ( QStringList::Iterator it = fieldList.begin();
-            it != fieldList.end(); ++it )
+      for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it )
       {
         QString field = *it;
         if ( field.length() > 0 )
@@ -401,7 +409,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
 
     feature.setFeatureId( mFid );
 
-    QByteArray  buffer;
+    QByteArray buffer;
     QDataStream s( &buffer, static_cast<QIODevice::OpenMode>( QIODevice::WriteOnly ) ); // open on buffers's data
 
     switch ( QgsApplication::endian() )
@@ -562,7 +570,9 @@ void QgsDelimitedTextProvider::rewind()
   // Skip ahead one line since first record is always assumed to be
   // the header record
   mStream->seek( 0 );
-  readLine( mStream );
+  int n = mSkipLines + 1;
+  while ( n-- )
+    readLine( mStream );
 }
 
 bool QgsDelimitedTextProvider::isValid()
