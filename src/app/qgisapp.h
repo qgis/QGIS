@@ -333,6 +333,7 @@ class QgisApp : public QMainWindow
     QMenu *layerMenu() { return mLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
+    QMenu *databaseMenu() { return mDatabaseMenu; }
 #ifdef Q_WS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
@@ -498,12 +499,18 @@ class QgisApp : public QMainWindow
     void showPluginManager();
     //! load python support if possible
     void loadPythonSupport();
-    //! Find the QMenu with the given name (ie the user visible text on the menu item)
+    //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
     QMenu* getPluginMenu( QString menuName );
     //! Add the action to the submenu with the given name under the plugin menu
     void addPluginToMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the plugin menu
     void removePluginMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Database menu (ie the user visible text on the menu item)
+    QMenu* getDatabaseMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Database menu
+    void addPluginToDatabaseMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Database menu
+    void removePluginDatabaseMenu( QString name, QAction* action );
     //! Add an icon to the plugin toolbar
     int addPluginToolBarIcon( QAction * qAction );
     //! Remove an icon from the plugin toolbar
@@ -1093,6 +1100,8 @@ class QgisApp : public QMainWindow
     QMenu * mPopupMenu;
     //! Top level plugin menu
     QMenu *mPluginMenu;
+    //! Top level database menu
+    QMenu *mDatabaseMenu;
     //! Popup menu for the map overview tools
     QMenu *toolPopupOverviews;
     //! Popup menu for the display tools

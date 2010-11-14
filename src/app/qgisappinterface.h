@@ -107,6 +107,11 @@ class QgisAppInterface : public QgisInterface
     /** Remove action from the plugins menu */
     void removePluginMenu( QString name, QAction* action );
 
+    /** Add action to the Database menu */
+    void addPluginToDatabaseMenu( QString name, QAction* action );
+    /** Remove action from the Database menu */
+    void removePluginDatabaseMenu( QString name, QAction* action );
+
     /** Add a dock widget to the main window */
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
 
@@ -143,6 +148,7 @@ class QgisAppInterface : public QgisInterface
     virtual QMenu *layerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
+    virtual QMenu *databaseMenu();
     virtual QMenu *firstRightStandardMenu();
     virtual QMenu *windowMenu();
     virtual QMenu *helpMenu();
