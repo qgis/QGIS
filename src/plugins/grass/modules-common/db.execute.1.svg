@@ -74,7 +74,7 @@
          y="13.782178"
          id="tspan14720" /></text>
     <g
-       id="g14680"
+       id="g15037"
        style="display:inline">
       <rect
          width="12"
@@ -82,20 +82,28 @@
          ry="0.85714281"
          x="19.5"
          y="19.5"
-         id="rect14672"
-         style="opacity:0.9;color:#000000;fill:#8f5902;fill-opacity:1;fill-rule:nonzero;stroke:#8f5902;stroke-width:1;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         id="rect15022"
+         style="opacity:0.9;color:#000000;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:#555753;stroke-width:1;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          d="m 19.5,25.5 12,0 0,-4 c 0,-2 0,-2 -3,-2 -0.698149,0 -6.072237,0 -7,0 -2,0 -2,0 -2,2 0,1 0,2 0,4 z"
-         id="path14674"
+         id="path15024"
          style="opacity:0.3;fill:#fcffff;fill-rule:evenodd;stroke:none;display:inline;enable-background:new" />
       <path
-         d="m 20.5,25.5 5,0"
-         id="path14676"
+         d="m 29.5,22.5 0,5"
+         id="path15026"
          style="fill:#5c3566;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
-         d="m 29.5,28.5 c -5,0 -5,-6 0,-6"
-         id="path14678"
-         style="fill:none;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         d="m 22.5,27.5 7,0"
+         id="path15031"
+         style="fill:#5c3566;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         d="m 21.5,27.5 3,-3"
+         id="path15033"
+         style="fill:#5c3566;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         d="m 21.5,27.5 3,3"
+         id="path15035"
+         style="fill:#5c3566;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     </g>
   </g>
 </svg>
