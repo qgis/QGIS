@@ -60,7 +60,7 @@ void QgsOraclePlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToMenu( tr( "&Oracle Spatial" ), mQActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( tr( "&Oracle Spatial" ), mQActionPointer );
 
 }
 //method defined in interface
@@ -88,7 +88,7 @@ void QgsOraclePlugin::run()
 void QgsOraclePlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Oracle Spatial", mQActionPointer );
+  mQGisIface->removePluginDatabaseMenu( "&Oracle Spatial", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
