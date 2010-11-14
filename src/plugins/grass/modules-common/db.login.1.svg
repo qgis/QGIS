@@ -74,28 +74,26 @@
          y="13.782178"
          id="tspan14720" /></text>
     <g
-       id="g14680"
-       style="display:inline">
+       transform="translate(0,-9)"
+       id="g14742">
       <rect
-         width="12"
-         height="12"
+         width="25"
+         height="8"
          ry="0.85714281"
-         x="19.5"
-         y="19.5"
-         id="rect14672"
-         style="opacity:0.9;color:#000000;fill:#8f5902;fill-opacity:1;fill-rule:nonzero;stroke:#8f5902;stroke-width:1;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-      <path
-         d="m 19.5,25.5 12,0 0,-4 c 0,-2 0,-2 -3,-2 -0.698149,0 -6.072237,0 -7,0 -2,0 -2,0 -2,2 0,1 0,2 0,4 z"
-         id="path14674"
-         style="opacity:0.3;fill:#fcffff;fill-rule:evenodd;stroke:none;display:inline;enable-background:new" />
-      <path
-         d="m 20.5,25.5 5,0"
-         id="path14676"
-         style="fill:#5c3566;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-      <path
-         d="m 29.5,28.5 c -5,0 -5,-6 0,-6"
-         id="path14678"
-         style="fill:none;stroke:#eeeeec;stroke-width:1.70560575;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         x="3.5"
+         y="21.5"
+         id="rect14716"
+         style="color:#000000;fill:#eeeeec;fill-opacity:0.78431373;fill-rule:nonzero;stroke:#555753;stroke-width:1;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         x="7.4921875"
+         y="31.945313"
+         id="text14722"
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#2e3436;fill-opacity:1;stroke:none;font-family:Monospace;-inkscape-font-specification:Monospace"><tspan
+           x="7.4921875"
+           y="31.945313"
+           id="tspan14724"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#2e3436;font-family:Georgia;-inkscape-font-specification:Georgia">***</tspan></text>
     </g>
   </g>
 </svg>
