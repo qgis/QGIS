@@ -245,7 +245,6 @@ class QgisApp : public QMainWindow
     QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionEditSeparator2() { return mActionEditSeparator2; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
-    QAction *actionEditSeparator4() { return mActionEditSeparator4; }
 
     QAction *actionPan() { return mActionPan; }
     QAction *actionZoomIn() { return mActionZoomIn; }
@@ -914,7 +913,6 @@ class QgisApp : public QMainWindow
     QAction *mActionRotatePointSymbols;
     QAction *mActionEditSeparator3;
     QAction *mActionSnappingOptions;
-    QAction *mActionEditSeparator4;
 
     QAction *mActionPan;
     QAction *mActionZoomIn;

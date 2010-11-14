@@ -38,16 +38,14 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     ~QgsSnappingDialog();
 
   public slots:
-    /**
-     * apply the changes
-     */
+    //! apply the changes
     void apply();
-    /**
-     * update the Dialog
-     */
+
+    //! update the Dialog
     void update();
 
-
+    //! show dialog or dock
+    void show();
 
   protected:
     /**Constructor

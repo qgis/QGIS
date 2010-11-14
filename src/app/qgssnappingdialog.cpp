@@ -45,7 +45,7 @@ class QgsSnappingDock : public QDockWidget
 
 };
 
-QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): QDialog( parent ), mMapCanvas( canvas )
+QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): QDialog( parent ), mMapCanvas( canvas ), mDock( 0 )
 {
   setupUi( this );
 
@@ -90,7 +90,7 @@ void QgsSnappingDialog::closeEvent( QCloseEvent* event )
 {
   QDialog::closeEvent( event );
 
-  if ( mDock == NULL )
+  if ( !mDock )
   {
     QSettings settings;
     settings.setValue( "/Windows/BetterSnapping/geometry", saveGeometry() );
@@ -218,4 +218,12 @@ void QgsSnappingDialog::apply()
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
+}
+
+void QgsSnappingDialog::show()
+{
+  if( mDock )
+    mDock->setVisible( true );
+  else
+    QDialog::show();
 }
