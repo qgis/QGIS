@@ -79,6 +79,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   if ( automaticPrecision )
   {
     radAutomatic->setChecked( true );
+     spinBoxDP->setDisabled( true );
+     labelDP->setDisabled( true );
   }
   else
   {
