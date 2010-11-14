@@ -140,20 +140,20 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mypInnerLayout->addWidget( mypLabel, index, 0 );
       if ( myFieldType == QVariant::Int )
       {
-        mypLabel->setText( myFieldName + tr( " (int)" ) );
+        mypLabel->setText( myFieldName );
       }
       else if ( myFieldType == QVariant::Double )
       {
-        mypLabel->setText( myFieldName + tr( " (dbl)" ) );
+        mypLabel->setText( myFieldName );
       }
       else if ( myFieldType == QVariant::LongLong )
       {
-        mypLabel->setText( myFieldName + tr( " (long)" ) );
+        mypLabel->setText( myFieldName );
       }
       else //string
       {
         //any special behaviour for string goes here
-        mypLabel->setText( myFieldName + tr( " (txt)" ) );
+        mypLabel->setText( myFieldName );
       }
 
       if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
