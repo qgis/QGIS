@@ -91,6 +91,11 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, i
     mPoints.push_back( QList<QgsPoint>() );
   }
 
+  //we need to set two points at the begin of the rubber band for operations that move the last point
+  if ( mPoints[geometryIndex].size() == 0 )
+  {
+    mPoints[geometryIndex].push_back( p );
+  }
   mPoints[geometryIndex].push_back( p );
 
   if ( do_update )
