@@ -70,3 +70,6 @@ INSTALL(TARGETS globeplugin
 
 INSTALL (FILES images/world.tif globe.earth
          DESTINATION ${QGIS_DATA_DIR}/globe)
+
+INSTALL (DIRECTORY data
+         DESTINATION ${QGIS_DATA_DIR}/globe)

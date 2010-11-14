@@ -42,13 +42,9 @@
 #include <osgEarth/Notify>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
-#include <osgEarthUtil/EarthManipulator>
-#include <osgEarthUtil/ElevationManager>
-#include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/TileSource>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
-#include "Controls"
 
 using namespace osgEarth::Drivers;
 using namespace osgEarthUtil::Controls2;
@@ -124,36 +120,77 @@ void GlobePlugin::run()
   osgEarthUtil::EarthManipulator* manip = new osgEarthUtil::EarthManipulator();
   viewer.setCameraManipulator( manip );
 
+  setupMap();
+
+  viewer.setSceneData( mRootNode );
+
+  // Set a home viewpoint
+  manip->setHomeViewpoint(
+    osgEarthUtil::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
+    1.0 );
+
+  // create a surface to house the controls
+  mControlCanvas = new ControlCanvas( &viewer );
+  mRootNode->addChild( mControlCanvas );
+  setupControls();
+
+  // add our fly-to handler
+  viewer.addEventHandler(new FlyToExtentHandler( manip, mQGisIface ));
+
+  // add some stock OSG handlers:
+  viewer.addEventHandler(new osgViewer::StatsHandler());
+  viewer.addEventHandler(new osgViewer::WindowSizeHandler());
+  viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
+
+#ifdef GLOBE_OSG_STANDALONE_VIEWER
+  viewer.run();
+#endif
+}
+
+void GlobePlugin::setupMap()
+{
   // read base layers from earth file
+  QString earthFileName = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/globe.earth" );
   EarthFile earthFile;
-  if ( !earthFile.readXML( QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/globe.earth" ).toStdString() ) )
+  QFile earthFileTemplate( earthFileName );
+  if (!earthFileTemplate.open(QIODevice::ReadOnly | QIODevice::Text))
+  {
+    return;
+  }
+
+  QTextStream in(&earthFileTemplate);
+  QString earthxml = in.readAll();
+  QSettings settings;
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  earthxml.replace( "/home/pi/devel/gis/qgis/.qgis/cache", cacheDirectory );
+  earthxml.replace( "/usr/share/osgearth/data", QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe" ) );
+
+  //prefill cache
+  if ( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
+  {
+    copyFolder( QgsApplication::pkgDataPath() + "/globe/data/worldwind_srtm", cacheDirectory + "/globe/worldwind_srtm" );
+  }
+
+  std::istringstream istream( earthxml.toStdString() );
+  if ( !earthFile.readXML( istream, earthFileName.toStdString() ) )
   {
     return;
   }
 
   osg::ref_ptr<Map> map = earthFile.getMap();
 
-  // Add base image to the map
-  GDALOptions* opt = new GDALOptions();
-  opt->url() = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" ).toStdString();
-  osg::ref_ptr<MapLayer> layer = new ImageMapLayer( "World", opt );
-  map->addMapLayer( layer );
-
   // Add QGIS layer to the map
   mTileSource = new QgsOsgEarthTileSource(mQGisIface);
   mTileSource->initialize("");
   mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
   map->addMapLayer( mQgisMapLayer );
+  mQgisMapLayer->setCache( 0 ); //disable caching
 
-  osg::Group* root = new osg::Group();
+  mRootNode = new osg::Group();
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map );
-  root->addChild( mMapNode );
-
-  // create a surface to house the controls
-  ControlCanvas* cs = new ControlCanvas( &viewer );
-  root->addChild( cs );
+  mRootNode->addChild( mMapNode );
 
   // model placement utils
   mElevationManager = new osgEarthUtil::ElevationManager( mMapNode->getMap() );
@@ -196,76 +233,58 @@ void GlobePlugin::run()
     {
       double dx = gridSize * ( rand()/( (double)RAND_MAX + 1.0 ) - 0.5 );
       double dy = gridSize * ( rand()/( (double)RAND_MAX + 1.0 ) - 0.5 );
-      placeNode( root, model, lat + i * gridSize + dx, lon + j * gridSize + dy );
+      placeNode( model, lat + i * gridSize + dx, lon + j * gridSize + dy );
     }
   }
 #endif
+}
 
-  viewer.setSceneData( root );
-
-  // Set a home viewpoint
-  manip->setHomeViewpoint(
-    osgEarthUtil::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
-    1.0 );
-
+void GlobePlugin::setupControls()
+{
   // a centered hbox container along the bottom on the screen.
+  HBox* bottom = new HBox();
+  bottom->setFrame( new RoundedFrame() );
+  bottom->getFrame()->setBackColor(0,0,0,0.5);
+  bottom->setMargin( 10 );
+  bottom->setSpacing( 145 );
+  bottom->setVertAlign( Control::ALIGN_BOTTOM );
+  bottom->setHorizAlign( Control::ALIGN_CENTER );
+
+  for( int i=0; i<4; ++i )
   {
-      HBox* bottom = new HBox();
-      bottom->setFrame( new RoundedFrame() );
-      bottom->getFrame()->setBackColor(0,0,0,0.5);
-      bottom->setMargin( 10 );
-      bottom->setSpacing( 145 );
-      bottom->setVertAlign( Control::ALIGN_BOTTOM );
-      bottom->setHorizAlign( Control::ALIGN_CENTER );
+    LabelControl* label = new LabelControl();
+    std::stringstream buf;
+    buf << "Label_" << i;
+    label->setText( buf.str() );
+    label->setMargin( 10 );
+    label->setBackColor( 1,1,1,0.4 );
+    bottom->addControl( label );
 
-      for( int i=0; i<4; ++i )
-      {
-          LabelControl* label = new LabelControl();
-          std::stringstream buf;
-          buf << "Label_" << i;
-          label->setText( buf.str() );
-          label->setMargin( 10 );
-          label->setBackColor( 1,1,1,0.4 );
-          bottom->addControl( label );
-
-          label->setActiveColor(1,.3,.3,1);
-          label->addEventHandler( new MyClickHandler );
-      }
-
-      cs->addControl( bottom );
+    label->setActiveColor(1,.3,.3,1);
+    label->addEventHandler( new MyClickHandler );
   }
 
-  // add our fly-to handler
-  viewer.addEventHandler(new FlyToExtentHandler( manip, mQGisIface ));
-
-  // add some stock OSG handlers:
-  viewer.addEventHandler(new osgViewer::StatsHandler());
-  viewer.addEventHandler(new osgViewer::WindowSizeHandler());
-  viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
-
-#ifdef GLOBE_OSG_STANDALONE_VIEWER
-  viewer.run();
-#endif
+  mControlCanvas->addControl( bottom );
 }
 
 void GlobePlugin::setupProxy()
 {
-    QSettings settings;
-    settings.beginGroup( "proxy" );
-    if (settings.value("/proxyEnabled").toBool())
+  QSettings settings;
+  settings.beginGroup( "proxy" );
+  if (settings.value("/proxyEnabled").toBool())
+  {
+    ProxySettings proxySettings(settings.value("/proxyHost").toString().toStdString(),
+      settings.value("/proxyPort").toInt());
+    if (!settings.value("/proxyUser").toString().isEmpty())
     {
-      ProxySettings proxySettings(settings.value("/proxyHost").toString().toStdString(),
-        settings.value("/proxyPort").toInt());
-      if (!settings.value("/proxyUser").toString().isEmpty())
-      {
-        QString auth = settings.value("/proxyUser").toString() + ":" + settings.value("/proxyPassword").toString();
-        setenv("OSGEARTH_CURL_PROXYAUTH", auth.toStdString().c_str(), 0);
-      }
-      //TODO: settings.value("/proxyType")
-      //TODO: URL exlusions
-      HTTPClient::setProxySettings(proxySettings);
+      QString auth = settings.value("/proxyUser").toString() + ":" + settings.value("/proxyPassword").toString();
+      setenv("OSGEARTH_CURL_PROXYAUTH", auth.toStdString().c_str(), 0);
     }
-    settings.endGroup();
+    //TODO: settings.value("/proxyType")
+    //TODO: URL exlusions
+    HTTPClient::setProxySettings(proxySettings);
+  }
+  settings.endGroup();
 }
 
 void GlobePlugin::extentsChanged()
@@ -277,32 +296,32 @@ typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
 
 void GlobePlugin::layersChanged()
 {
-    QgsDebugMsg("layersChanged");
-    if (mTileSource) {
-      /*
-        //viewer.getDatabasePager()->clear();
-        //mMapNode->getTerrain()->incrementRevision();
-        TileList tiles;
-        mMapNode->getTerrain()->getVersionedTiles( tiles );
-        for( TileList::iterator i = tiles.begin(); i != tiles.end(); i++ ) {
-          //i->get()->markTileForRegeneration();
-          i->get()->updateImagery( mQgisMapLayer->getId(), mMapNode->getMap(), mMapNode->getEngine() );
-        }
-        */
+  QgsDebugMsg("layersChanged");
+  if (mTileSource) {
+    /*
+    //viewer.getDatabasePager()->clear();
+    //mMapNode->getTerrain()->incrementRevision();
+    TileList tiles;
+    mMapNode->getTerrain()->getVersionedTiles( tiles );
+    for( TileList::iterator i = tiles.begin(); i != tiles.end(); i++ ) {
+      //i->get()->markTileForRegeneration();
+      i->get()->updateImagery( mQgisMapLayer->getId(), mMapNode->getMap(), mMapNode->getEngine() );
     }
-   if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1)
-    {
-        QgsDebugMsg("removeMapLayer");
-        QgsDebugMsg(QString("getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
-        mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
-        QgsDebugMsg(QString("getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
-        QgsDebugMsg("addMapLayer");
-        mTileSource = new QgsOsgEarthTileSource(mQGisIface);
-        mTileSource->initialize("", 0);
-        mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
-        mMapNode->getMap()->addMapLayer( mQgisMapLayer );
-        QgsDebugMsg(QString("getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
-    }
+    */
+  }
+  if (mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1)
+  {
+    QgsDebugMsg("removeMapLayer");
+    QgsDebugMsg(QString("getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
+    mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
+    QgsDebugMsg(QString("getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
+    QgsDebugMsg("addMapLayer");
+    mTileSource = new QgsOsgEarthTileSource(mQGisIface);
+    mTileSource->initialize("", 0);
+    mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
+    mMapNode->getMap()->addMapLayer( mQgisMapLayer );
+    QgsDebugMsg(QString("getImageMapLayers().size = %1").arg(mMapNode->getMap()->getImageMapLayers().size() ));
+  }
 }
 
 void GlobePlugin::unload()
@@ -317,7 +336,7 @@ void GlobePlugin::help()
 {
 }
 
-void GlobePlugin::placeNode( osg::Group* root, osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
+void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
 {
   // get elevation
   double elevation = 0.0;
@@ -330,7 +349,34 @@ void GlobePlugin::placeNode( osg::Group* root, osg::Node* node, double lat, doub
 
   osg::MatrixTransform* mt = new osg::MatrixTransform( mat );
   mt->addChild( node );
-  root->addChild( mt );
+  mRootNode->addChild( mt );
+}
+
+void GlobePlugin::copyFolder(QString sourceFolder, QString destFolder)
+{
+  QDir sourceDir(sourceFolder);
+  if(!sourceDir.exists())
+    return;
+  QDir destDir(destFolder);
+  if(!destDir.exists())
+  {
+    destDir.mkpath(destFolder);
+  }
+  QStringList files = sourceDir.entryList(QDir::Files);
+  for(int i = 0; i< files.count(); i++)
+  {
+    QString srcName = sourceFolder + "/" + files[i];
+    QString destName = destFolder + "/" + files[i];
+    QFile::copy(srcName, destName);
+  }
+  files.clear();
+  files = sourceDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+  for(int i = 0; i< files.count(); i++)
+  {
+    QString srcName = sourceFolder + "/" + files[i];
+    QString destName = destFolder + "/" + files[i];
+    copyFolder(srcName, destName);
+  }
 }
 
 bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
