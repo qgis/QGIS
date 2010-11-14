@@ -124,7 +124,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   updateButtons();
 
-  leSpatialRefSys->setText( layer->srs().toProj4() );
+  leSpatialRefSys->setText( "EPSG:" + QString::number( layer->crs().epsg() ) + " - " + layer->srs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 
   leEditForm->setText( layer->editForm() );
@@ -980,7 +980,7 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   }
   delete mySelector;
 
-  leSpatialRefSys->setText( layer->srs().toProj4() );
+  leSpatialRefSys->setText( "EPSG:" + QString::number( layer->crs().epsg() ) + " - " + layer->srs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 }
 
