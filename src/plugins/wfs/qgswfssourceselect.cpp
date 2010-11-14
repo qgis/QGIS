@@ -379,15 +379,12 @@ void QgsWFSSourceSelect::addLayer()
   QgsDebugMsg( QString( "%1SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=%2" ).arg( uri ).arg( typeName ) );
 
   //get CRS
-  QString crsString;
-  if ( mProjectionSelector )
+  QString crsString = labelCoordRefSys->text();
+  if ( !crsString.isEmpty() )
   {
-    QString authid = mProjectionSelector->selectedAuthId();
-    if ( !authid.isEmpty() )
-    {
-      crsString = "&SRSNAME=" + authid;
-    }
+    crsString.prepend( "&SRSNAME=" );
   }
+
   //add a wfs layer to the map
   if ( mIface )
   {

@@ -33,7 +33,6 @@ const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsWFSData::QgsWFSData(
   const QString& uri,
   QgsRectangle* extent,
-  QgsCoordinateReferenceSystem* srs,
   QMap<int, QgsFeature*> &features,
   QMap<int, QString > &idMap,
   const QString& geometryAttribute,
@@ -42,7 +41,6 @@ QgsWFSData::QgsWFSData(
     : QObject(),
     mUri( uri ),
     mExtent( extent ),
-    mSrs( srs ),
     mFeatures( features ),
     mIdMap( idMap ),
     mGeometryAttribute( geometryAttribute ),
@@ -201,14 +199,6 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
     if ( readEpsgFromAttribute( epsgNr, attr ) != 0 )
     {
       QgsDebugMsg( "error, could not get epsg id" );
-    }
-
-    if ( mSrs )
-    {
-      if ( !mSrs->createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) ) )
-      {
-        QgsDebugMsg( "Creation of srs from epsg failed" );
-      }
     }
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )

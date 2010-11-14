@@ -257,9 +257,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     //helper methods for WFS-T
 
-    /**Extracts the typename from the providers url
-      @return typename or a null string in case of error*/
-    QString typeNameFromUrl() const;
+    /**Returns HTTP parameter value from url (or empty string if it does not exist)*/
+    QString parameterFromUrl( const QString& name ) const;
 
     /**Removes a possible namespace prefix from a typename*/
     void removeNamespacePrefix( QString& tname ) const;

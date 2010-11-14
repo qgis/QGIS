@@ -284,7 +284,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   transactionDoc.appendChild( transactionElem );
 
   //find out typename from uri and strip namespace prefix
-  QString tname = typeNameFromUrl();
+  QString tname = parameterFromUrl( "typename" );
   if ( tname.isNull() )
   {
     return false;
@@ -375,7 +375,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   }
 
   //find out typename from uri and strip namespace prefix
-  QString tname = typeNameFromUrl();
+  QString tname = parameterFromUrl( "typename" );
   if ( tname.isNull() )
   {
     return false;
@@ -443,7 +443,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
 bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
   //find out typename from uri and strip namespace prefix
-  QString tname = typeNameFromUrl();
+  QString tname = parameterFromUrl( "typename" );
   if ( tname.isNull() )
   {
     return false;
@@ -530,7 +530,7 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   //find out typename from uri and strip namespace prefix
-  QString tname = typeNameFromUrl();
+  QString tname = parameterFromUrl( "typename" );
   if ( tname.isNull() )
   {
     return false;
@@ -656,7 +656,18 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
     thematicAttributes.insert( it.value().name(), qMakePair( it.key(), it.value() ) );
   }
 
-  QgsWFSData dataReader( uri, &mExtent, &mSourceCRS, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
+  //create mSourceCRS from url if possible
+  QString srsname = parameterFromUrl( "SRSNAME" );
+  if ( !srsname.isEmpty() )
+  {
+    QStringList epsgSplit = srsname.split( ":" );
+    if ( epsgSplit.size() > 1 )
+    {
+      mSourceCRS.createFromEpsg( epsgSplit.at( 1 ).toInt() );
+    }
+  }
+
+  QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
   QObject::connect( &dataReader, SIGNAL( dataProgressAndSteps( int , int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 
   //also connect to statusChanged signal of qgisapp (if it exists)
@@ -1989,7 +2000,7 @@ int QgsWFSProvider::capabilities() const
   return mCapabilities;
 }
 
-QString QgsWFSProvider::typeNameFromUrl() const
+QString QgsWFSProvider::parameterFromUrl( const QString& name ) const
 {
   QStringList urlSplit = dataSourceUri().split( "?" );
   if ( urlSplit.size() > 1 )
@@ -1998,7 +2009,7 @@ QString QgsWFSProvider::typeNameFromUrl() const
     QStringList::const_iterator kvIt = keyValueSplit.constBegin();
     for ( ; kvIt != keyValueSplit.constEnd(); ++kvIt )
     {
-      if ( kvIt->startsWith( "typename", Qt::CaseInsensitive ) )
+      if ( kvIt->startsWith( name, Qt::CaseInsensitive ) )
       {
         QStringList equalSplit = kvIt->split( "=" );
         if ( equalSplit.size() > 1 )
@@ -2069,7 +2080,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
   transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + " " \
                                 + dataSourceUri().replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) ) );
 
-  QString namespacePrefix = nameSpacePrefix( typeNameFromUrl() );
+  QString namespacePrefix = nameSpacePrefix( parameterFromUrl( "typename" ) );
   if ( !namespacePrefix.isEmpty() )
   {
     transactionElem.setAttribute( "xmlns:" + namespacePrefix, mWfsNamespace );
@@ -2204,7 +2215,7 @@ void QgsWFSProvider::getLayerCapabilities()
   }
 
   //find the <FeatureType> for this layer
-  QString thisLayerName = typeNameFromUrl();
+  QString thisLayerName = parameterFromUrl( "typename" );
   QDomNodeList featureTypeList = featureTypeListElem.elementsByTagName( "FeatureType" );
   for ( int i = 0; i < featureTypeList.size(); ++i )
   {
