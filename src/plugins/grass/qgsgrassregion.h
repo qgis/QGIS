@@ -17,13 +17,16 @@
 #define QGSGRASSREGION_H
 
 #include "ui_qgsgrassregionbase.h"
+#include "qgsmaptool.h"
+#include "qgsrubberband.h"
+#include "qgspoint.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;
 
 class QgisInterface;
 class QgsMapCanvas;
-//class QgsPoint;
+class QgsRectangle;
 
 class QButtonGroup;
 
@@ -50,15 +53,10 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 
   public slots:
     //! OK
-    void on_acceptButton_clicked() { accept(); }
     void accept( void );
 
-    //! Close
-    void on_rejectButton_clicked() { reject(); }
+    //! Cancel
     void reject( void );
-
-    //! Called when rendering is finished
-    void postRender( QPainter * );
 
     //! Mouse event receiver
     //void mouseEventReceiverMove ( QgsPoint & );
@@ -70,14 +68,14 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     void adjust( void );
 
     //! Value in GUI was changed
-    void northChanged( const QString &str );
-    void southChanged( const QString &str );
-    void eastChanged( const QString &str );
-    void westChanged( const QString &str );
-    void NSResChanged( const QString &str );
-    void EWResChanged( const QString &str );
-    void rowsChanged( const QString &str );
-    void colsChanged( const QString &str );
+    void northChanged();
+    void southChanged();
+    void eastChanged();
+    void westChanged();
+    void NSResChanged();
+    void EWResChanged();
+    void rowsChanged();
+    void colsChanged();
 
     void radioChanged( void ) ;
 
@@ -85,6 +83,9 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     void changeWidth( void ) ;
 
     void restorePosition( void );
+
+    //! Called when the capture finished to refresh the mWindow values
+    void onCaptureFinished();
 
   private:
     //! Pointer to plugin
@@ -96,8 +97,7 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
 
-    QButtonGroup *mNSRadioGroup;
-    QButtonGroup *mEWRadioGroup;
+    QButtonGroup *mRadioGroup;
 
     //! Current new region
     struct Cell_head mWindow;
@@ -105,11 +105,8 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Display current state of new region in XOR mode
     void displayRegion( void );
 
-    //! Region was displayed
-    bool mDisplayed;
-
-    //! Draw region
-    void draw( double x1, double y1, double x2, double y2 );
+    // Set region values in GUI from mWindow
+    void refreshGui();
 
     //! First corner coordinates
     double mX;
@@ -118,10 +115,6 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Currently updating GUI, don't run *Changed methods
     bool mUpdatingGui;
 
-    // Set region values in GUI from mWindow
-    void setGuiValues( bool north = true, bool south = true, bool east = true, bool west = true,
-                       bool nsres = true, bool ewres = true, bool rows = true, bool cols = true );
-
 
     void saveWindowLocation( void );
 
@@ -129,8 +122,54 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     QString formatEdge( double v );
 
     QgsGrassRegionEdit* mRegionEdit;
+};
 
-    friend class QgsGrassRegionEdit;
+/** map tool which uses rubber band for changing grass region */
+class QgsGrassRegionEdit : public QgsMapTool
+{
+    Q_OBJECT
+
+  public:
+    QgsGrassRegionEdit( QgsMapCanvas* );
+
+    ~QgsGrassRegionEdit();
+
+    //! mouse pressed in map canvas
+    void canvasPressEvent( QMouseEvent * );
+
+    //! mouse movement in map canvas
+    void canvasMoveEvent( QMouseEvent * );
+
+    //! mouse released
+    void canvasReleaseEvent( QMouseEvent * );
+
+
+    //! called when map tool is about to get inactive
+    void deactivate();
+
+    //! get the rectangle
+    QgsRectangle getRegion();
+
+    //! refresh the rectangle displayed in canvas
+    void setRegion( const QgsPoint&, const QgsPoint& );
+
+  signals:
+    void captureStarted();
+    void captureEnded();
+
+
+  private:
+    //! Rubber band for selecting grass region
+    QgsRubberBand* mRubberBand;
+
+    //! Status of input from canvas
+    bool mDraw;
+
+    //! First rectangle point
+    QgsPoint mStartPoint;
+    //! Last rectangle point
+    QgsPoint mEndPoint;
+
 };
 
 #endif // QGSGRASSREGION_H

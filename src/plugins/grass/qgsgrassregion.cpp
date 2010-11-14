@@ -33,82 +33,76 @@
 
 
 /** map tool which uses rubber band for changing grass region */
-class QgsGrassRegionEdit : public QgsMapTool
+QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
 {
-  public:
-    QgsGrassRegionEdit( QgsGrassRegion* reg )
-        : QgsMapTool( reg->mCanvas ), mRegion( reg )
-    {
-      mDraw = false;
-      mRubberBand = new QRubberBand( QRubberBand::Rectangle, mCanvas );
-    }
+  mDraw = false;
+  mRubberBand = new QgsRubberBand( mCanvas, true );
+}
 
-    ~QgsGrassRegionEdit()
-    {
-      delete mRubberBand;
-    }
+QgsGrassRegionEdit::~QgsGrassRegionEdit()
+{
+  delete mRubberBand;
+}
 
-    //! mouse click in map canvas
-    void canvasPressEvent( QMouseEvent * event )
-    {
-      QgsPoint point = toMapCoordinates( event->pos() );
-      double x = point.x();
-      double y = point.y();
+//! mouse pressed in map canvas
+void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
+{
+  QgsDebugMsg( "entered." );
+  mDraw = true;
+  mRubberBand->reset( true );
+  emit captureStarted();
 
-      QgsDebugMsg( "entered." );
+  mStartPoint = toMapCoordinates( event->pos() );
+  mEndPoint = mStartPoint;
+  setRegion( mStartPoint, mEndPoint );
+}
 
-      if ( !mDraw )   // first corner
-      {
-        mRegion->mX = x;
-        mRegion->mY = y;
+//! mouse movement in map canvas
+void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
+{
+  if ( !mDraw ) return;
 
-        mRegion->draw( x, y, x, y );
-        mDraw = true;
-      }
-      else
-      {
-        mRegion->draw( mRegion->mX, mRegion->mY, x, y );
-        mDraw = false;
-      }
-      mRubberBand->show();
-    }
+  mEndPoint = toMapCoordinates( event->pos() );
+  setRegion( mStartPoint, mEndPoint );
+}
 
-    //! mouse movement in map canvas
-    void canvasMoveEvent( QMouseEvent * event )
-    {
-      QgsPoint point = toMapCoordinates( event->pos() );
+//! mouse button released
+void QgsGrassRegionEdit::canvasReleaseEvent( QMouseEvent * event )
+{
+  if ( !mDraw ) return;
 
-      QgsDebugMsg( "entered." );
+  mEndPoint = toMapCoordinates( event->pos() );
+  setRegion( mStartPoint, mEndPoint );
+  mDraw = false;
+  emit captureEnded();
+}
 
-      if ( !mDraw ) return;
-      mRegion->draw( mRegion->mX, mRegion->mY, point.x(), point.y() );
-    }
+//! called when map tool is about to get inactive
+void QgsGrassRegionEdit::deactivate()
+{
+  mRubberBand->reset( true );
+  QgsMapTool::deactivate();
+}
 
-    //! called when map tool is about to get inactive
-    void deactivate()
-    {
-      mRubberBand->hide();
+void QgsGrassRegionEdit::setRegion( const QgsPoint& ul, const QgsPoint& lr )
+{
+  mStartPoint = ul;
+  mEndPoint = lr;
 
-      QgsMapTool::deactivate();
-    }
+  mRubberBand->reset( true );
+  mRubberBand->addPoint( ul, false );
+  mRubberBand->addPoint( QgsPoint( ul.x(), lr.y() ), false );
+  mRubberBand->addPoint( lr, false );
+  mRubberBand->addPoint( QgsPoint( lr.x(), ul.y() ), true );	// true to update canvas
 
-    void setRegion( const QgsPoint& ul, const QgsPoint& lr )
-    {
-      QPoint qul = toCanvasCoordinates( ul );
-      QPoint qlr = toCanvasCoordinates( lr );
-      mRubberBand->setGeometry( QRect( qul, qlr ) );
-    }
+  mRubberBand->show();
+}
 
-
-  private:
-    //! Rubber band for selecting grass region
-    QRubberBand* mRubberBand;
-
-    //! Status of input from canvas
-    bool mDraw;
-
-    QgsGrassRegion* mRegion;
-};
+QgsRectangle QgsGrassRegionEdit::getRegion()
+{
+  return QgsRectangle( mStartPoint, mEndPoint );
+}
 
 
 QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
@@ -118,13 +112,16 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   QgsDebugMsg( "QgsGrassRegion()" );
 
   setupUi( this );
+  setAttribute( Qt::WA_DeleteOnClose );
+
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   mPlugin = plugin;
   mInterface = iface;
   mCanvas = mInterface->mapCanvas();
   restorePosition();
   mUpdatingGui = false;
-  mDisplayed = false;
 
   // Set input validators
   QDoubleValidator *dv = new QDoubleValidator( 0 );
@@ -140,18 +137,13 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   mCols->setValidator( iv );
 
   // Group radio buttons
-  mNSRadioGroup = new QButtonGroup();
-  mEWRadioGroup = new QButtonGroup();
-  mNSRadioGroup->addButton( mNSResRadio );
-  mNSRadioGroup->addButton( mRowsRadio );
-  mEWRadioGroup->addButton( mEWResRadio );
-  mEWRadioGroup->addButton( mColsRadio );
-  mNSResRadio->setChecked( true );
-  mEWResRadio->setChecked( true );
-  mRows->setEnabled( false );
-  mCols->setEnabled( false );
-  connect( mNSRadioGroup, SIGNAL( clicked( int ) ), this, SLOT( radioChanged() ) );
-  connect( mEWRadioGroup, SIGNAL( clicked( int ) ), this, SLOT( radioChanged() ) );
+  mRadioGroup = new QButtonGroup();
+  mRadioGroup->addButton( mCellResRadio );
+  mRadioGroup->addButton( mRowsColsRadio );
+  mCellResRadio->setChecked( true );
+  radioChanged();
+
+  connect( mRadioGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( radioChanged() ) );
 
   // Set values to current region
   QString gisdbase = QgsGrass::getDefaultGisdbase();
@@ -169,23 +161,28 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   if ( err )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: %1" ).arg( err ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: %1" ).arg( QString::fromUtf8( err ) ) );
     return;
   }
 
-  setGuiValues();
+  mRegionEdit = new QgsGrassRegionEdit( mCanvas );
+  connect( mRegionEdit, SIGNAL( captureStarted() ), this, SLOT( hide() ) );
+  connect( mRegionEdit, SIGNAL( captureEnded() ), this, SLOT( onCaptureFinished() ) );
+  mCanvas->setMapTool( mRegionEdit );
+
+  refreshGui();
 
   connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
 
   // Connect entries
-  connect( mNorth, SIGNAL( textChanged( const QString & ) ), this, SLOT( northChanged( const QString & ) ) );
-  connect( mSouth, SIGNAL( textChanged( const QString & ) ), this, SLOT( southChanged( const QString & ) ) );
-  connect( mEast, SIGNAL( textChanged( const QString & ) ), this, SLOT( eastChanged( const QString & ) ) );
-  connect( mWest, SIGNAL( textChanged( const QString & ) ), this, SLOT( westChanged( const QString & ) ) );
-  connect( mNSRes, SIGNAL( textChanged( const QString & ) ), this, SLOT( NSResChanged( const QString & ) ) );
-  connect( mEWRes, SIGNAL( textChanged( const QString & ) ), this, SLOT( EWResChanged( const QString & ) ) );
-  connect( mRows, SIGNAL( textChanged( const QString & ) ), this, SLOT( rowsChanged( const QString & ) ) );
-  connect( mCols, SIGNAL( textChanged( const QString & ) ), this, SLOT( colsChanged( const QString & ) ) );
+  connect( mNorth, SIGNAL( editingFinished() ), this, SLOT( northChanged() ) );
+  connect( mSouth, SIGNAL( editingFinished() ), this, SLOT( southChanged() ) );
+  connect( mEast, SIGNAL( editingFinished() ), this, SLOT( eastChanged() ) );
+  connect( mWest, SIGNAL( editingFinished() ), this, SLOT( westChanged() ) );
+  connect( mNSRes, SIGNAL( editingFinished() ), this, SLOT( NSResChanged() ) );
+  connect( mEWRes, SIGNAL( editingFinished() ), this, SLOT( EWResChanged() ) );
+  connect( mRows, SIGNAL( editingFinished() ), this, SLOT( rowsChanged() ) );
+  connect( mCols, SIGNAL( editingFinished() ), this, SLOT( colsChanged() ) );
 
   // Symbology
   QPen pen = mPlugin->regionPen();
@@ -194,12 +191,6 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   mWidthSpinBox->setValue( pen.width() );
   connect( mWidthSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( changeWidth() ) );
-
-  mRegionEdit = new QgsGrassRegionEdit( this ); // will be deleted by map canvas
-  mCanvas->setMapTool( mRegionEdit );
-
-  setAttribute( Qt::WA_DeleteOnClose );
-  displayRegion();
 }
 
 void QgsGrassRegion::changeColor( void )
@@ -233,22 +224,25 @@ QString QgsGrassRegion::formatEdge( double v )
   return QString( "%1" ).arg( v, 0, 'g' );
 }
 
-void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
-                                   bool nsres, bool ewres, bool rows, bool cols )
+void QgsGrassRegion::refreshGui()
 {
-  QgsDebugMsg( "entered." );
+  if ( mUpdatingGui )
+    return;
 
   mUpdatingGui = true;
 
-  if ( north ) mNorth->setText( QString( "%1" ).arg( mWindow.north, 0, 'g', 15 ) );
-  if ( south ) mSouth->setText( QString( "%1" ).arg( mWindow.south, 0, 'g', 15 ) );
-  if ( east )  mEast->setText( QString( "%1" ).arg( mWindow.east, 0, 'g', 15 ) );
-  if ( west )  mWest->setText( QString( "%1" ).arg( mWindow.west, 0, 'g', 15 ) );
-  if ( nsres ) mNSRes->setText( QString( "%1" ).arg( mWindow.ns_res, 0, 'g' ) );
-  if ( ewres ) mEWRes->setText( QString( "%1" ).arg( mWindow.ew_res, 0, 'g' ) );
-  if ( rows )  mRows->setText( QString( "%1" ).arg( mWindow.rows ) );
-  if ( cols )  mCols->setText( QString( "%1" ).arg( mWindow.cols ) );
+  QgsDebugMsg( "entered." );  
 
+  mNorth->setText( QString( "%1" ).arg( mWindow.north, 0, 'g', 15 ) );
+  mSouth->setText( QString( "%1" ).arg( mWindow.south, 0, 'g', 15 ) );
+  mEast->setText( QString( "%1" ).arg( mWindow.east, 0, 'g', 15 ) );
+  mWest->setText( QString( "%1" ).arg( mWindow.west, 0, 'g', 15 ) );
+  mNSRes->setText( QString( "%1" ).arg( mWindow.ns_res, 0, 'g' ) );
+  mEWRes->setText( QString( "%1" ).arg( mWindow.ew_res, 0, 'g' ) );
+  mRows->setText( QString( "%1" ).arg( mWindow.rows ) );
+  mCols->setText( QString( "%1" ).arg( mWindow.cols ) );
+
+  displayRegion();
   mUpdatingGui = false;
 }
 
@@ -257,160 +251,153 @@ QgsGrassRegion::~QgsGrassRegion()
   delete mRegionEdit;
 }
 
-void QgsGrassRegion::northChanged( const QString &str )
+void QgsGrassRegion::northChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.north = mNorth->text().toDouble();
+  if ( mWindow.north < mWindow.south )
+    mWindow.north = mWindow.south;
+
   adjust();
-  setGuiValues( false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::southChanged( const QString &str )
+void QgsGrassRegion::southChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.south = mSouth->text().toDouble();
+  if ( mWindow.south > mWindow.north )
+    mWindow.south = mWindow.north;
+
   adjust();
-  setGuiValues( true, false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::eastChanged( const QString &str )
+void QgsGrassRegion::eastChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.east = mEast->text().toDouble();
+  if ( mWindow.east < mWindow.west )
+    mWindow.east = mWindow.west;
+
   adjust();
-  setGuiValues( true, true, false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::westChanged( const QString &str )
+void QgsGrassRegion::westChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.west = mWest->text().toDouble();
+  if ( mWindow.west > mWindow.east )
+    mWindow.west = mWindow.east;
+
   adjust();
-  setGuiValues( true, true, true, false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::NSResChanged( const QString &str )
+void QgsGrassRegion::NSResChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.ns_res = mNSRes->text().toDouble();
+  if ( mWindow.ns_res <= 0)
+    mWindow.ns_res = 1;
+
   adjust();
-  setGuiValues( true, true, true, true, false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::EWResChanged( const QString &str )
+void QgsGrassRegion::EWResChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.ew_res = mEWRes->text().toDouble();
+  if ( mWindow.ew_res <= 0)
+    mWindow.ew_res = 1;
+
   adjust();
-  setGuiValues( true, true, true, true, true, false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::rowsChanged( const QString &str )
+void QgsGrassRegion::rowsChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.rows = mRows->text().toInt();
+  if ( mWindow.rows < 1)
+    mWindow.rows = 1;
+
   adjust();
-  setGuiValues( true, true, true, true, true, true, false );
-  displayRegion();
+  refreshGui();
 }
 
-void QgsGrassRegion::colsChanged( const QString &str )
+void QgsGrassRegion::colsChanged()
 {
   if ( mUpdatingGui ) return;
+
   mWindow.cols = mCols->text().toInt();
+  if ( mWindow.cols < 1)
+    mWindow.cols = 1;
+
   adjust();
-  setGuiValues( true, true, true, true, true, true, true, false );
-  displayRegion();
+  refreshGui();
 }
 
 void QgsGrassRegion::adjust()
 {
-  int r, c;
-  if ( mRowsRadio->isChecked() ) r = 1; else r = 0;
-  if ( mColsRadio->isChecked() ) c = 1; else c = 0;
-  G_adjust_Cell_head( &mWindow, r, c );
+  int rc = 0;
+  if ( mRowsColsRadio->isChecked() )
+  {
+    rc = 1;
+  }
+  G_adjust_Cell_head( &mWindow, rc, rc );
 }
 
 void QgsGrassRegion::radioChanged()
 {
   QgsDebugMsg( "entered." );
 
-  if ( mRowsRadio->isChecked() )
+  if ( mRowsColsRadio->isChecked() )
   {
     mNSRes->setEnabled( false );
-    mRows->setEnabled( true );
-  }
-  else
-  {
-    mNSRes->setEnabled( true );
-    mRows->setEnabled( false );
-  }
-  if ( mColsRadio->isChecked() )
-  {
     mEWRes->setEnabled( false );
+    mRows->setEnabled( true );
     mCols->setEnabled( true );
   }
   else
   {
+    mNSRes->setEnabled( true );
     mEWRes->setEnabled( true );
+    mRows->setEnabled( false );
     mCols->setEnabled( false );
   }
 }
 
-void QgsGrassRegion::draw( double x1, double y1, double x2, double y2 )
+void QgsGrassRegion::onCaptureFinished()
 {
   QgsDebugMsg( "entered." );
+  QgsRectangle rect = mRegionEdit->getRegion();
 
-  if ( x1 < x2 )
-  {
-    mWindow.west = x1;
-    mWindow.east = x2;
-  }
-  else
-  {
-    mWindow.west = x2;
-    mWindow.east = x1;
-  }
-  if ( y1 < y2 )
-  {
-    mWindow.south = y1;
-    mWindow.north = y2;
-  }
-  else
-  {
-    mWindow.south = y2;
-    mWindow.north = y1;
-  }
-
+  mWindow.west = rect.xMinimum();
+  mWindow.east = rect.xMaximum();
+  mWindow.south = rect.yMinimum();
+  mWindow.north = rect.yMaximum();
   adjust();
-  setGuiValues();
-  displayRegion();
+
+  refreshGui();
+  show();
 }
 
 void QgsGrassRegion::displayRegion()
 {
-  QgsDebugMsg( "entered." );
-
   QgsPoint ul( mWindow.west, mWindow.north );
   QgsPoint lr( mWindow.east, mWindow.south );
 
   mRegionEdit->setRegion( ul, lr );
-
-  mDisplayed = true;
-}
-
-void QgsGrassRegion::postRender( QPainter *painter )
-{
-  QgsDebugMsg( "entered." );
-
-  mDisplayed = false;
-  displayRegion();
 }
 
 void QgsGrassRegion::accept()
@@ -441,14 +428,14 @@ void QgsGrassRegion::accept()
 
   saveWindowLocation();
   mCanvas->setMapTool( NULL );
-  delete this;
+  QDialog::accept();
 }
 
 void QgsGrassRegion::reject()
 {
   saveWindowLocation();
   mCanvas->setMapTool( NULL );
-  delete this;
+  QDialog::reject();
 }
 
 void QgsGrassRegion::restorePosition()

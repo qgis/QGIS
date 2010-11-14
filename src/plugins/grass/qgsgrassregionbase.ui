@@ -1,448 +1,204 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsGrassRegionBase</class>
- <widget class="QDialog" name="QgsGrassRegionBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsGrassRegionBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>297</height>
+    <width>445</width>
+    <height>348</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>GRASS Region Settings</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>2</number>
-   </property>
-   <property name="topMargin" >
-    <number>2</number>
-   </property>
-   <property name="rightMargin" >
-    <number>2</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>2</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>2</number>
-   </property>
-   <property name="verticalSpacing" >
-    <number>2</number>
-   </property>
-   <item row="0" column="0" >
-    <widget class="QFrame" name="frame4" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Extent</string>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="maximumSize" >
-      <size>
-       <width>32767</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="leftMargin" >
-       <number>6</number>
-      </property>
-      <property name="topMargin" >
-       <number>6</number>
-      </property>
-      <property name="rightMargin" >
-       <number>6</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>6</number>
-      </property>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="2">
+       <widget class="QLabel" name="textLabel1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>72</width>
-          <height>16</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel1" >
-        <property name="text" >
-         <string>N</string>
+        <property name="text">
+         <string>North</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="mNorth" />
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="0">
+       <widget class="QLabel" name="textLabel2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>71</width>
-          <height>21</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QFrame" name="frame19" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="maximumSize" >
-      <size>
-       <width>32767</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>2</number>
-      </property>
-      <property name="leftMargin" >
-       <number>2</number>
-      </property>
-      <property name="topMargin" >
-       <number>2</number>
-      </property>
-      <property name="rightMargin" >
-       <number>2</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>2</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="textLabel2" >
-        <property name="frameShape" >
+        <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
-        <property name="frameShadow" >
+        <property name="frameShadow">
          <enum>QFrame::Plain</enum>
         </property>
-        <property name="text" >
-         <string>W</string>
+        <property name="text">
+         <string>West</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="mWest" />
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="mWest"/>
       </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="4">
+       <widget class="QLabel" name="textLabel3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>51</width>
-          <height>26</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel3" >
-        <property name="text" >
-         <string>E</string>
+        <property name="text">
+         <string>East</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="mEast" />
+      <item row="1" column="5">
+       <widget class="QLineEdit" name="mEast"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="textLabel4">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>South</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" colspan="2">
+       <widget class="QLineEdit" name="mSouth"/>
+      </item>
+      <item row="0" column="3" colspan="2">
+       <widget class="QLineEdit" name="mNorth"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QFrame" name="frame20" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Resolution</string>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="maximumSize" >
-      <size>
-       <width>32767</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>2</number>
-      </property>
-      <property name="leftMargin" >
-       <number>2</number>
-      </property>
-      <property name="topMargin" >
-       <number>2</number>
-      </property>
-      <property name="rightMargin" >
-       <number>2</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>2</number>
-      </property>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="mCellResRadio">
+        <property name="text">
+         <string>Cell width</string>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>73</width>
-          <height>26</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel4" >
-        <property name="text" >
-         <string>S</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mSouth" />
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>57</width>
-          <height>23</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0" >
-    <widget class="QFrame" name="frame5" >
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>6</number>
-      </property>
-      <property name="topMargin" >
-       <number>6</number>
-      </property>
-      <property name="rightMargin" >
-       <number>6</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <widget class="QRadioButton" name="mNSResRadio" >
-        <property name="text" >
-         <string>N-S Res</string>
-        </property>
-        <property name="checked" >
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="mNSRes" />
-      </item>
-      <item row="0" column="2" >
-       <widget class="QRadioButton" name="mRowsRadio" >
-        <property name="text" >
-         <string>Rows</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3" >
-       <widget class="QLineEdit" name="mRows" />
-      </item>
-      <item row="1" column="2" >
-       <widget class="QRadioButton" name="mColsRadio" >
-        <property name="text" >
-         <string>Cols</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QLineEdit" name="mEWRes" />
-      </item>
-      <item row="1" column="3" >
-       <widget class="QLineEdit" name="mCols" />
-      </item>
-      <item row="1" column="0" >
-       <widget class="QRadioButton" name="mEWResRadio" >
-        <property name="text" >
-         <string>E-W Res</string>
-        </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mEWRes"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Cell height</string>
+        </property>
+        <property name="indent">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="mNSRes"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="mRowsColsRadio">
+        <property name="text">
+         <string>Columns</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mCols"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Rows</string>
+        </property>
+        <property name="indent">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="mRows"/>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <widget class="QFrame" name="frame6" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Border</string>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="maximumSize" >
-      <size>
-       <width>32767</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>3</number>
-      </property>
-      <property name="leftMargin" >
-       <number>3</number>
-      </property>
-      <property name="topMargin" >
-       <number>3</number>
-      </property>
-      <property name="rightMargin" >
-       <number>3</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>3</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="textLabel7" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="textLabel7">
+        <property name="text">
          <string>Color</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QgsColorButton" native="1" name="mColorButton" >
-        <property name="minimumSize" >
+      <item row="0" column="1">
+       <widget class="QgsColorButton" name="mColorButton" native="true">
+        <property name="minimumSize">
          <size>
           <width>35</width>
           <height>25</height>
          </size>
         </property>
-        <property name="text" stdset="0" >
+        <property name="text" stdset="0">
          <string/>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLabel" name="textLabel6" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QLabel" name="textLabel6">
+        <property name="text">
          <string>Width</string>
+        </property>
+        <property name="indent">
+         <number>20</number>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QSpinBox" name="mWidthSpinBox" />
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="mWidthSpinBox"/>
       </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
+      <item row="0" column="4">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
-          <width>69</width>
-          <height>24</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
        </spacer>
@@ -450,116 +206,18 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" >
-    <widget class="QFrame" name="frame8" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>38</height>
-      </size>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <property name="maximumSize" >
-      <size>
-       <width>32767</width>
-       <height>38</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>3</number>
-      </property>
-      <property name="leftMargin" >
-       <number>3</number>
-      </property>
-      <property name="topMargin" >
-       <number>3</number>
-      </property>
-      <property name="rightMargin" >
-       <number>3</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>3</number>
-      </property>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>45</width>
-          <height>26</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="acceptButton" >
-        <property name="text" >
-         <string>OK</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>47</width>
-          <height>25</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="rejectButton" >
-        <property name="text" >
-         <string>Cancel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>54</width>
-          <height>26</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>

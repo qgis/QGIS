@@ -651,7 +651,7 @@ void QgsGrassPlugin::changeRegion( void )
   }
 
   // Warning: don't use Qt::WType_Dialog, it would ignore restorePosition
-  mRegion = new QgsGrassRegion( this, qGisInterface, qGisInterface->mainWindow(), Qt::Window );
+  mRegion = new QgsGrassRegion( this, qGisInterface, qGisInterface->mainWindow() );
 
   connect( mRegion, SIGNAL( destroyed( QObject * ) ), this, SLOT( regionClosed() ) );
 
