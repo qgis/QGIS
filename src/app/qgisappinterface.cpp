@@ -144,6 +144,16 @@ void QgisAppInterface::removePluginMenu( QString name, QAction* action )
   qgis->removePluginMenu( name, action );
 }
 
+void QgisAppInterface::addPluginToDatabaseMenu( QString name, QAction* action )
+{
+  qgis->addPluginToDatabaseMenu( name, action );
+}
+
+void QgisAppInterface::removePluginDatabaseMenu( QString name, QAction* action )
+{
+  qgis->removePluginDatabaseMenu( name, action );
+}
+
 int QgisAppInterface::addToolBarIcon( QAction * qAction )
 {
   // add the menu to the master Plugins menu
@@ -242,6 +252,7 @@ QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
+QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
 QMenu *QgisAppInterface::firstRightStandardMenu() { return qgis->firstRightStandardMenu(); }
 QMenu *QgisAppInterface::windowMenu() { return qgis->windowMenu(); }
 QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }

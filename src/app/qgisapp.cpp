@@ -1611,6 +1611,11 @@ void QgisApp::createMenus()
   mActionWindowSeparator2 = mWindowMenu->addSeparator();
 #endif
 
+  // Database Menu
+  // don't add it yet, wait for a plugin
+  mDatabaseMenu = new QMenu( tr( "&Database" ) );
+
+
   // Help Menu
 
   menuBar()->addSeparator();
@@ -5654,6 +5659,93 @@ void QgisApp::removePluginMenu( QString name, QAction* action )
   {
     mPluginMenu->removeAction( mActionPluginSeparator1 );
     mActionPluginSeparator1 = NULL;
+  }
+}
+
+QMenu* QgisApp::getDatabaseMenu( QString menuName )
+{
+#ifdef Q_WS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  menuName.remove( QChar( '&' ) );
+#endif
+  QString dst = menuName;
+  dst.remove( QChar( '&' ) );
+
+  QAction *before = NULL;
+  QList<QAction*> actions = mDatabaseMenu->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    QString src = actions.at( i )->text();
+    src.remove( QChar( '&' ) );
+
+    int comp = dst.localeAwareCompare( src );
+    if ( comp < 0 )
+    {
+      // Add item before this one
+      before = actions.at( i );
+      break;
+    }
+    else if ( comp == 0 )
+    {
+      // Plugin menu item already exists
+      return actions.at( i )->menu();
+    }
+  }
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( menuName, this );
+  if ( before )
+    mDatabaseMenu->insertMenu( before, menu );
+  else
+    mDatabaseMenu->addMenu( menu );
+
+  return menu;
+}
+
+void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
+{
+  QMenu* menu = getDatabaseMenu( name );
+  menu->addAction( action );
+
+  // add the Database menu to the menuBar if not added yet
+  if ( mDatabaseMenu->actions().count() != 1 )
+    return;
+
+  QAction* before = NULL;
+  QList<QAction*> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mDatabaseMenu )
+      return;
+    if ( actions.at( i )->menu() == mHelpMenu )
+    {
+      before = actions.at( i );
+      break;
+    }
+  }
+
+  if ( before )
+    menuBar()->insertMenu( before, mDatabaseMenu );
+  else
+    menuBar()->addMenu( mDatabaseMenu );
+}
+
+void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
+{
+  QMenu* menu = getDatabaseMenu( name );
+  menu->removeAction( action );
+
+  // remove the Database menu from the menuBar if there are no more actions
+  if ( mDatabaseMenu->actions().count() > 0 )
+    return;
+
+  QList<QAction*> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mDatabaseMenu )
+    {
+      menuBar()->removeAction( actions.at( i ) );
+      return;
+    }
   }
 }
 
