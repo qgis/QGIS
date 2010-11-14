@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
+    <width>431</width>
     <height>562</height>
    </rect>
   </property>
@@ -53,7 +53,7 @@
      <property name="title">
       <string>Join data</string>
      </property>
-     <layout class="QGridLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <layout class="QVBoxLayout">
         <item>
@@ -117,6 +117,20 @@
         </item>
         <item>
          <widget class="QComboBox" name="joinField"/>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="labEncoding">
+          <property name="text">
+           <string>Encoding</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cmbEncoding"/>
         </item>
        </layout>
       </item>
