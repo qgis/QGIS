@@ -17,6 +17,7 @@
 
 #include "qgslabelinggui.h"
 
+#include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaplayerregistry.h>
@@ -32,8 +33,8 @@
 
 
 
-QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent ), mLBL( lbl ), mLayer( layer )
+QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
+    : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
@@ -168,11 +169,24 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWid
     radAroundCentroid, radPolygonHorizontal, radPolygonFree, radPolygonPerimeter // polygon
   };
   for ( unsigned int i = 0; i < sizeof( placementRadios ) / sizeof( QRadioButton* ); i++ )
+  {
     connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateOptions() ) );
+  }
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 }
 
 QgsLabelingGui::~QgsLabelingGui()
 {
+}
+
+void QgsLabelingGui::apply()
+{
+  layerSettings().writeToLayer( mLayer );
+  // trigger refresh
+  if ( mMapCanvas )
+  {
+    mMapCanvas->refresh();
+  }
 }
 
 QgsPalLayerSettings QgsLabelingGui::layerSettings()

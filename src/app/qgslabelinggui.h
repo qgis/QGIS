@@ -22,6 +22,7 @@
 #include <ui_qgslabelingguibase.h>
 
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 #include "qgspallabeling.h"
 
@@ -30,12 +31,13 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent );
+    QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
 
   public slots:
+    void apply();
     void changeTextColor();
     void changeTextFont();
     void showEngineConfigDialog();
@@ -62,6 +64,7 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
   private:
     QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

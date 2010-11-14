@@ -3893,7 +3893,7 @@ void QgisApp::labeling()
   }
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
 
-  QgsLabelingGui labelGui( mLBL, vlayer, this );
+  QgsLabelingGui labelGui( mLBL, vlayer, mMapCanvas, this );
 
   if ( labelGui.exec() )
   {
