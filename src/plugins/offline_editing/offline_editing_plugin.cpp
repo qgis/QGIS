@@ -60,14 +60,14 @@ void QgsOfflineEditingPlugin::initGui()
   connect( mActionConvertProject, SIGNAL( triggered() ), this, SLOT( convertProject() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mActionConvertProject );
-  mQGisIface->addPluginToMenu( tr( "&Offline Editing" ), mActionConvertProject );
+  mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
   mActionConvertProject->setEnabled( false );
 
   mActionSynchronize = new QAction( QIcon( ":/offline_editing/offline_editing_sync.png" ), tr( "Synchronize" ), this );
   mActionSynchronize->setWhatsThis( tr( "Synchronize offline project with remote layers" ) );
   connect( mActionSynchronize, SIGNAL( triggered() ), this, SLOT( synchronize() ) );
   mQGisIface->addToolBarIcon( mActionSynchronize );
-  mQGisIface->addPluginToMenu( tr( "&Offline Editing" ), mActionSynchronize );
+  mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionSynchronize );
   mActionSynchronize->setEnabled( false );
 
   mOfflineEditing = new QgsOfflineEditing( new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags ) );
@@ -117,9 +117,9 @@ void QgsOfflineEditingPlugin::unload()
   disconnect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
 
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Offline Editing", mActionConvertProject );
+  mQGisIface->removePluginDatabaseMenu( "&Offline Editing", mActionConvertProject );
   mQGisIface->removeToolBarIcon( mActionConvertProject );
-  mQGisIface->removePluginMenu( "&Offline Editing", mActionSynchronize );
+  mQGisIface->removePluginDatabaseMenu( "&Offline Editing", mActionSynchronize );
   mQGisIface->removeToolBarIcon( mActionSynchronize );
   delete mActionConvertProject;
   delete mActionSynchronize;
