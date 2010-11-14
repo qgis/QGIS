@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
+    <width>478</width>
     <height>221</height>
    </rect>
   </property>
@@ -94,7 +94,7 @@
    <item row="0" column="2">
     <widget class="QPushButton" name="GisdbaseBrowse">
      <property name="text">
-      <string>Browse</string>
+      <string>Browse...</string>
      </property>
     </widget>
    </item>

@@ -88,9 +88,6 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     static QString lastRasterMap;
     static QString lastLayer; // vector layer
     static QString lastMapcalc;
-
-    void restorePosition( void );
-    void saveWindowLocation( void );
 };
 
 
