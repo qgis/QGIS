@@ -30,7 +30,7 @@
 #ifdef WIN32
 #include <float.h>
 #define isnan(f) _isnan(f)
-#define isinf(f) (!_isfinite(f) && !_isnan(f))
+#define isinf(f) (!_finite(f) && !_isnan(f))
 #endif
 
 /** \ingroup core
