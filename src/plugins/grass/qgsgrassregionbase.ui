@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>445</width>
-    <height>348</height>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <string>Extent</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="2">
+      <item row="1" column="2">
        <widget class="QLabel" name="textLabel1">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -33,7 +33,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="textLabel2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -52,10 +52,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
+      <item row="2" column="1" colspan="2">
        <widget class="QLineEdit" name="mWest"/>
       </item>
-      <item row="1" column="4">
+      <item row="2" column="4">
        <widget class="QLabel" name="textLabel3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -68,10 +68,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="5">
+      <item row="2" column="5">
        <widget class="QLineEdit" name="mEast"/>
       </item>
-      <item row="2" column="2">
+      <item row="3" column="2">
        <widget class="QLabel" name="textLabel4">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -84,11 +84,19 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3" colspan="2">
+      <item row="3" column="3" colspan="2">
        <widget class="QLineEdit" name="mSouth"/>
       </item>
-      <item row="0" column="3" colspan="2">
+      <item row="1" column="3" colspan="2">
        <widget class="QLineEdit" name="mNorth"/>
+      </item>
+      <item row="0" column="0" colspan="6">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Select the extent by dragging on canvas 
+or change the following values</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
