@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-Name			 	 : GdalTools
+Name                  : GdalTools
 Description          : Integrate gdal tools into qgis
 Date                 : 17/Sep/09
 copyright            : (C) 2009 by Lorenzo Masini (Faunalia)
@@ -81,8 +81,27 @@ class GdalTools:
     from tools.GdalTools_utils import Version, GdalConfig
     self.GdalVersion = Version( GdalConfig.version() )
 
-    self.menu = QMenu()
-    self.menu.setTitle( QCoreApplication.translate( "GdalTools", "&Raster" ) )
+    # find the Raster menu
+    rasterMenu = None
+    menu_bar = self.iface.mainWindow().menuBar()
+    actions = menu_bar.actions()
+
+    rasterText = QCoreApplication.translate( "QgisApp", "&Raster" )
+
+    for a in actions:
+        if a.menu().title() == rasterText:
+            rasterMenu = a.menu()
+            break
+
+    if rasterMenu == None:
+        # no Raster menu, create and insert it before the Help menu
+        self.menu = QMenu()
+        self.menu.setTitle( QCoreApplication.translate( "GdalTools", "&Raster" ) )
+        lastAction = actions[ len( actions ) - 1 ]
+        menu_bar.insertMenu( lastAction, self.menu )
+    else:
+        self.menu = rasterMenu
+        self.menu.addSeparator()
 
     if self.GdalVersion >= "1.6":
       self.buildVRT = QAction( QIcon(":/icons/vrt.png"), QCoreApplication.translate( "GdalTools", "Build Virtual Raster (catalog)" ), self.iface.mainWindow() )

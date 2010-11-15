@@ -333,6 +333,7 @@ class QgisApp : public QMainWindow
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }
+    QMenu *rasterMenu() { return mRasterMenu; }
 #ifdef Q_WS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
@@ -1100,6 +1101,8 @@ class QgisApp : public QMainWindow
     QMenu *mPluginMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
+    //! Top level raster menu
+    QMenu *mRasterMenu;
     //! Popup menu for the map overview tools
     QMenu *toolPopupOverviews;
     //! Popup menu for the display tools
