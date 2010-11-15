@@ -86,6 +86,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_rbtnThreeBandMinMax_toggled( bool );
     /** \brief slot executed when the three band standard deviation radio button is pressed. */
     void on_rbtnThreeBandStdDev_toggled( bool );
+    /** \brief slot executed when the reset null value to file default icon is selected */
+    void on_btnResetNull_clicked( );
 
     void pixelSelected( int x, int y );
     /** \brief this slot clears min max values from gui */
