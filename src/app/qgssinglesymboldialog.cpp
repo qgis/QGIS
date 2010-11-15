@@ -646,10 +646,6 @@ void QgsSingleSymbolDialog::setLabel( QString label )
 
 void QgsSingleSymbolDialog::symbolChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  QAbstractItemModel *m = lstSymbols->model();
-  QgsDebugMsg( QString( "symbol changed to %1:%2" ).arg( current.row() ).arg( m->data( current, Qt::UserRole ).toString() ) );
-  // m->setData( current, Qt::UserRole+1, Qt::cyan );
-  // m->setData( previous, Qt::UserRole+1, Qt::white );
   emit settingsChanged();
 }
 
