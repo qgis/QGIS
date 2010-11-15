@@ -45,7 +45,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
     else:
       self.outShape.clear()
       self.geometry( self.inShape.currentText(), self.lineEdit.value(), self.cmbField.currentText() )
-  
+
   def outFile(self):
     self.outShape.clear()
     (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
@@ -90,11 +90,6 @@ class GeometryDialog(QDialog, Ui_Dialog):
       self.lineEdit.setVisible(False)
       self.cmbField.setVisible(False)
       self.field_label.setVisible(False)
-    elif self.myFunction == 6: # Simplify geometries
-      self.setWindowTitle( self.tr( "Simplify geometries" ) )
-      self.label_2.setText( self.tr( "Output shapefile" ) )
-      self.cmbField.setVisible(False)
-      self.field_label.setVisible(False)
     elif self.myFunction == 7: # Polygon centroids
       self.setWindowTitle( self.tr( "Polygon centroids" ) )
       self.label_2.setText( self.tr( "Output point shapefile" ) )
@@ -119,7 +114,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
     myList = []
     self.inShape.clear()
     if self.myFunction == 3 or self.myFunction == 6:
-      myList = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )    
+      myList = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )
     elif self.myFunction == 4 or self.myFunction == 7:
       myList = ftools_utils.getLayerNames( [ QGis.Polygon ] )
     elif self.myFunction == 8:
@@ -136,7 +131,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
 #3:  Extract nodes
 #4:  Polygons to lines
 #5:  Export/Add geometry columns
-#6:  Simplify geometries
+#6:  Simplify geometries (disabled)
 #7:  Polygon centroids
 #8: Delaunay triangulation
 #9: Polygon from layer extent
@@ -153,7 +148,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
         QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Unable to delete existing shapefile." ) )
         return
     self.buttonOk.setEnabled( False )
-    self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myParam, 
+    self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myParam,
     myField, self.shapefileName, self.encoding )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
@@ -165,7 +160,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
   def cancelThread( self ):
     self.testThread.stop()
     self.buttonOk.setEnabled( True )
-    
+
   def runFinishedFromThread( self, success ):
     self.testThread.stop()
     self.buttonOk.setEnabled( True )
@@ -177,7 +172,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
       QMessageBox.warning( self, self.tr("Geometry"), self.tr("At least two features must have same attribute value!\nPlease choose another field...") )
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
         QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Unable to delete incomplete shapefile." ) )
-    else: 
+    else:
       self.cancel_close.setText( "Close" )
       QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
       if success:
@@ -187,13 +182,13 @@ class GeometryDialog(QDialog, Ui_Dialog):
             QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
       else:
         QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Error writing output shapefile." ) )
-        
+
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
-        
+
   def runRangeFromThread( self, range_vals ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
-    
+
 class geometryThread( QThread ):
   def __init__( self, parentThread, parentObject, function, vlayer, myParam, myField, myName, myEncoding ):
     QThread.__init__( self, parentThread )
@@ -218,8 +213,7 @@ class geometryThread( QThread ):
       success = self.polygons_to_lines()
     elif self.myFunction == 5: # Export/Add geometry columns
       success = self.export_geometry_info()
-    elif self.myFunction == 6: # Simplify geometries
-      success = self.simplify_geometry()
+    # note that 6 used to be associated with simplify_geometry
     elif self.myFunction == 7: # Polygon centroids
       success = self.polygon_centroids()
     elif self.myFunction == 8: # Delaunay triangulation
@@ -231,7 +225,7 @@ class geometryThread( QThread ):
 
   def stop(self):
     self.running = False
-    
+
   def single_to_multi( self ):
     vprovider = self.vlayer.dataProvider()
     allAttrs = vprovider.attributeIndexes()
@@ -291,7 +285,7 @@ class geometryThread( QThread ):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vprovider.geometryType(), vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -302,7 +296,7 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     while vprovider.nextFeature( inFeat ):
-      nElement += 1  
+      nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       inGeom = inFeat.geometry()
       atMap = inFeat.attributeMap()
@@ -319,7 +313,7 @@ class geometryThread( QThread ):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBPoint, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -330,7 +324,7 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     while vprovider.nextFeature( inFeat ):
-      nElement += 1  
+      nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
       inGeom = inFeat.geometry()
       atMap = inFeat.attributeMap()
@@ -347,7 +341,7 @@ class geometryThread( QThread ):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBLineString, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -359,7 +353,7 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     while vprovider.nextFeature(inFeat):
       multi = False
-      nElement += 1  
+      nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
       inGeom = inFeat.geometry()
       if inGeom.isMultipart():
@@ -378,7 +372,7 @@ class geometryThread( QThread ):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     ( fields, index1, index2 ) = self.checkGeometryFields( self.vlayer )
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vprovider.geometryType(), vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -389,7 +383,7 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     while vprovider.nextFeature(inFeat):
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-      nElement += 1    
+      nElement += 1
       inGeom = inFeat.geometry()
       ( attr1, attr2 ) = self.simpleMeasure( inGeom )
       outFeat.setGeometry( inGeom )
@@ -401,41 +395,12 @@ class geometryThread( QThread ):
     del writer
     return True
 
-  def simplify_geometry( self ):
-    vprovider = self.vlayer.dataProvider()
-    tolerance = self.myParam
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
-    fields, vprovider.geometryType(), vprovider.crs() )
-    inFeat = QgsFeature()
-    outFeat = QgsFeature()
-    nFeat = vprovider.featureCount()
-    nElement = 0
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  0 )
-    self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-    self.measure = QgsDistanceArea()
-    while vprovider.nextFeature( inFeat ):
-      nElement += 1  
-      self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-      inGeom = inFeat.geometry()
-      atMap = inFeat.attributeMap()
-      outGeom = QgsGeometry(inGeom.simplify(tolerance))
-      if outGeom is None:
-        return "math_error"
-      outFeat.setAttributeMap( atMap )
-      outFeat.setGeometry( outGeom )
-      writer.addFeature( outFeat )
-    del writer
-    return True
-
   def polygon_centroids( self ):
     vprovider = self.vlayer.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBPoint, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -456,7 +421,7 @@ class geometryThread( QThread ):
       writer.addFeature( outFeat )
     del writer
     return True
-    
+
   def delaunay_triangulation( self ):
     import voronoi
     vprovider = self.vlayer.dataProvider()
@@ -495,13 +460,13 @@ class geometryThread( QThread ):
         if step <= 3: feat.addAttribute( step, QVariant( index ) )
         step += 1
       geometry = QgsGeometry().fromPolygon( [ polygon ] )
-      feat.setGeometry( geometry )      
+      feat.setGeometry( geometry )
       writer.addFeature( feat )
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
     del writer
     return True
-    
+
   def layer_extent( self ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, 0 ) )
@@ -517,7 +482,7 @@ class geometryThread( QThread ):
     8 : QgsField( "HEIGHT", QVariant.Double ),
     9 : QgsField( "WIDTH", QVariant.Double ) }
 
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBPolygon, self.vlayer.srs() )
     rect = self.vlayer.extent()
     minx = rect.xMinimum()
@@ -587,7 +552,7 @@ class geometryThread( QThread ):
 
   def checkForField( self, L, e ):
     e = QString( e ).toLower()
-    fieldRange = range( 0,len( L ) ) 
+    fieldRange = range( 0,len( L ) )
     for item in fieldRange:
       if L[ item ].toLower() == e:
         return True, item
@@ -602,17 +567,17 @@ class geometryThread( QThread ):
       nameList.append( fieldList[ i ].name().toLower() )
     if geomType == QGis.Polygon:
       plp = "Poly"
-      ( found, index1 ) = self.checkForField( nameList, "AREA" )           
+      ( found, index1 ) = self.checkForField( nameList, "AREA" )
       if not found:
         field = QgsField( "AREA", QVariant.Double, "double", 10, 6, self.tr("Polygon area") )
         index1 = len( fieldList.keys() )
-        fieldList[ index1 ] = field        
+        fieldList[ index1 ] = field
       ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
-        
+
       if not found:
         field = QgsField( "PERIMETER", QVariant.Double, "double", 10, 6, self.tr("Polygon perimeter") )
         index2 = len( fieldList.keys() )
-        fieldList[ index2 ] = field         
+        fieldList[ index2 ] = field
     elif geomType == QGis.Line:
       plp = "Line"
       (found, index1) = self.checkForField(nameList, "LENGTH")
@@ -675,7 +640,7 @@ class geometryThread( QThread ):
       else:
         temp_geom.append( geom )
     return temp_geom
-        
+
   def extractAsMulti( self, geom ):
     temp_geom = []
     if geom.type() == 0:
