@@ -54,6 +54,7 @@
 #include <QSettings>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QHeaderView>
 
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2.h"
