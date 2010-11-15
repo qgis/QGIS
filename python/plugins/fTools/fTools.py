@@ -127,7 +127,7 @@ class fToolsPlugin:
       return None
     QObject.connect( self.iface, SIGNAL( "currentThemeChanged ( QString )" ), self.updateThemeIcons )
     self.menu = QMenu()
-    self.menu.setTitle( QCoreApplication.translate( "fTools", "V&ector" ) )
+    self.menu.setTitle( QCoreApplication.translate( "fTools", "Vect&or" ) )
 
     self.analysisMenu = QMenu( QCoreApplication.translate( "fTools", "&Analysis Tools" ) )
     self.distMatrix = QAction( QCoreApplication.translate( "fTools", "Distance matrix" ),self.iface.mainWindow( ) )
