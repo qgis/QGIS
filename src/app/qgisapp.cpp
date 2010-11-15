@@ -1528,9 +1528,6 @@ void QgisApp::createMenus()
   mLayerMenu->addAction( mActionNewVectorLayer );
 #endif
 
-  //todo: should probably go into a raster menu
-  mLayerMenu->addAction( mActionShowRasterCalculator );
-
   mLayerMenu->addAction( mActionAddOgrLayer );
   mLayerMenu->addAction( mActionAddRasterLayer );
 #ifdef HAVE_POSTGRESQL
@@ -1608,6 +1605,13 @@ void QgisApp::createMenus()
   // Database Menu
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
+
+  
+  // Raster Menu
+
+  mRasterMenu = menuBar()->addMenu( tr( "&Raster" ) );
+
+  mRasterMenu->addAction( mActionShowRasterCalculator );
 
 
   // Help Menu
