@@ -29,17 +29,22 @@
   for tracking the mouse while drawing polylines or polygons.
 */
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
-    : QgsMapCanvasItem( mapCanvas ), mIsPolygon( isPolygon ), mTranslationOffsetX( 0.0 ), mTranslationOffsetY( 0.0 )
+    : QgsMapCanvasItem( mapCanvas )
+    , mIsPolygon( isPolygon )
+    , mTranslationOffsetX( 0.0 )
+    , mTranslationOffsetY( 0.0 )
 {
   reset( isPolygon );
   setColor( QColor( Qt::lightGray ) );
 }
 
 QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem( 0 )
-{}
+{
+}
 
 QgsRubberBand::~QgsRubberBand()
-{}
+{
+}
 
 /*!
   Set the outline and fill color.
@@ -88,15 +93,19 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, i
 
   if ( geometryIndex == mPoints.size() )
   {
-    mPoints.push_back( QList<QgsPoint>() );
+    mPoints.push_back( QList<QgsPoint>() << p );
   }
 
-  //we need to set two points at the begin of the rubber band for operations that move the last point
-  if ( mPoints[geometryIndex].size() == 0 )
+  if ( mPoints[geometryIndex].size() == 2 &&
+       mPoints[geometryIndex][0] == mPoints[geometryIndex][1] )
   {
-    mPoints[geometryIndex].push_back( p );
+    mPoints[geometryIndex].last() = p;
   }
-  mPoints[geometryIndex].push_back( p );
+  else
+  {
+    mPoints[geometryIndex] << p;
+  }
+
 
   if ( do_update )
   {
@@ -136,7 +145,7 @@ void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
     return;
   }
 
-  mPoints[geometryIndex][mPoints.at( geometryIndex ).size() - 1] = p;
+  mPoints[geometryIndex].last() = p;
 
   updateRect();
   update();
@@ -349,7 +358,6 @@ void QgsRubberBand::paint( QPainter* p )
       QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
-        //QgsDebugMsg("Drawing rubberband vertex: " + QString::number(it->x() + mTranslationOffsetX) + "//" + QString::number(it->y() + mTranslationOffsetY));
         pts.append( toCanvasCoordinates( QgsPoint( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY ) ) - pos() );
       }
 
@@ -384,9 +392,7 @@ void QgsRubberBand::updateRect()
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
         r.combineExtentWith( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
-        //QgsDebugMsg("Combining extent with: " + QString::number(it->x()) + "//" + QString::number(it->y()));
       }
-      //QgsDebugMsg("r: " + r.toString());
     }
     setRect( r );
   }
