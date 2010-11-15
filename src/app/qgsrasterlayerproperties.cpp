@@ -290,6 +290,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     refreshHistogram();
   }
+  tableTransparency->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
+  tableTransparency->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
 } // QgsRasterLayerProperties ctor
 
 
