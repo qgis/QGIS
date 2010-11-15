@@ -46,7 +46,7 @@ import doGeometry, doGeoprocessing, doVisual
 import doIntersectLines, doJoinAttributes, doSelectByLocation, doVectorSplit, doMeanCoords
 import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints, doDefineProj
 import doReProject, doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
-import doAbout, doValidate
+import doAbout, doValidate, doSimplify
 
 class fToolsPlugin:
   def __init__( self,iface ):
@@ -103,6 +103,7 @@ class fToolsPlugin:
     self.checkGeom.setIcon( QIcon( self.getThemeIcon( "check_geometry.png") ) )
     self.centroids.setIcon( QIcon( self.getThemeIcon( "centroids.png") ) )
     self.delaunay.setIcon( QIcon( self.getThemeIcon( "delaunay.png") ) )
+    self.voronoi.setIcon( QIcon( self.getThemeIcon( "delaunay.png") ) )
     self.extNodes.setIcon( QIcon( self.getThemeIcon( "extract_nodes.png") ) )
     self.simplify.setIcon( QIcon( self.getThemeIcon( "simplify.png") ) )
     self.multiToSingle.setIcon( QIcon( self.getThemeIcon( "multi_to_single.png") ) )
@@ -126,7 +127,7 @@ class fToolsPlugin:
       return None
     QObject.connect( self.iface, SIGNAL( "currentThemeChanged ( QString )" ), self.updateThemeIcons )
     self.menu = QMenu()
-    self.menu.setTitle( QCoreApplication.translate( "fTools", "&Vector" ) )
+    self.menu.setTitle( QCoreApplication.translate( "fTools", "V&ector" ) )
 
     self.analysisMenu = QMenu( QCoreApplication.translate( "fTools", "&Analysis Tools" ) )
     self.distMatrix = QAction( QCoreApplication.translate( "fTools", "Distance matrix" ),self.iface.mainWindow( ) )
@@ -168,12 +169,13 @@ class fToolsPlugin:
     self.checkGeom = QAction( QCoreApplication.translate( "fTools", "Check geometry validity" ),self.iface.mainWindow() )
     self.centroids = QAction( QCoreApplication.translate( "fTools", "Polygon centroids" ),self.iface.mainWindow() )
     self.delaunay = QAction( QCoreApplication.translate( "fTools", "Delaunay triangulation" ),self.iface.mainWindow() )
+    self.voronoi = QAction( QCoreApplication.translate( "fTools", "Voronoi Polygons" ),self.iface.mainWindow() )
     self.extNodes = QAction( QCoreApplication.translate( "fTools", "Extract nodes" ),self.iface.mainWindow() )
     self.simplify = QAction( QCoreApplication.translate( "fTools", "Simplify geometries" ),self.iface.mainWindow() )
     self.multiToSingle = QAction( QCoreApplication.translate( "fTools", "Multipart to singleparts" ),self.iface.mainWindow() )
     self.singleToMulti = QAction( QCoreApplication.translate( "fTools", "Singleparts to multipart" ),self.iface.mainWindow() )
     self.polysToLines = QAction( QCoreApplication.translate( "fTools", "Polygons to lines" ),self.iface.mainWindow() )
-    self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay,
+    self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay, self.voronoi,
     self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.extNodes] )
 
     self.dataManageMenu = QMenu( QCoreApplication.translate( "fTools", "&Data Management Tools") )
@@ -232,6 +234,7 @@ class fToolsPlugin:
     QObject.connect( self.simplify, SIGNAL("triggered()"), self.dosimplify )
     QObject.connect( self.centroids, SIGNAL("triggered()"), self.docentroids )
     QObject.connect( self.delaunay, SIGNAL("triggered()"), self.dodelaunay )
+    QObject.connect( self.voronoi, SIGNAL("triggered()"), self.dovoronoi )
     QObject.connect( self.polysToLines, SIGNAL("triggered()"), self.dopolysToLines )
     QObject.connect( self.compGeo, SIGNAL("triggered()"), self.docompGeo )
     QObject.connect( self.extNodes, SIGNAL("triggered()"), self.doextNodes )
@@ -249,7 +252,7 @@ class fToolsPlugin:
     pass
 
   def dosimplify( self ):
-    d = doGeometry.GeometryDialog( self.iface, 6 )
+    d = doSimplify.Dialog( self.iface )
     d.exec_()
 
   def dopolysToLines( self ):
@@ -323,6 +326,10 @@ class fToolsPlugin:
 
   def dodelaunay( self ):
     d = doGeometry.GeometryDialog( self.iface, 8 )
+    d.exec_()
+    
+  def dovoronoi( self ):
+    d = doGeometry.GeometryDialog( self.iface, 10 )
     d.exec_()
 
   def doextent( self ):
