@@ -1177,20 +1177,6 @@ void QgsRasterLayerProperties::apply()
   /*
    * Transparent Pixel Tab
    */
-  //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
-  if ( mRasterLayerIsGdal && chkboxResetNoDataValue->isChecked() )
-  {
-    mRasterLayer->resetNoDataValue();
-    if ( mRasterLayer->isNoDataValueValid() )
-    {
-      leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'f' ) );
-    }
-    else
-    {
-      leNoDataValue->clear();
-    }
-    chkboxResetNoDataValue->setChecked( false );
-  }
 
   //set NoDataValue
   bool myDoubleOk = false;
@@ -3029,4 +3015,21 @@ QgsPixelSelectorTool::~QgsPixelSelectorTool()
 void QgsPixelSelectorTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 {
   emit pixelSelected( theMouseEvent->x( ), theMouseEvent->y( ) );
+}
+
+void QgsRasterLayerProperties::on_btnResetNull_clicked( )
+{
+  //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
+  if ( mRasterLayerIsGdal )
+  {
+    mRasterLayer->resetNoDataValue();
+    if ( mRasterLayer->isNoDataValueValid() )
+    {
+      leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+    }
+    else
+    {
+      leNoDataValue->clear();
+    }
+  }
 }
