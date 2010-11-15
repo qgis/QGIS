@@ -1399,6 +1399,27 @@ guidelines are followed in layout and design of GUIs.
    Using a button box will ensure that the order of 'OK' and 'Cancel' etc,
    buttons is consistent with the operating system / locale / desktop
    environment that the user is using.
+ 6. Tabs should not be nested. If you use tabs, follow the style of the
+   tabs used in QgsVectorLayerProperties / QgsProjectProperties etc.
+   i.e. tabs at top with icons at 32x32.
+ 7. Widget stacks should be avoided if at all possible. They cause problems with 
+   layouts and inexplicable (to the user) resizing of dialogs to accommodate 
+   widgets that are not visible.
+ 8. Try to avoid technical terms and rather use a laymans equivalent e.g. use
+   the word 'Transparency' rather than 'Alpha Channel' (contrived example),
+   'Text' instead of 'String' and so on.
+ 9. Use consistent iconography. If you need an icon or icon elements, please
+   contact Robert Szczepanek on the mailing list for assistance.
+ 10. Place long lists of widgets into scroll boxes. No dialog should exceed 580
+   pixels in height and 1000 pixels in width.
+ 11. Separate advanced options from basic ones. Novice users should be able to
+   quickly access the items needed for basic activities without needing to
+   concern themselves with complexity of advanced features. Advanced features
+   should either be located below a dividing line, or placed onto a separate tab.
+ 12. Don't add options for the sake of having lots of options. Strive to keep the
+   user interface minimalistic and use sensible defaults.
+ 13. If clicking a button will spawn a new dialog, an ellipsis (...) should be
+   suffixed to the button text.
 
 
 
