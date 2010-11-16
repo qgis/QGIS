@@ -106,6 +106,24 @@ void QgsSnappingDialog::update()
   QSettings myQsettings;
   bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
 
+  double defaultSnapppingTolerance = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
+  int defaultSnapppingUnit = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
+  QString defaultSnappingString = myQsettings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
+
+  int defaultSnappingStringIdx = 0;
+  if ( defaultSnappingString == "to vertex" )
+  {
+    defaultSnappingStringIdx = 0;
+  }
+  else if ( defaultSnappingString == "to segment" )
+  {
+    defaultSnappingStringIdx = 1;
+  }
+  else //to vertex and segment
+  {
+    defaultSnappingStringIdx = 2;
+  }
+
   bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
@@ -135,12 +153,14 @@ void QgsSnappingDialog::update()
     cbxSnapTo->insertItem( 0, tr( "to vertex" ) );
     cbxSnapTo->insertItem( 1, tr( "to segment" ) );
     cbxSnapTo->insertItem( 2, tr( "to vertex and segment" ) );
+    cbxSnapTo->setCurrentIndex( defaultSnappingStringIdx );
     mLayerTreeWidget->setItemWidget( item, 2, cbxSnapTo );
 
     //snapping tolerance
     QLineEdit *leTolerance = new QLineEdit( mLayerTreeWidget );
     QDoubleValidator *validator = new QDoubleValidator( leTolerance );
     leTolerance->setValidator( validator );
+    leTolerance->setText( QString::number( defaultSnapppingTolerance, 'f' ) );
 
     mLayerTreeWidget->setItemWidget( item, 3, leTolerance );
 
@@ -148,6 +168,7 @@ void QgsSnappingDialog::update()
     QComboBox *cbxUnits = new QComboBox( mLayerTreeWidget );
     cbxUnits->insertItem( 0, tr( "map units" ) );
     cbxUnits->insertItem( 1, tr( "pixels" ) );
+    cbxUnits->setCurrentIndex( defaultSnapppingUnit );
     mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
 
     int idx = layerIdList.indexOf( currentVectorLayer->getLayerID() );
@@ -158,7 +179,21 @@ void QgsSnappingDialog::update()
     }
 
     cbxEnable->setChecked( enabledList[ idx ] == "enabled" );
-    cbxSnapTo->setCurrentIndex( snapToList[idx].toInt() );
+
+    int snappingStringIdx = 0;
+    if ( snapToList[idx] == "to_vertex" )
+    {
+      snappingStringIdx = 0;
+    }
+    else if ( snapToList[idx] == "to_segment" )
+    {
+      snappingStringIdx = 1;
+    }
+    else //to vertex and segment
+    {
+      snappingStringIdx = 2;
+    }
+    cbxSnapTo->setCurrentIndex( snappingStringIdx );
     leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
     cbxUnits->setCurrentIndex( toleranceUnitList[idx].toInt() );
   }
@@ -222,7 +257,7 @@ void QgsSnappingDialog::apply()
 
 void QgsSnappingDialog::show()
 {
-  if( mDock )
+  if ( mDock )
     mDock->setVisible( true );
   else
     QDialog::show();
