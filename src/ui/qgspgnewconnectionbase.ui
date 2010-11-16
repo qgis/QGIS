@@ -201,7 +201,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <layout class="QGridLayout" name="gridLayout">
+       <layout class="QGridLayout" name="gridLayout_1">
         <property name="margin">
          <number>0</number>
         </property>

@@ -587,7 +587,7 @@
              <property name="title">
               <string>Measure tool</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout">
+             <layout class="QGridLayout" name="gridLayout_21">
               <item row="1" column="0">
                <widget class="QLabel" name="textLabel1_8">
                 <property name="text">
