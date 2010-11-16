@@ -58,7 +58,7 @@
          <property name="title">
           <string>Arrow markers</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout_1">
           <item row="0" column="0" colspan="2">
            <widget class="QRadioButton" name="mDefaultMarkerRadioButton">
             <property name="text">
