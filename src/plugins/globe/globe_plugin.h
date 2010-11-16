@@ -49,6 +49,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     virtual void initGui();
     //! Show the dialog box
     void run();
+    //! Show the settings dialog box
+    void settings();
     //! unload the plugin
     void unload();
     //! show the help document
@@ -83,6 +85,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
+    //!pointer to the qaction for this plugin
+    QAction * mQActionSettingsPointer;
     //! OSG Viewer
     QgsOsgViewer viewer;
     //! Dock widget for viewer
