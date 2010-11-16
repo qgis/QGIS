@@ -220,10 +220,12 @@ FOREACH (QFW ${QTLISTQG})
     # applications behave better that way
     INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QBINDIR}/qgis_help.app/Contents/MacOS/qgis_help")
     # qgis-mapserver
-    IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
-    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QCGIDIR}/qgis_mapserv.fcgi")
+    IF (@WITH_MAPSERVER@)
+        IF (@OSX_HAVE_LOADERPATH@)
+            SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
+        ENDIF (@OSX_HAVE_LOADERPATH@)
+        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QCGIDIR}/qgis_mapserv.fcgi")
+    ENDIF ()
     # libs
     IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
