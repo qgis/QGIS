@@ -17,7 +17,14 @@ fi
 set -e
 
 # determine changed files
-MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
+if [ -d .svn ]; then
+	MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
+elif [ -d .git ]; then
+	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p")
+else
+	echo No working copy
+	exit 1
+fi
 
 if [ -z "$MODIFIED" ]; then
 	echo nothing was modified
@@ -25,8 +32,13 @@ if [ -z "$MODIFIED" ]; then
 fi
 
 # save original changes
-REV=$(svn info | sed -ne "s/Revision: //p")
-svn diff >r$REV.diff
+if [ -d .svn ]; then
+	REV=$(svn info | sed -ne "s/Revision: //p")
+	svn diff >r$REV.diff
+elif [ -d .git ]; then
+	REV=$(git svn info | sed -ne "s/Revision //p")
+	git diff >r$REV.diff
+fi
 
 ASTYLEDIFF=astyle.r$REV.diff
 >$ASTYLEDIFF
