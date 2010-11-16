@@ -15,13 +15,18 @@ SET (globe_plugin_SRCS
      qgsosgviewer.cpp
      qgsosgearthtilesource.cpp
      Controls.cpp
+     globe_plugin_dialog.cpp
 )
 
-SET (globe_plugin_UIS globe_plugin_guibase.ui)
+SET (globe_plugin_UIS
+     globe_plugin_guibase.ui
+     globe_plugin_dialog_guibase.ui
+     )
 
 SET (globe_plugin_MOC_HDRS
      globe_plugin.h
      globe_plugin_gui.h
+     globe_plugin_dialog.h
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)

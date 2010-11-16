@@ -3,7 +3,7 @@
     <loading_policy mode="sequential"/>
 
     <cache type="tilecache">
-      <path>/home/pi/devel/gis/qgis/.qgis/cache/globe</path>
+      <path>/home/marco/.qgis/cache/globe</path>
     </cache>
 
     <image name="world" driver="gdal">
@@ -25,18 +25,16 @@
       <url>http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml</url>
     </heightfield>
     -->
-
+    
     <heightfield name="WorldWind bil" driver="worldwind">
-      <worldwind_cache>/home/pi/devel/gis/qgis/.qgis/cache/globe/worldwind_srtm</worldwind_cache>
+      <worldwind_cache>/home/marco/.qgis/cache/globe/worldwind_srtm</worldwind_cache>
       <cache_enabled>false</cache_enabled>
     </heightfield>
-
-    <!--
+    
     <heightfield name="aster_dem" driver="gdal">
-      <url>/home/pi/data/geodata/Lech/ASTGTM_N47E010/ASTGTM_N47E010_dem.tif</url>
+      <url>/home/marco/data/geodata/Lech/ASTGTM_N47E010/ASTGTM_N47E010_dem.tif</url>
       <cache_enabled>false</cache_enabled>
     </heightfield>
-    -->
 
     <!--
     <vertical_scale>2</vertical_scale>

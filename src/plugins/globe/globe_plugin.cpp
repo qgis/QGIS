@@ -18,7 +18,7 @@
 
 #include "globe_plugin.h"
 #include "globe_plugin_gui.h"
-//#include "globe_plugin_settings_gui.h"
+#include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
 
 #include <qgisinterface.h>
@@ -81,8 +81,8 @@ GlobePlugin::~GlobePlugin()
 void GlobePlugin::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/globe/globe_plugin.png" ), tr( "Globe" ), this );
-  mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe_plugin.png" ), tr( "Globe Settings" ), this );
+  mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
+  mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );
   mQActionSettingsPointer->setWhatsThis( tr( "Settings for 3D globe" ) );
@@ -161,13 +161,9 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
-  //Ui_GlobePluginSettings* settingsDialog = new Ui_globeSettingsGuiBase( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
-  //ogrDialog->setAttribute( Qt::WA_DeleteOnClose );
-  //settingsDialog->show();
-// TODO: implement settings dialog	
-  QMessageBox msgBox;
-  msgBox.setText("settings dialog not implemented yet");
-  msgBox.exec();
+  QgsGlobePluginDialog* settingsDialog = new QgsGlobePluginDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  settingsDialog->setAttribute( Qt::WA_DeleteOnClose );
+  settingsDialog->show();
 }
 
 void GlobePlugin::setupMap()

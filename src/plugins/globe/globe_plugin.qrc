@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/globe/" >
-        <file>globe_plugin.png</file>
+        <file alias="globe_plugin.png">images/globe.png</file>
     </qresource>
 </RCC>
 
