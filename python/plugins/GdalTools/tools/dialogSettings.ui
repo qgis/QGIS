@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>286</height>
+    <width>368</width>
+    <height>324</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,6 +28,27 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSetBinPath">
+       <property name="text">
+        <string>Browse</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>GDAL help path</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLineEdit" name="leGdalHelpPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSetHelpPath">
        <property name="text">
         <string>Browse</string>
        </property>
