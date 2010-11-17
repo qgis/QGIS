@@ -165,7 +165,7 @@ if errorlevel 1 goto error
 
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
-	--exclude "*.pyc" \
+	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/themes/classic/grass" ^
 	"apps/%PACKAGENAME%/themes/default/grass" ^
 	"apps/%PACKAGENAME%/themes/gis/grass" ^
