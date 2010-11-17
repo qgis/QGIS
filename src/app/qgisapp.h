@@ -757,6 +757,13 @@ class QgisApp : public QMainWindow
 
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
+    //! Activates the move label tool
+    void moveLabel();
+    //! Activates rotate label tool
+    void rotateLabel();
+    //! Activates label property tool
+    void changeLabelProperties();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -866,6 +873,7 @@ class QgisApp : public QMainWindow
     QToolBar *mAttributesToolBar;
     QToolBar *mPluginToolBar;
     QToolBar *mHelpToolBar;
+    QToolBar *mLabelToolBar;
 
     // actions for menus and toolbars -----------------
 
@@ -1002,6 +1010,10 @@ class QgisApp : public QMainWindow
     QAction *mActionHelpSeparator2;
     QAction *mActionAbout;
 
+    QAction *mActionMoveLabel;
+    QAction *mActionRotateLabel;
+    QAction *mActionChangeLabelProperties;
+
     QAction *mActionUseRendererV2;
     QAction *mActionStyleManagerV2;
 
@@ -1069,6 +1081,9 @@ class QgisApp : public QMainWindow
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mTextAnnotation;
+        QgsMapTool* mMoveLabel;
+        QgsMapTool* mRotateLabel;
+        QgsMapTool* mChangeLabelProperties;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool;

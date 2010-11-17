@@ -77,6 +77,10 @@ public:
     @note added in QGIS 1.5*/
   double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint /Out/) const;
 
+  /**Calculates azimut between this point and other one (clockwise in degree, starting from north)
+    @note: this function has been added in version 1.7*/
+  double azimuth( const QgsPoint& other );
+
   //! equality operator
   bool operator==(const QgsPoint &other);
     

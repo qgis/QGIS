@@ -28,6 +28,7 @@ SET(QGIS_APP_SRCS
   qgsidentifyresults.cpp
   qgsfeatureaction.cpp
   qgslabeldialog.cpp
+  qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelpreview.cpp
@@ -37,17 +38,21 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptoolcapture.cpp
+  qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
   qgsmaptooldeletevertex.cpp
   qgsmaptooledit.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolidentify.cpp
+  qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
+  qgsmaptoolmovelabel.cpp
   qgsmaptoolmovevertex.cpp
   qgsmaptoolnodetool.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolselectrectangle.cpp
@@ -175,6 +180,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsidentifyresults.h
   qgsfeatureaction.h
   qgslabeldialog.h
+  qgslabelpropertydialog.h
   qgsmanageconnectionsdialog.h
   qgsmaptoolidentify.h
   qgsmaptoolsplitfeatures.h

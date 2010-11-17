@@ -53,6 +53,7 @@ SET(QGIS_CORE_SRCS
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
+  qgslabelsearchtree.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp

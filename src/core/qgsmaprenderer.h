@@ -19,6 +19,7 @@
 
 #include <QSize>
 #include <QStringList>
+#include <QVector>
 
 #include "qgis.h"
 #include "qgsrectangle.h"
@@ -38,12 +39,28 @@ class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 class QgsFeature;
 
+struct QgsLabelPosition
+{
+  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down ):
+      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ) {}
+  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ) {}
+  int featureId;
+  double rotation;
+  QVector< QgsPoint > cornerPoints;
+  QgsRectangle labelRect;
+  double width;
+  double height;
+  QString layerID;
+  bool upsideDown;
+};
+
 /** Labeling engine interface.
  * \note Added in QGIS v1.4
  */
 class QgsLabelingEngineInterface
 {
   public:
+
     virtual ~QgsLabelingEngineInterface() {}
 
     //! called when we're going to start with rendering
@@ -59,6 +76,9 @@ class QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering
     virtual void exit() = 0;
+    //! return infos about labels at a given (map) position
+    //! @note: this method was added in version 1.7
+    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() = 0;
