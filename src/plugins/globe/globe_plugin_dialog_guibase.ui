@@ -44,7 +44,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLineEdit" name="inputEarthfileDataset">
+       <widget class="QLineEdit" name="inputEarthFile">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="buttonSelectEarthfile">
+       <widget class="QPushButton" name="buttonSelectEarthFile">
         <property name="text">
          <string>Browse</string>
         </property>
@@ -76,7 +76,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="comboStereo">
+       <widget class="QComboBox" name="comboStereoMode">
         <property name="minimumSize">
          <size>
           <width>300</width>
@@ -98,7 +98,7 @@
         </item>
         <item>
          <property name="text">
-          <string>CHECKERBOARD</string>
+          <string>VERTICAL_SPLIT</string>
          </property>
         </item>
        </widget>
@@ -117,9 +117,9 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>inputEarthfileDataset</tabstop>
-  <tabstop>buttonSelectEarthfile</tabstop>
-  <tabstop>comboStereo</tabstop>
+  <tabstop>inputEarthFile</tabstop>
+  <tabstop>buttonSelectEarthFile</tabstop>
+  <tabstop>comboStereoMode</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

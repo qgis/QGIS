@@ -31,11 +31,18 @@
 #include <QStringList>
 #include <QVariant>
 
+#include <osgViewer/Viewer>
+
 //constructor
 QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
+  stereoMode = settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString();
+  comboStereoMode->setCurrentIndex( comboStereoMode->findText( stereoMode ) );
+  
+  earthFile = settings.value( "/Plugin-Globe/earthFile", QgsApplication::pkgDataPath() + "/globe/globe.earth" ).toString();
+  inputEarthFile->setText( earthFile );
 }
 
 //destructor
@@ -44,19 +51,64 @@ QgsGlobePluginDialog::~QgsGlobePluginDialog()
 }
 
 QString QgsGlobePluginDialog::openFile()
-{
-  QSettings sets;
+{ 
   QString path = QFileDialog::getOpenFileName( this,
-                 tr( "Open Earthfile" ),
-                 "/home",
-                 tr( "Earthfiles (*.earth)" ) );
+                 tr( "Open earth file" ),
+                 earthFile,
+                 tr( "Earth files (*.earth)" ) );
 
   return path;
+}
+
+void QgsGlobePluginDialog::setStereoMode()
+{
+  if("OFF" == stereoMode)
+  {
+    osg::DisplaySettings::instance()->setStereo( false );
+    }
+  else if("ADVANCED" == stereoMode)
+  {
+    //osg::DisplaySettings::instance()->set
+    }
+  else
+  {
+    osg::DisplaySettings::instance()->setStereo( true );
+    
+    if("ANAGLYPHIC" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::ANAGLYPHIC );
+    }
+    else if("VERTICAL_SPLIT" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
+    }
+    else
+    {
+      showMessageBox("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
+    }
+  }
+}
+
+void QgsGlobePluginDialog::setEarthFile()
+{
+  showMessageBox("TODO: set earth file to " + earthFile);
+}
+
+void QgsGlobePluginDialog::restartGlobe()
+{
+  //showMessageBox("TODO: restart globe");
+}
+
+bool QgsGlobePluginDialog::globeRunning()
+{
+  //TODO: method that tells if the globe plugin is running
+  return true;
 }
 
 void QgsGlobePluginDialog::on_buttonBox_accepted()
 {
   /*
+   * 
   // Validate input settings
   QString srcUrl( inputSrcDataset->text() );
   QString srcLayer( comboSrcLayer->currentText() );
@@ -138,6 +190,13 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
 
   // Close dialog box
   */
+  setStereoMode();
+  setEarthFile();
+  
+  if ( globeRunning() )
+  {
+    restartGlobe();
+  } 
   accept();
 }
 
@@ -146,48 +205,32 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsGlobePluginDialog::on_comboStereo_currentIndexChanged( int stereoMode )
+void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString mode )
 {
-   QMessageBox msgBox;
-    msgBox.setText("stereo mode changed");
-    msgBox.exec();
-  //showText("stereo mode changed");
-  /*
-  // Select destination data format
-  QString frmtCode = comboDstFormats->currentText();
-  mDstFormat = mFrmts.find( frmtCode );
-
-  resetDstUi();
-  */
+  stereoMode = mode;
+  settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
 }
 
-void QgsGlobePluginDialog::on_buttonSelectEarthfile_clicked()
+void QgsGlobePluginDialog::on_buttonSelectEarthFile_clicked()
 {
-  QMessageBox msgBox;
-    msgBox.setText("select file");
-    msgBox.exec();
-    /*
-  QSettings settings;
   QString src;
 
   src = openFile();
 
-  inputSrcDataset->setText( src );
+  inputEarthFile->setText( src );
 
   if ( !src.isEmpty() )
   {
-    QMessageBox msgBox;
-    msgBox.setText(src);
-    msgBox.exec();
-    //showText( src.toString() );
+    earthFile = src;
+    settings.setValue( "/Plugin-Globe/earthFile", earthFile );
   }
-  */
+  
 }
 
-/*void QgsGlobePluginDialog::showText(QString text)
+void QgsGlobePluginDialog::showMessageBox( QString text )
 {
   QMessageBox msgBox;
     msgBox.setText(text);
     msgBox.exec();
 }
-*/
+

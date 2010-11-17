@@ -20,6 +20,7 @@
 
 #include <ui_globe_plugin_dialog_guibase.h>
 #include <QDialog>
+#include <QSettings>
 #include "qgscontexthelp.h"
 
 class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBase
@@ -31,14 +32,21 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     ~QgsGlobePluginDialog();
 
   private:
+    QString stereoMode;
+    QString earthFile;
     QString openFile();
-    void showText( int text);
+    QSettings settings;
+    void setStereoMode();
+    void setEarthFile();
+    void restartGlobe();
+    bool globeRunning();
+    void showMessageBox( QString text);
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonSelectEarthfile_clicked();
-    void on_comboStereo_currentIndexChanged( int stereoMode );
+    void on_buttonSelectEarthFile_clicked();
+    void on_comboStereoMode_currentIndexChanged( QString mode );
 };
 
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H

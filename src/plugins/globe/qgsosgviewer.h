@@ -25,6 +25,7 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QTimer>
+#include <QSettings>
 
 using Qt::WindowFlags;
 
@@ -51,6 +52,11 @@ class QgsGLWidgetAdapter : public QGLWidget
         virtual void wheelEvent( QWheelEvent * event );
 
         osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
+        
+    private:
+    
+        QSettings settings;
+        void setStereoMode();
 };
 
 

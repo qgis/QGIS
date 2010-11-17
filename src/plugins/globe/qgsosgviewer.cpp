@@ -20,11 +20,13 @@
 
 #include <osgViewer/ViewerEventHandlers>
 
+#include <QString>
 
 QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, const QGLWidget * shareWidget, WindowFlags f):
     QGLWidget(parent, shareWidget, f)
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
+    setStereoMode();
     setFocusPolicy(Qt::ClickFocus);
     setMouseTracking ( true );
 }
@@ -81,4 +83,41 @@ void QgsGLWidgetAdapter::mouseMoveEvent( QMouseEvent* event )
 void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 {
     _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_DOWN : osgGA::GUIEventAdapter::SCROLL_UP);
+}
+
+void QgsGLWidgetAdapter::setStereoMode()
+{
+  //TODO: maybe consolidate this method somewhere else since it is repeated in globe_plugin_dialog.cpp
+  
+  //osg::DisplaySettings::instance()->setStereo( (bool) settings.value( "/Plugin-Globe/stereo", 0 ).toInt() );
+  //osg::DisplaySettings::instance()->setStereoMode( (osg::DisplaySettings::StereoMode) settings.value( "/Plugin-Globe/stereoMode", 1 ).toInt());
+  
+  QString stereoMode;
+  stereoMode = settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString();
+  
+  if("OFF" == stereoMode)
+  {
+    osg::DisplaySettings::instance()->setStereo( false );
+    }
+  else if("ADVANCED" == stereoMode)
+  {
+    //osg::DisplaySettings::instance()->set
+    }
+  else
+  {
+    osg::DisplaySettings::instance()->setStereo( true );
+    
+    if("ANAGLYPHIC" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::ANAGLYPHIC );
+    }
+    else if("VERTICAL_SPLIT" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
+    }
+    else
+    {
+      //should never get here
+    }
+  }
 }
