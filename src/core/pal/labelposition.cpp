@@ -55,7 +55,7 @@
 namespace pal
 {
   LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed )
-      : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart( NULL ), partId( -1 ), reversed( isReversed )
+      : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart( NULL ), partId( -1 ), reversed( isReversed ), upsideDown( false )
   {
 
     // alpha take his value bw 0 and 2*pi rad
@@ -111,6 +111,8 @@ namespace pal
       x[3] = tx;
       y[3] = ty;
 
+      upsideDown = true;
+
       if ( this->alpha < M_PI )
         this->alpha += M_PI;
       else
@@ -137,6 +139,7 @@ namespace pal
     else
       nextPart = NULL;
     partId = other.partId;
+    upsideDown = other.upsideDown;
   }
 
   bool LabelPosition::isIn( double *bbox )

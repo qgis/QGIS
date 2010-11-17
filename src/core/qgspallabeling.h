@@ -26,6 +26,7 @@ class QPainter;
 class QgsMapRenderer;
 class QgsRectangle;
 class QgsCoordinateTransform;
+class QgsLabelSearchTree;
 
 #include <QString>
 #include <QFont>
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QgsPalLabeling();
     ~QgsPalLabeling();
 
-    QgsPalLayerSettings& layer( const char* layerName );
+    QgsPalLayerSettings& layer( const QString& layerName );
 
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
@@ -199,6 +200,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
+    //! return infos about labels at a given (map) position
+    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
@@ -214,7 +217,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void initPal();
 
   protected:
-    // temporary hashtable of layer settings, being filled during labeling, cleared once labeling's done
+    // hashtable of layer settings, being filled during labeling
     QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
     QgsPalLayerSettings mInvalidLayerSettings;
 
@@ -229,6 +232,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingCandidates;
 
     bool mShowingAllLabels; // whether to avoid collisions or not
+
+    QgsLabelSearchTree* mLabelSearchTree;
 };
 
 #endif // QGSPALLABELING_H

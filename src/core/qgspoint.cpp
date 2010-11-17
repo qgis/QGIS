@@ -43,7 +43,7 @@ QgsVector QgsVector::operator-( void ) const
 
 QgsVector QgsVector::operator*( double scalar ) const
 {
-  return QgsVector( m_x*scalar, m_y*scalar );
+  return QgsVector( m_x * scalar, m_y * scalar );
 }
 
 QgsVector QgsVector::operator/( double scalar ) const
@@ -53,12 +53,12 @@ QgsVector QgsVector::operator/( double scalar ) const
 
 double QgsVector::operator*( QgsVector v ) const
 {
-  return m_x*v.m_x + m_y*v.m_y;
+  return m_x * v.m_x + m_y * v.m_y;
 }
 
 double QgsVector::length() const
 {
-  return sqrt( m_x*m_x + m_y*m_y );
+  return sqrt( m_x * m_x + m_y * m_y );
 }
 
 double QgsVector::x() const
@@ -80,7 +80,7 @@ QgsVector QgsVector::perpVector() const
 double QgsVector::angle( void ) const
 {
   double ang = atan2( m_y, m_x );
-  return ang < 0.0 ? ang + 2.0*M_PI : ang;
+  return ang < 0.0 ? ang + 2.0 * M_PI : ang;
 }
 
 double QgsVector::angle( QgsVector v ) const
@@ -92,7 +92,7 @@ QgsVector QgsVector::rotateBy( double rot ) const
 {
   double ang = atan2( m_y, m_x ) + rot;
   double len = length();
-  return QgsVector( len*cos( ang ), len*sin( ang ) );
+  return QgsVector( len * cos( ang ), len * sin( ang ) );
 }
 
 QgsVector QgsVector::normal() const
@@ -167,12 +167,19 @@ QString QgsPoint::wellKnownText() const
 
 double QgsPoint::sqrDist( double x, double y ) const
 {
-  return ( m_x - x )*( m_x - x ) + ( m_y - y )*( m_y - y );
+  return ( m_x - x ) * ( m_x - x ) + ( m_y - y ) * ( m_y - y );
 }
 
 double QgsPoint::sqrDist( const QgsPoint& other ) const
 {
   return sqrDist( other.x(), other.y() );
+}
+
+double QgsPoint::azimuth( const QgsPoint& other )
+{
+  double dx = other.x() - m_x;
+  double dy = other.y() - m_y;
+  return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 // operators

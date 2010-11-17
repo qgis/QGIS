@@ -25,9 +25,30 @@ public:
   virtual void drawLabeling( QgsRenderContext& context ) = 0;
   //! called when we're done with rendering
   virtual void exit() = 0;
+  //! return infos about labels at a given (map) position
+  //! @note: this method was added in version 1.7
+  virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p )= 0;
+
 
   //! called when passing engine among map renderers
   virtual QgsLabelingEngineInterface* clone() = 0;
+};
+
+struct QgsLabelPosition
+{
+%TypeHeaderCode
+#include <qgsmaprenderer.h>
+%End
+  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down );
+  QgsLabelPosition();
+  int featureId;
+  double rotation;
+  QVector< QgsPoint > cornerPoints;
+  QgsRectangle labelRect;
+  double width;
+  double height;
+  QString layerID;
+  bool upsideDown;
 };
 
 

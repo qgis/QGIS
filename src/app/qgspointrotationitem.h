@@ -24,6 +24,13 @@
 class QgsPointRotationItem: public QgsMapCanvasItem
 {
   public:
+
+    enum Orientation
+    {
+      Clockwise = 0,
+      Counterclockwise
+    };
+
     QgsPointRotationItem( QgsMapCanvas* canvas );
     ~QgsPointRotationItem();
 
@@ -39,8 +46,15 @@ class QgsPointRotationItem: public QgsMapCanvasItem
     /**Sets rotation symbol from image (takes ownership)*/
     void setSymbol( const QImage& symbolImage );
 
+    void setOrientation( Orientation o ) { mOrientation = o; }
+    Orientation orientation() const { return mOrientation; }
+
   private:
     QgsPointRotationItem();
+    /**Converts rotation into QPainter rotation considering mOrientation*/
+    int painterRotation( int rotation ) const;
+    /**Clockwise (default) or counterclockwise*/
+    Orientation mOrientation;
     /**Font to display the numerical rotation values*/
     QFont mFont;
     /**Symboll pixmap*/

@@ -123,6 +123,7 @@
     <file>themes/default/mActionCaptureLine.png</file>
     <file>themes/default/mActionCapturePoint.png</file>
     <file>themes/default/mActionCapturePolygon.png</file>
+    <file>themes/default/mActionChangeLabelProperties.png</file>
     <file>themes/default/mActionCheckQgisVersion.png</file>
     <file>themes/default/mActionCollapseTree.png</file>
     <file>themes/default/mActionComposerManager.png</file>
@@ -168,6 +169,7 @@
     <file>themes/default/mActionMergeFeatures.png</file>
     <file>themes/default/mActionMergeFeatureAttributes.png</file>
     <file>themes/default/mActionMoveFeature.png</file>
+    <file>themes/default/mActionMoveLabel.png</file>
     <file>themes/default/mActionMoveItemContent.png</file>
     <file>themes/default/mActionMoveItemsToBottom.png</file>
     <file>themes/default/mActionMoveItemsToTop.png</file>
@@ -191,6 +193,7 @@
     <file>themes/default/mActionRemoveLayer.png</file>
     <file>themes/default/mActionRemoveSelectedFeature.png</file>
     <file>themes/default/mActionReshape.png</file>
+    <file>themes/default/mActionRotateLabel.png</file>
     <file>themes/default/mActionRotatePointSymbols.png</file>
     <file>themes/default/mActionSaveAsPDF.png</file>
     <file>themes/default/mActionSaveAsSVG.png</file>

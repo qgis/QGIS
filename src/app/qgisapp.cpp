@@ -212,6 +212,9 @@
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
+#include "qgsmaptoolmovelabel.h"
+#include "qgsmaptoolrotatelabel.h"
+#include "qgsmaptoolchangelabelproperties.h"
 
 //
 // Conditional Includes
@@ -580,6 +583,8 @@ QgisApp::~QgisApp()
   delete mMapTools.mDeletePart;
   delete mMapTools.mAddIsland;
   delete mMapTools.mNodeTool;
+  delete mMapTools.mMoveLabel;
+  delete mMapTools.mChangeLabelProperties;
 
   delete mPythonUtils;
 
@@ -1229,6 +1234,18 @@ void QgisApp::createActions()
   mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 
+  mActionMoveLabel = new QAction( getThemeIcon( "mActionMoveLabel.png" ), tr( "Move Label" ), this );
+  mActionMoveLabel->setStatusTip( tr( "Move labels interactively" ) );
+  connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
+
+  mActionRotateLabel = new QAction( getThemeIcon( "mActionRotateLabel.png" ), tr( "Rotate Label" ), this );
+  mActionRotateLabel->setStatusTip( tr( "Rotate labels interactively" ) );
+  connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
+
+  mActionChangeLabelProperties = new QAction( getThemeIcon( "mActionChangeLabelProperties.png" ), tr( "Change label" ), this );
+  mActionChangeLabelProperties->setStatusTip( tr( "Change label properties" ) );
+  connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
+
   mActionStyleManagerV2 = new QAction( tr( "Style manager..." ), this );
   shortcuts->registerAction( mActionStyleManagerV2 );
   mActionStyleManagerV2->setStatusTip( tr( "Show style manager V2" ) );
@@ -1349,6 +1366,12 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionNodeTool );
   mActionRotatePointSymbols->setCheckable( true );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
+  mActionMoveLabel->setCheckable( true );
+  mMapToolGroup->addAction( mActionMoveLabel );
+  mActionRotateLabel->setCheckable( true );
+  mMapToolGroup->addAction( mActionRotateLabel );
+  mActionChangeLabelProperties->setCheckable( true );
+  mMapToolGroup->addAction( mActionChangeLabelProperties );
 }
 
 void QgisApp::createMenus()
@@ -1606,7 +1629,7 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
 
-  
+
   // Raster Menu
 
   mRasterMenu = menuBar()->addMenu( tr( "&Raster" ) );
@@ -1843,6 +1866,15 @@ void QgisApp::createToolBars()
   mHelpToolBar->addAction( mActionHelpContents );
   mHelpToolBar->addAction( QWhatsThis::createAction() );
   mToolbarMenu->addAction( mHelpToolBar->toggleViewAction() );
+
+  //Label Toolbar
+  mLabelToolBar = addToolBar( tr( "Label" ) );
+  mLabelToolBar->setIconSize( myIconSize );
+  mLabelToolBar->setObjectName( "Label" );
+  mLabelToolBar->addAction( mActionMoveLabel );
+  mLabelToolBar->addAction( mActionRotateLabel );
+  mLabelToolBar->addAction( mActionChangeLabelProperties );
+  mToolbarMenu->addAction( mLabelToolBar->toggleViewAction() );
 }
 
 void QgisApp::createStatusBar()
@@ -2245,6 +2277,12 @@ void QgisApp::createCanvasTools()
   mMapTools.mNodeTool->setAction( mActionNodeTool );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
+  mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
+  mMapTools.mMoveLabel->setAction( mActionMoveLabel );
+  mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
+  mMapTools.mRotateLabel->setAction( mActionRotateLabel );
+  mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
+  mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
   //ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
 }
@@ -4248,6 +4286,21 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
     newFormItem->readXML( doc, formItemList.at( i ).toElement() );
   }
   return true;
+}
+
+void QgisApp::moveLabel()
+{
+  mMapCanvas->setMapTool( mMapTools.mMoveLabel );
+}
+
+void QgisApp::rotateLabel()
+{
+  mMapCanvas->setMapTool( mMapTools.mRotateLabel );
+}
+
+void QgisApp::changeLabelProperties()
+{
+  mMapCanvas->setMapTool( mMapTools.mChangeLabelProperties );
 }
 
 QList<QgsAnnotationItem*> QgisApp::annotationItems()

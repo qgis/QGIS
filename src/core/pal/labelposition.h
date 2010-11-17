@@ -79,6 +79,8 @@ namespace pal
       //if the layer arrangement is P_LINE
       bool reversed;
 
+      bool upsideDown;
+
       bool isInConflictSinglePart( LabelPosition* lp );
       bool isInConflictMultiPart( LabelPosition* lp );
 
@@ -196,6 +198,7 @@ namespace pal
        */
       double getAlpha() const;
       bool getReversed() const { return reversed; }
+      bool getUpsideDown() const { return upsideDown; }
 
       void print();
 

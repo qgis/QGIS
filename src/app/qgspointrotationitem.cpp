@@ -22,7 +22,7 @@
 #include <math.h>
 #endif
 
-QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas ): QgsMapCanvasItem( canvas ), mRotation( 0.0 )
+QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas ): QgsMapCanvasItem( canvas ), mOrientation( Clockwise ), mRotation( 0.0 )
 {
   //setup font
   mFont.setPointSize( 12 );
@@ -55,12 +55,11 @@ void QgsPointRotationItem::paint( QPainter * painter )
   {
     h = sqrt(( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
     dAngel = acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
-    x = h * cos(( mRotation - dAngel ) * M_PI / 180 );
-    y = h * sin(( mRotation - dAngel ) * M_PI / 180 );
+    x = h * cos(( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
+    y = h * sin(( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
   }
 
-  //painter->translate(-mPixmap.width() / 2.0, -mPixmap.width() / 2.0);
-  painter->rotate( mRotation );
+  painter->rotate( painterRotation( mRotation ) );
   painter->translate( x - mPixmap.width() / 2.0, -y - mPixmap.height() / 2.0 );
   painter->drawPixmap( 0, 0, mPixmap );
 
@@ -107,5 +106,15 @@ void QgsPointRotationItem::setSymbol( const QImage& symbolImage )
   {
     mItemSize.setHeight( fm.height() );
   }
+}
+
+int QgsPointRotationItem::painterRotation( int rotation ) const
+{
+  if ( mOrientation == Clockwise )
+  {
+    return rotation;
+  }
+
+  return 360 - ( rotation % 360 );
 }
 
