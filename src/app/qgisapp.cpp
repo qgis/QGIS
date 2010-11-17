@@ -1823,7 +1823,6 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionMapTips );
   mAttributesToolBar->addAction( mActionShowBookmarks );
   mAttributesToolBar->addAction( mActionNewBookmark );
-  mAttributesToolBar->addAction( mActionLabeling );
 
   // Annotation tools
   bt = new QToolButton();
@@ -1871,6 +1870,7 @@ void QgisApp::createToolBars()
   mLabelToolBar = addToolBar( tr( "Label" ) );
   mLabelToolBar->setIconSize( myIconSize );
   mLabelToolBar->setObjectName( "Label" );
+  mLabelToolBar->addAction( mActionLabeling );
   mLabelToolBar->addAction( mActionMoveLabel );
   mLabelToolBar->addAction( mActionRotateLabel );
   mLabelToolBar->addAction( mActionChangeLabelProperties );
