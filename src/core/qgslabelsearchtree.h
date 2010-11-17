@@ -30,7 +30,7 @@
 using namespace pal;
 
 /**A class to query the labeling structure at a given point (small wraper around pal RTree class)*/
-class QgsLabelSearchTree
+class CORE_EXPORT QgsLabelSearchTree
 {
   public:
     QgsLabelSearchTree();
