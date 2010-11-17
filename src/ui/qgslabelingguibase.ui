@@ -76,7 +76,7 @@
      <item>
       <widget class="QgsLabelPreview" name="lblFontPreview">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -140,78 +140,29 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_15">
-            <item>
-             <widget class="QLabel" name="lblFontName">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                <horstretch>1</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="btnChangeFont">
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_6">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>999</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mFontSizeLabel">
+           <widget class="QLabel" name="lblFontName">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Font size</string>
+             <string>TextLabel</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
-              <property name="decimals">
-               <number>4</number>
-              </property>
-              <property name="maximum">
-               <double>999999999.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="mFontSizeUnitComboBox">
-              <item>
-               <property name="text">
-                <string>In points</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>In map units</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
+          <item row="0" column="2">
+           <widget class="QToolButton" name="btnChangeFont">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
           </item>
-          <item row="2" column="0">
+          <item row="0" column="3">
            <widget class="QLabel" name="label_29">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -227,38 +178,71 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
+          <item row="0" column="4">
+           <widget class="QgsColorButton" name="btnTextColor">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>32</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QLabel" name="mFontSizeLabel">
+            <property name="text">
+             <string>Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QComboBox" name="mFontSizeUnitComboBox">
             <item>
-             <widget class="QgsColorButton" name="btnTextColor">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
+             <property name="text">
+              <string>In points</string>
+             </property>
             </item>
             <item>
-             <spacer name="horizontalSpacer_7">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Preferred</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>142</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
+             <property name="text">
+              <string>In map units</string>
+             </property>
             </item>
-           </layout>
+           </widget>
+          </item>
+          <item row="0" column="8">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Maximum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -273,48 +257,63 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_17">
-            <item>
-             <widget class="QLabel" name="label_31">
-              <property name="text">
-               <string>Size</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="spinBufferSize">
-              <property name="suffix">
-               <string> mm</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_32">
-              <property name="text">
-               <string>Color</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsColorButton" name="btnBufferColor">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QLabel" name="label_31">
+            <property name="text">
+             <string>Size</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="spinBufferSize">
+            <property name="minimumSize">
+             <size>
+              <width>93</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_32">
+            <property name="text">
+             <string>Color</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QgsColorButton" name="btnBufferColor">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>428</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -328,7 +327,20 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_10">
-          <item row="1" column="1">
+          <item row="0" column="0">
+           <widget class="QSpinBox" name="spinScaleMin">
+            <property name="prefix">
+             <string>Minimum </string>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10000000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
            <widget class="QSpinBox" name="spinScaleMax">
             <property name="prefix">
              <string>Maximum </string>
@@ -344,18 +356,18 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QSpinBox" name="spinScaleMin">
-            <property name="prefix">
-             <string>Minimum </string>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="minimum">
-             <number>1</number>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>307</width>
+              <height>20</height>
+             </size>
             </property>
-            <property name="maximum">
-             <number>10000000</number>
-            </property>
-           </widget>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -381,7 +393,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>486</width>
+            <width>640</width>
             <height>483</height>
            </rect>
           </property>
@@ -815,7 +827,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>274</width>
+            <width>640</width>
             <height>615</height>
            </rect>
           </property>
