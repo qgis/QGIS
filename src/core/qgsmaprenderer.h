@@ -39,7 +39,7 @@ class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 class QgsFeature;
 
-struct QgsLabelPosition
+struct CORE_EXPORT QgsLabelPosition
 {
   QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down ):
       featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ) {}
