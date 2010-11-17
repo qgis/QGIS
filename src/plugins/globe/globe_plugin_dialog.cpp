@@ -40,9 +40,6 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   setupUi( this );
   stereoMode = settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString();
   comboStereoMode->setCurrentIndex( comboStereoMode->findText( stereoMode ) );
-  
-  earthFile = settings.value( "/Plugin-Globe/earthFile", QgsApplication::pkgDataPath() + "/globe/globe.earth" ).toString();
-  inputEarthFile->setText( earthFile );
 }
 
 //destructor
@@ -87,11 +84,6 @@ void QgsGlobePluginDialog::setStereoMode()
       showMessageBox("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
     }
   }
-}
-
-void QgsGlobePluginDialog::setEarthFile()
-{
-  showMessageBox("TODO: set earth file to " + earthFile);
 }
 
 void QgsGlobePluginDialog::restartGlobe()
@@ -191,7 +183,6 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
   // Close dialog box
   */
   setStereoMode();
-  setEarthFile();
   
   if ( globeRunning() )
   {
@@ -209,22 +200,6 @@ void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString mode 
 {
   stereoMode = mode;
   settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
-}
-
-void QgsGlobePluginDialog::on_buttonSelectEarthFile_clicked()
-{
-  QString src;
-
-  src = openFile();
-
-  inputEarthFile->setText( src );
-
-  if ( !src.isEmpty() )
-  {
-    earthFile = src;
-    settings.setValue( "/Plugin-Globe/earthFile", earthFile );
-  }
-  
 }
 
 void QgsGlobePluginDialog::showMessageBox( QString text )

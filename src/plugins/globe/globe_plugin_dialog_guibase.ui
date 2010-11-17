@@ -32,78 +32,258 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="earthGroupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="title">
-      <string>Custom Earth file</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="inputEarthFile">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>25</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="buttonSelectEarthFile">
+     <widget class="QWidget" name="elevation">
+      <attribute name="title">
+       <string>Elevation</string>
+      </attribute>
+      <widget class="QTableWidget" name="tableWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>140</y>
+         <width>461</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="rowCount">
+        <number>1</number>
+       </property>
+       <property name="columnCount">
+        <number>2</number>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <row/>
+       <column>
         <property name="text">
-         <string>Browse</string>
+         <string>Type</string>
         </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="stereoGroupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title">
-      <string>Stereo 3D</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="comboStereoMode">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>25</height>
-         </size>
+       </column>
+       <column>
+        <property name="text">
+         <string>Address</string>
         </property>
-        <property name="maxCount">
-         <number>200</number>
+       </column>
+       <item row="0" column="0">
+        <property name="text">
+         <string>Worldwind</string>
         </property>
-        <item>
-         <property name="text">
-          <string>OFF</string>
-         </property>
+       </item>
+      </widget>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>461</width>
+         <height>101</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Elevation Layer</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>ANAGLYPHIC</string>
-         </property>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="comboBox">
+          <item>
+           <property name="text">
+            <string>TMS</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Raster</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Worldwind</string>
+           </property>
+          </item>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>VERTICAL_SPLIT</string>
-         </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>URL/File</string>
+          </property>
+         </widget>
         </item>
-       </widget>
-      </item>
-     </layout>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QPushButton" name="pushButton">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>100</y>
+         <width>92</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="geometry">
+        <rect>
+         <x>240</x>
+         <y>100</y>
+         <width>92</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="stereo">
+      <attribute name="title">
+       <string>Stereo</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Stereo Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QComboBox" name="comboStereoMode">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maxCount">
+          <number>200</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ANAGLYPHIC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>QUAD_BUFFFER</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HORIZONTAL_SPLIT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VERTICAL_SPLIT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>SCREEN_DISTANCE</string>
+         </property>
+         <property name="buddy">
+          <cstring>xxxx</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>SCREEN_WIDTH </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx_2"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>EYE_SEPARATION </string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx_3"/>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>SPLIT_STEREO_HORIZONTAL_SEPARATION</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx_4"/>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>SPLIT_STEREO_HORIZONTAL_EYE_MAPPING</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx_5"/>
+       </item>
+       <item row="6" column="0" colspan="2">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>SPLIT_STEREO_VERTICAL_SEPARATION </string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx_6"/>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>SPLIT_STEREO_VERTICAL_EYE_MAPPING</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QDoubleSpinBox" name="xxxx_7"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -117,9 +297,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>inputEarthFile</tabstop>
-  <tabstop>buttonSelectEarthFile</tabstop>
-  <tabstop>comboStereoMode</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

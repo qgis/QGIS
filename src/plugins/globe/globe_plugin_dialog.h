@@ -37,7 +37,6 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     QString openFile();
     QSettings settings;
     void setStereoMode();
-    void setEarthFile();
     void restartGlobe();
     bool globeRunning();
     void showMessageBox( QString text);
@@ -45,7 +44,6 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonSelectEarthFile_clicked();
     void on_comboStereoMode_currentIndexChanged( QString mode );
 };
 
