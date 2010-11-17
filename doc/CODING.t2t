@@ -1282,7 +1282,7 @@ guidelines are followed in layout and design of GUIs.
    environment that the user is using.
  + Tabs should not be nested. If you use tabs, follow the style of the
    tabs used in QgsVectorLayerProperties / QgsProjectProperties etc.
-   i.e. tabs at top with icons at 32x32.
+   i.e. tabs at top with icons at 22x22.
  + Widget stacks should be avoided if at all possible. They cause problems with 
    layouts and inexplicable (to the user) resizing of dialogs to accommodate 
    widgets that are not visible.
