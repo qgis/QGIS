@@ -48,11 +48,11 @@ static const char *const ident_ = "$Id$";
 const int AUTOSCROLL_MARGIN = 16;
 
 QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
-  : QTreeWidget( parent )
-  , mMousePressedFlag( false )
-  , mMapCanvas( canvas )
-  , mMinimumIconSize( 20, 20 )
-  , mChanging( false )
+    : QTreeWidget( parent )
+    , mMousePressedFlag( false )
+    , mMapCanvas( canvas )
+    , mMinimumIconSize( 20, 20 )
+    , mChanging( false )
 {
   setObjectName( name );
 
@@ -117,7 +117,7 @@ void QgsLegend::showItem( QString msg, QTreeWidgetItem *item )
     return;
   }
 
-  QgsLegendItem  *litem = dynamic_cast<QgsLegendGroup *>( item );
+  QgsLegendItem  *litem = dynamic_cast<QgsLegendItem *>( item );
   QgsLegendGroup *group = dynamic_cast<QgsLegendGroup *>( item );
   QgsLegendLayer *layer = dynamic_cast<QgsLegendLayer *>( item );
 
@@ -327,54 +327,65 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
   {
     showItem( "moveMoveEvent" , item );
 
-    QgsLegendItem  *litem = dynamic_cast<QgsLegendGroup *>( item );
+    QgsLegendItem  *litem = dynamic_cast<QgsLegendItem *>( item );
     QgsLegendGroup *group = dynamic_cast<QgsLegendGroup *>( item );
     QgsLegendLayer *layer = dynamic_cast<QgsLegendLayer *>( item );
 
-    if ( group || layer )
+    while ( item->parent() && !group && !layer )
+    {
+      item = item->parent();
+      litem = dynamic_cast<QgsLegendItem *>( item );
+      group = dynamic_cast<QgsLegendGroup *>( item );
+      layer = dynamic_cast<QgsLegendLayer *>( item );
+    }
+
+    showItem( "layer/group" , item );
+
+    int line_x = visualItemRect( item ).left();
+    int line_y;
+    if ( layer )
+    {
+      QTreeWidgetItem *lastItem = item->childCount() > 0 ? item->child( item->childCount() - 1 ) : item;
+      int y0 = visualItemRect( item ).top() + 1;
+      int y1 = visualItemRect( lastItem ).bottom() - 2;
+
+      mDropTarget = layer;
+
+      if ( e->y() < ( y0 + y1 ) / 2 )
+      {
+        QgsDebugMsg( "insert before layer" );
+        mDropAction = BEFORE;
+        line_y = y0;
+      }
+      else
+      {
+        QgsDebugMsg( "insert after layer" );
+        mDropAction = AFTER;
+        line_y = y1;
+      }
+    }
+    else if ( group )
     {
       if ( yCoordAboveCenter( litem, e->y() ) ) //over center of item
       {
-        int line_y    = visualItemRect( item ).top() + 1;
-        int line_left = visualItemRect( item ).left();
+        QgsDebugMsg( "insert before group" );
 
-        QgsDebugMsg( "insert before layer/group" );
-        showLine( line_y, line_left );
-        setCursor( QCursor( Qt::SizeVerCursor ) );
-
+        line_y = visualItemRect( item ).top() + 1;
         mDropTarget = item;
         mDropAction = BEFORE;
       }
       else // below center of item
       {
-        int line_y    = visualItemRect( item ).bottom() - 2;
-        int line_left = visualItemRect( item ).left();
+        QgsDebugMsg( "insert into group" );
 
-        if ( group )
-        {
-          QgsDebugMsg( "insert into group" );
-          showLine( line_y, line_left );
-          setCursor( QCursor( Qt::SizeVerCursor ) );
-
-          mDropTarget = item;
-          mDropAction = INSERT;
-        }
-        else
-        {
-          QgsDebugMsg( "insert after layer" );
-          showLine( line_y, line_left );
-          setCursor( QCursor( Qt::SizeVerCursor ) );
-
-          mDropTarget = item;
-          mDropAction = AFTER;
-        }
+        line_y = visualItemRect( item ).bottom() - 2;
+        mDropTarget = item;
+        mDropAction = INSERT;
       }
     }
-    else
-    {
-      QgsDebugMsg( "no action" );
-      setCursor( QCursor( Qt::ForbiddenCursor ) );
-    }
+
+    showLine( line_y, line_x );
+    setCursor( QCursor( Qt::SizeVerCursor ) );
   }
   else if ( !item
             && e->pos().y() >= 0 && e->pos().y() < viewport()->height()
@@ -383,12 +394,11 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     // Outside the listed items, but check if we are in the empty area
     // of the viewport, so we can drop after the last top level item.
     mDropTarget = topLevelItem( topLevelItemCount() - 1 );
+    mDropAction = AFTER;
 
     QgsDebugMsg( "insert after last layer/group" );
     showLine( visualItemRect( lastVisibleItem() ).bottom() + 1, 0 );
     setCursor( QCursor( Qt::SizeVerCursor ) );
-
-    mDropAction = AFTER;
   }
   else
   {
