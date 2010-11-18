@@ -1,0 +1,8 @@
+*.pyc
+.DS_Store
+Thumb.db
+desktop.ini
+*.*~
+*~
+api_doc
+build
