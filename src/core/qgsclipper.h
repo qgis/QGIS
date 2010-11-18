@@ -157,8 +157,8 @@ inline void QgsClipper::trimFeatureToBoundary(
     // look at each edge of the polygon in turn
 
     //ignore segments with nan or inf coordinates
-    if ( isnan( inX[i2] ) || isnan( inY[i2] ) || isinf( inX[i2] ) || isinf( inY[i2] )
-         || isnan( inX[i1] ) || isnan( inY[i1] ) || isinf( inX[i1] ) || isinf( inY[i1] ) )
+    if ( qIsNaN( inX[i2] ) || qIsNaN( inY[i2] ) || qIsInf( inX[i2] ) || qIsInf( inY[i2] )
+         || qIsNaN( inX[i1] ) || qIsNaN( inY[i1] ) || qIsInf( inX[i1] ) || qIsInf( inY[i1] ) )
     {
       i1 = i2;
       continue;
@@ -268,7 +268,7 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
 
   QgsPoint p;
 
-  if ( std::abs( r_d ) > SMALL_NUM && std::abs( r_n ) > SMALL_NUM )
+  if ( qAbs( r_d ) > SMALL_NUM && qAbs( r_n ) > SMALL_NUM )
   { // they cross
     double r = r_n / r_d;
     p.set( x1 + r*( x2 - x1 ), y1 + r*( y2 - y1 ) );
@@ -277,7 +277,7 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
   {
     // Should never get here, but if we do for some reason, cause a
     // clunk because something else is wrong if we do.
-    Q_ASSERT( std::abs( r_d ) > SMALL_NUM && std::abs( r_n ) > SMALL_NUM );
+    Q_ASSERT( qAbs( r_d ) > SMALL_NUM && qAbs( r_n ) > SMALL_NUM );
   }
 
   return p;

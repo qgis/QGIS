@@ -453,7 +453,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
   bool dataDefinedRotation = false;
-  double xPos, yPos, angle;
+  double xPos = 0.0, yPos = 0.0, angle = 0.0;
   bool ddXPos, ddYPos;
 
   QMap< DataDefinedProperties, int >::const_iterator dPosXIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionX );

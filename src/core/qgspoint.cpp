@@ -137,12 +137,12 @@ QString QgsPoint::toString( int thePrecision ) const
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
 {
   int myDegreesX = int( std::abs( m_x ) );
-  float myFloatMinutesX = float(( std::abs( m_x ) - myDegreesX ) * 60 );
+  float myFloatMinutesX = float(( qAbs( m_x ) - myDegreesX ) * 60 );
   int myIntMinutesX = int( myFloatMinutesX );
   float mySecondsX = float( myFloatMinutesX - myIntMinutesX ) * 60;
 
   int myDegreesY = int( std::abs( m_y ) );
-  float myFloatMinutesY = float(( std::abs( m_y ) - myDegreesY ) * 60 );
+  float myFloatMinutesY = float(( qAbs( m_y ) - myDegreesY ) * 60 );
   int myIntMinutesY = int( myFloatMinutesY );
   float mySecondsY = float( myFloatMinutesY - myIntMinutesY ) * 60;
 

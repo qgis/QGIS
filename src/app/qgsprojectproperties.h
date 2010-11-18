@@ -21,7 +21,6 @@
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgisgui.h"
-#include "qgssnappingdialog.h"
 #include "qgscontexthelp.h"
 
 class QgsMapCanvas;

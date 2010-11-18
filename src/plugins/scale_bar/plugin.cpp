@@ -191,7 +191,7 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMapUnitsPerPixelDouble = std::abs( qGisInterface->mapCanvas()->mapUnitsPerPixel() );
+  double myMapUnitsPerPixelDouble = qAbs( qGisInterface->mapCanvas()->mapUnitsPerPixel() );
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount = qGisInterface->mapCanvas()->layerCount();
