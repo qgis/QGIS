@@ -798,7 +798,7 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMapUnitsPerPixelDouble = std::abs( thepMapRenderer->mapUnitsPerPixel() );
+  double myMapUnitsPerPixelDouble = qAbs( thepMapRenderer->mapUnitsPerPixel() );
   //
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount = thepMapRenderer->layerSet().count();

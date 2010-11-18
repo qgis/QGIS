@@ -306,11 +306,11 @@ double Tools::Geometry::Region::getMinimumDistance( const Region& r ) const
 
     if ( r.m_pHigh[i] < m_pLow[i] )
     {
-      x = std::abs( r.m_pHigh[i] - m_pLow[i] );
+      x = qAbs( r.m_pHigh[i] - m_pLow[i] );
     }
     else if ( m_pHigh[i] < r.m_pLow[i] )
     {
-      x = std::abs( r.m_pLow[i] - m_pHigh[i] );
+      x = qAbs( r.m_pLow[i] - m_pHigh[i] );
     }
 
     ret += x * x;

@@ -426,8 +426,8 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   // the rest of them so end the loop at that point.
   for ( register unsigned int i = 0; i < nPoints; ++i )
   {
-    if ( std::abs( x[i] ) > QgsClipper::MAX_X ||
-         std::abs( y[i] ) > QgsClipper::MAX_Y )
+    if ( qAbs( x[i] ) > QgsClipper::MAX_X ||
+         qAbs( y[i] ) > QgsClipper::MAX_Y )
     {
       QgsClipper::trimFeature( x, y, true ); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -546,8 +546,8 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
     // the rest of them so end the loop at that point.
     for ( register unsigned int i = 0; i < nPoints; ++i )
     {
-      if ( std::abs( ring->first[i] ) > QgsClipper::MAX_X ||
-           std::abs( ring->second[i] ) > QgsClipper::MAX_Y )
+      if ( qAbs( ring->first[i] ) > QgsClipper::MAX_X ||
+           qAbs( ring->second[i] ) > QgsClipper::MAX_Y )
       {
         QgsClipper::trimFeature( ring->first, ring->second, false );
         break;
@@ -4037,8 +4037,8 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
       double y = *(( double * )( feature + 5 + sizeof( double ) ) );
 
       transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
-      if ( std::abs( x ) > QgsClipper::MAX_X ||
-           std::abs( y ) > QgsClipper::MAX_Y )
+      if ( qAbs( x ) > QgsClipper::MAX_X ||
+           qAbs( y ) > QgsClipper::MAX_Y )
       {
         break;
       }
@@ -4085,8 +4085,8 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
         //QPointF pt( x, y );
 
         // Work around a +/- 32768 limitation on coordinates
-        if ( std::abs( x ) > QgsClipper::MAX_X ||
-             std::abs( y ) > QgsClipper::MAX_Y )
+        if ( qAbs( x ) > QgsClipper::MAX_X ||
+             qAbs( y ) > QgsClipper::MAX_Y )
           needToTrim = true;
         else
           p->drawImage( pt, *marker );

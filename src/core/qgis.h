@@ -18,20 +18,12 @@
 
 #ifndef QGIS_H
 #define QGIS_H
+
 #include <QEvent>
 #include <QString>
 #include <cfloat>
-
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
-#ifdef WIN32
-#include <float.h>
-#define isnan(f) _isnan(f)
-#define isinf(f) (!_finite(f) && !_isnan(f))
-#endif
+#include <qnumeric.h>
 
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.

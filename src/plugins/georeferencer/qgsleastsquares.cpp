@@ -59,8 +59,8 @@ void QgsLeastSquares::linear( std::vector<QgsPoint> mapCoords,
   origin.setX( aX );
   origin.setY( aY );
 
-  pixelXSize = std::abs( bX );
-  pixelYSize = std::abs( bY );
+  pixelXSize = qAbs( bX );
+  pixelYSize = qAbs( bY );
 }
 
 

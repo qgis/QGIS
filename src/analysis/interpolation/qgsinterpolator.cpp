@@ -83,7 +83,7 @@ int QgsInterpolator::cacheBaseData()
           continue;
         }
         attributeValue = att_it.value().toDouble( &attributeConversionOk );
-        if ( !attributeConversionOk || isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+        if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
         {
           continue;
         }
