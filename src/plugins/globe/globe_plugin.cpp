@@ -163,7 +163,11 @@ void GlobePlugin::settings()
 {
   QgsGlobePluginDialog* settingsDialog = new QgsGlobePluginDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   settingsDialog->setAttribute( Qt::WA_DeleteOnClose );
-  settingsDialog->show();
+  settingsDialog->exec();
+  
+  //QMessageBox msgBox;
+  //msgBox.setText(settingsDialog->stereoMode);
+  //msgBox.exec();
 }
 
 void GlobePlugin::setupMap()

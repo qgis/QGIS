@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "globe_plugin_dialog.h"
+#include "globe_plugin.h"
 
 #include <qgsapplication.h>
 #include <qgslogger.h>
@@ -59,6 +60,9 @@ QString QgsGlobePluginDialog::openFile()
 
 void QgsGlobePluginDialog::setStereoMode()
 {
+  //TODO: Call QgsGLWidgetAdapter::setStereoMode(QString stereoMode)
+  //from GlobePlugin::settings() instead of code duplication
+  settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
   if("OFF" == stereoMode)
   {
     osg::DisplaySettings::instance()->setStereo( false );
@@ -78,6 +82,14 @@ void QgsGlobePluginDialog::setStereoMode()
     else if("VERTICAL_SPLIT" == stereoMode)
     {
       osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
+    }
+    else if("HORIZONTAL_SPLIT" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::HORIZONTAL_SPLIT );
+    }
+    else if("QUAD_BUFFER" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::QUAD_BUFFER );
     }
     else
     {
@@ -199,7 +211,6 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString mode )
 {
   stereoMode = mode;
-  settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
 }
 
 void QgsGlobePluginDialog::showMessageBox( QString text )
@@ -208,4 +219,3 @@ void QgsGlobePluginDialog::showMessageBox( QString text )
     msgBox.setText(text);
     msgBox.exec();
 }
-
