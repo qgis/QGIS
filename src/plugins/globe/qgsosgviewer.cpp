@@ -28,7 +28,7 @@ QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, con
     QGLWidget(parent, shareWidget, f)
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
-    //setStereoMode();
+    setStereoMode();
     setFocusPolicy(Qt::ClickFocus);
     setMouseTracking ( true );
 }
