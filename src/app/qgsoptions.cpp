@@ -258,7 +258,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
-  pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue ) );
+  int myAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
+  pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //set the default color for canvas background
   myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
@@ -403,7 +404,12 @@ QgsOptions::~QgsOptions()
 
 void QgsOptions::on_pbnSelectionColor_clicked()
 {
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), this );
+#if QT_VERSION >= 0x040500
+  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
+#endif
+
   if ( color.isValid() )
   {
     pbnSelectionColor->setColor( color );
@@ -612,6 +618,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/default_selection_color_red", myColor.red() );
   settings.setValue( "/qgis/default_selection_color_green", myColor.green() );
   settings.setValue( "/qgis/default_selection_color_blue", myColor.blue() );
+  settings.setValue( "/qgis/default_selection_color_alpha", myColor.alpha() );
 
   //set the default color for canvas background
   myColor = pbnCanvasColor->color();

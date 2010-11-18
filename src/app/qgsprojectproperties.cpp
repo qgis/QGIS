@@ -79,8 +79,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   if ( automaticPrecision )
   {
     radAutomatic->setChecked( true );
-     spinBoxDP->setDisabled( true );
-     labelDP->setDisabled( true );
+    spinBoxDP->setDisabled( true );
+    labelDP->setDisabled( true );
   }
   else
   {
@@ -96,7 +96,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   int myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
   int myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
   int myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  int myAlphaInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
+  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   pbnSelectionColor->setColor( myColor );
 
   //get the color for map canvas background and set button color accordingly (default white)
@@ -315,6 +316,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorRedPart", myColor.red() );
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorBluePart", myColor.blue() );
+  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorAlphaPart", myColor.alpha() );
   QgsRenderer::setSelectionColor( myColor );
 
   //set the color for canvas
@@ -366,7 +368,12 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::on_pbnSelectionColor_clicked()
 {
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), this );
+#if QT_VERSION >= 0x040500
+  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
+#endif
+
   if ( color.isValid() )
   {
     pbnSelectionColor->setColor( color );
