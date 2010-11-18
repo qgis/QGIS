@@ -2259,7 +2259,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
         <source>Nearest neighbor</source>
-        <translation>najbliższe sąsiedztwo</translation>
+        <translation>najbliższy sąsiad</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
@@ -2864,7 +2864,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Eksportuj/Dodaj kolumnę geometrii</translation>
+        <translation>Eksportuj/Dodaj kolumnę geometrii</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -5749,7 +5749,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3814"/>
         <source>Please select a vector layer first.</source>
-        <translation type="unfinished">Wskaż warstwę wektorową.</translation>
+        <translation>Wskaż warstwę wektorową.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3949"/>
@@ -7662,7 +7662,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2525"/>
         <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
-        <translation type="unfinished">Ulepszono interakcję z zakresami widgetu w pasku stanu. Teraz tekstowa zawartość widgetu może być kopiowana i wklejana.</translation>
+        <translation>Ulepszono interakcję z zakresami widgetu w pasku stanu. Teraz tekstowa zawartość widgetu może być kopiowana i wklejana.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2526"/>
@@ -7672,12 +7672,12 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2527"/>
         <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
-        <translation type="unfinished">Dodano opcję --configpath, która nadpisuje domyślną ścieżkę (~/.qgis) konfiguracji użytkownika i wymusza, aby QSettings także używało tej ścieżki. To umożliwia użytkownikowi np. przeniesienie instalacji QGIS na pendrive z wszystkimi wtyczkami i ustawieniami.</translation>
+        <translation>Dodano opcję --configpath, która nadpisuje domyślną ścieżkę (~/.qgis) konfiguracji użytkownika i wymusza, aby QSettings także używało tej ścieżki. To umożliwia użytkownikowi np. przeniesienie instalacji QGIS na pendrive z wszystkimi wtyczkami i ustawieniami.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2528"/>
         <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
-        <translation type="unfinished">Eksperymentalna obsługa WFS-T. Dodatkowo przeniesono wfs do menadżera sieciowego.</translation>
+        <translation>Eksperymentalna obsługa WFS-T. Dodatkowo przeniesono wfs do menadżera sieciowego.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2529"/>
@@ -7692,7 +7692,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
         <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
-        <translation type="unfinished">Projekt QGIS Mapserver został włączony do głównego repozytorium SVN oraz udostępniono pakiety. QGIS Mapserver umożliwia udostępnianie projektów przez protokół OGC WMS.</translation>
+        <translation>Projekt QGIS Mapserver został włączony do głównego repozytorium SVN oraz udostępniono pakiety. QGIS Mapserver umożliwia udostępnianie projektów przez protokół OGC WMS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2531"/>
@@ -7708,27 +7708,27 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2533"/>
         <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
-        <translation type="unfinished">Dodano wsparcie dla tabel bez danych przestrzennych (obecnie OGR, tekst rozdzielany i PostgreSQL). Tabele mogą być używane w wyszukiwaniach po polach oraz przeglądania i edytowania używając widoku tabeli.</translation>
+        <translation>Dodano wsparcie dla tabel bez danych przestrzennych (obecnie OGR, tekst rozdzielany i PostgreSQL). Tabele mogą być używane w wyszukiwaniach po polach oraz przeglądania i edytowania używając widoku tabeli.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2534"/>
         <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
-        <translation type="unfinished">Dodano wsparcie dla wyszukiwania ciągów znaków dla identyfikatorów obiektów ($id) i inne ulepszenia związane z opcją wyszukiwania.</translation>
+        <translation>Dodano wsparcie dla wyszukiwania ciągów znaków dla identyfikatorów obiektów ($id) i inne ulepszenia związane z opcją wyszukiwania.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2535"/>
         <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
-        <translation type="unfinished">Dodano metodę przeładowywania do warstw mapy i interfesju dostawcy. Teraz buforujący dostawcy (obecnie WMS i WFS) mogą zsynchronizować się ze zmianami w źródle danych.</translation>
+        <translation>Dodano metodę przeładowywania do warstw mapy i interfesju dostawcy. Teraz buforujący dostawcy (obecnie WMS i WFS) mogą zsynchronizować się ze zmianami w źródle danych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2538"/>
         <source>Table of contents (TOC) improvements</source>
-        <translation type="unfinished">Zmiany w widoku listy warstw (TOC)</translation>
+        <translation>Zmiany w widoku listy warstw (TOC)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2540"/>
         <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
-        <translation type="unfinished">Dodano nową opcję do menu legendy warstwy rastrowej, która rozciąga kontrast aktywnej warstwy używając minimalnej i maksymalnej wartości pikseli aktualnego zakresu.</translation>
+        <translation>Dodano nową opcję do menu legendy warstwy rastrowej, która rozciąga kontrast aktywnej warstwy używając minimalnej i maksymalnej wartości pikseli aktualnego zakresu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2541"/>
@@ -7763,7 +7763,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2552"/>
         <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
-        <translation type="unfinished">Trzy nowe metody klasyfikacji.</translation>
+        <translation>Trzy nowe metody klasyfikacji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2553"/>
@@ -7783,7 +7783,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2556"/>
         <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
-        <translation type="unfinished">Zastąpiono implementację histogramu warstwy rastrowej implementacją opartą o bibliotekę Qwt. Dodano opcję zapisywania histogramu do pliku graficznego. Pokazuje aktualne wartości pikseli na osi x histogramu warstwy rastrowej.</translation>
+        <translation>Zastąpiono implementację histogramu warstwy rastrowej implementacją opartą o bibliotekę Qwt. Dodano opcję zapisywania histogramu do pliku graficznego. Pokazuje aktualne wartości pikseli na osi x histogramu warstwy rastrowej.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2557"/>
@@ -7793,12 +7793,13 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2558"/>
         <source>Allow creation of color ramps in vector color ramp combo box.</source>
+        <translatorcomment>Dodano możliwość tworzenia palet kolorów...</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2559"/>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation type="unfinished">Aby ułatwić dostęp do zarządzania stylem dodano nowy przycisk &quot;zarządzanie stylem&quot; we właściwościach warstwy na zakładce styl.</translation>
+        <translation>Aby ułatwić dostęp do zarządzania stylem dodano nowy przycisk &quot;zarządzanie stylem&quot; we właściwościach warstwy na zakładce styl.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2562"/>
@@ -7808,7 +7809,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2564"/>
         <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
-        <translation type="unfinished">dodano opcję umożliwiającą oglądanie i zmianę szerokości i wysokości kompozytora elementów w oknie dialogowym obiektu.</translation>
+        <translation>dodano opcję umożliwiającą oglądanie i zmianę szerokości i wysokości kompozytora elementów w oknie dialogowym obiektu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2565"/>
@@ -20262,7 +20263,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="726"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished">Wtyczka edycji offline</translation>
+        <translation>Wtyczka edycji offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="738"/>
@@ -21616,7 +21617,7 @@ Rozszerzona informacja o błędzie:
 &lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;Gdy warstwa jest ustawiana, różne metadane wymagane są dla tabeli PostGIS. Są to informacje takie jak ilość wierszy, typ geometryczny i zasięg przestrzenny danych w kolumnach z geometrią. Jeśli tabela zawiera dużo wierszy, określanie tych metadanych to zajęcie wymagające dużej ilości czasu.&lt;/p&gt;
 &lt;p&gt;Aktywując tę opcję są wykonywane następujące szybkie działania na metadanych:&lt;/p&gt;
@@ -23075,7 +23076,7 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
-        <translation type="unfinished">Tabela nie ma pól odpowiednich do użycia jako klucz.
+        <translation>Tabela nie ma pól odpowiednich do użycia jako klucz.
 
 Quantum GIS wymaga, aby tabela posiadała pole typu 
 int4 z unikalnymi wartościami (co dotyczy także
@@ -23124,7 +23125,7 @@ z szesnastobitową liczbą.</translation>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished">Widok &apos;%1.%2.&apos; nie ma kolumny odpowiedniej do użycia jako unikalny klucz.
+        <translation>Widok &apos;%1.%2.&apos; nie ma kolumny odpowiedniej do użycia jako unikalny klucz.
 Quantum GIS wymaga, żeby widok posiadał kolumnę, która może być użyta jako unikalny klucz. Kolumna ta powinna dziedziczyć z kolumny typu int4 i być podstawowym kluczem, powinna mieć ograniczenie unikalności lub być kolumną PostreSQL oid. Aby usprawnić działanie, kolumna powinna być także zaindeksowana.
 Widok, który został wybrany ma następujące kolumny, żadna z nich nie spełnia jednak powyższych warunków:</translation>
     </message>
@@ -23373,7 +23374,7 @@ Poszukać brakujących warstw?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="207"/>
         <source>Degrees, Minutes, Seconds</source>
-        <translation type="unfinished">Stopnie, minuty, sekundy</translation>
+        <translation>Stopnie, minuty, sekundy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="300"/>
@@ -23912,7 +23913,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="219"/>
         <source>Enter result file</source>
-        <translation type="unfinished">Wybierz plik wynikowy</translation>
+        <translation>Wybierz plik wynikowy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="260"/>
@@ -24863,7 +24864,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1815"/>
         <source>Nearest Neighbour</source>
-        <translation>Najbliższe sąsiedztwo</translation>
+        <translation>Najbliższy sąsiad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2011"/>
@@ -27914,17 +27915,17 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="53"/>
         <source>Nearest neighbour</source>
-        <translation>najbliższe sąsiedztwo</translation>
+        <translation>Najbliższego sąsiada</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="63"/>
         <source>Cubic</source>
-        <translation>sześcienna</translation>
+        <translation>Sześcienna</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="68"/>
         <source>Cubic Spline</source>
-        <translation>splajn sześcienny</translation>
+        <translation>Splajn sześcienny</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="73"/>
@@ -29765,7 +29766,7 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2439"/>
         <source>Image Formats</source>
-        <translation type="unfinished">Formaty obrazów</translation>
+        <translation>Formaty obrazów</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2447"/>
@@ -29830,7 +29831,7 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished">Nie można otrzymać WMS capabilities: %1 w linii %2 kolumnie %3
+        <translation>Nie można otrzymać WMS capabilities: %1 w linii %2 kolumnie %3
 Może to być spowodowane niepoprawnym adresem URL Serwera WMS.
 Odpowiedź:
 
@@ -29843,7 +29844,7 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished">Nie można otrzymać WMS capabilities w oczekiwanym formacie (DTD): nie znaleziono %1 lub %2.
+        <translation>Nie można otrzymać WMS capabilities w oczekiwanym formacie (DTD): nie znaleziono %1 lub %2.
 Może to być spowodowane niepoprawnym adresem URL Serwera WMS.
 Znacznik:%3
 Odpowiedź:
@@ -29856,7 +29857,7 @@ Odpowiedź:
 Response was:
 
 %5</source>
-        <translation type="unfinished">Nie można otrzymać WMS Service Exception dla %1:%2 w linii %3 kolumnie %4
+        <translation>Nie można otrzymać WMS Service Exception dla %1:%2 w linii %3 kolumnie %4
 
 Odpowiedź:
 
@@ -30428,11 +30429,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation>Analiza najbliższego sąsiedztwa</translation>
+        <translation>Analiza najbliższego sąsiada</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation>Statystyki najbliższego sąsiedztwa</translation>
+        <translation>Statystyki najbliższego sąsiada</translation>
     </message>
     <message>
         <source>Unique values</source>
@@ -30563,7 +30564,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="40"/>
         <source>Outline</source>
-        <translation type="unfinished">Obramowanie</translation>
+        <translation>Obrys</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="47"/>
@@ -30596,7 +30597,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="62"/>
         <source>Border color</source>
-        <translation type="unfinished">Kolor obramowania</translation>
+        <translation>Kolor obrysu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
@@ -30679,7 +30680,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="22"/>
         <source>Border color</source>
-        <translation type="unfinished">Kolor obramowania</translation>
+        <translation>Kolor obrysu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
@@ -30794,7 +30795,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="105"/>
         <source>Output file type</source>
-        <translation type="unfinished">Typ pliku wyjściowego</translation>
+        <translation>Rodzaj pliku wyjściowego</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="111"/>
@@ -31332,7 +31333,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation type="unfinished">Użyj listy rozwijalnej aby wybrać pole zawierające kierunek kompasu dla obrazu. Kierunek określa zwykle, w którą stronę skierowany był aparat przy wykonywaniu zdjęcia.</translation>
+        <translation>Użyj listy rozwijalnej aby wybrać pole zawierające kierunek kompasu dla obrazu. Kierunek określa zwykle, w którą stronę skierowany był aparat przy wykonywaniu zdjęcia.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
@@ -31357,7 +31358,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished">Użyj listy rozwijalnej aby wybrać pole zawierające poprawki kierunku kompasu. Pozwoli to kompensować odchyłki (dopasowuj zapisane kierunki do prawdziwych kierunków północy wykorzystując kierunki magnetyczne). Odchyłki wschodnie powinny być wprowadzane ze znakiem dodatnim, zachodnie zaś z ujemnym.</translation>
+        <translation>Użyj listy rozwijalnej aby wybrać pole zawierające poprawki kierunku kompasu. Pozwoli to kompensować odchyłki (dopasowuj zapisane kierunki do prawdziwych kierunków północy wykorzystując kierunki magnetyczne). Odchyłki wschodnie powinny być wprowadzane ze znakiem dodatnim, zachodnie zaś z ujemnym.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
@@ -31617,7 +31618,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation>Analiza najbliższego sąsiedztwa</translation>
+        <translation>Analiza najbliższego sąsiada</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
@@ -31911,7 +31912,7 @@ Wtyczka nie zostanie włączona.</translation>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
         <translatorcomment>do poprawki R.</translatorcomment>
-        <translation type="unfinished">Dekomponuj poligony importowane z formatów nietopologicznych (np. shapefile). Granice zostaną podzielone we wspólnych węzłach pomiędzy dwoma lub więcej poligonami</translation>
+        <translation>Dekomponuj poligony importowane z formatów nietopologicznych (np. shapefile). Granice zostaną podzielone we wspólnych węzłach pomiędzy dwoma lub więcej poligonami</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
@@ -31921,7 +31922,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation type="unfinished">Transformacja Brovey&apos;a do łączenia wielospektralnych i panchromatycznych kanałów wysokiej rozdzielczości</translation>
+        <translation>Transformacja Brovey&apos;a do łączenia wielospektralnych i panchromatycznych kanałów wysokiej rozdzielczości</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
@@ -31971,7 +31972,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
         <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
-        <translation type="unfinished">Oblicz optymalną tablicę wskaźników dla obrazów rastrowych LANDSAR TM</translation>
+        <translation>Oblicz optymalną tablicę wskaźników dla obrazów rastrowych LANDSAR TM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
@@ -32016,7 +32017,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="unfinished">Oblicz objętość grup danych (clump) i stwórz warstwę wektorową z centroidami tych grup.</translation>
+        <translation>Oblicz objętość grup danych (clump) i stwórz warstwę wektorową z centroidami tych grup</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
@@ -32076,7 +32077,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
         <source>Compares bit patterns with raster</source>
-        <translation type="unfinished">Porównuje wzorce bitowe z rastrem</translation>
+        <translation>Porównuje wzorce bitowe z rastrem</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
@@ -32126,7 +32127,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation>Konwertuj wektor 2D do 3D poprzez próbkowanie rastra z wysokościami. Domyślnie metodą najbliższego sąsiedztwa</translation>
+        <translation>Konwertuj wektor 2D do 3D poprzez próbkowanie rastra z wysokościami. Domyślnie metodą najbliższego sąsiada</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
@@ -32356,7 +32357,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create quantization file for floating-point raster</source>
-        <translation type="unfinished">Generuj plik kwantyzacji dla zmiennoprzecinkowej warstwy rastrowej</translation>
+        <translation>Generuj plik kwantyzacji dla zmiennoprzecinkowej warstwy rastrowej</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
@@ -32381,7 +32382,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
-        <translation type="unfinished">Generuj raster z obiektami strukturalnymi (wskaźniki pierwszego rzędu)</translation>
+        <translation>Generuj raster z obiektami strukturalnymi (wskaźniki pierwszego rzędu)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
@@ -32406,7 +32407,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
         <source>Create raster with textural features from raster (second serie of indices)</source>
-        <translation type="unfinished">Generuj raster z obiektami strukturalnymi (wskaźniki drugiego rzędu)</translation>
+        <translation>Generuj raster z obiektami strukturalnymi (wskaźniki drugiego rzędu)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
@@ -33035,7 +33036,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import geonames.org country files</source>
-        <translation type="unfinished">Importuj pliki z geonames.org</translation>
+        <translation>Importuj pliki z geonames.org</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
@@ -33200,7 +33201,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="unfinished">Stwórz funkcją przypisującą odpowiednie wartości z elementów warstwy wejściowej do elementów warstwy wyjściowej.</translation>
+        <translation type="unfinished">Stwórz funkcją przypisującą odpowiednie wartości z elementów warstwy wejściowej do elementów warstwy wyjściowej</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
@@ -33335,7 +33336,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Overlay</source>
-        <translation type="unfinished">Nakładki</translation>
+        <translation>Nakładki</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
@@ -33575,7 +33576,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="unfinished">Usuń wierzchołki w zadanej odległości od linii i granic. Granica jest usuwana tylko wtedy, gdy topologia nie jest zniszczona (nowy węzeł, zmienione przypisanie centroidu). Pierwszy i ostatni segment granicy nigdy się nie zmienia.</translation>
+        <translation>Usuń wierzchołki w zadanej odległości od linii i granic. Granica jest usuwana tylko wtedy, gdy topologia nie jest zniszczona (nowy węzeł, zmienione przypisanie centroidu). Pierwszy i ostatni segment granicy nigdy się nie zmienia.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
@@ -33690,7 +33691,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
         <source>Set general DB connection with a schema (PostgreSQL only)</source>
-        <translation type="unfinished">Połączenie z bazą danych ze schematem (tylko PostgreSQL)</translation>
+        <translation>Połączenie z bazą danych ze schematem (tylko PostgreSQL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
@@ -33805,12 +33806,12 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="unfinished">Tabularyzuj wspólne wystąpienie (koincydencja) kategorii dla dwóch warstw rastrowych</translation>
+        <translation>Tabularyzuj wspólne wystąpienie (koincydencja) kategorii dla dwóch warstw rastrowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="unfinished">Weź dane wektorowe strumieni, przekształć je w warstwę rastrową i odejmij głębokość od wyjściowego DEM</translation>
+        <translation>Weź dane wektorowe strumieni, przekształć je w warstwę rastrową i odejmij głębokość od wyjściowego DEM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
@@ -33840,7 +33841,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Tests of normality on vector points</source>
-        <translation type="unfinished">Testuj normalizację punktów wektorowych</translation>
+        <translation>Testuj normalizację punktów wektorowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
@@ -33990,7 +33991,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="unfinished">Funkcja rastrowa detekcji przejścia przez zero dla przetwarzania obrazów</translation>
+        <translation>Funkcja rastrowa detekcji przejścia przez zero dla przetwarzania obrazów</translation>
     </message>
 </context>
 <context>
