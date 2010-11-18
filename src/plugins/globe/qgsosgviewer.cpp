@@ -21,12 +21,14 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <QString>
+#include <QMessageBox>
+
 
 QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, const QGLWidget * shareWidget, WindowFlags f):
     QGLWidget(parent, shareWidget, f)
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
-    setStereoMode();
+    //setStereoMode();
     setFocusPolicy(Qt::ClickFocus);
     setMouseTracking ( true );
 }
@@ -87,13 +89,12 @@ void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 
 void QgsGLWidgetAdapter::setStereoMode()
 {
-  //TODO: maybe consolidate this method somewhere else since it is repeated in globe_plugin_dialog.cpp
-  
-  //osg::DisplaySettings::instance()->setStereo( (bool) settings.value( "/Plugin-Globe/stereo", 0 ).toInt() );
-  //osg::DisplaySettings::instance()->setStereoMode( (osg::DisplaySettings::StereoMode) settings.value( "/Plugin-Globe/stereoMode", 1 ).toInt());
-  
-  QString stereoMode;
-  stereoMode = settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString();
+  setStereoMode(settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString());
+}
+
+void QgsGLWidgetAdapter::setStereoMode(QString stereoMode)
+{
+  settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
   
   if("OFF" == stereoMode)
   {
@@ -115,9 +116,20 @@ void QgsGLWidgetAdapter::setStereoMode()
     {
       osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
     }
+    else if("HORIZONTAL_SPLIT" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::HORIZONTAL_SPLIT );
+    }
+    else if("QUAD_BUFFER" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::QUAD_BUFFER );
+    }
     else
     {
       //should never get here
+      QMessageBox msgBox;
+      msgBox.setText("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
+      msgBox.exec();
     }
   }
 }

@@ -22,6 +22,7 @@
 #include "../qgisplugin.h"
 #include "qgsosgviewer.h"
 #include "qgsosgearthtilesource.h"
+#include "globe_plugin_dialog.h"
 #include "Controls"
 #include <QObject>
 #include <QDockWidget>
@@ -105,8 +106,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarthUtil::ElevationManager* mElevationManager;
     //! Object placer
     osgEarthUtil::ObjectPlacer* mObjectPlacer;
+    //! Settings Dialog
+    QgsGlobePluginDialog* settingsDialog;
 };
-
 
 class FlyToExtentHandler : public osgGA::GUIEventHandler 
 {

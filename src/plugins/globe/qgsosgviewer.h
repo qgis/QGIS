@@ -39,6 +39,9 @@ class QgsGLWidgetAdapter : public QGLWidget
 
         osgViewer::GraphicsWindow* getGraphicsWindow() { return _gw.get(); }
         const osgViewer::GraphicsWindow* getGraphicsWindow() const { return _gw.get(); }
+        
+        void setStereoMode();
+        void setStereoMode(QString stereoMode);
 
     protected:
 
@@ -56,7 +59,6 @@ class QgsGLWidgetAdapter : public QGLWidget
     private:
     
         QSettings settings;
-        void setStereoMode();
 };
 
 
@@ -76,7 +78,7 @@ class QgsOsgViewer : public osgViewer::Viewer, public QgsGLWidgetAdapter
             connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
             _timer.start(10);
         }
-
+      
         virtual void paintGL()
         {
             frame();
