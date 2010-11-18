@@ -3163,10 +3163,12 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
+  int myAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
   prj->writeEntry( "Gui", "/SelectionColorRedPart", myRed );
   prj->writeEntry( "Gui", "/SelectionColorGreenPart", myGreen );
   prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue ) );
+  prj->writeEntry( "Gui", "/SelectionColorAlphaPart", myAlpha );
+  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //set the canvas to the default background color
   //the default can be set in qgisoptions
@@ -3429,6 +3431,18 @@ bool QgisApp::addProject( QString projectFile )
   mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   QgsDebugMsg( "Canvas background color restored..." );
 
+  //set the color for selections
+  QSettings settings;
+  int defaultRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
+  int defaultGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
+  int defaultBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
+  int defaultAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
+  int myRed = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", defaultRed );
+  int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
+  int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultBlue );
+  int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
+  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
 
@@ -3437,7 +3451,6 @@ bool QgisApp::addProject( QString projectFile )
   // specific plug-in state
 
   // add this to the list of recently used project files
-  QSettings settings;
   saveRecentProjectPath( projectFile, settings );
 
   QApplication::restoreOverrideCursor();
