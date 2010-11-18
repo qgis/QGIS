@@ -36,7 +36,7 @@ if [ -d .svn ]; then
 	REV=$(svn info | sed -ne "s/Revision: //p")
 	svn diff >r$REV.diff
 elif [ -d .git ]; then
-	REV=$(git svn info | sed -ne "s/Revision //p")
+	REV=$(git svn info | sed -ne "s/Revision: //p")
 	git diff >r$REV.diff
 fi
 

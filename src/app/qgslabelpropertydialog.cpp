@@ -36,20 +36,20 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 
 void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 {
-  if( !mMapRenderer )
+  if ( !mMapRenderer )
   {
     return;
   }
 
   //get feature attributes
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
-  if( !vlayer )
+  if ( !vlayer )
   {
     return;
   }
 
   QgsFeature f;
-  if( !vlayer->featureAtId( featureId, f, false, true ) )
+  if ( !vlayer->featureAtId( featureId, f, false, true ) )
   {
     return;
   }
@@ -58,7 +58,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 
   //get layerproperties. Problem: only for pallabeling...
   QgsPalLabeling* lbl = dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
-  if( !lbl )
+  if ( !lbl )
   {
     return;
   }
@@ -67,12 +67,12 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 
   //get label field and fill line edit
   QString labelFieldName = vlayer->customProperty( "labeling/fieldName" ).toString();
-  if( !labelFieldName.isEmpty() )
+  if ( !labelFieldName.isEmpty() )
   {
     mCurrentLabelField = vlayer->fieldNameIndex( labelFieldName );
     mLabelTextLineEdit->setText( attributeValues[mCurrentLabelField].toString() );
     const QgsFieldMap& layerFields = vlayer->pendingFields();
-    switch( layerFields[mCurrentLabelField].type() )
+    switch ( layerFields[mCurrentLabelField].type() )
     {
       case QVariant::Double:
         mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
@@ -81,6 +81,8 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
       case QVariant::UInt:
       case QVariant::LongLong:
         mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
+        break;
+      default:
         break;
     }
   }
@@ -94,17 +96,17 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
   mBufferColorButton->setColor( layerSettings.textColor );
   mLabelDistanceSpinBox->setValue( layerSettings.dist );
   mBufferSizeSpinBox->setValue( layerSettings.bufferSize );
-  mHaliComboBox->setCurrentIndex( mHaliComboBox->findText("Left") );
-  mValiComboBox->setCurrentIndex( mValiComboBox->findText("Bottom") );
+  mHaliComboBox->setCurrentIndex( mHaliComboBox->findText( "Left" ) );
+  mValiComboBox->setCurrentIndex( mValiComboBox->findText( "Bottom" ) );
 
   disableGuiElements();
 
   mDataDefinedProperties = layerSettings.dataDefinedProperties;
   QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator propIt = mDataDefinedProperties.constBegin();
 
-  for(; propIt != mDataDefinedProperties.constEnd(); ++propIt )
+  for ( ; propIt != mDataDefinedProperties.constEnd(); ++propIt )
   {
-    switch( propIt.key() )
+    switch ( propIt.key() )
     {
       case QgsPalLayerSettings::Size:
         mFontSizeSpinBox->setEnabled( true );
@@ -148,7 +150,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
         mRotationSpinBox->setValue( attributeValues[propIt.value()].toDouble() );
         break;
 
-      //font related properties
+        //font related properties
       case QgsPalLayerSettings::Bold:
         mLabelFont.setBold( attributeValues[propIt.value()].toBool() );
         break;
@@ -247,8 +249,8 @@ void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
 void QgsLabelPropertyDialog::on_mFontPushButton_clicked()
 {
   bool ok;
-  mLabelFont = QFontDialog::getFont( &ok, mLabelFont, 0, tr("Label font") );
-  if( ok )
+  mLabelFont = QFontDialog::getFont( &ok, mLabelFont, 0, tr( "Label font" ) );
+  if ( ok )
   {
     insertChangedValue( QgsPalLayerSettings::Size, mLabelFont.pointSizeF() );
     insertChangedValue( QgsPalLayerSettings::Bold, mLabelFont.bold() );
@@ -259,8 +261,12 @@ void QgsLabelPropertyDialog::on_mFontPushButton_clicked()
 
 void QgsLabelPropertyDialog::on_mFontColorButton_clicked()
 {
-  QColor c = QColorDialog::getColor ( mFontColorButton->color(), 0, tr("Font color"), QColorDialog::ShowAlphaChannel );
-  if( c.isValid() )
+#if QT_VERSION >= 0x040500
+  QColor c = QColorDialog::getColor( mFontColorButton->color(), 0, tr( "Font color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor c = QColorDialog::getColor( mFontColorButton->color() );
+#endif
+  if ( c.isValid() )
   {
     mFontColorButton->setColor( c );
     insertChangedValue( QgsPalLayerSettings::Color, c.name() );
@@ -269,8 +275,12 @@ void QgsLabelPropertyDialog::on_mFontColorButton_clicked()
 
 void QgsLabelPropertyDialog::on_mBufferColorButton_clicked()
 {
-  QColor c = QColorDialog::getColor ( mBufferColorButton->color(), 0, tr("Buffer color"), QColorDialog::ShowAlphaChannel );
-  if( c.isValid() )
+#if QT_VERSION >= 0x040500
+  QColor c = QColorDialog::getColor( mBufferColorButton->color(), 0, tr( "Buffer color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor c = QColorDialog::getColor( mBufferColorButton->color() );
+#endif
+  if ( c.isValid() )
   {
     mFontColorButton->setColor( c );
     insertChangedValue( QgsPalLayerSettings::BufferColor, c.name() );
@@ -287,9 +297,9 @@ void QgsLabelPropertyDialog::on_mValiComboBox_currentIndexChanged( const QString
   insertChangedValue( QgsPalLayerSettings::Vali, text );
 }
 
-void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged ( const QString& text )
+void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& text )
 {
-  if( mCurrentLabelField != -1 )
+  if ( mCurrentLabelField != -1 )
   {
     mChangedProperties.insert( mCurrentLabelField, text );
   }
@@ -297,8 +307,8 @@ void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged ( const QString& 
 
 void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value )
 {
-   QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator ddIt = mDataDefinedProperties.find( p );
-   if( ddIt != mDataDefinedProperties.constEnd() )
+  QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator ddIt = mDataDefinedProperties.find( p );
+  if ( ddIt != mDataDefinedProperties.constEnd() )
   {
     mChangedProperties.insert( ddIt.value(), value );
   }
