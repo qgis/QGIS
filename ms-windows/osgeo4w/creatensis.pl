@@ -57,7 +57,7 @@ sub getDeps {
 	}
 }
 
-getDeps("qgis");
+getDeps("qgis-full");
 
 if(-f "../addons/bin/NCSEcw4_RO.dll") {
 	print "Enabling ECW support...\n";
