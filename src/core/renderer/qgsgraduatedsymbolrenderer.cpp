@@ -25,7 +25,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsrendercontext.h"
-#include <math.h>
+#include <cmath>
 #include <QDomNode>
 #include <QDomElement>
 #include <QImage>
@@ -145,7 +145,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
     {
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( fabs( attrs[theSymbol->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( attrs[theSymbol->scaleClassificationField()].toDouble() ) );
       QgsDebugMsgLevel( QString( "Feature has field scale factor %1" ).arg( fieldScale ), 3 );
     }
     if ( theSymbol->rotationClassificationField() >= 0 )

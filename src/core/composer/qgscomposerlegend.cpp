@@ -163,7 +163,7 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
 
   p->setPen( QColor( 0, 0, 0 ) );
   drawText( p, mBoxSpace, currentYCoord, groupItem->text(), mGroupFont );
-  maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() ) );
+  maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() ) );
 
   //children can be other group items or layer items
   int numChildItems = groupItem->rowCount();
@@ -212,7 +212,7 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
       drawText( p, mBoxSpace, currentYCoord, layerItem->text(), mLayerFont );
     }
 
-    maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, layerItem->text() ) );
+    maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, layerItem->text() ) );
   }
   //and child items
   drawLayerChildItems( p, layerItem, currentYCoord, maxXCoord, opacity );
@@ -235,7 +235,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
   }
 
   //standerd item height
-  double itemHeight = std::max( mSymbolHeight, fontAscentMillimeters( mItemFont ) );
+  double itemHeight = qMax( mSymbolHeight, fontAscentMillimeters( mItemFont ) );
 
   QStandardItem* currentItem;
 
@@ -275,13 +275,13 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     {
       //draw symbol
       drawSymbol( p, symbol, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
-      realItemHeight = std::max( realSymbolHeight, itemHeight );
+      realItemHeight = qMax( realSymbolHeight, itemHeight );
       currentXCoord += mIconLabelSpace;
     }
     else if ( symbolNg ) //item with symbol NG?
     {
       drawSymbolV2( p, symbolNg, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
-      realItemHeight = std::max( realSymbolHeight, itemHeight );
+      realItemHeight = qMax( realSymbolHeight, itemHeight );
       currentXCoord += mIconLabelSpace;
     }
     else //item with icon?
@@ -304,7 +304,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     }
     currentXCoord += mBoxSpace;
 
-    maxXCoord = std::max( maxXCoord, currentXCoord );
+    maxXCoord = qMax( maxXCoord, currentXCoord );
 
     currentYCoord += realItemHeight;
   }

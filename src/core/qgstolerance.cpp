@@ -16,9 +16,7 @@
 #include "qgstolerance.h"
 #include <QSettings>
 #include <QPoint>
-#include <math.h>
-
-
+#include <cmath>
 
 double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units )
 {

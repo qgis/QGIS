@@ -16,11 +16,8 @@
 
 #include "CloughTocherInterpolator.h"
 #include "qgslogger.h"
-#ifndef Q_OS_MACX
+
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, double u, double v, double w )
 {

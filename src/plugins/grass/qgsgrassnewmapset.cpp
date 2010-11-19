@@ -1111,7 +1111,7 @@ void QgsGrassNewMapset::drawRegion()
       double x1 = points[i].x();
       double x2 = points[i+1].x();
 
-      if ( fabs( x2 - x1 ) > 150 )
+      if ( qAbs( x2 - x1 ) > 150 )
       {
         if ( x2 < x1 )
         {

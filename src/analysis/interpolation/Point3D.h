@@ -17,11 +17,7 @@
 #ifndef POINT3D_H
 #define POINT3D_H
 
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 #include <iostream>
 
 /**Point3D is a class to represent a three dimensional point*/

@@ -136,12 +136,12 @@ QString QgsPoint::toString( int thePrecision ) const
 
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
 {
-  int myDegreesX = int( std::abs( m_x ) );
+  int myDegreesX = int( qAbs( m_x ) );
   float myFloatMinutesX = float(( qAbs( m_x ) - myDegreesX ) * 60 );
   int myIntMinutesX = int( myFloatMinutesX );
   float mySecondsX = float( myFloatMinutesX - myIntMinutesX ) * 60;
 
-  int myDegreesY = int( std::abs( m_y ) );
+  int myDegreesY = int( qAbs( m_y ) );
   float myFloatMinutesY = float(( qAbs( m_y ) - myDegreesY ) * 60 );
   int myIntMinutesY = int( myFloatMinutesY );
   float mySecondsY = float( myFloatMinutesY - myIntMinutesY ) * 60;
@@ -220,8 +220,8 @@ int QgsPoint::onSegment( const QgsPoint& a, const QgsPoint& b ) const
 {
   //algorithm from 'graphics GEMS', A. Paeth: 'A Fast 2D Point-on-line test'
   if (
-    fabs(( b.y() - a.y() ) *( m_x - a.x() ) - ( m_y - a.y() ) *( b.x() - a.x() ) )
-    >= qMax( fabs( b.x() - a.x() ), fabs( b.y() - a.y() ) )
+    qAbs(( b.y() - a.y() ) *( m_x - a.x() ) - ( m_y - a.y() ) *( b.x() - a.x() ) )
+    >= qMax( qAbs( b.x() - a.x() ), qAbs( b.y() - a.y() ) )
   )
   {
     return 0;

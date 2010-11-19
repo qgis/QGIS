@@ -177,8 +177,8 @@ void Tools::Geometry::LineSegment::getCenter( Point& out ) const
   for ( unsigned long cDim = 0; cDim < m_dimension; cDim++ )
   {
     coords[cDim] =
-      ( std::abs( m_pStartPoint[cDim] - m_pEndPoint[cDim] ) / 2.0 ) +
-      std::min( m_pStartPoint[cDim], m_pEndPoint[cDim] );
+      ( qAbs( m_pStartPoint[cDim] - m_pEndPoint[cDim] ) / 2.0 ) +
+      qMin( m_pStartPoint[cDim], m_pEndPoint[cDim] );
   }
 
   out = Point( coords, m_dimension );
@@ -198,8 +198,8 @@ void Tools::Geometry::LineSegment::getMBR( Region& out ) const
 
   for ( unsigned long cDim = 0; cDim < m_dimension; cDim++ )
   {
-    low[cDim] = std::min( m_pStartPoint[cDim], m_pEndPoint[cDim] );
-    high[cDim] = std::max( m_pStartPoint[cDim], m_pEndPoint[cDim] );
+    low[cDim] = qMin( m_pStartPoint[cDim], m_pEndPoint[cDim] );
+    high[cDim] = qMax( m_pStartPoint[cDim], m_pEndPoint[cDim] );
   }
 
   out = Region( low, high, m_dimension );
@@ -247,10 +247,10 @@ double Tools::Geometry::LineSegment::getMinimumDistance( const Point& p ) const
     );
 
   if ( m_pEndPoint[0] >= m_pStartPoint[0] - std::numeric_limits<double>::epsilon() &&
-       m_pEndPoint[0] <= m_pStartPoint[0] + std::numeric_limits<double>::epsilon() ) return std::abs( p.m_pCoords[0] - m_pStartPoint[0] );
+       m_pEndPoint[0] <= m_pStartPoint[0] + std::numeric_limits<double>::epsilon() ) return qAbs( p.m_pCoords[0] - m_pStartPoint[0] );
 
   if ( m_pEndPoint[1] >= m_pStartPoint[1] - std::numeric_limits<double>::epsilon() &&
-       m_pEndPoint[1] <= m_pStartPoint[1] + std::numeric_limits<double>::epsilon() ) return std::abs( p.m_pCoords[1] - m_pStartPoint[1] );
+       m_pEndPoint[1] <= m_pStartPoint[1] + std::numeric_limits<double>::epsilon() ) return qAbs( p.m_pCoords[1] - m_pStartPoint[1] );
 
   double x1 = m_pStartPoint[0];
   double x2 = m_pEndPoint[0];
@@ -259,7 +259,7 @@ double Tools::Geometry::LineSegment::getMinimumDistance( const Point& p ) const
   double y2 = m_pEndPoint[1];
   double y0 = p.m_pCoords[1];
 
-  return std::abs(( x2 - x1 ) *( y1 - y0 ) - ( x1 - x0 ) *( y2 - y1 ) ) / ( std::sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) ) );
+  return qAbs(( x2 - x1 ) *( y1 - y0 ) - ( x1 - x0 ) *( y2 - y1 ) ) / ( std::sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) ) );
 }
 
 // assuming moving from start to end, positive distance is from right hand side.
@@ -325,7 +325,7 @@ double Tools::Geometry::LineSegment::getRelativeMaximumDistance( const Tools::Ge
   coords[1] = r.m_pLow[1];
   double d4 = getRelativeMinimumDistance( Point( coords, 2 ) );
 
-  return std::max( d1, std::max( d2, std::max( d3, d4 ) ) );
+  return qMax( d1, qMax( d2, qMax( d3, d4 ) ) );
 }
 
 double Tools::Geometry::LineSegment::getAngleOfPerpendicularRay()

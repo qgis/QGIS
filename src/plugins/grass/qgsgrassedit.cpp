@@ -854,7 +854,7 @@ int QgsGrassEdit::nodeSymbFromMap( int node )
 
   for ( int i = 0; i < nlines; i++ )
   {
-    int line = abs( mProvider->nodeLine( node, i ) );
+    int line = qAbs( mProvider->nodeLine( node, i ) );
     int type = mProvider->readLine( NULL, NULL, line );
 
     if ( type & GV_LINES )

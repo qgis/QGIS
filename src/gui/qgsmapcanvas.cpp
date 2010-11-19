@@ -717,8 +717,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
     // Don't want to interfer with mouse events
 
     QgsRectangle currentExtent = mMapRenderer->extent();
-    double dx = fabs(( currentExtent.xMaximum() - currentExtent.xMinimum() ) / 4 );
-    double dy = fabs(( currentExtent.yMaximum() - currentExtent.yMinimum() ) / 4 );
+    double dx = qAbs(( currentExtent.xMaximum() - currentExtent.xMinimum() ) / 4 );
+    double dy = qAbs(( currentExtent.yMaximum() - currentExtent.yMinimum() ) / 4 );
 
     switch ( e->key() )
     {
@@ -1289,8 +1289,8 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
-  double dx = fabs( end.x() - start.x() );
-  double dy = fabs( end.y() - start.y() );
+  double dx = qAbs( end.x() - start.x() );
+  double dy = qAbs( end.y() - start.y() );
 
   // modify the extent
   QgsRectangle r = mMapRenderer->extent();

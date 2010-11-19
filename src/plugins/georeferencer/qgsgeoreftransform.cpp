@@ -23,7 +23,6 @@
 #include "qgsleastsquares.h"
 
 #include <cmath>
-using std::abs;
 using std::cos;
 using std::sin;
 using std::pow;
@@ -454,7 +453,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   else
   {
     // Guard against division by zero
-    if ( abs( s ) < std::numeric_limits<double>::epsilon() )
+    if ( qAbs( s ) < std::numeric_limits<double>::epsilon() )
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
@@ -479,7 +478,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   return true;
 }
 
-QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder ) : mPolynomialOrder( std::min( 3u, polynomialOrder ) ), mIsTPSTransform( useTPS )
+QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder ) : mPolynomialOrder( qMin( 3u, polynomialOrder ) ), mIsTPSTransform( useTPS )
 {
   mGDALTransformer     = NULL;
   mGDALTransformerArgs = NULL;

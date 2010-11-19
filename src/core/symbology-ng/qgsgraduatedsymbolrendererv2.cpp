@@ -25,7 +25,7 @@ qgsgraduatedsymbolrendererv2.cpp - Graduated Symbol Renderer Version 2
 #include <QDomElement>
 #include <QSettings> // for legend
 #include <limits> // for jenks classification
-#include "math.h" // for pretty classification
+#include <cmath> // for pretty classification
 
 QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
     : mLowerValue( lowerValue ), mUpperValue( upperValue ), mSymbol( symbol ), mLabel( label )

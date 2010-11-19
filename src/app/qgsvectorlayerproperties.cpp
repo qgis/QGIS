@@ -141,7 +141,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   for ( ; it != overlayPluginList.constEnd(); ++it )
   {
     QgsApplyDialog* d = ( *it )->dialog( lyr );
-    position = tabWidget->insertTab( tabWidget->count(), qobject_cast<QDialog*>( d ), QgisApp::getThemeIcon( "propertyicons/diagram.png" ), tr( "Overlay"));
+    position = tabWidget->insertTab( tabWidget->count(), qobject_cast<QDialog*>( d ), QgisApp::getThemeIcon( "propertyicons/diagram.png" ), tr( "Overlay" ) );
     tabWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
     mOverlayDialogs.push_back( d );
   }
@@ -172,8 +172,8 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
   tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
-  tblAttributes->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
-  tblAttributes->horizontalHeader()->setResizeMode(7,QHeaderView::Stretch);
+  tblAttributes->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
+  tblAttributes->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
   tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
 
@@ -805,7 +805,7 @@ QString QgsVectorLayerProperties::metadata()
 
   QString xMin, yMin, xMax, yMax;
   double changeoverValue = 99999; // The 'largest' 5 digit number
-  if ( fabs( myExtent.xMinimum() ) > changeoverValue )
+  if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
   {
     xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
   }
@@ -814,7 +814,7 @@ QString QgsVectorLayerProperties::metadata()
     xMin = QString( "%1" ).arg( myExtent.xMinimum() );
   }
 
-  if ( fabs( myExtent.yMinimum() ) > changeoverValue )
+  if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
   {
     yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
   }
@@ -823,7 +823,7 @@ QString QgsVectorLayerProperties::metadata()
     yMin = QString( "%1" ).arg( myExtent.yMinimum() );
   }
 
-  if ( fabs( myExtent.xMaximum() ) > changeoverValue )
+  if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
   {
     xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
   }
@@ -832,7 +832,7 @@ QString QgsVectorLayerProperties::metadata()
     xMax = QString( "%1" ).arg( myExtent.xMaximum() );
   }
 
-  if ( fabs( myExtent.yMaximum() ) > changeoverValue )
+  if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
   {
     yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
   }

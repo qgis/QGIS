@@ -1146,7 +1146,7 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     }
 
     //finally draw text
-    double symbolItemHeight = std::max( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
+    double symbolItemHeight = qMax( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
 
     if ( p )
     {

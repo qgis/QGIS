@@ -15,12 +15,7 @@
 
 #include "qgspointrotationitem.h"
 #include <QPainter>
-
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas ): QgsMapCanvasItem( canvas ), mOrientation( Clockwise ), mRotation( 0.0 )
 {

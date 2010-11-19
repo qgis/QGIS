@@ -107,10 +107,10 @@ void QgsAnnotationItem::updateBoundingRect()
     halfSymbolSize = scaledSymbolSize() / 2.0;
   }
 
-  double xMinPos = std::min( -halfSymbolSize, mOffsetFromReferencePoint.x() - mFrameBorderWidth );
-  double xMaxPos = std::max( halfSymbolSize, mOffsetFromReferencePoint.x() + mFrameSize.width() + mFrameBorderWidth );
-  double yMinPos = std::min( -halfSymbolSize, mOffsetFromReferencePoint.y() - mFrameBorderWidth );
-  double yMaxPos = std::max( halfSymbolSize, mOffsetFromReferencePoint.y() + mFrameSize.height() + mFrameBorderWidth );
+  double xMinPos = qMin( -halfSymbolSize, mOffsetFromReferencePoint.x() - mFrameBorderWidth );
+  double xMaxPos = qMax( halfSymbolSize, mOffsetFromReferencePoint.x() + mFrameSize.width() + mFrameBorderWidth );
+  double yMinPos = qMin( -halfSymbolSize, mOffsetFromReferencePoint.y() - mFrameBorderWidth );
+  double yMaxPos = qMax( halfSymbolSize, mOffsetFromReferencePoint.y() + mFrameSize.height() + mFrameBorderWidth );
   mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
 }
 
@@ -283,16 +283,16 @@ QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( con
 
   int cursorSensitivity = 7;
 
-  if ( abs( itemPos.x() ) < cursorSensitivity && abs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
+  if ( qAbs( itemPos.x() ) < cursorSensitivity && qAbs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
   {
     return MoveMapPosition;
   }
 
   bool left, right, up, down;
-  left = abs( itemPos.x() - mOffsetFromReferencePoint.x() ) < cursorSensitivity;
-  right = abs( itemPos.x() - ( mOffsetFromReferencePoint.x() + mFrameSize.width() ) ) < cursorSensitivity;
-  up = abs( itemPos.y() - mOffsetFromReferencePoint.y() ) < cursorSensitivity;
-  down = abs( itemPos.y() - ( mOffsetFromReferencePoint.y() + mFrameSize.height() ) ) < cursorSensitivity;
+  left = qAbs( itemPos.x() - mOffsetFromReferencePoint.x() ) < cursorSensitivity;
+  right = qAbs( itemPos.x() - ( mOffsetFromReferencePoint.x() + mFrameSize.width() ) ) < cursorSensitivity;
+  up = qAbs( itemPos.y() - mOffsetFromReferencePoint.y() ) < cursorSensitivity;
+  down = qAbs( itemPos.y() - ( mOffsetFromReferencePoint.y() + mFrameSize.height() ) ) < cursorSensitivity;
 
   if ( left && up )
   {

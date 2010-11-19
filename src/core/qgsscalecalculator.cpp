@@ -17,8 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <assert.h>
-#include <math.h>
+#include <cmath>
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
@@ -84,7 +83,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
       delta = calculateGeographicDistance( mapExtent );
       break;
     default:
-      assert( "bad map units" );
+      Q_ASSERT( "bad map units" );
       break;
   }
   QgsDebugMsg( "Using conversionFactor of " + QString::number( conversionFactor ) );

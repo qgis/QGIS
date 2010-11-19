@@ -26,7 +26,7 @@
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 
-#include <math.h>
+#include <cmath>
 
 #include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
@@ -552,10 +552,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double tres = mResolutions[i];
 
     // clip view extent to layer extent
-    double xmin = std::max( viewExtent.xMinimum(), layerExtent.xMinimum() );
-    double ymin = std::max( viewExtent.yMinimum(), layerExtent.yMinimum() );
-    double xmax = std::min( viewExtent.xMaximum(), layerExtent.xMaximum() );
-    double ymax = std::min( viewExtent.yMaximum(), layerExtent.yMaximum() );
+    double xmin = qMax( viewExtent.xMinimum(), layerExtent.xMinimum() );
+    double ymin = qMax( viewExtent.yMinimum(), layerExtent.yMinimum() );
+    double xmax = qMin( viewExtent.xMaximum(), layerExtent.xMaximum() );
+    double ymax = qMin( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
     double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum() + mTileWidth * tres * 0.001;
@@ -2251,7 +2251,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   myMetadataQString += "</td></tr>";
 
   // Layer Coordinate Reference Systems
-  for ( int j = 0; j < std::min( layer.crs.size(), 10 ); j++ )
+  for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
   {
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
     myMetadataQString += tr( "Available in CRS" );

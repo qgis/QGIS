@@ -25,16 +25,17 @@
 #include "qgsvectorlayer.h"
 #include <QDomElement>
 #include <QPainter>
-
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
-QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& labelAttributeName ): QgsFeatureRendererV2( "pointDisplacement" ), \
-    mLabelAttributeName( labelAttributeName ), mLabelIndex( -1 ), mTolerance( 0.00001 ), mCircleWidth( 0.4 ), mCircleColor( QColor( 125, 125, 125 ) ), mCircleRadiusAddition( 0 ), \
-    mMaxLabelScaleDenominator( -1 )
+QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& labelAttributeName )
+    : QgsFeatureRendererV2( "pointDisplacement" )
+    , mLabelAttributeName( labelAttributeName )
+    , mLabelIndex( -1 )
+    , mTolerance( 0.00001 )
+    , mCircleWidth( 0.4 )
+    , mCircleColor( QColor( 125, 125, 125 ) )
+    , mCircleRadiusAddition( 0 )
+    , mMaxLabelScaleDenominator( -1 )
 {
   mRenderer = QgsFeatureRendererV2::defaultRenderer( QGis::Point );
   mCenterSymbol = new QgsMarkerSymbolV2(); //the symbol for the center of a displacement group
@@ -149,7 +150,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
 
   QgsSymbolV2RenderContext symbolContext( context, QgsSymbolV2::MM, 1.0, selected );
   double circleAdditionPainterUnits = symbolContext.outputLineWidth( mCircleRadiusAddition );
-  double radius = std::max(( diagonal / 2 ), labelAttributeList.size() * diagonal / 2 / M_PI ) + circleAdditionPainterUnits;
+  double radius = qMax(( diagonal / 2 ), labelAttributeList.size() * diagonal / 2 / M_PI ) + circleAdditionPainterUnits;
 
   //draw Circle
   drawCircle( radius, symbolContext, pt, symbolList.size() );

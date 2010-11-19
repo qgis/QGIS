@@ -494,7 +494,7 @@ double QgsDistanceArea::computeDistanceBearing(
   double tu2 = 0;
 
   int iterLimit = 20;
-  while ( fabs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
+  while ( qAbs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
   {
     sinLambda = sin( lambda );
     cosLambda = cos( lambda );
@@ -665,7 +665,7 @@ double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPoint>& points )
   }
   // QgsDebugMsg("Area from point: " + (points[i % size]).toString(2));
   area = area / 2.0;
-  return fabs( area ); // All areas are positive!
+  return qAbs( area ); // All areas are positive!
 }
 
 QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit )
@@ -682,12 +682,12 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         {
           unitLabel = QObject::tr( " m2" );
         }
-        else if ( fabs( value ) > 1000000.0 )
+        else if ( qAbs( value ) > 1000000.0 )
         {
           unitLabel = QObject::tr( " km2" );
           value = value / 1000000.0;
         }
-        else if ( fabs( value ) > 10000.0 )
+        else if ( qAbs( value ) > 10000.0 )
         {
           unitLabel = QObject::tr( " ha" );
           value = value / 10000.0;
@@ -699,21 +699,21 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       }
       else
       {
-        if ( keepBaseUnit || fabs( value ) == 0.0 )
+        if ( keepBaseUnit || qAbs( value ) == 0.0 )
         {
           unitLabel = QObject::tr( " m" );
         }
-        else if ( fabs( value ) > 1000.0 )
+        else if ( qAbs( value ) > 1000.0 )
         {
           unitLabel = QObject::tr( " km" );
           value = value / 1000;
         }
-        else if ( fabs( value ) < 0.01 )
+        else if ( qAbs( value ) < 0.01 )
         {
           unitLabel = QObject::tr( " mm" );
           value = value * 1000;
         }
-        else if ( fabs( value ) < 0.1 )
+        else if ( qAbs( value ) < 0.1 )
         {
           unitLabel = QObject::tr( " cm" );
           value = value * 100;
@@ -727,7 +727,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
     case QGis::Feet:
       if ( isArea )
       {
-        if ( keepBaseUnit  || fabs( value ) <= ( 528.0*528.0 ) )
+        if ( keepBaseUnit  || qAbs( value ) <= ( 528.0*528.0 ) )
         {
           unitLabel = QObject::tr( " sq ft" );
         }
@@ -739,9 +739,9 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       }
       else
       {
-        if ( fabs( value ) <= 528.0 || keepBaseUnit )
+        if ( qAbs( value ) <= 528.0 || keepBaseUnit )
         {
-          if ( fabs( value ) == 1.0 )
+          if ( qAbs( value ) == 1.0 )
           {
             unitLabel = QObject::tr( " foot" );
           }
@@ -764,7 +764,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       }
       else
       {
-        if ( fabs( value ) == 1.0 )
+        if ( qAbs( value ) == 1.0 )
           unitLabel = QObject::tr( " degree" );
         else
           unitLabel = QObject::tr( " degrees" );

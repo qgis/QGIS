@@ -1878,10 +1878,10 @@ QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangl
         case 3: src = QgsPoint( dX, oY + ( double )s*stepY ); break;
       }
       t.transform( src, raster, rasterToWorld );
-      minX = std::min( raster.x(), minX );
-      maxX = std::max( raster.x(), maxX );
-      minY = std::min( raster.y(), minY );
-      maxY = std::max( raster.y(), maxY );
+      minX = qMin( raster.x(), minX );
+      maxX = qMax( raster.x(), maxX );
+      minY = qMin( raster.y(), minY );
+      maxY = qMax( raster.y(), maxY );
     }
   }
   return QgsRectangle( minX, minY, maxX, maxY );

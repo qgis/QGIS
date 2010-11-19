@@ -205,7 +205,7 @@ double MathUtils::distPointFromLine( Point3D* thepoint, Point3D* p1, Point3D* p2
     double a = normal.getX();
     double b = normal.getY();
     double c = -( normal.getX() * p2->getX() + normal.getY() * p2->getY() );
-    double distance = fabs(( a * thepoint->getX() + b * thepoint->getY() + c ) / ( sqrt( a * a + b * b ) ) );
+    double distance = qAbs(( a * thepoint->getX() + b * thepoint->getY() + c ) / ( sqrt( a * a + b * b ) ) );
     return distance;
   }
   else
@@ -250,8 +250,8 @@ bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 
     double px = testp->getX();
     double py = testp->getY();
 
-    double xmin = min( min( ax, px ), min( bx, cx ) );
-    double ymin = min( min( ay, py ), min( by, cy ) );
+    double xmin = qMin( qMin( ax, px ), qMin( bx, cx ) );
+    double ymin = qMin( qMin( ay, py ), qMin( by, cy ) );
     ax -= xmin;
     bx -= xmin;
     cx -= xmin;
@@ -479,7 +479,7 @@ double MathUtils::power( double a, int b )
     return 1;
   }
   double tmp = a;
-  for ( int i = 2; i <= fabs(( double )b ); i++ )
+  for ( int i = 2; i <= qAbs(( double )b ); i++ )
   {
 
     a *= tmp;

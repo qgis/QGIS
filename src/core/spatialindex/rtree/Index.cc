@@ -309,8 +309,8 @@ void Index::adjustTree( Node* n, std::stack<long>& pathBuffer )
 
       for ( unsigned long cChild = 0; cChild < m_children; cChild++ )
       {
-        m_nodeMBR.m_pLow[cDim] = std::min( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
-        m_nodeMBR.m_pHigh[cDim] = std::max( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
+        m_nodeMBR.m_pLow[cDim] = qMin( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
+        m_nodeMBR.m_pHigh[cDim] = qMax( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
       }
     }
   }
@@ -355,8 +355,8 @@ void Index::adjustTree( Node* n1, Node* n2, std::stack<long>& pathBuffer, byte* 
 
       for ( unsigned long cChild = 0; cChild < m_children; cChild++ )
       {
-        m_nodeMBR.m_pLow[cDim] = std::min( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
-        m_nodeMBR.m_pHigh[cDim] = std::max( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
+        m_nodeMBR.m_pLow[cDim] = qMin( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
+        m_nodeMBR.m_pHigh[cDim] = qMax( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
       }
     }
   }

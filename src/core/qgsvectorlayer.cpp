@@ -668,10 +668,10 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
       for ( int i = 0; i < pa.size(); ++i )
       {
-        largestX  = std::max( largestX,  pa.point( i ).x() );
-        smallestX = std::min( smallestX, pa.point( i ).x() );
-        largestY  = std::max( largestY,  pa.point( i ).y() );
-        smallestY = std::min( smallestY, pa.point( i ).y() );
+        largestX  = qMax( largestX,  pa.point( i ).x() );
+        smallestX = qMin( smallestX, pa.point( i ).x() );
+        largestY  = qMax( largestY,  pa.point( i ).y() );
+        smallestY = qMin( smallestY, pa.point( i ).y() );
       }
       QgsDebugMsg( QString( "Largest  X coordinate was %1" ).arg( largestX ) );
       QgsDebugMsg( QString( "Smallest X coordinate was %1" ).arg( smallestX ) );

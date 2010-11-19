@@ -22,12 +22,7 @@
 #include "qgsrubberband.h"
 #include <QMouseEvent>
 #include <QSettings>
-
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mRubberBand( 0 ), mResultDisplay( 0 )
 {
@@ -57,9 +52,9 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QMouseEvent * e )
       double azimutOne = distArea->bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
       double azimutTwo = distArea->bearing( mAnglePoints.at( 1 ), point );
       double resultAngle = azimutTwo - azimutOne;
-      QgsDebugMsg( QString::number( fabs( resultAngle ) ) );
+      QgsDebugMsg( QString::number( qAbs( resultAngle ) ) );
       QgsDebugMsg( QString::number( M_PI ) );
-      if ( fabs( resultAngle ) > M_PI )
+      if ( qAbs( resultAngle ) > M_PI )
       {
         if ( resultAngle < 0 )
         {

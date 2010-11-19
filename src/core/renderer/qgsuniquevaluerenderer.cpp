@@ -24,7 +24,7 @@
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgslogger.h"
-#include <math.h>
+#include <cmath>
 #include <QDomNode>
 #include <QPainter>
 #include <QImage>
@@ -123,7 +123,7 @@ void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, Qgs
     {
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( fabs( attrs[symbol->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( attrs[symbol->scaleClassificationField()].toDouble() ) );
     }
     if ( symbol->rotationClassificationField() >= 0 )
     {

@@ -640,7 +640,7 @@ void Tools::uncompressRLE(
         rl * blockSize
       )
       {
-        unsigned long l = std::max( bufferLength, rl * blockSize );
+        unsigned long l = qMax( bufferLength, rl * blockSize );
 
         byte* tmp;
         try
@@ -717,10 +717,10 @@ void Tools::ResourceUsage::start()
     );
 
   // maximum resident set size
-  m_peakMemory = std::max( m_peakMemory, m_tmpRU.ru_maxrss );
+  m_peakMemory = qMax( m_peakMemory, m_tmpRU.ru_maxrss );
 
   // total memory
-  m_totalMemory = std::max( m_totalMemory, m_tmpRU.ru_ixrss + m_tmpRU.ru_idrss + m_tmpRU.ru_isrss + m_tmpRU.ru_maxrss );
+  m_totalMemory = qMax( m_totalMemory, m_tmpRU.ru_ixrss + m_tmpRU.ru_idrss + m_tmpRU.ru_isrss + m_tmpRU.ru_maxrss );
 }
 
 void Tools::ResourceUsage::stop()
@@ -757,10 +757,10 @@ void Tools::ResourceUsage::stop()
   m_writeIO += ru.ru_oublock - m_tmpRU.ru_oublock;
 
   // maximum resident set size
-  m_peakMemory = std::max( m_peakMemory, ru.ru_maxrss );
+  m_peakMemory = qMax( m_peakMemory, ru.ru_maxrss );
 
   // total memory
-  m_totalMemory = std::max( m_totalMemory, ru.ru_ixrss + ru.ru_idrss + ru.ru_isrss + ru.ru_maxrss );
+  m_totalMemory = qMax( m_totalMemory, ru.ru_ixrss + ru.ru_idrss + ru.ru_isrss + ru.ru_maxrss );
 
   // page faults
   m_pageFaults += ru.ru_majflt - m_tmpRU.ru_majflt;

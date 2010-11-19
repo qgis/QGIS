@@ -383,7 +383,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         //Take the higher z-Value in case of two equal points
         Point3D* newPoint = mPointVector[mPointVector.count()-1];
         Point3D* existingPoint = mPointVector[mTwiceInsPoint];
-        existingPoint->setZ( std::max( newPoint->getZ(), existingPoint->getZ() ) );
+        existingPoint->setZ( qMax( newPoint->getZ(), existingPoint->getZ() ) );
 
         mPointVector.remove( mPointVector.count() - 1 );
         delete newPoint;

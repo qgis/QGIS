@@ -330,7 +330,7 @@ void QgsLabelDialog::changeBufferColor( void )
 int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
 {
   //if no matches assume first item in list is blank and return that
-  return std::max( 0, theFieldList.indexOf( theFieldName ) );
+  return qMax( 0, theFieldList.indexOf( theFieldName ) );
 }
 
 QgsLabelDialog::~QgsLabelDialog()

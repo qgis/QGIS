@@ -326,8 +326,8 @@ void Node::deleteEntry( unsigned long index )
 
       for ( unsigned long cChild = 0; cChild < m_children; cChild++ )
       {
-        m_nodeMBR.m_pLow[cDim] = std::min( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
-        m_nodeMBR.m_pHigh[cDim] = std::max( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
+        m_nodeMBR.m_pLow[cDim] = qMin( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
+        m_nodeMBR.m_pHigh[cDim] = qMax( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
       }
     }
   }
@@ -439,8 +439,8 @@ bool Node::insertData( unsigned long dataLength, byte* pData, Region& mbr, long 
 
       for ( unsigned long cChild = 0; cChild < m_children; cChild++ )
       {
-        m_nodeMBR.m_pLow[cDim] = std::min( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
-        m_nodeMBR.m_pHigh[cDim] = std::max( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
+        m_nodeMBR.m_pLow[cDim] = qMin( m_nodeMBR.m_pLow[cDim], m_ptrMBR[cChild]->m_pLow[cDim] );
+        m_nodeMBR.m_pHigh[cDim] = qMax( m_nodeMBR.m_pHigh[cDim], m_ptrMBR[cChild]->m_pHigh[cDim] );
       }
     }
 
@@ -673,7 +673,7 @@ void Node::rtreeSplit( unsigned long dataLength, byte* pData, Region& mbr, long 
           d1 = a->getArea() - a1;
           mbr2->getCombinedRegion( *b, *( m_ptrMBR[cChild] ) );
           d2 = b->getArea() - a2;
-          d = std::abs( d1 - d2 );
+          d = qAbs( d1 - d2 );
 
           if ( d > m )
           {
@@ -826,7 +826,7 @@ void Node::rstarSplit( unsigned long dataLength, byte* pData, Region& mbr, long 
       marginh += bbh1.getMargin() + bbh2.getMargin();
     } // for (cChild)
 
-    double margin = std::min( marginl, marginh );
+    double margin = qMin( marginl, marginh );
 
     // keep minimum margin as split axis.
     if ( margin < minimumMargin )
@@ -935,8 +935,8 @@ void Node::pickSeeds( unsigned long& index1, unsigned long& index2 )
           if ( m_ptrMBR[cChild]->m_pLow[cDim] > m_ptrMBR[greatestLower]->m_pLow[cDim] ) greatestLower = cChild;
           if ( m_ptrMBR[cChild]->m_pHigh[cDim] < m_ptrMBR[leastUpper]->m_pHigh[cDim] ) leastUpper = cChild;
 
-          leastLower = std::min( m_ptrMBR[cChild]->m_pLow[cDim], leastLower );
-          greatestUpper = std::max( m_ptrMBR[cChild]->m_pHigh[cDim], greatestUpper );
+          leastLower = qMin( m_ptrMBR[cChild]->m_pLow[cDim], leastLower );
+          greatestUpper = qMax( m_ptrMBR[cChild]->m_pHigh[cDim], greatestUpper );
         }
 
         width = greatestUpper - leastLower;
@@ -1047,8 +1047,8 @@ void Node::condenseTree( stack<NodePtr>& toReinsert, stack<long>& pathBuffer, No
 
           for ( unsigned long cChild = 0; cChild < p->m_children; cChild++ )
           {
-            p->m_nodeMBR.m_pLow[cDim] = std::min( p->m_nodeMBR.m_pLow[cDim], p->m_ptrMBR[cChild]->m_pLow[cDim] );
-            p->m_nodeMBR.m_pHigh[cDim] = std::max( p->m_nodeMBR.m_pHigh[cDim], p->m_ptrMBR[cChild]->m_pHigh[cDim] );
+            p->m_nodeMBR.m_pLow[cDim] = qMin( p->m_nodeMBR.m_pLow[cDim], p->m_ptrMBR[cChild]->m_pLow[cDim] );
+            p->m_nodeMBR.m_pHigh[cDim] = qMax( p->m_nodeMBR.m_pHigh[cDim], p->m_ptrMBR[cChild]->m_pHigh[cDim] );
           }
         }
       }

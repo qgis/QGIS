@@ -18,18 +18,14 @@
 #include "qgsrastermatrix.h"
 #include <string.h>
 
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 QgsRasterMatrix::QgsRasterMatrix(): mColumns( 0 ), mRows( 0 ), mData( 0 )
 {
 }
 
 QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue ):
-  mColumns( nCols ), mRows( nRows ), mData( data ), mNodataValue( nodataValue )
+    mColumns( nCols ), mRows( nRows ), mData( data ), mNodataValue( nodataValue )
 {
 }
 
@@ -163,22 +159,22 @@ bool QgsRasterMatrix::atangens()
 
 bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
 {
-  if( !mData )
+  if ( !mData )
   {
     return false;
   }
 
   int nEntries = mColumns * mRows;
   double value;
-  for( int i = 0; i < nEntries; ++i )
+  for ( int i = 0; i < nEntries; ++i )
   {
     value = mData[i];
-    if( value != mNodataValue )
+    if ( value != mNodataValue )
     {
-      switch( op )
+      switch ( op )
       {
         case opSQRT:
-          if( value < 0 )  //no complex numbers
+          if ( value < 0 ) //no complex numbers
           {
             mData[i] = static_cast<float>( mNodataValue );
           }
@@ -213,15 +209,15 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
 
 bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other )
 {
-  if( isNumber() && other.isNumber() )  //operation on two 1x1 matrices
+  if ( isNumber() && other.isNumber() ) //operation on two 1x1 matrices
   {
     //operations with nodata values always generate nodata
-    if( mData[0] == mNodataValue || other.number() == other.nodataValue() )
+    if ( mData[0] == mNodataValue || other.number() == other.nodataValue() )
     {
       mData[0] = static_cast<float>( mNodataValue );
       return true;
     }
-    switch( op )
+    switch ( op )
     {
       case opPLUS:
         mData[0] = static_cast<float>( number() + other.number() );
@@ -233,7 +229,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         mData[0] = static_cast<float>( number() * other.number() );
         break;
       case opDIV:
-        if( other.number() == 0 )
+        if ( other.number() == 0 )
         {
           mData[0] = static_cast<float>( mNodataValue );
         }
@@ -243,7 +239,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         }
         break;
       case opPOW:
-        if( !testPowerValidity( mData[0], ( float ) other.number() ) )
+        if ( !testPowerValidity( mData[0], ( float ) other.number() ) )
         {
           mData[0] = static_cast<float>( mNodataValue );
         }
@@ -275,22 +271,22 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   }
 
   //two matrices
-  if( !isNumber() && !other.isNumber() )
+  if ( !isNumber() && !other.isNumber() )
   {
     float* matrix = other.mData;
     int nEntries = mColumns * mRows;
     double value1, value2;
 
-    for( int i = 0; i < nEntries; ++i )
+    for ( int i = 0; i < nEntries; ++i )
     {
       value1 = mData[i]; value2 = matrix[i];
-      if( value1 == mNodataValue || value2 == other.mNodataValue )
+      if ( value1 == mNodataValue || value2 == other.mNodataValue )
       {
         mData[i] = static_cast<float>( mNodataValue );
       }
       else
       {
-        switch( op )
+        switch ( op )
         {
           case opPLUS:
             mData[i] = static_cast<float>( value1 + value2 );
@@ -302,7 +298,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
             mData[i] = static_cast<float>( value1 * value2 );
             break;
           case opDIV:
-            if( value2 == 0 )
+            if ( value2 == 0 )
             {
               mData[i] = static_cast<float>( mNodataValue );
             }
@@ -312,7 +308,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
             }
             break;
           case opPOW:
-            if( !testPowerValidity( value1, value2 ) )
+            if ( !testPowerValidity( value1, value2 ) )
             {
               mData[i] = static_cast<float>( mNodataValue );
             }
@@ -346,7 +342,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   }
 
   //this matrix is a single number and the other one a real matrix
-  if( isNumber() )
+  if ( isNumber() )
   {
     float* matrix = other.mData;
     int nEntries = other.nColumns() * other.nRows();
@@ -355,24 +351,24 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     mData = new float[nEntries]; mColumns = other.nColumns(); mRows = other.nRows();
     mNodataValue = other.nodataValue();
 
-    if( value == mNodataValue )
+    if ( value == mNodataValue )
     {
-      for( int i = 0; i < nEntries; ++i )
+      for ( int i = 0; i < nEntries; ++i )
       {
         mData[i] = static_cast<float>( mNodataValue );
       }
       return true;
     }
 
-    for( int i = 0; i < nEntries; ++i )
+    for ( int i = 0; i < nEntries; ++i )
     {
-      if( matrix[i] == other.mNodataValue )
+      if ( matrix[i] == other.mNodataValue )
       {
         mData[i] = static_cast<float>( mNodataValue );
         continue;
       }
 
-      switch( op )
+      switch ( op )
       {
         case opPLUS:
           mData[i] = static_cast<float>( value + matrix[i] );
@@ -384,7 +380,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           mData[i] = static_cast<float>( value * matrix[i] );
           break;
         case opDIV:
-          if( matrix[i] == 0 )
+          if ( matrix[i] == 0 )
           {
             mData[i] = static_cast<float>( mNodataValue );
           }
@@ -394,7 +390,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           }
           break;
         case opPOW:
-          if( !testPowerValidity( value, matrix[i] ) )
+          if ( !testPowerValidity( value, matrix[i] ) )
           {
             mData[i] = static_cast<float>( mNodataValue );
           }
@@ -430,23 +426,23 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     double value = other.number();
     int nEntries = mColumns * mRows;
 
-    if( other.number() == other.mNodataValue )
+    if ( other.number() == other.mNodataValue )
     {
-      for( int i = 0; i < nEntries; ++i )
+      for ( int i = 0; i < nEntries; ++i )
       {
         mData[i] = static_cast<float>( mNodataValue );
       }
       return true;
     }
 
-    for( int i = 0; i < nEntries; ++i )
+    for ( int i = 0; i < nEntries; ++i )
     {
-      if( mData[i] == mNodataValue )
+      if ( mData[i] == mNodataValue )
       {
         continue;
       }
 
-      switch( op )
+      switch ( op )
       {
         case opPLUS:
           mData[i] = static_cast<float>( mData[i] + value );
@@ -458,7 +454,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           mData[i] = static_cast<float>( mData[i] * value );
           break;
         case opDIV:
-          if( value == 0 )
+          if ( value == 0 )
           {
             mData[i] = static_cast<float>( mNodataValue );
           }
@@ -468,7 +464,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           }
           break;
         case opPOW:
-          if( !testPowerValidity( mData[i], value ) )
+          if ( !testPowerValidity( mData[i], value ) )
           {
             mData[i] = static_cast<float>( mNodataValue );
           }
@@ -503,7 +499,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power )
 {
-  if(( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
+  if (( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
   {
     return false;
   }
