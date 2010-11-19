@@ -639,8 +639,8 @@ bool SpatialIndex::RTree::RTree::isIndexValid()
 
       for ( unsigned long cChild = 0; cChild < e.m_pNode->m_children; cChild++ )
       {
-        tmpRegion.m_pLow[cDim] = std::min( tmpRegion.m_pLow[cDim], e.m_pNode->m_ptrMBR[cChild]->m_pLow[cDim] );
-        tmpRegion.m_pHigh[cDim] = std::max( tmpRegion.m_pHigh[cDim], e.m_pNode->m_ptrMBR[cChild]->m_pHigh[cDim] );
+        tmpRegion.m_pLow[cDim] = qMin( tmpRegion.m_pLow[cDim], e.m_pNode->m_ptrMBR[cChild]->m_pLow[cDim] );
+        tmpRegion.m_pHigh[cDim] = qMax( tmpRegion.m_pHigh[cDim], e.m_pNode->m_ptrMBR[cChild]->m_pHigh[cDim] );
       }
     }
 

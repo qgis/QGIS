@@ -28,13 +28,7 @@
 #include <QSettings>
 #include <iostream>
 
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
-
-
 
 #define EVAL_STR(x) (x.length() ? x : "(empty)")
 

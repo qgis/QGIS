@@ -743,16 +743,16 @@ void TerminalDisplay::scrollImage( int lines , const QRect& screenWindowRegion )
   if ( lines == 0
        || _image == 0
        || !region.isValid()
-       || ( region.top() + abs( lines ) ) >= region.bottom()
+       || ( region.top() + qAbs( lines ) ) >= region.bottom()
        || this->_lines <= region.height() ) return;
 
   QRect scrollRect;
 
   void* firstCharPos = &_image[ region.top() * this->_columns ];
-  void* lastCharPos = &_image[( region.top() + abs( lines ) ) * this->_columns ];
+  void* lastCharPos = &_image[( region.top() + qAbs( lines ) ) * this->_columns ];
 
   int top = _topMargin + ( region.top() * _fontHeight );
-  int linesToMove = region.height() - abs( lines );
+  int linesToMove = region.height() - qAbs( lines );
   int bytesToMove = linesToMove *
                     this->_columns *
                     sizeof( Character );
@@ -789,7 +789,7 @@ void TerminalDisplay::scrollImage( int lines , const QRect& screenWindowRegion )
 
     //set region of the display to scroll, making sure that
     //the region aligns correctly to the character grid
-    QPoint topPoint( _leftMargin , top + abs( lines )*_fontHeight );
+    QPoint topPoint( _leftMargin , top + qAbs( lines )*_fontHeight );
 
     scrollRect = QRect( topPoint ,
                         QSize( this->_usedColumns * _fontWidth ,

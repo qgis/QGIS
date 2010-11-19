@@ -19,19 +19,24 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
-QgsComposerArrow::QgsComposerArrow( QgsComposition* c ): QgsComposerItem( c ), mStartPoint( 0, 0 ), mStopPoint( 0, 0 ), mMarkerMode( DefaultMarker ), mArrowColor( QColor( 0, 0, 0 ) )
+QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
+    : QgsComposerItem( c )
+    , mStartPoint( 0, 0 )
+    , mStopPoint( 0, 0 )
+    , mMarkerMode( DefaultMarker )
+    , mArrowColor( QColor( 0, 0, 0 ) )
 {
   initGraphicsSettings();
 }
 
-QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c ): QgsComposerItem( c ), mStartPoint( startPoint ), \
-    mStopPoint( stopPoint ), mMarkerMode( DefaultMarker ), mArrowColor( QColor( 0, 0, 0 ) )
+QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c )
+    : QgsComposerItem( c )
+    , mStartPoint( startPoint )
+    , mStopPoint( stopPoint )
+    , mMarkerMode( DefaultMarker )
+    , mArrowColor( QColor( 0, 0, 0 ) )
 {
   initGraphicsSettings();
   adaptItemSceneRect();
@@ -134,8 +139,8 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   //make nicer preview
   if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
   {
-    imageWidth *= std::min( viewScaleFactor, 10.0 );
-    imageHeight *= std::min( viewScaleFactor, 10.0 );
+    imageWidth *= qMin( viewScaleFactor, 10.0 );
+    imageHeight *= qMin( viewScaleFactor, 10.0 );
   }
   QImage markerImage( imageWidth, imageHeight, QImage::Format_ARGB32 );
   QColor markerBG( 255, 255, 255, 0 ); //transparent white background
@@ -251,8 +256,8 @@ void QgsComposerArrow::setArrowHeadWidth( double width )
 void QgsComposerArrow::adaptItemSceneRect()
 {
   //rectangle containing start and end point
-  QRectF rect = QRectF( std::min( mStartPoint.x(), mStopPoint.x() ), std::min( mStartPoint.y(), mStopPoint.y() ), \
-                        fabs( mStopPoint.x() - mStartPoint.x() ), fabs( mStopPoint.y() - mStartPoint.y() ) );
+  QRectF rect = QRectF( qMin( mStartPoint.x(), mStopPoint.x() ), qMin( mStartPoint.y(), mStopPoint.y() ), \
+                        qAbs( mStopPoint.x() - mStartPoint.x() ), qAbs( mStopPoint.y() - mStartPoint.y() ) );
   double enlarge = 0;
   if ( mMarkerMode == DefaultMarker )
   {
@@ -264,8 +269,8 @@ void QgsComposerArrow::adaptItemSceneRect()
   }
   else if ( mMarkerMode == SVGMarker )
   {
-    double maxArrowHeight = std::max( mStartArrowHeadHeight, mStopArrowHeadHeight );
-    enlarge = mPen.widthF() / 2 + std::max( mArrowHeadWidth / 2.0, maxArrowHeight / 2.0 );
+    double maxArrowHeight = qMax( mStartArrowHeadHeight, mStopArrowHeadHeight );
+    enlarge = mPen.widthF() / 2 + qMax( mArrowHeadWidth / 2.0, maxArrowHeight / 2.0 );
   }
 
   rect.adjust( -enlarge, -enlarge, enlarge, enlarge );

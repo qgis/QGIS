@@ -31,11 +31,7 @@
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
@@ -346,7 +342,7 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
 
   //it was only a click
-  if ( abs( diffX ) < std::numeric_limits<double>::min() && abs( diffY ) < std::numeric_limits<double>::min() )
+  if ( qAbs( diffX ) < std::numeric_limits<double>::min() && qAbs( diffY ) < std::numeric_limits<double>::min() )
   {
     return;
   }
@@ -892,7 +888,7 @@ void QgsComposerItem::setRotation( double r )
 
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
 {
-  if ( abs( mRotation ) <= 0 ) //width and height stays the same if there is no rotation
+  if ( qAbs( mRotation ) <= 0.0 ) //width and height stays the same if there is no rotation
   {
     return true;
   }

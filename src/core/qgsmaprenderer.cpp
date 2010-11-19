@@ -104,8 +104,8 @@ bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
-    double xMean = ( fabs( extent.xMinimum() ) + fabs( extent.xMaximum() ) ) * 0.5;
-    double yMean = ( fabs( extent.yMinimum() ) + fabs( extent.yMaximum() ) ) * 0.5;
+    double xMean = ( qAbs( extent.xMinimum() ) + qAbs( extent.xMaximum() ) ) * 0.5;
+    double yMean = ( qAbs( extent.yMinimum() ) + qAbs( extent.yMaximum() ) ) * 0.5;
 
     double xRange = extent.width() / xMean;
     double yRange = extent.height() / yMean;
@@ -388,7 +388,7 @@ void QgsMapRenderer::render( QPainter* painter )
       QgsMapToPixel rasterMapToPixel;
       QgsMapToPixel bk_mapToPixel;
 
-      if ( ml->type() == QgsMapLayer::RasterLayer && fabs( rasterScaleFactor - 1.0 ) > 0.000001 )
+      if ( ml->type() == QgsMapLayer::RasterLayer && qAbs( rasterScaleFactor - 1.0 ) > 0.000001 )
       {
         scaleRaster = true;
       }

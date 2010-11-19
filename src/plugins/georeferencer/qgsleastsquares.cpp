@@ -245,7 +245,7 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
+  uint m = qMax( 9u, ( uint )mapCoords.size() * 2u );
   uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 

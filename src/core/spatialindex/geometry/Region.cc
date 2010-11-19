@@ -395,8 +395,8 @@ Tools::Geometry::Region Tools::Geometry::Region::getIntersectingRegion( const Re
 
   for ( unsigned long cDim = 0; cDim < m_dimension; cDim++ )
   {
-    ret.m_pLow[cDim] = std::max( m_pLow[cDim], r.m_pLow[cDim] );
-    ret.m_pHigh[cDim] = std::min( m_pHigh[cDim], r.m_pHigh[cDim] );
+    ret.m_pLow[cDim] = qMax( m_pLow[cDim], r.m_pLow[cDim] );
+    ret.m_pHigh[cDim] = qMin( m_pHigh[cDim], r.m_pHigh[cDim] );
   }
 
   return ret;
@@ -416,8 +416,8 @@ double Tools::Geometry::Region::getIntersectingArea( const Region& r ) const
   {
     if ( m_pLow[cDim] > r.m_pHigh[cDim] || m_pHigh[cDim] < r.m_pLow[cDim] ) return 0.0;
 
-    f1 = std::max( m_pLow[cDim], r.m_pLow[cDim] );
-    f2 = std::min( m_pHigh[cDim], r.m_pHigh[cDim] );
+    f1 = qMax( m_pLow[cDim], r.m_pLow[cDim] );
+    f2 = qMin( m_pHigh[cDim], r.m_pHigh[cDim] );
     ret *= f2 - f1;
   }
 
@@ -450,8 +450,8 @@ void Tools::Geometry::Region::combineRegion( const Region& r )
 
   for ( unsigned long cDim = 0; cDim < m_dimension; cDim++ )
   {
-    m_pLow[cDim] = std::min( m_pLow[cDim], r.m_pLow[cDim] );
-    m_pHigh[cDim] = std::max( m_pHigh[cDim], r.m_pHigh[cDim] );
+    m_pLow[cDim] = qMin( m_pLow[cDim], r.m_pLow[cDim] );
+    m_pHigh[cDim] = qMax( m_pHigh[cDim], r.m_pHigh[cDim] );
   }
 }
 
@@ -464,8 +464,8 @@ void Tools::Geometry::Region::combinePoint( const Point& p )
 
   for ( unsigned long cDim = 0; cDim < m_dimension; cDim++ )
   {
-    m_pLow[cDim] = std::min( m_pLow[cDim], p.m_pCoords[cDim] );
-    m_pHigh[cDim] = std::max( m_pHigh[cDim], p.m_pCoords[cDim] );
+    m_pLow[cDim] = qMin( m_pLow[cDim], p.m_pCoords[cDim] );
+    m_pHigh[cDim] = qMax( m_pHigh[cDim], p.m_pCoords[cDim] );
   }
 }
 

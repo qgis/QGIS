@@ -332,7 +332,7 @@ void *QgsImageWarper::createWarpProgressArg( QProgressDialog *progressDialog ) c
 int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
   QProgressDialog *progress = static_cast<QProgressDialog*>( pProgressArg );
-  progress->setValue( std::min( 100u, ( uint )( dfComplete*100.0 ) ) );
+  progress->setValue( qMin( 100u, ( uint )( dfComplete*100.0 ) ) );
   qApp->processEvents();
   // TODO: call QEventLoop manually to make "cancel" button more responsive
   if ( progress->wasCanceled() )

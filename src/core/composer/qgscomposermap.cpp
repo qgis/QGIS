@@ -1292,16 +1292,16 @@ double QgsComposerMap::maxExtension() const
   for ( ; it != xLines.constEnd(); ++it )
   {
     currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
-    currentExtension = std::max( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
-    maxExtension = std::max( maxExtension, currentExtension );
+    currentExtension = qMax( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
+    maxExtension = qMax( maxExtension, currentExtension );
   }
 
   it = yLines.constBegin();
   for ( ; it != yLines.constEnd(); ++it )
   {
     currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
-    currentExtension = std::max( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
-    maxExtension = std::max( maxExtension, currentExtension );
+    currentExtension = qMax( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
+    maxExtension = qMax( maxExtension, currentExtension );
   }
 
   return maxExtension + mAnnotationFrameDistance;

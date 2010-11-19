@@ -15,12 +15,7 @@
 
 #include "qgsdisplayangle.h"
 #include <QSettings>
-
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 QgsDisplayAngle::QgsDisplayAngle( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {

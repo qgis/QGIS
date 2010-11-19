@@ -402,8 +402,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
   QgsPoint ptSize = xform->toMapCoordinates( w, h );
 
-  labelX = fabs( ptSize.x() - ptZero.x() );
-  labelY = fabs( ptSize.y() - ptZero.y() );
+  labelX = qAbs( ptSize.x() - ptZero.x() );
+  labelY = qAbs( ptSize.y() - ptZero.y() );
 }
 
 
@@ -570,7 +570,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   if ( distance != 0 )
   {
-    feat->setDistLabel( fabs( ptOne.x() - ptZero.x() )* distance * vectorScaleFactor );
+    feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance * vectorScaleFactor );
   }
 
   //add parameters for data defined labeling to QgsPalGeometry

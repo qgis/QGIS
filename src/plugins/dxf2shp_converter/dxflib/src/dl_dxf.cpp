@@ -1226,7 +1226,7 @@ void DL_Dxf::addMText( DL_CreationInterface* creationInterface )
     double x = toReal( values[11], 0.0 );
     double y = toReal( values[21], 0.0 );
 
-    if ( fabs( x ) < 1.0e-6 )
+    if ( qAbs( x ) < 1.0e-6 )
     {
       if ( y > 0.0 )
       {
@@ -1821,9 +1821,9 @@ bool DL_Dxf::handleHatchData( DL_CreationInterface* /*creationInterface*/ )
           double dist = sqrt( pow( x2 - x1, 2 ) + pow( y2 - y1, 2 ) ) / 2.0;
 
           // alpha can't be 0.0 at this point
-          radius = fabs( dist / sin( alpha / 2.0 ) );
+          radius = qAbs( dist / sin( alpha / 2.0 ) );
 
-          double wu = fabs( pow( radius, 2.0 ) - pow( dist, 2.0 ) );
+          double wu = qAbs( pow( radius, 2.0 ) - pow( dist, 2.0 ) );
           double h = sqrt( wu );
           double angle = acos(( x2 - x1 ) / dist );
 
@@ -1836,7 +1836,7 @@ bool DL_Dxf::handleHatchData( DL_CreationInterface* /*creationInterface*/ )
             angle -= M_PI / 2.0;
           }
 
-          if ( fabs( alpha ) > M_PI )
+          if ( qAbs( alpha ) > M_PI )
           {
             h *= -1.0;
           }
@@ -2470,7 +2470,7 @@ void DL_Dxf::writeVertex( DL_WriterA& dw,
   {
     dw.dxfReal( 10, data.x );
     dw.dxfReal( 20, data.y );
-    if ( fabs( data.bulge ) > 1.0e-10 )
+    if ( qAbs( data.bulge ) > 1.0e-10 )
     {
       dw.dxfReal( 42, data.bulge );
     }
@@ -2481,7 +2481,7 @@ void DL_Dxf::writeVertex( DL_WriterA& dw,
     //dw.entityAttributes(attrib);
     dw.dxfString( 8, polylineLayer );
     dw.coord( VERTEX_COORD_CODE, data.x, data.y );
-    if ( fabs( data.bulge ) > 1.0e-10 )
+    if ( qAbs( data.bulge ) > 1.0e-10 )
     {
       dw.dxfReal( 42, data.bulge );
     }

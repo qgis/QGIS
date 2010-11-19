@@ -26,7 +26,7 @@
 #include <QSvgRenderer>
 #include <QTemporaryFile>
 #include <QPainter>
-#include <math.h>
+#include <cmath>
 
 QgsSLDRule::QgsSLDRule( double minDenom, double maxDenom, const QgsSymbol& s, const QgsFilter* f ): mSymbol( s ), mMinScaleDenominator( minDenom ), mMaxScaleDenominator( maxDenom )
 {
@@ -54,7 +54,7 @@ int QgsSLDRule::applySymbology( QPainter* p, QgsFeature& f, QImage* pic, bool se
     {
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( fabs( attrs[mSymbol.scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( attrs[mSymbol.scaleClassificationField()].toDouble() ) );
     }
 
     *pic = mSymbol.getPointSymbolAsImage( widthScale, selected, selectionColor, fieldScale, rotation, rasterScaleFactor );

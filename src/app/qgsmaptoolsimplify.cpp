@@ -446,7 +446,7 @@ QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints( const QVector<QgsPoint>& p
         }
         else
         {  // calculate perpendicular distance to line (pythagorean theorem):
-          dist_to_seg = sqrt( fabs( seg_len * seg_len - proj * proj ) );
+          dist_to_seg = sqrt( qAbs( seg_len * seg_len - proj * proj ) );
         }
         if ( max_dist < dist_to_seg )
         {

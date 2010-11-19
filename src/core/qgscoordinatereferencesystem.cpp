@@ -747,7 +747,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     static const double feetToMeter = 0.3048;
     static const double smallNum = 1e-3;
 
-    if ( std::abs( toMeter - feetToMeter ) < smallNum )
+    if ( qAbs( toMeter - feetToMeter ) < smallNum )
       unit = "Foot";
 
     QgsDebugMsg( "Projection has linear units of " + unit );

@@ -313,7 +313,7 @@ static QPointF offsetPoint( QPointF pt, double angle, double dist )
 static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 {
   // parallel lines? (or the difference between angles is less than cca 0.1 degree)
-  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || fabs( t1 - t2 ) < 0.001 )
+  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( t1 - t2 ) < 0.001 )
     return QPointF();
 
   double x, y;

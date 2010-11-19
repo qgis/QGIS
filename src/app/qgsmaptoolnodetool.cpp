@@ -21,7 +21,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgstolerance.h"
 #include "qgsgeometry.h"
-#include <math.h>
+#include <cmath>
 #include <QMouseEvent>
 #include <QMessageBox>
 #include "qgslogger.h"

@@ -23,7 +23,7 @@ originally part of the larger QgsRasterLayer class
 
 #include "qgscolorrampshader.h"
 
-#include <math.h>
+#include <cmath>
 
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
 {
@@ -63,7 +63,7 @@ bool QgsColorRampShader::discreteColor( double theValue, int* theReturnRedValue,
   {
     //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
-    myTinyDiff = fabs( theValue - myColorRampItem.value );
+    myTinyDiff = qAbs( theValue - myColorRampItem.value );
     //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
     if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {
@@ -105,7 +105,7 @@ bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, in
   {
     //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
-    myTinyDiff = fabs( theValue - myColorRampItem.value );
+    myTinyDiff = qAbs( theValue - myColorRampItem.value );
     if ( theValue == myColorRampItem.value || myTinyDiff <= DOUBLE_DIFF_THRESHOLD )
     {
       *theReturnRedValue = myColorRampItem.color.red();
@@ -154,7 +154,7 @@ bool QgsColorRampShader::interpolatedColor( double theValue, int* theReturnRedVa
   {
     //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
-    myTinyDiff = fabs( theValue - myColorRampItem.value );
+    myTinyDiff = qAbs( theValue - myColorRampItem.value );
     //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
     if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {

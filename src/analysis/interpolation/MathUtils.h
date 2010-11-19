@@ -17,11 +17,7 @@
 #ifndef MATHUTILS_H
 #define MATHUTILS_H
 
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 #include "Vector3D.h"
 #include "Point3D.h"
 

@@ -30,7 +30,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QString>
-#include <math.h>
+#include <cmath>
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QGis::GeometryType type )
 {
@@ -141,7 +141,7 @@ void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, Qg
     {
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( fabs( attrs[ mSymbol0->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( attrs[ mSymbol0->scaleClassificationField()].toDouble() ) );
       QgsDebugMsgLevel( QString( "Feature has field scale factor %1" ).arg( fieldScale ), 3 );
     }
     if ( mSymbol0->rotationClassificationField() >= 0 )

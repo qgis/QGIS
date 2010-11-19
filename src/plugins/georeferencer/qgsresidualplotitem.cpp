@@ -18,11 +18,7 @@
 #include "qgsgeorefdatapoint.h"
 #include <QPainter>
 #include <cfloat>
-#ifndef Q_OS_MACX
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition* c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
 {

@@ -86,8 +86,8 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
         //make nicer preview
         if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
         {
-          boundImageWidth *= std::min( viewScaleFactor, 10.0 );
-          boundImageHeight *= std::min( viewScaleFactor, 10.0 );
+          boundImageWidth *= qMin( viewScaleFactor, 10.0 );
+          boundImageHeight *= qMin( viewScaleFactor, 10.0 );
         }
         mImage = QImage( boundImageWidth, boundImageHeight, QImage::Format_ARGB32 );
         updateImageFromSvg();

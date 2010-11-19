@@ -213,7 +213,7 @@ QString QgsRectangle::toString( bool automaticPrecision ) const
     int precision = 0;
     if (( width() < 1 || height() < 1 ) && ( width() > 0 && height() > 0 ) )
     {
-      precision = static_cast<int>( ceil( -1.0 * log10( std::min( width(), height() ) ) ) ) + 1;
+      precision = static_cast<int>( ceil( -1.0 * log10( qMin( width(), height() ) ) ) ) + 1;
       // sanity check
       if ( precision > 20 )
         precision = 20;
