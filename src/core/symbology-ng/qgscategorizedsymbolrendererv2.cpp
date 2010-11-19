@@ -75,7 +75,9 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     mAttrName( attrName ),
     mCategories( categories ),
     mSourceSymbol( NULL ),
-    mSourceColorRamp( NULL )
+    mSourceColorRamp( NULL ),
+    mRotationFieldIdx( -1 ),
+    mSizeScaleFieldIdx( -1 )
 {
   for ( int i = 0; i < mCategories.count(); ++i )
   {

@@ -112,6 +112,10 @@ class CORE_EXPORT QgsRenderer
      This is a hint for QgsVectorLayer to not use the transparency setting on layer level in this cases*/
     virtual bool usesTransparency() const {return false;}
 
+    /**Returns renderer symbol for a feature.
+        @note: this method was added in version 1.6*/
+    virtual QgsSymbol* symbolForFeature( const QgsFeature* f ) { return 0;}
+
     /**Scales a brush to a given raster scale factor (e.g. for printing)*/
     static void scaleBrush( QBrush& b, double rasterScaleFactor );
 

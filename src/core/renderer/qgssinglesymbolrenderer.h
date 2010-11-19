@@ -64,6 +64,11 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     const QList<QgsSymbol*> symbols() const;
     /**Returns a deep copy of this renderer*/
     QgsRenderer* clone() const;
+
+    /**Returns renderer symbol for a feature
+        @note: this method was added in version 1.6*/
+    QgsSymbol* symbolForFeature( const QgsFeature* f ) { return mSymbol0; }
+
   protected:
     /**Object containing symbology information*/
     QgsSymbol *mSymbol0;
