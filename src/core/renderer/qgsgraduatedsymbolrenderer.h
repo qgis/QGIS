@@ -107,6 +107,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     QgsRenderer* clone() const;
 
+    QgsSymbol *symbolForFeature( const QgsFeature* f );
+
   protected:
     /** The graduation mode */
     Mode mMode;
@@ -117,12 +119,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     /**List holding the symbols for the individual classes*/
     QList<QgsSymbol*> mSymbols;
 
-    QgsSymbol *symbolForFeature( const QgsFeature* f );
-
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
-
-
 };
 
 inline void QgsGraduatedSymbolRenderer::addSymbol( QgsSymbol* sy )

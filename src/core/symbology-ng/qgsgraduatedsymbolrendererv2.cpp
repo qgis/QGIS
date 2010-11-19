@@ -100,7 +100,9 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mRanges( ranges ),
     mMode( Custom ),
     mSourceSymbol( NULL ),
-    mSourceColorRamp( NULL )
+    mSourceColorRamp( NULL ),
+    mRotationFieldIdx( -1 ),
+    mSizeScaleFieldIdx( -1 )
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
 }
@@ -421,13 +423,13 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
 
   double base = pow( 10.0, floor( log10( cell ) ) );
   double unit = base;
-  if (( 2 * base ) - cell < h * ( cell - unit ) )
+  if (( 2 * base ) - cell < h *( cell - unit ) )
   {
     unit = 2.0 * base;
-    if (( 5 * base ) - cell < adjustBias * ( cell - unit ) )
+    if (( 5 * base ) - cell < adjustBias *( cell - unit ) )
     {
       unit = 5.0 * base;
-      if (( 10.0 * base ) - cell < h * ( cell - unit ) )
+      if (( 10.0 * base ) - cell < h *( cell - unit ) )
       {
         unit = 10.0 * base;
       }

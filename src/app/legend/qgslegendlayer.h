@@ -29,6 +29,7 @@ class QgsLegendLayer;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
 class QgsRasterLayer;
+class QgsSymbol;
 class QgsVectorLayer;
 
 class QTreeWidget;
@@ -87,10 +88,16 @@ class QgsLegendLayer : public QgsLegendItem
     /**Layer name has changed - set it also in legend*/
     void layerNameChanged();
 
+    /**Update symbology (e.g. to update feature count in the legend after editing operations)*/
+    void updateAfterLayerModification( bool onlyGeomChanged );
+
+    void setShowFeatureCount( bool show, bool update = true );
+    bool showFeatureCount() const { return mShowFeatureCount; }
+
   protected:
 
     /** Prepare and change symbology for vector layer */
-    void vectorLayerSymbology( const QgsVectorLayer* mapLayer, double widthScale = 1.0 );
+    void vectorLayerSymbology( QgsVectorLayer* mapLayer, double widthScale = 1.0 );
 
     void vectorLayerSymbologyV2( QgsVectorLayer* vlayer );
 
@@ -99,6 +106,11 @@ class QgsLegendLayer : public QgsLegendItem
 
     /** Removes the symbology items of a layer and adds new ones. */
     void changeSymbologySettings( const QgsMapLayer* mapLayer, const SymbologyList& newSymbologyItems );
+
+    /**Adds feature counts to the symbology items (for symbology v2)*/
+    void updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer );
+    /**Calculates feature count for the individual symbols (old symbology)*/
+    void updateItemListCount( QgsVectorLayer* layer, const QList<QgsSymbol*>& sym, QMap< QgsSymbol*, int >& featureCountMap );
 
     QPixmap getOriginalPixmap();
 
@@ -113,6 +125,9 @@ class QgsLegendLayer : public QgsLegendItem
 
     /** layer identified by its layer id */
     QgsMapCanvasLayer mLyr;
+
+    /**True if number of features per legend class should is shown in the legend items*/
+    bool mShowFeatureCount;
 };
 
 #endif

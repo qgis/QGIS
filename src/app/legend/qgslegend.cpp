@@ -849,6 +849,7 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
     {
       QDomElement legendlayernode = document.createElement( "legendlayer" );
       legendlayernode.setAttribute( "open", isItemExpanded( item ) ? "true" : "false" );
+
       Qt::CheckState cstate = item->checkState( 0 );
       if ( cstate == Qt::Checked )
       {
@@ -900,6 +901,7 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
       // to keep it compatible with older projects
       QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
       QgsMapLayer* layer = ll->layer();
+      legendlayernode.setAttribute( "showFeatureCount", ll->showFeatureCount() );
 
       QDomElement layerfilegroupnode = document.createElement( "filegroup" );
       layerfilegroupnode.setAttribute( "open", isItemExpanded( item ) ? "true" : "false" );
@@ -1060,6 +1062,7 @@ QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpe
 
   // create the item
   QgsLegendLayer* ll = new QgsLegendLayer( theMapLayer );
+  ll->setShowFeatureCount( childelem.attribute( "showFeatureCount", "0" ).toInt(), false );
 
   // load layer's visibility and 'show in overview' flag
   ll->setInOverview( atoi( fileElem.attribute( "isInOverview" ).toUtf8() ) );

@@ -67,13 +67,16 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
        @note added in 1.4 */
     const QMap<QString, QgsSymbol*> symbolMap() const { return mSymbols; }
     QgsRenderer* clone() const;
+
+    /**Returns the symbol for a feature or 0 if there isn't any*/
+    QgsSymbol *symbolForFeature( const QgsFeature* f );
+
   protected:
     /**Field index used for classification*/
     int mClassificationField;
     /**Symbols for the unique values*/
     QMap<QString, QgsSymbol*> mSymbols;
-    /**Returns the symbol for a feature or 0 if there isn't any*/
-    QgsSymbol *symbolForFeature( const QgsFeature* f );
+
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
     bool mSymbolAttributesDirty;  // insertValue was called

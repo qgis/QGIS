@@ -12,8 +12,7 @@
 #include <QDomElement>
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
-    : QgsFeatureRendererV2( "singleSymbol" )
-    , mTempSymbol( NULL )
+    : QgsFeatureRendererV2( "singleSymbol" ), mRotationFieldIdx( -1 ), mSizeScaleFieldIdx( -1 ), mTempSymbol( NULL )
 {
   Q_ASSERT( symbol );
   mSymbol = symbol;

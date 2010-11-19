@@ -27,6 +27,7 @@
 
 #include "qgsapplication.h"
 #include "qgsfield.h"
+#include "qgsmapcanvasmap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
@@ -50,11 +51,12 @@
 #include <QPainter>
 #include <QSettings>
 #include <QFileDialog>
+#include <QProgressDialog>
 
 
 QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     : QgsLegendItem( ),
-    mLyr( layer )
+    mLyr( layer ), mShowFeatureCount( false )
 {
   mType = LEGEND_LAYER;
 
@@ -91,6 +93,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     QgsDebugMsg( "Connecting signals for updating icons, layer " + layer->name() );
     connect( layer, SIGNAL( editingStarted() ), this, SLOT( updateIcon() ) );
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( updateIcon() ) );
+    connect( layer, SIGNAL( layerModified( bool ) ), this, SLOT( updateAfterLayerModification( bool ) ) );
   }
   connect( layer, SIGNAL( layerNameChanged() ), this, SLOT( layerNameChanged() ) );
 
@@ -184,7 +187,7 @@ void QgsLegendLayer::changeSymbologySettings( const QgsMapLayer* theMapLayer,
 
 
 
-void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double widthScale )
+void QgsLegendLayer::vectorLayerSymbology( QgsVectorLayer* layer, double widthScale )
 {
   if ( !layer )
   {
@@ -217,6 +220,12 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
           itemList.append( qMakePair( classfieldname, QPixmap() ) );
         }
       }
+    }
+
+    QMap< QgsSymbol*, int > featureCountMap;
+    if ( mShowFeatureCount )
+    {
+      updateItemListCount( layer, sym, featureCountMap );
     }
 
     for ( QList<QgsSymbol*>::const_iterator it = sym.begin(); it != sym.end(); ++it )
@@ -258,6 +267,15 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
         values += label;
       }
 
+      if ( mShowFeatureCount )
+      {
+        int fCount = featureCountMap[*it];
+        if ( fCount >= 0 )
+        {
+          values += ( " [" + QString::number( fCount ) + "]" );
+        }
+      }
+
       QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
       itemList.append( qMakePair( values, pix ) );
     }
@@ -270,12 +288,11 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 {
   QSize iconSize( 16, 16 );
 
-#if 0 // unused
-  QSettings settings;
-  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
-#endif
-
   SymbologyList itemList = layer->rendererV2()->legendSymbologyItems( iconSize );
+  if ( mShowFeatureCount )
+  {
+    updateItemListCountV2( itemList, layer );
+  }
 
   changeSymbologySettings( layer, itemList );
 }
@@ -436,6 +453,12 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() )
       theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
+    //show number of features in legend if requested
+    QAction* showNFeaturesAction = new QAction( tr( "Show feature count" ), &theMenu );
+    showNFeaturesAction->setCheckable( true );
+    showNFeaturesAction->setChecked( mShowFeatureCount );
+    QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );
+    theMenu.addAction( showNFeaturesAction );
     theMenu.addSeparator();
   }
 
@@ -502,4 +525,159 @@ void QgsLegendLayer::layerNameChanged()
 {
   QString name = mLyr.layer()->name();
   setText( 0, name );
+}
+
+void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
+{
+  if ( onlyGeomChanged )
+  {
+    return;
+  }
+
+  double widthScale = 1.0;
+  QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
+  if ( canvas && canvas->map() )
+  {
+    widthScale = canvas->map()->paintDevice().logicalDpiX() / 25.4;
+  }
+  refreshSymbology( mLyr.layer()->getLayerID(), widthScale );
+}
+
+void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  if ( !renderer )
+  {
+    return;
+  }
+  QgsRenderContext dummyContext;
+  renderer->startRender( dummyContext, layer );
+
+  //create map holding the symbol count
+  QMap< QgsSymbolV2*, int > mSymbolCountMap;
+  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
+  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  {
+    mSymbolCountMap.insert( symbolIt->second, 0 );
+  }
+
+  //go through all features and count the number of occurrences
+  int nFeatures = layer->pendingFeatureCount();
+  QProgressDialog p( tr( "Updating feature count for layer " ) + layer->name(), tr( "Abort" ), 0, nFeatures );
+  p.setWindowModality( Qt::WindowModal );
+  int featuresCounted = 0;
+
+
+  layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeature f;
+  QgsSymbolV2* currentSymbol = 0;
+
+  while ( layer->nextFeature( f ) )
+  {
+    currentSymbol = renderer->symbolForFeature( f );
+    mSymbolCountMap[currentSymbol] += 1;
+    ++featuresCounted;
+    if ( featuresCounted % 50 == 0 )
+    {
+      if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
+      {
+        p.setMaximum( 0 );
+      }
+      p.setValue( featuresCounted );
+      if ( p.wasCanceled() )
+      {
+        return;
+      }
+    }
+  }
+  p.setValue( nFeatures );
+
+  QMap<QString, QPixmap> itemMap;
+  SymbologyList::const_iterator symbologyIt = itemList.constBegin();
+  for ( ; symbologyIt != itemList.constEnd(); ++ symbologyIt )
+  {
+    itemMap.insert( symbologyIt->first, symbologyIt->second );
+  }
+  itemList.clear();
+
+  //
+  symbolIt = symbolList.constBegin();
+  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  {
+    QgsSymbolV2* debug = symbolIt->second;
+    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( mSymbolCountMap[symbolIt->second] ) + "]", itemMap[symbolIt->first] ) );
+  }
+}
+
+void QgsLegendLayer::updateItemListCount( QgsVectorLayer* layer, const QList<QgsSymbol*>& sym, QMap< QgsSymbol*, int >& featureCountMap )
+{
+  featureCountMap.clear();
+  QList<QgsSymbol*>::const_iterator symbolIt = sym.constBegin();
+  for ( ; symbolIt != sym.constEnd(); ++symbolIt )
+  {
+    featureCountMap.insert( *symbolIt, 0 );
+  }
+
+  QgsRenderer* renderer = const_cast<QgsRenderer*>( layer->renderer() );
+  if ( !renderer )
+  {
+    return;
+  }
+
+  //go through all features and count the number of occurrences
+  int nFeatures = layer->pendingFeatureCount();
+  QProgressDialog p( tr( "Updating feature count for layer " ) + layer->name(), tr( "Abort" ), 0, nFeatures );
+  p.setWindowModality( Qt::WindowModal );
+  int featuresCounted = 0;
+
+  layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeature f;
+  QgsSymbol* currentSymbol = 0;
+
+  while ( layer->nextFeature( f ) )
+  {
+    currentSymbol = renderer->symbolForFeature( &f );
+    if ( currentSymbol )
+    {
+      featureCountMap[currentSymbol] += 1;
+    }
+    ++featuresCounted;
+
+    if ( featuresCounted % 50 == 0 )
+    {
+      if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
+      {
+        p.setMaximum( 0 );
+      }
+      p.setValue( featuresCounted );
+      if ( p.wasCanceled() ) //set all entries to -1 (= invalid)
+      {
+        QMap< QgsSymbol*, int >::iterator cIt = featureCountMap.begin();
+        for ( ; cIt != featureCountMap.end(); ++cIt )
+        {
+          cIt.value() = -1;
+        }
+        return;
+      }
+    }
+  }
+  p.setValue( nFeatures );
+}
+
+void QgsLegendLayer::setShowFeatureCount( bool show, bool update )
+{
+  if ( show != mShowFeatureCount )
+  {
+    mShowFeatureCount = show;
+    if ( update )
+    {
+      updateAfterLayerModification( false );
+    }
+  }
 }
