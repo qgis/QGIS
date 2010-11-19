@@ -38,7 +38,7 @@ RequestExecutionLevel admin
 
 ;NSIS Includes
 
-!include "MUI2.nsh"
+!include "MUI.nsh"
 !include "LogicLib.nsh"
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -89,6 +89,7 @@ RequestExecutionLevel admin
 	!define INSTALLER_DISPLAYED_NAME "${DISPLAYED_NAME}"
 
 	!addplugindir osgeo4w/untgz
+	!addplugindir osgeo4w/nsis
 !endif
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -282,6 +283,7 @@ FunctionEnd
 
 ;Installer Pages
 
+!define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE ".\Installer-Files\LICENSE.txt"
 
@@ -290,6 +292,7 @@ FunctionEnd
 
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_WELCOME
@@ -301,6 +304,19 @@ FunctionEnd
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "German"
+!insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "Russian"
+!insertmacro MUI_LANGUAGE "Japanese"
+!insertmacro MUI_LANGUAGE "Italian"
+!insertmacro MUI_LANGUAGE "Polish"
+!insertmacro MUI_LANGUAGE "Spanish"
+!insertmacro MUI_LANGUAGE "PortugueseBR"
+!insertmacro MUI_LANGUAGE "Portuguese"
+!insertmacro MUI_LANGUAGE "Czech"
+!insertmacro MUI_LANGUAGE "Croatian"
+!insertmacro MUI_LANGUAGE "Thai"
+!insertmacro MUI_LANGUAGE "Dutch"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 	
@@ -397,27 +413,11 @@ Section "Quantum GIS" SecQGIS
 	
 	;Create the Desktop Shortcut
 	SetShellVarContext current
-	
-!if ${INSTALLER_TYPE} == "OSGeo4W"
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis-dev.bat"' \
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!else
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!endif
  
 	;Create the Windows Start Menu Shortcuts
 	SetShellVarContext all
 	
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
-	
-!if ${INSTALLER_TYPE} == "OSGeo4W"
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis-dev.bat"' \
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!else
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
-	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-!endif
 	
 	GetFullPathName /SHORT $0 $INSTALL_DIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
@@ -425,6 +425,22 @@ Section "Quantum GIS" SecQGIS
 
 	ReadEnvStr $0 COMSPEC
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
+
+!if ${INSTALLER_TYPE} == "OSGeo4W"
+       Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
+       CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
+       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+       Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+       CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
+       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!else
+       CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
+       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+       CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
+       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!endif
+
 SectionEnd
 
 Function DownloadDataSet
@@ -554,6 +570,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\preremove.bat.done"
 	Delete "$INSTDIR\preremove.bat"
 	Delete "$INSTDIR\preremove.log"
+	Delete "$INSTDIR\*.txt"
 
 	RMDir /r "$INSTDIR\bin"
 	RMDir /r "$INSTDIR\apps"
@@ -562,6 +579,7 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\lib"
 	RMDir /r "$INSTDIR\share"
 	RMDir /r "$INSTDIR\icons"
+
 !else
 	;remove files
 	Delete "$INSTDIR\Uninstall-QGIS.exe"
