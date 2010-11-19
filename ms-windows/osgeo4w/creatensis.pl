@@ -13,6 +13,11 @@
 # Download OSGeo4W packages
 #
 
+unless(-f "nsis/System.dll") {
+	mkdir "nsis", 0755 unless -d "nsis";
+	system "wget -q -Onsis/System.dll http://qgis.org/downloads/System.dll";
+}
+
 mkdir "packages", 0755 unless -d "packages";
 chdir "packages";
 
@@ -52,16 +57,16 @@ sub getDeps {
 	}
 }
 
-getDeps("qgis-dev");
+getDeps("qgis");
 
-if(-f "../addons/bin/NCSEcw.dll") {
+if(-f "../addons/bin/NCSEcw4_RO.dll") {
 	print "Enabling ECW support...\n";
-	getDeps("gdal16-ecw")
+	getDeps("gdal17-ecw")
 }
 
 if(-f "../addons/bin/lti_dsdk_dll.dll") {
 	print "Enabling MrSID support...\n";
-	getDeps("gdal16-mrsid")
+	getDeps("gdal17-mrsid")
 }
 
 
@@ -104,7 +109,7 @@ unless(-d "unpacked") {
 
 	system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
 
-	system "tar -C ../addons -cf . | tar -xf -" if -d "../addons";
+	system "tar -C ../addons -cf - . | tar -xf -" if -d "../addons";
 
 	chdir "..";
 }
@@ -193,6 +198,10 @@ $revision = <F>;
 $revision =~ s/\D+$//g;
 close F;
 
+$revision = 14615 unless $revision =~ /^\d+$/;
+
+system "unzip packages/Untgz.zip" unless -d "untgz";
+
 chdir "..";
 
 my $cmd = "makensis";
@@ -201,7 +210,7 @@ $cmd .= " -DVERSION_NAME='$release'";
 $cmd .= " -DSVN_REVISION='$revision'";
 $cmd .= " -DQGIS_BASE='Quantum GIS $release'";
 $cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$major.$minor.$patch-$revision-Setup.exe'";
-$cmd .= " -DDISPLAYED_NAME='Quantum GIS OSGeo4W ($release)'";
+$cmd .= " -DDISPLAYED_NAME='Quantum GIS \'$release\' ($major.$minor.$patch)'";
 $cmd .= " -DBINARY_REVISION=1";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/unpacked";
