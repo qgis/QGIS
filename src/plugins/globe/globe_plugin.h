@@ -92,6 +92,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     QgsOsgViewer viewer;
     //! Dock widget for viewer
     QDockWidget mQDockWidget;
+    //! Settings Dialog
+    QgsGlobePluginDialog mSettingsDialog;
     //! OSG root node
     osg::Group* mRootNode;
     //! Map node
@@ -106,8 +108,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarthUtil::ElevationManager* mElevationManager;
     //! Object placer
     osgEarthUtil::ObjectPlacer* mObjectPlacer;
-    //! Settings Dialog
-    QgsGlobePluginDialog* settingsDialog;
 };
 
 class FlyToExtentHandler : public osgGA::GUIEventHandler 

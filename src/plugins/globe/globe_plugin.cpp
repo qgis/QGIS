@@ -67,6 +67,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     mQActionSettingsPointer( NULL ),
     viewer(),
     mQDockWidget( tr( "Globe" ) ),
+    mSettingsDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
     mTileSource(0),
     mElevationManager( NULL ),
     mObjectPlacer( NULL )
@@ -161,9 +162,7 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
-  QgsGlobePluginDialog* settingsDialog = new QgsGlobePluginDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
-  settingsDialog->setAttribute( Qt::WA_DeleteOnClose );
-  settingsDialog->exec();
+  mSettingsDialog.exec();
   
   //QMessageBox msgBox;
   //msgBox.setText(settingsDialog->stereoMode);
