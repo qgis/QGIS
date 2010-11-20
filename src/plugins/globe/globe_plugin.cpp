@@ -162,11 +162,10 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
-  mSettingsDialog.exec();
-  
-  //QMessageBox msgBox;
-  //msgBox.setText(settingsDialog->stereoMode);
-  //msgBox.exec();
+  if (mSettingsDialog.exec())
+  {
+    viewer.QgsGLWidgetAdapter::setStereoMode(mSettingsDialog.stereoMode);
+  }
 }
 
 void GlobePlugin::setupMap()
