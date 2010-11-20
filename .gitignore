@@ -10,3 +10,6 @@ ms-windows/Installer-Files/postinstall.bat
 ms-windows/Installer-Files/preremove.bat
 ms-windows/osgeo4w/packages/
 ms-windows/osgeo4w/unpacked/
+ms-windows/*Setup.exe
+ms-windows/osgeo4w/nsis/
+ms-windows/osgeo4w/untgz/
