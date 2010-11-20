@@ -28,10 +28,10 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   Q_OBJECT 
   
   public:
-    QString stereoMode;
     QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
-
+    QString stereoMode;
+    
   private:
     QString earthFile;
     QString openFile();

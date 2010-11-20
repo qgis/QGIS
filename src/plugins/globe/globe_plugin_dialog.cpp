@@ -41,6 +41,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   setupUi( this );
   stereoMode = settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString();
   comboStereoMode->setCurrentIndex( comboStereoMode->findText( stereoMode ) );
+  //showMessageBox("constructor " + stereoMode);
 }
 
 //destructor
@@ -56,46 +57,6 @@ QString QgsGlobePluginDialog::openFile()
                  tr( "Earth files (*.earth)" ) );
 
   return path;
-}
-
-void QgsGlobePluginDialog::setStereoMode()
-{
-  //TODO: Call QgsGLWidgetAdapter::setStereoMode(QString stereoMode)
-  //from GlobePlugin::settings() instead of code duplication
-  settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
-  if("OFF" == stereoMode)
-  {
-    osg::DisplaySettings::instance()->setStereo( false );
-    }
-  else if("ADVANCED" == stereoMode)
-  {
-    //osg::DisplaySettings::instance()->set
-    }
-  else
-  {
-    osg::DisplaySettings::instance()->setStereo( true );
-    
-    if("ANAGLYPHIC" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::ANAGLYPHIC );
-    }
-    else if("VERTICAL_SPLIT" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
-    }
-    else if("HORIZONTAL_SPLIT" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::HORIZONTAL_SPLIT );
-    }
-    else if("QUAD_BUFFER" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::QUAD_BUFFER );
-    }
-    else
-    {
-      showMessageBox("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
-    }
-  }
 }
 
 void QgsGlobePluginDialog::restartGlobe()
@@ -194,7 +155,6 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
 
   // Close dialog box
   */
-  setStereoMode();
   
   if ( globeRunning() )
   {
@@ -211,6 +171,7 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString mode )
 {
   stereoMode = mode;
+  //showMessageBox("index_changed " + stereoMode);
 }
 
 void QgsGlobePluginDialog::showMessageBox( QString text )

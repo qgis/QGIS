@@ -95,14 +95,9 @@ void QgsGLWidgetAdapter::setStereoMode()
 void QgsGLWidgetAdapter::setStereoMode(QString stereoMode)
 {
   settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
-  
   if("OFF" == stereoMode)
   {
     osg::DisplaySettings::instance()->setStereo( false );
-    }
-  else if("ADVANCED" == stereoMode)
-  {
-    //osg::DisplaySettings::instance()->set
     }
   else
   {
@@ -127,6 +122,7 @@ void QgsGLWidgetAdapter::setStereoMode(QString stereoMode)
     else
     {
       //should never get here
+      settings.setValue( "/Plugin-Globe/stereoMode", "ANAGLYPHIC" );
       QMessageBox msgBox;
       msgBox.setText("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
       msgBox.exec();
