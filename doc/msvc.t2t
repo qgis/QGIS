@@ -132,7 +132,31 @@ directory or add their respective directories to your PATH.
 
 === Packaging ===
 
-The packaging process is currently not documented, for now please take a look 
-at:
+To create a windows 'all in one' standalone  package ''under ubuntu'' (yes you
+read correctly) do the following:
+
+```
+sudo apt-get install nsis
+```
+
+Now 
+
+```
+cd qgis/ms-windows/osgeo4w
+```
+
+And run the nsis creation script:
+
+```
+creatensis.pl
+```
+
+When the script completes, it should have created a QGIS installer executable
+in the ms-windows directory.
+
+=== Osgeo4w packaging ===
+
+The actual packaging process is currently not documented, for now please take a
+look at:
 
 //ms-windows/osgeo4w/package.cmd//
