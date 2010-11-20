@@ -6,3 +6,7 @@ desktop.ini
 *~
 api_doc
 build
+ms-windows/Installer-Files/postinstall.bat
+ms-windows/Installer-Files/preremove.bat
+ms-windows/osgeo4w/packages/
+ms-windows/osgeo4w/unpacked/
