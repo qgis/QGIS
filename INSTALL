@@ -1,8 +1,8 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
 
-Last update: 20101113
-Last change: 20101028
+Last update: 20101120
+Last change: 20101114
 
   1. Introduction
   2. Overview
@@ -780,8 +780,34 @@ directory or add their respective directories to your PATH.
     4.1.4. Packaging
     ================
 
-The packaging process is currently not documented, for now please take a look 
-at:
+To create a windows 'all in one' standalone  package ''under ubuntu'' (yes you
+read correctly) do the following:
+
+
+  sudo apt-get install nsis
+
+
+Now 
+
+
+  cd qgis/ms-windows/osgeo4w
+
+
+And run the nsis creation script:
+
+
+  creatensis.pl
+
+
+When the script completes, it should have created a QGIS installer executable
+in the ms-windows directory.
+
+
+    4.1.5. Osgeo4w packaging
+    ========================
+
+The actual packaging process is currently not documented, for now please take a
+look at:
 
 ms-windows/osgeo4w/package.cmd
 
