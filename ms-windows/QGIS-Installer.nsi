@@ -625,7 +625,7 @@ Section "Uninstall"
 	
 	;remove the Desktop ShortCut
 	SetShellVarContext current
-	Delete "$DESKTOP\${QGIS_BASE}.lnk"
+	Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
 	
 	;remove the Programs Start ShortCut
 	SetShellVarContext all
