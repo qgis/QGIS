@@ -116,10 +116,7 @@ class Dialog(QDialog, Ui_Dialog):
                 value = self.spnUnstratified.value()
             else:
                 QMessageBox.information(self, self.tr("Random Points"), self.tr("Unknown layer type..."))
-            if self.chkMinimum.isChecked():
-                minimum = self.spnMinimum.value()
-            else:
-                minimum = 0.00
+            minimum = 0.00
             self.progressBar.setValue(10)
             self.randomize(inLayer, outPath, minimum, design, value)
             self.progressBar.setValue(100)
