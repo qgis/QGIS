@@ -32,16 +32,16 @@
 #include <QStringList>
 #include <QVariant>
 
-#include <osgViewer/Viewer>
+#include <osg/DisplaySettings>
 
 //constructor
 QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  stereoMode = settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString();
-  comboStereoMode->setCurrentIndex( comboStereoMode->findText( stereoMode ) );
-  //showMessageBox("constructor " + stereoMode);
+  getStereoConfig(); //default values from OSG
+  loadStereoConfig();
+  setStereoConfig(); //overwrite with values from QSettings
 }
 
 //destructor
@@ -72,6 +72,8 @@ bool QgsGlobePluginDialog::globeRunning()
 
 void QgsGlobePluginDialog::on_buttonBox_accepted()
 {
+  setStereoConfig();
+  saveStereoConfig();
   /*
    * 
   // Validate input settings
@@ -170,7 +172,6 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 
 void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString mode )
 {
-  stereoMode = mode;
   //showMessageBox("index_changed " + stereoMode);
 }
 
@@ -179,4 +180,71 @@ void QgsGlobePluginDialog::showMessageBox( QString text )
   QMessageBox msgBox;
     msgBox.setText(text);
     msgBox.exec();
+}
+
+void QgsGlobePluginDialog::getStereoConfig()
+{
+  //stereoMode ignored
+
+  screenDistance->setValue( osg::DisplaySettings::instance()->getScreenDistance() );
+}
+
+void QgsGlobePluginDialog::setStereoConfig()
+{
+  //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoConfig
+  //http://www.openscenegraph.org/documentation/OpenSceneGraphReferenceDocs/a00181.html
+
+  QString stereoMode = comboStereoMode->currentText();
+  if("OFF" == stereoMode)
+  {
+    osg::DisplaySettings::instance()->setStereo( false );
+  }
+  else
+  {
+    osg::DisplaySettings::instance()->setStereo( true );
+
+    if("ANAGLYPHIC" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::ANAGLYPHIC );
+    }
+    else if("VERTICAL_SPLIT" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
+    }
+    else if("HORIZONTAL_SPLIT" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::HORIZONTAL_SPLIT );
+    }
+    else if("QUAD_BUFFER" == stereoMode)
+    {
+      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::QUAD_BUFFER );
+    }
+    else
+    {
+      //should never get here
+      QMessageBox msgBox;
+      msgBox.setText("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
+      msgBox.exec();
+    }
+  }
+
+  osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
+}
+
+void QgsGlobePluginDialog::loadStereoConfig()
+{
+  if ( settings.contains( "/Plugin-Globe/stereoMode" ) )
+  {
+    comboStereoMode->setCurrentIndex( comboStereoMode->findText( settings.value( "/Plugin-Globe/stereoMode" ).toString() ) );
+  }
+  if ( settings.contains( "/Plugin-Globe/screenDistance" ) )
+  {
+    screenDistance->setValue( settings.value( "/Plugin-Globe/screenDistance" ).toDouble() );
+  }
+}
+
+void QgsGlobePluginDialog::saveStereoConfig()
+{
+  settings.setValue( "/Plugin-Globe/stereoMode", comboStereoMode->currentText() );
+  settings.setValue( "/Plugin-Globe/screenDistance", screenDistance->value() );
 }

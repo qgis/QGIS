@@ -28,7 +28,6 @@ QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, con
     QGLWidget(parent, shareWidget, f)
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
-    setStereoMode();
     setFocusPolicy(Qt::ClickFocus);
     setMouseTracking ( true );
 }
@@ -85,47 +84,4 @@ void QgsGLWidgetAdapter::mouseMoveEvent( QMouseEvent* event )
 void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 {
     _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_DOWN : osgGA::GUIEventAdapter::SCROLL_UP);
-}
-
-void QgsGLWidgetAdapter::setStereoMode()
-{
-  setStereoMode(settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString());
-}
-
-void QgsGLWidgetAdapter::setStereoMode(QString stereoMode)
-{
-  settings.setValue( "/Plugin-Globe/stereoMode", stereoMode );
-  if("OFF" == stereoMode)
-  {
-    osg::DisplaySettings::instance()->setStereo( false );
-    }
-  else
-  {
-    osg::DisplaySettings::instance()->setStereo( true );
-    
-    if("ANAGLYPHIC" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::ANAGLYPHIC );
-    }
-    else if("VERTICAL_SPLIT" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
-    }
-    else if("HORIZONTAL_SPLIT" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::HORIZONTAL_SPLIT );
-    }
-    else if("QUAD_BUFFER" == stereoMode)
-    {
-      osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::QUAD_BUFFER );
-    }
-    else
-    {
-      //should never get here
-      settings.setValue( "/Plugin-Globe/stereoMode", "ANAGLYPHIC" );
-      QMessageBox msgBox;
-      msgBox.setText("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
-      msgBox.exec();
-    }
-  }
 }

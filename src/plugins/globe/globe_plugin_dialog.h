@@ -30,16 +30,22 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   public:
     QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
-    QString stereoMode;
     
   private:
     QString earthFile;
     QString openFile();
     QSettings settings;
-    void setStereoMode();
     void restartGlobe();
     bool globeRunning();
     void showMessageBox( QString text);
+    //! Init dialog from osg/DisplaySettings
+    void getStereoConfig();
+    //! Set osg/DisplaySettings
+    void setStereoConfig();
+    //! Init dialog from settings
+    void loadStereoConfig();
+    //! Save settings
+    void saveStereoConfig();
 
   private slots:
     void on_buttonBox_accepted();

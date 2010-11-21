@@ -164,7 +164,7 @@ void GlobePlugin::settings()
 {
   if (mSettingsDialog.exec())
   {
-    viewer.QgsGLWidgetAdapter::setStereoMode(mSettingsDialog.stereoMode);
+    //viewer stereo settings set by mSettingsDialog and stored in QSettings
   }
 }
 

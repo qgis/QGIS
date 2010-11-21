@@ -20,12 +20,10 @@
 #define QGS_OSG_VIEWER_H
 
 #include <osgViewer/Viewer>
-#include <osgViewer/CompositeViewer>
 
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QTimer>
-#include <QSettings>
 
 using Qt::WindowFlags;
 
@@ -39,9 +37,6 @@ class QgsGLWidgetAdapter : public QGLWidget
 
         osgViewer::GraphicsWindow* getGraphicsWindow() { return _gw.get(); }
         const osgViewer::GraphicsWindow* getGraphicsWindow() const { return _gw.get(); }
-        
-        void setStereoMode();
-        void setStereoMode(QString stereoMode);
 
     protected:
 
@@ -56,9 +51,6 @@ class QgsGLWidgetAdapter : public QGLWidget
 
         osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
         
-    private:
-    
-        QSettings settings;
 };
 
 
