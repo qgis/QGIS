@@ -4,6 +4,13 @@ Thumb.db
 desktop.ini
 *.*~
 *~
+*.diff
+*.log*
+*.prepare
+debian/*.debhelper
+debian/*.substvars
+Makefile
+*-stamp
 api_doc
 build
 ms-windows/Installer-Files/postinstall.bat
@@ -13,3 +20,5 @@ ms-windows/osgeo4w/unpacked/
 ms-windows/*Setup.exe
 ms-windows/osgeo4w/nsis/
 ms-windows/osgeo4w/untgz/
+scripts/astyle
+qtcreator-build/

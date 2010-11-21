@@ -106,8 +106,8 @@ void QgsSnappingDialog::update()
   QSettings myQsettings;
   bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
 
-  double defaultSnapppingTolerance = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
-  int defaultSnapppingUnit = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
+  double defaultSnappingTolerance = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
+  int defaultSnappingUnit = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
   QString defaultSnappingString = myQsettings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
 
   int defaultSnappingStringIdx = 0;
@@ -160,7 +160,7 @@ void QgsSnappingDialog::update()
     QLineEdit *leTolerance = new QLineEdit( mLayerTreeWidget );
     QDoubleValidator *validator = new QDoubleValidator( leTolerance );
     leTolerance->setValidator( validator );
-    leTolerance->setText( QString::number( defaultSnapppingTolerance, 'f' ) );
+    leTolerance->setText( QString::number( defaultSnappingTolerance, 'f' ) );
 
     mLayerTreeWidget->setItemWidget( item, 3, leTolerance );
 
@@ -168,7 +168,7 @@ void QgsSnappingDialog::update()
     QComboBox *cbxUnits = new QComboBox( mLayerTreeWidget );
     cbxUnits->insertItem( 0, tr( "map units" ) );
     cbxUnits->insertItem( 1, tr( "pixels" ) );
-    cbxUnits->setCurrentIndex( defaultSnapppingUnit );
+    cbxUnits->setCurrentIndex( defaultSnappingUnit );
     mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
 
     int idx = layerIdList.indexOf( currentVectorLayer->getLayerID() );
