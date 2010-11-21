@@ -63,7 +63,7 @@ class QgsIdentifyResultsDock : public QDockWidget
 // Tree hierarchy
 //
 // layer [userrole: QgsMapLayer]
-//   feature: displayfield|displayvalue [userrole: fid]
+//   feature: displayfield|displayvalue [userrole: fid, index in feature list]
 //     derived attributes (if any) [userrole: "derived"]
 //       name value
 //     actions (if any) [userrole: "actions"]
@@ -132,8 +132,8 @@ QTreeWidgetItem *QgsIdentifyResults::layerItem( QObject *layer )
   return 0;
 }
 
-void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer, int fid,
-                                     const QgsAttributeMap &attributes,
+void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
+                                     const QgsFeature &f,
                                      const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
@@ -153,10 +153,12 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer, int fid,
   }
 
   QTreeWidgetItem *featItem = new QTreeWidgetItem;
-  featItem->setData( 0, Qt::UserRole, fid );
+  featItem->setData( 0, Qt::UserRole, f.id() );
+  featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
+  mFeatures << f;
   layItem->addChild( featItem );
 
-  for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+  for ( QgsAttributeMap::const_iterator it = f.attributeMap().begin(); it != f.attributeMap().end(); it++ )
   {
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( it.key() ) << it.value().toString() );
 
@@ -461,7 +463,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), this, vlayer, i, featItem );
+      int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ idx ], vlayer, i, this );
       mActionPopup->addAction( QgisApp::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
     }
   }
@@ -869,71 +872,23 @@ void QgsIdentifyResults::featureForm()
     return;
 
   int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;
   if ( !vlayer->featureAtId( fid, f ) )
     return;
 
-  QgsAttributeMap src = f.attributeMap();
-
-  if ( vlayer->isEditable() )
-    vlayer->beginEditCommand( tr( "Attribute changed" ) );
-
-  QgsAttributeDialog *ad = new QgsAttributeDialog( vlayer, &f );
-
-  if ( vlayer->actions()->size() > 0 )
-  {
-    ad->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
-
-    QAction *a = new QAction( tr( "Run actions" ), ad->dialog() );
-    a->setEnabled( false );
-    ad->dialog()->addAction( a );
-
-    for ( int i = 0; i < vlayer->actions()->size(); i++ )
-    {
-      const QgsAction &action = vlayer->actions()->at( i );
-
-      if ( !action.runable() )
-        continue;
-
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), this, vlayer, i, featItem );
-      ad->dialog()->addAction( a );
-      connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
-
-      QAbstractButton *pb = ad->dialog()->findChild<QAbstractButton *>( action.name() );
-      if ( pb )
-        connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
-    }
-  }
-
+  QgsFeatureAction action( tr( "Attribute changes" ), f, vlayer, idx, this );
   if ( vlayer->isEditable() )
   {
-    if ( ad->exec() )
+    if ( action.editFeature() )
     {
-      const QgsAttributeMap &dst = f.attributeMap();
-      for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
-      {
-        if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
-        {
-          vlayer->changeAttributeValue( f.id(), it.key(), it.value() );
-        }
-      }
-      vlayer->endEditCommand();
+      mCanvas->refresh();
     }
-    else
-    {
-      vlayer->destroyEditCommand();
-    }
-
-    delete ad;
-
-    mCanvas->refresh();
   }
   else
   {
-    QgsRubberBand *rb = mRubberBands.take( featItem );
-    ad->setHighlight( rb );
-    ad->show();
+    action.viewFeatureForm( mRubberBands.take( featItem ) );
   }
 }
 

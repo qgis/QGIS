@@ -26,7 +26,8 @@
 
 class QgsIdentifyResults;
 class QgsVectorLayer;
-class QTreeWidgetItem;
+class QgsRubberBand;
+class QgsAttributeDialog;
 
 class QgsFeatureAction : public QAction
 {
@@ -34,16 +35,22 @@ class QgsFeatureAction : public QAction
 
   public:
     QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action, QObject *parent );
-    QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem );
 
   public slots:
     void execute();
+    bool viewFeatureForm( QgsRubberBand *rb = 0 );
+    bool editFeature();
+    bool addFeature();
 
   private:
+    QgsAttributeDialog *newDialog();
+
     QgsVectorLayer *mLayer;
+    QgsFeature &mFeature;
     int mAction;
     int mIdx;
-    QgsAttributeMap mAttributes;
+
+    static QMap<QgsVectorLayer *, QgsAttributeMap> mLastUsedValues;
 };
 
 #endif

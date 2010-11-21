@@ -88,26 +88,31 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
   }
 
   QgsVectorLayer *vlayer = mModel->layer();
-  if ( !vlayer || vlayer->actions()->size() == 0 )
-  {
+  if ( !vlayer )
     return;
-  }
 
   mActionPopup = new QMenu();
 
-  QAction *a = mActionPopup->addAction( tr( "Run action" ) );
-  a->setEnabled( false );
-
-  for ( int i = 0; i < vlayer->actions()->size(); i++ )
+  if ( vlayer->actions()->size() == 0 )
   {
-    const QgsAction &action = vlayer->actions()->at( i );
 
-    if ( !action.runable() )
-      continue;
+    QAction *a = mActionPopup->addAction( tr( "Run action" ) );
+    a->setEnabled( false );
 
-    QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, mModel, i, idx );
-    mActionPopup->addAction( action.name(), a, SLOT( execute() ) );
+    for ( int i = 0; i < vlayer->actions()->size(); i++ )
+    {
+      const QgsAction &action = vlayer->actions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, mModel, i, idx );
+      mActionPopup->addAction( action.name(), a, SLOT( execute() ) );
+    }
   }
+
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, mModel, -1, idx );
+  mActionPopup->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 
   mActionPopup->popup( event->globalPos() );
 }
@@ -115,4 +120,9 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
 void QgsAttributeTableAction::execute()
 {
   mModel->executeAction( mAction, mFieldIdx );
+}
+
+void QgsAttributeTableAction::featureForm()
+{
+  mModel->featureForm( mFieldIdx );
 }

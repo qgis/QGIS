@@ -151,6 +151,11 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void on_mDeleteSelectedButton_clicked();
 
+    /**
+     * add feature
+     */
+    void addFeature();
+
     void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
 
   signals:

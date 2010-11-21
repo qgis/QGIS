@@ -623,6 +623,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void editingStopped();
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
+    void featureAdded( int fid );  // added in 1.7
     void featureDeleted( int fid );
     void layerDeleted();
 

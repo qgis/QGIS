@@ -55,8 +55,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     ~QgsIdentifyResults();
 
     /** Add add feature from vector layer */
-    void addFeature( QgsVectorLayer *layer, int fid,
-                     const QgsAttributeMap &attributes,
+    void addFeature( QgsVectorLayer *layer,
+                     const QgsFeature &f,
                      const QMap< QString, QString > &derivedAttributes );
 
     /** Add add feature from other layer */
@@ -117,6 +117,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     QMenu *mActionPopup;
     QMap<QTreeWidgetItem *, QgsRubberBand * > mRubberBands;
     QgsMapCanvas *mCanvas;
+    QList<QgsFeature> mFeatures;
 
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
