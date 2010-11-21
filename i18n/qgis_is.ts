@@ -1649,16 +1649,16 @@ http://trac.faunalia.it/GdalTools-plugin</source>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Viðvörun</translation>
+        <translation>Viðvörun</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Skipunin er ekk keyrandi. Viltu stoppa hana samt?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ógildar breytur.</translation>
     </message>
 </context>
 <context>
@@ -2047,24 +2047,24 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="102"/>
         <source>1:</source>
-        <translation type="unfinished">1:</translation>
+        <translation>1:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="113"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="178"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="130"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="195"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="167"/>
         <source>2:</source>
-        <translation type="unfinished">2:</translation>
+        <translation>2:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="218"/>
@@ -2520,12 +2520,12 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="118"/>
         <source>4</source>
-        <translation type="unfinished">4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="123"/>
         <source>8</source>
-        <translation type="unfinished">8</translation>
+        <translation>8</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="96"/>
@@ -2567,7 +2567,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="173"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="186"/>
@@ -3068,18 +3068,18 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="57"/>
         <source>Run OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Keyra þýðanda OGR lags</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="63"/>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation>Þýða vigurlög milli kerfa studd af OGR kerfi</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="70"/>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="99"/>
         <source>OG&amp;R Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OG&amp;R þýðandi</translation>
     </message>
 </context>
 <context>
@@ -3633,22 +3633,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitjur til að vista:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktar</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Línur</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
@@ -3725,27 +3725,27 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
         <source>3</source>
-        <translation type="unfinished">3</translation>
+        <translation>3</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
         <source>4</source>
-        <translation type="unfinished">4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
         <source>5</source>
-        <translation type="unfinished">5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
@@ -3760,22 +3760,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Notandanafn:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lykilorð:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
         <source>Show password</source>
-        <translation type="unfinished"></translation>
+        <translation>Sýna lykilorð</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
         <source>Save password</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista lykilorð</translation>
     </message>
 </context>
 <context>
@@ -3825,7 +3825,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>PythonConsole</name>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished">Python skjár</translation>
+        <translation>Python skjár</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this console
@@ -4865,7 +4865,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -4904,7 +4903,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -6061,7 +6059,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1036"/>
         <source>Add WMS Layer...</source>
-        <translation>Bæta bið WMS lagi...</translation>
+        <translation>Bæta við WMS lagi...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1037"/>
@@ -7104,7 +7102,6 @@ Error: %1</source>
         <comment>number of features to delete</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -7237,7 +7234,6 @@ Error: %1</source>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -7588,7 +7584,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisappinterface.cpp" line="395"/>
         <source>Run actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Keyra skipanir</translation>
     </message>
 </context>
 <context>
@@ -7734,33 +7730,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="14"/>
         <source>Add Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við eigind</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
         <source>N&amp;ame</source>
-        <translation type="unfinished"></translation>
+        <translation>N&amp;afn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Athugasemd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="49"/>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="62"/>
         <source>Type</source>
-        <translation type="unfinished">Tegund</translation>
+        <translation>Tegund</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
-        <translation type="unfinished">Vídd</translation>
+        <translation>Vídd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
         <source>Precision</source>
-        <translation type="unfinished">Nákvæmni</translation>
+        <translation>Nákvæmni</translation>
     </message>
 </context>
 <context>
@@ -7768,7 +7764,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="111"/>
         <source>Select frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Veldu lit á ramma</translation>
     </message>
 </context>
 <context>
@@ -7811,7 +7807,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="100"/>
         <source>unknown exception</source>
-        <translation type="unfinished"></translation>
+        <translation>óþekkt frávik</translation>
     </message>
 </context>
 <context>
@@ -8051,7 +8047,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="203"/>
         <source>Attributes - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigindir - %1</translation>
     </message>
 </context>
 <context>
@@ -8077,34 +8073,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesa inn gildi frá lagi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lag</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="68"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Lýsing</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="63"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="83"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Gildi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesa inn gögn frá eigindum í völdu lagi.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
         <source>View All</source>
-        <translation type="unfinished"></translation>
+        <translation>Byrta allt</translation>
     </message>
 </context>
 <context>
@@ -8114,13 +8110,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="149"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Hækkandi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="71"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="77"/>
         <source>Descending</source>
-        <translation type="unfinished"></translation>
+        <translation>Lækkandi</translation>
     </message>
 </context>
 <context>
@@ -8128,12 +8124,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="14"/>
         <source>Select attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Veldu eigindir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="31"/>
         <source>&lt;b&gt;Attribute&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Eigind&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="44"/>
@@ -8143,22 +8139,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="56"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja allt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="63"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Hreinsa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="83"/>
         <source>Sorting</source>
-        <translation type="unfinished"></translation>
+        <translation>Raða</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="144"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Dálkur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="149"/>
@@ -8194,7 +8190,6 @@ p, li { white-space: pre-wrap; }
         <comment>feature count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -8203,7 +8198,6 @@ p, li { white-space: pre-wrap; }
         <comment>feature count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -8211,7 +8205,6 @@ p, li { white-space: pre-wrap; }
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -8386,7 +8379,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="449"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigind breytt</translation>
     </message>
 </context>
 <context>
@@ -8394,7 +8387,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="98"/>
         <source>Run action</source>
-        <translation type="unfinished"></translation>
+        <translation>Keyra skipun</translation>
     </message>
 </context>
 <context>
@@ -8639,7 +8632,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="58"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eyða</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="59"/>
@@ -8649,7 +8642,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="156"/>
         <source>Really Delete?</source>
-        <translation type="unfinished"></translation>
+        <translation>Virkilega eyða?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="157"/>
@@ -8701,22 +8694,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="15"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Heilt</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="16"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Lárétt</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="17"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Lóðrétt</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="18"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Kross</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="19"/>
@@ -8873,7 +8866,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="40"/>
         <source>New color ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ný stigun á lit...</translation>
     </message>
 </context>
 <context>
@@ -9542,7 +9535,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/composer/qgscomposerlegend.cpp" line="32"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Skýringar</translation>
     </message>
 </context>
 <context>
@@ -9555,7 +9548,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texti hlutar</translation>
     </message>
 </context>
 <context>
@@ -9732,12 +9725,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Stjórn prentsmiðs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="36"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við</translation>
     </message>
 </context>
 <context>
@@ -10358,12 +10351,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="55"/>
         <source>Attributes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigindir...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
         <source>Show only visible features</source>
-        <translation type="unfinished"></translation>
+        <translation>Sýna aðeins sýnilegar fitjur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="84"/>
@@ -10421,17 +10414,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="83"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kort</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="102"/>
         <source>Title</source>
-        <translation type="unfinished">Titill</translation>
+        <translation>Titill</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="138"/>
         <source>Layers</source>
-        <translation type="unfinished">Lög</translation>
+        <translation>Lög</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="143"/>
@@ -10446,12 +10439,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="156"/>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Kassi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="169"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Leturgerð</translation>
     </message>
 </context>
 <context>
@@ -10459,7 +10452,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="130"/>
         <source>Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS</translation>
     </message>
 </context>
 <context>
@@ -11315,17 +11308,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="14"/>
         <source>Dash space pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Strik bil mynstur</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="51"/>
         <source>Dash</source>
-        <translation type="unfinished"></translation>
+        <translation>Strik</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="56"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Bil</translation>
     </message>
 </context>
 <context>
@@ -11396,7 +11389,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="13"/>
         <source>Delete Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða eigindum</translation>
     </message>
 </context>
 <context>
@@ -11680,12 +11673,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="70"/>
         <source>Classification attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Flokkunareigind</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="80"/>
         <source>Classification type</source>
-        <translation type="unfinished"></translation>
+        <translation>Flokkunartegund</translation>
     </message>
 </context>
 <context>
@@ -11711,7 +11704,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdisplayanglebase.ui" line="14"/>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Horn</translation>
     </message>
 </context>
 <context>
@@ -11749,7 +11742,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="125"/>
         <source>Unique field to use as feature id:</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstakt svið notað sem kenni fitju:</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="132"/>
@@ -11782,12 +11775,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="36"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kóðun:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="93"/>
         <source>Cancel &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Hætta við &amp;Allt</translation>
     </message>
 </context>
 <context>
@@ -12068,7 +12061,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="23"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða</translation>
     </message>
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="62"/>
@@ -12081,12 +12074,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Valmynd</translation>
+        <translation>Valmynd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="25"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -12095,13 +12088,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="100"/>
         <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="152"/>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>mælieining korts</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="104"/>
         <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="140"/>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>punktar</translation>
     </message>
 </context>
 <context>
@@ -12109,12 +12102,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgcplistwidget.cpp" line="188"/>
         <source>Recenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Miðja aftur</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgcplistwidget.cpp" line="192"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja</translation>
     </message>
 </context>
 <context>
@@ -13206,7 +13199,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="103"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Um</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="98"/>
@@ -13953,7 +13946,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="43"/>
         <source>GRASS Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS eigindir</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="80"/>
@@ -13963,17 +13956,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="112"/>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>niðurstaða</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="182"/>
         <source>Update database record</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppfæra færslu í gagnagrunni</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="185"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppfæra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="210"/>
@@ -13983,7 +13976,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="213"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nýtt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="238"/>
@@ -14080,7 +14073,6 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -15213,12 +15205,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2956"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigindasvæði</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2969"/>
         <source>Warning</source>
-        <translation type="unfinished">Viðvörun</translation>
+        <translation>Viðvörun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2969"/>
@@ -15289,7 +15281,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2070"/>
         <source>Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Inntak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2094"/>
@@ -15297,7 +15289,7 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2176"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2193"/>
         <source>Warning</source>
-        <translation type="unfinished">Viðvörun</translation>
+        <translation>Viðvörun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2094"/>
@@ -15327,12 +15319,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2286"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja lag</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2569"/>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;ekkert inntak</translation>
     </message>
 </context>
 <context>
@@ -16563,7 +16555,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -16590,12 +16581,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="100"/>
         <source>Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="101"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Gildi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="207"/>
@@ -16630,17 +16621,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="436"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"></translation>
+        <translation>Afrita gildi eigindar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="437"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Afrita eigindir fitju</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="441"/>
         <source>Clear results</source>
-        <translation type="unfinished"></translation>
+        <translation>Hreinsa niðurstöðu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="442"/>
@@ -16670,12 +16661,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="880"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigind breytt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="888"/>
         <source>Run actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Keyra skipanir</translation>
     </message>
 </context>
 <context>
@@ -16885,47 +16876,47 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="14"/>
         <source>Set item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Setja staðsetningu hlutar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="20"/>
         <source>Item reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Viðmiðunarpunktur hlutar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="92"/>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Hnit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="98"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="108"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="118"/>
         <source>Width</source>
-        <translation type="unfinished">Vídd</translation>
+        <translation>Vídd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="128"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Hæð</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="156"/>
         <source>Set Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Setja staðsetningu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="163"/>
         <source>Close</source>
-        <translation type="unfinished">Loka</translation>
+        <translation>Loka</translation>
     </message>
 </context>
 <context>
@@ -17667,27 +17658,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="412"/>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opna eigindatöflu</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="427"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista sem...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="430"/>
         <source>Save selection as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista val sem...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="437"/>
         <source>&amp;Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fyrirspurn...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="444"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stillingar</translation>
     </message>
 </context>
 <context>
@@ -17734,12 +17725,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="45"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Stærð</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="59"/>
         <source>Size unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Eining stærðar</translation>
     </message>
 </context>
 <context>
@@ -18051,7 +18042,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="459"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="476"/>
         <source>Feature added</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitju bætt við</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="209"/>
@@ -18069,7 +18060,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="435"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="442"/>
         <source>Error</source>
-        <translation type="unfinished">Villa</translation>
+        <translation>Villa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="327"/>
@@ -18103,7 +18094,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="52"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lag er óbreytanlegt</translation>
+        <translation>Lag er óbreytanlegt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
@@ -18290,7 +18281,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="96"/>
         <source>No active layer</source>
-        <translation type="unfinished">Ekkert virkt lag</translation>
+        <translation>Ekkert virkt lag</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="97"/>
@@ -18310,7 +18301,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="159"/>
         <source>No features at this position found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Engar fitjur fundust á þessari staðsetningu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="201"/>
@@ -18353,17 +18344,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="301"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenni fitju</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="301"/>
         <source>new feature</source>
-        <translation type="unfinished"></translation>
+        <translation>ný fitja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="328"/>
         <source>WMS layer</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS lag</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="348"/>
@@ -18413,7 +18404,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="460"/>
         <source>Feature was deleted on background.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Fitju var eytt í bakgrunni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="814"/>
@@ -18464,27 +18455,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Engin punktafitja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">sdf</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Engin snúningur eigindar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Virka punktalagið hefur ekki snúningseigind</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Snúa merki</translation>
     </message>
 </context>
 <context>
@@ -18533,7 +18524,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="49"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lag er óbreytanlegt</translation>
+        <translation>Lag er óbreytanlegt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
@@ -18553,12 +18544,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="78"/>
         <source>Features split</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitjum skipt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
         <source>No feature split done</source>
-        <translation type="unfinished"></translation>
+        <translation>Engar skiptingar á fitjum framkvæmdar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
@@ -18568,12 +18559,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="88"/>
         <source>Split error</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa í skiptingu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="88"/>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa átti sér stað við skiptingu fitju</translation>
     </message>
 </context>
 <context>
@@ -18827,27 +18818,27 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="39"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nýtt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="220"/>
         <source>Segments (in meters)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hlutar (í metrum)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="223"/>
         <source>Segments (in feet)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hlutar (í fetum)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="228"/>
         <source>Segments (in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hlutar (í gráðum)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="231"/>
         <source>Segments</source>
-        <translation type="unfinished">Hlutar</translation>
+        <translation>Hlutar</translation>
     </message>
 </context>
 <context>
@@ -18898,19 +18889,19 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="430"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="482"/>
         <source>feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation>fitja %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="130"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="224"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Lágmark</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="131"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="228"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Hámark</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="132"/>
@@ -18928,7 +18919,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="140"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="232"/>
         <source>Mean</source>
-        <translation type="unfinished"></translation>
+        <translation>Meðaltal</translation>
     </message>
 </context>
 <context>
@@ -18936,17 +18927,17 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="14"/>
         <source>Merge feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sameina eigindir fitju</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="38"/>
         <source>Take attributes from selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Taka eigindir frá valinni fitju</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="72"/>
         <source>Remove feature from selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarllægja fitju úr vali</translation>
     </message>
 </context>
 <context>
@@ -18980,7 +18971,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
         <source>Create a new WMS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Búa til nýja WMS tengingu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="26"/>
@@ -18990,12 +18981,12 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="32"/>
         <source>Name</source>
-        <translation type="unfinished">Nafn</translation>
+        <translation>Nafn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Nafn á nýja tengingu</translation>
+        <translation>Nafn á nýja tengingu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="64"/>
@@ -19005,7 +18996,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="77"/>
         <source>HTTP address of the Web Map Server</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP vistfang fyrir WMS þjóninn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
@@ -19015,12 +19006,12 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="97"/>
         <source>&amp;User name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Notandanafn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="117"/>
         <source>Password</source>
-        <translation type="unfinished">Lykilorð</translation>
+        <translation>Lykilorð</translation>
     </message>
 </context>
 <context>
@@ -19029,7 +19020,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="89"/>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="93"/>
         <source>Test connection</source>
-        <translation type="unfinished">Prófa tengingu</translation>
+        <translation>Prófa tengingu</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="89"/>
@@ -19037,7 +19028,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
 
 Extended error information:
 %1</source>
-        <translation type="unfinished">Tenging mistókst - yfirfarið stillingar og prófið aftur.
+        <translation>Tenging mistókst - yfirfarið stillingar og prófið aftur.
 
 Frekari villuupplýsingar:
 %1</translation>
@@ -19045,17 +19036,17 @@ Frekari villuupplýsingar:
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="93"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished">Tenging %1 tókst</translation>
+        <translation>Tenging %1 tókst</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="109"/>
         <source>Save connection</source>
-        <translation type="unfinished">Vista tengingu</translation>
+        <translation>Vista tengingu</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="110"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished">Á að skrifa yfir eldri tengingu %1?</translation>
+        <translation>Á að skrifa yfir eldri tengingu %1?</translation>
     </message>
 </context>
 <context>
@@ -19399,7 +19390,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="14"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nýtt vigurlag</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="26"/>
@@ -19431,7 +19422,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="73"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Ný eigind</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="79"/>
@@ -19454,27 +19445,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="141"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigindalisti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="205"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða valdar eigindir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="208"/>
         <source>Remove selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja valdar eigindir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="241"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta eigind í lista</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="247"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við eigindalista
+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="274"/>
@@ -19498,27 +19490,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="81"/>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Neðst til vinstri</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="81"/>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Efst til vinstri</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="82"/>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Efst til hægri</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="82"/>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Neðst til hægri</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="95"/>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Norður ör</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="97"/>
@@ -19631,12 +19623,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja lög til innlestrar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="43"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -19672,13 +19664,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="457"/>
         <source>%v / %m features copied</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m fitjur afritaðar</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="482"/>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="655"/>
         <source>%v / %m features processed</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m fitjur unnar</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="531"/>
@@ -19688,17 +19680,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="569"/>
         <source>%v / %m features added</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m fitjum bætt við</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="598"/>
         <source>%v / %m features removed</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m fitjur fjarlægðar</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="615"/>
         <source>%v / %m feature updates</source>
-        <translation type="unfinished"></translation>
+        <translation>%v / %m fitjur uppfærðar</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="634"/>
@@ -19801,7 +19793,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog.cpp" line="38"/>
         <source>Layer %1 of %2..</source>
-        <translation type="unfinished"></translation>
+        <translation>Lag %1 af %2..</translation>
     </message>
 </context>
 <context>
@@ -19809,12 +19801,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog_base.ui" line="17"/>
         <source>Dialog</source>
-        <translation type="unfinished">Valmynd</translation>
+        <translation>Valmynd</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog_base.ui" line="23"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Textamerki</translation>
     </message>
 </context>
 <context>
@@ -19846,7 +19838,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="83"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="124"/>
         <source>Error</source>
-        <translation type="unfinished">Villa</translation>
+        <translation>Villa</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="84"/>
@@ -19863,7 +19855,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="150"/>
         <source>-modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished"></translation>
+        <translation>-breytt</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="14"/>
@@ -19879,7 +19871,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="44"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="76"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="64"/>
@@ -20771,7 +20763,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspastetransformations.cpp" line="37"/>
         <source>&amp;Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bæta við nýjum flutningi</translation>
     </message>
 </context>
 <context>
@@ -20802,17 +20794,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="93"/>
         <source>Square</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferkantað</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="94"/>
         <source>Flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Flatt</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="95"/>
         <source>Round</source>
-        <translation type="unfinished"></translation>
+        <translation>Hringlótt</translation>
     </message>
 </context>
 <context>
@@ -20951,43 +20943,43 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="39"/>
         <source>disable</source>
-        <translation type="unfinished">óvirkt</translation>
+        <translation>óvirkt</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="40"/>
         <source>allow</source>
-        <translation type="unfinished">leyft</translation>
+        <translation>leyft</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="41"/>
         <source>prefer</source>
-        <translation type="unfinished">óskandi</translation>
+        <translation>óskandi</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="42"/>
         <source>require</source>
-        <translation type="unfinished">krafist</translation>
+        <translation>krafist</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="107"/>
         <source>Save connection</source>
-        <translation type="unfinished">Vista tengingu</translation>
+        <translation>Vista tengingu</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="108"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished">Á að skrifa yfir eldri tengingu %1?</translation>
+        <translation>Á að skrifa yfir eldri tengingu %1?</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="214"/>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="220"/>
         <source>Test connection</source>
-        <translation type="unfinished">Prófa tengingu</translation>
+        <translation>Prófa tengingu</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="215"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished">Tenging %1 tókst</translation>
+        <translation>Tenging %1 tókst</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="221"/>
@@ -20995,7 +20987,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
 
 Extended error information:
 %1</source>
-        <translation type="unfinished">Tenging mistókst - yfirfarið stillingar og prófið aftur.
+        <translation>Tenging mistókst - yfirfarið stillingar og prófið aftur.
 
 Frekari villuupplýsingar:
 %1</translation>
@@ -22037,19 +22029,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Leita eftir nafni þjóns...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Tengist...</translation>
+        <translation>Tengist...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Þjónn tengdur. Sendi fyrirspurn...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hleð niður gögnum...</translation>
     </message>
     <message>
         <source>Idle</source>
@@ -22057,11 +22049,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Loka tengingu...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Villa</translation>
+        <translation>Villa</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
@@ -22069,7 +22061,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Stöðvað af notanda</translation>
     </message>
 </context>
 <context>
@@ -22127,7 +22119,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">engin villuboð móttekin</translation>
+        <translation>engin villuboð móttekin</translation>
     </message>
 </context>
 <context>
@@ -22341,22 +22333,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="145"/>
         <source>Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Merki</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="153"/>
         <source>Label attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigind merkis:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="167"/>
         <source>Label font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Leturgerð merkis...</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="191"/>
         <source>Label color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Litur merkis:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="213"/>
@@ -23035,7 +23027,6 @@ Because of this the projection selector will not work...</source>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -24869,7 +24860,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="333"/>
         <source>Error</source>
-        <translation type="unfinished">Villa</translation>
+        <translation>Villa</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
@@ -24887,7 +24878,6 @@ p, li { white-space: pre-wrap; }
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -25446,7 +25436,6 @@ p, li { white-space: pre-wrap; }
         <comment>test result</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -25881,37 +25870,37 @@ The error was:
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="69"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="76"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nýtt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="83"/>
         <source>Connect</source>
-        <translation type="unfinished">Tengja</translation>
+        <translation>Tengja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="108"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Leita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="118"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Leitarhamur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="131"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Leita í dálkum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="150"/>
         <source>Search options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Leitarmöguleikar...</translation>
     </message>
 </context>
 <context>
@@ -25919,12 +25908,12 @@ The error was:
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="25"/>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tafla</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="26"/>
         <source>Type</source>
-        <translation type="unfinished">Tegund</translation>
+        <translation>Tegund</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="27"/>
@@ -25934,7 +25923,7 @@ The error was:
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="166"/>
         <source>Point</source>
-        <translation type="unfinished">Punktur</translation>
+        <translation>Punktur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="170"/>
@@ -25944,7 +25933,7 @@ The error was:
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="174"/>
         <source>Line</source>
-        <translation type="unfinished">Lína</translation>
+        <translation>Lína</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="178"/>
@@ -25954,7 +25943,7 @@ The error was:
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="182"/>
         <source>Polygon</source>
-        <translation type="unfinished">Marghyrningur</translation>
+        <translation>Marghyrningur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitetablemodel.cpp" line="186"/>
@@ -25980,7 +25969,6 @@ The error was:
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -26159,17 +26147,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="263"/>
         <source>Show log messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sýna </translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="292"/>
         <source>Total of features from query</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjöldi fitja úr fyrirspurn</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="295"/>
         <source> Total</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjöldi</translation>
     </message>
 </context>
 <context>
@@ -26817,7 +26805,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollevelsv2dialog.cpp" line="81"/>
         <source>Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lag %1</translation>
     </message>
 </context>
 <context>
@@ -27032,7 +27020,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgstilescalewidgetbase.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
 </context>
 <context>
@@ -27351,27 +27339,27 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="166"/>
         <source>Add Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við fitju</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="172"/>
         <source>Delete Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða fitju</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="178"/>
         <source>Change Attribute Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Breyta gildi eigindar</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="184"/>
         <source>Add Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við eigind</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="190"/>
         <source>Delete Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða eigindum</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="197"/>
@@ -27477,7 +27465,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2780"/>
         <source>Classification field not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Flokkunarsvæði fannst ekki</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2943"/>
@@ -27497,14 +27485,13 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3272"/>
         <source>ERROR: layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation>VILLA: Lag er óbreytanlegt</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3286"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -27514,7 +27501,6 @@ Should the existing classes be deleted before classification?</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -27523,7 +27509,6 @@ Should the existing classes be deleted before classification?</source>
         <comment>added attributes count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -27531,7 +27516,6 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -27551,7 +27535,6 @@ Should the existing classes be deleted before classification?</source>
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -27559,7 +27542,6 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -27569,7 +27551,6 @@ Should the existing classes be deleted before classification?</source>
         <comment>added features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -27577,7 +27558,6 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -27587,7 +27567,6 @@ Should the existing classes be deleted before classification?</source>
         <comment>changed geometries count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -27595,7 +27574,6 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -27605,7 +27583,6 @@ Should the existing classes be deleted before classification?</source>
         <comment>deleted features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -27613,7 +27590,6 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -28453,23 +28429,23 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="31"/>
         <source>Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigindir</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="50"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="57"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="68"/>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="73"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -28574,7 +28550,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>crs count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -28612,7 +28587,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -28843,7 +28817,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28852,7 +28825,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -28863,7 +28835,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -28872,7 +28843,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -29050,7 +29020,6 @@ Tried URL: %1</source>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -29738,7 +29707,7 @@ Response was:
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="71"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -30046,12 +30015,12 @@ For support send a mail to scala@itc.cnr.it
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="71"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="223"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Óskilgreint</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="73"/>
         <source>No predefined queries loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Engar fyrirfram skilgreindar fyrirspurnir lesnar inn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="78"/>
@@ -30070,17 +30039,17 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="225"/>
         <source>Error: You must select a database type</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa: Þú verður að tilgreina tegund gagnagrunns</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="233"/>
         <source>Error: No host name entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa: Ekkert nafn á þjóni skilgreint</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="240"/>
         <source>Error: No database name entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa: Ekkert nafn á gagnagrunni skilgreint</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="282"/>
@@ -30105,7 +30074,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="409"/>
         <source>Error: Parse error at line %1, column %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa: villa í línu %1 dálki %2: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="414"/>
@@ -30115,7 +30084,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="470"/>
         <source>Error: Query failed: %1</source>
-        <translation type="unfinished">
+        <translation>Villa: Fyrirspurn tókst ekki: %1
 </translation>
     </message>
     <message>
@@ -30375,7 +30344,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="795"/>
         <source>Attribute Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Innihald eiginda</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="998"/>
@@ -30386,12 +30355,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1093"/>
         <source>Select Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið forrit</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1093"/>
         <source>All ( * )</source>
-        <translation type="unfinished"></translation>
+        <translation>Allt (*)</translation>
     </message>
 </context>
 <context>
@@ -30399,7 +30368,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Byrta</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
@@ -30409,7 +30378,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyrra</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
@@ -30419,7 +30388,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Næsta</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="113"/>
@@ -30429,7 +30398,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="117"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="131"/>
@@ -30449,7 +30418,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="171"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Slóð skráar</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="177"/>
@@ -32059,7 +32028,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Help</source>
-        <translation type="unfinished">Hjálp</translation>
+        <translation>Hjálp</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
