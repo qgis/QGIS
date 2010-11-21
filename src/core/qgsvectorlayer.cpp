@@ -169,7 +169,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
 QgsVectorLayer::~QgsVectorLayer()
 {
-  QgsDebugMsg( "In QgsVectorLayer destructor" );
+  QgsDebugMsg( "entered." );
 
   emit layerDeleted();
 
@@ -1812,6 +1812,8 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   {
     updateExtents();
   }
+
+  emit featureAdded( f.id() );
 
   return true;
 }
@@ -4509,6 +4511,7 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
   for ( ; delIt != deletedFeatureIdChange.end(); ++delIt )
   {
     mDeletedFeatureIds.insert( *delIt );
+    emit featureDeleted( *delIt );
   }
 
   // added features
@@ -4516,6 +4519,7 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
   for ( ; addIt != addedFeatures.end(); ++addIt )
   {
     mAddedFeatures.append( *addIt );
+    emit featureAdded( addIt->id() );
   }
 
   // changed attributes
@@ -4553,9 +4557,8 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
             break;
           }
         }
-
       }
-
+      emit attributeValueChanged( fid, attrChIt.key(), attrChIt.value().target );
     }
   }
 
@@ -4566,6 +4569,7 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
     int attrIndex = attrIt.key();
     mAddedAttributeIds.insert( attrIndex );
     mUpdatedFields.insert( attrIndex, attrIt.value() );
+    emit attributeAdded( attrIndex );
   }
 
   // deleted attributes
@@ -4575,6 +4579,7 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
     int attrIndex = dAttrIt.key();
     mDeletedAttributeIds.insert( attrIndex );
     mUpdatedFields.remove( attrIndex );
+    emit attributeDeleted( attrIndex );
   }
   setModified( true );
 
@@ -4598,6 +4603,7 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
     int attrIndex = dAttrIt.key();
     mDeletedAttributeIds.remove( attrIndex );
     mUpdatedFields.insert( attrIndex, dAttrIt.value() );
+    emit attributeAdded( attrIndex );
   }
 
   // added attributes
@@ -4607,6 +4613,7 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
     int attrIndex = attrIt.key();
     mAddedAttributeIds.remove( attrIndex );
     mUpdatedFields.remove( attrIndex );
+    emit attributeDeleted( attrIndex );
   }
 
   // geometry changes
@@ -4628,6 +4635,7 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
   for ( ; delIt != deletedFeatureIdChange.end(); ++delIt )
   {
     mDeletedFeatureIds.remove( *delIt );
+    emit featureAdded( *delIt );
   }
 
   // added features
@@ -4640,6 +4648,7 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
       if ( addedIt->id() == addIt->id() )
       {
         mAddedFeatures.erase( addedIt );
+        emit featureDeleted( addIt->id() );
         break; // feature was found so move to next one
       }
     }
@@ -4675,9 +4684,15 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
             break;
           }
         }
-
       }
-      emit attributeValueChanged( fid, attrChIt.key(), attrChIt.value().original );
+      QVariant original = attrChIt.value().original;
+      if ( attrChIt.value().isFirstChange )
+      {
+        QgsFeature tmp;
+        mDataProvider->featureAtId( fid, tmp, false, QgsAttributeList() << attrChIt.key() );
+        original = tmp.attributeMap()[ attrChIt.key()];
+      }
+      emit attributeValueChanged( fid, attrChIt.key(), original );
     }
   }
   setModified( true );

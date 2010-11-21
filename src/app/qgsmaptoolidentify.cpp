@@ -300,7 +300,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : QString::number( fid ) );
 
-    results()->addFeature( layer, fid, f_it->attributeMap(), derivedAttributes );
+    results()->addFeature( layer, *f_it, derivedAttributes );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );

@@ -26,7 +26,12 @@
 #include <limits>
 #include <QComboBox>
 
-QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mFeatureList( features ), mVectorLayer( vl ), mMapCanvas( canvas ), mSelectionRubberBand( 0 )
+QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
+    : QDialog( parent, f )
+    , mFeatureList( features )
+    , mVectorLayer( vl )
+    , mMapCanvas( canvas )
+    , mSelectionRubberBand( 0 )
 {
   setupUi( this );
   createTableWidgetContents();
@@ -60,48 +65,50 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     return;
   }
-  const QgsFieldMap& fieldMap = mVectorLayer->pendingFields();
 
   //combo box row, attributes titles, feature values and current merge results
   mTableWidget->setRowCount( mFeatureList.size() + 2 );
-  mTableWidget->setColumnCount( fieldMap.size() );
 
-  //create combo boxes
-  for ( int i = 0; i < fieldMap.size(); ++i )
-  {
-    mTableWidget->setCellWidget( 0, i, createMergeComboBox( fieldMap[i].type() ) );
-  }
+  //create combo boxes and insert attribute names
+  const QgsFieldMap& fieldMap = mVectorLayer->pendingFields();
 
-  QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-
-  //insert attribute names
   int col = 0;
-  for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+  for ( QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
+        fieldIt != fieldMap.constEnd();
+        ++fieldIt )
   {
+    if ( mVectorLayer->editType( fieldIt.key() ) == QgsVectorLayer::Hidden ||
+         mVectorLayer->editType( fieldIt.key() ) == QgsVectorLayer::Immutable )
+      continue;
+
+    mTableWidget->setColumnCount( col + 1 );
+
+    mTableWidget->setCellWidget( 0, col, createMergeComboBox( fieldIt->type() ) );
+
     QTableWidgetItem *item = new QTableWidgetItem( fieldIt.value().name() );
     item->setData( Qt::UserRole, fieldIt.key() );
     mTableWidget->setHorizontalHeaderItem( col++, item );
   }
 
   //insert the attribute values
-  int currentRow = 1;
   QStringList verticalHeaderLabels; //the id column is in the
   verticalHeaderLabels << tr( "Id" );
 
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
     verticalHeaderLabels << QString::number( mFeatureList[i].id() );
-    QgsAttributeMap currentAttributeMap = mFeatureList[i].attributeMap();
-    QgsAttributeMap::const_iterator currentMapIt = currentAttributeMap.constBegin();
-    int col = 0;
-    for ( ; currentMapIt != currentAttributeMap.constEnd(); ++currentMapIt )
+
+    const QgsAttributeMap &attrs = mFeatureList[i].attributeMap();
+
+    for ( int j = 0; j < mTableWidget->columnCount(); j++ )
     {
-      QTableWidgetItem* attributeValItem = new QTableWidgetItem( currentMapIt.value().toString() );
+      int idx = mTableWidget->horizontalHeaderItem( j )->data( Qt::UserRole ).toInt();
+
+      QTableWidgetItem* attributeValItem = new QTableWidgetItem( attrs[idx].toString() );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mTableWidget->setItem( currentRow, col, attributeValItem );
-      mTableWidget->setCellWidget( currentRow, col++, QgsAttributeEditor::createAttributeEditor( mTableWidget, NULL, mVectorLayer, currentMapIt.key(), currentMapIt.value() ) );
+      mTableWidget->setItem( i + 1, j, attributeValItem );
+      mTableWidget->setCellWidget( i + 1, j, QgsAttributeEditor::createAttributeEditor( mTableWidget, NULL, mVectorLayer, idx, attrs[idx] ) );
     }
-    ++currentRow;
   }
 
   //merge
@@ -109,7 +116,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mTableWidget->setVerticalHeaderLabels( verticalHeaderLabels );
 
   //insert currently merged values
-  for ( int i = 0; i < fieldMap.size(); ++i )
+  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
     refreshMergedValue( i );
   }
@@ -180,7 +187,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
 
   int row = selectionList[0]->row();
 
-  if ( !mTableWidget || !mMapCanvas || !mVectorLayer || row < 1 || row >= ( mTableWidget->rowCount() ) )
+  if ( !mTableWidget || !mMapCanvas || !mVectorLayer || row < 1 || row >= mTableWidget->rowCount() )
   {
     return;
   }
@@ -476,17 +483,18 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
-    if ( currentComboBox )
-    {
-      currentComboBox->blockSignals( true );
-      currentComboBox->removeItem( currentComboBox->findText( tr( "feature %1" ).arg( featureId ) ) );
-      currentComboBox->blockSignals( false );
-    }
+    if ( !currentComboBox )
+      continue;
+
+    currentComboBox->blockSignals( true );
+    currentComboBox->removeItem( currentComboBox->findText( tr( "feature %1" ).arg( featureId ) ) );
+    currentComboBox->blockSignals( false );
   }
 
   //finally remove the feature from mFeatureList
-  QgsFeatureList::iterator f_it = mFeatureList.begin();
-  for ( ; f_it != mFeatureList.end(); ++f_it )
+  for ( QgsFeatureList::iterator f_it = mFeatureList.begin();
+        f_it != mFeatureList.end();
+        ++f_it )
   {
     if ( f_it->id() == featureId )
     {
@@ -509,29 +517,22 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( int featureId )
 
 QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
 {
-  QgsAttributeMap resultMap;
   if ( mFeatureList.size() < 1 )
   {
-    return resultMap; //return empty map
+    return QgsAttributeMap();
   }
 
-  resultMap = mFeatureList[0].attributeMap();
-  int index = 0;
-  QgsAttributeMap::iterator it = resultMap.begin();
-
-  for ( ; it != resultMap.end(); ++it )
+  QgsAttributeMap resultMap;
+  for ( int i = 0; i < mTableWidget->columnCount(); i++ )
   {
-    QTableWidgetItem* currentItem = mTableWidget->item( mFeatureList.size() + 1, index );
+    int idx = mTableWidget->horizontalHeaderItem( i )->data( Qt::UserRole ).toInt();
+
+    QTableWidgetItem* currentItem = mTableWidget->item( mFeatureList.size() + 1, i );
     if ( !currentItem )
-    {
       continue;
-    }
-    QString mergedString = currentItem->text();
-    QVariant newValue( mergedString );
-    resultMap.insert( it.key(), newValue );
-    ++index;
+
+    resultMap.insert( idx, currentItem->text() );
   }
 
   return resultMap;
 }
-

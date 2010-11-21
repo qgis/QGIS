@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsfieldcalculator.h"
+#include "qgsfeatureaction.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -99,6 +100,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   bool canDeleteFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures;
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
+  bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
@@ -106,6 +108,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
+  mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
+  mAddFeature->setHidden( !canAddFeatures || mLayer->geometryType() != QGis::NoGeometry );
 
   // info from table to application
   connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
@@ -114,6 +118,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
 
   connect( searchButton, SIGNAL( clicked() ), this, SLOT( search() ) );
+  connect( mAddFeature, SIGNAL( clicked() ), this, SLOT( addFeature() ) );
 
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
@@ -674,10 +679,12 @@ void QgsAttributeTableDialog::editingToggled()
   bool canDeleteFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures;
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
+  bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
+  mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
 
   // (probably reload data if user stopped editing - possible revert)
   mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
@@ -775,9 +782,18 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
 void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 {
   QgsFieldCalculator calc( mLayer );
-  if ( calc.exec() == QDialog::Accepted )
+  calc.exec();
+}
+
+void QgsAttributeTableDialog::addFeature()
+{
+  if ( !mLayer->isEditable() )
+    return;
+
+  QgsFeature f;
+  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, this );
+  if ( action.addFeature() )
   {
-    // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
   }
 }

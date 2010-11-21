@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>646</width>
+    <width>763</width>
     <height>570</height>
    </rect>
   </property>
@@ -309,6 +309,19 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+L</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mAddFeature">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Add feature</string>
+       </property>
+       <property name="text">
+        <string>+</string>
        </property>
       </widget>
      </item>

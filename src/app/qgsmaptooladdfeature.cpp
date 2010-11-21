@@ -27,87 +27,24 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsfeatureaction.h"
+
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode tool ): QgsMapToolCapture( canvas, tool )
 {
-
 }
 
 QgsMapToolAddFeature::~QgsMapToolAddFeature()
 {
-
 }
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
 {
-  bool res = false;
-  QgsVectorDataProvider* provider = vlayer->dataProvider();
-
-  QSettings settings;
-  bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
-  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
-
-  // add the fields to the QgsFeature
-  const QgsFieldMap fields = vlayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
-  {
-    if ( reuseLastValues && mLastUsedValues.contains( vlayer ) && mLastUsedValues[ vlayer ].contains( it.key() ) )
-    {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ vlayer ][ it.key()].toString() ).arg( it.key() ) );
-      f->addAttribute( it.key(), mLastUsedValues[ vlayer ][ it.key()] );
-    }
-    else
-    {
-      f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
-    }
-  }
-
-  // show the dialog to enter attribute values
-  bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", true ).toBool();
-  if ( isDisabledAttributeValuesDlg )
-  {
-    res = vlayer->addFeature( *f );
-  }
-  else
-  {
-    QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, f );
-
-    QgsAttributeMap origValues;
-    if ( reuseLastValues )
-      origValues = f->attributeMap();
-
-    if ( mypDialog->exec() )
-    {
-      if ( reuseLastValues )
-      {
-        for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
-        {
-          const QgsAttributeMap &newValues = f->attributeMap();
-          if ( newValues.contains( it.key() )
-               && origValues.contains( it.key() )
-               && origValues[ it.key()] != newValues[ it.key()] )
-          {
-            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ vlayer ][ it.key()].toString() ).arg( it.key() ) );
-            mLastUsedValues[ vlayer ][ it.key()] = newValues[ it.key()];
-          }
-        }
-      }
-
-      res = vlayer->addFeature( *f );
-    }
-    else
-    {
-      QgsDebugMsg( "Adding feature to layer failed" );
-      res = false;
-    }
-
-    mypDialog->deleteLater();
-  }
-
-  return res;
+  QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, this );
+  return action.addFeature();
 }
 
 void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )

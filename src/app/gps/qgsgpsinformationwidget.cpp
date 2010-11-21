@@ -29,7 +29,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsattributedialog.h"
+#include "qgsfeatureaction.h"
 #include "qgsgeometry.h"
 
 //for avoid intersections static method
@@ -674,45 +674,13 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
       memcpy( &wkb[5] + sizeof( double ), &y, sizeof( double ) );
 
       f->setGeometryAndOwnership( &wkb[0], size );
-      // add the fields to the QgsFeature
-      const QgsFieldMap fields = vlayer->pendingFields();
-      for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
-      {
-        f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
-      }
 
-      vlayer->beginEditCommand( tr( "Feature added" ) );
+      QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, this );
+      if ( action.addFeature() )
+        mpCanvas->refresh();
 
-      // show the dialog to enter attribute values
-      QSettings settings;
-      bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
-      if ( isDisabledAttributeValuesDlg )
-      {
-        QgsDebugMsg( "Adding feature to layer" );
-        vlayer->addFeature( *f );
-        vlayer->endEditCommand();
-      }
-      else
-      {
-        QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, f );
-        if ( mypDialog->exec() )
-        {
-          QgsDebugMsg( "Adding feature to layer" );
-          vlayer->addFeature( *f );
-          vlayer->endEditCommand();
-        }
-        else
-        {
-          vlayer->destroyEditCommand();
-          QgsDebugMsg( "Adding feature to layer failed" );
-          delete f;
-        }
-        delete mypDialog;
-      }
-
-      mpCanvas->refresh();
+      delete f;
     }
-
   }
   else // Line or poly
   {
@@ -819,48 +787,10 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
       return; //unknown wkbtype
     }
 
-    // add the fields to the QgsFeature
-    const QgsFieldMap fields = vlayer->pendingFields();
-    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
-    {
-      f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
-    }
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, this );
+    if ( action.addFeature() )
+      mpCanvas->refresh();
 
-    QSettings settings;
-    bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
-    if ( isDisabledAttributeValuesDlg )
-    {
-      vlayer->beginEditCommand( tr( "Feature added" ) );
-      if ( vlayer->addFeature( *f ) )
-      {
-        //add points to other features to keep topology up-to-date
-        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-        if ( topologicalEditing )
-        {
-          vlayer->addTopologicalPoints( f->geometry() );
-        }
-      }
-      vlayer->endEditCommand();
-    }
-    else
-    {
-      QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
-      if ( mypDialog->exec() )
-      {
-        vlayer->beginEditCommand( tr( "Feature added" ) );
-        if ( vlayer->addFeature( *f ) )
-        {
-          //add points to other features to keep topology up-to-date
-          int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-          if ( topologicalEditing )
-          {
-            vlayer->addTopologicalPoints( f->geometry() );
-          }
-        }
-        vlayer->endEditCommand();
-      }
-      mypDialog->deleteLater();
-    }
     delete f;
 
     delete mpRubberBand;

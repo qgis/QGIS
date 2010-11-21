@@ -82,6 +82,10 @@ class QgsAttributeTableModel: public QAbstractTableModel
      */
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
     /**
+     * Remove rows
+     */
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+    /**
      * Resets the model
      */
     void resetModel();
@@ -104,9 +108,9 @@ class QgsAttributeTableModel: public QAbstractTableModel
     int fieldIdx( int col ) const;
     /**
      * Maps row to feature id
-     * @param id row id
+     * @param row row number
      */
-    int rowToId( const int id ) const;
+    int rowToId( const int row ) const;
     /**
      * Sorts the model
      * @param column column to sort by
@@ -127,6 +131,8 @@ class QgsAttributeTableModel: public QAbstractTableModel
 
     /** Execute an action */
     void executeAction( int action, const QModelIndex &idx ) const;
+
+    void featureForm( QModelIndex& );
 
   signals:
     /**
@@ -151,6 +157,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
      * @param idx attribute index
      */
     virtual void attributeDeleted( int idx );
+  protected slots:
     /**
      * Launched when attribute value has been changed
      * @param fid feature id
@@ -159,15 +166,6 @@ class QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeValueChanged( int fid, int idx, const QVariant &value );
     /**
-     * Launched when layer has been modified
-     * Rebuilds the model
-     * @param onlyGeometry true if only geometry has changed
-     */
-    virtual void layerModified( bool onlyGeometry = false );
-
-  protected slots:
-#if 0
-    /**
      * Launched when a feature has been deleted
      * @param fid feature id
      */
@@ -175,9 +173,9 @@ class QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Launched when a feature has been added
      * @param fid feature id
+     * @parem inOperation guard insertion with beginInsertRows() / endInsertRows()
      */
-    virtual void featureAdded( int fid );
-#endif
+    virtual void featureAdded( int fid, bool inOperation = true );
     /**
      * Launched when layer has been deleted
      */

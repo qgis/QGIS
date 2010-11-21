@@ -26,7 +26,7 @@ class QgsVectorLayer;
 class QMenu;
 
 
-class QgsAttributeTableView: public QTableView
+class QgsAttributeTableView : public QTableView
 {
     Q_OBJECT
 
@@ -65,6 +65,7 @@ class QgsAttributeTableAction : public QAction
 
   public slots:
     void execute();
+    void featureForm();
 
   private:
     QgsAttributeTableModel *mModel;

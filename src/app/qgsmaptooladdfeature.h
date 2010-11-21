@@ -18,7 +18,7 @@
 #include "qgsfeature.h"
 
 /**This tool adds new point/line/polygon features to already existing vector layers*/
-class QgsMapToolAddFeature: public QgsMapToolCapture
+class QgsMapToolAddFeature : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
@@ -26,7 +26,5 @@ class QgsMapToolAddFeature: public QgsMapToolCapture
     virtual ~QgsMapToolAddFeature();
     void canvasReleaseEvent( QMouseEvent * e );
 
-  private:
     bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f );
-    QMap<QgsVectorLayer *, QgsAttributeMap> mLastUsedValues;
 };

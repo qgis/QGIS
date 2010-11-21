@@ -32,6 +32,7 @@ class QgsAttributeTableDelegate : public QItemDelegate
 
     QgsVectorLayer *layer( const QAbstractItemModel *model ) const;
     int fieldIdx( const QModelIndex &index ) const;
+    int featureId( const QModelIndex &index ) const;
 
   public:
     /** Constructor

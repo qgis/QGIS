@@ -52,6 +52,19 @@ int QgsAttributeTableDelegate::fieldIdx( const QModelIndex &index ) const
   return -1;
 }
 
+int QgsAttributeTableDelegate::featureId( const QModelIndex &index ) const
+{
+  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( index.model() );
+  if ( tm )
+    return tm->rowToId( index.row() );
+
+  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
+  if ( fm )
+    return fm->tableModel()->rowToId( index.row() );
+
+  return -1;
+}
+
 
 QWidget *QgsAttributeTableDelegate::createEditor(
   QWidget *parent,
@@ -87,11 +100,16 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   if ( vl == NULL )
     return;
 
+  int idx = fieldIdx( index );
+  int fid = featureId( index );
+
   QVariant value;
-  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx( index ), value ) )
+  if ( !QgsAttributeEditor::retrieveValue( editor, vl, idx, value ) )
     return;
 
-  model->setData( index, value );
+  vl->beginEditCommand( tr( "Attribute changed" ) );
+  vl->changeAttributeValue( fid, idx, value, true );
+  vl->endEditCommand();
 }
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
