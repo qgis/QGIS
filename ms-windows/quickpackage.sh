@@ -12,11 +12,11 @@
 # Tim Sutton November 2010
 
 makensis \
--DVERSION_NUMBER='$major.$minor.$patch' \
--DVERSION_NAME='$release' \
--DSVN_REVISION='$revision' \
+-DVERSION_NUMBER='1.6.0' \
+-DVERSION_NAME='Capiapo' \
+-DSVN_REVISION='0' \
 -DQGIS_BASE='Quantum GIS $release' \
--DINSTALLER_NAME='QGIS-OSGeo4W-1-6-0-Setup.exe' \
+-DINSTALLER_NAME='QGIS-1-6-0-Setup.exe' \
 -DDISPLAYED_NAME='Quantum GIS 1.6.0' \
 -DBINARY_REVISION=1 \
 -DINSTALLER_TYPE=OSGeo4W \
