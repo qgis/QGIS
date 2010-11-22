@@ -96,7 +96,7 @@ void QgsMapToolSimplify::toleranceChanged( int tolerance )
       QgsSimplifyFeature::simplifyPolygon( f, mTolerance );
     }
   }
-  mRubberBand->setToGeometry( f.geometry(), false );
+  mRubberBand->setToGeometry( f.geometry(), 0 );
 }
 
 
@@ -287,7 +287,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     }
 
     mRubberBand = new QgsRubberBand( mCanvas );
-    mRubberBand->setToGeometry( mSelectedFeature.geometry(), false );
+    mRubberBand->setToGeometry( mSelectedFeature.geometry(), 0 );
     mRubberBand->setColor( Qt::red );
     mRubberBand->setWidth( 2 );
     mRubberBand->show();

@@ -3822,7 +3822,7 @@ QString QgsGeometry::exportToWkt()
   if ( !mGeometry )
   {
     QgsDebugMsg( "WKB geometry not available!" );
-    return false;
+    return QString::null;
   }
 
   QGis::WkbType wkbType;
@@ -4085,7 +4085,7 @@ QString QgsGeometry::exportToWkt()
 
     default:
       QgsDebugMsg( "error: mGeometry type not recognized" );
-      return QString();
+      return QString::null;
   }
 }
 
