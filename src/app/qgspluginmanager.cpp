@@ -43,7 +43,8 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#define TESTLIB
+// Do we need this?
+// #define TESTLIB 
 #ifdef TESTLIB
 // This doesn't work on WIN32 and causes problems with plugins
 // on OS X (the code doesn't cause a problem but including dlfcn.h
