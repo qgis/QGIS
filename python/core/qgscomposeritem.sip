@@ -5,6 +5,29 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
+#include <qgscomposerlabel.h>
+#include <qgscomposerlegend.h>
+#include <qgscomposermap.h>
+#include <qgscomposerpicture.h>
+#include <qgscomposerscalebar.h>
+#include <qgscomposershape.h>
+%End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsComposerLabel*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerLabel;
+  else if (dynamic_cast<QgsComposerLegend*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerLegend;
+  else if (dynamic_cast<QgsComposerMap*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerMap;
+  else if (dynamic_cast<QgsComposerPicture*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerPicture;
+  else if (dynamic_cast<QgsComposerScaleBar*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerScaleBar;
+  else if (dynamic_cast<QgsComposerShape*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerShape;
+  else
+    sipClass = 0;
 %End
 
   public:
