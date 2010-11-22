@@ -131,7 +131,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/
-    void selectedItemChanged( const QgsComposerItem* selected );
+    void selectedItemChanged( QgsComposerItem* selected );
     /**Is emitted when new composer arrow has been added to the view*/
     void composerArrowAdded( QgsComposerArrow* arrow );
     /**Is emitted when new composer label has been added to the view*/
