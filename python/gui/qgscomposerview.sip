@@ -83,7 +83,7 @@ class QgsComposerView: QGraphicsView
 
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/
-    void selectedItemChanged( const QgsComposerItem* selected );
+    void selectedItemChanged( QgsComposerItem* selected );
     /**Ist emittted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /**Is emitted when new composer map has been added to the view*/
