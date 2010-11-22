@@ -383,6 +383,10 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
         mDropAction = INSERT;
       }
     }
+    else
+    {
+      line_y = visualItemRect( item ).bottom() - 2;
+    }
 
     showLine( line_y, line_x );
     setCursor( QCursor( Qt::SizeVerCursor ) );
@@ -1554,7 +1558,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
     ll->layer()->setLayerName( ll->text( 0 ) );
   }
 
-  bool renderFlagState;
+  bool renderFlagState = false;
   bool changing = mChanging;
   mChanging = true;
 

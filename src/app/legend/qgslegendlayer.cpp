@@ -610,7 +610,6 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    QgsSymbolV2* debug = symbolIt->second;
     itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( mSymbolCountMap[symbolIt->second] ) + "]", itemMap[symbolIt->first] ) );
   }
 }
