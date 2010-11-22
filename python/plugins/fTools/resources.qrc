@@ -1,24 +1,24 @@
 <RCC>
-    <qresource>
-		<file>icons/default/single_to_multi.png</file>
-		<file>icons/default/simplify.png</file>
-		<file>icons/default/difference.png</file>
-		<file>icons/default/geometry.png</file>
-		<file>icons/default/check_geometry.png</file>
-		<file>icons/default/to_lines.png</file>
-		<file>icons/default/multi_to_single.png</file>
-		<file>icons/default/mean.png</file>
-		<file>icons/default/select_location.png</file>
-		<file>icons/default/union.png</file>
-		<file>icons/default/dissolve.png</file>
-		<file>icons/default/clip.png</file>
-		<file>icons/default/sym_difference.png</file>
-		<file>icons/default/intersect.png</file>
-		<file>icons/default/analysis.png</file>
-		<file>icons/default/geoprocessing.png</file>
-		<file>icons/default/sampling.png</file>
-		<file>icons/default/management.png</file>
-		<file>icons/default/ftools_logo.png</file>
+    <qresource prefix="/">
+        <file>icons/default/single_to_multi.png</file>
+        <file>icons/default/simplify.png</file>
+        <file>icons/default/difference.png</file>
+        <file>icons/default/geometry.png</file>
+        <file>icons/default/check_geometry.png</file>
+        <file>icons/default/to_lines.png</file>
+        <file>icons/default/multi_to_single.png</file>
+        <file>icons/default/mean.png</file>
+        <file>icons/default/select_location.png</file>
+        <file>icons/default/union.png</file>
+        <file>icons/default/dissolve.png</file>
+        <file>icons/default/clip.png</file>
+        <file>icons/default/sym_difference.png</file>
+        <file>icons/default/intersect.png</file>
+        <file>icons/default/analysis.png</file>
+        <file>icons/default/geoprocessing.png</file>
+        <file>icons/default/sampling.png</file>
+        <file>icons/default/management.png</file>
+        <file>icons/default/ftools_logo.png</file>
         <file>icons/default/centroids.png</file>
         <file>icons/default/export_geometry.png</file>
         <file>icons/default/define_projection.png</file>
@@ -42,28 +42,28 @@
         <file>icons/default/vector_grid.png</file>
         <file>icons/default/split_layer.png</file>
         <file>icons/default/merge_shapes.png</file>
-		<file>icons/default/neighbour.png</file>
-		<file>icons/default/delaunay.png</file>
-		<file>icons/default/layer_extent.png</file>
-		<file>icons/gis/single_to_multi.png</file>
-		<file>icons/gis/simplify.png</file>
-		<file>icons/gis/difference.png</file>
-		<file>icons/gis/geometry.png</file>
-		<file>icons/gis/check_geometry.png</file>
-		<file>icons/gis/to_lines.png</file>
-		<file>icons/gis/multi_to_single.png</file>
-		<file>icons/gis/mean.png</file>
-		<file>icons/gis/select_location.png</file>
-		<file>icons/gis/union.png</file>
-		<file>icons/gis/dissolve.png</file>
-		<file>icons/gis/clip.png</file>
-		<file>icons/gis/sym_difference.png</file>
-		<file>icons/gis/intersect.png</file>
-		<file>icons/gis/analysis.png</file>
-		<file>icons/gis/geoprocessing.png</file>
-		<file>icons/gis/sampling.png</file>
-		<file>icons/gis/management.png</file>
-		<file>icons/gis/ftools_logo.png</file>
+        <file>icons/default/neighbour.png</file>
+        <file>icons/default/delaunay.png</file>
+        <file>icons/default/layer_extent.png</file>
+        <file>icons/gis/single_to_multi.png</file>
+        <file>icons/gis/simplify.png</file>
+        <file>icons/gis/difference.png</file>
+        <file>icons/gis/geometry.png</file>
+        <file>icons/gis/check_geometry.png</file>
+        <file>icons/gis/to_lines.png</file>
+        <file>icons/gis/multi_to_single.png</file>
+        <file>icons/gis/mean.png</file>
+        <file>icons/gis/select_location.png</file>
+        <file>icons/gis/union.png</file>
+        <file>icons/gis/dissolve.png</file>
+        <file>icons/gis/clip.png</file>
+        <file>icons/gis/sym_difference.png</file>
+        <file>icons/gis/intersect.png</file>
+        <file>icons/gis/analysis.png</file>
+        <file>icons/gis/geoprocessing.png</file>
+        <file>icons/gis/sampling.png</file>
+        <file>icons/gis/management.png</file>
+        <file>icons/gis/ftools_logo.png</file>
         <file>icons/gis/centroids.png</file>
         <file>icons/gis/export_geometry.png</file>
         <file>icons/gis/define_projection.png</file>
@@ -86,8 +86,10 @@
         <file>icons/gis/sum_lines.png</file>
         <file>icons/gis/vector_grid.png</file>
         <file>icons/gis/split_layer.png</file>
-		<file>icons/gis/neighbour.png</file>
-		<file>icons/gis/delaunay.png</file>
-		<file>icons/gis/layer_extent.png</file>
+        <file>icons/gis/neighbour.png</file>
+        <file>icons/gis/delaunay.png</file>
+        <file>icons/gis/layer_extent.png</file>
+        <file>icons/gis/voronoi.png</file>
+        <file>icons/default/voronoi.png</file>
     </qresource>
 </RCC>
