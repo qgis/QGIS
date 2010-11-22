@@ -103,7 +103,7 @@ class fToolsPlugin:
     self.checkGeom.setIcon( QIcon( self.getThemeIcon( "check_geometry.png") ) )
     self.centroids.setIcon( QIcon( self.getThemeIcon( "centroids.png") ) )
     self.delaunay.setIcon( QIcon( self.getThemeIcon( "delaunay.png") ) )
-    self.voronoi.setIcon( QIcon( self.getThemeIcon( "delaunay.png") ) )
+    self.voronoi.setIcon( QIcon( self.getThemeIcon( "voronoi.png") ) )
     self.extNodes.setIcon( QIcon( self.getThemeIcon( "extract_nodes.png") ) )
     self.simplify.setIcon( QIcon( self.getThemeIcon( "simplify.png") ) )
     self.multiToSingle.setIcon( QIcon( self.getThemeIcon( "multi_to_single.png") ) )
