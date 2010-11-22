@@ -550,6 +550,9 @@ class geometryThread( QThread ):
 
     
   def clip_voronoi(self, edges, c, width, height, extent, exX, exY):
+    """ Clip voronoi function based on code written for Inkscape
+        Copyright (C) 2010 Alvin Penner, penner@vaxxine.com
+    """
     def clip_line(x1, y1, x2, y2, w, h, x, y):
       if x1 < 0-x and x2 < 0-x:
         return [0, 0, 0, 0]

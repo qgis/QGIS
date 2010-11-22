@@ -4,6 +4,8 @@
 # Translated to Python by Bill Simons
 # September, 2005
 #
+# Additional changes by Carson Farmer added November 2010
+#
 # Calculate Delaunay triangulation or the Voronoi polygons for a set of 
 # 2D input points.
 #
