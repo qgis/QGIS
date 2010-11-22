@@ -45,7 +45,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
 
 bool QgsAttributeTableModel::featureAtId( int fid ) const
 {
-  QgsDebugMsg( QString( "loading feature %1" ).arg( fid ) );
+  QgsDebugMsgLevel( QString( "loading feature %1" ).arg( fid ), 3 );
 
   if ( fid == std::numeric_limits<int>::min() )
     return false;
@@ -55,7 +55,7 @@ bool QgsAttributeTableModel::featureAtId( int fid ) const
 
 void QgsAttributeTableModel::featureDeleted( int fid )
 {
-  QgsDebugMsg( QString( "deleted fid=%1 => row=%2" ).arg( fid ).arg( idToRow( fid ) ) );
+  QgsDebugMsgLevel( QString( "deleted fid=%1 => row=%2" ).arg( fid ).arg( idToRow( fid ) ), 3 );
 
   int row = idToRow( fid );
 
@@ -66,7 +66,7 @@ void QgsAttributeTableModel::featureDeleted( int fid )
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  QgsDebugMsg( QString( "remove %2 rows at %1" ).arg( row ).arg( count ) );
+  QgsDebugMsgLevel( QString( "remove %2 rows at %1" ).arg( row ).arg( count ), 3 );
 
   // clean old references
   for ( int i = row; i < row + count; i++ )
@@ -86,12 +86,12 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   }
 
 #ifdef QGISDEBUG
-  QgsDebugMsg( "id->row" );
+  QgsDebugMsgLevel( "id->row", 4 );
   QHash<int, int>::iterator it;
   for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
     QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
-  QgsDebugMsg( "row->id" );
+  QgsDebugMsgLevel( "row->id", 4 );
   for ( it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
     QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 #endif
@@ -101,7 +101,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( int fid, bool newOperation )
 {
-  QgsDebugMsg( QString( "feature %1 added (%2, rows %3, ids %4)" ).arg( fid ).arg( newOperation ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
+  QgsDebugMsgLevel( QString( "feature %1 added (%2, rows %3, ids %4)" ).arg( fid ).arg( newOperation ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
 
   int n = mRowIdMap.size();
   if ( newOperation )
