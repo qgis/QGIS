@@ -66,13 +66,13 @@ void QgsAttributeTableModel::featureDeleted( int fid )
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  QgsDebugMsgLevel( QString( "remove %2 rows at %1" ).arg( row ).arg( count ), 3 );
+  QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
 
   // clean old references
   for ( int i = row; i < row + count; i++ )
   {
-    mIdRowMap.remove( mRowIdMap[ row ] );
-    mRowIdMap.remove( row );
+    mIdRowMap.remove( mRowIdMap[ i ] );
+    mRowIdMap.remove( i );
   }
 
   // update maps
@@ -86,15 +86,19 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   }
 
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( "id->row", 4 );
   QHash<int, int>::iterator it;
+
+  QgsDebugMsgLevel( QString( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
+  QgsDebugMsgLevel( "id->row", 4 );
   for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
-    QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
+    QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( *it ), 4 );
 
   QgsDebugMsgLevel( "row->id", 4 );
   for ( it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
-    QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
+    QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( *it ), 4 );
 #endif
+
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 
   return true;
 }
@@ -201,13 +205,9 @@ void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
 
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
-
   beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
   removeRows( 0, rowCount() );
   endRemoveRows();
-
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 
   QSettings settings;
   int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
@@ -238,8 +238,6 @@ void QgsAttributeTableModel::loadLayer()
       featureAdded( f.id() );
     }
   }
-
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 
   mFieldCount = mAttributes.size();
 }

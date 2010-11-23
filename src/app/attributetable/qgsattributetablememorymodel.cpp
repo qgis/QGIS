@@ -89,3 +89,13 @@ void QgsAttributeTableMemoryModel::attributeValueChanged( int fid, int idx, cons
   mFeatureMap[fid].changeAttribute( idx, value );
   QgsAttributeTableModel::attributeValueChanged( fid, idx, value );
 }
+
+bool QgsAttributeTableMemoryModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+  QgsDebugMsg( "entered." );
+  for ( int i = row; i < row + count; i++ )
+  {
+    mFeatureMap.remove( mRowIdMap[ i ] );
+  }
+  return QgsAttributeTableModel::removeRows( row, count, parent );
+}
