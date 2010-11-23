@@ -39,8 +39,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  getStereoConfig(); //default values from OSG
-  loadStereoConfig();
+  loadStereoConfig();  //values from settings, default values from OSG
   setStereoConfig(); //overwrite with values from QSettings
 }
 
@@ -170,9 +169,18 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString mode )
+void QgsGlobePluginDialog::on_resetDefaults_clicked()
 {
-  //showMessageBox("index_changed " + stereoMode);
+  //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
+  comboStereoMode->setCurrentIndex( comboStereoMode->findText("OFF") );
+  screenDistance->setValue( 0.5 );
+  screenHeight->setValue( 0.26 );
+  screenWidth->setValue( 0.325 );
+  eyeSeparation->setValue( 0.06);
+  splitStereoHorizontalSeparation->setValue( 42 );
+  splitStereoVerticalSeparation->setValue( 42 );
+  splitStereoHorizontalEyeMapping->setCurrentIndex( 0 );
+  splitStereoVerticalEyeMapping->setCurrentIndex( 0 );
 }
 
 void QgsGlobePluginDialog::showMessageBox( QString text )
@@ -182,19 +190,36 @@ void QgsGlobePluginDialog::showMessageBox( QString text )
     msgBox.exec();
 }
 
-void QgsGlobePluginDialog::getStereoConfig()
+void QgsGlobePluginDialog::loadStereoConfig()
 {
-  //stereoMode ignored
-
-  screenDistance->setValue( osg::DisplaySettings::instance()->getScreenDistance() );
+  //TODO: is it ok to default to OFF? or should we implement all of the STEREO_MODES
+  //and a enable stereo switch?
+  comboStereoMode->setCurrentIndex( comboStereoMode->findText( settings.value( "/Plugin-Globe/stereoMode", 
+    "OFF" ).toString() ) );
+  screenDistance->setValue( settings.value( "/Plugin-Globe/screenDistance", 
+    osg::DisplaySettings::instance()->getScreenDistance() ).toDouble() );
+  screenWidth->setValue( settings.value( "/Plugin-Globe/screenWidth", 
+    osg::DisplaySettings::instance()->getScreenWidth() ).toDouble() );
+  screenHeight->setValue( settings.value( "/Plugin-Globe/screenHeight", 
+    osg::DisplaySettings::instance()->getScreenHeight() ).toDouble() );
+  eyeSeparation->setValue( settings.value( "/Plugin-Globe/eyeSeparation", 
+    osg::DisplaySettings::instance()->getEyeSeparation() ).toDouble() );
+  splitStereoHorizontalSeparation->setValue( settings.value( "/Plugin-Globe/splitStereoHorizontalSeparation", 
+    osg::DisplaySettings::instance()->getSplitStereoHorizontalSeparation() ).toInt() );
+  splitStereoVerticalSeparation->setValue( settings.value( "/Plugin-Globe/splitStereoVerticalSeparation", 
+    osg::DisplaySettings::instance()->getSplitStereoVerticalSeparation() ).toInt() );
+  splitStereoHorizontalEyeMapping->setCurrentIndex( settings.value( "/Plugin-Globe/splitStereoHorizontalEyeMapping", 
+    osg::DisplaySettings::instance()->getSplitStereoHorizontalEyeMapping() ).toInt() );
+  splitStereoVerticalEyeMapping->setCurrentIndex( settings.value( "/Plugin-Globe/splitStereoVerticalEyeMapping", 
+    osg::DisplaySettings::instance()->getSplitStereoVerticalEyeMapping() ).toInt() );
 }
 
 void QgsGlobePluginDialog::setStereoConfig()
 {
-  //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoConfig
+  //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
   //http://www.openscenegraph.org/documentation/OpenSceneGraphReferenceDocs/a00181.html
 
-  QString stereoMode = comboStereoMode->currentText();
+  QString stereoMode = comboStereoMode->currentText() ;
   if("OFF" == stereoMode)
   {
     osg::DisplaySettings::instance()->setStereo( false );
@@ -227,24 +252,30 @@ void QgsGlobePluginDialog::setStereoConfig()
       msgBox.exec();
     }
   }
-
+  
+  //SETTING THE VALUES IN THE OEGearth instance
   osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
-}
-
-void QgsGlobePluginDialog::loadStereoConfig()
-{
-  if ( settings.contains( "/Plugin-Globe/stereoMode" ) )
-  {
-    comboStereoMode->setCurrentIndex( comboStereoMode->findText( settings.value( "/Plugin-Globe/stereoMode" ).toString() ) );
-  }
-  if ( settings.contains( "/Plugin-Globe/screenDistance" ) )
-  {
-    screenDistance->setValue( settings.value( "/Plugin-Globe/screenDistance" ).toDouble() );
-  }
+  osg::DisplaySettings::instance()->setScreenWidth( screenWidth->value() );
+  osg::DisplaySettings::instance()->setScreenHeight( screenHeight->value() );
+  osg::DisplaySettings::instance()->setEyeSeparation( eyeSeparation->value() );
+  osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( splitStereoHorizontalSeparation->value() );
+  osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( splitStereoVerticalSeparation->value() );
+  osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping( 
+    (osg::DisplaySettings::SplitStereoHorizontalEyeMapping) splitStereoHorizontalEyeMapping->currentIndex() );
+  osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping( 
+    (osg::DisplaySettings::SplitStereoVerticalEyeMapping) splitStereoVerticalEyeMapping->currentIndex() );
+  
 }
 
 void QgsGlobePluginDialog::saveStereoConfig()
 {
   settings.setValue( "/Plugin-Globe/stereoMode", comboStereoMode->currentText() );
   settings.setValue( "/Plugin-Globe/screenDistance", screenDistance->value() );
+  settings.setValue( "/Plugin-Globe/screenWidth", screenWidth->value() );
+  settings.setValue( "/Plugin-Globe/screenHeight", screenHeight->value() );
+  settings.setValue( "/Plugin-Globe/eyeSeparation", eyeSeparation->value() );
+  settings.setValue( "/Plugin-Globe/splitStereoHorizontalSeparation", splitStereoHorizontalSeparation->value() );
+  settings.setValue( "/Plugin-Globe/splitStereoVerticalSeparation", splitStereoVerticalSeparation->value() );
+  settings.setValue( "/Plugin-Globe/splitStereoHorizontalEyeMapping", splitStereoHorizontalEyeMapping->currentIndex() );
+  settings.setValue( "/Plugin-Globe/splitStereoVerticalEyeMapping", splitStereoVerticalEyeMapping->currentIndex() );
 }

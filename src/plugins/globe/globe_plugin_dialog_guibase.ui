@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
-    <height>359</height>
+    <width>547</width>
+    <height>433</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,7 +34,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="elevation">
       <attribute name="title">
@@ -165,23 +165,130 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="comboStereoModeLabel">
          <property name="text">
           <string>Stereo Mode</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" colspan="2">
+       <item row="4" column="0">
+        <widget class="QLabel" name="screenDistanceLabel">
+         <property name="text">
+          <string>Screen distance (m)</string>
+         </property>
+         <property name="buddy">
+          <cstring>screenDistance</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QDoubleSpinBox" name="screenDistance">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="screenWidthLabel">
+         <property name="text">
+          <string>Screen width (m)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QDoubleSpinBox" name="screenWidth">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="2">
+        <widget class="QLabel" name="splitStereoHorizontalSeparationLabel">
+         <property name="text">
+          <string>Split stereo horizontal separation (px)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0" colspan="2">
+        <widget class="QLabel" name="splitStereoVerticalSeparationLabel">
+         <property name="text">
+          <string>Split stereo vertical separation (px)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0" colspan="2">
+        <widget class="QLabel" name="splitStereoVerticalEyeMappingLabel">
+         <property name="text">
+          <string>Split stereo vertical eye mapping</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="2">
+        <widget class="QComboBox" name="splitStereoVerticalEyeMapping">
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_TOP_VIEWPORT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_BOTTOM_VIEWPORT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QDoubleSpinBox" name="screenHeight">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="screenHeightLabel">
+         <property name="text">
+          <string>Screen height (m)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QLabel" name="splitStereoHorizontalEyeMappingLabel">
+         <property name="text">
+          <string>Split stereo horizontal eye mapping</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="2">
+        <widget class="QComboBox" name="splitStereoHorizontalEyeMapping">
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_LEFT_VIEWPORT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_RIGHT_VIEWPORT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="12" column="2">
+        <widget class="QSpinBox" name="splitStereoVerticalSeparation"/>
+       </item>
+       <item row="10" column="2">
+        <widget class="QSpinBox" name="splitStereoHorizontalSeparation"/>
+       </item>
+       <item row="0" column="2">
         <widget class="QComboBox" name="comboStereoMode">
-         <property name="minimumSize">
-          <size>
-           <width>300</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maxCount">
-          <number>200</number>
-         </property>
          <item>
           <property name="text">
            <string>OFF</string>
@@ -209,78 +316,32 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Screen distance</string>
-         </property>
-         <property name="buddy">
-          <cstring>screenDistance</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QDoubleSpinBox" name="screenDistance"/>
-       </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="eyeSeparationLabel">
          <property name="text">
-          <string>SCREEN_WIDTH </string>
+          <string>Eye separation (m)</string>
          </property>
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QDoubleSpinBox" name="xxxx_2"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>EYE_SEPARATION </string>
+        <widget class="QDoubleSpinBox" name="eyeSeparation">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="maximum">
+          <double>10.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.001000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <widget class="QDoubleSpinBox" name="xxxx_3"/>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QLabel" name="label_5">
+       <item row="15" column="2">
+        <widget class="QPushButton" name="resetDefaults">
          <property name="text">
-          <string>SPLIT_STEREO_HORIZONTAL_SEPARATION</string>
+          <string>Reset to defaults</string>
          </property>
         </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QDoubleSpinBox" name="xxxx_4"/>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>SPLIT_STEREO_HORIZONTAL_EYE_MAPPING</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QDoubleSpinBox" name="xxxx_5"/>
-       </item>
-       <item row="6" column="0" colspan="2">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>SPLIT_STEREO_VERTICAL_SEPARATION </string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <widget class="QDoubleSpinBox" name="xxxx_6"/>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>SPLIT_STEREO_VERTICAL_EYE_MAPPING</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="2">
-        <widget class="QDoubleSpinBox" name="xxxx_7"/>
        </item>
       </layout>
      </widget>
@@ -298,6 +359,21 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>buttonBox</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>comboStereoMode</tabstop>
+  <tabstop>eyeSeparation</tabstop>
+  <tabstop>screenDistance</tabstop>
+  <tabstop>screenWidth</tabstop>
+  <tabstop>screenHeight</tabstop>
+  <tabstop>splitStereoHorizontalSeparation</tabstop>
+  <tabstop>splitStereoVerticalSeparation</tabstop>
+  <tabstop>splitStereoHorizontalEyeMapping</tabstop>
+  <tabstop>splitStereoVerticalEyeMapping</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -38,11 +38,9 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void restartGlobe();
     bool globeRunning();
     void showMessageBox( QString text);
-    //! Init dialog from osg/DisplaySettings
-    void getStereoConfig();
     //! Set osg/DisplaySettings
     void setStereoConfig();
-    //! Init dialog from settings
+    //! Init dialog from settings using defaults from osg/DisplaySettings
     void loadStereoConfig();
     //! Save settings
     void saveStereoConfig();
@@ -50,7 +48,7 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_comboStereoMode_currentIndexChanged( QString mode );
+    void on_resetDefaults_clicked();
 };
 
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H
