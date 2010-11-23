@@ -151,7 +151,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="61"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="119"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Fletta</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
@@ -251,7 +251,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="17"/>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sameina eigindir</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="28"/>
@@ -267,35 +267,35 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="54"/>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation>Sameina gögn</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="62"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="41"/>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sameina vigur lag</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="79"/>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation>Sameina gagnagrunnstöflu</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="114"/>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Sameina svæði</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="158"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="177"/>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Úttakstafla</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="164"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="183"/>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Halda aðeins í samsvarandi færslur</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="174"/>
@@ -314,19 +314,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>búa til nýtt val</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>fjarlægja úr núverandi vali</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja eftir staðsetningu</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja fitjur í:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
@@ -338,19 +338,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vinsamlega tiltakið inntakslag</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vinsamlega tiltakið val lag</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggja saman línulengdir</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggja saman línulengdir í marghyrningum</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
@@ -366,7 +366,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>length field</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengdarsvæði</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
@@ -394,15 +394,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>density</source>
-        <translation type="unfinished"></translation>
+        <translation>þéttleiki</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished"></translation>
+        <translation>svæði</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="unfinished"></translation>
+        <translation>Óþekkt lagtegund...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
@@ -3016,13 +3016,13 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="43"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppruni</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="55"/>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="261"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lag</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="65"/>
@@ -3034,13 +3034,13 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="95"/>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="248"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Fletta</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="121"/>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="205"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Forsníða</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="136"/>
@@ -3055,7 +3055,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="150"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Skráarsafn</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="193"/>
@@ -9840,37 +9840,37 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="73"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kort</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="47"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Forskoðun</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="63"/>
         <source>Update preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppfæra forskoðun</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="79"/>
         <source>Width</source>
-        <translation type="unfinished">Vídd</translation>
+        <translation>Vídd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="95"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Hæð</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="117"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skali</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Snúningur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="172"/>
@@ -9960,12 +9960,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="589"/>
         <source>Line color</source>
-        <translation type="unfinished"></translation>
+        <translation>Línulitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="471"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Leturgerð...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="478"/>
@@ -10498,43 +10498,43 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="32"/>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation>tomma</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="235"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="339"/>
         <source>Landscape</source>
-        <translation type="unfinished"></translation>
+        <translation>Lárétt</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="343"/>
         <source>Portrait</source>
-        <translation type="unfinished"></translation>
+        <translation>Lóðrétt</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="77"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="473"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Heilt</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="78"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="477"/>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="79"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="481"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Krossar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="114"/>
@@ -20149,7 +20149,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="14"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Stillingar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="144"/>
@@ -30988,7 +30988,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigindasvæði</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
