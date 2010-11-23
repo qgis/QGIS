@@ -16,7 +16,6 @@
 		</section>
 		<section label="Create new GRASS location from vector data">
 			<grass name="v.in.ogr.qgis.loc"/>
-			<grass name="v.in.ogr.qgis"/>
 		</section>
 		<section label="Print projection information from a georeferenced file and create a new location based on it">
 			<grass name="g.proj.geo.new"/>
