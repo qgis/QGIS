@@ -266,26 +266,25 @@ void GlobePlugin::setupControls()
   std::string imgDir = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/gui" ).toStdString();
   
   //MOVE CONTROLS
+  
   //Horizontal container
   HBox* moveHControls = new HBox();
   moveHControls->setFrame( new RoundedFrame() );
   //moveHControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  //moveHControls->setMargin( 10 );
+  moveHControls->setMargin( 10 );
   moveHControls->setSpacing( 15 );
   moveHControls->setVertAlign( Control::ALIGN_CENTER );
   moveHControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveHControls->setPosition( 20, 40);
+  moveHControls->setPosition( 20, 40 );
   
   //Move Left
-  osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png");
-  ImageControl* moveLeft = new ImageControl(moveLeftImg);
-  //moveLeft->setPosition( 0, 5 );
+  osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png" );
+  ImageControl* moveLeft = new ImageControl( moveLeftImg );
   moveLeft->addEventHandler( new MyClickHandler );
   
   //Move Right
-  osg::Image* moveRightImg = osgDB::readImageFile( imgDir + "/move-right.png");
-  ImageControl* moveRight = new ImageControl(moveRightImg);
-  //moveRight->setPosition( 10, 5 );
+  osg::Image* moveRightImg = osgDB::readImageFile( imgDir + "/move-right.png" );
+  ImageControl* moveRight = new ImageControl( moveRightImg );
   moveRight->addEventHandler( new MyClickHandler );
   
   
@@ -293,30 +292,29 @@ void GlobePlugin::setupControls()
   VBox* moveVControls = new VBox();
   moveVControls->setFrame( new RoundedFrame() );
   //moveControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  //moveControls->setMargin( 10 );
+  moveControls->setMargin( 10 );
   moveVControls->setSpacing( 15 );
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveVControls->setPosition( 40, 20);
+  moveVControls->setPosition( 40, 20 );
   
   //Move Up
-  osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png");
-  ImageControl* moveUp = new ImageControl(moveUpImg);
-  //moveUp->setPosition( 5, 10 );
+  osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png" );
+  ImageControl* moveUp = new ImageControl( moveUpImg );
   moveUp->addEventHandler( new MyClickHandler );
   
   //Move Down
-  osg::Image* moveDownImg = osgDB::readImageFile( imgDir + "/move-down.png");
-  ImageControl* moveDown = new ImageControl(moveDownImg);
-  //moveDown->setPosition( 5, 0 );
+  osg::Image* moveDownImg = osgDB::readImageFile( imgDir + "/move-down.png" );
+  ImageControl* moveDown = new ImageControl( moveDownImg );
   moveDown->addEventHandler( new MyClickHandler );
-  //END MOVE CONTROLS
   
   //add controls to moveControls group
   moveHControls->addControl( moveLeft );
   moveHControls->addControl( moveRight );
   moveVControls->addControl( moveUp );
   moveVControls->addControl( moveDown );
+  
+  //END MOVE CONTROLS
   
   //add controls groups to canavas
   mControlCanvas->addControl( moveHControls );
