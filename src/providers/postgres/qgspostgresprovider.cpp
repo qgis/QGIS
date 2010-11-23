@@ -3138,18 +3138,19 @@ bool QgsPostgresProvider::getGeometryDetails()
                      "from " ).arg( quotedIdentifier( geometryColumn ) );
       if ( mUseEstimatedMetadata )
       {
-        sql += QString( "(select %1 from %2 where %1 is not null limit %3) as t" )
+        sql += QString( "(select %1 from %2 where %1 is not null" )
                .arg( quotedIdentifier( geometryColumn ) )
-               .arg( mQuery )
-               .arg( sGeomTypeSelectLimit );
+               .arg( mQuery );
+        if ( !sqlWhereClause.isEmpty() )
+          sql += " and " + sqlWhereClause;
+        sql += QString( " limit %1 ) as t" ).arg( sGeomTypeSelectLimit );
       }
       else
       {
         sql += mQuery;
+        if ( !sqlWhereClause.isEmpty() )
+          sql += " where " + sqlWhereClause;
       }
-
-      if ( !sqlWhereClause.isEmpty() )
-        sql += " where " + sqlWhereClause;
 
       result = connectionRO->PQexec( sql );
 
