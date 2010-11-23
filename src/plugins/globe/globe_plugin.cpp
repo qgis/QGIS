@@ -291,8 +291,8 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* moveVControls = new VBox();
   moveVControls->setFrame( new RoundedFrame() );
-  //moveControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  moveControls->setMargin( 10 );
+  //moveVControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
+  moveVControls->setMargin( 10 );
   moveVControls->setSpacing( 15 );
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
