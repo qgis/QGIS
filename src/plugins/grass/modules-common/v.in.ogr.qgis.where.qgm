@@ -3,10 +3,11 @@
 
 <qgisgrassmodule label="Import loaded vector selecting some features" module="v.in.ogr"> 
 	<flag key="o" answer="on" hidden="yes" />
-	<flag key="z" answer="off" hidden="no" />
-	<flag key="e" answer="off" hidden="no" />
         <ogr key="dsn" layeroption="layer" whereoption="where" label="OGR vector layer" />
 	<option key="where" />
         <option key="output" /> 
-	<option key="type" />
+        <option key="type" advanced="yes"/>
+        <flag key="z" answer="off" hidden="no" advanced="yes"/>
+        <flag key="e" answer="off" hidden="no" advanced="yes"/>
+        <option key="snap" advanced="yes" /> 
 </qgisgrassmodule>
