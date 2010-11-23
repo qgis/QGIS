@@ -13,7 +13,6 @@ class Dialog(QDialog, Ui_Dialog):
         # Set up the user interface from Designer.
         self.setupUi(self)
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
@@ -21,7 +20,15 @@ class Dialog(QDialog, Ui_Dialog):
         self.inPolygon.addItems(layers)
         self.inPoint.addItems(layers)
         self.updateUI()
+        self.connect(self.inPoint, SIGNAL("currentIndexChanged(QString)"), self.updateCheck)
         self.cmbModify.addItems([self.tr("creating new selection"), self.tr("adding to current selection"), self.tr("removing from current selection")])
+        
+    def updateCheck(self, text):
+        vlayer = ftools_utils.getVectorLayerByName(text)
+        if vlayer.selectedFeatureCount() > 0:
+            self.chkSelected.setChecked(True)
+        else:
+            self.chkSelected.setChecked(False)
 
     def updateUI(self):
         self.label_5.setVisible(False)
@@ -37,8 +44,11 @@ class Dialog(QDialog, Ui_Dialog):
         self.label_mod.setText(self.tr("Modify current selection by:"))
         self.cmbModify = QComboBox(self)
         self.cmbModify.setObjectName("cmbModify")
-        self.gridLayout.addWidget(self.label_mod,2,0,1,1)
-        self.gridLayout.addWidget(self.cmbModify,3,0,1,1)
+        self.chkSelected = QCheckBox(self.tr("Use selected features only"), self)
+        self.chkSelected.setObjectName("chkSelected")
+        self.gridLayout.addWidget(self.chkSelected,2,0,1,1)
+        self.gridLayout.addWidget(self.label_mod,3,0,1,1)
+        self.gridLayout.addWidget(self.cmbModify,4,0,1,1)
         self.resize(381, 100)
 
     def accept(self):
@@ -50,11 +60,11 @@ class Dialog(QDialog, Ui_Dialog):
         else:
             inPoly = self.inPolygon.currentText()
             inPts = self.inPoint.currentText()
-            self.compute(inPoly, inPts, self.cmbModify.currentText())
+            self.compute(inPoly, inPts, self.cmbModify.currentText(), self.chkSelected.isChecked())
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
-    def compute(self, inPoly, inPts, modify):
+    def compute(self, inPoly, inPts, modify, selection):
         inputLayer = ftools_utils.getVectorLayerByName(inPoly)
         selectLayer = ftools_utils.getVectorLayerByName(inPts)
         inputProvider = inputLayer.dataProvider()
@@ -68,20 +78,29 @@ class Dialog(QDialog, Ui_Dialog):
         geom = QgsGeometry()
         selectedSet = []
         index = ftools_utils.createIndex(inputProvider)
-        #selectProvider.nextFeature(feat)
-        #geomLayer = QgsGeometry(feat.geometry())
-        self.progressBar.setMaximum(selectProvider.featureCount())
-        
-        while selectProvider.nextFeature(feat):
-            geom = QgsGeometry(feat.geometry())
-            intersects = index.intersects(geom.boundingBox())
-            print len(intersects)
-            for id in intersects:
-                inputProvider.featureAtId(int(id), infeat, True)
-                tmpGeom = QgsGeometry( infeat.geometry() )
-                if geom.intersects(tmpGeom):
-                    selectedSet.append(infeat.id())
-            self.progressBar.setValue(self.progressBar.value()+1)
+        if selection:
+            features = selectLayer.selectedFeatures()
+            self.progressBar.setMaximum(len(features))
+            for feat in features:
+                geom = QgsGeometry(feat.geometry())
+                intersects = index.intersects(geom.boundingBox())
+                for id in intersects:
+                    inputProvider.featureAtId(int(id), infeat, True)
+                    tmpGeom = QgsGeometry(infeat.geometry())
+                    if geom.intersects(tmpGeom):
+                        selectedSet.append(infeat.id())
+                self.progressBar.setValue(self.progressBar.value()+1)
+        else:        
+            self.progressBar.setMaximum(selectProvider.featureCount())
+            while selectProvider.nextFeature(feat):
+                geom = QgsGeometry(feat.geometry())
+                intersects = index.intersects(geom.boundingBox())
+                for id in intersects:
+                    inputProvider.featureAtId(int(id), infeat, True)
+                    tmpGeom = QgsGeometry( infeat.geometry() )
+                    if geom.intersects(tmpGeom):
+                        selectedSet.append(infeat.id())
+                self.progressBar.setValue(self.progressBar.value()+1)
         if modify == self.tr("adding to current selection"):
             selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))
         elif modify == self.tr("removing from current selection"):
