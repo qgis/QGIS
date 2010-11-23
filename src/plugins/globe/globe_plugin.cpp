@@ -108,7 +108,7 @@ struct MyClickHandler : public ControlEventHandler
 {
     void onClick( Control* control, int mouseButtonMask )
     {
-        OE_NOTICE << "Thank you for clicking on " << typeid(control).name()
+        OE_NOTICE << "Thank you for clicking on " << typeid(control).name() << mouseButtonMask
                   << std::endl;
     }
 };
@@ -262,30 +262,66 @@ void GlobePlugin::setupMap()
 
 void GlobePlugin::setupControls()
 {
-  // a centered hbox container along the bottom on the screen.
-  HBox* bottom = new HBox();
-  bottom->setFrame( new RoundedFrame() );
-  bottom->getFrame()->setBackColor(0,0,0,0.5);
-  bottom->setMargin( 10 );
-  bottom->setSpacing( 145 );
-  bottom->setVertAlign( Control::ALIGN_BOTTOM );
-  bottom->setHorizAlign( Control::ALIGN_CENTER );
-
-  for( int i=0; i<4; ++i )
-  {
-    LabelControl* label = new LabelControl();
-    std::stringstream buf;
-    buf << "Label_" << i;
-    label->setText( buf.str() );
-    label->setMargin( 10 );
-    label->setBackColor( 1,1,1,0.4 );
-    bottom->addControl( label );
-
-    label->setActiveColor(1,.3,.3,1);
-    label->addEventHandler( new MyClickHandler );
-  }
-
-  mControlCanvas->addControl( bottom );
+ 
+  std::string imgDir = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/gui" ).toStdString();
+  
+  //MOVE CONTROLS
+  //Horizontal container
+  HBox* moveHControls = new HBox();
+  moveHControls->setFrame( new RoundedFrame() );
+  //moveHControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
+  //moveHControls->setMargin( 10 );
+  moveHControls->setSpacing( 15 );
+  moveHControls->setVertAlign( Control::ALIGN_CENTER );
+  moveHControls->setHorizAlign( Control::ALIGN_CENTER );
+  moveHControls->setPosition( 20, 40);
+  
+  //Move Left
+  osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png");
+  ImageControl* moveLeft = new ImageControl(moveLeftImg);
+  //moveLeft->setPosition( 0, 5 );
+  moveLeft->addEventHandler( new MyClickHandler );
+  
+  //Move Right
+  osg::Image* moveRightImg = osgDB::readImageFile( imgDir + "/move-right.png");
+  ImageControl* moveRight = new ImageControl(moveRightImg);
+  //moveRight->setPosition( 10, 5 );
+  moveRight->addEventHandler( new MyClickHandler );
+  
+  
+  //Vertical container
+  VBox* moveVControls = new VBox();
+  moveVControls->setFrame( new RoundedFrame() );
+  //moveControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
+  //moveControls->setMargin( 10 );
+  moveVControls->setSpacing( 15 );
+  moveVControls->setVertAlign( Control::ALIGN_CENTER );
+  moveVControls->setHorizAlign( Control::ALIGN_CENTER );
+  moveVControls->setPosition( 40, 20);
+  
+  //Move Up
+  osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png");
+  ImageControl* moveUp = new ImageControl(moveUpImg);
+  //moveUp->setPosition( 5, 10 );
+  moveUp->addEventHandler( new MyClickHandler );
+  
+  //Move Down
+  osg::Image* moveDownImg = osgDB::readImageFile( imgDir + "/move-down.png");
+  ImageControl* moveDown = new ImageControl(moveDownImg);
+  //moveDown->setPosition( 5, 0 );
+  moveDown->addEventHandler( new MyClickHandler );
+  //END MOVE CONTROLS
+  
+  //add controls to moveControls group
+  moveHControls->addControl( moveLeft );
+  moveHControls->addControl( moveRight );
+  moveVControls->addControl( moveUp );
+  moveVControls->addControl( moveDown );
+  
+  //add controls groups to canavas
+  mControlCanvas->addControl( moveHControls );
+  mControlCanvas->addControl( moveVControls );
+  
 }
 
 void GlobePlugin::setupProxy()
