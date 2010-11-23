@@ -36,6 +36,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureaction.h"
 #include "qgsattributeaction.h"
+#include "qgsattributetabledialog.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis ),
@@ -231,9 +232,24 @@ void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
   }
 }
 
-void QgisAppInterface::addWindow( QAction *action ) { qgis->addWindow( action ); }
-void QgisAppInterface::removeWindow( QAction *action ) { qgis->removeWindow( action ); }
+void QgisAppInterface::showAttributeTable( QgsVectorLayer *l )
+{
+  if ( l )
+  {
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l );
+    dialog->show();
+  }
+}
 
+void QgisAppInterface::addWindow( QAction *action )
+{
+  qgis->addWindow( action );
+}
+
+void QgisAppInterface::removeWindow( QAction *action )
+{
+  qgis->removeWindow( action );
+}
 
 bool QgisAppInterface::registerMainWindowAction( QAction* action, QString defaultShortcut )
 {

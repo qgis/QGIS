@@ -117,6 +117,11 @@ class QgisInterface : QObject
      */
     virtual void showLayerProperties( QgsMapLayer * layer )=0;
 
+    /** open attribute table 
+      \note added in 1.7
+     */
+    virtual void showAttributeTable( QgsVectorLayer * layer )=0;
+
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) = 0;
