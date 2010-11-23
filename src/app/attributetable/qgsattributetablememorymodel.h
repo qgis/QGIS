@@ -39,6 +39,11 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      */
     QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer );
 
+    /**
+     * Remove rows
+     */
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
   protected slots:
     /**
      * Launched when a feature has been deleted
