@@ -233,7 +233,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void deleteItem( QgsComposerItem* item );
 
     /**Shows the configuration widget for a composer item*/
-    void showItemOptions( const QgsComposerItem* i );
+    void showItemOptions( QgsComposerItem* i );
 
     //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
 

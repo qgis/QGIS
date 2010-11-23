@@ -360,7 +360,7 @@ void QgsComposer::showCompositionOptions( QWidget *w )
   mItemStackedWidget->addWidget( w );
 }
 
-void QgsComposer::showItemOptions( const QgsComposerItem* item )
+void QgsComposer::showItemOptions( QgsComposerItem* item )
 {
   QWidget* currentWidget = mItemStackedWidget->currentWidget();
 
@@ -371,7 +371,7 @@ void QgsComposer::showItemOptions( const QgsComposerItem* item )
     return;
   }
 
-  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find( const_cast<QgsComposerItem*>( item ) );
+  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find( item );
   if ( it == mItemWidgetMap.constEnd() )
   {
     return;
