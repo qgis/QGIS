@@ -120,7 +120,17 @@ class QgisAppInterface : public QgisInterface
 
     virtual void refreshLegend( QgsMapLayer *l );
 
+    /** show layer properties dialog for layer
+     * @param l layer to show properties table for
+     * @note added in added in 1.5
+     */
     virtual void showLayerProperties( QgsMapLayer *l );
+
+    /** show layer attribute dialog for layer
+     * @param l layer to show attribute table for
+     * @note added in added in 1.7
+     */
+    virtual void showAttributeTable( QgsVectorLayer *l );
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */

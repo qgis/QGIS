@@ -126,11 +126,15 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Add action to the plugins menu */
     virtual void addPluginToMenu( QString name, QAction* action ) = 0;
+
     /** Remove action from the plugins menu */
     virtual void removePluginMenu( QString name, QAction* action ) = 0;
 
-     /** Add action to the Database menu */
+    /** Add action to the Database menu
+     * @note added in 1.7
+     */
     virtual void addPluginToDatabaseMenu( QString name, QAction* action ) = 0;
+
     /** Remove action from the Database menu */
     virtual void removePluginDatabaseMenu( QString name, QAction* action ) = 0;
 
@@ -149,6 +153,11 @@ class GUI_EXPORT QgisInterface : public QObject
      \note added in 1.5
      */
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+
+    /** open attribute table dialog
+     \note added in 1.7
+     */
+    virtual void showAttributeTable( QgsVectorLayer *l ) = 0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
@@ -346,7 +355,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
         Added in v1.6
       */
-     void newProjectCreated();
+    void newProjectCreated();
 
 };
 
