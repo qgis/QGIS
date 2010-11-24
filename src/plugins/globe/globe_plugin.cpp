@@ -265,17 +265,16 @@ void GlobePlugin::setupControls()
  
   std::string imgDir = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/gui" ).toStdString();
   
-  //MOVE CONTROLS
-  
+//MOVE CONTROLS
   //Horizontal container
   HBox* moveHControls = new HBox();
   moveHControls->setFrame( new RoundedFrame() );
   //moveHControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
   moveHControls->setMargin( 10 );
-  moveHControls->setSpacing( 15 );
+  moveHControls->setSpacing( 10 );
   moveHControls->setVertAlign( Control::ALIGN_CENTER );
   moveHControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveHControls->setPosition( 20, 40 );
+  moveHControls->setPosition( 5, 35 );
   
   //Move Left
   osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png" );
@@ -287,16 +286,21 @@ void GlobePlugin::setupControls()
   ImageControl* moveRight = new ImageControl( moveRightImg );
   moveRight->addEventHandler( new MyClickHandler );
   
+  //Move Reset
+  osg::Image* moveResetImg = osgDB::readImageFile( imgDir + "/move-reset.png" );
+  ImageControl* moveReset = new ImageControl( moveResetImg );
+  moveReset->addEventHandler( new MyClickHandler );
+  
   
   //Vertical container
   VBox* moveVControls = new VBox();
   moveVControls->setFrame( new RoundedFrame() );
   //moveVControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
   moveVControls->setMargin( 10 );
-  moveVControls->setSpacing( 15 );
+  moveVControls->setSpacing( 30 );
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveVControls->setPosition( 40, 20 );
+  moveVControls->setPosition( 40, 5 );
   
   //Move Up
   osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png" );
@@ -310,15 +314,84 @@ void GlobePlugin::setupControls()
   
   //add controls to moveControls group
   moveHControls->addControl( moveLeft );
+  moveHControls->addControl( moveReset );
   moveHControls->addControl( moveRight );
   moveVControls->addControl( moveUp );
   moveVControls->addControl( moveDown );
   
-  //END MOVE CONTROLS
+//END MOVE CONTROLS
+  
+//ROTATE CONTROLS
+  //Horizontal container
+  HBox* rotateControls = new HBox();
+  rotateControls->setFrame( new RoundedFrame() );
+  //rotateControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
+  rotateControls->setMargin( 10 );
+  rotateControls->setSpacing( 10 );
+  rotateControls->setVertAlign( Control::ALIGN_CENTER );
+  rotateControls->setHorizAlign( Control::ALIGN_CENTER );
+  rotateControls->setPosition( 5, 90 );
+  
+  //Rotate CCW
+  osg::Image* rotateCCWImg = osgDB::readImageFile( imgDir + "/rotate-ccw.png" );
+  ImageControl* rotateCCW = new ImageControl( rotateCCWImg );
+  rotateCCW->addEventHandler( new MyClickHandler );
+  
+  //Rotate CW
+  osg::Image* rotateCWImg = osgDB::readImageFile( imgDir + "/rotate-cw.png" );
+  ImageControl* rotateCW = new ImageControl( rotateCWImg );
+  rotateCW->addEventHandler( new MyClickHandler );
+  
+  //Rotate Reset
+  osg::Image* rotateResetImg = osgDB::readImageFile( imgDir + "/rotate-reset.png" );
+  ImageControl* rotateReset = new ImageControl( rotateResetImg );
+  rotateReset->addEventHandler( new MyClickHandler );
+  
+  //add controls to moveControls group
+  rotateControls->addControl( rotateCCW );
+  rotateControls->addControl( rotateReset );
+  rotateControls->addControl( rotateCW );
+  
+//END ROTATE CONTROLS
+  
+//ZOOM CONTROLS
+  //Vertical container
+  VBox* zoomControls = new VBox();
+  zoomControls->setFrame( new RoundedFrame() );
+  //zoomControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
+  zoomControls->setMargin( 10 );
+  zoomControls->setSpacing( 5 );
+  zoomControls->setVertAlign( Control::ALIGN_CENTER );
+  zoomControls->setHorizAlign( Control::ALIGN_CENTER );
+  zoomControls->setPosition( 40, 120 );
+  
+  //Zoom In
+  osg::Image* zoomInImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
+  ImageControl* zoomIn = new ImageControl( zoomInImg );
+  zoomIn->addEventHandler( new MyClickHandler );
+  
+  //Zoom Out
+  osg::Image* zoomOutImg = osgDB::readImageFile( imgDir + "/zoom-out.png" );
+  ImageControl* zoomOut = new ImageControl( zoomOutImg );
+  zoomOut->addEventHandler( new MyClickHandler );
+  
+  //Zoom Reset
+  osg::Image* zoomResetImg = osgDB::readImageFile( imgDir + "/zoom-reset.png" );
+  ImageControl* zoomReset = new ImageControl( zoomResetImg );
+  zoomReset->addEventHandler( new MyClickHandler );
+  
+  //add controls to moveControls group
+  zoomControls->addControl( zoomIn );
+  zoomControls->addControl( zoomReset );
+  zoomControls->addControl( zoomOut );
+  
+//END ZOOM CONTROLS
   
   //add controls groups to canavas
-  mControlCanvas->addControl( moveHControls );
   mControlCanvas->addControl( moveVControls );
+  mControlCanvas->addControl( moveHControls );
+  mControlCanvas->addControl( rotateControls );
+  mControlCanvas->addControl( zoomControls );
   
 }
 
