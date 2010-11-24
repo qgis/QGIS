@@ -463,12 +463,16 @@ class geometryThread( QThread ):
     inFeat = QgsFeature()
     c = voronoi.Context()
     pts = []
+    ptDict = {}
+    ptNdx = -1
     while vprovider.nextFeature(inFeat):
       geom = QgsGeometry(inFeat.geometry())
       point = geom.asPoint()
       x = point.x()
       y = point.y()
       pts.append((x, y))
+      ptNdx +=1
+      ptDict[ptNdx] = inFeat.id()
     if len(pts) < 3:
       return False
     uniqueSet = Set(item for item in pts)
@@ -488,7 +492,7 @@ class geometryThread( QThread ):
       polygon = []
       step = 0
       for index in indicies:
-        vprovider.featureAtId( ids[index], inFeat, True,  allAttrs )
+        vprovider.featureAtId(ptDict[ids[index]], inFeat, True,  allAttrs)
         geom = QgsGeometry(inFeat.geometry())
         point = QgsPoint(geom.asPoint())
         polygon.append(point)
@@ -517,18 +521,22 @@ class geometryThread( QThread ):
     width = extent.width()
     c = voronoi.Context()
     pts = []
+    ptDict = {}
+    ptNdx = -1
     while vprovider.nextFeature(inFeat):
       geom = QgsGeometry(inFeat.geometry())
       point = geom.asPoint()
       x = point.x()-extent.xMinimum()
       y = point.y()-extent.yMinimum()
       pts.append((x, y))
+      ptNdx +=1
+      ptDict[ptNdx] = inFeat.id()
     self.vlayer = None
     if len(pts) < 3:
       return False
     uniqueSet = Set(item for item in pts)
     ids = [pts.index(item) for item in uniqueSet]
-    sl = voronoi.SiteList([voronoi.Site(*i, sitenum=j) for j, i in enumerate(uniqueSet)])
+    sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j) for j, i in enumerate(uniqueSet)])
     voronoi.voronoi(sl, c)
     inFeat = QgsFeature()
     nFeat = len(c.polygons)
@@ -536,7 +544,7 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     for site, edges in c.polygons.iteritems():
-      vprovider.featureAtId(ids[site], inFeat, True,  allAttrs)
+      vprovider.featureAtId(ptDict[ids[site]], inFeat, True,  allAttrs)
       lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
       geom = QgsGeometry.fromMultiPoint(lines)
       geom = QgsGeometry(geom.convexHull())
