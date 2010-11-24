@@ -124,4 +124,18 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
     QgisInterface *mQGisIface;
 };
 
+namespace osgEarthUtil { namespace Controls2
+{
+class NavigationControl : public ImageControl
+{
+public:
+    NavigationControl( osg::Image* image =0L ) : ImageControl(image) {}
+
+protected:
+    virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx );
+
+};
+}
+}
+
 #endif // QGS_GLOBE_PLUGIN_H
