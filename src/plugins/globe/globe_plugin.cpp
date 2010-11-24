@@ -387,7 +387,7 @@ void GlobePlugin::setupControls()
   
 //END ZOOM CONTROLS
   
-  //add controls groups to canavas
+//add controls groups to canavas
   mControlCanvas->addControl( moveVControls );
   mControlCanvas->addControl( moveHControls );
   mControlCanvas->addControl( rotateControls );
