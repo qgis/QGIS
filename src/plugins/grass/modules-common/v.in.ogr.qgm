@@ -3,9 +3,11 @@
 
 <qgisgrassmodule label="Import OGR vector" module="v.in.ogr">
 	<flag key="o" answer="on" hidden="yes" />
-	<flag key="z" answer="off" hidden="no" />
-	<flag key="e" answer="off" hidden="no" />
 	<file key="dsn" type="old" label="OGR file" />
 	<option key="output" />	
-	<option key="type" />
+        <option key="type" advanced="yes"/>
+        <flag key="z" answer="off" hidden="no" advanced="yes"/>
+        <flag key="e" answer="off" hidden="no" advanced="yes"/>
+        <option key="snap" advanced="yes" />
+        <option key="where" advanced="yes"/>
 </qgisgrassmodule>
