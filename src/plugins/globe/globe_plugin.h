@@ -119,10 +119,9 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
 
   private:
     osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-
+    //osgEarthUtil::EarthManipulator::Settings* _manipSettings;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
 };
-
 
 #endif // QGS_GLOBE_PLUGIN_H

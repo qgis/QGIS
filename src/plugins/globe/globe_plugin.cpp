@@ -106,9 +106,9 @@ void GlobePlugin::initGui()
 
 struct MyClickHandler : public ControlEventHandler
 {
-    void onClick( Control* control, int mouseButtonMask )
+    void onClick( Control* control, int mouseButtonMask)
     {
-        OE_NOTICE << "Thank you for clicking on " << typeid(control).name() << mouseButtonMask
+        OE_NOTICE << "Thank you for clicking on " << typeid(control).name()
                   << std::endl;
     }
 };
@@ -508,13 +508,58 @@ void GlobePlugin::copyFolder(QString sourceFolder, QString destFolder)
 }
 
 bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-{
+{ 
+  float deg = 3.14159 / 180;
+  
+  //this should be the way to implement this I think, but it segfaults...
+  //TODO: put this in the correct place, here is ok for now to test
+  //_manipSettings.bindKey(osgEarthUtil::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Page_Up);
+  //_manip->applySettings( _manipSettings );
+  
+  
   if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
+  
   {
     QgsPoint center = mQGisIface->mapCanvas()->extent().center();
     osgEarthUtil::Viewpoint viewpoint( osg::Vec3d(  center.x(), center.y(), 0.0 ), 0.0, -90.0, 1e4 );
     _manip->setViewpoint( viewpoint, 4.0 );
   }
+  
+  
+  /*if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '4' )
+  {
+    _manip->pan(-1,0);
+  }
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '6' )
+  {
+    _manip->pan(1,0);
+  }  
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '8' )
+  {
+    _manip->pan(0,1);
+  }
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '2' )
+  {
+    _manip->pan(0,-1);
+  }  
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '+' )
+  {
+    _manip->rotate(0,1*deg);
+  }
+  */
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '-' )
+  {
+    _manip->rotate(0,-1*deg);
+  }  
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '/' )
+  {
+    _manip->rotate(1*deg,0);
+  }
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '*' )
+  {
+    _manip->rotate(-1*deg,0);
+  } 
+  
   return false;
 }
 
