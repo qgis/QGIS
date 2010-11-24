@@ -2562,12 +2562,9 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
   }
 
   QString errorMsg;
-  if ( geometryType() != QGis::NoGeometry )
+  if ( !readSymbology( layer_node, errorMsg ) )
   {
-    if ( !readSymbology( layer_node, errorMsg ) )
-    {
-      return false;
-    }
+    return false;
   }
 
   return mValid;               // should be true if read successfully
