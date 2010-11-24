@@ -52,11 +52,7 @@
 				</section>
 			</section>
 			<section label="Import vector into GRASS">
-				<section label="Import vector into GRASS from QGIS view">
 	                                <grass name="v.in.ogr.qgis"/>
-        	                        <grass name="v.in.ogr.qgis.loc"/>
-				</section>
-				<section label="Import vector into GRASS from external data sources in GRASS">
 					<grass name="v.in.ogr"/>
 					<grass name="v.in.ogr.loc"/>
                 	                <grass name="v.in.ogr.all"/> 
@@ -70,7 +66,6 @@
 					<grass name="v.in.gpsbabel"/>
 					<grass name="v.in.geonames"/>
 					<grass name="v.in.gns"/>
-				</section>
 			</section>
 			<section label="Import from database into GRASS">
 				<grass name="db.in.ogr"/>
