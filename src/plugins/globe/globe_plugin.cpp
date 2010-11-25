@@ -330,7 +330,7 @@ void GlobePlugin::setupControls()
   rotateControls->setSpacing( 10 );
   rotateControls->setVertAlign( Control::ALIGN_CENTER );
   rotateControls->setHorizAlign( Control::ALIGN_CENTER );
-  rotateControls->setPosition( 5, 90 );
+  rotateControls->setPosition( 5, 120 );
   
   //Rotate CCW
   osg::Image* rotateCCWImg = osgDB::readImageFile( imgDir + "/rotate-ccw.png" );
@@ -351,8 +351,35 @@ void GlobePlugin::setupControls()
   rotateControls->addControl( rotateCCW );
   rotateControls->addControl( rotateReset );
   rotateControls->addControl( rotateCW );
-  
+
 //END ROTATE CONTROLS
+
+//TILT CONTROLS
+  //Vertical container
+  VBox* tiltControls = new VBox();
+  tiltControls->setFrame( new RoundedFrame() );
+  //tiltControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
+  tiltControls->setMargin( 10 );
+  tiltControls->setSpacing( 30 );
+  tiltControls->setVertAlign( Control::ALIGN_CENTER );
+  tiltControls->setHorizAlign( Control::ALIGN_CENTER );
+  tiltControls->setPosition( 40, 90 );
+  
+  //tilt Up
+  osg::Image* tiltUpImg = osgDB::readImageFile( imgDir + "/tilt-up.png" );
+  ImageControl* tiltUp = new ImageControl( tiltUpImg );
+  tiltUp->addEventHandler( new MyClickHandler );
+  
+  //tilt Down
+  osg::Image* tiltDownImg = osgDB::readImageFile( imgDir + "/tilt-down.png" );
+  ImageControl* tiltDown = new ImageControl( tiltDownImg );
+  tiltDown->addEventHandler( new MyClickHandler );
+  
+  //add controls to tiltControls group
+  tiltControls->addControl( tiltUp );
+  tiltControls->addControl( tiltDown );
+  
+//END TILT CONTROLS
   
 //ZOOM CONTROLS
   //Vertical container
@@ -363,7 +390,7 @@ void GlobePlugin::setupControls()
   zoomControls->setSpacing( 5 );
   zoomControls->setVertAlign( Control::ALIGN_CENTER );
   zoomControls->setHorizAlign( Control::ALIGN_CENTER );
-  zoomControls->setPosition( 40, 120 );
+  zoomControls->setPosition( 40, 180 );
   
   //Zoom In
   osg::Image* zoomInImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
@@ -380,7 +407,7 @@ void GlobePlugin::setupControls()
   ImageControl* zoomReset = new ImageControl( zoomResetImg );
   zoomReset->addEventHandler( new MyClickHandler );
   
-  //add controls to moveControls group
+  //add controls to zoomControls group
   zoomControls->addControl( zoomIn );
   zoomControls->addControl( zoomReset );
   zoomControls->addControl( zoomOut );
@@ -391,6 +418,7 @@ void GlobePlugin::setupControls()
   mControlCanvas->addControl( moveVControls );
   mControlCanvas->addControl( moveHControls );
   mControlCanvas->addControl( rotateControls );
+  mControlCanvas->addControl( tiltControls );
   mControlCanvas->addControl( zoomControls );
   
 }
