@@ -147,8 +147,8 @@ void GlobePlugin::run()
   mRootNode->addChild( mControlCanvas );
   setupControls();
 
-  // add our fly-to handler
-  viewer.addEventHandler(new FlyToExtentHandler( manip, mQGisIface ));
+  // add our controls handler
+  viewer.addEventHandler(new ControlsHandler( manip, mQGisIface ));
 
   // add some stock OSG handlers:
   viewer.addEventHandler(new osgViewer::StatsHandler());
@@ -535,7 +535,7 @@ void GlobePlugin::copyFolder(QString sourceFolder, QString destFolder)
   }
 }
 
-bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+bool ControlsHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 { 
   float deg = 3.14159 / 180;
   

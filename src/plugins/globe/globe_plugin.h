@@ -110,10 +110,10 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarthUtil::ObjectPlacer* mObjectPlacer;
 };
 
-class FlyToExtentHandler : public osgGA::GUIEventHandler 
+class ControlsHandler : public osgGA::GUIEventHandler 
 {
   public:
-    FlyToExtentHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
+    ControlsHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
 
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
 
