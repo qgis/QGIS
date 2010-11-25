@@ -39,7 +39,7 @@ MACRO(ADD_FLEX_FILES _sources )
          OUTPUT ${_out}
          COMMAND ${FLEX_EXECUTABLE}
          ARGS
-         -o${_out} -d
+         -o${_out}
          ${_in}
          DEPENDS ${_in}
       )
@@ -66,7 +66,7 @@ MACRO(ADD_FLEX_FILES_PREFIX _sources prefix )
          COMMAND ${FLEX_EXECUTABLE}
          ARGS
          -P${prefix}
-         -o${_out} -d
+         -o${_out}
          ${_in}
          DEPENDS ${_in}
       )
