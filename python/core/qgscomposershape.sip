@@ -17,6 +17,9 @@ class QgsComposerShape: QgsComposerItem
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/);
     ~QgsComposerShape();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const;
+
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

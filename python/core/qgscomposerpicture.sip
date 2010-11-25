@@ -12,6 +12,9 @@ class QgsComposerPicture: QgsComposerItem
     QgsComposerPicture( QgsComposition *composition /TransferThis/);
     ~QgsComposerPicture();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const;
+
     /**Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

@@ -27,6 +27,10 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
   public:
     QgsComposerItemGroup( QgsComposition* c );
     ~QgsComposerItemGroup();
+
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerItemGroup; }
+
     /**Adds an item to the group. All the group members are deleted
      if the group is deleted*/
     void addItem( QgsComposerItem* item );

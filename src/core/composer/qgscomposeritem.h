@@ -35,6 +35,26 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     Q_OBJECT
   public:
 
+    enum ItemType
+    {
+      // base class for the items
+      ComposerItem = UserType + 100,
+
+      // derived classes
+      ComposerArrow,
+      ComposerItemGroup,
+      ComposerLabel,
+      ComposerLegend,
+      ComposerMap,
+      ComposerPaper,  // QgsPaperItem
+      ComposerPicture,
+      ComposerScaleBar,
+      ComposerShape,
+      ComposerTable,
+      ComposerAttributeTable,
+      ComposerTextTable
+    };
+
     /**Describes the action (move or resize in different directon) to be done during mouse move*/
     enum MouseMoveAction
     {
@@ -76,6 +96,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true );
     virtual ~QgsComposerItem();
+
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerItem; }
 
     /** \brief Set selected, selected item should be highlighted */
     virtual void setSelected( bool s );

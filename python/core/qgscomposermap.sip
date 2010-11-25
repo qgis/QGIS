@@ -16,6 +16,9 @@ class QgsComposerMap : QgsComposerItem
     QgsComposerMap( QgsComposition *composition /TransferThis/ );
     ~QgsComposerMap();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const;
+
     /** \brief Preview style  */
     enum PreviewMode
     {

@@ -31,6 +31,9 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     QgsComposerTable( QgsComposition* composition );
     virtual ~QgsComposerTable();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerTable; }
+
     /** \brief Reimplementation of QCanvasItem::paint*/
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

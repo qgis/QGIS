@@ -6,9 +6,12 @@ class QgsPaperItem: QgsComposerItem
 #include <qgspaperitem.h>
 %End
   public:
-    QgsPaperItem( QgsComposition* c );
-    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
+    QgsPaperItem( QgsComposition* c /TransferThis/ );
+    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/ );
     ~QgsPaperItem();
+
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );

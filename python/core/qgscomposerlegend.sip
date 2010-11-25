@@ -11,6 +11,9 @@ class QgsComposerLegend: QgsComposerItem
     QgsComposerLegend( QgsComposition* composition /TransferThis/);
     ~QgsComposerLegend();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const;
+
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

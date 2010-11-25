@@ -27,6 +27,9 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
     QgsComposerTextTable( QgsComposition* c );
     ~QgsComposerTextTable();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerTextTable; }
+
     void setHeaderLabels( const QStringList& l ) { mHeaderLabels = l; }
     void addRow( const QStringList& row ) { mRowText.append( row ); }
 

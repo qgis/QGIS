@@ -5,32 +5,103 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
+//#include <qgscomposerarrow.h>
+//#include <qgscomposeritemgroup.h>
 #include <qgscomposerlabel.h>
 #include <qgscomposerlegend.h>
 #include <qgscomposermap.h>
+#include <qgspaperitem.h>
 #include <qgscomposerpicture.h>
 #include <qgscomposerscalebar.h>
 #include <qgscomposershape.h>
+//#include <qgscomposertable.h>
+//#include <qgscomposerattributetable.h>
+//#include <qgscomposertexttable.h>
 %End
 
 %ConvertToSubClassCode
-  if (dynamic_cast<QgsComposerLabel*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerLabel;
-  else if (dynamic_cast<QgsComposerLegend*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerLegend;
-  else if (dynamic_cast<QgsComposerMap*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerMap;
-  else if (dynamic_cast<QgsComposerPicture*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerPicture;
-  else if (dynamic_cast<QgsComposerScaleBar*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerScaleBar;
-  else if (dynamic_cast<QgsComposerShape*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerShape;
-  else
-    sipClass = 0;
+  // the conversions have to be static, because they're using multiple inheritance
+  // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+  switch (sipCpp->type())
+  {
+  case QgsComposerItem::ComposerItem:
+    sipType = sipType_QgsComposerItem;
+    *sipCppRet = static_cast<QgsComposerItem*>(sipCpp);
+    break;
+/*  case QgsComposerItem::ComposerArrow:
+    sipType = sipType_QgsComposerArrow;
+    *sipCppRet = static_cast<QgsComposerArrow*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerItemGroup:
+    sipType = sipType_QgsComposerItemGroup;
+    *sipCppRet = static_cast<QgsComposerItemGroup*>(sipCpp);
+    break;*/
+  case QgsComposerItem::ComposerLabel:
+    sipType = sipType_QgsComposerLabel;
+    *sipCppRet = static_cast<QgsComposerLabel*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerLegend:
+    sipType = sipType_QgsComposerLegend;
+    *sipCppRet = static_cast<QgsComposerLegend*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerMap:
+    sipType = sipType_QgsComposerMap;
+    *sipCppRet = static_cast<QgsComposerMap*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerPaper:
+    sipType = sipType_QgsPaperItem;
+    *sipCppRet = static_cast<QgsPaperItem*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerPicture:
+    sipType = sipType_QgsComposerPicture;
+    *sipCppRet = static_cast<QgsComposerPicture*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerScaleBar:
+    sipType = sipType_QgsComposerScaleBar;
+    *sipCppRet = static_cast<QgsComposerScaleBar*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerShape:
+    sipType = sipType_QgsComposerShape;
+    *sipCppRet = static_cast<QgsComposerShape*>(sipCpp);
+    break;
+/*  case QgsComposerItem::ComposerTable:
+    sipType = sipType_QgsComposerTable;
+    *sipCppRet = static_cast<QgsComposerTable*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerAttributeTable:
+    sipType = sipType_QgsComposerAttributeTable;
+    *sipCppRet = static_cast<QgsComposerAttributeTable*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerTextTable:
+    sipType = sipType_QgsComposerTextTable;
+    *sipCppRet = static_cast<QgsComposerTextTable*>(sipCpp);
+    break;*/
+  default:
+    sipType = 0;
+  }
 %End
 
   public:
+
+    enum ItemType
+    {
+      // base class for the items
+      ComposerItem = 65636, /* UserType + 100 ... SIP does not do arithmetic */
+
+      // derived classes
+      ComposerArrow,
+      ComposerItemGroup,
+      ComposerLabel,
+      ComposerLegend,
+      ComposerMap,
+      ComposerPaper,  // QgsPaperItem
+      ComposerPicture,
+      ComposerScaleBar,
+      ComposerShape,
+      ComposerTable,
+      ComposerAttributeTable,
+      ComposerTextTable
+    };
 
     /**Describes the action (move or resize in different directon) to be done during mouse move*/
     enum MouseMoveAction
@@ -61,11 +132,14 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 
     /**Constructor
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( QgsComposition* composition, bool manageZValue = true );
+    QgsComposerItem( QgsComposition* composition /TransferThis/, bool manageZValue = true );
     /**Constructor with box position and composer object
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true );
+    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/, bool manageZValue = true );
     virtual ~QgsComposerItem();
+
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const;
 
     /** \brief Set selected, selected item should be highlighted */
     virtual void setSelected( bool s );
