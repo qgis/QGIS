@@ -44,6 +44,7 @@ class QgsOfflineEditing : public QObject
     void synchronize( QgsLegendInterface* legendInterface );
 
   private:
+    void initializeSpatialMetadata( sqlite3 *sqlite_handle );
     bool createSpatialiteDB( const QString& offlineDbPath );
     void createLoggingTables( sqlite3* db );
     void copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath );

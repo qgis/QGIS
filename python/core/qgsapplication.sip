@@ -139,10 +139,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the master qgis.db file.
     static const QString qgisMasterDbFilePath();
 
-    //! Returns the path to the spatialite template db file.
-    //! @note added in 1.5
-    static const QString qgisSpatialiteDbTemplatePath();
-
     //! Returns the path to the settings directory in user's home dir
     static const QString qgisSettingsDirPath();
     

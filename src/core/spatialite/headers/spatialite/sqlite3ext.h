@@ -1,4 +1,233 @@
 /*
+** alias MACROs to avoid any potential collision
+** for linker symbols declared into the sqlite3 code
+** internally embedded into SpatiaLite
+*/
+#define sqlite3_version SPLite3_version
+#define sqlite3_libversion SPLite3_libversion
+#define sqlite3_sourceid SPLite3_sourceid
+#define sqlite3_libversion_number SPLite3_libversion_number
+#define sqlite3_compileoption_used SPLite3_compileoption_used
+#define sqlite3_compileoption_get SPLite3_compileoption_get
+#define sqlite3_threadsafe SPLite3_threadsafe
+#define sqlite3_close SPLite3_close
+#define sqlite3_exec SPLite3_exec
+#define sqlite3_initialize SPLite3_initialize
+#define sqlite3_shutdown SPLite3_shutdown
+#define sqlite3_os_init SPLite3_os_init
+#define sqlite3_os_end SPLite3_os_end
+#define sqlite3_config SPLite3_config
+#define sqlite3_db_config SPLite3_db_config
+#define sqlite3_extended_result_codes SPLite3_extended_result_codes
+#define sqlite3_last_insert_rowid SPLite3_last_insert_rowid
+#define sqlite3_changes SPLite3_changes
+#define sqlite3_total_changes SPLite3_total_changes
+#define sqlite3_interrupt SPLite3_interrupt
+#define sqlite3_complete SPLite3_complete
+#define sqlite3_complete16 SPLite3_complete16
+#define sqlite3_busy_handler SPLite3_busy_handler
+#define sqlite3_busy_timeout SPLite3_busy_timeout
+#define sqlite3_get_table SPLite3_get_table
+#define sqlite3_free_table SPLite3_free_table
+#define sqlite3_mprintf SPLite3_mprintf
+#define sqlite3_vmprintf SPLite3_vmprintf
+#define sqlite3_snprintf SPLite3_snprintf
+#define sqlite3_malloc SPLite3_malloc
+#define sqlite3_realloc SPLite3_realloc
+#define sqlite3_free SPLite3_free
+#define sqlite3_memory_used SPLite3_memory_used
+#define sqlite3_memory_highwater SPLite3_memory_highwater
+#define sqlite3_randomness SPLite3_randomness
+#define sqlite3_set_authorizer SPLite3_set_authorizer
+#define sqlite3_trace SPLite3_trace
+#define sqlite3_progress_handler SPLite3_progress_handler
+#define sqlite3_open SPLite3_open
+#define sqlite3_open16 SPLite3_open16
+#define sqlite3_open_v2 SPLite3_open_v2
+#define sqlite3_errcode SPLite3_errcode
+#define sqlite3_extended_errcode SPLite3_extended_errcode
+#define sqlite3_errmsg SPLite3_errmsg
+#define sqlite3_errmsg16 SPLite3_errmsg16
+#define sqlite3_limit SPLite3_limit
+#define sqlite3_prepare SPLite3_prepare
+#define sqlite3_prepare_v2 SPLite3_prepare_v2
+#define sqlite3_prepare16 SPLite3_prepare16
+#define sqlite3_prepare16_v2 SPLite3_prepare16_v2
+#define sqlite3_sql SPLite3_sql
+#define sqlite3_bind_blob SPLite3_bind_blob
+#define sqlite3_bind_double SPLite3_bind_double
+#define sqlite3_bind_int SPLite3_bind_int
+#define sqlite3_bind_int64 SPLite3_bind_int64
+#define sqlite3_bind_null SPLite3_bind_null
+#define sqlite3_bind_text SPLite3_bind_text
+#define sqlite3_bind_text16 SPLite3_bind_text16
+#define sqlite3_bind_value SPLite3_bind_value
+#define sqlite3_bind_zeroblob SPLite3_bind_zeroblob
+#define sqlite3_bind_parameter_count SPLite3_bind_parameter_count
+#define sqlite3_bind_parameter_name SPLite3_bind_parameter_name
+#define sqlite3_bind_parameter_index SPLite3_bind_parameter_index
+#define sqlite3_clear_bindings SPLite3_clear_bindings
+#define sqlite3_column_count SPLite3_column_count
+#define sqlite3_column_name SPLite3_column_name
+#define sqlite3_column_name16 SPLite3_column_name16
+#define sqlite3_column_database_name SPLite3_column_database_name
+#define sqlite3_column_database_name16 SPLite3_column_database_name16
+#define sqlite3_column_table_name SPLite3_column_table_name
+#define sqlite3_column_table_name16 SPLite3_column_table_name16
+#define sqlite3_column_origin_name SPLite3_column_origin_name
+#define sqlite3_column_origin_name16 SPLite3_column_origin_name16
+#define sqlite3_column_decltype SPLite3_column_decltype
+#define sqlite3_column_decltype16 SPLite3_column_decltype16
+#define sqlite3_step SPLite3_step
+#define sqlite3_data_count SPLite3_data_count
+#define sqlite3_column_blob SPLite3_column_blob
+#define sqlite3_column_bytes SPLite3_column_bytes
+#define sqlite3_column_bytes16 SPLite3_column_bytes16
+#define sqlite3_column_double SPLite3_column_double
+#define sqlite3_column_int SPLite3_column_int
+#define sqlite3_column_int64 SPLite3_column_int64
+#define sqlite3_column_text SPLite3_column_text
+#define sqlite3_column_text16 SPLite3_column_text16
+#define sqlite3_column_type SPLite3_column_type
+#define sqlite3_column_value SPLite3_column_value
+#define sqlite3_finalize SPLite3_finalize
+#define sqlite3_reset SPLite3_reset
+#define sqlite3_create_function SPLite3_create_function
+#define sqlite3_create_function16 SPLite3_create_function16
+#define sqlite3_create_function_v2 SPLite3_create_function_v2
+#define sqlite3_value_blob SPLite3_value_blob
+#define sqlite3_value_bytes SPLite3_value_bytes
+#define sqlite3_value_bytes16 SPLite3_value_bytes16
+#define sqlite3_value_double SPLite3_value_double
+#define sqlite3_value_int SPLite3_value_int
+#define sqlite3_value_int64 SPLite3_value_int64
+#define sqlite3_value_text SPLite3_value_text
+#define sqlite3_value_text16 SPLite3_value_text16
+#define sqlite3_value_text16le SPLite3_value_text16le
+#define sqlite3_value_text16be SPLite3_value_text16be
+#define sqlite3_value_type SPLite3_value_type
+#define sqlite3_value_numeric_type SPLite3_value_numeric_type
+#define sqlite3_aggregate_context SPLite3_aggregate_context
+#define sqlite3_user_data SPLite3_user_data
+#define sqlite3_context_db_handle SPLite3_context_db_handle
+#define sqlite3_get_auxdata SPLite3_get_auxdata
+#define sqlite3_set_auxdata SPLite3_set_auxdata
+#define sqlite3_result_blob SPLite3_result_blob
+#define sqlite3_result_double SPLite3_result_double
+#define sqlite3_result_error SPLite3_result_error
+#define sqlite3_result_error16 SPLite3_result_error16
+#define sqlite3_result_error_toobig SPLite3_result_error_toobig
+#define sqlite3_result_error_nomem SPLite3_result_error_nomem
+#define sqlite3_result_error_code SPLite3_result_error_code
+#define sqlite3_result_int SPLite3_result_int
+#define sqlite3_result_int64 SPLite3_result_int64
+#define sqlite3_result_null SPLite3_result_null
+#define sqlite3_result_text SPLite3_result_text
+#define sqlite3_result_text16 SPLite3_result_text16
+#define sqlite3_result_text16le SPLite3_result_text16le
+#define sqlite3_result_text16be SPLite3_result_text16be
+#define sqlite3_result_value SPLite3_result_value
+#define sqlite3_result_zeroblob SPLite3_result_zeroblob
+#define sqlite3_create_collation SPLite3_create_collation
+#define sqlite3_create_collation_v2 SPLite3_create_collation_v2
+#define sqlite3_create_collation16 SPLite3_create_collation16
+#define sqlite3_collation_needed SPLite3_collation_needed
+#define sqlite3_collation_needed16 SPLite3_collation_needed16
+#define sqlite3_key SPLite3_key
+#define sqlite3_rekey SPLite3_rekey
+#define sqlite3_activate_see SPLite3_activate_see
+#define sqlite3_activate_cerod SPLite3_activate_cerod
+#define sqlite3_sleep SPLite3_sleep
+#define sqlite3_temp_directory SPLite3_temp_directory
+#define sqlite3_get_autocommit SPLite3_get_autocommit
+#define sqlite3_db_handle SPLite3_db_handle
+#define sqlite3_next_stmt SPLite3_next_stmt
+#define sqlite3_commit_hook SPLite3_commit_hook
+#define sqlite3_rollback_hook SPLite3_rollback_hook
+#define sqlite3_update_hook SPLite3_update_hook
+#define sqlite3_enable_shared_cache SPLite3_enable_shared_cache
+#define sqlite3_release_memory SPLite3_release_memory
+#define sqlite3_soft_heap_limit64 SPLite3_soft_heap_limit64
+#define sqlite3_table_column_metadata SPLite3_table_column_metadata
+#define sqlite3_load_extension SPLite3_load_extension
+#define sqlite3_enable_load_extension SPLite3_enable_load_extension
+#define sqlite3_auto_extension SPLite3_auto_extension
+#define sqlite3_reset_auto_extension SPLite3_reset_auto_extension
+#define sqlite3_create_module SPLite3_create_module
+#define sqlite3_create_module_v2 SPLite3_create_module_v2
+#define sqlite3_declare_vtab SPLite3_declare_vtab
+#define sqlite3_overload_function SPLite3_overload_function
+#define sqlite3_blob_open SPLite3_blob_open
+#define sqlite3_blob_close SPLite3_blob_close
+#define sqlite3_blob_bytes SPLite3_blob_bytes
+#define sqlite3_blob_read SPLite3_blob_read
+#define sqlite3_blob_write SPLite3_blob_write
+#define sqlite3_vfs_find SPLite3_vfs_find
+#define sqlite3_vfs_register SPLite3_vfs_register
+#define sqlite3_vfs_unregister SPLite3_vfs_unregister
+#define sqlite3_mutex_alloc SPLite3_mutex_alloc
+#define sqlite3_mutex_free SPLite3_mutex_free
+#define sqlite3_mutex_enter SPLite3_mutex_enter
+#define sqlite3_mutex_try SPLite3_mutex_try
+#define sqlite3_mutex_leave SPLite3_mutex_leave
+#define sqlite3_mutex_held SPLite3_mutex_held
+#define sqlite3_mutex_notheld SPLite3_mutex_notheld
+#define sqlite3_db_mutex SPLite3_db_mutex
+#define sqlite3_file_control SPLite3_file_control
+#define sqlite3_test_control SPLite3_test_control
+#define sqlite3_status SPLite3_status
+#define sqlite3_db_status SPLite3_db_status
+#define sqlite3_stmt_status SPLite3_stmt_status
+#define sqlite3_backup_init SPLite3_backup_init
+#define sqlite3_backup_step SPLite3_backup_step
+#define sqlite3_backup_finish SPLite3_backup_finish
+#define sqlite3_backup_remaining SPLite3_backup_remaining
+#define sqlite3_backup_pagecount SPLite3_backup_pagecount
+#define sqlite3_unlock_notify SPLite3_unlock_notify
+#define sqlite3_strnicmp SPLite3_strnicmp
+#define sqlite3_log SPLite3_log
+#define sqlite3_wal_hook SPLite3_wal_hook
+#define sqlite3_wal_autocheckpoint SPLite3_wal_autocheckpoint
+#define sqlite3_wal_checkpoint SPLite3_wal_checkpoint
+#define sqlite3_rtree_geometry_callback SPLite3_rtree_geometry_callback
+#define sqlite3_memdebug_vfs_oom_test SPLite3_memdebug_vfs_oom_test
+#define sqlite3_memory_alarm SPLite3_memory_alarm
+#define sqlite3_soft_heap_limit SPLite3_soft_heap_limit
+#define sqlite3_io_error_hit SPLite3_io_error_hit
+#define sqlite3_io_error_hardhit SPLite3_io_error_hardhit
+#define sqlite3_io_error_pending SPLite3_io_error_pending
+#define sqlite3_io_error_persist SPLite3_io_error_persist
+#define sqlite3_io_error_benign SPLite3_io_error_benign
+#define sqlite3_diskfull_pending SPLite3_diskfull_pending
+#define sqlite3_diskfull SPLite3_diskfull
+#define sqlite3_open_file_count SPLite3_open_file_count
+#define sqlite3_sync_count SPLite3_sync_count
+#define sqlite3_fullsync_count SPLite3_fullsync_count
+#define sqlite3_current_time SPLite3_current_time
+#define sqlite3_hostid_num SPLite3_hostid_num
+#define sqlite3_os_type SPLite3_os_type
+#define sqlite3_win32_mbcs_to_utf8 SPLite3_win32_mbcs_to_utf8
+#define sqlite3_pager_readdb_count SPLite3_pager_readdb_count
+#define sqlite3_pager_writedb_count SPLite3_pager_writedb_count
+#define sqlite3_pager_writej_count SPLite3_pager_writej_count
+#define sqlite3_opentemp_count SPLite3_opentemp_count
+#define sqlite3_expired SPLite3_expired
+#define sqlite3_aggregate_count SPLite3_aggregate_count
+#define sqlite3_transfer_bindings SPLite3_transfer_bindings
+#define sqlite3_search_count SPLite3_search_count
+#define sqlite3_interrupt_count SPLite3_interrupt_count
+#define sqlite3_sort_count SPLite3_sort_count
+#define sqlite3_max_blobsize SPLite3_max_blobsize
+#define sqlite3_found_count SPLite3_found_count
+#define sqlite3_like_count SPLite3_like_count
+#define sqlite3_xferopt_count SPLite3_xferopt_count
+#define sqlite3_profile SPLite3_profile
+#define sqlite3_global_recover SPLite3_global_recover
+#define sqlite3_thread_cleanup SPLite3_thread_cleanup
+#define sqlite3_fts3_enable_parentheses SPLite3_fts3_enable_parentheses
+/* end SpatiaLite/sqlite3 alias macros */
+
+/*
 ** 2006 June 7
 **
 ** The author disclaims copyright to this source code.  In place of
@@ -14,8 +243,6 @@
 ** an SQLite instance.  Shared libraries that intend to be loaded
 ** as extensions by SQLite should #include this file instead of 
 ** sqlite3.h.
-**
-** @(#) $Id: sqlite3ext.h,v 1.25 2008/10/12 00:27:54 shane Exp $
 */
 #ifndef _SQLITE3EXT_H_
 #define _SQLITE3EXT_H_
@@ -197,7 +424,7 @@ struct sqlite3_api_routines {
 
 /*
 ** The following macros redefine the API routines so that they are
-** redirected through the global sqlite3_api structure.
+** redirected throught the global sqlite3_api structure.
 **
 ** This header file is also used by the loadext.c source file
 ** (part of the main SQLite library - not an extension) so that

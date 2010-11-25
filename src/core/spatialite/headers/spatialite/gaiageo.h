@@ -158,6 +158,7 @@ extern "C"
 /* constants used for VirtualNetwork */
 #define GAIA_NET_START		0x67
 #define GAIA_NET64_START	0x68
+#define GAIA_NET64_A_STAR_START	0x69
 #define GAIA_NET_END		0x87
 #define GAIA_NET_HEADER		0xc0
 #define GAIA_NET_CODE		0xa6
@@ -169,6 +170,7 @@ extern "C"
 #define GAIA_NET_TO		0xa2
 #define GAIA_NET_GEOM		0xa3
 #define GAIA_NET_NAME		0xa4
+#define GAIA_NET_A_STAR_COEFF	0xa5
 #define GAIA_NET_BLOCK		0xed
 
 /* constants used for Coordinate Dimensions */
@@ -346,6 +348,7 @@ extern "C"
 	double MaxY;		/* MBR - BBOX */
 	int DimensionModel;	/* (x,y), (x,y,z), (x,y,m) or (x,y,z,m) */
 	int DeclaredType;	/* the declared TYPE for this Geometry */
+	struct gaiaGeomCollStruct *Next;	/* Vanuatu - used for linked list */
     } gaiaGeomColl;
     typedef gaiaGeomColl *gaiaGeomCollPtr;
 
@@ -374,7 +377,7 @@ extern "C"
 	char *Name;		/* field name */
 	unsigned char Type;	/* field type */
 	int Offset;		/* buffer offset [this field begins at *buffer+offset* and extends for *length* bytes */
-	unsigned char Length;	/* field total length [in bytes] */
+	unsigned char Length;	/* field total lenght [in bytes] */
 	unsigned char Decimals;	/* decimal positions */
 	gaiaValuePtr Value;	/* the current multitype value for this attribute */
 	struct gaiaDbfFieldStruct *Next;	/* pointer to next element in linked list */
@@ -391,12 +394,30 @@ extern "C"
     } gaiaDbfList;
     typedef gaiaDbfList *gaiaDbfListPtr;
 
+    typedef struct gaiaDbfStruct
+    {
+/* DBF TYPE */
+	int endian_arch;
+	int Valid;		/* 1 = ready to process */
+	char *Path;		/* the DBF path */
+	FILE *flDbf;		/* the DBF file handle */
+	gaiaDbfListPtr Dbf;	/* the DBF attributes list */
+	unsigned char *BufDbf;	/* the DBF I/O buffer */
+	int DbfHdsz;		/* the DBF header length */
+	int DbfReclen;		/* the DBF record length */
+	int DbfSize;		/* current DBF size */
+	int DbfRecno;		/* current DBF record number */
+	void *IconvObj;		/* opaque reference to ICONV converter */
+	char *LastError;	/* last error message */
+    } gaiaDbf;
+    typedef gaiaDbf *gaiaDbfPtr;
+
     typedef struct gaiaShapefileStruct
     {
 /* SHAPEFILE TYPE */
 	int endian_arch;
 	int Valid;		/* 1 = ready to process */
-	int ReadOnly;		/* read or wite mode */
+	int ReadOnly;		/* read or write mode */
 	char *Path;		/* the shapefile abstract path [no suffixes] */
 	FILE *flShx;		/* the SHX file handle */
 	FILE *flShp;		/* the SHP file handle */
@@ -422,6 +443,95 @@ extern "C"
 	int EffectiveDims;	/* the effective Dimensions [XY, XYZ, XYM, XYZM], as determined by gaiaShpAnalyze() */
     } gaiaShapefile;
     typedef gaiaShapefile *gaiaShapefilePtr;
+
+    typedef struct gaiaOutBufferStruct
+    {
+/* a struct handling a dynamically growing output buffer */
+	char *Buffer;
+	int WriteOffset;
+	int BufferSize;
+	int Error;
+    } gaiaOutBuffer;
+    typedef gaiaOutBuffer *gaiaOutBufferPtr;
+
+#ifndef OMIT_ICONV		/* ICONV enabled: supporting text reader */
+
+#define VRTTXT_FIELDS_MAX	65535
+#define VRTTXT_BLOCK_MAX 65535
+
+#define VRTTXT_TEXT		1
+#define VRTTXT_INTEGER	2
+#define VRTTXT_DOUBLE	3
+#define VRTTXT_NULL	4
+
+    struct vrttxt_line
+    {
+/* a struct representing a full LINE (aka Record) */
+	off_t offset;
+	int len;
+	int field_offsets[VRTTXT_FIELDS_MAX];
+	int num_fields;
+	int error;
+    };
+
+    struct vrttxt_row
+    {
+/* a struct storing Row offsets */
+	int line_no;
+	off_t offset;
+	int len;
+	int num_fields;
+    };
+
+    struct vrttxt_row_block
+    {
+/*
+/ for efficiency sake, individuale Row offsets 
+/ are grouped in reasonably sized blocks
+*/
+	struct vrttxt_row rows[VRTTXT_BLOCK_MAX];
+	int num_rows;
+	int min_line_no;
+	int max_line_no;
+	struct vrttxt_row_block *next;
+    };
+
+    struct vrttxt_column_header
+    {
+/* a struct representing a Column (aka Field) header */
+	char *name;
+	int type;
+    };
+
+    typedef struct vrttxt_reader
+    {
+/* the main TXT-Reader struct */
+	struct vrttxt_column_header columns[VRTTXT_FIELDS_MAX];
+	FILE *text_file;
+	void *toUtf8;		/* the UTF-8 ICONV converter */
+	char field_separator;
+	char text_separator;
+	char decimal_separator;
+	int first_line_titles;
+	int error;
+	struct vrttxt_row_block *first;
+	struct vrttxt_row_block *last;
+	struct vrttxt_row **rows;
+	int num_rows;
+	int line_no;
+	int max_fields;
+	int current_buf_sz;
+	int current_buf_off;
+	char *line_buffer;
+	char *field_buffer;
+	int field_offsets[VRTTXT_FIELDS_MAX];
+	int field_lens[VRTTXT_FIELDS_MAX];
+	int max_current_field;
+	int current_line_ready;
+    } gaiaTextReader;
+    typedef gaiaTextReader *gaiaTextReaderPtr;
+
+#endif				/* end ICONV (text reader) */
 
 /* function prototipes */
 
@@ -608,13 +718,6 @@ extern "C"
 						 unsigned int size);
     GAIAGEO_DECLARE void gaiaToWkb (gaiaGeomCollPtr geom,
 				    unsigned char **result, int *size);
-    GAIAGEO_DECLARE int gaiaFromWkbNoCheck (const unsigned char *in,
-					    unsigned int szin,
-					    unsigned char **out, int *szout,
-					    int srid);
-    GAIAGEO_DECLARE int gaiaToWkbNoCheck (const unsigned char *in,
-					  unsigned int szin,
-					  unsigned char **out, int *szout);
     GAIAGEO_DECLARE char *gaiaToHexWkb (gaiaGeomCollPtr geom);
     GAIAGEO_DECLARE void gaiaFreeValue (gaiaValuePtr p);
     GAIAGEO_DECLARE void gaiaSetNullValue (gaiaDbfFieldPtr field);
@@ -659,11 +762,28 @@ extern "C"
     GAIAGEO_DECLARE int gaiaWriteShpEntity (gaiaShapefilePtr shp,
 					    gaiaDbfListPtr entity);
     GAIAGEO_DECLARE void gaiaFlushShpHeaders (gaiaShapefilePtr shp);
+    GAIAGEO_DECLARE gaiaDbfPtr gaiaAllocDbf (void);
+    GAIAGEO_DECLARE void gaiaFreeDbf (gaiaDbfPtr dbf);
+    GAIAGEO_DECLARE void gaiaOpenDbfRead (gaiaDbfPtr dbf,
+					  const char *path,
+					  const char *charFrom,
+					  const char *charTo);
+    GAIAGEO_DECLARE int gaiaReadDbfEntity (gaiaDbfPtr shp, int current_row,
+					   int *deleted);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaParseWkt (const unsigned char
 						  *dirty_buffer, short type);
-    GAIAGEO_DECLARE void gaiaOutWkt (gaiaGeomCollPtr geom, char **result);
-    GAIAGEO_DECLARE void gaiaOutSvg (gaiaGeomCollPtr geom, char **result,
-				     int relative, int precision);
+    GAIAGEO_DECLARE void gaiaOutWkt (gaiaOutBufferPtr out_buf,
+				     gaiaGeomCollPtr geom);
+    GAIAGEO_DECLARE void gaiaOutSvg (gaiaOutBufferPtr out_buf,
+				     gaiaGeomCollPtr geom, int relative,
+				     int precision);
+    GAIAGEO_DECLARE void gaiaOutBareKml (gaiaOutBufferPtr out_buf,
+					 gaiaGeomCollPtr geom, int precision);
+    GAIAGEO_DECLARE void gaiaOutFullKml (gaiaOutBufferPtr out_buf,
+					 const char *name, const char *desc,
+					 gaiaGeomCollPtr geom, int precision);
+    GAIAGEO_DECLARE void gaiaOutGml (gaiaOutBufferPtr out_buf, int version,
+				     int precision, gaiaGeomCollPtr geom);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromFgf (const unsigned char *blob,
 						 unsigned int size);
     GAIAGEO_DECLARE void gaiaToFgf (gaiaGeomCollPtr geom,
@@ -752,6 +872,21 @@ extern "C"
 						    double *coords, int vert);
     GAIAGEO_DECLARE int gaiaConvertLength (double value, int unit_from,
 					   int unit_to, double *cvt);
+    GAIAGEO_DECLARE int gaiaLineGetPoint (gaiaLinestringPtr ln, int v,
+					  double *x, double *y, double *z,
+					  double *m);
+    GAIAGEO_DECLARE int gaiaLineSetPoint (gaiaLinestringPtr ln, int v, double x,
+					  double y, double z, double m);
+    GAIAGEO_DECLARE int gaiaRingGetPoint (gaiaRingPtr rng, int v, double *x,
+					  double *y, double *z, double *m);
+    GAIAGEO_DECLARE int gaiaRingSetPoint (gaiaRingPtr rng, int v, double x,
+					  double y, double z, double m);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaSanitize (gaiaGeomCollPtr org);
+    GAIAGEO_DECLARE int gaiaIsToxic (gaiaGeomCollPtr org);
+    GAIAGEO_DECLARE void gaiaOutBufferInitialize (gaiaOutBufferPtr buf);
+    GAIAGEO_DECLARE void gaiaOutBufferReset (gaiaOutBufferPtr buf);
+    GAIAGEO_DECLARE void gaiaAppendToOutBuffer (gaiaOutBufferPtr buf,
+						const char *text);
 
 #ifndef OMIT_PROJ		/* including PROJ.4 */
 
@@ -764,6 +899,12 @@ extern "C"
 #endif				/* end including PROJ.4 */
 
 #ifndef OMIT_GEOS		/* including GEOS */
+
+    GAIAGEO_DECLARE void gaiaResetGeosMsg (void);
+    GAIAGEO_DECLARE const char *gaiaGetGeosErrorMsg (void);
+    GAIAGEO_DECLARE const char *gaiaGetGeosWarningMsg (void);
+    GAIAGEO_DECLARE void gaiaSetGeosErrorMsg (const char *msg);
+    GAIAGEO_DECLARE void gaiaSetGeosWarningMsg (const char *msg);
 
     GAIAGEO_DECLARE int gaiaGeomCollEquals (gaiaGeomCollPtr geom1,
 					    gaiaGeomCollPtr geom2);
@@ -831,6 +972,25 @@ extern "C"
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromGeos_XYZM (const void *geos);
 
 #endif				/* end including GEOS */
+
+#ifndef OMIT_ICONV		/* ICONV enabled: supporting text reader */
+    GAIAGEO_DECLARE gaiaTextReaderPtr gaiaTextReaderAlloc (const char *path,
+							   char field_separator,
+							   char text_separator,
+							   char
+							   decimal_separator,
+							   int
+							   first_line_titles,
+							   const char
+							   *encoding);
+    GAIAGEO_DECLARE void gaiaTextReaderDestroy (gaiaTextReaderPtr reader);
+    GAIAGEO_DECLARE int gaiaTextReaderParse (gaiaTextReaderPtr reader);
+    GAIAGEO_DECLARE int gaiaTextReaderGetRow (gaiaTextReaderPtr reader,
+					      int row_num);
+    GAIAGEO_DECLARE int gaiaTextReaderFetchField (gaiaTextReaderPtr reader,
+						  int field_num, int *type,
+						  const char **value);
+#endif				/* end ICONV (text reader) */
 
 #ifdef __cplusplus
 }
