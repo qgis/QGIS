@@ -187,7 +187,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   }
 }
 
-void QgsNewSpatialiteLayerDialog::initializeSpatialMetadata(sqlite3 *sqlite_handle)
+void QgsNewSpatialiteLayerDialog::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 {
 // attempting to perform self-initialization for a newly created DB
   int ret;
@@ -199,37 +199,37 @@ void QgsNewSpatialiteLayerDialog::initializeSpatialMetadata(sqlite3 *sqlite_hand
   int rows;
   int columns;
 
-  if (sqlite_handle == NULL)
+  if ( sqlite_handle == NULL )
     return;
-  // checking if this DB is really empty 
-  strcpy(sql, "SELECT Count(*) from sqlite_master");
-  ret = sqlite3_get_table(sqlite_handle, sql, &results, &rows, &columns, NULL);
-  if (ret != SQLITE_OK)
+  // checking if this DB is really empty
+  strcpy( sql, "SELECT Count(*) from sqlite_master" );
+  ret = sqlite3_get_table( sqlite_handle, sql, &results, &rows, &columns, NULL );
+  if ( ret != SQLITE_OK )
     return;
-  if (rows < 1)
+  if ( rows < 1 )
     ;
   else
   {
-      for (i = 1; i <= rows; i++)
-        count = atoi(results[(i * columns) + 0]);
+    for ( i = 1; i <= rows; i++ )
+      count = atoi( results[( i * columns ) + 0] );
   }
-  sqlite3_free_table(results);
+  sqlite3_free_table( results );
 
-  if (count > 0)
+  if ( count > 0 )
     return;
 
   // all right, it's empty: proceding to initialize
-  strcpy(sql, "SELECT InitSpatialMetadata()");
-  ret = sqlite3_exec(sqlite_handle, sql, NULL, NULL, &errMsg);
-  if (ret != SQLITE_OK)
+  strcpy( sql, "SELECT InitSpatialMetadata()" );
+  ret = sqlite3_exec( sqlite_handle, sql, NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
   {
     QString errCause = tr( "Unable to initialize SpatialMetedata:\n" );
-    errCause += QString::fromUtf8(errMsg);
+    errCause += QString::fromUtf8( errMsg );
     QMessageBox::warning( 0, tr( "SpatiaLite Database" ), errCause );
-    sqlite3_free(errMsg);
+    sqlite3_free( errMsg );
     return;
   }
-  spatial_ref_sys_init(sqlite_handle, 0);
+  spatial_ref_sys_init( sqlite_handle, 0 );
 }
 
 bool QgsNewSpatialiteLayerDialog::createDb()
@@ -256,32 +256,32 @@ bool QgsNewSpatialiteLayerDialog::createDb()
 
     // creating/opening the new database
     QString dbPath = newDb.fileName();
-    spatialite_init(0);
-    ret = sqlite3_open_v2(dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
-    if (ret)
+    spatialite_init( 0 );
+    ret = sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL );
+    if ( ret )
     {
-    // an error occurred
+      // an error occurred
       QString errCause = tr( "Could not create a new database\n" );
-      errCause += QString::fromUtf8(sqlite3_errmsg(sqlite_handle));
-      sqlite3_close(sqlite_handle);
-	  QMessageBox::warning( 0, tr( "SpatiaLite Database" ), errCause );
+      errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
+      sqlite3_close( sqlite_handle );
+      QMessageBox::warning( 0, tr( "SpatiaLite Database" ), errCause );
       pbnFindSRID->setEnabled( false );
       return false;
     }
     // activating Foreign Key constraints
-    ret = sqlite3_exec(sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, &errMsg);
-    if (ret != SQLITE_OK)
+    ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, &errMsg );
+    if ( ret != SQLITE_OK )
     {
       QMessageBox::warning( 0, tr( "SpatiaLite Database" ), tr( "Unable to activate FOREIGN_KEY constraints" ) );
-      sqlite3_free(errMsg);
-	  sqlite3_close(sqlite_handle);
+      sqlite3_free( errMsg );
+      sqlite3_close( sqlite_handle );
       pbnFindSRID->setEnabled( false );
       return false;
     }
-    initializeSpatialMetadata(sqlite_handle);
-	
+    initializeSpatialMetadata( sqlite_handle );
+
     // all done: closing the DB connection
-    sqlite3_close(sqlite_handle);
+    sqlite3_close( sqlite_handle );
   }
 
   QFileInfo fi( newDb );
