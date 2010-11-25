@@ -32,11 +32,11 @@ CMAKE_OPTS := \
 	-D WITH_MAPSERVER=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin
 
-ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty sid"))
+#ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty sid"))
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
-else
-	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
-endif
+#else
+#	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
+#endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"hardy intrepid"))
 LDFLAGS += -Wl,--as-needed -Wl,--no-undefined
