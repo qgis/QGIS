@@ -23,6 +23,8 @@
 /**A map tool for dragging label positions*/
 class QgsMapToolMoveLabel: public QgsMapToolLabel
 {
+    Q_OBJECT
+
   public:
     QgsMapToolMoveLabel( QgsMapCanvas* canvas );
     ~QgsMapToolMoveLabel();

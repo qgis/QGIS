@@ -23,6 +23,8 @@ class QgsPointRotationItem;
 
 class QgsMapToolRotateLabel: public QgsMapToolLabel
 {
+    Q_OBJECT
+
   public:
     QgsMapToolRotateLabel( QgsMapCanvas* canvas );
     ~QgsMapToolRotateLabel();

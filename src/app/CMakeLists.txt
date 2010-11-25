@@ -189,8 +189,10 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdisland.h
   qgsmaptooladdring.h
   qgsmaptoolmovefeature.h
+  qgsmaptoolmovelabel.h
   qgsmaptoolnodetool.h
   qgsmaptoolreshape.h
+  qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselect.h
   qgsmaptoolselectrectangle.h
@@ -198,6 +200,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolselectpolygon.h
   qgsmaptoolselectradius.h
   qgsmaptooladdvertex.h
+  qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletering.h
   qgsmaptooldeletepart.h
   qgsmaptooldeletevertex.h
