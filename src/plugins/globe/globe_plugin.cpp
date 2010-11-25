@@ -538,56 +538,114 @@ void GlobePlugin::copyFolder(QString sourceFolder, QString destFolder)
 bool ControlsHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 { 
   float deg = 3.14159 / 180;
-  
-  //this should be the way to implement this I think, but it segfaults...
-  //TODO: put this in the correct place, here is ok for now to test
-  //_manipSettings.bindKey(osgEarthUtil::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Page_Up);
-  //_manip->applySettings( _manipSettings );
-  
-  
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
-  
-  {
-    QgsPoint center = mQGisIface->mapCanvas()->extent().center();
-    osgEarthUtil::Viewpoint viewpoint( osg::Vec3d(  center.x(), center.y(), 0.0 ), 0.0, -90.0, 1e4 );
-    _manip->setViewpoint( viewpoint, 4.0 );
-  }
-  
-  
-  /*if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '4' )
-  {
-    _manip->pan(-1,0);
-  }
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '6' )
-  {
-    _manip->pan(1,0);
-  }  
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '8' )
-  {
-    _manip->pan(0,1);
-  }
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '2' )
-  {
-    _manip->pan(0,-1);
-  }  
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '+' )
-  {
-    _manip->rotate(0,1*deg);
-  }
+  /*
+  osgEarthUtil::EarthManipulator::Settings* _manipSettings = _manip->getSettings();
+  _manipSettings->bindKey(osgEarthUtil::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Space);
+  //install default action bindings:
+  osgEarthUtil::EarthManipulator::ActionOptions options;
+
+  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_HOME, osgGA::GUIEventAdapter::KEY_Space );
+
+  _manipSettings->bindMouse( osgEarthUtil::EarthManipulator::ACTION_PAN, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON );
+
+  // zoom as you hold the right button:
+  options.clear();
+  options.add( osgEarthUtil::EarthManipulator::OPTION_CONTINUOUS, true );
+  _manipSettings->bindMouse( osgEarthUtil::EarthManipulator::ACTION_ROTATE, osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options );
+
+  // zoom with the scroll wheel:
+  _manipSettings->bindScroll( osgEarthUtil::EarthManipulator::ACTION_ZOOM_IN,  osgGA::GUIEventAdapter::SCROLL_DOWN );
+  _manipSettings->bindScroll( osgEarthUtil::EarthManipulator::ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::SCROLL_UP );
+
+  // pan around with arrow keys:
+  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_LEFT,  osgGA::GUIEventAdapter::KEY_Left );
+  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_RIGHT, osgGA::GUIEventAdapter::KEY_Right );
+  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_UP,    osgGA::GUIEventAdapter::KEY_Up );
+  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_DOWN,  osgGA::GUIEventAdapter::KEY_Down );
+
+  // double click the left button to zoom in on a point:
+  options.clear();
+  options.add( osgEarthUtil::EarthManipulator::OPTION_GOTO_RANGE_FACTOR, 0.4 );
+  _manipSettings->bindMouseDoubleClick( osgEarthUtil::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, 0L, options );
+
+  // double click the right button (or CTRL-left button) to zoom out to a point
+  options.clear();
+  options.add( osgEarthUtil::EarthManipulator::OPTION_GOTO_RANGE_FACTOR, 2.5 );
+  _manipSettings->bindMouseDoubleClick( osgEarthUtil::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options );
+  _manipSettings->bindMouseDoubleClick( osgEarthUtil::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, osgGA::GUIEventAdapter::MODKEY_CTRL, options );
+
+  _manipSettings->setThrowingEnabled( false );
+  _manipSettings->setLockAzimuthWhilePanning( true );
+
+	_manip->applySettings(_manipSettings);
+
   */
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '-' )
-  {
-    _manip->rotate(0,-1*deg);
-  }  
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '/' )
-  {
-    _manip->rotate(1*deg,0);
-  }
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '*' )
-  {
-    _manip->rotate(-1*deg,0);
-  } 
   
+  switch(ea.getEventType())
+  {
+    case(osgGA::GUIEventAdapter::KEYDOWN):
+    {
+      if (ea.getKey() == '1' )
+      {
+        QgsPoint center = mQGisIface->mapCanvas()->extent().center();
+        osgEarthUtil::Viewpoint viewpoint( osg::Vec3d(  center.x(), center.y(), 0.0 ), 0.0, -90.0, 1e4 );
+        _manip->setViewpoint( viewpoint, 4.0 );
+      }
+      //move map
+      if (ea.getKey() == '4' )
+      {
+        _manip->pan( -0.1, 0 );
+      }
+      if (ea.getKey() == '6' )
+      {
+        _manip->pan( 0.1, 0 );
+      }  
+      if (ea.getKey() == '2' )
+      {
+        _manip->pan( 0, 0.1 );
+      }
+      if (ea.getKey() == '8' )
+      {
+        _manip->pan( 0, -0.1 );
+      }  
+      //rotate
+      if (ea.getKey() == '/' )
+      {
+        _manip->rotate( 1*deg, 0 );
+      }
+      if (ea.getKey() == '*' )
+      {
+        _manip->rotate( -1*deg, 0 );
+      }
+      //tilt
+      if ( ea.getKey() == '9' )
+      {
+        _manip->rotate( 0, 1*deg );
+      }
+      if (ea.getKey() == '3' )
+      {
+        _manip->rotate( 0, -1*deg );
+      }
+      //zoom
+      if (ea.getKey() == '-' )
+      {
+        _manip->zoom( 0, 0.1 );
+      }
+      if (ea.getKey() == '+' )
+      {
+       _manip->zoom( 0, -0.1 );
+      }  
+      //reset
+      if (ea.getKey() == '5' )
+      {
+        //_manip->zoom( 0, 1 );
+      }
+      break;
+    }
+	         
+    default:
+      break;
+  }
   return false;
 }
 

@@ -119,7 +119,7 @@ class ControlsHandler : public osgGA::GUIEventHandler
 
   private:
     osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-    //osgEarthUtil::EarthManipulator::Settings* _manipSettings;
+    osgEarthUtil::EarthManipulator::Settings* _manipSettings;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
 };
