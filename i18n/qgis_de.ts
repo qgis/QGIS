@@ -561,10 +561,6 @@ p, li { white-space: pre-wrap; }
         <translation>Eingabegrenzlayer</translation>
     </message>
     <message>
-        <source>Minimum distance between points</source>
-        <translation type="obsolete">Minimaler Punktabstand</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="42"/>
         <source>Sample Size</source>
         <translation>Stichprobengröße</translation>
@@ -949,7 +945,7 @@ Soll es als neuer Layer hinzugefügt werden?</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur gewählte Objekte nutzen</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -2954,11 +2950,11 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
     </message>
     <message>
         <source>Voronoi polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Voronoi-Polygon</translation>
     </message>
     <message>
         <source>Buffer region</source>
-        <translation type="unfinished"></translation>
+        <translation>Region puffern</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
@@ -2989,7 +2985,8 @@ Bitte wählen Sie ein anderes Feld...</translation>
     <message>
         <source>One or more features in the output layer may have invalid geometry, please check using the check validity tool
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Ein oder mehrere Objekte des Ausgabelayers haben ungültige Geometrie, bitten prüfen Sie sie mit dem Validierungswerkzeug
+</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -2997,12 +2994,11 @@ Bitte wählen Sie ein anderes Feld...</translation>
 %2
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Ausgabeshapedatei erzeugt:
+        <translation>Ausgabeshapedatei erzeugt:
 %1
-
-Soll sie dem Projekt als neuer Layer hinzugefügt werden? {1
 %2
-?}</translation>
+
+Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
@@ -3031,27 +3027,6 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden? {1
 Please choose larger tolerance...</source>
         <translation>Fehler beim Verarbeiten der angegebenen Toleranz!
 Bitte eine größere Toleranz wählen...</translation>
-    </message>
-    <message>
-        <source>Created output shapefile:
-%1
-
-Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Ausgabeshapedatei erzeugt:
-%1
-
-Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
-    </message>
-</context>
-<context>
-    <name>GeometryErrors</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialog</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -8332,7 +8307,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <location filename="../src/app/qgsattributedialog.cpp" line="203"/>
+        <location filename="../src/app/qgsattributedialog.cpp" line="204"/>
         <source>Attributes - %1</source>
         <translation>Attribute - %1</translation>
     </message>
@@ -9220,160 +9195,160 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="601"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="614"/>
         <source>Big image</source>
         <translation>Großes Bild</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="213"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="217"/>
         <source>Map 1</source>
         <translation>Karte 1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
         <source>Image too big</source>
         <translation>Bild zu groß</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="716"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
         <translation>Erzeugung eines Bildes mit %1x%2 Pixel fehlgeschlagen.  Export abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="741"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="753"/>
         <source>SVG warning</source>
         <translation>SVG-Warnung</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="742"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1483"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="754"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1492"/>
         <source>Don&apos;t show this message again</source>
         <translation>Diese Nachricht nicht mehr anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="761"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="773"/>
         <source>SVG Format</source>
         <translation>SVG-Format</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="127"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="131"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="132"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="136"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="146"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="150"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="153"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="157"/>
         <source>Layout</source>
         <translation>Anordnung</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="465"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="473"/>
         <source>PDF Format</source>
         <translation>PDF-Format</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="556"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="566"/>
         <source>Image too large</source>
         <translation>Bild zu groß</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="567"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
         <translation>Erzeugung eines Bildes mit %1x%2 Pixel fehlgeschlagen.  Ohne &apos;Als Raster drucken&apos; nocheinmal versuchen?</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="602"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="615"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation>Die Erzeugung des %1x%2 Bilds benötigt etwa %3 MB Hauptspeicher. Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="668"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Namen der Datei des zu speichernden Kartenabbild wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="472"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="772"/>
         <source>Choose a file name to save the map as</source>
         <translation>Einen Dateinamen zum Speichern des Kartenabbilds wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1154"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1163"/>
         <source>Composer</source>
         <translation>Zusammmenstellung</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1481"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1490"/>
         <source>Project contains WMS layers</source>
         <translation>Projekt enthält WMS-Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1482"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1491"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Einige WMS-Server (z.B. UMN-Mapserver) haben Begrenzungen für die WIDTH- und HEIGHT-Parameter. Falls diese Begrenzungen beim Ausdruck überschritten werden, werden diese WMS-Layer nicht gedruckt</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="746"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="758"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;Die SVG-Exportfunktion in QGIS hat einige Probleme durch Fehler und Einschränkungen im </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="748"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4-SVG-Code. Genauergesagt ist die Ausgabebegrenzung der Layer auf die Kartengrenzen ein Problem&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="631"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="644"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1-Format (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="751"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="763"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Wenn die SVG-Ausgabe nicht zufriedenstellend ist, wird für vektorbasierende QGIS-Ausgabe der Druck in PostScript empfohlen.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="887"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="896"/>
         <source>save template</source>
         <translation>Vorlage speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="922"/>
         <source>Save error</source>
         <translation>Fehler beim Speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="913"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="922"/>
         <source>Error, could not save file</source>
         <translation>Fehler, in Datei konnte nicht gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="921"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="930"/>
         <source>Load template</source>
         <translation>Vorlage laden</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="943"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="950"/>
         <source>Read error</source>
         <translation>Lesefehler</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="934"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="943"/>
         <source>Error, could not read file</source>
         <translation>Fehler, Datei konnte nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="941"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="950"/>
         <source>Content of template file is not valid</source>
         <translation>Inhalt der Vorlagendatei könnte ungültig sein</translation>
     </message>
@@ -12215,7 +12190,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsFeatureAction</name>
     <message>
-        <location filename="../src/app/qgsfeatureaction.cpp" line="50"/>
+        <location filename="../src/app/qgsfeatureaction.cpp" line="51"/>
         <source>Run actions</source>
         <translation>Aktionen starten</translation>
     </message>
@@ -19697,70 +19672,85 @@ p, li { white-space: pre-wrap; }
         <translation>SpatiaLite DB (*.sqlite);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="218"/>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="238"/>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="304"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="228"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="267"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="275"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="301"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="367"/>
         <source>SpatiaLite Database</source>
         <translation>SpatiaLite-Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="218"/>
-        <source>Could not copy the template database to new location</source>
-        <translation>Konnte die Datenbankvorlage nicht zum neuen Platz kopieren</translation>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="226"/>
+        <source>Unable to initialize SpatialMetadata:
+</source>
+        <translation>Konnte räumliche Metadaten nicht initialisieren:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="238"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="264"/>
+        <source>Could not create a new database
+</source>
+        <translation>Konnte neue Datenbank nicht anlegen
+</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="275"/>
+        <source>Unable to activate FOREIGN_KEY constraints</source>
+        <translation>Konnte FOREIGN_KEY-Einschränkung nicht aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="301"/>
         <source>Registered new database!</source>
         <translation>Neue Datenbank registriert!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="305"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="368"/>
         <source>Unable to open the database: %1</source>
         <translation>Datenbank %1 konnte nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="314"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="377"/>
         <source>Error Creating SpatiaLite Table</source>
         <translation>Fehler beim Erzeugen der SpatiaLite-Tabelle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="315"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="378"/>
         <source>Failed to create the SpatiaLite table %1. The database returned:
 %2</source>
         <translation>Erzeugen der SpatiaLite-Tabelle %1 scheiterte. Datenbankantwort:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="325"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="388"/>
         <source>Error Creating Geometry Column</source>
         <translation>Fehler beim Erzeugen der Geometriespalte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="326"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="389"/>
         <source>Failed to create the geometry column. The database returned:
 %1</source>
         <translation>Erzeugen der Geometriespalte scheiterte. Datenbankantwort:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="336"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="399"/>
         <source>Error Creating Spatial Index</source>
         <translation>Fehler beim Erzeugen des räumlichen Index</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="337"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="400"/>
         <source>Failed to create the spatial index. The database returned:
 %1</source>
         <translation>Erzeugen des räumlichen Index scheiterte. Datenbankantwort:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="354"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="417"/>
         <source>Invalid Layer</source>
         <translation>Ungültiger Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="354"/>
+        <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="417"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 ist ein ungültiger Layer und kann nicht geladen werden.</translation>
     </message>
@@ -20203,63 +20193,77 @@ Primärschlüssel erzeugen</translation>
         <translation>Konnte die SpatiaLite-Datenbank nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="279"/>
-        <source>Could not copy the template database to new location</source>
-        <translation>Konnte die Datenbankvorlage nicht zum neuen Platz kopieren</translation>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="292"/>
+        <source>Unable to initialize SpatialMetadata:
+</source>
+        <translation>Konnten räumliche Metadaten nicht initialisieren:
+</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="363"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="327"/>
+        <source>Could not create a new database
+</source>
+        <translation>Konnte neue Datenbank nicht anlegen
+</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="337"/>
+        <source>Unable to activate FOREIGN_KEY constraints</source>
+        <translation>Konnten FOREIGN_KEY-Einschränkung nicht aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="427"/>
         <source>Unknown data type %1</source>
         <translation>Unbekannter Datentyp %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="394"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="458"/>
         <source>QGIS wkbType %1 not supported</source>
         <translation>QGIS WKB-Typ %1 nicht unterstützt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="457"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="521"/>
         <source>%v / %m features copied</source>
         <translation>%v / %m Objekte kopiert</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="482"/>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="655"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="546"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="719"/>
         <source>%v / %m features processed</source>
         <translation>%v / %m Objekte verarbeitet</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="531"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="595"/>
         <source>%v / %m fields added</source>
         <translation>%v / %m Felder ergänzt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="569"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="633"/>
         <source>%v / %m features added</source>
         <translation>%v / %m Objekte hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="598"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="662"/>
         <source>%v / %m features removed</source>
         <translation>%v / %m Objekte gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="615"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="679"/>
         <source>%v / %m feature updates</source>
         <translation>%v / %m Objektänderungen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="634"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="698"/>
         <source>%v / %m feature geometry updates</source>
         <translation>%v / %m Objektgeometrieänderungen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="726"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="790"/>
         <source>Offline Editing Plugin</source>
         <translation>Offline-Bearbeitungserweiterung</translation>
     </message>
     <message>
-        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="738"/>
+        <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="802"/>
         <source>Could not open the spatialite logging database</source>
         <translation>Konnte die SpatiaLite-Protokolldatenbank nicht öffnen</translation>
     </message>
@@ -32980,10 +32984,6 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Geladenen Vektor importieren und passende Location erzeugen</translation>
     </message>
     <message>
-        <source>Import loaded vector selecting some features</source>
-        <translation type="obsolete">Geladenen Vektor importieren und einige Objekte auswählen</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Import only some layers of a DXF vector</source>
         <translation>Nur einige Layer eines DXF-Vektors importieren</translation>
@@ -33042,14 +33042,6 @@ Erweiterung wird nicht aktiviert.</translation>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
         <source>Import vector into GRASS</source>
         <translation>Vektor in GRASS importieren</translation>
-    </message>
-    <message>
-        <source>Import vector into GRASS from QGIS view</source>
-        <translation type="obsolete">Vektor aus QGIS-Anzeige in GRASS importieren</translation>
-    </message>
-    <message>
-        <source>Import vector into GRASS from external data sources in GRASS</source>
-        <translation type="obsolete">Vektor aus externen Datenquellen in GRASS in GRASS importieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
