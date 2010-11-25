@@ -35,6 +35,9 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerScaleBar; }
+
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

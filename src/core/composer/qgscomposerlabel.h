@@ -28,6 +28,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerLabel; }
+
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

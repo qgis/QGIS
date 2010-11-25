@@ -29,6 +29,9 @@ class CORE_EXPORT QgsPaperItem: public QgsComposerItem
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
     ~QgsPaperItem();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerPaper; }
+
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

@@ -36,6 +36,9 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c );
     ~QgsComposerArrow();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerArrow; }
+
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 

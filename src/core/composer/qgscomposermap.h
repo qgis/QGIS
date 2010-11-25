@@ -46,6 +46,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition );
     ~QgsComposerMap();
 
+    /** return correct graphics item type. Added in v1.7 */
+    virtual int type() const { return ComposerMap; }
+
     /** \brief Preview style  */
     enum PreviewMode
     {
