@@ -1398,8 +1398,9 @@ bool
 ControlCanvas::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 {
     bool handled = false;
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::FRAME )
-        return handled;
+    //Filtered in osgEarth
+    //if ( ea.getEventType() == osgGA::GUIEventAdapter::FRAME )
+    //    return handled;
 
     float invY = _context._vp->height() - ea.getY();
 

@@ -126,14 +126,22 @@ class ControlsHandler : public osgGA::GUIEventHandler
 
 namespace osgEarthUtil { namespace Controls2
 {
+class NavigationControlHandler : public ControlEventHandler
+{
+public:
+    virtual void onMouseDown( class Control* control, int mouseButtonMask ) { }
+};
+
 class NavigationControl : public ImageControl
 {
 public:
-    NavigationControl( osg::Image* image =0L ) : ImageControl(image) {}
+    NavigationControl( osg::Image* image = 0L ) : ImageControl( image ),  _mouse_down_event( NULL ) {}
 
 protected:
     virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx );
 
+private:
+    osg::ref_ptr<const osgGA::GUIEventAdapter> _mouse_down_event;
 };
 }
 }

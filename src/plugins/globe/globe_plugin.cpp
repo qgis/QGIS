@@ -113,6 +113,22 @@ struct MyClickHandler : public ControlEventHandler
     }
 };
 
+struct PanControlHandler : public NavigationControlHandler
+{
+  PanControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip(manip), _dx(dx), _dy(dy) { }
+  virtual void onMouseDown( Control* control, int mouseButtonMask )
+  {
+         OE_NOTICE << "Thank you for clicking on " << typeid(control).name() << mouseButtonMask
+                  << std::endl;
+   _manip->pan( _dx, _dy );
+  }
+private:
+  osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+  double _dx;
+  double _dy;
+};
+
+
 void GlobePlugin::run()
 {
 #ifdef QGISDEBUG
@@ -304,13 +320,13 @@ void GlobePlugin::setupControls()
   
   //Move Up
   osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png" );
-  ImageControl* moveUp = new ImageControl( moveUpImg );
-  moveUp->addEventHandler( new MyClickHandler );
+  ImageControl* moveUp = new NavigationControl( moveUpImg );
+  moveUp->addEventHandler( new PanControlHandler( manip, 0, 0.05 ) );
   
   //Move Down
   osg::Image* moveDownImg = osgDB::readImageFile( imgDir + "/move-down.png" );
-  ImageControl* moveDown = new ImageControl( moveDownImg );
-  moveDown->addEventHandler( new MyClickHandler );
+  ImageControl* moveDown = new NavigationControl( moveDownImg );
+  moveDown->addEventHandler( new PanControlHandler( manip, 0, -0.05 ) );
   
   //add controls to moveControls group
   moveHControls->addControl( moveLeft );
@@ -654,13 +670,31 @@ bool ControlsHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAction
 bool
 NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )
 {
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH )
+  switch ( ea.getEventType() )
+  {
+    case osgGA::GUIEventAdapter::PUSH:
+      _mouse_down_event = &ea;
+      break;
+    case osgGA::GUIEventAdapter::FRAME:
+      if ( _mouse_down_event )
+      {
+        _mouse_down_event = &ea;
+      }
+      break;
+    case osgGA::GUIEventAdapter::RELEASE:
+      _mouse_down_event = NULL;
+      break;
+  }
+  if ( _mouse_down_event )
+  {
+    //OE_NOTICE << "NavigationControl::handle getEventType " << ea.getEventType() << std::endl;
+    for( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
     {
-        OE_NOTICE << "Thank you for pushing " << std::endl;
-        aa.requestContinuousUpdate(true);
+      NavigationControlHandler* handler = dynamic_cast<NavigationControlHandler*>(i->get());
+      if ( handler ) handler->onMouseDown( this, ea.getButtonMask() );
     }
-        OE_NOTICE << "getEventType " << ea.getEventType() << std::endl;
-    return Control::handle( ea, aa, cx );
+  }
+  return Control::handle( ea, aa, cx );
 }
 
 // ----------
