@@ -289,7 +289,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   ret = sqlite3_exec( sqlite_handle, sql, NULL, NULL, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    QString errCause = tr( "Unable to initialize SpatialMetedata:\n" );
+    QString errCause = tr( "Unable to initialize SpatialMetadata:\n" );
     errCause += QString::fromUtf8( errMsg );
     showWarning( errCause );
     sqlite3_free( errMsg );

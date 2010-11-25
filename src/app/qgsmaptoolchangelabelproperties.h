@@ -22,6 +22,8 @@
 
 class QgsMapToolChangeLabelProperties: public QgsMapToolLabel
 {
+    Q_OBJECT
+
   public:
     QgsMapToolChangeLabelProperties( QgsMapCanvas* canvas );
     ~QgsMapToolChangeLabelProperties();
