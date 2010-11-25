@@ -39,11 +39,12 @@ void QgsFeatureAction::execute()
   mLayer->actions()->doAction( mAction, mFeature.attributeMap(), mIdx );
 }
 
-QgsAttributeDialog *QgsFeatureAction::newDialog()
+QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 {
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, &mFeature );
+  QgsFeature *f = cloneFeature ? new QgsFeature( mFeature ) : &mFeature;
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature );
 
-  if ( mLayer->actions()->size() == 0 )
+  if ( mLayer->actions()->size() > 0 )
   {
     dialog->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
 
@@ -58,7 +59,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog()
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeature, mLayer, i, dialog->dialog() );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, dialog->dialog() );
       dialog->dialog()->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 
@@ -76,7 +77,7 @@ bool QgsFeatureAction::viewFeatureForm( QgsRubberBand *rb )
   if ( !mLayer )
     return false;
 
-  QgsAttributeDialog *dialog = newDialog();
+  QgsAttributeDialog *dialog = newDialog( true );
   dialog->setHighlight( rb );
   dialog->show();
 
@@ -90,7 +91,7 @@ bool QgsFeatureAction::editFeature()
   if ( !mLayer )
     return res;
 
-  QgsAttributeDialog *dialog = newDialog();
+  QgsAttributeDialog *dialog = newDialog( false );
 
   if ( !mLayer->isEditable() )
   {
@@ -168,7 +169,7 @@ bool QgsFeatureAction::addFeature()
     if ( reuseLastValues )
       origValues = mFeature.attributeMap();
 
-    QgsAttributeDialog *dialog = newDialog();
+    QgsAttributeDialog *dialog = newDialog( false );
     if ( dialog->exec() )
     {
       if ( reuseLastValues )

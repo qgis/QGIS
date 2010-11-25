@@ -32,7 +32,7 @@ class QgsAttributeDialog : public QObject
     Q_OBJECT
 
   public:
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature * thepFeature );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner );
     ~QgsAttributeDialog();
 
     /** Saves the size and position for the next time
@@ -66,7 +66,8 @@ class QgsAttributeDialog : public QObject
     QList<QWidget *> mpWidgets;
     QList<int> mpIndizes;
     QgsVectorLayer *mLayer;
-    QgsFeature *mpFeature;
+    QgsFeature *mFeature;
+    bool mFeatureOwner;
     QgsRubberBand *mRubberBand;
     int mFormNr;
     static int smFormCounter;

@@ -44,22 +44,23 @@
 
 int QgsAttributeDialog::smFormCounter = 0;
 
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner )
     : mDialog( 0 )
     , mSettingsPath( "/Windows/AttributeDialog/" )
     , mLayer( vl )
-    , mpFeature( thepFeature )
+    , mFeature( thepFeature )
+    , mFeatureOwner( featureOwner )
     , mRubberBand( 0 )
     , mFormNr( -1 )
 {
-  if ( mpFeature == NULL || vl->dataProvider() == NULL )
+  if ( !mFeature || !vl->dataProvider() )
     return;
 
   const QgsFieldMap &theFieldMap = vl->pendingFields();
   if ( theFieldMap.isEmpty() )
     return;
 
-  QgsAttributeMap myAttributes = mpFeature->attributeMap();
+  QgsAttributeMap myAttributes = mFeature->attributeMap();
 
   QDialogButtonBox *buttonBox = NULL;
 
@@ -243,7 +244,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     mFormNr = smFormCounter++;
     QgisApp::instance()->runPythonString( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mFormNr ).arg(( unsigned long ) mDialog ) );
 
-    QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->getLayerID() ).arg( mpFeature->id() );
+    QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->getLayerID() ).arg( mFeature->id() );
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgisApp::instance()->runPythonString( expr );
   }
@@ -260,6 +261,11 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mRubberBand;
   }
 
+  if ( mFeatureOwner )
+  {
+    delete mFeature;
+  }
+
   saveGeometry();
 
   if ( mDialog )
@@ -270,11 +276,11 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
 void QgsAttributeDialog::accept()
 {
-  if ( !mLayer->isEditable() )
+  if ( !mLayer->isEditable() || !mFeature )
     return;
 
   //write the new values back to the feature
-  QgsAttributeMap myAttributes = mpFeature->attributeMap();
+  QgsAttributeMap myAttributes = mFeature->attributeMap();
   int myIndex = 0;
   for ( QgsAttributeMap::const_iterator it = myAttributes.begin(); it != myAttributes.end(); ++it )
   {
@@ -282,7 +288,7 @@ void QgsAttributeDialog::accept()
 
     int idx = mpIndizes.value( myIndex );
     if ( QgsAttributeEditor::retrieveValue( mpWidgets.value( myIndex ), mLayer, idx, value ) )
-      mpFeature->changeAttribute( idx, value );
+      mFeature->changeAttribute( idx, value );
 
     ++myIndex;
   }

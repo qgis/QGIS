@@ -43,7 +43,7 @@ class QgsFeatureAction : public QAction
     bool addFeature();
 
   private:
-    QgsAttributeDialog *newDialog();
+    QgsAttributeDialog *newDialog( bool cloneFeature );
 
     QgsVectorLayer *mLayer;
     QgsFeature &mFeature;
