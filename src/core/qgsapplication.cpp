@@ -278,14 +278,6 @@ const QString QgsApplication::qgisMasterDbFilePath()
 }
 
 /*!
-  Returns the path to the spatialite template db file.
-*/
-const QString QgsApplication::qgisSpatialiteDbTemplatePath()
-{
-  return mPkgDataPath + QString( "/resources/spatialite.db" );
-}
-
-/*!
   Returns the path to the settings directory in user's home dir
  */
 const QString QgsApplication::qgisSettingsDirPath()
