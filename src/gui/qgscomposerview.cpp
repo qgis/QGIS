@@ -31,7 +31,7 @@
 #include "qgscomposerattributetable.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
-    QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 )
+    QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 ), mPaintingEnabled( true )
 {
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
@@ -204,6 +204,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
         double moveX = scenePoint.x() - mMoveContentStartPos.x();
         double moveY = scenePoint.y() - mMoveContentStartPos.y();
+
         mMoveContentItem->moveContent( -moveX, -moveY );
         mMoveContentItem = 0;
       }
@@ -447,6 +448,19 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
       QPointF itemPoint = theItem->mapFromScene( scenePoint );
       theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
     }
+  }
+}
+
+void QgsComposerView::paintEvent( QPaintEvent* event )
+{
+  if ( mPaintingEnabled )
+  {
+    QGraphicsView::paintEvent( event );
+    event->accept();
+  }
+  else
+  {
+    event->ignore();
   }
 }
 

@@ -38,6 +38,7 @@
 #include "qgscomposerattributetable.h"
 #include "qgscomposertablewidget.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
@@ -46,26 +47,29 @@
 #include "qgscursors.h"
 
 #include <QCloseEvent>
+#include <QCheckBox>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QIcon>
+#include <QImageWriter>
 #include <QMatrix>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPageSetupDialog>
 #include <QPainter>
-
+#include <QPixmap>
 #include <QPrintDialog>
 #include <QSettings>
-#include <QIcon>
-#include <QPixmap>
+#include <QSizeGrip>
 #include <QSvgGenerator>
 #include <QToolBar>
 #include <QToolButton>
-#include <QImageWriter>
-#include <QCheckBox>
-#include <QSizeGrip>
-#include "qgslogger.h"
+//#include <QUndoView>
+
+
+
+
 
 QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), mTitle( title )
 {
@@ -211,6 +215,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   l->addWidget( mView, 0, 0 );
 
   mCompositionNameComboBox->insertItem( 0, tr( "Map 1" ) );
+
+  //undo widget
+  /*QUndoView* undoWidget = new QUndoView( mComposition->undoStack(), this );
+  mOptionsTabWidget->addTab( undoWidget, tr( "Command history" ) );*/
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
@@ -507,7 +515,7 @@ void QgsComposer::on_mActionPrint_triggered()
 
 void QgsComposer::print( QPrinter &printer )
 {
-  if ( !mComposition )
+  if ( !mComposition || !mView )
     return;
 
   if ( containsWMSLayer() )
@@ -530,6 +538,7 @@ void QgsComposer::print( QPrinter &printer )
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   bool printAsRaster = mComposition->printAsRaster();
+  //mView->setScene( 0 );
 
   if ( printAsRaster )
   {
@@ -545,8 +554,9 @@ void QgsComposer::print( QPrinter &printer )
       QPainter imagePainter( &image );
       QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
       QRectF targetArea( 0, 0, width, height );
+      mView->setPaintingEnabled( false );
       mComposition->render( &imagePainter, targetArea, sourceArea );
-      imagePainter.end();
+      mView->setPaintingEnabled( true );
       p.drawImage( targetArea, image, targetArea );
     }
     else
@@ -574,7 +584,10 @@ void QgsComposer::print( QPrinter &printer )
     //better in case of custom page size, but only possible with Qt>=4.4.0
     QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
+
+    mView->setPaintingEnabled( false );
     mComposition->render( &p, paperRectPixel, paperRectMM );
+    mView->setPaintingEnabled( true );
   }
 
   mComposition->setPlotStyle( savedPlotStyle );
@@ -707,19 +720,18 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   }
 
   mComposition->setPlotStyle( QgsComposition::Print );
-  mView->setScene( 0 );
   image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
   image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
   image.fill( 0 );
   QPainter p( &image );
   QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
   QRectF targetArea( 0, 0, width, height );
+  mView->setPaintingEnabled( false );
   mComposition->render( &p, targetArea, sourceArea );
   p.end();
-
   mComposition->setPlotStyle( QgsComposition::Preview );
+  mView->setPaintingEnabled( true );
   image.save( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
-  mView->setScene( mComposition );
 }
 
 
@@ -779,8 +791,6 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   }
 
   myQSettings.setValue( "/UI/lastSaveAsSvgFile", myOutputFileNameQString );
-
-  //mView->setScene(0);//don't redraw the scene on the display while we render
   mComposition->setPlotStyle( QgsComposition::Print );
 
   QSvgGenerator generator;
@@ -799,12 +809,11 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 
   QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
   QRectF targetArea( 0, 0, width, height );
+  mView->setPaintingEnabled( false );
   mComposition->render( &p, targetArea, sourceArea );
-
   p.end();
-
   mComposition->setPlotStyle( QgsComposition::Preview );
-  //mView->setScene(mComposition->canvas()); //now that we're done, set the view to show the scene again
+  mView->setPaintingEnabled( true );
 }
 
 void QgsComposer::on_mActionSelectMoveItem_triggered()

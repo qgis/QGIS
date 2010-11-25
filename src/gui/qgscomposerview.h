@@ -98,6 +98,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
 
+    void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
+    bool paintingEnabled() const { return mPaintingEnabled; }
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -108,6 +111,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
+
+    void paintEvent( QPaintEvent* event );
 
   private:
     /**Status of shift key (used for multiple selection)*/
@@ -124,6 +129,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPointF mMoveContentStartPos;
     /**Start of rubber band creation*/
     QPointF mRubberBandStartPos;
+
+    bool mPaintingEnabled;
 
   public slots:
     /**For QgsComposerItemGroup to send its signals to QgsComposer (or other classes that keep track of input widgets)*/
