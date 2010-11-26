@@ -14,8 +14,8 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 #include <qgscomposerpicture.h>
 #include <qgscomposerscalebar.h>
 #include <qgscomposershape.h>
-//#include <qgscomposertable.h>
-//#include <qgscomposerattributetable.h>
+#include <qgscomposertable.h>
+#include <qgscomposerattributetable.h>
 //#include <qgscomposertexttable.h>
 %End
 
@@ -64,7 +64,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     sipType = sipType_QgsComposerShape;
     *sipCppRet = static_cast<QgsComposerShape*>(sipCpp);
     break;
-/*  case QgsComposerItem::ComposerTable:
+  case QgsComposerItem::ComposerTable:
     sipType = sipType_QgsComposerTable;
     *sipCppRet = static_cast<QgsComposerTable*>(sipCpp);
     break;
@@ -72,7 +72,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     sipType = sipType_QgsComposerAttributeTable;
     *sipCppRet = static_cast<QgsComposerAttributeTable*>(sipCpp);
     break;
-  case QgsComposerItem::ComposerTextTable:
+  /*case QgsComposerItem::ComposerTextTable:
     sipType = sipType_QgsComposerTextTable;
     *sipCppRet = static_cast<QgsComposerTextTable*>(sipCpp);
     break;*/
