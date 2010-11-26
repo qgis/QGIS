@@ -44,10 +44,23 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void loadStereoConfig();
     //! Save settings
     void saveStereoConfig();
+    //! Handle stereoMode
+    void setStereoMode();
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
+    
+    void on_comboStereoMode_currentIndexChanged(QString value);
+    void on_eyeSeparation_valueChanged(double value);
+    void on_screenDistance_valueChanged(double value);
+    void on_screenWidth_valueChanged(double value);
+    void on_screenHeight_valueChanged(double value);
+    void on_splitStereoHorizontalSeparation_valueChanged(int value);
+    void on_splitStereoVerticalSeparation_valueChanged(int value);
+    void on_splitStereoHorizontalEyeMapping_currentIndexChanged(int value);
+    void on_splitStereoVerticalEyeMapping_currentIndexChanged(int value);
+
     void on_resetDefaults_clicked();
 };
 

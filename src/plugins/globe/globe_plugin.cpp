@@ -51,6 +51,7 @@
 using namespace osgEarth::Drivers;
 using namespace osgEarthUtil::Controls2;
 
+#define MOVE_OFFSET 0.05
 
 //static const char * const sIdent = "$Id: plugin.cpp 9327 2008-09-14 11:18:44Z jef $";
 static const QString sName = QObject::tr( "Globe" );
@@ -318,16 +319,15 @@ void GlobePlugin::setupControls()
   moveHControls->setPosition( 5, 35 );
   
   osgEarthUtil::EarthManipulator* manip = dynamic_cast<osgEarthUtil::EarthManipulator*>(viewer.getCameraManipulator());
-  
   //Move Left
   osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png" );
   ImageControl* moveLeft = new NavigationControl( moveLeftImg );
-  moveLeft->addEventHandler( new PanControlHandler( manip, -0.05, 0 ) );
+  moveLeft->addEventHandler( new PanControlHandler( manip, -MOVE_OFFSET, 0 ) );
   
   //Move Right
   osg::Image* moveRightImg = osgDB::readImageFile( imgDir + "/move-right.png" );
   ImageControl* moveRight = new NavigationControl( moveRightImg );
-  moveRight->addEventHandler( new PanControlHandler( manip, 0.05, 0 ) );
+  moveRight->addEventHandler( new PanControlHandler( manip, MOVE_OFFSET, 0 ) );
   
   //Move Reset
   osg::Image* moveResetImg = osgDB::readImageFile( imgDir + "/move-reset.png" );
@@ -348,12 +348,12 @@ void GlobePlugin::setupControls()
   //Move Up
   osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png" );
   ImageControl* moveUp = new NavigationControl( moveUpImg );
-  moveUp->addEventHandler( new PanControlHandler( manip, 0, -0.05 ) );
+  moveUp->addEventHandler( new PanControlHandler( manip, 0, MOVE_OFFSET ) );
   
   //Move Down
   osg::Image* moveDownImg = osgDB::readImageFile( imgDir + "/move-down.png" );
   ImageControl* moveDown = new NavigationControl( moveDownImg );
-  moveDown->addEventHandler( new PanControlHandler( manip, 0, 0.05 ) );
+  moveDown->addEventHandler( new PanControlHandler( manip, 0, -MOVE_OFFSET ) );
   
   //add controls to moveControls group
   moveHControls->addControl( moveLeft );
@@ -378,12 +378,12 @@ void GlobePlugin::setupControls()
   //Rotate CCW
   osg::Image* rotateCCWImg = osgDB::readImageFile( imgDir + "/rotate-ccw.png" );
   ImageControl* rotateCCW = new NavigationControl( rotateCCWImg );
-  rotateCCW->addEventHandler( new RotateControlHandler( manip, 0.05, 0) );
+  rotateCCW->addEventHandler( new RotateControlHandler( manip, MOVE_OFFSET, 0) );
   
   //Rotate CW
   osg::Image* rotateCWImg = osgDB::readImageFile( imgDir + "/rotate-cw.png" );
   ImageControl* rotateCW = new NavigationControl( rotateCWImg );
-  rotateCW->addEventHandler( new RotateControlHandler( manip, -0.05 , 0 ) );
+  rotateCW->addEventHandler( new RotateControlHandler( manip, -MOVE_OFFSET , 0 ) );
   
   //Rotate Reset
   osg::Image* rotateResetImg = osgDB::readImageFile( imgDir + "/rotate-reset.png" );
@@ -411,12 +411,12 @@ void GlobePlugin::setupControls()
   //tilt Up
   osg::Image* tiltUpImg = osgDB::readImageFile( imgDir + "/tilt-up.png" );
   ImageControl* tiltUp = new NavigationControl( tiltUpImg );
-  tiltUp->addEventHandler( new RotateControlHandler( manip, 0, 0.05 ) );
+  tiltUp->addEventHandler( new RotateControlHandler( manip, 0, MOVE_OFFSET ) );
   
   //tilt Down
   osg::Image* tiltDownImg = osgDB::readImageFile( imgDir + "/tilt-down.png" );
   ImageControl* tiltDown = new NavigationControl( tiltDownImg );
-  tiltDown->addEventHandler( new RotateControlHandler( manip, 0, -0.05 ) );
+  tiltDown->addEventHandler( new RotateControlHandler( manip, 0, -MOVE_OFFSET ) );
   
   //add controls to tiltControls group
   tiltControls->addControl( tiltUp );
@@ -438,12 +438,12 @@ void GlobePlugin::setupControls()
   //Zoom In
   osg::Image* zoomInImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
   ImageControl* zoomIn = new NavigationControl( zoomInImg );
-  zoomIn->addEventHandler( new ZoomControlHandler( manip, 0, -0.05 ) );
+  zoomIn->addEventHandler( new ZoomControlHandler( manip, 0, -MOVE_OFFSET ) );
   
   //Zoom Out
   osg::Image* zoomOutImg = osgDB::readImageFile( imgDir + "/zoom-out.png" );
   ImageControl* zoomOut = new NavigationControl( zoomOutImg );
-  zoomOut->addEventHandler( new ZoomControlHandler( manip, 0, 0.05 ) );
+  zoomOut->addEventHandler( new ZoomControlHandler( manip, 0, MOVE_OFFSET ) );
   
   //Zoom Reset
   osg::Image* zoomResetImg = osgDB::readImageFile( imgDir + "/zoom-reset.png" );
@@ -578,6 +578,8 @@ void GlobePlugin::copyFolder(QString sourceFolder, QString destFolder)
   }
 }
 
+// ----------
+
 bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 { 
   if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
@@ -589,7 +591,10 @@ bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAct
   return false;
 }
 
-bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )
+// ----------
+
+bool
+NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )
 {
   switch ( ea.getEventType() )
   {
@@ -671,46 +676,46 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
       //move map
       if (ea.getKey() == '4' )
       {
-        _manip->pan( -0.05, 0 );
+        _manip->pan( -MOVE_OFFSET, 0 );
       }
       if (ea.getKey() == '6' )
       {
-        _manip->pan( 0.05, 0 );
+        _manip->pan( MOVE_OFFSET, 0 );
       }  
       if (ea.getKey() == '2' )
       {
-        _manip->pan( 0, 0.05 );
+        _manip->pan( 0, MOVE_OFFSET );
       }
       if (ea.getKey() == '8' )
       {
-        _manip->pan( 0, -0.05 );
+        _manip->pan( 0, -MOVE_OFFSET );
       }  
       //rotate
       if (ea.getKey() == '/' )
       {
-        _manip->rotate( 0.05, 0 );
+        _manip->rotate( MOVE_OFFSET, 0 );
       }
       if (ea.getKey() == '*' )
       {
-        _manip->rotate( -0.05, 0 );
+        _manip->rotate( -MOVE_OFFSET, 0 );
       }
       //tilt
       if ( ea.getKey() == '9' )
       {
-        _manip->rotate( 0, 0.05 );
+        _manip->rotate( 0, MOVE_OFFSET );
       }
       if (ea.getKey() == '3' )
       {
-        _manip->rotate( 0, -0.05 );
+        _manip->rotate( 0, -MOVE_OFFSET );
       }
       //zoom
       if (ea.getKey() == '-' )
       {
-        _manip->zoom( 0, 0.05 );
+        _manip->zoom( 0, MOVE_OFFSET );
       }
       if (ea.getKey() == '+' )
       {
-       _manip->zoom( 0, -0.05 );
+       _manip->zoom( 0, -MOVE_OFFSET );
       }  
       //reset
       if (ea.getKey() == '5' )
