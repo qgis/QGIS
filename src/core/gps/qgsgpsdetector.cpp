@@ -35,7 +35,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 #ifdef linux
   // look for linux serial devices
-  foreach( QString linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" )
+  foreach( QString linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" << "/dev/ttyACM%1" )
   {
     for ( int i = 0; i < 10; ++i )
     {
