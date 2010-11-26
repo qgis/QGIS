@@ -62,6 +62,8 @@ class QgsComposerView: QGraphicsView
     void addComposerPicture( QgsComposerPicture* picture );
     /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerShape( QgsComposerShape* shape );
+    /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerTable( QgsComposerAttributeTable* table );
 
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
