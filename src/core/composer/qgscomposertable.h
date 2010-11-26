@@ -74,8 +74,8 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     QColor mGridColor;
 
     /**Retrieves feature attributes*/
-    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributes ) = 0;
-    virtual QMap<int, QString> getHeaderLabels() const = 0;
+    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributes ) {return false;} //= 0;
+    virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
     /**Calculate the maximum width values of the vector attributes*/
     virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList ) const;
     /**Adapts the size of the item frame to match the content*/
