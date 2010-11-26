@@ -680,9 +680,8 @@ void QgsWmsProvider::tileReplyFinished()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
 
-  bool fromCache;
-#if QT_VERSION >= 0x40500
-  fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+#if defined(QGISDEBUG) && (QT_VERSION >= 0x40500)
+  bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
   if ( fromCache )
     mCacheHits++;
   else

@@ -193,7 +193,7 @@ void QgsNewSpatialiteLayerDialog::initializeSpatialMetadata( sqlite3 *sqlite_han
   int ret;
   char sql[1024];
   char *errMsg = NULL;
-  int count;
+  int count = 0;
   int i;
   char **results;
   int rows;
