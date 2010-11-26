@@ -32,6 +32,10 @@ CMAKE_OPTS := \
 	-D WITH_MAPSERVER=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin
 
+ifneq (,$(findstring $(DISTRIBUTION),"natty"))
+	CMAKE_OPTS += -D QT_QTWEBKIT_INCLUDE_DIR=/usr/include/QtWebKit
+endif
+
 #ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty sid"))
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
 #else
