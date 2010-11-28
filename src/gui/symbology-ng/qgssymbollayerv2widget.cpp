@@ -589,6 +589,7 @@ QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( QWid
   setupUi( this );
 
   connect( btnChangeColor, SIGNAL( clicked() ), this, SLOT( colorChanged() ) );
+  connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
 }
 
 void QgsLineDecorationSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -601,6 +602,7 @@ void QgsLineDecorationSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
 
   // set values
   btnChangeColor->setColor( mLayer->color() );
+  spinWidth->setValue( mLayer->width() );
 }
 
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2Widget::symbolLayer()
@@ -615,6 +617,12 @@ void QgsLineDecorationSymbolLayerV2Widget::colorChanged()
     return;
   mLayer->setColor( color );
   btnChangeColor->setColor( mLayer->color() );
+  emit changed();
+}
+
+void QgsLineDecorationSymbolLayerV2Widget::penWidthChanged()
+{
+  mLayer->setWidth( spinWidth->value() );
   emit changed();
 }
 

@@ -146,11 +146,13 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 /////////
 
 #define DEFAULT_LINEDECORATION_COLOR  QColor(0,0,0)
+#define DEFAULT_LINEDECORATION_WIDTH  DEFAULT_LINE_WIDTH
 
 class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
   public:
-    QgsLineDecorationSymbolLayerV2( QColor color = DEFAULT_LINEDECORATION_COLOR );
+    QgsLineDecorationSymbolLayerV2( QColor color = DEFAULT_LINEDECORATION_COLOR,
+                                    double width = DEFAULT_LINEDECORATION_WIDTH );
 
     ~QgsLineDecorationSymbolLayerV2();
 
