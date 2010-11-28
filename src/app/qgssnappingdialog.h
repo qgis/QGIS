@@ -18,6 +18,7 @@
 #ifndef QGSSNAPPINGDIALOG_H
 #define QGSSNAPPINGDIALOG_H
 
+#include "qgsmaplayer.h"
 #include "ui_qgssnappingdialogbase.h"
 
 class QDockWidget;
@@ -41,11 +42,11 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     //! apply the changes
     void apply();
 
-    //! update the Dialog
-    void update();
-
     //! show dialog or dock
     void show();
+
+    //! connect to the layers destroyed() and then update()
+    void connectUpdate( QgsMapLayer* theMapLayer );
 
   protected:
     /**Constructor
@@ -67,6 +68,10 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     QgsMapCanvas* mMapCanvas;
 
     QDockWidget *mDock;
+
+  private slots:
+    //! update the Dialog
+    void update();
 };
 
 #endif

@@ -27,6 +27,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QDockWidget>
+#include <QPushButton>
 
 
 class QgsSnappingDock : public QDockWidget
@@ -63,9 +64,9 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   else
   {
     connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( apply() ) );
+    connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   }
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( update() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( update() ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( connectUpdate( QgsMapLayer * ) ) );
 
   update();
 
@@ -133,9 +134,11 @@ void QgsSnappingDialog::update()
 
   mLayerTreeWidget->clear();
 
-  for ( int i = 0; i < mMapCanvas->layerCount(); ++i )
+  QMap< QString, QgsMapLayer *> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap< QString, QgsMapLayer *>::iterator it;
+  for ( it = mapLayers.begin(); it != mapLayers.end() ; ++it )
   {
-    QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->layer( i ) );
+    QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( !currentVectorLayer )
       continue;
 
@@ -261,4 +264,11 @@ void QgsSnappingDialog::show()
     mDock->setVisible( true );
   else
     QDialog::show();
+}
+
+
+void QgsSnappingDialog::connectUpdate( QgsMapLayer * theMapLayer )
+{
+  connect( theMapLayer, SIGNAL( destroyed() ), this, SLOT( update() ) );
+  update();
 }
