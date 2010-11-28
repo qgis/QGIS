@@ -6,16 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>192</height>
+    <width>352</width>
+    <height>232</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -30,44 +30,58 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="4">
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Preferred</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="1" column="0">
+     <item row="1" column="0" colspan="2">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Marker interval</string>
+        <string>Marker placement</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="2" column="0">
+      <widget class="QRadioButton" name="radInterval">
+       <property name="text">
+        <string>with interval</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="spinInterval">
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QRadioButton" name="radVertex">
+       <property name="text">
+        <string>on every vertex</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="2">
       <widget class="QCheckBox" name="chkRotateMarker">
        <property name="text">
         <string>Rotate marker</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Line offset</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="5" column="1">
       <widget class="QDoubleSpinBox" name="spinOffset">
        <property name="decimals">
         <number>2</number>
@@ -80,18 +94,21 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="spinInterval">
-       <property name="decimals">
-        <number>2</number>
+     <item row="0" column="2" rowspan="6">
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-       <property name="maximum">
-        <double>100000.000000000000000</double>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
        </property>
-       <property name="value">
-        <double>1.000000000000000</double>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>110</width>
+         <height>20</height>
+        </size>
        </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -112,7 +129,11 @@
  </widget>
  <tabstops>
   <tabstop>btnChangeMarker</tabstop>
+  <tabstop>radInterval</tabstop>
   <tabstop>spinInterval</tabstop>
+  <tabstop>radVertex</tabstop>
+  <tabstop>chkRotateMarker</tabstop>
+  <tabstop>spinOffset</tabstop>
  </tabstops>
  <resources/>
  <connections/>
