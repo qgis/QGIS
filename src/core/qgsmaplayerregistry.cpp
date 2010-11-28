@@ -111,6 +111,7 @@ void QgsMapLayerRegistry::removeAllMapLayers()
   {
     emit layerWillBeRemoved( it.key() );
     delete it.value(); // delete the map layer
+    mMapLayers.remove( it.key() );
   }
   mMapLayers.clear();
 
