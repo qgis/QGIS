@@ -455,9 +455,10 @@ double QgsMarkerLineSymbolLayerV2::width() const
 
 /////////////
 
-QgsLineDecorationSymbolLayerV2::QgsLineDecorationSymbolLayerV2( QColor color )
+QgsLineDecorationSymbolLayerV2::QgsLineDecorationSymbolLayerV2( QColor color, double width )
 {
   mColor = color;
+  mWidth = width;
 }
 
 QgsLineDecorationSymbolLayerV2::~QgsLineDecorationSymbolLayerV2()
@@ -467,11 +468,14 @@ QgsLineDecorationSymbolLayerV2::~QgsLineDecorationSymbolLayerV2()
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2::create( const QgsStringMap& props )
 {
   QColor color = DEFAULT_LINEDECORATION_COLOR;
+  double width = DEFAULT_LINEDECORATION_WIDTH;
 
   if ( props.contains( "color" ) )
     color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
+  if ( props.contains( "width" ) )
+    width = props["width"].toDouble();
 
-  return new QgsLineDecorationSymbolLayerV2( color );
+  return new QgsLineDecorationSymbolLayerV2( color, width );
 }
 
 QString QgsLineDecorationSymbolLayerV2::layerType() const
@@ -483,9 +487,11 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
 {
   QColor penColor = mColor;
   penColor.setAlphaF( context.alpha() );
+  mPen.setWidth( context.outputLineWidth( mWidth ) );
   mPen.setColor( penColor );
   QColor selColor = context.selectionColor();
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  mSelPen.setWidth( context.outputLineWidth( mWidth ) );
   mSelPen.setColor( selColor );
 }
 
@@ -521,7 +527,7 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   QPointF p2 = points.at( cnt - 1 );
   double angle = _calculateAngle( p1.x(), p1.y(), p2.x(), p2.y() );
 
-  double size = context.outputLineWidth( 2 );
+  double size = context.outputLineWidth( mWidth * 8 );
   double angle1 = angle + M_PI / 6;
   double angle2 = angle - M_PI / 6;
 
@@ -537,10 +543,11 @@ QgsStringMap QgsLineDecorationSymbolLayerV2::properties() const
 {
   QgsStringMap map;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["width"] = QString::number( mWidth );
   return map;
 }
 
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2::clone() const
 {
-  return new QgsLineDecorationSymbolLayerV2( mColor );
+  return new QgsLineDecorationSymbolLayerV2( mColor, mWidth );
 }

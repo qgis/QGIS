@@ -6,24 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>244</height>
+    <width>366</width>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Color</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1">
       <widget class="QgsColorButtonV2" name="btnChangeColor">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -36,7 +36,7 @@
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="2" rowspan="2">
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -47,10 +47,30 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>112</width>
-         <height>21</height>
+         <height>48</height>
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Pen width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="spinWidth">
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -76,6 +96,10 @@
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>spinWidth</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
