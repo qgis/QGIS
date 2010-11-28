@@ -132,11 +132,11 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
 
   if ( mDisplayAttributes.size() < 1 )
   {
-    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), selectionRect, false, true );
+    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), selectionRect, mShowOnlyVisibleFeatures, mShowOnlyVisibleFeatures );
   }
   else
   {
-    mVectorLayer->select( mDisplayAttributes.toList(), selectionRect, false, true );
+    mVectorLayer->select( mDisplayAttributes.toList(), selectionRect, mShowOnlyVisibleFeatures, mShowOnlyVisibleFeatures );
   }
   QgsFeature f;
   int counter = 0;

@@ -66,6 +66,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   mLayerComboBox->blockSignals( false );
 
   updateGuiElements();
+  on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
 
   if ( mComposerTable )
   {
@@ -123,7 +124,7 @@ void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
   }
 }
 
-void QgsComposerTableWidget::on_mComposerMapComboBox_currentIndexChanged( int index )
+void QgsComposerTableWidget::on_mComposerMapComboBox_activated( int index )
 {
   if ( !mComposerTable )
   {
