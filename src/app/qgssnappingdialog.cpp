@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgssnappingdialog.h"
+#include "qgsavoidintersectionsdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgisapp.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 #include <QCheckBox>
 #include <QDoubleValidator>
 #include <QComboBox>
@@ -36,7 +38,7 @@ class QgsSnappingDock : public QDockWidget
     QgsSnappingDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
         : QDockWidget( title, parent, flags )
     {
-      setObjectName( "Snapping Options" ); // set object name so the position can be saved
+      setObjectName( "Snapping and Digitizing Options" ); // set object name so the position can be saved
     }
 
     virtual void closeEvent( QCloseEvent * ev )
@@ -54,7 +56,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
   if ( myDockFlag )
   {
-    mDock = new QgsSnappingDock( tr( "Snapping Options" ), QgisApp::instance() );
+    mDock = new QgsSnappingDock( tr( "Snapping and Digitizing Options" ), QgisApp::instance() );
     mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
     connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
@@ -67,6 +69,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
     connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   }
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( connectUpdate( QgsMapLayer * ) ) );
+  connect( cbxEnableTopologicalEditingCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_cbxEnableTopologicalEditingCheckBox_stateChanged( int ) ) );
 
   update();
 
@@ -85,6 +88,29 @@ QgsSnappingDialog::QgsSnappingDialog()
 
 QgsSnappingDialog::~QgsSnappingDialog()
 {
+}
+
+void QgsSnappingDialog::on_cbxEnableTopologicalEditingCheckBox_stateChanged( int state )
+{
+  int topologicalEditingEnabled = ( state == Qt::Checked ) ? 1 : 0;
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", topologicalEditingEnabled );
+}
+
+void QgsSnappingDialog::on_mAvoidIntersectionsPushButton_clicked()
+{
+  QgsAvoidIntersectionsDialog d( mMapCanvas, mAvoidIntersectionsSettings );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    d.enabledLayers( mAvoidIntersectionsSettings );
+    //store avoid intersection layers
+    QStringList avoidIntersectionList;
+    QSet<QString>::const_iterator avoidIt = mAvoidIntersectionsSettings.constBegin();
+    for ( ; avoidIt != mAvoidIntersectionsSettings.constEnd(); ++avoidIt )
+    {
+      avoidIntersectionList.append( *avoidIt );
+    }
+    QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  }
 }
 
 void QgsSnappingDialog::closeEvent( QCloseEvent* event )
@@ -199,6 +225,29 @@ void QgsSnappingDialog::update()
     cbxSnapTo->setCurrentIndex( snappingStringIdx );
     leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
     cbxUnits->setCurrentIndex( toleranceUnitList[idx].toInt() );
+  }
+
+  // read the digitizing settings
+  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  if ( topologicalEditing != 0 )
+  {
+    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Checked );
+  }
+  else
+  {
+    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
+  }
+
+  bool avoidIntersectionListOk;
+  mAvoidIntersectionsSettings.clear();
+  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &avoidIntersectionListOk );
+  if ( avoidIntersectionListOk )
+  {
+    QStringList::const_iterator avoidIt = avoidIntersectionsList.constBegin();
+    for ( ; avoidIt != avoidIntersectionsList.constEnd(); ++avoidIt )
+    {
+      mAvoidIntersectionsSettings.insert( *avoidIt );
+    }
   }
 
   if ( myDockFlag )

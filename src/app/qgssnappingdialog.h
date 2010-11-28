@@ -48,11 +48,15 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     //! connect to the layers destroyed() and then update()
     void connectUpdate( QgsMapLayer* theMapLayer );
 
+    void on_cbxEnableTopologicalEditingCheckBox_stateChanged( int );
+    void on_mAvoidIntersectionsPushButton_clicked();
+
   protected:
     /**Constructor
     @param canvas pointer to the map canvas (for detecting which vector layers are loaded
     */
     //QgsSnappingDialog( QgsMapCanvas* canvas );
+
     /**
      * Handle closing of the window
      * @param event unused
@@ -63,6 +67,9 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
   private:
     /**Default constructor forbidden*/
     QgsSnappingDialog();
+
+    /**Stores ids of layers where intersections of new polygons is considered. Is passed to / read from QgsAvoidIntersectionsDialog*/
+    QSet<QString> mAvoidIntersectionsSettings;
 
     /**Used to query the loaded layers*/
     QgsMapCanvas* mMapCanvas;

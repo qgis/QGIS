@@ -23,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -285,35 +285,6 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QGroupBox" name="grpDigitizing">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Digitizing</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_1">
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox">
-            <property name="text">
-             <string>Enable topological editing</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="mAvoidIntersectionsPushButton">
-            <property name="text">
-             <string>Avoid intersections of new polygons...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab2">
@@ -422,8 +393,6 @@
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
-  <tabstop>mEnableTopologicalEditingCheckBox</tabstop>
-  <tabstop>mAvoidIntersectionsPushButton</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>tabWidget</tabstop>

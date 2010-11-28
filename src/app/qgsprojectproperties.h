@@ -89,11 +89,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    /*!
-      *
-      */
-    void on_mAvoidIntersectionsPushButton_clicked();
-
     void on_cbxProjectionEnabled_stateChanged( int state );
 
     /*!
@@ -111,9 +106,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
   private:
     QgsMapCanvas* mMapCanvas;
-
-    /**Stores ids of layers where intersections of new polygons is considered. Is passed to / read from QgsAvoidIntersectionsDialog*/
-    QSet<QString> mAvoidIntersectionsSettings;
 
     /*!
      * Function to save dialog window state
