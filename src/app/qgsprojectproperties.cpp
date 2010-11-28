@@ -107,29 +107,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   pbnCanvasColor->setColor( myColor );
 
-  //read the digitizing settings
-  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-  if ( topologicalEditing != 0 )
-  {
-    mEnableTopologicalEditingCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
-  }
-
-  bool avoidIntersectionListOk;
-  mAvoidIntersectionsSettings.clear();
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &avoidIntersectionListOk );
-  if ( avoidIntersectionListOk )
-  {
-    QStringList::const_iterator avoidIt = avoidIntersectionsList.constBegin();
-    for ( ; avoidIt != avoidIntersectionsList.constEnd(); ++avoidIt )
-    {
-      mAvoidIntersectionsSettings.insert( *avoidIt );
-    }
-  }
-
   QgsMapLayer* currentLayer = 0;
 
   QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
@@ -325,20 +302,6 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
 
-  //write the digitizing settings
-  int topologicalEditingEnabled = ( mEnableTopologicalEditingCheckBox->checkState() == Qt::Checked ) ? 1 : 0;
-  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", topologicalEditingEnabled );
-
-  //store avoid intersection layers
-  QStringList avoidIntersectionList;
-  QSet<QString>::const_iterator avoidIt = mAvoidIntersectionsSettings.constBegin();
-  for ( ; avoidIt != mAvoidIntersectionsSettings.constEnd(); ++avoidIt )
-  {
-    avoidIntersectionList.append( *avoidIt );
-  }
-  QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
-
-
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
@@ -388,16 +351,6 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
     pbnCanvasColor->setColor( color );
   }
 }
-
-void QgsProjectProperties::on_mAvoidIntersectionsPushButton_clicked()
-{
-  QgsAvoidIntersectionsDialog d( mMapCanvas, mAvoidIntersectionsSettings );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    d.enabledLayers( mAvoidIntersectionsSettings );
-  }
-}
-
 
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {

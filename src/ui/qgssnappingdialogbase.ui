@@ -13,14 +13,8 @@
   <property name="windowTitle">
    <string>Snapping options</string>
   </property>
-  <layout class="QGridLayout">
-   <property name="margin">
-    <number>9</number>
-   </property>
-   <property name="spacing">
-    <number>6</number>
-   </property>
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QTreeWidget" name="mLayerTreeWidget">
      <property name="indentation">
       <number>0</number>
@@ -55,7 +49,31 @@
      </column>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="cbxEnableTopologicalEditingCheckBox">
+       <property name="text">
+        <string>Enable topological editing</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mAvoidIntersectionsPushButton">
+       <property name="text">
+        <string>Avoid intersections of new polygons...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
