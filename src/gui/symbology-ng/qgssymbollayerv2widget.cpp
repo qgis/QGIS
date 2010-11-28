@@ -359,6 +359,8 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( QWidget* par
   connect( btnChangeMarker, SIGNAL( clicked() ), this, SLOT( setMarker() ) );
   connect( chkRotateMarker, SIGNAL( clicked() ), this, SLOT( setRotate() ) );
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
+  connect( radInterval, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
+  connect( radVertex, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
 }
 
 void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -373,7 +375,12 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinInterval->setValue( mLayer->interval() );
   chkRotateMarker->setChecked( mLayer->rotateMarker() );
   spinOffset->setValue( mLayer->offset() );
+  if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::Interval )
+    radInterval->setChecked( true );
+  else
+    radVertex->setChecked( true );
   updateMarker();
+  setPlacement(); // update gui
 }
 
 QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2Widget::symbolLayer()
@@ -416,6 +423,13 @@ void QgsMarkerLineSymbolLayerV2Widget::updateMarker()
   btnChangeMarker->setIcon( icon );
 }
 
+void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
+{
+  bool interval = radInterval->isChecked();
+  mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayerV2::Interval : QgsMarkerLineSymbolLayerV2::Vertex );
+  spinInterval->setEnabled( interval );
+  emit changed();
+}
 
 ///////////
 

@@ -145,6 +145,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setMarker();
     void setRotate();
     void setOffset();
+    void setPlacement();
 
   protected:
 

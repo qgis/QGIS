@@ -215,6 +215,7 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
   mInterval = interval;
   mMarker = NULL;
   mOffset = 0;
+  mPlacement = Interval;
 
   setSubSymbol( new QgsMarkerSymbolV2() );
 }
@@ -237,6 +238,8 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( rotate, interval );
   if ( props.contains( "offset" ) )
     x->setOffset( props["offset"].toDouble() );
+  if ( props.contains( "placement" ) )
+    x->setPlacement( props["placement"] == "vertex" ? Vertex : Interval );
   return x;
 }
 
@@ -276,16 +279,22 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 {
   if ( mOffset == 0 )
   {
-    renderPolylineNoOffset( points, context );
+    if ( mPlacement == Vertex )
+      renderPolylineVertex( points, context );
+    else
+      renderPolylineInterval( points, context );
   }
   else
   {
     QPolygonF points2 = ::offsetLine( points, context.outputLineWidth( mOffset ) );
-    renderPolylineNoOffset( points2, context );
+    if ( mPlacement == Vertex )
+      renderPolylineVertex( points2, context );
+    else
+      renderPolylineInterval( points2, context );
   }
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
@@ -344,12 +353,65 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
 
 }
 
+void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+{
+  QPointF lastPt = points[0];
+  QgsRenderContext& rc = context.renderContext();
+
+  double origAngle = mMarker->angle();
+  double angle;
+
+  for ( int i = 0; i < points.count(); ++i )
+  {
+    const QPointF& pt = points[i];
+
+    // rotate marker (if desired)
+    if ( mRotateMarker )
+    {
+      if ( i == 0 )
+      {
+        const QPointF& nextPt = points[i+1];
+        if ( pt == nextPt )
+          continue;
+        angle = MyLine( pt, nextPt ).angle();
+      }
+      else if ( i == points.count() - 1 )
+      {
+        const QPointF& prevPt = points[i-1];
+        if ( pt == prevPt )
+          continue;
+        angle = MyLine( prevPt, pt ).angle();
+      }
+      else
+      {
+        const QPointF& prevPt = points[i-1];
+        const QPointF& nextPt = points[i+1];
+        if ( prevPt == pt || nextPt == pt )
+          continue;
+
+        // calc average angle between the previous and next point
+        double a1 = MyLine( prevPt, pt ).angle();
+        double a2 = MyLine( pt, nextPt ).angle();
+        double unitX = cos( a1 ) + cos( a2 ), unitY = sin( a1 ) + sin( a2 );
+        angle = atan2( unitY, unitX );
+      }
+      mMarker->setAngle( angle * 180 / M_PI );
+    }
+
+    mMarker->renderPoint( points.at( i ), rc, -1, context.selected() );
+  }
+
+  // restore original rotation
+  mMarker->setAngle( origAngle );
+}
+
 QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
 {
   QgsStringMap map;
   map["rotate"] = ( mRotateMarker ? "1" : "0" );
   map["interval"] = QString::number( mInterval );
   map["offset"] = QString::number( mOffset );
+  map["placement"] = ( mPlacement == Vertex ? "vertex" : "interval" );
   return map;
 }
 
@@ -377,6 +439,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( mRotateMarker, mInterval );
   x->setSubSymbol( mMarker->clone() );
   x->setOffset( mOffset );
+  x->setPlacement( mPlacement );
   return x;
 }
 

@@ -85,6 +85,12 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     ~QgsMarkerLineSymbolLayerV2();
 
+    enum Placement
+    {
+      Interval,
+      Vertex
+    };
+
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
@@ -122,14 +128,19 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }
 
+    Placement placement() const { return mPlacement; }
+    void setPlacement( Placement p ) { mPlacement = p; }
+
   protected:
 
-    void renderPolylineNoOffset( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
     bool mRotateMarker;
     double mInterval;
     QgsMarkerSymbolV2* mMarker;
     double mOffset;
+    Placement mPlacement;
 };
 
 /////////
