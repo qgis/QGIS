@@ -183,6 +183,7 @@ void QgsComposerShapeWidget::on_mTransparentCheckBox_stateChanged( int state )
   mComposerShape->endCommand();
 }
 
+
 void QgsComposerShapeWidget::on_mFillColorButton_clicked()
 {
   if ( !mComposerShape )
