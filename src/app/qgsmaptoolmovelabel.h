@@ -35,6 +35,12 @@ class QgsMapToolMoveLabel: public QgsMapToolLabel
 
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
+    /**Returns true if layer move can be applied to a layer
+        @param xCol out: index of the attribute for data defined x coordinate
+        @param yCol out: index of the attribute for data defined y coordinate
+        @return true if labels of layer can be moved*/
+    bool layerIsMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+
   protected:
     /**Get data defined position of a feature
       @param layerId layer identification string
@@ -46,12 +52,6 @@ class QgsMapToolMoveLabel: public QgsMapToolLabel
       @param yCol out: index of the y position column
       @return false if layer does not have data defined label position enabled*/
     bool dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
-
-    /**Returns true if layer move can be applied to a layer
-      @param xCol out: index of the attribute for data defined x coordinate
-      @param yCol out: index of the attribute for data defined y coordinate
-      @return true if labels of layer can be moved*/
-    bool layerIsMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
 
     /**Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;

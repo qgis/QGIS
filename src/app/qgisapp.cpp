@@ -584,6 +584,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mAddIsland;
   delete mMapTools.mNodeTool;
   delete mMapTools.mMoveLabel;
+  delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
 
   delete mPythonUtils;
@@ -3955,6 +3956,8 @@ void QgisApp::labeling()
     // alter labeling - save the changes
     labelGui.layerSettings().writeToLayer( vlayer );
 
+    activateDeactivateLayerRelatedActions( layer );
+
     // trigger refresh
     if ( mMapCanvas )
     {
@@ -6171,6 +6174,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCaptureLine->setVisible( false );
     mActionCapturePolygon->setVisible( false );
 
+    mActionMoveLabel->setEnabled( false );
+    mActionRotateLabel->setEnabled( false );
+    mActionChangeLabelProperties->setEnabled( false );
+
     return;
   }
 
@@ -6247,11 +6254,29 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
                                           dprovider->capabilities() & QgsVectorDataProvider::AddFeatures );
 
         mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
+
+        if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) )
+        {
+          int colX, colY, colAng;
+          mActionMoveLabel->setEnabled( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel ) && qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->layerIsMoveable( layer, colX, colY ) );
+          mActionRotateLabel->setEnabled( qobject_cast<QgsMapToolRotateLabel*>( mMapTools.mRotateLabel ) && qobject_cast<QgsMapToolRotateLabel*>( mMapTools.mMoveLabel )->layerIsRotatable( layer, colAng ) );
+          mActionChangeLabelProperties->setEnabled( true );
+        }
+        else
+        {
+          mActionMoveLabel->setEnabled( false );
+          mActionRotateLabel->setEnabled( false );
+          mActionChangeLabelProperties->setEnabled( false );
+        }
       }
       else
       {
         mActionMergeFeatures->setEnabled( false );
         mActionMergeFeatureAttributes->setEnabled( false );
+
+        mActionMoveLabel->setEnabled( false );
+        mActionRotateLabel->setEnabled( false );
+        mActionChangeLabelProperties->setEnabled( false );
       }
 
       // moving enabled if geometry changes are supported
