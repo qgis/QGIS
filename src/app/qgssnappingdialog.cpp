@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgssnappingdialog.h"
-#include "qgsavoidintersectionsdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -24,6 +23,7 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+
 #include <QCheckBox>
 #include <QDoubleValidator>
 #include <QComboBox>
@@ -96,23 +96,6 @@ void QgsSnappingDialog::on_cbxEnableTopologicalEditingCheckBox_stateChanged( int
   QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", topologicalEditingEnabled );
 }
 
-void QgsSnappingDialog::on_mAvoidIntersectionsPushButton_clicked()
-{
-  QgsAvoidIntersectionsDialog d( mMapCanvas, mAvoidIntersectionsSettings );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    d.enabledLayers( mAvoidIntersectionsSettings );
-    //store avoid intersection layers
-    QStringList avoidIntersectionList;
-    QSet<QString>::const_iterator avoidIt = mAvoidIntersectionsSettings.constBegin();
-    for ( ; avoidIt != mAvoidIntersectionsSettings.constEnd(); ++avoidIt )
-    {
-      avoidIntersectionList.append( *avoidIt );
-    }
-    QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
-  }
-}
-
 void QgsSnappingDialog::closeEvent( QCloseEvent* event )
 {
   QDialog::closeEvent( event );
@@ -151,12 +134,13 @@ void QgsSnappingDialog::update()
     defaultSnappingStringIdx = 2;
   }
 
-  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
+  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk;
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk );
   QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &snapToListOk );
+  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &avoidIntersectionListOk );
 
   mLayerTreeWidget->clear();
 
@@ -165,7 +149,7 @@ void QgsSnappingDialog::update()
   for ( it = mapLayers.begin(); it != mapLayers.end() ; ++it )
   {
     QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( it.value() );
-    if ( !currentVectorLayer )
+    if ( !currentVectorLayer || currentVectorLayer->geometryType() == QGis::NoGeometry )
       continue;
 
     //snap to layer yes/no
@@ -200,6 +184,13 @@ void QgsSnappingDialog::update()
     cbxUnits->setCurrentIndex( defaultSnappingUnit );
     mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
 
+    QCheckBox *cbxAvoidIntersection = 0;
+    if ( currentVectorLayer->geometryType() == QGis::Polygon )
+    {
+      cbxAvoidIntersection = new QCheckBox( mLayerTreeWidget );
+      mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );
+    }
+
     int idx = layerIdList.indexOf( currentVectorLayer->getLayerID() );
     if ( idx < 0 )
     {
@@ -225,6 +216,10 @@ void QgsSnappingDialog::update()
     cbxSnapTo->setCurrentIndex( snappingStringIdx );
     leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
     cbxUnits->setCurrentIndex( toleranceUnitList[idx].toInt() );
+    if ( cbxAvoidIntersection )
+    {
+      cbxAvoidIntersection->setChecked( avoidIntersectionsList.contains( currentVectorLayer->getLayerID() ) );
+    }
   }
 
   // read the digitizing settings
@@ -238,18 +233,6 @@ void QgsSnappingDialog::update()
     cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
   }
 
-  bool avoidIntersectionListOk;
-  mAvoidIntersectionsSettings.clear();
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &avoidIntersectionListOk );
-  if ( avoidIntersectionListOk )
-  {
-    QStringList::const_iterator avoidIt = avoidIntersectionsList.constBegin();
-    for ( ; avoidIt != avoidIntersectionsList.constEnd(); ++avoidIt )
-    {
-      mAvoidIntersectionsSettings.insert( *avoidIt );
-    }
-  }
-
   if ( myDockFlag )
   {
     for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
@@ -259,6 +242,12 @@ void QgsSnappingDialog::update()
       connect( mLayerTreeWidget->itemWidget( item, 2 ), SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
       connect( mLayerTreeWidget->itemWidget( item, 3 ), SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
       connect( mLayerTreeWidget->itemWidget( item, 4 ), SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+
+      QCheckBox *cbxAvoidIntersection = qobject_cast<QCheckBox*>( mLayerTreeWidget->itemWidget( item, 5 ) );
+      if ( cbxAvoidIntersection )
+      {
+        connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+      }
     }
   }
 }
@@ -270,6 +259,7 @@ void QgsSnappingDialog::apply()
   QStringList toleranceList;
   QStringList enabledList;
   QStringList toleranceUnitList;
+  QStringList avoidIntersectionList;
 
   for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
   {
@@ -298,6 +288,12 @@ void QgsSnappingDialog::apply()
 
     toleranceList << QString::number( qobject_cast<QLineEdit*>( mLayerTreeWidget->itemWidget( currentItem, 3 ) )->text().toDouble(), 'f' );
     toleranceUnitList << QString::number( qobject_cast<QComboBox*>( mLayerTreeWidget->itemWidget( currentItem, 4 ) )->currentIndex() );
+
+    QCheckBox *cbxAvoidIntersection = qobject_cast<QCheckBox*>( mLayerTreeWidget->itemWidget( currentItem, 5 ) );
+    if ( cbxAvoidIntersection && cbxAvoidIntersection->isChecked() )
+    {
+      avoidIntersectionList << currentItem->data( 0, Qt::UserRole ).toString();
+    }
   }
 
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
@@ -305,6 +301,7 @@ void QgsSnappingDialog::apply()
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
 }
 
 void QgsSnappingDialog::show()

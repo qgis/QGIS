@@ -49,7 +49,6 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     void connectUpdate( QgsMapLayer* theMapLayer );
 
     void on_cbxEnableTopologicalEditingCheckBox_stateChanged( int );
-    void on_mAvoidIntersectionsPushButton_clicked();
 
   protected:
     /**Constructor

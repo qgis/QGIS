@@ -6,16 +6,42 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
+    <width>760</width>
     <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Snapping options</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="cbxEnableTopologicalEditingCheckBox">
+     <property name="text">
+      <string>Enable topological editing</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
     <widget class="QTreeWidget" name="mLayerTreeWidget">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
      <property name="indentation">
       <number>0</number>
      </property>
@@ -25,6 +51,9 @@
      <column>
       <property name="text">
        <string/>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
      <column>
@@ -47,40 +76,17 @@
        <string>Units</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="cbxEnableTopologicalEditingCheckBox">
-       <property name="text">
-        <string>Enable topological editing</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-       <property name="tristate">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mAvoidIntersectionsPushButton">
-       <property name="text">
-        <string>Avoid intersections of new polygons...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
+     <column>
+      <property name="text">
+       <string>Avoid Int.</string>
+      </property>
+      <property name="toolTip">
+       <string>Avoid intersections of new polygons</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+     </column>
     </widget>
    </item>
   </layout>
