@@ -237,7 +237,7 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
     return;
   }
 
-  mPicture->beginCommand( tr( "Rotation synchronisatione toggled" ) );
+  mPicture->beginCommand( tr( "Rotation synchronisation toggled" ) );
   if ( state == Qt::Unchecked )
   {
     mPicture->setRotationMap( -1 );
