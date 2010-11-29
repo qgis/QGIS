@@ -35,8 +35,6 @@ class QgsComposerShapeWidget: public QWidget, private Ui::QgsComposerShapeWidget
 
     /**Blocks / unblocks the signal of all GUI elements*/
     void blockAllSignals( bool block );
-    /**Sets the GUI elements to the currentValues of mComposerShape*/
-    void setGuiElementValues();
 
   private slots:
     void on_mShapeComboBox_currentIndexChanged( const QString& text );
@@ -45,6 +43,9 @@ class QgsComposerShapeWidget: public QWidget, private Ui::QgsComposerShapeWidget
     void on_mTransparentCheckBox_stateChanged( int state );
     void on_mFillColorButton_clicked();
     void on_mRotationSpinBox_valueChanged( int val );
+
+    /**Sets the GUI elements to the currentValues of mComposerShape*/
+    void setGuiElementValues();
 };
 
 #endif // QGSCOMPOSERSHAPEWIDGET_H

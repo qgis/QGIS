@@ -19,6 +19,7 @@
 #define QGSCOMPOSERVIEW_H
 
 #include <QGraphicsView>
+#include "qgsaddremoveitemcommand.h"
 
 class QKeyEvent;
 class QMainWindow;
@@ -114,6 +115,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     void paintEvent( QPaintEvent* event );
 
+    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
+
+
   private:
     /**Status of shift key (used for multiple selection)*/
     bool mShiftKeyPressed;
@@ -132,9 +137,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     bool mPaintingEnabled;
 
+    void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
+
+
   public slots:
-    /**For QgsComposerItemGroup to send its signals to QgsComposer (or other classes that keep track of input widgets)*/
-    void sendItemRemovedSignal( QgsComposerItem* item );
+    /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
+    void sendItemAddedSignal( QgsComposerItem* item );
 
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/

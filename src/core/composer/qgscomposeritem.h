@@ -169,6 +169,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     const QgsComposition* composition() const {return mComposition;}
 
+    /**Starts new composer undo command
+      @param commandText command title
+      @param c context for mergeable commands (unknown for non-mergeable commands*/
+    void beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
+    /**Finish current command and push it onto the undo stack */
+    void endCommand();
+    void cancelCommand();
+
     //functions that encapsulate the workaround for the Qt font bug (that is to scale the font size up and then scale the
     //painter down by the same factor for drawing
 
@@ -305,6 +313,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/
     void rotationChanged( double newRotation );
+    /**Used e.g. by the item widgets to update the gui elements*/
+    void itemChanged();
 };
 
 #endif

@@ -623,5 +623,6 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     _readXML( composerItemElem, doc );
   }
 
+  emit itemChanged();
   return true;
 }

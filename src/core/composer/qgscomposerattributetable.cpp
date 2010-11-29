@@ -362,5 +362,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
       mSortInformation.push_back( qMakePair( attribute, ascending ) );
     }
   }
-  return tableReadXML( itemElem, doc );
+  bool success = tableReadXML( itemElem, doc );
+  emit itemChanged();
+  return success;
 }

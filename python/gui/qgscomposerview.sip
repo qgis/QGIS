@@ -80,8 +80,8 @@ class QgsComposerView: QGraphicsView
     
 
   public slots:
-    /**For QgsComposerItemGroup to send its signals to QgsComposer (or other classes that keep track of input widgets)*/
-    void sendItemRemovedSignal( QgsComposerItem* item );
+    /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
+    void sendItemAddedSignal( QgsComposerItem* item );
 
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/

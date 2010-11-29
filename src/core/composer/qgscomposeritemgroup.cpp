@@ -32,7 +32,6 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
     emit childItemDeleted( *itemIt );
-    delete( *itemIt );
   }
 }
 

@@ -60,10 +60,13 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupButton_clicked();
 
-  private:
-    QgsComposerLegendWidget();
+  private slots:
     /**Sets GUI according to state of mLegend*/
     void setGuiElements();
+
+  private:
+    QgsComposerLegendWidget();
+
 
     QgsComposerLegend* mLegend;
 };

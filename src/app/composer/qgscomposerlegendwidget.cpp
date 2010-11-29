@@ -45,6 +45,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   mItemTreeView->setDragDropMode( QAbstractItemView::InternalMove );
 
   setGuiElements();
+  connect( mItemTreeView, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
 }
 
 QgsComposerLegendWidget::QgsComposerLegendWidget(): mLegend( 0 )
@@ -81,9 +82,11 @@ void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString& text
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend title changed" ), QgsComposerMergeCommand::ComposerLegendText );
     mLegend->setTitle( text );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -91,9 +94,11 @@ void QgsComposerLegendWidget::on_mSymbolWidthSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend symbol width" ), QgsComposerMergeCommand::LegendSymbolWidth );
     mLegend->setSymbolWidth( d );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -101,9 +106,11 @@ void QgsComposerLegendWidget::on_mSymbolHeightSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend symbol height" ), QgsComposerMergeCommand::LegendSymbolHeight );
     mLegend->setSymbolHeight( d );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -111,9 +118,11 @@ void QgsComposerLegendWidget::on_mLayerSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend layer space" ), QgsComposerMergeCommand::LegendLayerSpace );
     mLegend->setLayerSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -121,9 +130,11 @@ void QgsComposerLegendWidget::on_mSymbolSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend symbol space" ), QgsComposerMergeCommand::LegendSymbolSpace );
     mLegend->setSymbolSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -131,9 +142,11 @@ void QgsComposerLegendWidget::on_mIconLabelSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend icon label space" ), QgsComposerMergeCommand::LegendIconSymbolSpace );
     mLegend->setIconLabelSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -150,9 +163,11 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
 #endif
     if ( ok )
     {
+      mLegend->beginCommand( tr( "Title font changed" ) );
       mLegend->setTitleFont( newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
+      mLegend->endCommand();
     }
   }
 }
@@ -170,9 +185,11 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
 #endif
     if ( ok )
     {
+      mLegend->beginCommand( tr( "Legend group font changed" ) );
       mLegend->setGroupFont( newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
+      mLegend->endCommand();
     }
   }
 }
@@ -190,9 +207,11 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
 #endif
     if ( ok )
     {
+      mLegend->beginCommand( tr( "Legend layer font changed" ) );
       mLegend->setLayerFont( newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
+      mLegend->endCommand();
     }
   }
 }
@@ -210,9 +229,11 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
 #endif
     if ( ok )
     {
+      mLegend->beginCommand( tr( "Legend item font changed" ) );
       mLegend->setItemFont( newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
+      mLegend->endCommand();
     }
   }
 }
@@ -222,14 +243,21 @@ void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend box space" ), QgsComposerMergeCommand::LegendBoxSpace );
     mLegend->setBoxSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
 void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
 {
+  if ( !mLegend )
+  {
+    return;
+  }
+
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
@@ -251,6 +279,7 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
     return;
   }
 
+  mLegend->beginCommand( "Moved legend item down" );
   QModelIndex parentIndex = currentIndex.parent();
   QList<QStandardItem*> itemToMove;
   QList<QStandardItem*> youngerSiblingItem;
@@ -272,14 +301,17 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
   }
 
   mItemTreeView->setCurrentIndex( itemModel->indexFromItem( itemToMove.at( 0 ) ) );
-  if ( mLegend )
-  {
-    mLegend->update();
-  }
+  mLegend->update();
+  mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
 {
+  if ( !mLegend )
+  {
+    return;
+  }
+
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
@@ -292,6 +324,7 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
     return;
   }
 
+  mLegend->beginCommand( "Moved legend item up" );
   //is there an older sibling?
   int row = currentIndex.row();
   QModelIndex olderSibling = currentIndex.sibling( row - 1, 0 );
@@ -323,14 +356,17 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
   }
 
   mItemTreeView->setCurrentIndex( itemModel->indexFromItem( itemToMove.at( 0 ) ) );
-  if ( mLegend )
-  {
-    mLegend->update();
-  }
+  mLegend->update();
+  mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
 {
+  if ( !mLegend )
+  {
+    return;
+  }
+
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
@@ -345,16 +381,20 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
 
   QModelIndex parentIndex = currentIndex.parent();
 
+  mLegend->beginCommand( "Legend item removed" );
   itemModel->removeRow( currentIndex.row(), parentIndex );
-  if ( mLegend )
-  {
-    mLegend->adjustBoxSize();
-    mLegend->update();
-  }
+  mLegend->adjustBoxSize();
+  mLegend->update();
+  mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mEditPushButton_clicked()
 {
+  if ( !mLegend )
+  {
+    return;
+  }
+
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
@@ -379,15 +419,20 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   {
     currentItem->setText( itemDialog.itemText() );
   }
-  if ( mLegend )
-  {
-    mLegend->adjustBoxSize();
-    mLegend->update();
-  }
+
+  mLegend->beginCommand( tr( "Legend item edited" ) );
+  mLegend->adjustBoxSize();
+  mLegend->update();
+  mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
 {
+  if ( !mLegend )
+  {
+    return;
+  }
+
   //get current item
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
@@ -408,12 +453,14 @@ void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
     return;
   }
 
+  mLegend->beginCommand( tr( "Legend updated" ) );
   if ( mLegend->model() )
   {
     mLegend->model()->updateItem( currentItem );
   }
   mLegend->update();
   mLegend->adjustBoxSize();
+  mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
@@ -425,8 +472,10 @@ void QgsComposerLegendWidget::on_mAddGroupButton_clicked()
 {
   if ( mLegend && mLegend->model() )
   {
+    mLegend->beginCommand( tr( "Legend group added" ) );
     mLegend->model()->addGroup();
     mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -434,6 +483,7 @@ void QgsComposerLegendWidget::updateLegend()
 {
   if ( mLegend )
   {
+    mLegend->beginCommand( tr( "Legend updated" ) );
     QgisApp* app = QgisApp::instance();
     if ( !app )
     {
@@ -456,5 +506,6 @@ void QgsComposerLegendWidget::updateLegend()
     QgsAppLegendInterface legendIface( app->legend() );
     QList< GroupLayerInfo > groupInfo = legendIface.groupLayerRelationship();
     mLegend->model()->setLayerSetAndGroups( layerIdList, groupInfo );
+    mLegend->endCommand();
   }
 }

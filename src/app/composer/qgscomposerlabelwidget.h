@@ -43,8 +43,13 @@ class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidget
     void on_mBottomRadioButton_clicked();
     void on_mMiddleRadioButton_clicked();
 
+  private slots:
+    void setGuiElementValues();
+
   private:
     QgsComposerLabel* mComposerLabel;
+
+    void blockAllSignals( bool block );
 };
 
 #endif //QGSCOMPOSERLABELWIDGET

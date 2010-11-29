@@ -271,6 +271,30 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   return true;
 }
 
+void QgsComposerItem::beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c )
+{
+  if ( mComposition )
+  {
+    mComposition->beginCommand( this, commandText, c );
+  }
+}
+
+void QgsComposerItem::endCommand()
+{
+  if ( mComposition )
+  {
+    mComposition->endCommand();
+  }
+}
+
+void QgsComposerItem::cancelCommand()
+{
+  if ( mComposition )
+  {
+    mComposition->cancelCommand();
+  }
+}
+
 void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 {
   if ( mItemPositionLocked )
@@ -347,7 +371,9 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
+  beginCommand( tr( "Change item position" ) );
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
+  endCommand();
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::MoveItem;

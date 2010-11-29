@@ -39,6 +39,11 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QWidg
   toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
 
   setGuiElementValues();
+
+  if ( arrow )
+  {
+    connect( arrow, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+  }
 }
 
 QgsComposerArrowWidget::~QgsComposerArrowWidget()
@@ -53,8 +58,10 @@ void QgsComposerArrowWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
     return;
   }
 
+  mArrow->beginCommand( tr( "Arrow outline width" ), QgsComposerMergeCommand::ArrowOutlineWidth );
   mArrow->setOutlineWidth( d );
   mArrow->update();
+  mArrow->endCommand();
 }
 
 void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
@@ -64,8 +71,10 @@ void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
     return;
   }
 
+  mArrow->beginCommand( tr( "Arrowhead width" ), QgsComposerMergeCommand::ArrowHeadWidth );
   mArrow->setArrowHeadWidth( d );
   mArrow->update();
+  mArrow->endCommand();
 }
 
 void QgsComposerArrowWidget::on_mArrowColorButton_clicked()
@@ -82,8 +91,10 @@ void QgsComposerArrowWidget::on_mArrowColorButton_clicked()
 #endif
   if ( newColor.isValid() )
   {
+    mArrow->beginCommand( tr( "Arrow color changed" ) );
     mArrow->setArrowColor( newColor );
     mArrow->update();
+    mArrow->endCommand();
   }
 }
 
@@ -143,8 +154,10 @@ void QgsComposerArrowWidget::on_mDefaultMarkerRadioButton_toggled( bool toggled 
 {
   if ( mArrow && toggled )
   {
+    mArrow->beginCommand( tr( "Arrow marker changed" ) );
     mArrow->setMarkerMode( QgsComposerArrow::DefaultMarker );
     mArrow->update();
+    mArrow->endCommand();
   }
 }
 
@@ -152,8 +165,10 @@ void QgsComposerArrowWidget::on_mNoMarkerRadioButton_toggled( bool toggled )
 {
   if ( mArrow && toggled )
   {
+    mArrow->beginCommand( tr( "Arrow marker changed" ) );
     mArrow->setMarkerMode( QgsComposerArrow::NoMarker );
     mArrow->update();
+    mArrow->endCommand();
   }
 }
 
@@ -162,15 +177,18 @@ void QgsComposerArrowWidget::on_mSvgMarkerRadioButton_toggled( bool toggled )
   enableSvgInputElements( toggled );
   if ( mArrow && toggled )
   {
+    mArrow->beginCommand( tr( "Arrow marker changed" ) );
     mArrow->setMarkerMode( QgsComposerArrow::SVGMarker );
     mArrow->update();
+    mArrow->endCommand();
   }
 }
 
-void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString & text )
+void QgsComposerArrowWidget::on_mStartMarkerLineEdit_editingFinished( const QString & text )
 {
   if ( mArrow )
   {
+    mArrow->beginCommand( tr( "Arrow start marker" ) );
     QFileInfo fi( text );
     if ( fi.exists() )
     {
@@ -181,13 +199,15 @@ void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString 
       mArrow->setStartMarker( "" );
     }
     mArrow->update();
+    mArrow->endCommand();
   }
 }
 
-void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString & text )
+void QgsComposerArrowWidget::on_mEndMarkerLineEdit_editingFinished( const QString & text )
 {
   if ( mArrow )
   {
+    mArrow->beginCommand( tr( "Arrow start marker" ) );
     QFileInfo fi( text );
     if ( fi.exists() )
     {
@@ -198,6 +218,7 @@ void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString & 
       mArrow->setEndMarker( "" );
     }
     mArrow->update();
+    mArrow->endCommand();
   }
 }
 
@@ -207,7 +228,9 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
   QString svgFileName = QFileDialog::getOpenFileName( 0, tr( "Start marker svg file" ), fi.dir().absolutePath() );
   if ( !svgFileName.isNull() )
   {
+    mArrow->beginCommand( tr( "Arrow start marker" ) );
     mStartMarkerLineEdit->setText( svgFileName );
+    mArrow->endCommand();
   }
 }
 
@@ -217,6 +240,8 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
   QString svgFileName = QFileDialog::getOpenFileName( 0, tr( "End marker svg file" ), fi.dir().absolutePath() );
   if ( !svgFileName.isNull() )
   {
+    mArrow->beginCommand( tr( "Arrow end marker" ) );
     mEndMarkerLineEdit ->setText( svgFileName );
+    mArrow->endCommand();
   }
 }

@@ -161,7 +161,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   {
     setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), rect().height() ) );
   }
-  emit settingsChanged();
+  emit itemChanged();
 }
 
 QRectF QgsComposerPicture::boundedImageRect( double deviceWidth, double deviceHeight )
@@ -241,7 +241,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   mPictureWidth = newPictureWidth;
   mPictureHeight = newPictureHeight;
 
-  emit settingsChanged();
+  emit itemChanged();
 }
 
 void QgsComposerPicture::setRotation( double r )
@@ -357,6 +357,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
     QObject::connect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
   }
 
+  emit itemChanged();
   return true;
 }
 

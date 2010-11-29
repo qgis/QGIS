@@ -32,8 +32,6 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
   private:
     QgsComposerAttributeTable* mComposerTable;
 
-    /**Sets the GUI elements to the values of mComposerTable*/
-    void updateGuiElements();
     /**Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
 
@@ -52,6 +50,9 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );
+
+    /**Sets the GUI elements to the values of mComposerTable*/
+    void updateGuiElements();
 };
 
 #endif // QGSCOMPOSERTABLEWIDGET_H

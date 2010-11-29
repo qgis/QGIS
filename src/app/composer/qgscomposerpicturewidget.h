@@ -45,6 +45,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
     void on_mComposerMapComboBox_activated( const QString & text );
 
+  private slots:
     /**Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
 

@@ -52,12 +52,14 @@ void QgsComposerItemWidget::on_mFrameColorButton_clicked()
     return; //dialog canceled
   }
 
+  mItem->beginCommand( tr( "Frame color changed" ) );
   QPen thePen;
   thePen.setColor( newFrameColor );
   thePen.setWidthF( mOutlineWidthSpinBox->value() );
 
   mItem->setPen( thePen );
   mItem->update();
+  mItem->endCommand();
 }
 
 void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
@@ -73,6 +75,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
     return; //dialog canceled
   }
 
+  mItem->beginCommand( tr( "Background color changed" ) );
   newBackgroundColor.setAlpha( mOpacitySlider->value() );
   mItem->setBrush( QBrush( QColor( newBackgroundColor ), Qt::SolidPattern ) );
   //if the item is a composer map, we need to regenerate the map image
@@ -83,6 +86,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
     cm->cache();
   }
   mItem->update();
+  mItem->endCommand();
 }
 
 void QgsComposerItemWidget::on_mOpacitySlider_sliderReleased()
@@ -93,11 +97,13 @@ void QgsComposerItemWidget::on_mOpacitySlider_sliderReleased()
   }
   int value = mOpacitySlider->value();
 
+  mItem->beginCommand( tr( "Item opacity changed" ) );
   QBrush itemBrush = mItem->brush();
   QColor brushColor = itemBrush.color();
   brushColor.setAlpha( value );
   mItem->setBrush( QBrush( brushColor ) );
   mItem->update();
+  mItem->endCommand();
 }
 
 void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
@@ -107,9 +113,11 @@ void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
     return;
   }
 
+  mItem->beginCommand( tr( "Item outline width" ), QgsComposerMergeCommand::ItemOutlineWidth );
   QPen itemPen = mItem->pen();
   itemPen.setWidthF( d );
   mItem->setPen( itemPen );
+  mItem->endCommand();
 }
 
 void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
@@ -119,6 +127,7 @@ void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
     return;
   }
 
+  mItem->beginCommand( tr( "Item frame toggled" ) );
   if ( state == Qt::Checked )
   {
     mItem->setFrame( true );
@@ -128,6 +137,7 @@ void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
     mItem->setFrame( false );
   }
   mItem->update();
+  mItem->endCommand();
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()
@@ -165,6 +175,14 @@ void QgsComposerItemWidget::on_mPositionButton_clicked()
     return;
   }
 
+  mItem->beginCommand( tr( "Item position changed" ) );
   QgsItemPositionDialog d( mItem, 0 );
-  d.exec();
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mItem->endCommand();
+  }
+  else
+  {
+    mItem->cancelCommand();
+  }
 }

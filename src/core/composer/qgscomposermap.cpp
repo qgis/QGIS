@@ -390,6 +390,7 @@ void QgsComposerMap::moveContent( double dx, double dy )
     mExtent.setYMaximum( mExtent.yMaximum() + dy );
     cache();
     update();
+    emit itemChanged();
     emit extentChanged();
   }
 }
@@ -458,6 +459,7 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
 
   cache();
   update();
+  emit itemChanged();
   emit extentChanged();
 }
 
@@ -480,6 +482,7 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
   }
   updateBoundingRect();
   update();
+  emit itemChanged();
   emit extentChanged();
 }
 
@@ -513,6 +516,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
   mCacheUpdated = false;
   cache();
   update();
+  emit itemChanged();
   emit extentChanged();
 }
 
@@ -786,6 +790,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   }
 
   updateBoundingRect();
+  emit itemChanged();
   return true;
 }
 

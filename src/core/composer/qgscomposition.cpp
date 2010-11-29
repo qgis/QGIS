@@ -24,7 +24,9 @@
 #include <QGraphicsRectItem>
 #include <QSettings>
 
-QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ): QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 )
+QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mSnapToGrid( false ),
+    mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
 
@@ -41,7 +43,9 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ): QGraphicsScene( 0
   mPrintAsRaster = s.value( "/qgis/composerPrintAsRaster", false ).toBool();
 }
 
-QgsComposition::QgsComposition(): QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 )
+QgsComposition::QgsComposition():
+    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ),
+    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   loadGridAppearanceSettings();
   //mPrintAsRaster
@@ -326,6 +330,7 @@ void QgsComposition::moveSelectedItemsToTop()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
+
   for ( ; it != selectedItems.end(); ++it )
   {
     moveItemToTop( *it );
@@ -389,13 +394,18 @@ void QgsComposition::alignSelectedItemsLeft()
   double minXCoordinate = selectedItemBBox.left();
 
   //align items left to minimum x coordinate
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items left" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
+    subcommand->savePreviousState();
     QTransform itemTransform = ( *align_it )->transform();
     itemTransform.translate( minXCoordinate - itemTransform.dx(), 0 );
     ( *align_it )->setTransform( itemTransform );
+    subcommand->saveAfterState();
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::alignSelectedItemsHCenter()
@@ -415,13 +425,18 @@ void QgsComposition::alignSelectedItemsHCenter()
   double averageXCoord = ( selectedItemBBox.left() + selectedItemBBox.right() ) / 2.0;
 
   //place items
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items hcenter" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
+    subcommand->savePreviousState();
     QTransform itemTransform = ( *align_it )->transform();
     itemTransform.translate( averageXCoord - itemTransform.dx() - ( *align_it )->rect().width() / 2.0, 0 );
     ( *align_it )->setTransform( itemTransform );
+    subcommand->saveAfterState();
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::alignSelectedItemsRight()
@@ -441,13 +456,18 @@ void QgsComposition::alignSelectedItemsRight()
   double maxXCoordinate = selectedItemBBox.right();
 
   //align items right to maximum x coordinate
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items right" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
+    subcommand->savePreviousState();
     QTransform itemTransform = ( *align_it )->transform();
     itemTransform.translate( maxXCoordinate - itemTransform.dx() - ( *align_it )->rect().width(), 0 );
     ( *align_it )->setTransform( itemTransform );
+    subcommand->saveAfterState();
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::alignSelectedItemsTop()
@@ -465,13 +485,19 @@ void QgsComposition::alignSelectedItemsTop()
   }
 
   double minYCoordinate = selectedItemBBox.top();
+
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items top" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
+    subcommand->savePreviousState();
     QTransform itemTransform = ( *align_it )->transform();
     itemTransform.translate( 0, minYCoordinate - itemTransform.dy() );
     ( *align_it )->setTransform( itemTransform );
+    subcommand->saveAfterState();
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::alignSelectedItemsVCenter()
@@ -489,13 +515,18 @@ void QgsComposition::alignSelectedItemsVCenter()
   }
 
   double averageYCoord = ( selectedItemBBox.top() + selectedItemBBox.bottom() ) / 2.0;
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items vcenter" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
+    subcommand->savePreviousState();
     QTransform itemTransform = ( *align_it )->transform();
     itemTransform.translate( 0, averageYCoord - itemTransform.dy() - ( *align_it )->rect().height() / 2 );
     ( *align_it )->setTransform( itemTransform );
+    subcommand->saveAfterState();
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::alignSelectedItemsBottom()
@@ -513,13 +544,18 @@ void QgsComposition::alignSelectedItemsBottom()
   }
 
   double maxYCoord = selectedItemBBox.bottom();
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items bottom" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
+    subcommand->savePreviousState();
     QTransform itemTransform = ( *align_it )->transform();
     itemTransform.translate( 0, maxYCoord - itemTransform.dy() - ( *align_it )->rect().height() );
     ( *align_it )->setTransform( itemTransform );
+    subcommand->saveAfterState();
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::updateZValues()
@@ -528,16 +564,20 @@ void QgsComposition::updateZValues()
   QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
   QgsComposerItem* currentItem = 0;
 
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
   for ( ; it != mItemZList.end(); ++it )
   {
     currentItem = *it;
     if ( currentItem )
     {
-      QgsDebugMsg( QString::number( counter ) );
+      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *it, "", parentCommand );
+      subcommand->savePreviousState();
       currentItem->setZValue( counter );
+      subcommand->saveAfterState();
     }
     ++counter;
   }
+  mUndoStack.push( parentCommand );
 }
 
 void QgsComposition::sortZList()
@@ -546,16 +586,6 @@ void QgsComposition::sortZList()
   {
     return;
   }
-
-#ifdef QGISDEBUG
-  //debug: list before sorting
-  QgsDebugMsg( "before sorting" );
-  QLinkedList<QgsComposerItem*>::iterator before_it = mItemZList.begin();
-  for ( ; before_it != mItemZList.end(); ++before_it )
-  {
-    QgsDebugMsg( QString( "%1" ).arg(( *before_it )->zValue() ) );
-  }
-#endif
 
   QLinkedList<QgsComposerItem*>::const_iterator lIt = mItemZList.constBegin();
   QLinkedList<QgsComposerItem*> sortedList;
@@ -574,17 +604,6 @@ void QgsComposition::sortZList()
   }
 
   mItemZList = sortedList;
-
-#ifdef QGISDEBUG
-  //debug: list after sorting
-  //debug: list before sorting
-  QgsDebugMsg( "after sorting" );
-  QLinkedList<QgsComposerItem*>::iterator after_it = mItemZList.begin();
-  for ( ; after_it != mItemZList.end(); ++after_it )
-  {
-    QgsDebugMsg( QString( "%1" ).arg(( *after_it )->zValue() ) );
-  }
-#endif
 }
 
 QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
@@ -757,4 +776,47 @@ void QgsComposition::saveGridAppearanceSettings()
   {
     s.setValue( "/qgis/composerGridStyle", "Crosses" );
   }
+}
+
+void QgsComposition::beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c )
+{
+  delete mActiveCommand;
+  if ( !item )
+  {
+    mActiveCommand = 0;
+    return;
+  }
+
+  if ( c == QgsComposerMergeCommand::Unknown )
+  {
+    mActiveCommand = new QgsComposerItemCommand( item, commandText );
+  }
+  else
+  {
+    mActiveCommand = new QgsComposerMergeCommand( c, item, commandText );
+  }
+  mActiveCommand->savePreviousState();
+}
+
+void QgsComposition::endCommand()
+{
+  if ( mActiveCommand )
+  {
+    mActiveCommand->saveAfterState();
+    if ( mActiveCommand->containsChange() ) //protect against empty commands
+    {
+      mUndoStack.push( mActiveCommand );
+    }
+    else
+    {
+      delete mActiveCommand;
+    }
+    mActiveCommand = 0;
+  }
+}
+
+void QgsComposition::cancelCommand()
+{
+  delete mActiveCommand;
+  mActiveCommand = 0;
 }
