@@ -21,6 +21,8 @@
 #include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
 
+#include <cmath>
+
 #include <qgisinterface.h>
 #include <qgisgui.h>
 #include <qgslogger.h>
@@ -270,14 +272,12 @@ struct PanControlHandler : public NavigationControlHandler
     {
       if ( 0 == _dx && 0 == _dy)
       {
-	_manip->setRotation(osg::Quat());
-	//FIXME: instead of next 2 lines use _manip->home( control->ea, control->aa );
-	osgEarthUtil::Viewpoint viewpoint ( osg::Vec3d ( -90, 0, 0.0 ), 0.0, -90.0, 3e7 );
-	_manip->setViewpoint ( viewpoint, 4.0 );
+	//TODO
+        OE_NOTICE <<  "ZOOM reset" << _manip->getDistance();
       }
       else
       {
-	_manip->pan ( _dx, _dy );
+        _manip->pan ( _dx, _dy );
       }
     }
   private:
@@ -313,14 +313,14 @@ struct ZoomControlHandler : public NavigationControlHandler
     {
       if ( 0 == _dx && 0 == _dy)
       {
-	_manip->setRotation(osg::Quat());
-	//FIXME: instead of next 2 lines use _manip->home( control->ea, control->aa );
-	osgEarthUtil::Viewpoint viewpoint ( osg::Vec3d ( -90, 0, 0.0 ), 0.0, -90.0, 3e7 );
-	_manip->setViewpoint ( viewpoint, 4.0 );
+        _manip->setRotation(osg::Quat());
+        //FIXME: instead of next 2 lines use _manip->home( control->ea, control->aa );
+        osgEarthUtil::Viewpoint viewpoint ( osg::Vec3d ( -90, 0, 0.0 ), 0.0, -90.0, 3e7 );
+        _manip->setViewpoint ( viewpoint, 4.0 );
       }
       else
       {
-	_manip->zoom ( _dx, _dy );
+        _manip->zoom ( _dx, _dy );
       }
     }
   private:
@@ -328,6 +328,36 @@ struct ZoomControlHandler : public NavigationControlHandler
     double _dx;
     double _dy;
   };
+
+bool FlyToExtentHandler::handle ( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+{
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
+    {
+      _manip->setRotation(osg::Quat());
+      
+      //get actual mapCanvas->extent().height in meters
+      QgsRectangle extent = mQGisIface->mapCanvas()->extent();
+      QgsCoordinateReferenceSystem* destSrs = new QgsCoordinateReferenceSystem(31254, QgsCoordinateReferenceSystem::EpsgCrsId );
+      QgsCoordinateTransform* trans = new QgsCoordinateTransform( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs(), *destSrs);
+      QgsRectangle projectedExtent = trans->transformBoundingBox( extent );
+      
+      const double PI = 3.141592;
+      double viewAngle = 30;
+      double height = projectedExtent.height();
+      double distance = height / tan( viewAngle*PI/180 ); //c = b*cotan(B)
+      
+      QString md, me;
+      md.setNum(height);
+      me.setNum(distance);
+      QMessageBox msgBox;
+      msgBox.setText(md + " " + me );
+      msgBox.exec();
+      
+      osgEarthUtil::Viewpoint viewpoint ( osg::Vec3d ( extent.center().x(), extent.center().y(), 0.0 ), 0.0, -90.0, distance );
+      _manip->setViewpoint ( viewpoint, 4.0 );
+    }
+  return false;
+}
 
 void GlobePlugin::setupControls()
 {
@@ -358,8 +388,8 @@ void GlobePlugin::setupControls()
 
   //Move Reset
   osg::Image* moveResetImg = osgDB::readImageFile ( imgDir + "/move-reset.png" );
-  ImageControl* moveReset = new ImageControl ( moveResetImg );
-  moveReset->addEventHandler ( new MyClickHandler );
+  ImageControl* moveReset = new NavigationControl ( moveResetImg );
+  moveReset->addEventHandler ( new PanControlHandler ( manip, 0, 0 ) );
 
 
   //Vertical container
@@ -604,25 +634,6 @@ void GlobePlugin::copyFolder ( QString sourceFolder, QString destFolder )
       QString destName = destFolder + "/" + files[i];
       copyFolder ( srcName, destName );
     }
-}
-
-bool FlyToExtentHandler::handle ( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-{
-  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
-    {
-      QgsRectangle extent = mQGisIface->mapCanvas()->extent();
-      QgsPoint center = extent.center();
-      double zoom = extent.width();
-      osgEarthUtil::Viewpoint viewpoint ( osg::Vec3d ( center.x(), center.y(), 0.0 ), 0.0, -90.0, 10000 );
-      _manip->setViewpoint ( viewpoint, 4.0 );
-      
-      /*QString text_double;
-      text_double.setNum(center.y());
-      QMessageBox msgBox;
-      msgBox.setText(text_double);
-      msgBox.exec();*/
-    }
-  return false;
 }
 
 bool NavigationControl::handle ( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )
