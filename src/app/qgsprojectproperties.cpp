@@ -20,7 +20,6 @@
 #include "qgsprojectproperties.h"
 
 //qgis includes
-#include "qgsavoidintersectionsdialog.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
