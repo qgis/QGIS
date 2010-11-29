@@ -38,6 +38,8 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
   setGuiElementValues();
 
   blockAllSignals( false );
+
+  connect( mShapeComboBox, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
 }
 
 QgsComposerShapeWidget::~QgsComposerShapeWidget()
@@ -61,6 +63,8 @@ void QgsComposerShapeWidget::setGuiElementValues()
   {
     return;
   }
+
+  blockAllSignals( true );
   mOutlineWidthSpinBox->setValue( mComposerShape->lineWidth() );
   mRotationSpinBox->setValue( mComposerShape->rotation() );
   if ( mComposerShape->shapeType() == QgsComposerShape::Ellipse )
@@ -86,14 +90,17 @@ void QgsComposerShapeWidget::setGuiElementValues()
     mTransparentCheckBox->setCheckState( Qt::Unchecked );
     mFillColorButton->setEnabled( true );
   }
+  blockAllSignals( false );
 }
 
 void QgsComposerShapeWidget::on_mRotationSpinBox_valueChanged( int val )
 {
   if ( mComposerShape )
   {
+    mComposerShape->beginCommand( tr( "Shape rotation changed" ), QgsComposerMergeCommand::ShapeRotation );
     mComposerShape->setRotation( val );
     mComposerShape->update();
+    mComposerShape->endCommand();
   }
 }
 
@@ -104,6 +111,7 @@ void QgsComposerShapeWidget::on_mShapeComboBox_currentIndexChanged( const QStrin
     return;
   }
 
+  mComposerShape->beginCommand( tr( "Shape type changed" ) );
   if ( text == tr( "Ellipse" ) )
   {
     mComposerShape->setShapeType( QgsComposerShape::Ellipse );
@@ -117,6 +125,7 @@ void QgsComposerShapeWidget::on_mShapeComboBox_currentIndexChanged( const QStrin
     mComposerShape->setShapeType( QgsComposerShape::Triangle );
   }
   mComposerShape->update();
+  mComposerShape->endCommand();
 }
 
 void QgsComposerShapeWidget::on_mOutlineColorButton_clicked()
@@ -133,8 +142,10 @@ void QgsComposerShapeWidget::on_mOutlineColorButton_clicked()
 #endif
   if ( newColor.isValid() )
   {
+    mComposerShape->beginCommand( tr( "Shape outline color" ) );
     mComposerShape->setOutlineColor( newColor );
     mComposerShape->update();
+    mComposerShape->endCommand();
   }
 }
 
@@ -144,8 +155,10 @@ void QgsComposerShapeWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   {
     return;
   }
+  mComposerShape->beginCommand( tr( "Shape outline width" ), QgsComposerMergeCommand::ShapeOutlineWidth );
   mComposerShape->setLineWidth( d );
   mComposerShape->update();
+  mComposerShape->endCommand();
 }
 
 void QgsComposerShapeWidget::on_mTransparentCheckBox_stateChanged( int state )
@@ -155,6 +168,7 @@ void QgsComposerShapeWidget::on_mTransparentCheckBox_stateChanged( int state )
     return;
   }
 
+  mComposerShape->beginCommand( tr( "Shape transparency toggled" ) );
   if ( state == Qt::Checked )
   {
     mComposerShape->setTransparentFill( true );
@@ -166,6 +180,7 @@ void QgsComposerShapeWidget::on_mTransparentCheckBox_stateChanged( int state )
     mFillColorButton->setEnabled( true );
   }
   mComposerShape->update();
+  mComposerShape->endCommand();
 }
 
 void QgsComposerShapeWidget::on_mFillColorButton_clicked()
@@ -182,7 +197,9 @@ void QgsComposerShapeWidget::on_mFillColorButton_clicked()
 #endif
   if ( newColor.isValid() )
   {
+    mComposerShape->beginCommand( tr( "Shape fill color" ) );
     mComposerShape->setFillColor( newColor );
     mComposerShape->update();
+    mComposerShape->endCommand();
   }
 }

@@ -358,5 +358,6 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   adaptItemSceneRect();
+  emit itemChanged();
   return true;
 }

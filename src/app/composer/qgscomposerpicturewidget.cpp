@@ -46,7 +46,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   //add preview icons
   addStandardDirectoriesToPreview();
-  connect( mPicture, SIGNAL( settingsChanged() ), this, SLOT( setGuiElementValues() ) );
+  connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   connect( mPicture, SIGNAL( rotationChanged( double ) ), this, SLOT( setGuiElementValues() ) );
 }
 
@@ -88,8 +88,10 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   //pass file path to QgsComposerPicture
   if ( mPicture )
   {
+    mPicture->beginCommand( tr( "Picture changed" ) );
     mPicture->setPictureFile( filePath );
     mPicture->update();
+    mPicture->endCommand();
   }
 }
 
@@ -108,8 +110,10 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
       return;
     }
 
+    mPicture->beginCommand( tr( "Picture changed" ) );
     mPicture->setPictureFile( filePath );
     mPicture->update();
+    mPicture->endCommand();
   }
 }
 
@@ -123,8 +127,10 @@ void QgsComposerPictureWidget::on_mWidthLineEdit_editingFinished()
     double newWidth = mWidthLineEdit->text().toDouble( &conversionOk );
     if ( conversionOk )
     {
+      mPicture->beginCommand( tr( "Picture width changed" ) );
       QRectF newSceneRect( mPicture->transform().dx(), mPicture->transform().dy(), newWidth, pictureRect.height() );
       mPicture->setSceneRect( newSceneRect );
+      mPicture->endCommand();
     }
   }
 }
@@ -139,8 +145,10 @@ void QgsComposerPictureWidget::on_mHeightLineEdit_editingFinished()
     double newHeight = mHeightLineEdit->text().toDouble( &conversionOk );
     if ( conversionOk )
     {
+      mPicture->beginCommand( tr( "Picture height changed" ) );
       QRectF newSceneRect( mPicture->transform().dx(), mPicture->transform().dy(), pictureRect.width(), newHeight );
       mPicture->setSceneRect( newSceneRect );
+      mPicture->endCommand();
     }
   }
 }
@@ -149,8 +157,10 @@ void QgsComposerPictureWidget::on_mRotationSpinBox_valueChanged( double d )
 {
   if ( mPicture )
   {
+    mPicture->beginCommand( tr( "Picture rotation changed" ), QgsComposerMergeCommand::ComposerPictureRotation );
     mPicture->setRotation( d );
     mPicture->update();
+    mPicture->endCommand();
   }
 }
 
@@ -162,9 +172,11 @@ void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWi
   }
 
   QString absoluteFilePath = current->data( Qt::UserRole ).toString();
+  mPicture->beginCommand( tr( "Picture changed" ) );
   mPicture->setPictureFile( absoluteFilePath );
   mPictureLineEdit->setText( absoluteFilePath );
   mPicture->update();
+  mPicture->endCommand();
 }
 
 void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
@@ -225,6 +237,7 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
     return;
   }
 
+  mPicture->beginCommand( tr( "Rotation synchronisatione toggled" ) );
   if ( state == Qt::Unchecked )
   {
     mPicture->setRotationMap( -1 );
@@ -239,10 +252,12 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
       return;
     }
     int composerId = mComposerMapComboBox->itemData( currentItemIndex, Qt::UserRole ).toInt();
+
     mPicture->setRotationMap( composerId );
     mRotationSpinBox->setEnabled( false );
     mComposerMapComboBox->setEnabled( true );
   }
+  mPicture->endCommand();
 }
 
 void QgsComposerPictureWidget::showEvent( QShowEvent * event )
@@ -287,8 +302,10 @@ void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString 
   {
     return;
   }
+  mPicture->beginCommand( tr( "Rotation map changed" ) );
   mPicture->setRotationMap( id );
   mPicture->update();
+  mPicture->endCommand();
 }
 
 void QgsComposerPictureWidget::refreshMapComboBox()

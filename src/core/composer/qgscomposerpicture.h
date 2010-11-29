@@ -104,10 +104,6 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     double mPictureWidth;
     /**Height of the picture (in mm)*/
     double mPictureHeight;
-
-  signals:
-    /**Tell the configuration widget that the settings need to be updated*/
-    void settingsChanged();
 };
 
 #endif

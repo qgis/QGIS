@@ -65,13 +65,13 @@
 #include <QSvgGenerator>
 #include <QToolBar>
 #include <QToolButton>
-//#include <QUndoView>
+#include <QUndoView>
 
 
 
 
 
-QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), mTitle( title )
+QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), mTitle( title ), mUndoView( 0 )
 {
   setupUi( this );
   setWindowTitle( mTitle );
@@ -217,8 +217,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   mCompositionNameComboBox->insertItem( 0, tr( "Map 1" ) );
 
   //undo widget
-  /*QUndoView* undoWidget = new QUndoView( mComposition->undoStack(), this );
-  mOptionsTabWidget->addTab( undoWidget, tr( "Command history" ) );*/
+  mUndoView = new QUndoView( mComposition->undoStack(), this );
+  mOptionsTabWidget->addTab( mUndoView, tr( "Command history" ) );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
@@ -1330,6 +1330,11 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mComposition->sortZList();
   mView->setComposition( mComposition );
 
+  if ( mUndoView )
+  {
+    mUndoView->setStack( mComposition->undoStack() );
+  }
+
   setSelectionTool();
 }
 
@@ -1446,7 +1451,7 @@ void QgsComposer::deleteItem( QgsComposerItem* item )
     return;
   }
 
-  delete( it.key() );
+  //the item itself is not deleted here (usually, this is done in the destructor of QgsAddRemoveItemCommand)
   delete( it.value() );
   mItemWidgetMap.remove( it.key() );
 }

@@ -56,7 +56,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mAnnotationDirectionComboBox->insertItem( 2, tr( "Boundary direction" ) );
   if ( composerMap )
   {
-    connect( composerMap, SIGNAL( extentChanged() ), this, SLOT( updateSettingsNoSignals() ) );
+    connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   }
 
   updateGuiElements();
@@ -81,7 +81,10 @@ void QgsComposerMapWidget::on_mWidthLineEdit_editingFinished()
     QTransform composerMapTransform = mComposerMap->transform();
 
     QRectF newRect( composerMapTransform.dx(), composerMapTransform.dy(), newWidth, composerMapRect.height() );
+
+    mComposerMap->beginCommand( tr( "Change item width" ) );
     mComposerMap->setSceneRect( newRect );
+    mComposerMap->endCommand();
   }
 }
 
@@ -99,7 +102,9 @@ void QgsComposerMapWidget::on_mHeightLineEdit_editingFinished()
     QTransform composerMapTransform = mComposerMap->transform();
 
     QRectF newRect( composerMapTransform.dx(), composerMapTransform.dy(), composerMapRect.width(), newHeight );
+    mComposerMap->beginCommand( tr( "Change item height" ) );
     mComposerMap->setSceneRect( newRect );
+    mComposerMap->endCommand();
   }
 }
 
@@ -151,7 +156,9 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Map scale changed" ) );
   mComposerMap->setNewScale( scaleDenominator );
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( int value )
@@ -161,7 +168,9 @@ void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( int value )
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
   mComposerMap->setMapRotation( value );
+  mComposerMap->endCommand();
   mComposerMap->cache();
   mComposerMap->update();
 }
@@ -200,7 +209,9 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
       mYMinLineEdit->setText( QString::number( newExtent.yMinimum() ) );
       mYMaxLineEdit->setText( QString::number( newExtent.yMaximum() ) );
 
+      mComposerMap->beginCommand( tr( "Map extent changed" ) );
       mComposerMap->setNewExtent( newExtent );
+      mComposerMap->endCommand();
     }
   }
 }
@@ -225,7 +236,7 @@ void QgsComposerMapWidget::on_mYMaxLineEdit_editingFinished()
   updateComposerExtentFromGui();
 }
 
-void QgsComposerMapWidget::updateSettingsNoSignals()
+void QgsComposerMapWidget::setGuiElementValues()
 {
   mHeightLineEdit->blockSignals( true );
   mWidthLineEdit->blockSignals( true );
@@ -398,7 +409,9 @@ void QgsComposerMapWidget::updateComposerExtentFromGui()
   if ( !conversionSuccess ) {return;}
 
   QgsRectangle newExtent( xmin, ymin, xmax, ymax );
+  mComposerMap->beginCommand( tr( "Map extent changed" ) );
   mComposerMap->setNewExtent( newExtent );
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::blockAllSignals( bool b )
@@ -479,12 +492,14 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Canvas items toggled" ) );
   mComposerMap->setDrawCanvasItems( state == Qt::Checked );
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
   mComposerMap->setCacheUpdated( false );
   mComposerMap->cache();
   mComposerMap->update();
   mUpdatePreviewButton->setEnabled( true );
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
@@ -494,6 +509,7 @@ void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Grid checkbox toggled" ) );
   if ( state )
   {
     mComposerMap->setGridEnabled( true );
@@ -504,6 +520,7 @@ void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
@@ -512,9 +529,12 @@ void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
   {
     return;
   }
+
+  mComposerMap->beginCommand( tr( "Grid interval changed" ) );
   mComposerMap->setGridIntervalX( mIntervalXSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mIntervalYSpinBox_editingFinished()
@@ -523,9 +543,11 @@ void QgsComposerMapWidget::on_mIntervalYSpinBox_editingFinished()
   {
     return;
   }
+  mComposerMap->beginCommand( tr( "Grid interval changed" ) );
   mComposerMap->setGridIntervalY( mIntervalYSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mOffsetXSpinBox_editingFinished()
@@ -534,9 +556,11 @@ void QgsComposerMapWidget::on_mOffsetXSpinBox_editingFinished()
   {
     return;
   }
+  mComposerMap->beginCommand( tr( "Grid offset changed" ) );
   mComposerMap->setGridOffsetX( mOffsetXSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mOffsetYSpinBox_editingFinished()
@@ -545,9 +569,11 @@ void QgsComposerMapWidget::on_mOffsetYSpinBox_editingFinished()
   {
     return;
   }
+  mComposerMap->beginCommand( tr( "Grid offset changed" ) );
   mComposerMap->setGridOffsetY( mOffsetYSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mLineWidthSpinBox_valueChanged( double d )
@@ -556,8 +582,10 @@ void QgsComposerMapWidget::on_mLineWidthSpinBox_valueChanged( double d )
   {
     return;
   }
+  mComposerMap->beginCommand( tr( "Grid pen changed" ) );
   mComposerMap->setGridPenWidth( d );
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mLineColorButton_clicked()
@@ -569,8 +597,10 @@ void QgsComposerMapWidget::on_mLineColorButton_clicked()
   QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
   if ( newColor.isValid() )
   {
+    mComposerMap->beginCommand( tr( "Grid pen changed" ) );
     mLineColorButton->setColor( newColor );
     mComposerMap->setGridPenColor( newColor );
+    mComposerMap->endCommand();
   }
   mComposerMap->update();
 }
@@ -590,7 +620,9 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
   {
     mComposerMap->setGridStyle( QgsComposerMap::Solid );
   }
+  mComposerMap->beginCommand( tr( "Grid type changed" ) );
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double d )
@@ -600,8 +632,10 @@ void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double d )
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Grid cross width changed" ) );
   mComposerMap->setCrossLength( d );
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
@@ -620,9 +654,11 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
 #endif
   if ( ok )
   {
+    mComposerMap->beginCommand( tr( "Annotation font changed" ) );
     mComposerMap->setGridAnnotationFont( newFont );
     mComposerMap->updateBoundingRect();
     mComposerMap->update();
+    mComposerMap->endCommand();
   }
 }
 
@@ -632,9 +668,11 @@ void QgsComposerMapWidget::on_mDistanceToMapFrameSpinBox_valueChanged( double d 
   {
     return;
   }
+  mComposerMap->beginCommand( tr( "Annotation distance changed" ), QgsComposerMergeCommand::ComposerMapAnnotationDistance );
   mComposerMap->setAnnotationFrameDistance( d );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mAnnotationPositionComboBox_currentIndexChanged( const QString& text )
@@ -644,6 +682,7 @@ void QgsComposerMapWidget::on_mAnnotationPositionComboBox_currentIndexChanged( c
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Annotation position changed" ) );
   if ( text == tr( "Inside frame" ) )
   {
     mComposerMap->setGridAnnotationPosition( QgsComposerMap::InsideMapFrame );
@@ -654,6 +693,7 @@ void QgsComposerMapWidget::on_mAnnotationPositionComboBox_currentIndexChanged( c
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mDrawAnnotationCheckBox_stateChanged( int state )
@@ -663,6 +703,7 @@ void QgsComposerMapWidget::on_mDrawAnnotationCheckBox_stateChanged( int state )
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Annotation toggled" ) );
   if ( state == Qt::Checked )
   {
     mComposerMap->setShowGridAnnotation( true );
@@ -673,6 +714,7 @@ void QgsComposerMapWidget::on_mDrawAnnotationCheckBox_stateChanged( int state )
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mAnnotationDirectionComboBox_currentIndexChanged( const QString& text )
@@ -682,6 +724,7 @@ void QgsComposerMapWidget::on_mAnnotationDirectionComboBox_currentIndexChanged( 
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Changed annotation direction" ) );
   if ( text == tr( "Horizontal" ) )
   {
     mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal );
@@ -700,6 +743,7 @@ void QgsComposerMapWidget::on_mAnnotationDirectionComboBox_currentIndexChanged( 
   }
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int value )
@@ -708,7 +752,9 @@ void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int valu
   {
     return;
   }
+  mComposerMap->beginCommand( tr( "Changed annotation precision" ) );
   mComposerMap->setGridAnnotationPrecision( value );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
+  mComposerMap->endCommand();
 }
