@@ -39,6 +39,8 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   connect( mLayer, SIGNAL( attributeValueChanged( int, int, const QVariant& ) ), this, SLOT( attributeValueChanged( int, int, const QVariant& ) ) );
   connect( mLayer, SIGNAL( featureAdded( int ) ), this, SLOT( featureAdded( int ) ) );
   connect( mLayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
+  connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
+  connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 
   loadLayer();
 }
@@ -123,14 +125,16 @@ void QgsAttributeTableModel::featureAdded( int fid, bool newOperation )
 void QgsAttributeTableModel::attributeAdded( int idx )
 {
   QgsDebugMsg( "entered." );
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
+  loadAttributes();
+  loadLayer();
   emit modelChanged();
 }
 
 void QgsAttributeTableModel::attributeDeleted( int idx )
 {
   QgsDebugMsg( "entered." );
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
+  loadAttributes();
+  loadLayer();
   emit modelChanged();
 }
 
