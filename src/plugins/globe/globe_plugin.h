@@ -66,7 +66,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Called when the extents of the map change
     void extentsChanged();
     //! Sync globe extent to mapCanavas
-    void syncExtent( osgEarthUtil::EarthManipulator* manip );
+    void syncExtent();
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );
@@ -115,15 +115,12 @@ class GlobePlugin : public QObject, public QgisPlugin
 class FlyToExtentHandler : public osgGA::GUIEventHandler 
 {
   public:
-    FlyToExtentHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
+    FlyToExtentHandler( GlobePlugin* globe ) : mGlobe ( globe ) { }
 
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
 
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-
-    //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+  GlobePlugin* mGlobe;
 };
 
 class KeyboardControlHandler : public osgGA::GUIEventHandler 
