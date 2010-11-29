@@ -65,6 +65,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     void layersChanged();
     //! Called when the extents of the map change
     void extentsChanged();
+    //! Sync globe extent to mapCanavas
+    void syncExtent( osgEarthUtil::EarthManipulator* manip );
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );
