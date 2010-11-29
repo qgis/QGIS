@@ -166,12 +166,19 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool boundsCheck( double x, double y );
 
 
-
-
+    /**
+     * Check to see if a geometry overlaps the selection
+     * rectangle
+     * @param geom geometry to test against bounds
+     * @param y Y value of point
+     * @return True if point is within the rectangle
+    */
+    bool boundsCheck( QgsGeometry *geom );
 
   private:
 
     //! Fields
+    QList<int> attributeColumns;
     QgsFieldMap attributeFields;
 
     QgsAttributeList mAttributesToFetch;
@@ -181,8 +188,20 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QRegExp mDelimiterRegexp;
     QString mDelimiterType;
 
+	bool mHasWktField;
+	int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
     int mYFieldIndex;
+	int mWktFieldIndex;
+
+	// Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
+	// Z values and/or measures).  mWktZMRegexp is used to test for and
+	// remove the Z or M fields, and mWktCrdRegexp is used to remove the
+	// extra coordinate values.
+
+	bool mWktHasZM;
+	QRegExp mWktZMRegexp;
+	QRegExp mWktCrdRegexp;
 
     //! Layer extent
     QgsRectangle mExtent;
@@ -220,7 +239,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     };
     wkbPoint mWKBpt;
 
-    QGis::WkbType mWkbType; //can be WKBPoint or NoGeometry
+    QGis::WkbType mWkbType;
 
     QString readLine( QTextStream *stream );
     QStringList splitLine( QString line );

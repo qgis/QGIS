@@ -33,7 +33,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   setupUi( this );
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
 
-  enableAccept();
+  updateFieldsAndEnable();
 
   // at startup, fetch the last used delimiter and directory from
   // settings
@@ -58,22 +58,23 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
 
   cmbXField->setDisabled( true );
   cmbYField->setDisabled( true );
+  cmbWktField->setDisabled( true );
 
-  connect( txtFilePath, SIGNAL( textChanged( QString ) ), this, SLOT( enableAccept() ) );
+  connect( txtFilePath, SIGNAL( textChanged( QString ) ), this, SLOT( updateFieldsAndEnable() ) );
 
-  connect( delimiterSelection, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
-  connect( delimiterPlain, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
-  connect( delimiterRegexp, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+  connect( delimiterSelection, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( delimiterPlain, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( delimiterRegexp, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
 
-  connect( cbxDelimSpace, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
-  connect( cbxDelimTab, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
-  connect( cbxDelimSemicolon, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
-  connect( cbxDelimComma, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
-  connect( cbxDelimColon, SIGNAL( stateChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( cbxDelimSpace, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( cbxDelimTab, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( cbxDelimSemicolon, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( cbxDelimComma, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( cbxDelimColon, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
 
-  connect( txtDelimiter, SIGNAL( editingFinished() ), this, SLOT( enableAccept() ) );
+  connect( txtDelimiter, SIGNAL( editingFinished() ), this, SLOT( updateFieldsAndEnable() ) );
 
-  connect( rowCounter, SIGNAL( valueChanged( int ) ), this, SLOT( enableAccept() ) );
+  connect( rowCounter, SIGNAL( valueChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
 }
 
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
@@ -103,12 +104,23 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
                   .arg( txtDelimiter->text() )
                   .arg( delimiterType );
 
-    if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
-    {
-      uri += QString( "&xField=%1&yField=%2" )
-             .arg( cmbXField->currentText() )
-             .arg( cmbYField->currentText() );
-    }
+	if( geomTypeXY->isChecked())
+	{
+		if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
+		{
+		  uri += QString( "&xField=%1&yField=%2" )
+				 .arg( cmbXField->currentText() )
+				 .arg( cmbYField->currentText() );
+		}
+	}
+	else
+	{
+		if( ! cmbWktField->currentText().isEmpty() )
+		{
+		  uri += QString( "&wktField=%1" )
+				 .arg( cmbWktField->currentText() );
+		}
+	}
 
     int skipLines = rowCounter->value();
     if ( skipLines > 0 )
@@ -177,6 +189,31 @@ QStringList QgsDelimitedTextPluginGui::splitLine( QString line )
   return fieldList;
 }
 
+bool QgsDelimitedTextPluginGui::haveValidFileAndDelimiters()
+{
+
+  bool valid = true;
+  // If there is no valid file or field delimiters than cannot determine fields
+  if ( txtFilePath->text().isEmpty() || !QFile( txtFilePath->text() ).exists() )
+  {
+    valid = false;
+  }
+  else if ( delimiterSelection->isChecked() )
+  {
+    valid =
+      cbxDelimSpace->isChecked() ||
+      cbxDelimTab->isChecked() ||
+      cbxDelimSemicolon->isChecked() ||
+      cbxDelimComma->isChecked() ||
+      cbxDelimColon->isChecked();
+  }
+  else
+  {
+    valid = !txtDelimiter->text().isEmpty();
+  }
+  return valid;
+}
+
 void QgsDelimitedTextPluginGui::updateFieldLists()
 {
   // Update the x and y field dropdown boxes
@@ -184,16 +221,27 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
   disconnect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
   disconnect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+  disconnect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+  disconnect(geomTypeXY, SIGNAL(toggled(bool)), cmbXField, SLOT(setEnabled(bool)));
+  disconnect(geomTypeXY, SIGNAL(toggled(bool)), cmbYField, SLOT(setEnabled(bool)));
+  disconnect(geomTypeXY, SIGNAL(toggled(bool)), cmbWktField, SLOT(setDisabled(bool)));
 
   QString columnX = cmbXField->currentText();
   QString columnY = cmbYField->currentText();
+  QString columnWkt = cmbWktField->currentText();
 
   // clear the field lists
   cmbXField->clear();
   cmbYField->clear();
+  cmbWktField->clear();
 
+  geomTypeXY->setEnabled( false );
+  geomTypeWKT->setEnabled( false );
   cmbXField->setEnabled( false );
   cmbYField->setEnabled( false );
+  cmbWktField->setEnabled( false );
+
+  if( ! haveValidFileAndDelimiters()) return;
 
   QFile file( txtFilePath->text() );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -220,6 +268,8 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   //
   // We don't know anything about a text based field other
   // than its name. All fields are assumed to be text
+  bool haveFields = false;
+
   foreach( QString field, fieldList )
   {
     if (( field.left( 1 ) == "'" || field.left( 1 ) == "\"" ) &&
@@ -233,10 +283,28 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
     cmbXField->addItem( field );
     cmbYField->addItem( field );
+	cmbWktField->addItem( field );
+	haveFields = true;
   }
 
-  cmbXField->setEnabled( cmbXField->count() > 0 );
-  cmbYField->setEnabled( cmbYField->count() > 0 );
+  int indexWkt = -1;
+  if( ! columnWkt.isEmpty() )
+  {
+	  indexWkt = cmbWktField->findText( columnWkt );
+  }
+  if( indexWkt < 0 )
+  {
+	  indexWkt = cmbWktField->findText("wkt", Qt::MatchContains );
+  }
+  if( indexWkt < 0 )
+  {
+	  indexWkt = cmbWktField->findText("geometry", Qt::MatchContains );
+  }
+  if( indexWkt < 0 )
+  {
+	  indexWkt = cmbWktField->findText("shape", Qt::MatchContains );
+  }
+  cmbWktField->setCurrentIndex( indexWkt);
 
   int indexX = -1;
   if ( !columnX.isEmpty() )
@@ -274,8 +342,28 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
   cmbYField->setCurrentIndex( indexY );
 
-  connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-  connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+
+  bool isXY = (geomTypeXY->isChecked() && indexX >= 0 && indexY >= 0) || indexWkt < 0;
+
+  geomTypeXY->setChecked(  isXY );
+  geomTypeWKT->setChecked( ! isXY );
+
+  if( haveFields )
+  {
+	  geomTypeXY->setEnabled(true);
+	  geomTypeWKT->setEnabled(true);
+	  cmbXField->setEnabled( isXY );
+	  cmbYField->setEnabled( isXY );
+	  cmbWktField->setEnabled( !  isXY );
+
+
+	  connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+	  connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+	  connect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+	  connect(geomTypeXY, SIGNAL(toggled(bool)), cmbXField, SLOT(setEnabled(bool)));
+	  connect(geomTypeXY, SIGNAL(toggled(bool)), cmbYField, SLOT(setEnabled(bool)));
+	  connect(geomTypeXY, SIGNAL(toggled(bool)), cmbWktField, SLOT(setDisabled(bool)));
+  }
 
   // clear the sample text box
   tblSample->clear();
@@ -318,41 +406,36 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
                 this,
                 tr( "Choose a delimited text file to open" ),
                 settings.value( "/Plugin-DelimitedText/text_path", "./" ).toString(),
-                "Text files (*.txt *.csv);; All files (* *.*)" );
+                "Text files (*.txt *.csv);; Well Known Text files (*.wkt);; All files (* *.*)" );
 
   // set path
   txtFilePath->setText( s );
 }
 
+void QgsDelimitedTextPluginGui::updateFieldsAndEnable()
+{
+	updateFieldLists();
+	enableAccept();
+}
+
 void QgsDelimitedTextPluginGui::enableAccept()
 {
-  bool enabled = false;
 
-  if ( txtFilePath->text().isEmpty() || !QFile( txtFilePath->text() ).exists() )
-  {
-    enabled = false;
-  }
-  else if ( delimiterSelection->isChecked() )
-  {
-    enabled =
-      cbxDelimSpace->isChecked() ||
-      cbxDelimTab->isChecked() ||
-      cbxDelimSemicolon->isChecked() ||
-      cbxDelimComma->isChecked() ||
-      cbxDelimColon->isChecked();
-  }
-  else
-  {
-    enabled = !txtDelimiter->text().isEmpty();
-  }
-
+  // If the geometry type field is enabled then there must be 
+  // a valid file, and it must be 
+  bool enabled = haveValidFileAndDelimiters();
 
   if ( enabled )
   {
-    updateFieldLists();
 
-    enabled = ( cmbXField->currentText().isEmpty() && cmbYField->currentText().isEmpty() )
-              || ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() && cmbXField->currentText() != cmbYField->currentText() );
+	if( geomTypeXY->isChecked() )
+	{
+       enabled = !( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() || cmbXField->currentText() == cmbYField->currentText() );
+	}
+	else
+	{
+       enabled = !cmbWktField->currentText().isEmpty();
+	}
   }
 
   pbnOK->setEnabled( enabled );

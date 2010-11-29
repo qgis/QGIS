@@ -34,6 +34,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     QStringList splitLine( QString line );
 
   private:
+    bool haveValidFileAndDelimiters();
     void updateFieldLists();
     void getOpenFileName();
 
@@ -47,6 +48,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void on_btnBrowseForFile_clicked();
 
   public slots:
+    void updateFieldsAndEnable();
     void enableAccept();
 
   signals:

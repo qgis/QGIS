@@ -102,7 +102,7 @@ void QgsDelimitedTextPlugin::initGui()
   setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Add a delimited text file as a map layer. "
                                       "The file must have a header row containing the field names. "
-                                      "X and Y fields are required and must contain coordinates in decimal units." ) );
+                                      "The file must either contain X and Y fields with coordinates in decimal units or a WKT field." ) );
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
