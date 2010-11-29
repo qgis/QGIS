@@ -33,10 +33,11 @@ class QgsMapToolRotateLabel: public QgsMapToolLabel
     virtual void canvasMoveEvent( QMouseEvent * e );
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-  protected:
     /**Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
+
+  protected:
     /**Returns data defined rotation of a feature.
       @param rotation out: rotation value
       @param rotationSuccess out: false if rotation value is NULL
