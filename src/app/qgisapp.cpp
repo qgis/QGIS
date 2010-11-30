@@ -3956,14 +3956,14 @@ void QgisApp::labeling()
     // alter labeling - save the changes
     labelGui.layerSettings().writeToLayer( vlayer );
 
-    activateDeactivateLayerRelatedActions( layer );
-
     // trigger refresh
     if ( mMapCanvas )
     {
       mMapCanvas->refresh();
     }
   }
+
+  activateDeactivateLayerRelatedActions( layer );
 }
 
 void QgisApp::attributeTable()
@@ -6129,6 +6129,36 @@ void QgisApp::legendLayerSelectionChanged( void )
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 {
+  bool enableMove = false, enableRotate = false, enableChange = false;
+
+  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
+    if ( !vlayer || !vlayer->isEditable() || vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) )
+      continue;
+
+    int colX, colY, colAng;
+    enableMove =
+      enableMove ||
+      ( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel ) &&
+        qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->layerIsMoveable( vlayer, colX, colY ) );
+
+    enableRotate =
+      enableRotate ||
+      ( qobject_cast<QgsMapToolRotateLabel*>( mMapTools.mRotateLabel ) &&
+        qobject_cast<QgsMapToolRotateLabel*>( mMapTools.mRotateLabel )->layerIsRotatable( vlayer, colAng ) );
+
+    enableChange = true;
+
+    if ( enableMove && enableRotate && enableChange )
+      break;
+  }
+
+  mActionMoveLabel->setEnabled( enableMove );
+  mActionRotateLabel->setEnabled( enableRotate );
+  mActionChangeLabelProperties->setEnabled( enableChange );
+
   if ( !layer )
   {
     mActionSelect->setEnabled( false );
@@ -6254,29 +6284,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
                                           dprovider->capabilities() & QgsVectorDataProvider::AddFeatures );
 
         mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
-
-        if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) )
-        {
-          int colX, colY, colAng;
-          mActionMoveLabel->setEnabled( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel ) && qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->layerIsMoveable( layer, colX, colY ) );
-          mActionRotateLabel->setEnabled( qobject_cast<QgsMapToolRotateLabel*>( mMapTools.mRotateLabel ) && qobject_cast<QgsMapToolRotateLabel*>( mMapTools.mMoveLabel )->layerIsRotatable( layer, colAng ) );
-          mActionChangeLabelProperties->setEnabled( true );
-        }
-        else
-        {
-          mActionMoveLabel->setEnabled( false );
-          mActionRotateLabel->setEnabled( false );
-          mActionChangeLabelProperties->setEnabled( false );
-        }
       }
       else
       {
         mActionMergeFeatures->setEnabled( false );
         mActionMergeFeatureAttributes->setEnabled( false );
-
-        mActionMoveLabel->setEnabled( false );
-        mActionRotateLabel->setEnabled( false );
-        mActionChangeLabelProperties->setEnabled( false );
       }
 
       // moving enabled if geometry changes are supported
