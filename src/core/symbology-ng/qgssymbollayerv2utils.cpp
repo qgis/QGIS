@@ -226,10 +226,10 @@ QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize s
   Q_ASSERT( symbol );
 
   QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
   symbol->drawPreviewIcon( &painter, size );
   painter.end();
   return pixmap;
@@ -239,10 +239,10 @@ QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize s
 QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size )
 {
   QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
   QgsRenderContext renderContext = createRenderContext( &painter );
   QgsSymbolV2RenderContext symbolContext( renderContext, u );
   layer->drawPreviewIcon( symbolContext, size );
