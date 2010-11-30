@@ -248,7 +248,7 @@ QString QgsMarkerLineSymbolLayerV2::layerType() const
   return "MarkerLine";
 }
 
-void QgsMarkerLineSymbolLayerV2::setColor( QColor color )
+void QgsMarkerLineSymbolLayerV2::setColor( const QColor& color )
 {
   mMarker->setColor( color );
   mColor = color;

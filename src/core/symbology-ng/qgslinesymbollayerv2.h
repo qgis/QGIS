@@ -109,7 +109,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const;
 
-    void setColor( QColor color );
+    void setColor( const QColor& color );
 
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol );
