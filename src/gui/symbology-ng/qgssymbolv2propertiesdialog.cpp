@@ -94,6 +94,7 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
   _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );
+  _initWidgetFunction( "CentroidFill", QgsCentroidFillSymbolLayerV2Widget::create );
 
   initialized = true;
 }
@@ -363,7 +364,7 @@ void QgsSymbolV2PropertiesDialog::removeLayer()
   updateUi();
 
   // set previous layer as active
-  QModelIndex newIndex = listLayers->model()->index( qMin(row, mSymbol->symbolLayerCount()-1), 0 );
+  QModelIndex newIndex = listLayers->model()->index( qMin( row, mSymbol->symbolLayerCount() - 1 ), 0 );
   listLayers->setCurrentIndex( newIndex );
 }
 

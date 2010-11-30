@@ -121,4 +121,39 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
     void storeViewBox();
 };
 
+
+
+class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
+{
+  public:
+    QgsCentroidFillSymbolLayerV2();
+    ~QgsCentroidFillSymbolLayerV2();
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    void setColor( const QColor& color );
+
+    QgsSymbolV2* subSymbol();
+    bool setSubSymbol( QgsSymbolV2* symbol );
+
+  protected:
+    QgsMarkerSymbolV2* mMarker;
+};
+
 #endif

@@ -807,3 +807,50 @@ void QgsFontMarkerSymbolLayerV2Widget::setCharacter( const QChar& chr )
   mLayer->setCharacter( chr );
   emit changed();
 }
+
+
+///////////////
+
+
+QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent )
+{
+  mLayer = NULL;
+
+  setupUi( this );
+
+  connect( btnChangeMarker, SIGNAL( clicked() ), this, SLOT( setMarker() ) );
+}
+
+void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+{
+  if ( layer->layerType() != "CentroidFill" )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsCentroidFillSymbolLayerV2*>( layer );
+
+  // set values
+  updateMarker();
+}
+
+QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsCentroidFillSymbolLayerV2Widget::setMarker()
+{
+  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+  if ( dlg.exec() == 0 )
+    return;
+  updateMarker();
+
+  emit changed();
+}
+
+void QgsCentroidFillSymbolLayerV2Widget::updateMarker()
+{
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), btnChangeMarker->iconSize() );
+  btnChangeMarker->setIcon( icon );
+}

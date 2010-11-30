@@ -282,5 +282,34 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     CharacterWidget* widgetChar;
 };
 
+//////////
+
+
+#include "ui_widget_centroidfill.h"
+
+class QgsCentroidFillSymbolLayerV2;
+
+class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetCentroidFill
+{
+    Q_OBJECT
+
+  public:
+    QgsCentroidFillSymbolLayerV2Widget( QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create() { return new QgsCentroidFillSymbolLayerV2Widget(); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  public slots:
+    void setMarker();
+
+  protected:
+    void updateMarker();
+
+    QgsCentroidFillSymbolLayerV2* mLayer;
+};
+
 
 #endif
