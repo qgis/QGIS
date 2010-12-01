@@ -103,8 +103,8 @@ void GlobePlugin::initGui()
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
-  connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
-           this, SLOT( layersChanged() ) );
+  //connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
+  //         this, SLOT( layersChanged() ) );
 }
 
 
@@ -315,15 +315,13 @@ struct HomeControlHandler : public NavigationControlHandler
 
 struct RefreshControlHandler : public ControlEventHandler
 {
-    RefreshControlHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface* mQGisIface ) : _manip( manip ), _mQGisIface( mQGisIface ) { }
+    RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
     virtual void onClick( Control* control, int mouseButtonMask )
     {
-      //TODO
-      OE_NOTICE << "refresh layers" << std::endl;
+      mGlobe->layersChanged();
     }
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-    QgisInterface* _mQGisIface;
+    GlobePlugin* mGlobe;
 };
 
 struct SyncExtentControlHandler : public ControlEventHandler
@@ -541,7 +539,7 @@ void GlobePlugin::setupControls()
   //refresh layers
   osg::Image* extraRefreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
   ImageControl* extraRefresh = new NavigationControl( extraRefreshImg );
-  extraRefresh->addEventHandler( new RefreshControlHandler( manip, mQGisIface ) );
+  extraRefresh->addEventHandler( new RefreshControlHandler( this ) );
 
   //add controls to extraControls group
   extraControls->addControl( extraSync );
@@ -590,31 +588,17 @@ typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
 void GlobePlugin::layersChanged()
 {
   QgsDebugMsg( "layersChanged" );
-  if( mTileSource )
-  {
-    /*
-    //viewer.getDatabasePager()->clear();
-    //mMapNode->getTerrain()->incrementRevision();
-    TileList tiles;
-    mMapNode->getTerrain()->getVersionedTiles( tiles );
-    for( TileList::iterator i = tiles.begin(); i != tiles.end(); i++ ) {
-      //i->get()->markTileForRegeneration();
-      i->get()->updateImagery( mQgisMapLayer->getId(), mMapNode->getMap(), mMapNode->getEngine() );
-    }
-    */
-  }
   if( mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1 )
   {
+    viewer.getDatabasePager()->clear();
     QgsDebugMsg( "removeMapLayer" );
-    QgsDebugMsg( QString( "getImageMapLayers().size = %1" ).arg( mMapNode->getMap()->getImageMapLayers().size() ) );
     mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
-    QgsDebugMsg( QString( "getImageMapLayers().size = %1" ).arg( mMapNode->getMap()->getImageMapLayers().size() ) );
     QgsDebugMsg( "addMapLayer" );
     mTileSource = new QgsOsgEarthTileSource( mQGisIface );
     mTileSource->initialize( "", 0 );
     mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
     mMapNode->getMap()->addMapLayer( mQgisMapLayer );
-    QgsDebugMsg( QString( "getImageMapLayers().size = %1" ).arg( mMapNode->getMap()->getImageMapLayers().size() ) );
+    mQgisMapLayer->setCache( 0 ); //disable caching
   }
 }
 
