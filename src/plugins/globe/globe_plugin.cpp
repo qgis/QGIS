@@ -259,7 +259,7 @@ void GlobePlugin::setupMap()
 struct PanControlHandler : public NavigationControlHandler
 {
     PanControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa  )
+    virtual void onMouseDown( Control* control, int mouseButtonMask )
     {
       _manip->pan( _dx, _dy );
     }
@@ -272,7 +272,7 @@ struct PanControlHandler : public NavigationControlHandler
 struct RotateControlHandler : public NavigationControlHandler
 {
     RotateControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa  )
+    virtual void onMouseDown( Control* control, int mouseButtonMask )
     {
       if( 0 == _dx && 0 == _dy )
       {
@@ -292,7 +292,7 @@ struct RotateControlHandler : public NavigationControlHandler
 struct ZoomControlHandler : public NavigationControlHandler
 {
     ZoomControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa  )
+    virtual void onMouseDown( Control* control, int mouseButtonMask )
     {
       _manip->zoom( _dx, _dy );
     }
@@ -305,7 +305,7 @@ struct ZoomControlHandler : public NavigationControlHandler
 struct HomeControlHandler : public NavigationControlHandler
 {
     HomeControlHandler( osgEarthUtil::EarthManipulator* manip ) : _manip( manip ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+    virtual void onClick( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
     {
       _manip->home( ea, aa );
     }
@@ -696,7 +696,11 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
     for( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
     {
       NavigationControlHandler* handler = dynamic_cast<NavigationControlHandler*>( i->get() );
-      if( handler ) handler->onMouseDown( this, ea.getButtonMask(), ea, aa );
+      if( handler )
+      {
+        handler->onMouseDown( this, ea.getButtonMask() );
+        handler->onClick( this, ea.getButtonMask(), ea, aa );
+      }
     }
   }
   return Control::handle( ea, aa, cx );

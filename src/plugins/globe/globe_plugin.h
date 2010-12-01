@@ -123,6 +123,7 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
   GlobePlugin* mGlobe;
 };
 
+
 class KeyboardControlHandler : public osgGA::GUIEventHandler
 {
   public:
@@ -144,7 +145,8 @@ namespace osgEarthUtil
     class NavigationControlHandler : public ControlEventHandler
     {
       public:
-        virtual void onMouseDown( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { }
+        virtual void onMouseDown( class Control* control, int mouseButtonMask ) { }
+        virtual void onClick( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { }
     };
 
     class NavigationControl : public ImageControl
