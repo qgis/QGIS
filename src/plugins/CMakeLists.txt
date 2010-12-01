@@ -13,8 +13,11 @@ SUBDIRS (copyright_label
   evis
   point_displacement_renderer
   spatialquery
-  offline_editing
   )
+
+IF (WITH_SPATIALITE)
+  SUBDIRS( offline_editing )
+ENDIF (WITH_SPATIALITE)
 
 IF (POSTGRES_FOUND)
   SUBDIRS (spit)
