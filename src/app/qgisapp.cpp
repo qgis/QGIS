@@ -894,33 +894,37 @@ void QgisApp::createActions()
   mActionZoomOut->setStatusTip( tr( "Zoom Out" ) );
   connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
 
-  mActionSelect = new QAction( getThemeIcon( "mActionSelect.png" ), tr( "Select Features" ) , this );
+  QString singleSelectOptTip( tr( ", hold ctrl to add/subtract current selection" ) );
+
+  mActionSelect = new QAction( getThemeIcon( "mActionSelect.png" ), tr( "Select single feature" ) , this );
   shortcuts->registerAction( mActionSelect );
-  mActionSelect->setStatusTip( tr( "Select Features" ) );
+  mActionSelect->setStatusTip( tr( "Select single features" ) + singleSelectOptTip );
   connect( mActionSelect, SIGNAL( triggered() ), this, SLOT( select() ) );
   mActionSelect->setEnabled( false );
 
+  QString selectOptionTip( tr( ", hold shift to select by containment" ) + singleSelectOptTip );
+  
   mActionSelectRectangle = new QAction( getThemeIcon( "mActionSelectRectangle.png" ), tr( "Select features by rectangle" ), this );
   shortcuts->registerAction( mActionSelectRectangle );
-  mActionSelectRectangle->setStatusTip( tr( "Select features by rectangle" ) );
+  mActionSelectRectangle->setStatusTip( tr( "Select features by rectangle" ) + selectOptionTip );
   connect( mActionSelectRectangle, SIGNAL( triggered() ), this, SLOT( selectByRectangle() ) );
   mActionSelectRectangle->setEnabled( false );
 
   mActionSelectPolygon = new QAction( getThemeIcon( "mActionSelectPolygon.png" ), tr( "Select features by polygon" ), this );
   shortcuts->registerAction( mActionSelectPolygon );
-  mActionSelectPolygon->setStatusTip( tr( "Select features by polygon" ) );
+  mActionSelectPolygon->setStatusTip( tr( "Select features by polygon" ) + selectOptionTip );
   connect( mActionSelectPolygon, SIGNAL( triggered() ), this, SLOT( selectByPolygon() ) );
   mActionSelectPolygon->setEnabled( false );
 
   mActionSelectFreehand = new QAction( getThemeIcon( "mActionSelectFreehand.png" ), tr( "Select features by freehand" ), this );
   shortcuts->registerAction( mActionSelectFreehand );
-  mActionSelectFreehand->setStatusTip( tr( "Select features by freehand" ) );
+  mActionSelectFreehand->setStatusTip( tr( "Select features by freehand" ) + selectOptionTip );
   connect( mActionSelectFreehand, SIGNAL( triggered() ), this, SLOT( selectByFreehand() ) );
   mActionSelectFreehand->setEnabled( false );
 
   mActionSelectRadius = new QAction( getThemeIcon( "mActionSelectRadius.png" ), tr( "Select features by radius" ), this );
   shortcuts->registerAction( mActionSelectRadius );
-  mActionSelectRadius->setStatusTip( tr( "Select features by radius" ) );
+  mActionSelectRadius->setStatusTip( tr( "Select features by radius" ) + selectOptionTip );
   connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
   mActionSelectRadius->setEnabled( false );
 
