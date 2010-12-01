@@ -259,7 +259,7 @@ void GlobePlugin::setupMap()
 struct PanControlHandler : public NavigationControlHandler
 {
     PanControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
+    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa  )
     {
       _manip->pan( _dx, _dy );
     }
@@ -272,7 +272,7 @@ struct PanControlHandler : public NavigationControlHandler
 struct RotateControlHandler : public NavigationControlHandler
 {
     RotateControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
+    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa  )
     {
       if( 0 == _dx && 0 == _dy )
       {
@@ -292,7 +292,7 @@ struct RotateControlHandler : public NavigationControlHandler
 struct ZoomControlHandler : public NavigationControlHandler
 {
     ZoomControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
+    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa  )
     {
       _manip->zoom( _dx, _dy );
     }
@@ -302,15 +302,12 @@ struct ZoomControlHandler : public NavigationControlHandler
     double _dy;
 };
 
-struct HomeControlHandler : public ControlEventHandler
+struct HomeControlHandler : public NavigationControlHandler
 {
     HomeControlHandler( osgEarthUtil::EarthManipulator* manip ) : _manip( manip ) { }
-    virtual void onClick( Control* control, int mouseButtonMask )
+    virtual void onMouseDown( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
     {
-      _manip->setRotation( osg::Quat() );
-      //FIXME: instead of next 2 lines use _manip->home( control->ea, control->aa );
-      osgEarthUtil::Viewpoint viewpoint( osg::Vec3d( -90, 0, 0.0 ), 0.0, -90.0, 3e7 );
-      _manip->setViewpoint( viewpoint, 4.0 );
+      _manip->home( ea, aa );
     }
   private:
     osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
@@ -699,7 +696,7 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
     for( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
     {
       NavigationControlHandler* handler = dynamic_cast<NavigationControlHandler*>( i->get() );
-      if( handler ) handler->onMouseDown( this, ea.getButtonMask() );
+      if( handler ) handler->onMouseDown( this, ea.getButtonMask(), ea, aa );
     }
   }
   return Control::handle( ea, aa, cx );

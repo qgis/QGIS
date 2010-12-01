@@ -112,7 +112,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarthUtil::ObjectPlacer* mObjectPlacer;
 };
 
-class FlyToExtentHandler : public osgGA::GUIEventHandler 
+class FlyToExtentHandler : public osgGA::GUIEventHandler
 {
   public:
     FlyToExtentHandler( GlobePlugin* globe ) : mGlobe ( globe ) { }
@@ -123,7 +123,7 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
   GlobePlugin* mGlobe;
 };
 
-class KeyboardControlHandler : public osgGA::GUIEventHandler 
+class KeyboardControlHandler : public osgGA::GUIEventHandler
 {
   public:
     KeyboardControlHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
@@ -137,14 +137,14 @@ class KeyboardControlHandler : public osgGA::GUIEventHandler
     QgisInterface *mQGisIface;
 };
 
-namespace osgEarthUtil 
-{ 
+namespace osgEarthUtil
+{
   namespace Controls2
   {
     class NavigationControlHandler : public ControlEventHandler
     {
       public:
-        virtual void onMouseDown( class Control* control, int mouseButtonMask ) { }
+        virtual void onMouseDown( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { }
     };
 
     class NavigationControl : public ImageControl
