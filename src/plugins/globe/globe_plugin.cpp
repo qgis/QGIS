@@ -687,6 +687,14 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
       }
       break;
     case osgGA::GUIEventAdapter::RELEASE:
+      for( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
+      {
+        NavigationControlHandler* handler = dynamic_cast<NavigationControlHandler*>( i->get() );
+        if( handler )
+        {
+          handler->onClick( this, ea.getButtonMask(), ea, aa  );
+        }
+      }
       _mouse_down_event = NULL;
       break;
   }
@@ -699,7 +707,6 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
       if( handler )
       {
         handler->onMouseDown( this, ea.getButtonMask() );
-        handler->onClick( this, ea.getButtonMask(), ea, aa );
       }
     }
   }
