@@ -655,7 +655,8 @@ bool QgsDelimitedTextProvider::boundsCheck( QgsGeometry *geom )
   if ( mSelectionRectangle.isEmpty() || !mFetchGeom )
     return true;
 
-  return geom->boundingBox().intersects( mSelectionRectangle );
+  return geom->boundingBox().intersects( mSelectionRectangle )
+	     && geom->intersects(mSelectionRectangle);;
 }
 
 int QgsDelimitedTextProvider::capabilities() const
