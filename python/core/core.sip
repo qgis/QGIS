@@ -11,9 +11,11 @@
 // TODO: more files to wrap
 
 %Include qgis.sip
+%Include qgsaddremoveitemcommand.sip
 %Include qgsapplication.sip
 %Include qgscomposerattributetable.sip
 %Include qgscomposeritem.sip
+%Include qgscomposeritemcommand.sip
 %Include qgscomposerlabel.sip
 %Include qgscomposerlegend.sip
 %Include qgscomposermap.sip

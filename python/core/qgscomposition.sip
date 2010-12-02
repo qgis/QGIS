@@ -57,6 +57,9 @@ class QgsComposition: QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const;
 
+    /**Returns pointer to undo/redo command storage*/
+    QUndoStack* undoStack();
+
     /**Returns the topmose composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
@@ -125,4 +128,15 @@ class QgsComposition: QGraphicsScene
 
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
+
+    /**Allocates new item command and saves initial state in it
+      @param item target item
+      @param commandText descriptive command text
+      @param c context for merge commands (unknown for non-mergeable commands)*/
+    void beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
+
+    /**Saves end state of item and pushes command to the undo history*/
+    void endCommand();
+    /**Deletes current command*/
+    void cancelCommand();
 };

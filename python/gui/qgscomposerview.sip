@@ -68,6 +68,12 @@ class QgsComposerView: QGraphicsView
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
 
+    void setPaintingEnabled( bool enabled );
+    bool paintingEnabled() const;
+
+    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );

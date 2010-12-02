@@ -102,6 +102,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
     bool paintingEnabled() const { return mPaintingEnabled; }
 
+    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -114,9 +117,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void wheelEvent( QWheelEvent* event );
 
     void paintEvent( QPaintEvent* event );
-
-    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
-    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
 
   private:
