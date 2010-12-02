@@ -12,7 +12,6 @@
 		<section label="Create new GRASS location from raster data">
 			<grass name="r.in.gdal.qgis.loc"/>
 			<grass name="r.in.gdal.qgis"/>
-			<grass name="r.external.qgis"/>
 		</section>
 		<section label="Create new GRASS location from vector data">
 			<grass name="v.in.ogr.qgis.loc"/>

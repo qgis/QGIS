@@ -6831,25 +6831,25 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <location filename="../src/app/qgisapp.cpp" line="904"/>
         <source>Select features by rectangle</source>
-        <translation>Sleleziona elementi con un rettangolo</translation>
+        <translation>Seleziona elementi con un rettangolo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="908"/>
         <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>Select features by polygon</source>
-        <translation>Sleleziona elementi con un poligono</translation>
+        <translation>Seleziona elementi con un poligono</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="914"/>
         <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>Select features by freehand</source>
-        <translation>Sleleziona elementi a mano libera</translation>
+        <translation>Seleziona elementi a mano libera</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="920"/>
         <location filename="../src/app/qgisapp.cpp" line="922"/>
         <source>Select features by radius</source>
-        <translation>Sleleziona elementi con un cerchio</translation>
+        <translation>Seleziona elementi con un cerchio</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="962"/>
@@ -7467,7 +7467,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="856"/>
         <location filename="../src/app/qgisapp.cpp" line="858"/>
         <source>Merge attributes of selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Unisci gli attributi dalle geometrie selezionate</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="868"/>
@@ -34614,7 +34614,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation>Rimuovi i vertici sotto una certa soglia di tolleranza da linee e contorni, il contorno viene tagliato solo se la topologia non è danneggiata (nuove intersezioni, attachement cambiato), il primo e l&apos;ultimo segmento del contorno non viene mai cambiato</translation>
+        <translation>Rimuovi i vertici sotto una certa soglia di tolleranza da linee e contorni, il contorno viene tagliato solo se la topologia non è danneggiata (nuove intersezioni, attachment cambiato), il primo e l&apos;ultimo segmento del contorno non viene mai cambiato</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
