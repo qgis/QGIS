@@ -76,7 +76,7 @@ class GdalToolsBasePluginWidget:
       if fileInfo.exists():
         if load:
           self.addLayerIntoCanvas(fileInfo)
-        QMessageBox.information(self, self.tr( "Finished" ), self.tr( "Elaboration completed." ) )
+        QMessageBox.information(self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
       else:
         QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "%1 not created." ).arg( outFn ) )
 
