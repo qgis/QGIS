@@ -614,6 +614,9 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     return myErrorMessage;
   }
 
+  //also restore custom properties (for labeling-ng)
+  readCustomProperties( myRoot, "labeling" );
+
   return "";
 }
 
@@ -652,6 +655,9 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   {
     return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
   }
+
+  //save customproperties (for labeling ng)
+  writeCustomProperties( myRootNode, myDocument );
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one
@@ -804,7 +810,7 @@ void QgsMapLayer::removeCustomProperty( const QString& key )
   mCustomProperties.remove( key );
 }
 
-void QgsMapLayer::readCustomProperties( QDomNode & layerNode )
+void QgsMapLayer::readCustomProperties( QDomNode & layerNode, const QString& keyStartsWith )
 {
   QDomNode propsNode = layerNode.namedItem( "customproperties" );
   if ( propsNode.isNull() ) // no properties stored...
@@ -822,17 +828,20 @@ void QgsMapLayer::readCustomProperties( QDomNode & layerNode )
     QDomElement propElement = propNode.toElement();
 
     QString key = propElement.attribute( "key" );
-    QString value = propElement.attribute( "value" );
-    mCustomProperties[key] = QVariant( value );
+    if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
+    {
+      QString value = propElement.attribute( "value" );
+      mCustomProperties[key] = QVariant( value );
+    }
   }
 
 }
 
-void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & doc )
+void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const
 {
   QDomElement propsElement = doc.createElement( "customproperties" );
 
-  for ( QMap<QString, QVariant>::const_iterator it = mCustomProperties.begin(); it != mCustomProperties.end(); ++it )
+  for ( QMap<QString, QVariant>::const_iterator it = mCustomProperties.constBegin(); it != mCustomProperties.constEnd(); ++it )
   {
     QDomElement propElement = doc.createElement( "property" );
     propElement.setAttribute( "key", it.key() );

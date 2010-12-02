@@ -373,11 +373,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
 
-    /** Read custom properties from project file. Added in v1.4 */
-    void readCustomProperties( QDomNode & layerNode );
+    /** Read custom properties from project file. Added in v1.4
+        @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
+    void readCustomProperties( QDomNode & layerNode, const QString& keyStartsWith = "" );
 
     /** Write custom properties to project file. Added in v1.4 */
-    void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc );
+    void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
