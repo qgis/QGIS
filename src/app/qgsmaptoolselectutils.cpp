@@ -135,9 +135,15 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   while( vlayer->nextFeature( f ) )
   {
     QgsGeometry* g = f.geometry();
-    if( doContains && !selectGeomTrans.contains( g ) )
+    if( doContains )
     {
-      continue;
+      if ( !selectGeomTrans.contains( g ) )
+        continue;
+    }
+    else
+    {
+      if ( !selectGeomTrans.intersects( g ) )
+        continue;
     }
     if( singleSelect )
     {
