@@ -104,23 +104,23 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
                   .arg( txtDelimiter->text() )
                   .arg( delimiterType );
 
-	if( geomTypeXY->isChecked())
-	{
-		if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
-		{
-		  uri += QString( "&xField=%1&yField=%2" )
-				 .arg( cmbXField->currentText() )
-				 .arg( cmbYField->currentText() );
-		}
-	}
-	else
-	{
-		if( ! cmbWktField->currentText().isEmpty() )
-		{
-		  uri += QString( "&wktField=%1" )
-				 .arg( cmbWktField->currentText() );
-		}
-	}
+    if ( geomTypeXY->isChecked() )
+    {
+      if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
+      {
+        uri += QString( "&xField=%1&yField=%2" )
+               .arg( cmbXField->currentText() )
+               .arg( cmbYField->currentText() );
+      }
+    }
+    else
+    {
+      if ( ! cmbWktField->currentText().isEmpty() )
+      {
+        uri += QString( "&wktField=%1" )
+               .arg( cmbWktField->currentText() );
+      }
+    }
 
     int skipLines = rowCounter->value();
     if ( skipLines > 0 )
@@ -222,9 +222,9 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   disconnect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
   disconnect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
   disconnect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-  disconnect(geomTypeXY, SIGNAL(toggled(bool)), cmbXField, SLOT(setEnabled(bool)));
-  disconnect(geomTypeXY, SIGNAL(toggled(bool)), cmbYField, SLOT(setEnabled(bool)));
-  disconnect(geomTypeXY, SIGNAL(toggled(bool)), cmbWktField, SLOT(setDisabled(bool)));
+  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbXField, SLOT( setEnabled( bool ) ) );
+  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbYField, SLOT( setEnabled( bool ) ) );
+  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbWktField, SLOT( setDisabled( bool ) ) );
 
   QString columnX = cmbXField->currentText();
   QString columnY = cmbYField->currentText();
@@ -241,7 +241,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   cmbYField->setEnabled( false );
   cmbWktField->setEnabled( false );
 
-  if( ! haveValidFileAndDelimiters()) return;
+  if ( ! haveValidFileAndDelimiters() ) return;
 
   QFile file( txtFilePath->text() );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -283,28 +283,28 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
     cmbXField->addItem( field );
     cmbYField->addItem( field );
-	cmbWktField->addItem( field );
-	haveFields = true;
+    cmbWktField->addItem( field );
+    haveFields = true;
   }
 
   int indexWkt = -1;
-  if( ! columnWkt.isEmpty() )
+  if ( ! columnWkt.isEmpty() )
   {
-	  indexWkt = cmbWktField->findText( columnWkt );
+    indexWkt = cmbWktField->findText( columnWkt );
   }
-  if( indexWkt < 0 )
+  if ( indexWkt < 0 )
   {
-	  indexWkt = cmbWktField->findText("wkt", Qt::MatchContains );
+    indexWkt = cmbWktField->findText( "wkt", Qt::MatchContains );
   }
-  if( indexWkt < 0 )
+  if ( indexWkt < 0 )
   {
-	  indexWkt = cmbWktField->findText("geometry", Qt::MatchContains );
+    indexWkt = cmbWktField->findText( "geometry", Qt::MatchContains );
   }
-  if( indexWkt < 0 )
+  if ( indexWkt < 0 )
   {
-	  indexWkt = cmbWktField->findText("shape", Qt::MatchContains );
+    indexWkt = cmbWktField->findText( "shape", Qt::MatchContains );
   }
-  cmbWktField->setCurrentIndex( indexWkt);
+  cmbWktField->setCurrentIndex( indexWkt );
 
   int indexX = -1;
   if ( !columnX.isEmpty() )
@@ -343,26 +343,26 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   cmbYField->setCurrentIndex( indexY );
 
 
-  bool isXY = (geomTypeXY->isChecked() && indexX >= 0 && indexY >= 0) || indexWkt < 0;
+  bool isXY = ( geomTypeXY->isChecked() && indexX >= 0 && indexY >= 0 ) || indexWkt < 0;
 
-  geomTypeXY->setChecked(  isXY );
+  geomTypeXY->setChecked( isXY );
   geomTypeWKT->setChecked( ! isXY );
 
-  if( haveFields )
+  if ( haveFields )
   {
-	  geomTypeXY->setEnabled(true);
-	  geomTypeWKT->setEnabled(true);
-	  cmbXField->setEnabled( isXY );
-	  cmbYField->setEnabled( isXY );
-	  cmbWktField->setEnabled( !  isXY );
+    geomTypeXY->setEnabled( true );
+    geomTypeWKT->setEnabled( true );
+    cmbXField->setEnabled( isXY );
+    cmbYField->setEnabled( isXY );
+    cmbWktField->setEnabled( !  isXY );
 
 
-	  connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-	  connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-	  connect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-	  connect(geomTypeXY, SIGNAL(toggled(bool)), cmbXField, SLOT(setEnabled(bool)));
-	  connect(geomTypeXY, SIGNAL(toggled(bool)), cmbYField, SLOT(setEnabled(bool)));
-	  connect(geomTypeXY, SIGNAL(toggled(bool)), cmbWktField, SLOT(setDisabled(bool)));
+    connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+    connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+    connect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
+    connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbXField, SLOT( setEnabled( bool ) ) );
+    connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbYField, SLOT( setEnabled( bool ) ) );
+    connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbWktField, SLOT( setDisabled( bool ) ) );
   }
 
   // clear the sample text box
@@ -414,28 +414,28 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
 
 void QgsDelimitedTextPluginGui::updateFieldsAndEnable()
 {
-	updateFieldLists();
-	enableAccept();
+  updateFieldLists();
+  enableAccept();
 }
 
 void QgsDelimitedTextPluginGui::enableAccept()
 {
 
-  // If the geometry type field is enabled then there must be 
-  // a valid file, and it must be 
+  // If the geometry type field is enabled then there must be
+  // a valid file, and it must be
   bool enabled = haveValidFileAndDelimiters();
 
   if ( enabled )
   {
 
-	if( geomTypeXY->isChecked() )
-	{
-       enabled = !( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() || cmbXField->currentText() == cmbYField->currentText() );
-	}
-	else
-	{
-       enabled = !cmbWktField->currentText().isEmpty();
-	}
+    if ( geomTypeXY->isChecked() )
+    {
+      enabled = !( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() || cmbXField->currentText() == cmbYField->currentText() );
+    }
+    else
+    {
+      enabled = !cmbWktField->currentText().isEmpty();
+    }
   }
 
   pbnOK->setEnabled( enabled );

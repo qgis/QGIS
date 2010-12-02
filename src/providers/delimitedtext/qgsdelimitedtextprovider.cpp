@@ -132,13 +132,16 @@ QStringList QgsDelimitedTextProvider::splitLine( QString line )
 }
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
-    : QgsVectorDataProvider( uri ),
-	mHasWktField( false ), mFieldCount(0),
-    mXFieldIndex( -1 ), mYFieldIndex( -1 ), 
-	mWktFieldIndex( -1 ), mWktHasZM( false),
-	mWktZMRegexp("\\s+(?:z|m|zm)(?=\\s*\\()",Qt::CaseInsensitive),
-	mWktCrdRegexp("(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+"),
-    mShowInvalidLines( true ), mWkbType( QGis::WKBNoGeometry )
+    : QgsVectorDataProvider( uri )
+    , mHasWktField( false )
+    , mFieldCount( 0 )
+    , mXFieldIndex( -1 ), mYFieldIndex( -1 )
+    , mWktFieldIndex( -1 )
+    , mWktHasZM( false )
+    , mWktZMRegexp( "\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive )
+    , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
+    , mShowInvalidLines( true )
+    , mWkbType( QGis::WKBNoGeometry )
 {
   // Get the file name and mDelimiter out of the uri
   mFileName = uri.left( uri.indexOf( "?" ) );
@@ -169,7 +172,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   yField    = QUrl::fromPercentEncoding( yField.toUtf8() );
 
   mHasWktField = wktField != "";
- 
+
   skipLines = QUrl::fromPercentEncoding( skipLines.toUtf8() );
 
   mSkipLines = skipLines.toInt();
@@ -247,13 +250,13 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       // fields vector
       QStringList fieldList = splitLine( line );
 
-	  mFieldCount = fieldList.count();
+      mFieldCount = fieldList.count();
 
       // We don't know anything about a text based field other
       // than its name. All fields are assumed to be text
       int fieldPos = 0;
-	  for( int column = 0; column < mFieldCount; column++ )
-	  {
+      for ( int column = 0; column < mFieldCount; column++ )
+      {
         QString field = fieldList[column];
         if ( field.length() > 0 )
         {
@@ -275,20 +278,20 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
             mYFieldIndex = column;
           }
 
-		  // WKT geometry field won't be displayed in attribute tables
-		  if( column == mWktFieldIndex ) continue;
+          // WKT geometry field won't be displayed in attribute tables
+          if ( column == mWktFieldIndex ) continue;
 
           QgsDebugMsg( "Adding field: " + ( field ) );
           // assume that the field could be integer or double
           // for now, let's set field type as text
-		  attributeColumns.append(column);
+          attributeColumns.append( column );
           attributeFields[fieldPos] = QgsField( field, QVariant::String, "Text" );
           couldBeInt.insert( fieldPos, true );
           couldBeDouble.insert( fieldPos, true );
           fieldPos++;
         }
       }
-	  if( mWktFieldIndex >= 0 ) { mXFieldIndex = -1; mYFieldIndex=-1; }
+      if ( mWktFieldIndex >= 0 ) { mXFieldIndex = -1; mYFieldIndex = -1; }
       QgsDebugMsg( "Field count for the delimited text file is " + QString::number( attributeFields.size() ) );
       hasFields = true;
     }
@@ -304,83 +307,83 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         continue;
       }
 
-	  if( mHasWktField && mWktFieldIndex >= 0 )
-	  {
-          // Get the wkt - confirm it is valid, get the type, and 
-		  // if compatible with the rest of file, add to the extents
+      if ( mHasWktField && mWktFieldIndex >= 0 )
+      {
+        // Get the wkt - confirm it is valid, get the type, and
+        // if compatible with the rest of file, add to the extents
 
-		  QString sWkt = parts[mWktFieldIndex];
-		  QgsGeometry *geom = 0;
-		  try
-		  {
-		    if( ! mWktHasZM && sWkt.indexOf(mWktZMRegexp) >= 0 ) mWktHasZM = true;
-			if( mWktHasZM )
-			{
-				sWkt.remove(mWktZMRegexp).replace(mWktCrdRegexp,"\\1");
-			}
-			geom = QgsGeometry::fromWkt(sWkt);
-		  }
-		  catch(...)
-		  {
-			  geom = 0;
-		  }
+        QString sWkt = parts[mWktFieldIndex];
+        QgsGeometry *geom = 0;
+        try
+        {
+          if ( ! mWktHasZM && sWkt.indexOf( mWktZMRegexp ) >= 0 ) mWktHasZM = true;
+          if ( mWktHasZM )
+          {
+            sWkt.remove( mWktZMRegexp ).replace( mWktCrdRegexp, "\\1" );
+          }
+          geom = QgsGeometry::fromWkt( sWkt );
+        }
+        catch ( ... )
+        {
+          geom = 0;
+        }
 
-		  if( geom )
-		  {
-			  QGis::WkbType type = geom->wkbType();
-			  if( type != QGis::WKBNoGeometry )
-			  {
-				  if( mNumberFeatures == 0 )
-				  {
-					  mNumberFeatures++;
-					  mWkbType = type;
-					  mExtent = geom->boundingBox();
-				  }
-				  else if( type == mWkbType )
-				  {
-					  mNumberFeatures++;
-					  QgsRectangle bbox( geom->boundingBox());
-					  mExtent.combineExtentWith( &bbox );
-				  }
-			  }
-			  delete geom;
-		  }
-	  }
+        if ( geom )
+        {
+          QGis::WkbType type = geom->wkbType();
+          if ( type != QGis::WKBNoGeometry )
+          {
+            if ( mNumberFeatures == 0 )
+            {
+              mNumberFeatures++;
+              mWkbType = type;
+              mExtent = geom->boundingBox();
+            }
+            else if ( type == mWkbType )
+            {
+              mNumberFeatures++;
+              QgsRectangle bbox( geom->boundingBox() );
+              mExtent.combineExtentWith( &bbox );
+            }
+          }
+          delete geom;
+        }
+      }
 
-	  else if( ! mHasWktField && mXFieldIndex >= 0 && mYFieldIndex >= 0 )
-	  {
+      else if ( ! mHasWktField && mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+      {
 
-          // Get the x and y values, first checking to make sure they
-          // aren't null.
+        // Get the x and y values, first checking to make sure they
+        // aren't null.
 
-		  QString sX = parts[mXFieldIndex];
-		  QString sY = parts[mYFieldIndex];
+        QString sX = parts[mXFieldIndex];
+        QString sY = parts[mYFieldIndex];
 
-		  bool xOk = true;
-		  bool yOk = true;
-		  double x = sX.toDouble( &xOk );
-		  double y = sY.toDouble( &yOk );
+        bool xOk = true;
+        bool yOk = true;
+        double x = sX.toDouble( &xOk );
+        double y = sY.toDouble( &yOk );
 
-		  if ( xOk && yOk )
-		  {
-			if ( mNumberFeatures > 0 )
-			{
-			  mExtent.combineExtentWith( x, y );
-			}
-			else
-			{
-			  // Extent for the first point is just the first point
-			  mExtent.set( x, y, x, y );
-   			  mWkbType = QGis::WKBPoint;
-			}
-			mNumberFeatures++;
-		  }
-	  }
+        if ( xOk && yOk )
+        {
+          if ( mNumberFeatures > 0 )
+          {
+            mExtent.combineExtentWith( x, y );
+          }
+          else
+          {
+            // Extent for the first point is just the first point
+            mExtent.set( x, y, x, y );
+            mWkbType = QGis::WKBPoint;
+          }
+          mNumberFeatures++;
+        }
+      }
 
-      for( int i = 0; i < attributeFields.size(); i++ )
-	  {
-		QString &value = parts[attributeColumns[i]];
-		if( value.isEmpty()) continue;
+      for ( int i = 0; i < attributeFields.size(); i++ )
+      {
+        QString &value = parts[attributeColumns[i]];
+        if ( value.isEmpty() ) continue;
         // try to convert attribute values to integer and double
         if ( couldBeInt[i] )
         {
@@ -433,8 +436,6 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
   feature.setValid( false );
   while ( ! mStream->atEnd() )
   {
-    double x = 0.0;
-    double y = 0.0;
     QString line = readLine( mStream ); // Default local 8 bit encoding
     if ( line.isEmpty() )
       continue;
@@ -442,55 +443,55 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     // lex the tokens from the current data line
     QStringList tokens = splitLine( line );
 
-	QgsGeometry *geom = 0;
+    QgsGeometry *geom = 0;
 
-    if( mHasWktField && mWktFieldIndex >= 0 )
-	{
-		try
-		{
-			QString &sWkt = tokens[mWktFieldIndex];
-			if( mWktHasZM )
-			{
-				sWkt.remove(mWktZMRegexp).replace(mWktCrdRegexp,"\\1");
-			}
+    if ( mHasWktField && mWktFieldIndex >= 0 )
+    {
+      try
+      {
+        QString &sWkt = tokens[mWktFieldIndex];
+        if ( mWktHasZM )
+        {
+          sWkt.remove( mWktZMRegexp ).replace( mWktCrdRegexp, "\\1" );
+        }
 
-			geom = QgsGeometry::fromWkt(sWkt);
-		}
-		catch(...)
-		{
-			geom = 0;
-		}
+        geom = QgsGeometry::fromWkt( sWkt );
+      }
+      catch ( ... )
+      {
+        geom = 0;
+      }
 
-		if( geom && geom->wkbType() != mWkbType )
-		{
-			delete geom;
-			geom = 0;
-		}
-		mFid++;
-		if( ! boundsCheck(geom))
-		{
-			delete geom;
-			geom = 0;
-		}
-	}
-	else if( ! mHasWktField && mXFieldIndex >= 0 && mYFieldIndex >= 0 )
-	{
-		bool xOk, yOk;
-		double x = tokens[mXFieldIndex].toDouble(&xOk);
-		double y = tokens[mYFieldIndex].toDouble(&yOk);
-		if( xOk && yOk )
-		{
-			mFid++;
-			if( boundsCheck(x,y) )
-			{
-				geom = QgsGeometry::fromPoint(QgsPoint(x,y));
-			}
-		}
-	}
+      if ( geom && geom->wkbType() != mWkbType )
+      {
+        delete geom;
+        geom = 0;
+      }
+      mFid++;
+      if ( ! boundsCheck( geom ) )
+      {
+        delete geom;
+        geom = 0;
+      }
+    }
+    else if ( ! mHasWktField && mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+    {
+      bool xOk, yOk;
+      double x = tokens[mXFieldIndex].toDouble( &xOk );
+      double y = tokens[mYFieldIndex].toDouble( &yOk );
+      if ( xOk && yOk )
+      {
+        mFid++;
+        if ( boundsCheck( x, y ) )
+        {
+          geom = QgsGeometry::fromPoint( QgsPoint( x, y ) );
+        }
+      }
+    }
 
-	// If no valid geometry skip to the next line
+    // If no valid geometry skip to the next line
 
-	if( ! geom ) continue;
+    if ( ! geom ) continue;
 
     // At this point the current feature values are valid
 
@@ -498,13 +499,13 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
 
     feature.setFeatureId( mFid );
 
-	feature.setGeometry( geom );
+    feature.setGeometry( geom );
 
     for ( QgsAttributeList::const_iterator i = mAttributesToFetch.begin();
           i != mAttributesToFetch.end();
           ++i )
     {
-	  QString &value = tokens[attributeColumns[*i]];
+      QString &value = tokens[attributeColumns[*i]];
       QVariant val;
       switch ( attributeFields[*i].type() )
       {
@@ -568,6 +569,7 @@ void QgsDelimitedTextProvider::select( QgsAttributeList fetchAttributes,
   mSelectionRectangle = rect;
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
+  mUseIntersect = useIntersect;
   if ( rect.isEmpty() )
   {
     mSelectionRectangle = mExtent;
@@ -644,7 +646,7 @@ bool QgsDelimitedTextProvider::boundsCheck( double x, double y )
   if ( mSelectionRectangle.isEmpty() || !mFetchGeom )
     return true;
 
-  return mSelectionRectangle.contains( QgsPoint(x,y) );
+  return mSelectionRectangle.contains( QgsPoint( x, y ) );
 }
 /**
  * Check to see if the geometry is within the selection rectangle
@@ -655,8 +657,8 @@ bool QgsDelimitedTextProvider::boundsCheck( QgsGeometry *geom )
   if ( mSelectionRectangle.isEmpty() || !mFetchGeom )
     return true;
 
-  return geom->boundingBox().intersects( mSelectionRectangle )
-	     && geom->intersects(mSelectionRectangle);;
+  return geom->boundingBox().intersects( mSelectionRectangle ) &&
+         ( !mUseIntersect || geom->intersects( mSelectionRectangle ) );
 }
 
 int QgsDelimitedTextProvider::capabilities() const

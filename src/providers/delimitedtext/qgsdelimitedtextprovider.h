@@ -188,20 +188,20 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QRegExp mDelimiterRegexp;
     QString mDelimiterType;
 
-	bool mHasWktField;
-	int mFieldCount;  // Note: this includes field count for wkt field
+    bool mHasWktField;
+    int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
     int mYFieldIndex;
-	int mWktFieldIndex;
+    int mWktFieldIndex;
 
-	// Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
-	// Z values and/or measures).  mWktZMRegexp is used to test for and
-	// remove the Z or M fields, and mWktCrdRegexp is used to remove the
-	// extra coordinate values.
+    // Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
+    // Z values and/or measures).  mWktZMRegexp is used to test for and
+    // remove the Z or M fields, and mWktCrdRegexp is used to remove the
+    // extra coordinate values.
 
-	bool mWktHasZM;
-	QRegExp mWktZMRegexp;
-	QRegExp mWktCrdRegexp;
+    bool mWktHasZM;
+    QRegExp mWktZMRegexp;
+    QRegExp mWktCrdRegexp;
 
     //! Layer extent
     QgsRectangle mExtent;
@@ -216,6 +216,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QTextStream *mStream;
 
     bool mValid;
+    bool mUseIntersect;
 
     int mGeomType;
 
