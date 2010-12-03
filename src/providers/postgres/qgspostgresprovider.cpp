@@ -2265,16 +2265,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     connectionRW->PQexecNR( "BEGIN" );
 
     // Prepare the INSERT statement
-    QString insert = QString( "INSERT INTO %1(" ).arg( mQuery );
-    QString values;
+    QString insert = QString( "INSERT INTO %1 (" ).arg( mQuery );
+    QString values = ") VALUES (";
     QString delim = ",";
+    int offset = 1;
 
     if ( !geometryColumn.isNull() )
     {
       insert += quotedIdentifier( geometryColumn );
-      values = QString( ") VALUES (GeomFromWKB($1%1,%2)" )
-               .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
-               .arg( srid );
+      values += QString( "GeomFromWKB($%1%2,%3)" )
+                .arg( offset )
+                .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
+                .arg( srid );
+      offset += 1;
       delim = ",";
     }
     else
@@ -2282,16 +2285,12 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       delim = "";
     }
 
-    int offset;
     if ( primaryKeyType != "tid" && primaryKeyType != "oid" )
     {
       insert += delim + quotedIdentifier( primaryKey );
-      values += delim + "$2";
-      offset = 3;
-    }
-    else
-    {
-      offset = 2;
+      values += delim + QString( "$%1" ).arg( offset );
+      offset += 1;
+      delim = ",";
     }
 
     const QgsAttributeMap &attributevec = flist[0].attributeMap();
@@ -2393,11 +2392,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     {
       const QgsAttributeMap &attributevec = features->attributeMap();
 
-      QString geomParam;
-      appendGeomString( features->geometry(), geomParam );
-
       QStringList params;
-      params << geomParam;
+      if ( !geometryColumn.isNull() )
+      {
+        QString geomParam;
+        appendGeomString( features->geometry(), geomParam );
+
+        params << geomParam;
+      }
 
       if ( primaryKeyType != "tid" && primaryKeyType != "oid" )
       {
