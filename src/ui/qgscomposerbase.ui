@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1145</width>
+    <width>1333</width>
     <height>609</height>
    </rect>
   </property>
@@ -163,6 +163,8 @@
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionRefreshView"/>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
    <addaction name="separator"/>
    <addaction name="mActionAddNewMap"/>
    <addaction name="mActionAddImage"/>
@@ -479,11 +481,38 @@
     <string>Page Setup</string>
    </property>
   </action>
+  <action name="mActionUndo">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/mActionUndo.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Revert last change</string>
+   </property>
+  </action>
+  <action name="mActionRedo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Restore last change</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>mCompositionNameComboBox</tabstop>
   <tabstop>mOptionsTabWidget</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

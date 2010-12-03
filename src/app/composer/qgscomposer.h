@@ -203,6 +203,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Align selected composer items to bottom
     void on_mActionAlignBottom_triggered();
 
+    //!Undo last composer change
+    void on_mActionUndo_triggered();
+
+    //!Redo last composer change
+    void on_mActionRedo_triggered();
+
     //! Save window state
     void saveWindowState();
 

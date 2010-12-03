@@ -151,6 +151,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
   viewMenu->addAction( mActionZoomAll );
+  viewMenu->addAction( mActionUndo );
+  viewMenu->addAction( mActionRedo );
   viewMenu->addSeparator();
   viewMenu->addAction( mActionRefreshView );
 
@@ -198,7 +200,17 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   mView = new QgsComposerView( mViewFrame );
   connectSlots();
 
+  //init undo/redo buttons
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
+  if ( mComposition->undoStack() )
+  {
+    connect( mComposition->undoStack(), SIGNAL( canUndoChanged( bool ) ), mActionUndo, SLOT( setEnabled( bool ) ) );
+    connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
+  }
+
+
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
 
@@ -257,6 +269,8 @@ void QgsComposer::setupTheme()
   mActionZoomIn->setIcon( QgisApp::getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( QgisApp::getThemeIcon( "/mActionZoomOut.png" ) );
   mActionRefreshView->setIcon( QgisApp::getThemeIcon( "/mActionDraw.png" ) );
+  mActionUndo->setIcon( QgisApp::getThemeIcon( "/mActionUndo.png" ) );
+  mActionRedo->setIcon( QgisApp::getThemeIcon( "/mActionRedo.png" ) );
   mActionAddImage->setIcon( QgisApp::getThemeIcon( "/mActionAddImage.png" ) );
   mActionAddNewMap->setIcon( QgisApp::getThemeIcon( "/mActionAddMap.png" ) );
   mActionAddNewLabel->setIcon( QgisApp::getThemeIcon( "/mActionLabel.png" ) );
@@ -1059,6 +1073,22 @@ void QgsComposer::on_mActionAlignBottom_triggered()
   }
 }
 
+void QgsComposer::on_mActionUndo_triggered()
+{
+  if ( mComposition && mComposition->undoStack() )
+  {
+    mComposition->undoStack()->undo();
+  }
+}
+
+void QgsComposer::on_mActionRedo_triggered()
+{
+  if ( mComposition && mComposition->undoStack() )
+  {
+    mComposition->undoStack()->redo();
+  }
+}
+
 void QgsComposer::moveEvent( QMoveEvent *e ) { saveWindowState(); }
 
 void QgsComposer::resizeEvent( QResizeEvent *e )
@@ -1332,8 +1362,18 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   if ( mUndoView )
   {
-    mUndoView->setStack( mComposition->undoStack() );
+    //init undo/redo buttons
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
+    if ( mComposition->undoStack() )
+    {
+      mUndoView->setStack( mComposition->undoStack() );
+      connect( mComposition->undoStack(), SIGNAL( canUndoChanged( bool ) ), mActionUndo, SLOT( setEnabled( bool ) ) );
+      connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
+    }
   }
+
+
 
   setSelectionTool();
 }

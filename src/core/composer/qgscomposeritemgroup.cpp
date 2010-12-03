@@ -31,7 +31,11 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
   QSet<QgsComposerItem*>::iterator itemIt = mItems.begin();
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
-    emit childItemDeleted( *itemIt );
+    if ( *itemIt )
+    {
+      mComposition->removeItem( *itemIt );
+      ( *itemIt )->setFlag( QGraphicsItem::ItemIsSelectable, true );
+    }
   }
 }
 
@@ -161,14 +165,4 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
-}
-
-bool QgsComposerItemGroup::writeXML( QDomElement& elem, QDomDocument & doc ) const
-{
-  return true; //soon...
-}
-
-bool QgsComposerItemGroup::readXML( const QDomElement& itemElem, const QDomDocument& doc )
-{
-  return false; //soon...
 }

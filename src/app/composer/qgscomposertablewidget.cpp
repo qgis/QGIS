@@ -146,10 +146,16 @@ void QgsComposerTableWidget::on_mComposerMapComboBox_activated( int index )
   const QgsComposition* tableComposition = mComposerTable->composition();
   if ( tableComposition )
   {
-    mComposerTable->beginCommand( tr( "Table map changed" ) );
+    if ( sender() ) //only create command if called from GUI
+    {
+      mComposerTable->beginCommand( tr( "Table map changed" ) );
+    }
     mComposerTable->setComposerMap( tableComposition->getComposerMapById( mapId ) );
     mComposerTable->update();
-    mComposerTable->endCommand();
+    if ( sender() )
+    {
+      mComposerTable->endCommand();
+    }
   }
 }
 
