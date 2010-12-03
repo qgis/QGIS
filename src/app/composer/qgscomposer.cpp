@@ -151,12 +151,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
   viewMenu->addAction( mActionZoomAll );
-  viewMenu->addAction( mActionUndo );
-  viewMenu->addAction( mActionRedo );
   viewMenu->addSeparator();
   viewMenu->addAction( mActionRefreshView );
 
   QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
+  layoutMenu->addAction( mActionUndo );
+  layoutMenu->addAction( mActionRedo );
+  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionAddNewMap );
   layoutMenu->addAction( mActionAddNewLabel );
   layoutMenu->addAction( mActionAddNewScalebar );

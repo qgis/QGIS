@@ -163,9 +163,9 @@
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionRefreshView"/>
+   <addaction name="separator"/>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
-   <addaction name="separator"/>
    <addaction name="mActionAddNewMap"/>
    <addaction name="mActionAddImage"/>
    <addaction name="mActionAddNewLabel"/>
@@ -493,6 +493,9 @@
    <property name="toolTip">
     <string>Revert last change</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
   </action>
   <action name="mActionRedo">
    <property name="icon">
@@ -504,6 +507,9 @@
    </property>
    <property name="toolTip">
     <string>Restore last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>
