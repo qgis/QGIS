@@ -394,9 +394,30 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
       {
         composition()->removeItem( *itemIt );
-        emit itemRemoved( *itemIt );
+        QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
+        if ( itemGroup && composition() )
+        {
+          //add add/remove item command for every item in the group
+          QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
 
-        pushAddRemoveCommand( *itemIt, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+          QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+          QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+          for ( ; it != groupedItems.end(); ++it )
+          {
+            QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, composition(), "", parentCommand );
+            connectAddRemoveCommandSignals( subcommand );
+            emit itemRemoved( *it );
+          }
+
+          composition()->undoStack()->push( parentCommand );
+          delete itemGroup;
+          emit itemRemoved( itemGroup );
+        }
+        else
+        {
+          emit itemRemoved( *itemIt );
+          pushAddRemoveCommand( *itemIt, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+        }
       }
     }
   }
@@ -591,8 +612,6 @@ void QgsComposerView::groupItems()
     return; //not enough items for a group
   }
   QgsComposerItemGroup* itemGroup = new QgsComposerItemGroup( composition() );
-  //connect signal/slot to let item group tell if child items get removed
-  connect( itemGroup, SIGNAL( childItemDeleted( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
 
   QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
   for ( ; itemIter != selectionList.end(); ++itemIter )

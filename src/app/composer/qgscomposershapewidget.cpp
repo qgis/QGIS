@@ -39,7 +39,7 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
 
   blockAllSignals( false );
 
-  connect( mShapeComboBox, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+  connect( mShapeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGuiElementValues() ) );
 }
 
 QgsComposerShapeWidget::~QgsComposerShapeWidget()
