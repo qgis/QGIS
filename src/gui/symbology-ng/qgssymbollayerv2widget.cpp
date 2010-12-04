@@ -155,7 +155,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( QWidget*
   QSize size = lstNames->iconSize();
   QStringList names;
   names << "circle" << "rectangle" << "diamond" << "pentagon" << "cross" << "cross2" << "triangle"
-  << "equilateral_triangle" << "star" << "regular_star" << "arrow" << "line";
+  << "equilateral_triangle" << "star" << "regular_star" << "arrow" << "line" << "arrowhead" << "filled_arrowhead";
   double markerSize = DEFAULT_POINT_SIZE * 2;
   for ( int i = 0; i < names.count(); ++i )
   {

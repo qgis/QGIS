@@ -281,6 +281,11 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
     << QPointF( -0.5,  -0.5 );
     return true;
   }
+  else if ( mName == "filled_arrowhead" )
+  {
+    mPolygon << QPointF( 0, 0 ) << QPointF( -1, 1 ) << QPointF( -1, -1 );
+    return true;
+  }
 
   return false;
 }
@@ -314,6 +319,14 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath()
   {
     mPath.moveTo( 0, -1 );
     mPath.lineTo( 0, 1 ); // vertical line
+    return true;
+  }
+  else if ( mName == "arrowhead" )
+  {
+    mPath.moveTo( 0, 0 );
+    mPath.lineTo( -1, -1 );
+    mPath.moveTo( 0, 0 );
+    mPath.lineTo( -1, 1 );
     return true;
   }
 
