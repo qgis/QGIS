@@ -90,7 +90,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
       Interval,
       Vertex,
       LastVertex,
-      FirstVertex
+      FirstVertex,
+      CentralPoint
     };
 
     // static stuff
@@ -137,6 +138,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
     void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
     bool mRotateMarker;
     double mInterval;

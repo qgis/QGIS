@@ -245,6 +245,8 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
       x->setPlacement( LastVertex );
     else if ( props["placement"] == "firstvertex" )
       x->setPlacement( FirstVertex );
+    else if ( props["placement"] == "centralpoint" )
+      x->setPlacement( CentralPoint );
     else
       x->setPlacement( Interval );
   return x;
@@ -288,6 +290,8 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   {
     if ( mPlacement == Interval )
       renderPolylineInterval( points, context );
+    else if ( mPlacement == CentralPoint )
+      renderPolylineCentral( points, context );
     else
       renderPolylineVertex( points, context );
   }
@@ -296,6 +300,8 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     QPolygonF points2 = ::offsetLine( points, context.outputLineWidth( mOffset ) );
     if ( mPlacement == Interval )
       renderPolylineInterval( points2, context );
+    else if ( mPlacement == CentralPoint )
+      renderPolylineCentral( points2, context );
     else
       renderPolylineVertex( points2, context );
   }
@@ -429,6 +435,52 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   mMarker->setAngle( origAngle );
 }
 
+void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+{
+  // calc length
+  qreal length = 0;
+  QPolygonF::const_iterator it = points.constBegin();
+  QPointF last = *it;
+  for ( ++it; it != points.constEnd(); ++it )
+  {
+    length += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                   ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+    last = *it;
+  }
+
+  // find the segment where the central point lies
+  it = points.constBegin();
+  last = *it;
+  qreal last_at = 0, next_at;
+  QPointF next;
+  int segment = 0;
+  for ( ++it; it != points.constEnd(); ++it )
+  {
+    next = *it;
+    next_at += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                    ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+    if ( next_at >= length / 2 )
+      break; // we have reached the center
+    last = *it;
+    last_at = next_at;
+    segment++;
+  }
+
+  // find out the central point on segment
+  MyLine l( last, next ); // for line angle
+  qreal k = ( length * 0.5 - last_at ) / ( next_at - last_at );
+  QPointF pt = last + ( next - last ) * k;
+
+  // draw the marker
+  double origAngle = mMarker->angle();
+  if ( mRotateMarker )
+    mMarker->setAngle( origAngle + l.angle() * 180 / M_PI );
+  mMarker->renderPoint( pt, context.renderContext(), -1, context.selected() );
+  if ( mRotateMarker )
+    mMarker->setAngle( origAngle );
+}
+
+
 QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
 {
   QgsStringMap map;
@@ -441,6 +493,8 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
     map["placement"] = "lastvertex";
   else if ( mPlacement == FirstVertex )
     map["placement"] = "firstvertex";
+  else if ( mPlacement == CentralPoint )
+    map["placement"] = "centralpoint";
   else
     map["placement"] = "interval";
   return map;

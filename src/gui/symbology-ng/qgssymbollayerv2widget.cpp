@@ -363,6 +363,7 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( QWidget* par
   connect( radVertex, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
   connect( radVertexLast, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
   connect( radVertexFirst, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
+  connect( radCentralPoint, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
 }
 
 void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -383,6 +384,8 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     radVertex->setChecked( true );
   else if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::LastVertex )
     radVertexLast->setChecked( true );
+  else if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::CentralPoint )
+    radCentralPoint->setChecked( true );
   else
     radVertexFirst->setChecked( true );
   updateMarker();
@@ -440,8 +443,10 @@ void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
     mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::Vertex );
   else if ( radVertexLast->isChecked() )
     mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
-  else
+  else if ( radVertexFirst->isChecked() )
     mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::FirstVertex );
+  else
+    mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::CentralPoint );
 
   emit changed();
 }
