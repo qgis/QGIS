@@ -361,6 +361,8 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( QWidget* par
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( radInterval, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
   connect( radVertex, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
+  connect( radVertexLast, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
+  connect( radVertexFirst, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
 }
 
 void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -377,8 +379,12 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffset->setValue( mLayer->offset() );
   if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::Interval )
     radInterval->setChecked( true );
-  else
+  else if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::Vertex )
     radVertex->setChecked( true );
+  else if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::LastVertex )
+    radVertexLast->setChecked( true );
+  else
+    radVertexFirst->setChecked( true );
   updateMarker();
   setPlacement(); // update gui
 }
@@ -426,8 +432,17 @@ void QgsMarkerLineSymbolLayerV2Widget::updateMarker()
 void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
 {
   bool interval = radInterval->isChecked();
-  mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayerV2::Interval : QgsMarkerLineSymbolLayerV2::Vertex );
   spinInterval->setEnabled( interval );
+  //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayerV2::Interval : QgsMarkerLineSymbolLayerV2::Vertex );
+  if ( radInterval->isChecked() )
+    mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::Interval );
+  else if ( radVertex->isChecked() )
+    mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::Vertex );
+  else if ( radVertexLast->isChecked() )
+    mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
+  else
+    mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::FirstVertex );
+
   emit changed();
 }
 

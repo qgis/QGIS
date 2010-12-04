@@ -88,7 +88,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     enum Placement
     {
       Interval,
-      Vertex
+      Vertex,
+      LastVertex,
+      FirstVertex
     };
 
     // static stuff
