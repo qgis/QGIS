@@ -239,7 +239,14 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "offset" ) )
     x->setOffset( props["offset"].toDouble() );
   if ( props.contains( "placement" ) )
-    x->setPlacement( props["placement"] == "vertex" ? Vertex : Interval );
+    if ( props["placement"] == "vertex" )
+      x->setPlacement( Vertex );
+    else if ( props["placement"] == "lastvertex" )
+      x->setPlacement( LastVertex );
+    else if ( props["placement"] == "firstvertex" )
+      x->setPlacement( FirstVertex );
+    else
+      x->setPlacement( Interval );
   return x;
 }
 
@@ -279,18 +286,18 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 {
   if ( mOffset == 0 )
   {
-    if ( mPlacement == Vertex )
-      renderPolylineVertex( points, context );
-    else
+    if ( mPlacement == Interval )
       renderPolylineInterval( points, context );
+    else
+      renderPolylineVertex( points, context );
   }
   else
   {
     QPolygonF points2 = ::offsetLine( points, context.outputLineWidth( mOffset ) );
-    if ( mPlacement == Vertex )
-      renderPolylineVertex( points2, context );
-    else
+    if ( mPlacement == Interval )
       renderPolylineInterval( points2, context );
+    else
+      renderPolylineVertex( points2, context );
   }
 }
 
@@ -360,8 +367,25 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
   double origAngle = mMarker->angle();
   double angle;
+  int i, maxCount;
 
-  for ( int i = 0; i < points.count(); ++i )
+  if ( mPlacement == FirstVertex )
+  {
+    i = 0;
+    maxCount = 1;
+  }
+  else if ( mPlacement == LastVertex )
+  {
+    i = points.count() - 1;
+    maxCount = points.count();
+  }
+  else
+  {
+    i = 0;
+    maxCount = points.count();
+  }
+
+  for ( ; i < maxCount; ++i )
   {
     const QPointF& pt = points[i];
 
@@ -395,7 +419,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
         double unitX = cos( a1 ) + cos( a2 ), unitY = sin( a1 ) + sin( a2 );
         angle = atan2( unitY, unitX );
       }
-      mMarker->setAngle( angle * 180 / M_PI );
+      mMarker->setAngle( origAngle + angle * 180 / M_PI );
     }
 
     mMarker->renderPoint( points.at( i ), rc, -1, context.selected() );
@@ -411,7 +435,14 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   map["rotate"] = ( mRotateMarker ? "1" : "0" );
   map["interval"] = QString::number( mInterval );
   map["offset"] = QString::number( mOffset );
-  map["placement"] = ( mPlacement == Vertex ? "vertex" : "interval" );
+  if ( mPlacement == Vertex )
+    map["placement"] = "vertex";
+  else if ( mPlacement == LastVertex )
+    map["placement"] = "lastvertex";
+  else if ( mPlacement == FirstVertex )
+    map["placement"] = "firstvertex";
+  else
+    map["placement"] = "interval";
   return map;
 }
 
