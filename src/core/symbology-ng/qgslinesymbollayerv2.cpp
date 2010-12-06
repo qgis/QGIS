@@ -237,8 +237,12 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
 
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( rotate, interval );
   if ( props.contains( "offset" ) )
+  {
     x->setOffset( props["offset"].toDouble() );
+  }
+
   if ( props.contains( "placement" ) )
+  {
     if ( props["placement"] == "vertex" )
       x->setPlacement( Vertex );
     else if ( props["placement"] == "lastvertex" )
@@ -249,6 +253,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
       x->setPlacement( CentralPoint );
     else
       x->setPlacement( Interval );
+  }
   return x;
 }
 
