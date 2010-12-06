@@ -565,6 +565,9 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 public:
   virtual void renderPolyline(const QPolygonF& points, QgsSymbolV2RenderContext& context) = 0;
 
+  //! @note added in v1.7
+  virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
   void setWidth(double width);
   double width() const;
   	

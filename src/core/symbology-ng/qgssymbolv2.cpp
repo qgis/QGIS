@@ -28,7 +28,7 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
     {
       mLayers.removeAt( i-- );
     }
-    else if ( mLayers[i]->type() != mType )
+    else if ( !isSymbolLayerCompatible( mLayers[i]->type() ) )
     {
       delete mLayers[i];
       mLayers.removeAt( i-- );
@@ -69,12 +69,21 @@ QgsSymbolLayerV2* QgsSymbolV2::symbolLayer( int layer )
 }
 
 
+bool QgsSymbolV2::isSymbolLayerCompatible( SymbolType t )
+{
+  // fill symbol can contain also line symbol layers for drawing of outlines
+  if ( mType == Fill && t == Line )
+    return true;
+
+  return mType == t;
+}
+
 
 bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index
     return false;
-  if ( layer == NULL || layer->type() != mType )
+  if ( layer == NULL || !isSymbolLayerCompatible( layer->type() ) )
     return false;
 
   mLayers.insert( index, layer );
@@ -84,7 +93,7 @@ bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 bool QgsSymbolV2::appendSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if ( layer == NULL || layer->type() != mType )
+  if ( layer == NULL || !isSymbolLayerCompatible( layer->type() ) )
     return false;
 
   mLayers.append( layer );
@@ -116,7 +125,7 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 {
   if ( index < 0 || index >= mLayers.count() )
     return false;
-  if ( layer == NULL || layer->type() != mType )
+  if ( layer == NULL || !isSymbolLayerCompatible( layer->type() ) )
     return false;
 
   delete mLayers[index]; // first delete the original layer
@@ -165,7 +174,20 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
   QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, false, mRenderHints );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    ( *it )->drawPreviewIcon( symbolContext, size );
+    if ( mType == Fill && ( *it )->type() == Line )
+    {
+      // line symbol layer would normally draw just a line
+      // so we override this case to force it to draw a polygon outline
+      QgsLineSymbolLayerV2* lsl = ( QgsLineSymbolLayerV2* ) * it;
+
+      // from QgsFillSymbolLayerV2::drawPreviewIcon()
+      QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
+      lsl->startRender( symbolContext );
+      lsl->renderPolygonOutline( poly, NULL, symbolContext );
+      lsl->stopRender( symbolContext );
+    }
+    else
+      ( *it )->drawPreviewIcon( symbolContext, size );
   }
 }
 
@@ -456,14 +478,29 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
-      (( QgsFillSymbolLayerV2* ) mLayers[layer] )->renderPolygon( points, rings, symbolContext );
+    {
+      QgsSymbolV2::SymbolType layertype = mLayers.at( layer )->type();
+      if ( layertype == QgsSymbolV2::Fill )
+        (( QgsFillSymbolLayerV2* ) mLayers[layer] )->renderPolygon( points, rings, symbolContext );
+      else if ( layertype == QgsSymbolV2::Line )
+        (( QgsLineSymbolLayerV2* ) mLayers[layer] )->renderPolygonOutline( points, rings, symbolContext );
+    }
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    QgsFillSymbolLayerV2* layer = ( QgsFillSymbolLayerV2* ) * it;
-    layer->renderPolygon( points, rings, symbolContext );
+    QgsSymbolV2::SymbolType layertype = ( *it )->type();
+    if ( layertype == QgsSymbolV2::Fill )
+    {
+      QgsFillSymbolLayerV2* layer = ( QgsFillSymbolLayerV2* ) * it;
+      layer->renderPolygon( points, rings, symbolContext );
+    }
+    else if ( layertype == QgsSymbolV2::Line )
+    {
+      QgsLineSymbolLayerV2* layer = ( QgsLineSymbolLayerV2* ) * it;
+      layer->renderPolygonOutline( points, rings, symbolContext );
+    }
   }
 }
 
