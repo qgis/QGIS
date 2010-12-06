@@ -20,7 +20,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.progressBar.setValue( 0 )
     self.partProgressBar.setValue( 0 )
     self.partProgressBar.setVisible( False )
-    
+
   def keyPressEvent( self, e ):
     '''
     Reimplemented key press event:
@@ -55,7 +55,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
       # add all fields in combobox because now we can work with text fields too
       for i in changedField:
         self.cmbField.addItem( unicode( changedField[i].name() ) )
-        
+
   def accept( self ):
     if self.inShape.currentText() == "":
       QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input vector layer" ) )
@@ -63,7 +63,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
       QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input field" ) )
     else:
       self.visual( self.inShape.currentText(), self.cmbField.currentText(), self.useSelected.checkState() )
-  
+
   def manageGui( self ):
     if self.myFunction == 2: # List unique values
       self.setWindowTitle( self.tr( "List unique values" ) )
@@ -89,7 +89,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     if self.myFunction == 4:
       myList = ftools_utils.getLayerNames( [ QGis.Point ] )
     else:
-      myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )    
+      myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
     self.inShape.addItems( myList )
     return
 
@@ -121,7 +121,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.testThread.stop()
     QApplication.restoreOverrideCursor()
     self.buttonOk.setEnabled( True )
-    
+
   def runFinishedFromThread( self, output ):
     self.testThread.stop()
     QApplication.restoreOverrideCursor()
@@ -147,15 +147,15 @@ class VisualDialog( QDialog, Ui_Dialog ):
       self.tblUnique.horizontalHeader().show()
     self.tblUnique.horizontalHeader().setResizeMode( 0, QHeaderView.Stretch )
     self.tblUnique.resizeRowsToContents()
-    
+
     self.lstCount.insert( unicode( output[ 1 ] ) )
     self.cancel_close.setText( "Close" )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     return True
-    
+
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
-        
+
   def runRangeFromThread( self, range_vals ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
 
@@ -163,12 +163,12 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.partProgressBar.setValue( status )
     if status >= self.part_max:
       self.partProgressBar.setVisible( False )
-        
+
   def runPartRangeFromThread( self, range_vals ):
     self.part_max = range_vals[ 1 ]
     self.partProgressBar.setVisible( True )
     self.partProgressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
-    
+
 class visualThread( QThread ):
   def __init__( self, parentThread, parentObject, function, vlayer, myField, mySelection ):
     QThread.__init__( self, parentThread )
@@ -359,7 +359,7 @@ class visualThread( QThread ):
             if ( nVal % 2 ) == 0:
                 medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
             else:
-                medianVal = lstVal[ int( ( nVal + 1 ) / 2 ) ]
+                medianVal = lstVal[ int( ( nVal + 1 ) / 2 - 1 ) ]
         lstStats = []
         lstStats.append( self.tr( "Mean:" ) + unicode( meanVal ) )
         lstStats.append( self.tr( "StdDev:" ) + unicode( stdVal ) )
