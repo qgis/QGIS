@@ -592,13 +592,14 @@ int main( int argc, char *argv[] )
   {
     myApp.installTranslator( &qgistor );
   }
+
   /* Translation file for Qt.
    * The strings from the QMenuBar context section are used by Qt/Mac to shift
    * the About, Preferences and Quit items to the Mac Application menu.
    * These items must be translated identically in both qt_ and qgis_ files.
    */
   QTranslator qttor( 0 );
-  if ( qttor.load( QString( "qt_" ) + myTranslationCode, i18nPath ) )
+  if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
   {
     myApp.installTranslator( &qttor );
   }
