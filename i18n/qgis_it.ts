@@ -364,7 +364,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="128"/>
         <source>Encoding</source>
-        <translation type="unfinished">Codifica</translation>
+        <translation>Codifica</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="172"/>
@@ -500,7 +500,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa solo le geometrie selezionate</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
@@ -516,7 +516,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input files</source>
-        <translation type="unfinished"></translation>
+        <translation>File di input</translation>
     </message>
     <message>
         <source>No output file</source>
@@ -686,7 +686,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa sistema di riferimento spaziale</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
@@ -1430,7 +1430,7 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="17"/>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Semplifica geometrie</translation>
+        <translation>Semplifica geometrie</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="23"/>
@@ -1445,12 +1445,12 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="76"/>
         <source>Save to new file</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva su nuovo file</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="105"/>
         <source>Add result to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi il risultato all&apos;area di mappa</translation>
     </message>
 </context>
 <context>
@@ -2245,12 +2245,12 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="102"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="167"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <source>or change the extent coordinates:</source>
@@ -3224,12 +3224,11 @@ Scegli un altro campo...</translation>
 %2
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Creato uno shapefile di output:
+        <translation>Creato uno shapefile di output:
 %1
-
-Vuoi aggiungerlo alla legenda? {1
 %2
-?}</translation>
+
+Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
@@ -19532,7 +19531,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/qgsmaptoolchangelabelproperties.cpp" line="61"/>
         <source>Label properties changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà dell&apos;etichetta modificate</translation>
     </message>
 </context>
 <context>
@@ -19689,7 +19688,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="128"/>
         <source>Label moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichetta spostata</translation>
     </message>
 </context>
 <context>
@@ -19763,7 +19762,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="144"/>
         <source>Label rotated</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichetta ruotata</translation>
     </message>
 </context>
 <context>
@@ -21157,7 +21156,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="70"/>
         <source>Show only editable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza solo gli elementi modificabili</translation>
     </message>
 </context>
 <context>
@@ -21475,7 +21474,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="408"/>
         <source>Selection color</source>
-        <translation type="unfinished">Colore della selezione</translation>
+        <translation>Colore della selezione</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="864"/>
@@ -23187,7 +23186,7 @@ Riavvia Quantum GIS per poterlo utilizzare.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="243"/>
         <source>Upgrade all</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna tutti</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="275"/>
@@ -24198,7 +24197,7 @@ Cercare i layer mancanti?</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="372"/>
         <source>Selection color</source>
-        <translation type="unfinished">Colore della selezione</translation>
+        <translation>Colore della selezione</translation>
     </message>
 </context>
 <context>
@@ -27280,7 +27279,7 @@ L´errore era:
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="56"/>
         <source>Snapping Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni di snapping</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="153"/>
@@ -32592,7 +32591,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Vect&amp;or</source>
-        <translation type="unfinished"></translation>
+        <translation>Vett&amp;ore</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -32720,7 +32719,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Voronoi Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligoni di Voronoi</translation>
     </message>
     <message>
         <source>Extract nodes</source>
@@ -34129,7 +34128,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Import text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa file di testo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
@@ -34333,7 +34332,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Number of rows to be skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero di righe da saltare</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
@@ -34689,7 +34688,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
         <source>Separator (| , 	 etc.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Separatore (| , 	 ecc.)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
