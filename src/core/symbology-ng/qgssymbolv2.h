@@ -101,6 +101,11 @@ class CORE_EXPORT QgsSymbolV2
 
     QgsSymbolLayerV2List cloneLayers() const;
 
+    //! check whether a symbol layer type can be used within the symbol
+    //! (marker-marker, line-line, fill-fill/line)
+    //! @note added in 1.7
+    bool isSymbolLayerCompatible( SymbolType t );
+
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;
 
