@@ -32,12 +32,12 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     ~QgsGlobePluginDialog();
 
   private:
-    QString earthFile;
-    QString openFile();
     QSettings settings;
+    QString openFile();
     void updateStereoDialog();
     void restartGlobe();
     bool globeRunning();
+    bool validateNetworkResource( QString uri);
     void showMessageBox( QString text);
     //! Set osg/DisplaySettings
     void setStereoConfig();
@@ -52,6 +52,7 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
+    //STEREO
     void on_comboStereoMode_currentIndexChanged(QString value);
     void on_eyeSeparation_valueChanged(double value);
     void on_screenDistance_valueChanged(double value);
@@ -62,6 +63,11 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_splitStereoHorizontalEyeMapping_currentIndexChanged(int value);
     void on_splitStereoVerticalEyeMapping_currentIndexChanged(int value);
     void on_resetStereoDefaults_clicked();
+
+    //ELEVATION
+    void on_elevationCombo_currentIndexChanged(QString value);
+    void on_elevationBrowse_clicked();
+    void on_elevationTest_clicked();
 };
 
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H

@@ -31,6 +31,9 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 #include <osg/DisplaySettings>
 
@@ -51,12 +54,42 @@ QgsGlobePluginDialog::~QgsGlobePluginDialog()
 
 QString QgsGlobePluginDialog::openFile()
 {
+  //see http://www.gdal.org/formats_list.html
+  const char* filter = "GDAL files (*.dem *.tif *.tiff *.jpg *.jpeg *.asc);;DEM files (*.dem);;All files (*.*)";
   QString path = QFileDialog::getOpenFileName( this,
-                 tr( "Open earth file" ),
-                 earthFile,
-                 tr( "Earth files (*.earth)" ) );
+                  tr( "Open raster file" ),
+                  QDir::homePath (),
+                  tr( filter ) );
 
   return path;
+}
+
+bool QgsGlobePluginDialog::validateNetworkResource(QString uri)
+{
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+  QNetworkRequest request;
+  request.setUrl(QUrl(uri));
+  QNetworkReply *reply = manager->get(request);
+
+  //wait for response syncronously
+  QEventLoop eLoop;
+  connect( manager, SIGNAL( finished( QNetworkReply * ) ),
+           &eLoop, SLOT( quit() ) );
+  eLoop.exec(QEventLoop::ExcludeUserInputEvents);
+
+  if (QNetworkReply::HostNotFoundError != reply->error())
+  //FIXME:should be the following line but reply->error() always give "unknown error"
+  //if (QNetworkReply::NoError == reply->error())
+  {
+    QByteArray data = reply->readAll();
+    QString req(data);
+    return true;
+  }
+  else
+  {
+    showMessageBox( tr("Invalid URL: ") + reply->errorString() );
+    return false;
+  }
 }
 
 void QgsGlobePluginDialog::showMessageBox( QString text )
@@ -81,89 +114,6 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
 {
   setStereoConfig();
   saveStereoConfig();
-  /*
-   *
-  // Validate input settings
-  QString srcUrl( inputSrcDataset->text() );
-  QString srcLayer( comboSrcLayer->currentText() );
-
-  if ( srcUrl.isEmpty() )
-  {
-    QMessageBox::warning( this,
-                          tr( "OGR Layer Converter" ),
-                          tr( "Input OGR dataset is missing!" ) );
-    return;
-  }
-
-  if ( srcLayer.isEmpty() )
-  {
-    QMessageBox::warning( this,
-                          tr( "OGR Layer Converter" ),
-                          tr( "Input OGR layer name is missing!" ) );
-    return;
-  }
-
-  // Validate output settings
-  QString dstFormat( comboDstFormats->currentText() );
-  QString dstUrl( inputDstDataset->text() );
-  QString dstLayer( inputDstLayer->text() );
-  if ( dstLayer.isEmpty() )
-    dstLayer = srcLayer;
-
-  if ( dstFormat.isEmpty() )
-  {
-    QMessageBox::warning( this,
-                          tr( "OGR Layer Converter" ),
-                          tr( "Target OGR format not selected!" ) );
-    return;
-  }
-
-  if ( dstUrl.isEmpty() )
-  {
-    QMessageBox::warning( this,
-                          tr( "OGR Layer Converter" ),
-                          tr( "Output OGR dataset is missing!" ) );
-    return;
-  }
-
-  if ( dstLayer.isEmpty() )
-  {
-    QMessageBox::warning( this,
-                          tr( "OGR Layer Converter" ),
-                          tr( "Output OGR layer name is missing!" ) );
-    return;
-  }
-
-  // TODO: SRS transformation support
-  //QString srcSrs("EPSG:");
-  //QString dstSrs("EPSG:");
-  //srcSrs += inputSrcSrs->text();
-  //dstSrs += inputDstSrs->text();
-
-  // Execute layer translation
-  bool success = false;
-
-  // TODO: Use try-catch to display more meaningful error messages from Translator
-  Translator worker( srcUrl, dstUrl, dstFormat );
-  worker.setSourceLayer( srcLayer );
-  worker.setTargetLayer( dstLayer );
-  success = worker.translate();
-
-  if ( success )
-  {
-    QMessageBox::information( this,
-                              tr( "OGR Layer Converter" ),
-                              tr( "Successfully translated layer '%1'" ).arg( srcLayer ) );
-  }
-  else
-  {
-    QMessageBox::information( this,
-                              tr( "OGR Layer Converter" ),
-                              tr( "Failed to translate layer '%1'" ).arg( srcLayer ) );
-  }
-
-  // Close dialog box
-  */
 
   if ( globeRunning() )
   {
@@ -177,6 +127,29 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
   loadStereoConfig();
   setStereoConfig();
   reject();
+}
+
+//ELEVATION
+void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged(QString type)
+{
+  if("Raster" == type)
+  {
+    elevationActions->setCurrentIndex(0);
+  }
+  else
+  {
+    elevationActions->setCurrentIndex(1);
+  }
+}
+
+void QgsGlobePluginDialog::on_elevationBrowse_clicked()
+{
+  elevationPath->setText( openFile() );
+}
+
+void QgsGlobePluginDialog::on_elevationTest_clicked()
+{
+  validateNetworkResource( elevationPath->text() );
 }
 
 void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()

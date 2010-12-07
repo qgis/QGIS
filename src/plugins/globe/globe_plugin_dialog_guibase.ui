@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>547</width>
-    <height>433</height>
+    <width>593</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,137 +30,173 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="elevation">
       <attribute name="title">
        <string>Elevation</string>
       </attribute>
-      <widget class="QTableWidget" name="tableWidget">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>140</y>
-         <width>461</width>
-         <height>131</height>
-        </rect>
-       </property>
-       <property name="rowCount">
-        <number>1</number>
-       </property>
-       <property name="columnCount">
-        <number>2</number>
-       </property>
-       <attribute name="horizontalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <row/>
-       <column>
-        <property name="text">
-         <string>Type</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Address</string>
-        </property>
-       </column>
-       <item row="0" column="0">
-        <property name="text">
-         <string>Worldwind</string>
-        </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Elevation Layer</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QComboBox" name="elevationCombo">
+            <item>
+             <property name="text">
+              <string>Raster</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>TMS</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Worldwind</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>URL/File</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QPushButton" name="elevatonAdd">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="2">
+           <widget class="QPushButton" name="elevationRemove">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="2">
+           <widget class="QTableWidget" name="elevationDatasets">
+            <property name="rowCount">
+             <number>1</number>
+            </property>
+            <property name="columnCount">
+             <number>2</number>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <row/>
+            <column>
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Address</string>
+             </property>
+            </column>
+            <item row="0" column="0">
+             <property name="text">
+              <string>Worldwind</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="elevationPath">
+            <property name="text">
+             <string>http://s0.tileservice.worldwindcentral.com/getTile?</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QStackedWidget" name="elevationActions">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="elevationIsLocal">
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="0" column="0">
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="elevationBrowse">
+                <property name="text">
+                 <string>Browse</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="elevationIsRemote">
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="1">
+               <widget class="QPushButton" name="elevationTest">
+                <property name="text">
+                 <string>Test</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
-      </widget>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>461</width>
-         <height>101</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Elevation Layer (NOT implemented yet)</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>Type</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="comboBox">
-          <item>
-           <property name="text">
-            <string>TMS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Raster</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Worldwind</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>URL/File</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QPushButton" name="pushButton">
-       <property name="geometry">
-        <rect>
-         <x>130</x>
-         <y>100</y>
-         <width>92</width>
-         <height>24</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Add</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="geometry">
-        <rect>
-         <x>240</x>
-         <y>100</y>
-         <width>92</width>
-         <height>24</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Remove</string>
-       </property>
-      </widget>
+      </layout>
      </widget>
      <widget class="QWidget" name="stereo">
       <attribute name="title">
@@ -393,21 +429,25 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>buttonBox</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>comboBox</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>tableWidget</tabstop>
+  <tabstop>elevationCombo</tabstop>
+  <tabstop>elevationPath</tabstop>
+  <tabstop>elevationBrowse</tabstop>
+  <tabstop>elevatonAdd</tabstop>
+  <tabstop>elevationRemove</tabstop>
+  <tabstop>elevationDatasets</tabstop>
   <tabstop>comboStereoMode</tabstop>
   <tabstop>eyeSeparation</tabstop>
   <tabstop>screenDistance</tabstop>
   <tabstop>screenWidth</tabstop>
   <tabstop>screenHeight</tabstop>
   <tabstop>splitStereoHorizontalSeparation</tabstop>
+  <tabstop>splitStereoHorizontalEyeMapping</tabstop>
   <tabstop>splitStereoVerticalSeparation</tabstop>
   <tabstop>splitStereoVerticalEyeMapping</tabstop>
+  <tabstop>resetStereoDefaults</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>elevationTest</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -418,8 +458,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>433</x>
-     <y>423</y>
+     <x>442</x>
+     <y>460</y>
     </hint>
     <hint type="destinationlabel">
      <x>481</x>
@@ -434,8 +474,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>374</x>
-     <y>423</y>
+     <x>383</x>
+     <y>460</y>
     </hint>
     <hint type="destinationlabel">
      <x>281</x>
