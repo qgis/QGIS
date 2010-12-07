@@ -1678,7 +1678,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     mLayerParents[ layerProperty.orderId ] = parentProperty->orderId;
   }
 
-  if ( layerProperty.layer.empty() )
+  if ( !layerProperty.name.isEmpty() )
   {
     // We have all the information we need to properly evaluate a layer definition
     // TODO: Save this somewhere
@@ -1721,7 +1721,8 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
       layerProperty.style.clear();
     }
   }
-  else
+
+  if ( !layerProperty.layer.empty() )
   {
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
