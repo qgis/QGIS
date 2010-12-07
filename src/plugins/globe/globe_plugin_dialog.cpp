@@ -59,6 +59,13 @@ QString QgsGlobePluginDialog::openFile()
   return path;
 }
 
+void QgsGlobePluginDialog::showMessageBox( QString text )
+{
+  QMessageBox msgBox;
+  msgBox.setText(text);
+  msgBox.exec();
+}
+
 void QgsGlobePluginDialog::restartGlobe()
 {
   //showMessageBox("TODO: restart globe");
@@ -68,52 +75,6 @@ bool QgsGlobePluginDialog::globeRunning()
 {
   //TODO: method that tells if the globe plugin is running
   return true;
-}
-
-void QgsGlobePluginDialog::updateStereoDialog()
-{
-  QString stereoMode = comboStereoMode->currentText() ;
-  screenDistance->setEnabled( true );
-  screenHeight->setEnabled( true );
-  screenWidth->setEnabled( true );
-  eyeSeparation->setEnabled( true );
-  splitStereoHorizontalSeparation->setEnabled( false );
-  splitStereoVerticalSeparation->setEnabled( false );
-  splitStereoHorizontalEyeMapping->setEnabled( false );
-  splitStereoVerticalEyeMapping->setEnabled( false );
-
-  if("OFF" == stereoMode)
-  {
-    screenDistance->setEnabled( false );
-    screenHeight->setEnabled( false );
-    screenWidth->setEnabled( false );
-    eyeSeparation->setEnabled( false );
-  }
-  else if("ANAGLYPHIC" == stereoMode)
-  {
-    //nothing to do
-  }
-  else if("VERTICAL_SPLIT" == stereoMode)
-  {
-    splitStereoVerticalSeparation->setEnabled( true );
-    splitStereoVerticalEyeMapping->setEnabled( true );
-  }
-  else if("HORIZONTAL_SPLIT" == stereoMode)
-  {
-    splitStereoHorizontalSeparation->setEnabled( true );
-    splitStereoHorizontalEyeMapping->setEnabled( true );
-  }
-  else if("QUAD_BUFFER" == stereoMode)
-  {
-    //nothing to do
-  }
-  else
-  {
-    //should never get here
-    QMessageBox msgBox;
-    msgBox.setText("This stereo mode has not been implemented yet.");
-    msgBox.exec();
-  }
 }
 
 void QgsGlobePluginDialog::on_buttonBox_accepted()
@@ -218,7 +179,7 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsGlobePluginDialog::on_resetDefaults_clicked()
+void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()
 {
   //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
   comboStereoMode->setCurrentIndex( comboStereoMode->findText("OFF") );
@@ -278,13 +239,6 @@ void QgsGlobePluginDialog::on_splitStereoVerticalEyeMapping_currentIndexChanged(
 {
   osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
     (osg::DisplaySettings::SplitStereoVerticalEyeMapping) value );
-}
-
-void QgsGlobePluginDialog::showMessageBox( QString text )
-{
-  QMessageBox msgBox;
-    msgBox.setText(text);
-    msgBox.exec();
 }
 
 void QgsGlobePluginDialog::loadStereoConfig()
@@ -377,4 +331,50 @@ void QgsGlobePluginDialog::saveStereoConfig()
   settings.setValue( "/Plugin-Globe/splitStereoVerticalSeparation", splitStereoVerticalSeparation->value() );
   settings.setValue( "/Plugin-Globe/splitStereoHorizontalEyeMapping", splitStereoHorizontalEyeMapping->currentIndex() );
   settings.setValue( "/Plugin-Globe/splitStereoVerticalEyeMapping", splitStereoVerticalEyeMapping->currentIndex() );
+}
+
+void QgsGlobePluginDialog::updateStereoDialog()
+{
+  QString stereoMode = comboStereoMode->currentText() ;
+  screenDistance->setEnabled( true );
+  screenHeight->setEnabled( true );
+  screenWidth->setEnabled( true );
+  eyeSeparation->setEnabled( true );
+  splitStereoHorizontalSeparation->setEnabled( false );
+  splitStereoVerticalSeparation->setEnabled( false );
+  splitStereoHorizontalEyeMapping->setEnabled( false );
+  splitStereoVerticalEyeMapping->setEnabled( false );
+
+  if("OFF" == stereoMode)
+  {
+    screenDistance->setEnabled( false );
+    screenHeight->setEnabled( false );
+    screenWidth->setEnabled( false );
+    eyeSeparation->setEnabled( false );
+  }
+  else if("ANAGLYPHIC" == stereoMode)
+  {
+    //nothing to do
+  }
+  else if("VERTICAL_SPLIT" == stereoMode)
+  {
+    splitStereoVerticalSeparation->setEnabled( true );
+    splitStereoVerticalEyeMapping->setEnabled( true );
+  }
+  else if("HORIZONTAL_SPLIT" == stereoMode)
+  {
+    splitStereoHorizontalSeparation->setEnabled( true );
+    splitStereoHorizontalEyeMapping->setEnabled( true );
+  }
+  else if("QUAD_BUFFER" == stereoMode)
+  {
+    //nothing to do
+  }
+  else
+  {
+    //should never get here
+    QMessageBox msgBox;
+    msgBox.setText("This stereo mode has not been implemented yet.");
+    msgBox.exec();
+  }
 }

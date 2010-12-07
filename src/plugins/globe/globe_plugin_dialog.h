@@ -61,8 +61,7 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_splitStereoVerticalSeparation_valueChanged(int value);
     void on_splitStereoHorizontalEyeMapping_currentIndexChanged(int value);
     void on_splitStereoVerticalEyeMapping_currentIndexChanged(int value);
-
-    void on_resetDefaults_clicked();
+    void on_resetStereoDefaults_clicked();
 };
 
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H

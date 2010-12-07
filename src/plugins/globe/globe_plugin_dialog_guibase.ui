@@ -351,7 +351,7 @@
         </widget>
        </item>
        <item row="16" column="2">
-        <widget class="QPushButton" name="resetDefaults">
+        <widget class="QPushButton" name="resetStereoDefaults">
          <property name="text">
           <string>Reset to defaults</string>
          </property>
