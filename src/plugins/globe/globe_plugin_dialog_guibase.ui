@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>QgsGlobePluginDialogGuiBase</class>
  <widget class="QDialog" name="QgsGlobePluginDialogGuiBase">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -183,6 +186,9 @@
        </item>
        <item row="4" column="2">
         <widget class="QDoubleSpinBox" name="screenDistance">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -200,6 +206,9 @@
        </item>
        <item row="7" column="2">
         <widget class="QDoubleSpinBox" name="screenWidth">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -215,22 +224,25 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="0" colspan="2">
+       <item row="13" column="0" colspan="2">
         <widget class="QLabel" name="splitStereoVerticalSeparationLabel">
          <property name="text">
           <string>Split stereo vertical separation (px)</string>
          </property>
         </widget>
        </item>
-       <item row="14" column="0" colspan="2">
+       <item row="15" column="0" colspan="2">
         <widget class="QLabel" name="splitStereoVerticalEyeMappingLabel">
          <property name="text">
           <string>Split stereo vertical eye mapping</string>
          </property>
         </widget>
        </item>
-       <item row="14" column="2">
+       <item row="15" column="2">
         <widget class="QComboBox" name="splitStereoVerticalEyeMapping">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <item>
           <property name="text">
            <string>LEFT_EYE_TOP_VIEWPORT</string>
@@ -245,6 +257,9 @@
        </item>
        <item row="8" column="2">
         <widget class="QDoubleSpinBox" name="screenHeight">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -260,32 +275,22 @@
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="splitStereoHorizontalEyeMappingLabel">
-         <property name="text">
-          <string>Split stereo horizontal eye mapping</string>
+       <item row="13" column="2">
+        <widget class="QSpinBox" name="splitStereoVerticalSeparation">
+         <property name="accelerated">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="13" column="2">
-        <widget class="QComboBox" name="splitStereoHorizontalEyeMapping">
-         <item>
-          <property name="text">
-           <string>LEFT_EYE_LEFT_VIEWPORT</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LEFT_EYE_RIGHT_VIEWPORT</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="12" column="2">
-        <widget class="QSpinBox" name="splitStereoVerticalSeparation"/>
-       </item>
        <item row="10" column="2">
-        <widget class="QSpinBox" name="splitStereoHorizontalSeparation"/>
+        <widget class="QSpinBox" name="splitStereoHorizontalSeparation">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="0" column="2">
         <widget class="QComboBox" name="comboStereoMode">
@@ -325,6 +330,15 @@
        </item>
        <item row="2" column="2">
         <widget class="QDoubleSpinBox" name="eyeSeparation">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::UpDownArrows</enum>
+         </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -336,11 +350,32 @@
          </property>
         </widget>
        </item>
-       <item row="15" column="2">
+       <item row="16" column="2">
         <widget class="QPushButton" name="resetDefaults">
          <property name="text">
           <string>Reset to defaults</string>
          </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="splitStereoHorizontalEyeMappingLabel">
+         <property name="text">
+          <string>Split stereo horizontal eye mapping</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="2">
+        <widget class="QComboBox" name="splitStereoHorizontalEyeMapping">
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_LEFT_VIEWPORT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_RIGHT_VIEWPORT</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -372,7 +407,6 @@
   <tabstop>screenHeight</tabstop>
   <tabstop>splitStereoHorizontalSeparation</tabstop>
   <tabstop>splitStereoVerticalSeparation</tabstop>
-  <tabstop>splitStereoHorizontalEyeMapping</tabstop>
   <tabstop>splitStereoVerticalEyeMapping</tabstop>
  </tabstops>
  <resources/>
@@ -384,8 +418,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>424</x>
-     <y>322</y>
+     <x>433</x>
+     <y>423</y>
     </hint>
     <hint type="destinationlabel">
      <x>481</x>
@@ -400,8 +434,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>365</x>
-     <y>323</y>
+     <x>374</x>
+     <y>423</y>
     </hint>
     <hint type="destinationlabel">
      <x>281</x>

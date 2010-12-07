@@ -1,5 +1,5 @@
 /*
- * $Id$ 
+ * $Id$
  */
 /***************************************************************************
     globe_plugin_dialog.h - settings dialog for the globe plugin
@@ -25,16 +25,17 @@
 
 class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBase
 {
-  Q_OBJECT 
-  
+  Q_OBJECT
+
   public:
     QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
-    
+
   private:
     QString earthFile;
     QString openFile();
     QSettings settings;
+    void updateStereoDialog();
     void restartGlobe();
     bool globeRunning();
     void showMessageBox( QString text);
@@ -50,7 +51,7 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    
+
     void on_comboStereoMode_currentIndexChanged(QString value);
     void on_eyeSeparation_valueChanged(double value);
     void on_screenDistance_valueChanged(double value);
