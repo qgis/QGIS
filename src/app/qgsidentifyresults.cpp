@@ -774,7 +774,7 @@ void QgsIdentifyResults::attributeValueChanged( int fid, int idx, const QVariant
         if ( item->childCount() > 0 )
           continue;
 
-        if ( item->data( 0, Qt::UserRole ).toInt() == idx )
+        if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
           item->setData( 1, Qt::DisplayRole, val );
           return;
