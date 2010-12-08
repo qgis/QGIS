@@ -489,7 +489,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points,
   // find the segment where the central point lies
   it = points.constBegin();
   last = *it;
-  qreal last_at = 0, next_at;
+  qreal last_at = 0, next_at = 0;
   QPointF next;
   int segment = 0;
   for ( ++it; it != points.constEnd(); ++it )
