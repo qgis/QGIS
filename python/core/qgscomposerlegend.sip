@@ -33,6 +33,9 @@ class QgsComposerLegend: QgsComposerItem
     QFont titleFont() const;
     void setTitleFont( const QFont& f );
 
+    QFont groupFont() const;
+    void setGroupFont( const QFont& f );
+
     QFont layerFont() const;
     void setLayerFont( const QFont& f );
 
