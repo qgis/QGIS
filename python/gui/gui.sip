@@ -32,5 +32,6 @@
 %Include qgsrubberband.sip
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
+%Include qgssearchquerybuilder.sip
 
 %Include symbology-ng-gui.sip

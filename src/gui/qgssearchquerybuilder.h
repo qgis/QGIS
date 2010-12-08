@@ -33,7 +33,7 @@ class QgsVectorLayer;
  * \brief Query Builder for search strings
  *
  */
-class QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
+class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {
     Q_OBJECT
 
