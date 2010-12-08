@@ -38,7 +38,8 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void restartGlobe();
     bool globeRunning();
     bool validateResource( QString type, QString uri, QString& error);
-    void readElevationDataSourcesFromSettings();
+    void readElevationDatasourcesFromSettings();
+    void saveElevationDatasources();
     void showMessageBox( QString text);
     //! Set osg/DisplaySettings
     void setStereoConfig();
@@ -70,7 +71,8 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_elevationBrowse_clicked();
     void on_elevationAdd_clicked();
     void on_elevationRemove_clicked();
-    void on_showDataSources_clicked();
+    void on_showDatasources_clicked();
+
 };
 
 struct DataSource {

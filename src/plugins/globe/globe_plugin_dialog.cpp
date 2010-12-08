@@ -37,7 +37,7 @@
 
 #include <osg/DisplaySettings>
 
-QList<DataSource> elevationsDataSources;
+QList<DataSource> elevationsDatasources;
 
 //constructor
 QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
@@ -48,7 +48,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   setStereoConfig(); //overwrite with values from QSettings
   updateStereoDialog(); //update the dialog gui
 
-  readElevationDataSourcesFromSettings();
+  readElevationDatasourcesFromSettings();
 }
 
 //destructor
@@ -143,35 +143,26 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
     restartGlobe();
   }
 
-  settings.beginGroup("Plugin-Globe");
-  settings.beginWriteArray("ElevationsDataSources");
-  for (int i = 0; i < elevationsDataSources.size(); ++i)
-  {
-    settings.setArrayIndex(i);
-    settings.setValue("type", elevationsDataSources.at(i).type);
-    settings.setValue("uri", elevationsDataSources.at(i).uri);
-  }
-  settings.endArray();
-  settings.endGroup();
-
+  saveElevationDatasources();
   accept();
-}
-
-void QgsGlobePluginDialog::on_showDataSources_clicked(){
-  QString txt;
-  foreach (DataSource source, elevationsDataSources)
-  {
-    txt += source.type + ":\t" + source.uri + "\n";
-  }
-  showMessageBox( txt );
 }
 
 void QgsGlobePluginDialog::on_buttonBox_rejected()
 {
   loadStereoConfig();
   setStereoConfig();
-  readElevationDataSourcesFromSettings();
+  readElevationDatasourcesFromSettings();
   reject();
+}
+
+
+void QgsGlobePluginDialog::on_showDatasources_clicked(){
+  QString txt;
+  foreach (DataSource source, elevationsDatasources)
+  {
+    txt += source.type + ":\t" + source.uri + "\n";
+  }
+  showMessageBox( txt );
 }
 
 //ELEVATION
@@ -196,7 +187,6 @@ void QgsGlobePluginDialog::on_elevationBrowse_clicked()
   }
 }
 
-
 void QgsGlobePluginDialog::on_elevationAdd_clicked()
 {
   QString errorText;
@@ -214,31 +204,62 @@ void QgsGlobePluginDialog::on_elevationAdd_clicked()
     DataSource ds;
     ds.uri = elevationPath->text();
     ds.type = elevationCombo->currentText();
-    elevationsDataSources.append(ds);
+    elevationsDatasources.append(ds);
+
+    int i = elevationDatasourcesWidget->rowCount();
+    QTableWidgetItem *type = new QTableWidgetItem(ds.type);
+    QTableWidgetItem *uri = new QTableWidgetItem(ds.uri);
+    elevationDatasourcesWidget->setRowCount(1+i);
+    elevationDatasourcesWidget->setItem(i, 0, type);
+    elevationDatasourcesWidget->setItem(i, 1, uri);
   }
 }
 
 void QgsGlobePluginDialog::on_elevationRemove_clicked()
 {
-   elevationDatasets->clear();
+  QList< QTableWidgetItem* > si = elevationDatasourcesWidget->selectedItems();
+  for(int i = 0; i < si.count(); i++)
+  {
+    elevationDatasourcesWidget->removeRow( elevationDatasourcesWidget->row(si.at(i)) );
+  }
 }
 
-void QgsGlobePluginDialog::readElevationDataSourcesFromSettings()
+void QgsGlobePluginDialog::readElevationDatasourcesFromSettings()
 {
-  elevationsDataSources.clear();
+  elevationsDatasources.clear();
   settings.beginGroup("Plugin-Globe");
-  int size = settings.beginReadArray("ElevationsDataSources");
+  int size = settings.beginReadArray("ElevationsDatasources");
   for (int i = 0; i < size; ++i) {
     settings.setArrayIndex(i);
     DataSource ds;
     ds.type = settings.value("type").toString();
     ds.uri = settings.value("uri").toString();
-    elevationsDataSources.append(ds);
+    elevationsDatasources.append(ds);
+
+    QTableWidgetItem *type = new QTableWidgetItem(ds.type);
+    QTableWidgetItem *uri = new QTableWidgetItem(ds.uri);
+    elevationDatasourcesWidget->setRowCount(1+i);
+    elevationDatasourcesWidget->setItem(i, 0, type);
+    elevationDatasourcesWidget->setItem(i, 1, uri);
   }
   settings.endArray();
   settings.endGroup();
 }
 
+void QgsGlobePluginDialog::saveElevationDatasources()
+{
+  settings.beginGroup("Plugin-Globe");
+  settings.beginWriteArray("ElevationsDatasources");
+  for (int i = 0; i < elevationsDatasources.size(); ++i)
+  {
+    settings.setArrayIndex(i);
+    settings.setValue("type", elevationsDatasources.at(i).type);
+    settings.setValue("uri", elevationsDatasources.at(i).uri);
+  }
+  settings.endArray();
+  settings.endGroup();
+}
+//END ELEVATION
 void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()
 {
   //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
