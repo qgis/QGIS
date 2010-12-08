@@ -75,15 +75,14 @@
  {
    if ( "Raster" == type )
    {
-     QFile file;
-     file.setFileName( uri );
-     if ( file.exists() )
+     QFileInfo file( uri );
+     if ( file.isFile() && file.isReadable() )
      {
        return true;
      }
      else
      {
-       error = tr("Invalid Path: ") + file.errorString();
+       error = tr("Invalid Path: The file is either unreadable or does not exist");
        return false;
      }
    }
@@ -157,16 +156,6 @@
  }
 
 //ELEVATION
- void QgsGlobePluginDialog::on_showDatasources_clicked()
- {
-   QString txt;
-   foreach (DataSource source, elevationsDatasources)
-   {
-     txt += source.type + ":\t" + source.uri + "\n";
-   }
-   showMessageBox( txt );
- }
-
  void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged(QString type)
  {
    if("Raster" == type)
@@ -231,18 +220,12 @@
 
  void QgsGlobePluginDialog::readElevationDatasourcesFromSettings()
  {
-   elevationsDatasources.clear();
    settings.beginGroup("Plugin-Globe");
    int size = settings.beginReadArray("ElevationsDatasources");
    for (int i = 0; i < size; ++i) {
      settings.setArrayIndex(i);
-     DataSource ds;
-     ds.type = settings.value("type").toString();
-     ds.uri = settings.value("uri").toString();
-     elevationsDatasources.append(ds);
-
-     QTableWidgetItem *type = new QTableWidgetItem(ds.type);
-     QTableWidgetItem *uri = new QTableWidgetItem(ds.uri);
+     QTableWidgetItem *type = new QTableWidgetItem(settings.value("type").toString());
+     QTableWidgetItem *uri = new QTableWidgetItem(settings.value("uri").toString());
      elevationDatasourcesWidget->setRowCount(1+i);
      elevationDatasourcesWidget->setItem(i, 0, type);
      elevationDatasourcesWidget->setItem(i, 1, uri);
@@ -254,9 +237,8 @@
  void QgsGlobePluginDialog::saveElevationDatasources()
  {
    elevationsDatasources.clear();
-   int iRows = elevationDatasourcesWidget->rowCount();
 
-   for(int i = 0; i < iRows; ++i)
+   for(int i = 0; i < elevationDatasourcesWidget->rowCount(); ++i)
    {
      QTableWidgetItem* type = elevationDatasourcesWidget->item(i, 0);
      QTableWidgetItem* uri = elevationDatasourcesWidget->item(i, 1);

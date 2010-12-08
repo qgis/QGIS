@@ -67,12 +67,10 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_resetStereoDefaults_clicked();
 
     //ELEVATION
-    void on_elevationCombo_currentIndexChanged(QString value);
+    void on_elevationCombo_currentIndexChanged(QString type);
     void on_elevationBrowse_clicked();
     void on_elevationAdd_clicked();
     void on_elevationRemove_clicked();
-    void on_showDatasources_clicked();
-
 };
 
 struct DataSource {
