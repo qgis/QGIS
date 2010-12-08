@@ -40,6 +40,9 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     bool validateResource( QString type, QString uri, QString& error);
     void readElevationDatasourcesFromSettings();
     void saveElevationDatasources();
+    void moveRow( QTableWidget* widget, bool up);
+    QList<QTableWidgetItem*> takeRow( QTableWidget* widget, int row);
+    void setRow( QTableWidget* widget, int row, const QList< QTableWidgetItem* >& rowItems);
     void showMessageBox( QString text);
     //! Set osg/DisplaySettings
     void setStereoConfig();
@@ -71,6 +74,8 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_elevationBrowse_clicked();
     void on_elevationAdd_clicked();
     void on_elevationRemove_clicked();
+    void on_elevationUp_clicked();
+    void on_elevationDown_clicked();
 };
 
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H
