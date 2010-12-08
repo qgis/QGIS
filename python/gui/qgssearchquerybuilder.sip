@@ -5,7 +5,7 @@ class QgsSearchQueryBuilder : QDialog
 %End
 
   public:
-    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent /TransferThis/ = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsSearchQueryBuilder();
 
     //! returns newly created search string
