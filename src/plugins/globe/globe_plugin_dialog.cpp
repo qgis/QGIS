@@ -219,12 +219,15 @@
 
  void QgsGlobePluginDialog::readElevationDatasourcesFromSettings()
  {
+   elevationDatasourcesWidget->clearContents();
    settings.beginGroup("Plugin-Globe");
    int size = settings.beginReadArray("ElevationsDatasources");
    for (int i = 0; i < size; ++i) {
      settings.setArrayIndex(i);
      QTableWidgetItem *type = new QTableWidgetItem(settings.value("type").toString());
      QTableWidgetItem *uri = new QTableWidgetItem(settings.value("uri").toString());
+//      uri->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
+//      type->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled  | Qt::ItemIsDropEnabled);
      elevationDatasourcesWidget->setRowCount(1+i);
      elevationDatasourcesWidget->setItem(i, 0, type);
      elevationDatasourcesWidget->setItem(i, 1, uri);

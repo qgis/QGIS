@@ -181,20 +181,29 @@
        </item>
        <item>
         <widget class="QTableWidget" name="elevationDatasourcesWidget">
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="tabKeyNavigation">
           <bool>false</bool>
          </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
          <property name="dragEnabled">
-          <bool>true</bool>
+          <bool>false</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
+          <bool>false</bool>
          </property>
          <property name="dragDropMode">
           <enum>QAbstractItemView::NoDragDrop</enum>
          </property>
          <property name="defaultDropAction">
-          <enum>Qt::MoveAction</enum>
+          <enum>Qt::IgnoreAction</enum>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
