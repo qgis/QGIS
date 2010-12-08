@@ -78,7 +78,6 @@ SET(QGIS_APP_SRCS
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
-  qgssearchquerybuilder.cpp
   qgstextannotationdialog.cpp
   qgswmssourceselect.cpp
   qgsshortcutsmanager.cpp
@@ -214,7 +213,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsprojectproperties.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
-  qgssearchquerybuilder.h
   qgstextannotationdialog.h
   qgswmssourceselect.h
   qgssinglesymboldialog.h
