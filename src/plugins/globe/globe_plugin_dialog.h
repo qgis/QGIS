@@ -37,7 +37,8 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void updateStereoDialog();
     void restartGlobe();
     bool globeRunning();
-    bool validateNetworkResource( QString uri);
+    bool validateResource( QString type, QString uri, QString& error);
+    void readElevationDataSourcesFromSettings();
     void showMessageBox( QString text);
     //! Set osg/DisplaySettings
     void setStereoConfig();
@@ -67,7 +68,14 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     //ELEVATION
     void on_elevationCombo_currentIndexChanged(QString value);
     void on_elevationBrowse_clicked();
-    void on_elevationTest_clicked();
+    void on_elevationAdd_clicked();
+    void on_elevationRemove_clicked();
+    void on_showDataSources_clicked();
+};
+
+struct DataSource {
+  QString type;
+  QString uri;
 };
 
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H

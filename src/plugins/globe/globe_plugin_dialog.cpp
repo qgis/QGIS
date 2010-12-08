@@ -22,7 +22,6 @@
 #include <qgsapplication.h>
 #include <qgslogger.h>
 #include <qgscontexthelp.h>
-
 #include <QtAlgorithms>
 #include <QtDebug>
 #include <QFileDialog>
@@ -30,12 +29,15 @@
 #include <QSettings>
 #include <QString>
 #include <QStringList>
+
 #include <QVariant>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
 #include <osg/DisplaySettings>
+
+QList<DataSource> elevationsDataSources;
 
 //constructor
 QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
@@ -45,6 +47,8 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   loadStereoConfig();  //values from settings, default values from OSG
   setStereoConfig(); //overwrite with values from QSettings
   updateStereoDialog(); //update the dialog gui
+
+  readElevationDataSourcesFromSettings();
 }
 
 //destructor
@@ -55,7 +59,9 @@ QgsGlobePluginDialog::~QgsGlobePluginDialog()
 QString QgsGlobePluginDialog::openFile()
 {
   //see http://www.gdal.org/formats_list.html
-  const char* filter = "GDAL files (*.dem *.tif *.tiff *.jpg *.jpeg *.asc);;DEM files (*.dem);;All files (*.*)";
+  const char* filter = "GDAL files (*.dem *.tif *.tiff *.jpg *.jpeg *.asc) \
+                        ;;DEM files (*.dem) \
+                        ;;All files (*.*)";
   QString path = QFileDialog::getOpenFileName( this,
                   tr( "Open raster file" ),
                   QDir::homePath (),
@@ -64,31 +70,48 @@ QString QgsGlobePluginDialog::openFile()
   return path;
 }
 
-bool QgsGlobePluginDialog::validateNetworkResource(QString uri)
+bool QgsGlobePluginDialog::validateResource( QString type, QString uri, QString &error )
 {
-  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-  QNetworkRequest request;
-  request.setUrl(QUrl(uri));
-  QNetworkReply *reply = manager->get(request);
-
-  //wait for response syncronously
-  QEventLoop eLoop;
-  connect( manager, SIGNAL( finished( QNetworkReply * ) ),
-           &eLoop, SLOT( quit() ) );
-  eLoop.exec(QEventLoop::ExcludeUserInputEvents);
-
-  if (QNetworkReply::HostNotFoundError != reply->error())
-  //FIXME:should be the following line but reply->error() always give "unknown error"
-  //if (QNetworkReply::NoError == reply->error())
+  if ( "Raster" == type )
   {
-    QByteArray data = reply->readAll();
-    QString req(data);
-    return true;
+    QFile file;
+    file.setFileName( uri );
+    if ( file.exists() )
+    {
+      return true;
+    }
+    else
+    {
+      error = tr("Invalid Path: ") + file.errorString();
+      return false;
+    }
   }
   else
   {
-    showMessageBox( tr("Invalid URL: ") + reply->errorString() );
-    return false;
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QNetworkRequest request;
+    request.setUrl(QUrl(uri));
+    QNetworkReply *reply = manager->get(request);
+
+    //wait for response syncronously
+    QEventLoop eLoop;
+    connect( manager, SIGNAL( finished( QNetworkReply * ) ),
+            &eLoop, SLOT( quit() ) );
+    eLoop.exec(QEventLoop::ExcludeUserInputEvents);
+
+    if (QNetworkReply::HostNotFoundError != reply->error())
+    //FIXME:should be the following line but reply->error() always give "unknown error"
+    //if (QNetworkReply::NoError == reply->error())
+    {
+      QByteArray data = reply->readAll();
+      QString req(data);
+      return true;
+    }
+    else
+    {
+      error = tr("Invalid URL: ") + reply->errorString();
+      return false;
+    }
   }
 }
 
@@ -119,13 +142,35 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
   {
     restartGlobe();
   }
+
+  settings.beginGroup("Plugin-Globe");
+  settings.beginWriteArray("ElevationsDataSources");
+  for (int i = 0; i < elevationsDataSources.size(); ++i)
+  {
+    settings.setArrayIndex(i);
+    settings.setValue("type", elevationsDataSources.at(i).type);
+    settings.setValue("uri", elevationsDataSources.at(i).uri);
+  }
+  settings.endArray();
+  settings.endGroup();
+
   accept();
+}
+
+void QgsGlobePluginDialog::on_showDataSources_clicked(){
+  QString txt;
+  foreach (DataSource source, elevationsDataSources)
+  {
+    txt += source.type + ":\t" + source.uri + "\n";
+  }
+  showMessageBox( txt );
 }
 
 void QgsGlobePluginDialog::on_buttonBox_rejected()
 {
   loadStereoConfig();
   setStereoConfig();
+  readElevationDataSourcesFromSettings();
   reject();
 }
 
@@ -144,12 +189,54 @@ void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged(QString type)
 
 void QgsGlobePluginDialog::on_elevationBrowse_clicked()
 {
-  elevationPath->setText( openFile() );
+  QString newPath = openFile();
+  if ( ! newPath.isEmpty() )
+  {
+    elevationPath->setText( newPath );
+  }
 }
 
-void QgsGlobePluginDialog::on_elevationTest_clicked()
+
+void QgsGlobePluginDialog::on_elevationAdd_clicked()
 {
-  validateNetworkResource( elevationPath->text() );
+  QString errorText;
+  bool validationResult = validateResource( elevationCombo->currentText(), elevationPath->text(), errorText );
+
+  QMessageBox msgBox;
+  msgBox.setText( errorText );
+  msgBox.setInformativeText( tr( "Do you want to add the datasource anyway?" ) );
+  msgBox.setIcon( QMessageBox::Warning );
+  msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+  msgBox.setDefaultButton(QMessageBox::Cancel);
+
+  if ( validationResult || msgBox.exec() == QMessageBox::Ok )
+  {
+    DataSource ds;
+    ds.uri = elevationPath->text();
+    ds.type = elevationCombo->currentText();
+    elevationsDataSources.append(ds);
+  }
+}
+
+void QgsGlobePluginDialog::on_elevationRemove_clicked()
+{
+   elevationDatasets->clear();
+}
+
+void QgsGlobePluginDialog::readElevationDataSourcesFromSettings()
+{
+  elevationsDataSources.clear();
+  settings.beginGroup("Plugin-Globe");
+  int size = settings.beginReadArray("ElevationsDataSources");
+  for (int i = 0; i < size; ++i) {
+    settings.setArrayIndex(i);
+    DataSource ds;
+    ds.type = settings.value("type").toString();
+    ds.uri = settings.value("uri").toString();
+    elevationsDataSources.append(ds);
+  }
+  settings.endArray();
+  settings.endGroup();
 }
 
 void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()

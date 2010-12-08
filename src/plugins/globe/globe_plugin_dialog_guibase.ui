@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>593</width>
-    <height>470</height>
+    <height>496</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -83,20 +83,20 @@
            </widget>
           </item>
           <item row="6" column="2">
-           <widget class="QPushButton" name="elevatonAdd">
+           <widget class="QPushButton" name="elevationAdd">
             <property name="text">
              <string>Add</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="2">
+          <item row="8" column="2">
            <widget class="QPushButton" name="elevationRemove">
             <property name="text">
              <string>Remove</string>
             </property>
            </widget>
           </item>
-          <item row="9" column="2">
+          <item row="10" column="2">
            <widget class="QTableWidget" name="elevationDatasets">
             <property name="rowCount">
              <number>1</number>
@@ -126,7 +126,18 @@
             </column>
             <item row="0" column="0">
              <property name="text">
-              <string>Worldwind</string>
+              <string/>
+             </property>
+             <property name="flags">
+              <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+             </property>
+            </item>
+            <item row="0" column="1">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="flags">
+              <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
              </property>
             </item>
            </widget>
@@ -145,6 +156,13 @@
             </property>
             <widget class="QWidget" name="elevationIsLocal">
              <layout class="QGridLayout" name="gridLayout_4">
+              <item row="0" column="1">
+               <widget class="QPushButton" name="elevationBrowse">
+                <property name="text">
+                 <string>Browse</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <spacer name="horizontalSpacer">
                 <property name="orientation">
@@ -158,39 +176,18 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="elevationBrowse">
-                <property name="text">
-                 <string>Browse</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
             <widget class="QWidget" name="elevationIsRemote">
-             <layout class="QGridLayout" name="gridLayout_3">
-              <item row="0" column="1">
-               <widget class="QPushButton" name="elevationTest">
-                <property name="text">
-                 <string>Test</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
+             <layout class="QGridLayout" name="gridLayout_3"/>
             </widget>
+           </widget>
+          </item>
+          <item row="7" column="2">
+           <widget class="QPushButton" name="showDataSources">
+            <property name="text">
+             <string>Show</string>
+            </property>
            </widget>
           </item>
          </layout>
@@ -433,7 +430,7 @@
   <tabstop>elevationCombo</tabstop>
   <tabstop>elevationPath</tabstop>
   <tabstop>elevationBrowse</tabstop>
-  <tabstop>elevatonAdd</tabstop>
+  <tabstop>elevationAdd</tabstop>
   <tabstop>elevationRemove</tabstop>
   <tabstop>elevationDatasets</tabstop>
   <tabstop>comboStereoMode</tabstop>
@@ -447,7 +444,6 @@
   <tabstop>splitStereoVerticalEyeMapping</tabstop>
   <tabstop>resetStereoDefaults</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>elevationTest</tabstop>
  </tabstops>
  <resources/>
  <connections>
