@@ -210,11 +210,7 @@
 
  void QgsGlobePluginDialog::on_elevationRemove_clicked()
  {
-   QList< QTableWidgetItem* > si = elevationDatasourcesWidget->selectedItems();
-   for(int i = 0; i < si.count(); i++)
-   {
-     elevationDatasourcesWidget->removeRow( elevationDatasourcesWidget->row(si.at(i)) );
-   }
+   elevationDatasourcesWidget->removeRow( elevationDatasourcesWidget->currentRow() );
  }
 
  void QgsGlobePluginDialog::readElevationDatasourcesFromSettings()
@@ -226,8 +222,6 @@
      settings.setArrayIndex(i);
      QTableWidgetItem *type = new QTableWidgetItem(settings.value("type").toString());
      QTableWidgetItem *uri = new QTableWidgetItem(settings.value("uri").toString());
-//      uri->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
-//      type->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled  | Qt::ItemIsDropEnabled);
      elevationDatasourcesWidget->setRowCount(1+i);
      elevationDatasourcesWidget->setItem(i, 0, type);
      elevationDatasourcesWidget->setItem(i, 1, uri);
