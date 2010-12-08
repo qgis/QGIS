@@ -37,8 +37,6 @@
 
  #include <osg/DisplaySettings>
 
- QList<DataSource> elevationsDatasources;
-
  //constructor
  QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
  : QDialog( parent, fl )
@@ -206,6 +204,7 @@
      elevationDatasourcesWidget->setRowCount(1+i);
      elevationDatasourcesWidget->setItem(i, 0, type);
      elevationDatasourcesWidget->setItem(i, 1, uri);
+     elevationDatasourcesWidget->setCurrentItem(type, QItemSelectionModel::Clear);
    }
  }
 
@@ -236,27 +235,20 @@
 
  void QgsGlobePluginDialog::saveElevationDatasources()
  {
-   elevationsDatasources.clear();
+   settings.beginGroup("Plugin-Globe");
+   settings.remove("ElevationsDatasources");
+   settings.beginWriteArray("ElevationsDatasources");
 
    for(int i = 0; i < elevationDatasourcesWidget->rowCount(); ++i)
    {
-     QTableWidgetItem* type = elevationDatasourcesWidget->item(i, 0);
-     QTableWidgetItem* uri = elevationDatasourcesWidget->item(i, 1);
-     DataSource ds;
-     ds.uri = uri->text();
-     ds.type = type->text();
-     elevationsDatasources.append(ds);
+     QString type = elevationDatasourcesWidget->item(i, 0)->text();
+     QString uri = elevationDatasourcesWidget->item(i, 1)->text();
+
+     settings.setArrayIndex(i);
+     settings.setValue("type", type);
+     settings.setValue("uri", uri);
    }
 
-   settings.beginGroup("Plugin-Globe");
-   settings.remove("");
-   settings.beginWriteArray("ElevationsDatasources");
-   for (int i = 0; i < elevationsDatasources.size(); ++i)
-   {
-     settings.setArrayIndex(i);
-     settings.setValue("type", elevationsDatasources.at(i).type);
-     settings.setValue("uri", elevationsDatasources.at(i).uri);
-   }
    settings.endArray();
    settings.endGroup();
  }

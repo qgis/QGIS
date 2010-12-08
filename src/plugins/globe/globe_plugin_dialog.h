@@ -73,9 +73,4 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_elevationRemove_clicked();
 };
 
-struct DataSource {
-  QString type;
-  QString uri;
-};
-
 #endif				// QGIS_GLOBE_PLUGIN_DIALOG_H
