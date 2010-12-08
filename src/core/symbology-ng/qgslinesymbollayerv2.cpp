@@ -371,6 +371,16 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
 
 }
 
+static double _averageAngle( const QPointF& prevPt, const QPointF& pt, const QPointF& nextPt )
+{
+  // calc average angle between the previous and next point
+  double a1 = MyLine( prevPt, pt ).angle();
+  double a2 = MyLine( pt, nextPt ).angle();
+  double unitX = cos( a1 ) + cos( a2 ), unitY = sin( a1 ) + sin( a2 );
+
+  return atan2( unitY, unitX );
+}
+
 void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
   QPointF lastPt = points[0];
@@ -379,6 +389,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   double origAngle = mMarker->angle();
   double angle;
   int i, maxCount;
+  bool isRing = false;
 
   if ( mPlacement == FirstVertex )
   {
@@ -394,6 +405,8 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   {
     i = 0;
     maxCount = points.count();
+    if ( points.first() == points.last() )
+      isRing = true;
   }
 
   for ( ; i < maxCount; ++i )
@@ -405,30 +418,50 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     {
       if ( i == 0 )
       {
-        const QPointF& nextPt = points[i+1];
-        if ( pt == nextPt )
-          continue;
-        angle = MyLine( pt, nextPt ).angle();
+        if ( !isRing )
+        {
+          // use first segment's angle
+          const QPointF& nextPt = points[i+1];
+          if ( pt == nextPt )
+            continue;
+          angle = MyLine( pt, nextPt ).angle();
+        }
+        else
+        {
+          // closed ring: use average angle between first and last segment
+          const QPointF& prevPt = points[points.count() - 2];
+          const QPointF& nextPt = points[1];
+          if ( prevPt == pt || nextPt == pt )
+            continue;
+
+          angle = _averageAngle( prevPt, pt, nextPt );
+        }
       }
       else if ( i == points.count() - 1 )
       {
-        const QPointF& prevPt = points[i-1];
-        if ( pt == prevPt )
+        if ( !isRing )
+        {
+          // use last segment's angle
+          const QPointF& prevPt = points[i-1];
+          if ( pt == prevPt )
+            continue;
+          angle = MyLine( prevPt, pt ).angle();
+        }
+        else
+        {
+          // don't draw the last marker - it has been drawn already
           continue;
-        angle = MyLine( prevPt, pt ).angle();
+        }
       }
       else
       {
+        // use average angle
         const QPointF& prevPt = points[i-1];
         const QPointF& nextPt = points[i+1];
         if ( prevPt == pt || nextPt == pt )
           continue;
 
-        // calc average angle between the previous and next point
-        double a1 = MyLine( prevPt, pt ).angle();
-        double a2 = MyLine( pt, nextPt ).angle();
-        double unitX = cos( a1 ) + cos( a2 ), unitY = sin( a1 ) + sin( a2 );
-        angle = atan2( unitY, unitX );
+        angle = _averageAngle( prevPt, pt, nextPt );
       }
       mMarker->setAngle( origAngle + angle * 180 / M_PI );
     }
