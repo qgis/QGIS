@@ -60,7 +60,8 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
   pbn->setToolTip( tr( "Load query from xml file" ) );
   connect( pbn, SIGNAL( clicked() ), this, SLOT( loadQuery() ) );
 
-  lblDataUri->setText( layer->name() );
+  if ( layer )
+    lblDataUri->setText( layer->name() );
   populateFields();
 }
 
@@ -71,6 +72,9 @@ QgsSearchQueryBuilder::~QgsSearchQueryBuilder()
 
 void QgsSearchQueryBuilder::populateFields()
 {
+  if ( !mLayer )
+    return;
+
   QgsDebugMsg( "entering." );
   QRegExp reQuote( "[A-Za-z_][A-Za-z0-9_]*" );
   const QgsFieldMap& fields = mLayer->pendingFields();
@@ -194,6 +198,9 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
     QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorMsg() );
     return -1;
   }
+
+  if ( !mLayer )
+    return -1;
 
   QgsSearchTreeNode* searchTree = search.tree();
   if ( searchTree == NULL )
