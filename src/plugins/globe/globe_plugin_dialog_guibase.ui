@@ -100,7 +100,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>http://s0.tileservice.worldwindcentral.com/getTile?</string>
+            <string/>
            </property>
           </widget>
          </item>
