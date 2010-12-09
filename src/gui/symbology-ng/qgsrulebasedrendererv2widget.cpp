@@ -316,11 +316,11 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( const QgsRuleBasedRender
   l->addWidget( symbolSel );
   groupSymbol->setLayout( l );
 
-  connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpreesion() ) );
+  connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
 }
 
-void QgsRendererRulePropsDialog::buildExpreesion()
+void QgsRendererRulePropsDialog::buildExpression()
 {
   QgsSearchQueryBuilder dlg( mLayer, this );
   dlg.setSearchString( editFilter->text() );
