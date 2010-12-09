@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QSettings>
 #include "qgscontexthelp.h"
+#include <qgsproject.h>
 
 class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBase
 {
@@ -30,6 +31,7 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   public:
     QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
+    void readElevationDatasources();
 
   private:
     QSettings settings;
@@ -38,7 +40,6 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void restartGlobe();
     bool globeRunning();
     bool validateResource( QString type, QString uri, QString& error);
-    void readElevationDatasourcesFromSettings();
     void saveElevationDatasources();
     void moveRow( QTableWidget* widget, bool up);
     QList<QTableWidgetItem*> takeRow( QTableWidget* widget, int row);

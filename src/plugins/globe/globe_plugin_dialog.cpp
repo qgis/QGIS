@@ -20,6 +20,7 @@
 #include "globe_plugin.h"
 
 #include <qgsapplication.h>
+#include <qgsproject.h>
 #include <qgslogger.h>
 #include <qgscontexthelp.h>
 #include <QtAlgorithms>
@@ -47,7 +48,6 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   updateStereoDialog(); //update the dialog gui
 
   elevationPath->setText( QDir::homePath() );
-  readElevationDatasourcesFromSettings();
 }
 
 //destructor
@@ -149,29 +149,29 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 {
   loadStereoConfig();
   setStereoConfig();
-  readElevationDatasourcesFromSettings();
+  readElevationDatasources();
   reject();
 }
 
 //ELEVATION
 void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged(QString type)
 {
+  elevationPath->setEnabled(true);
   if("Raster" == type)
   {
     elevationActions->setCurrentIndex(0);
     elevationPath->setText( QDir::homePath() );
   }
-  else
+  else if ( "Worldwind" == type )
   {
     elevationActions->setCurrentIndex(1);
-    if ( "Worldwind" == type )
-    {
-      elevationPath->setText("http://tileservice.worldwindcentral.com/getTile?");
-    }
-    if ( "TMS" == type )
-    {
-      elevationPath->setText("http://");
-    }
+    elevationPath->setText("http://tileservice.worldwindcentral.com/getTile?bmng.topo.bathy.200401");
+    elevationPath->setEnabled(false);
+  }
+  else if ( "TMS" == type )
+  {
+    elevationActions->setCurrentIndex(1);
+    elevationPath->setText("http://tilecache.osgeo.org/wms-c/Basic.py/1.0.0/linktothepast/");
   }
 }
 
@@ -264,41 +264,40 @@ void QgsGlobePluginDialog::setRow(QTableWidget* widget, int row, const QList<QTa
   }
 }
 
-void QgsGlobePluginDialog::readElevationDatasourcesFromSettings()
+void QgsGlobePluginDialog::readElevationDatasources()
 {
+  // clear the widget
   elevationDatasourcesWidget->clearContents();
-  settings.beginGroup("Plugin-Globe");
-  int size = settings.beginReadArray("ElevationsDatasources");
-  for (int i = 0; i < size; ++i) {
-    settings.setArrayIndex(i);
-    QTableWidgetItem *type = new QTableWidgetItem(settings.value("type").toString());
-    QTableWidgetItem *uri = new QTableWidgetItem(settings.value("uri").toString());
+  int keysCount = QgsProject::instance()->subkeyList("Globe-Plugin", "/elevationDatasources/").count();
+  for (int i = 0; i < keysCount; ++i) {
+    QString iNum;
+    iNum.setNum(i);
+    QTableWidgetItem *type = new QTableWidgetItem(
+      QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/type"));
+    QTableWidgetItem *uri = new QTableWidgetItem(
+      QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/uri"));
+
     elevationDatasourcesWidget->setRowCount(1+i);
     elevationDatasourcesWidget->setItem(i, 0, type);
     elevationDatasourcesWidget->setItem(i, 1, uri);
   }
-  settings.endArray();
-  settings.endGroup();
 }
 
 void QgsGlobePluginDialog::saveElevationDatasources()
 {
-  settings.beginGroup("Plugin-Globe");
-  settings.remove("ElevationsDatasources");
-  settings.beginWriteArray("ElevationsDatasources");
-
+  QgsProject::instance()->removeEntry("Globe-Plugin", "/elevationDatasources/");
   for(int i = 0; i < elevationDatasourcesWidget->rowCount(); ++i)
   {
     QString type = elevationDatasourcesWidget->item(i, 0)->text();
     QString uri = elevationDatasourcesWidget->item(i, 1)->text();
+    bool cache = true; //elevationDatasourcesWidget->item(i, 1)->isChecked();
+    QString iNum;
+    iNum.setNum(i);
 
-    settings.setArrayIndex(i);
-    settings.setValue("type", type);
-    settings.setValue("uri", uri);
+    QgsProject::instance()->writeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/type", type);
+    QgsProject::instance()->writeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/uri", uri);
+    QgsProject::instance()->writeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/cache", cache);
   }
-
-  settings.endArray();
-  settings.endGroup();
 }
 //END ELEVATION
 
