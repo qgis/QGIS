@@ -26,13 +26,14 @@
 
 #include "qgisapp.h"
 
-QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas ), mRotationItem( 0 )
+QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas ), mRotationItem( 0 ), mRotationPreviewBox( 0 )
 {
 }
 
 QgsMapToolRotateLabel::~QgsMapToolRotateLabel()
 {
   delete mRotationItem;
+  delete mRotationPreviewBox;
 }
 
 void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent * e )
@@ -68,7 +69,10 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent * e )
       {
         mCurrentRotation = 0;
       }
+      mStartRotation = mCurrentRotation;
       createRubberBands();
+
+      mRotationPreviewBox = createRotationPreviewBox();
 
       mRotationItem = new QgsPointRotationItem( mCanvas );
       mRotationItem->setOrientation( QgsPointRotationItem::Counterclockwise );
@@ -110,6 +114,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent * e )
     if ( mRotationItem )
     {
       mRotationItem->setSymbolRotation( displayValue );
+      setRotationPreviewBox( displayValue - mStartRotation );
       mRotationItem->update();
     }
   }
@@ -117,9 +122,16 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent * e )
 
 void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent * e )
 {
+  if ( !mLabelRubberBand ) //no rubber band created (most likely because the current label cannot be rotated )
+  {
+    return;
+  }
+
   deleteRubberBands();
   delete mRotationItem;
   mRotationItem = 0;
+  delete mRotationPreviewBox;
+  mRotationPreviewBox = 0;
 
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID );
   if ( !layer )
@@ -140,6 +152,10 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent * e )
   }
 
   double rotation = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
+  if ( rotation == mStartRotation ) //mouse button pressed / released, but no rotation
+  {
+    return;
+  }
 
   vlayer->beginEditCommand( tr( "Label rotated" ) );
   vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rotationCol, rotation, false );
@@ -191,6 +207,16 @@ bool QgsMapToolRotateLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int fea
   }
 
   QgsAttributeMap attributes = f.attributeMap();
+
+  //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
+  int xCol, yCol;
+  double x, y;
+  bool xSuccess, ySuccess;
+  if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+  {
+    return false;
+  }
+
   rotation = attributes[rotationCol].toDouble( &rotationSuccess );
   return true;
 }
@@ -204,4 +230,54 @@ int QgsMapToolRotateLabel::roundTo15Degrees( double n )
 double QgsMapToolRotateLabel::azimuthToCCW( double a )
 {
   return ( a > 0 ? 360 - a : -a );
+}
+
+QgsRubberBand* QgsMapToolRotateLabel::createRotationPreviewBox()
+{
+  delete mRotationPreviewBox;
+  QVector< QgsPoint > boxPoints = mCurrentLabelPos.cornerPoints;
+  if ( boxPoints.size() < 1 )
+  {
+    return 0;
+  }
+
+  mRotationPreviewBox = new QgsRubberBand( mCanvas, false );
+  mRotationPreviewBox->setColor( Qt::blue );
+  mRotationPreviewBox->setWidth( 3 );
+  setRotationPreviewBox( mCurrentRotation - mStartRotation );
+  return mRotationPreviewBox;
+}
+
+void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
+{
+  if ( !mRotationPreviewBox )
+  {
+    return;
+  }
+
+  mRotationPreviewBox->reset();
+  QVector< QgsPoint > boxPoints = mCurrentLabelPos.cornerPoints;
+  if ( boxPoints.size() < 1 )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < boxPoints.size(); ++i )
+  {
+    mRotationPreviewBox->addPoint( rotatePointCounterClockwise( boxPoints.at( i ), mRotationPoint, rotation ) );
+  }
+  mRotationPreviewBox->addPoint( rotatePointCounterClockwise( boxPoints.at( 0 ), mRotationPoint, rotation ) );
+  mRotationPreviewBox->show();
+}
+
+QgsPoint QgsMapToolRotateLabel::rotatePointCounterClockwise( const QgsPoint& input, const QgsPoint& centerPoint, double degrees )
+{
+  double rad = degrees / 180 * M_PI;
+  double v1x = input.x() - centerPoint.x();
+  double v1y = input.y() - centerPoint.y();
+
+  double v2x = cos( rad ) * v1x - sin( rad ) * v1y;
+  double v2y = sin( rad ) * v1x + cos( rad ) * v1y;
+
+  return QgsPoint( centerPoint.x() + v2x, centerPoint.y() + v2y );
 }

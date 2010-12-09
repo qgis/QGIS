@@ -31,6 +31,12 @@ class QgsMapToolLabel: public QgsMapTool
     QgsMapToolLabel( QgsMapCanvas* canvas );
     ~QgsMapToolLabel();
 
+    /**Returns true if layer move can be applied to a layer
+        @param xCol out: index of the attribute for data defined x coordinate
+        @param yCol out: index of the attribute for data defined y coordinate
+        @return true if labels of layer can be moved*/
+    bool layerIsMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+
   protected:
     QgsRubberBand* mLabelRubberBand;
     QgsRubberBand* mFeatureRubberBand;
@@ -72,6 +78,17 @@ class QgsMapToolLabel: public QgsMapTool
 
     /**Returns the font for the current feature (considering default font and data defined properties*/
     QFont labelFontCurrentFeature();
+
+    /**Get data defined position of a feature
+      @param layerId layer identification string
+      @param x out: data defined x-coordinate
+      @param xSuccess out: false if attribute value is NULL
+      @param y out: data defined y-coordinate
+      @param ySuccess out: false if attribute value is NULL
+      @param xCol out: index of the x position column
+      @param yCol out: index of the y position column
+      @return false if layer does not have data defined label position enabled*/
+    bool dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;
