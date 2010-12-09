@@ -276,10 +276,17 @@ void QgsGlobePluginDialog::readElevationDatasources()
       QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/type"));
     QTableWidgetItem *uri = new QTableWidgetItem(
       QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/uri"));
+    bool cache = QgsProject::instance()->readBoolEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/cache");
 
     elevationDatasourcesWidget->setRowCount(1+i);
     elevationDatasourcesWidget->setItem(i, 0, type);
     elevationDatasourcesWidget->setItem(i, 1, uri);
+    QCheckBox *cacheCheckbox= new QCheckBox();
+    elevationDatasourcesWidget->setCellWidget(i, 2, cacheCheckbox);
+    if(cache)
+    {
+      cacheCheckbox->setChecked(true);
+    }
   }
 }
 
@@ -290,7 +297,10 @@ void QgsGlobePluginDialog::saveElevationDatasources()
   {
     QString type = elevationDatasourcesWidget->item(i, 0)->text();
     QString uri = elevationDatasourcesWidget->item(i, 1)->text();
-    bool cache = true; //elevationDatasourcesWidget->item(i, 1)->isChecked();
+    //TODO
+    QCheckBox *cacheCheckbox = qobject_cast<QCheckBox*>(elevationDatasourcesWidget->cellWidget(i, 2));
+    bool cache = cacheCheckbox->isChecked();
+
     QString iNum;
     iNum.setNum(i);
 
