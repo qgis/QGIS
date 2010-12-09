@@ -269,6 +269,7 @@ void QgsGlobePluginDialog::setRow(QTableWidget* widget, int row, const QList<QTa
 
 void QgsGlobePluginDialog::readElevationDatasources()
 {
+  //showMessageBox("reading");
   // clear the widget
   elevationDatasourcesWidget->clearContents();
   int keysCount = QgsProject::instance()->subkeyList("Globe-Plugin", "/elevationDatasources/").count();

@@ -57,6 +57,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! show the help document
     void help();
 
+
     //!  Called when the main canvas is about to be rendered
     void renderStarting();
     //!  Called when the main canvas has rendered.
@@ -67,6 +68,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     void extentsChanged();
     //! Sync globe extent to mapCanavas
     void syncExtent();
+
+    void projectRead();
+    void blankProject();
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );

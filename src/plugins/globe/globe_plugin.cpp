@@ -106,8 +106,11 @@ void GlobePlugin::initGui()
            this, SLOT( extentsChanged() ) );
   //connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
   //         this, SLOT( layersChanged() ) );
+  connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
+           SLOT( projectRead() ) );
+  connect( mQGisIface->mainWindow(), SIGNAL( newProjectCreated() ), this,
+           SLOT( newProject() ) );
 }
-
 
 void GlobePlugin::run()
 {
@@ -159,7 +162,6 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
-  mSettingsDialog.readElevationDatasources();
   if( mSettingsDialog.exec() )
   {
     //viewer stereo settings set by mSettingsDialog and stored in QSettings
@@ -250,6 +252,17 @@ void GlobePlugin::setupMap()
     }
   }
 #endif
+}
+
+void GlobePlugin::projectRead()
+{
+  mSettingsDialog.readElevationDatasources();
+}
+
+void GlobePlugin::blankProject()
+{//TODO
+  mSettingsDialog.elevationDatasources()->clearContents();
+  mSettingsDialog.elevationDatasources()->setRowCount(0);
 }
 
 struct PanControlHandler : public NavigationControlHandler
