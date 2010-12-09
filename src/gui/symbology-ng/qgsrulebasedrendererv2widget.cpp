@@ -176,6 +176,7 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2widget.h"
+#include "qgssearchquerybuilder.h"
 #include <QDialogButtonBox>
 #include <QInputDialog>
 
@@ -315,7 +316,17 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( const QgsRuleBasedRender
   l->addWidget( symbolSel );
   groupSymbol->setLayout( l );
 
+  connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpreesion() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
+}
+
+void QgsRendererRulePropsDialog::buildExpreesion()
+{
+  QgsSearchQueryBuilder dlg( mLayer, this );
+  dlg.setSearchString( editFilter->text() );
+
+  if ( dlg.exec() )
+    editFilter->setText( dlg.searchString() );
 }
 
 void QgsRendererRulePropsDialog::testFilter()

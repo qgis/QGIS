@@ -110,6 +110,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
 
   public slots:
     void testFilter();
+    void buildExpreesion();
 
   protected:
     QgsRuleBasedRendererV2::Rule mRule;
