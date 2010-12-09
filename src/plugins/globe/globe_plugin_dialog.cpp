@@ -202,7 +202,7 @@ void QgsGlobePluginDialog::on_elevationAdd_clicked()
     QTableWidgetItem *type = new QTableWidgetItem(elevationCombo->currentText());
     QTableWidgetItem *uri = new QTableWidgetItem(elevationPath->text());
     QTableWidgetItem* cache = new QTableWidgetItem();
-    cache->setCheckState(Qt::Unchecked);
+    cache->setCheckState( (elevationCombo->currentText() == "Worldwind") ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
     elevationDatasourcesWidget->setRowCount(1+i);
     elevationDatasourcesWidget->setItem(i, 0, type);
     elevationDatasourcesWidget->setItem(i, 1, cache);
@@ -285,7 +285,7 @@ void QgsGlobePluginDialog::readElevationDatasources()
     elevationDatasourcesWidget->setRowCount(1+i);
     elevationDatasourcesWidget->setItem(i, 0, type);
     QTableWidgetItem* chkBoxItem = new QTableWidgetItem();
-    (cache) ? chkBoxItem->setCheckState(Qt::Checked) : chkBoxItem->setCheckState(Qt::Unchecked);
+    chkBoxItem->setCheckState( cache ? Qt::Checked : Qt::Unchecked );
     elevationDatasourcesWidget->setItem(i, 1, chkBoxItem);
     elevationDatasourcesWidget->setItem(i, 2, uri);
   }

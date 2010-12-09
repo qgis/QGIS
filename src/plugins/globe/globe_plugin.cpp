@@ -619,6 +619,7 @@ void GlobePlugin::layersChanged()
   for(int i = 0; i < table->rowCount(); ++i)
   {
     QString type = table->item(i, 0)->text();
+    bool cache = table->item(i, 1)->checkState();
     QString uri = table->item(i, 2)->text();
     MapLayer* layer = 0;
 
@@ -647,8 +648,7 @@ void GlobePlugin::layersChanged()
     }
     map->addMapLayer( layer );
 
-    bool cache = table->item(i, 1)->checkState();
-    layer->setCache( 0 ); //TODO: from dialog
+    if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
   }
 
   //remove QGIS layer
