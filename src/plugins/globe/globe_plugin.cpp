@@ -606,7 +606,7 @@ void GlobePlugin::layersChanged()
   for(int i = 0; i < table->rowCount(); ++i)
   {
     QString type = table->item(i, 0)->text();
-    QString uri = table->item(i, 1)->text();
+    QString uri = table->item(i, 2)->text();
     MapLayer* layer = 0;
 
     if( "Raster" == type)
@@ -633,6 +633,8 @@ void GlobePlugin::layersChanged()
       //map->addElevationLayer( new osgEarth::ElevationLayer( "SRTM", tms ) );
     }
     map->addMapLayer( layer );
+
+    bool cache = table->item(i, 1)->checkState();
     layer->setCache( 0 ); //TODO: from dialog
   }
 

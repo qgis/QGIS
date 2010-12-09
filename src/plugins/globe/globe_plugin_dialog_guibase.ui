@@ -271,7 +271,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Path</string>
+           <string>Cache</string>
           </property>
           <property name="font">
            <font>
@@ -282,7 +282,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Cache</string>
+           <string>Path</string>
           </property>
           <property name="font">
            <font>

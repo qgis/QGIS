@@ -36,7 +36,6 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
 
   private:
     QSettings settings;
-    QCheckBox cacheCheckbox;
     QString openFile();
     void updateStereoDialog();
     void restartGlobe();
