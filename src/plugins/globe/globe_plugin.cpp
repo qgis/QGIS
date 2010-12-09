@@ -70,7 +70,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     mQActionSettingsPointer( NULL ),
     viewer(),
     mQDockWidget( tr( "Globe" ) ),
-    mSettingsDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
+    mSettingsDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
     mTileSource( 0 ),
     mQgisMapLayer( 0 ),
     mElevationManager( NULL ),

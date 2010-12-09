@@ -39,8 +39,8 @@
 #include <osg/DisplaySettings>
 
 //constructor
-QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
-: QDialog( parent, fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QgsOsgViewer* viewer, QWidget* parent, Qt::WFlags fl )
+: mViewer(viewer), QDialog( parent, fl )
 {
   setupUi( this );
   loadStereoConfig();  //values from settings, default values from OSG
@@ -437,6 +437,7 @@ void QgsGlobePluginDialog::setStereoMode()
 
 void QgsGlobePluginDialog::setStereoConfig()
 {
+  mViewer->getDatabasePager()->clear();
   //SETTING THE VALUES IN THE OEGearth instance
   setStereoMode();
   osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
