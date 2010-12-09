@@ -107,9 +107,9 @@ void GlobePlugin::initGui()
   //connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
   //         this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
-           SLOT( projectRead() ) );
+           SLOT( projectReady() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProjectCreated() ), this,
-           SLOT( newProject() ) );
+           SLOT( blankProject() ) );
 }
 
 void GlobePlugin::run()
@@ -254,13 +254,16 @@ void GlobePlugin::setupMap()
 #endif
 }
 
-void GlobePlugin::projectRead()
+void GlobePlugin::projectReady()
 {
   mSettingsDialog.readElevationDatasources();
 }
 
 void GlobePlugin::blankProject()
 {//TODO
+  QMessageBox m;
+  m.setText("new");
+  m.exec();
   mSettingsDialog.elevationDatasources()->clearContents();
   mSettingsDialog.elevationDatasources()->setRowCount(0);
 }

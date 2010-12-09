@@ -69,7 +69,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Sync globe extent to mapCanavas
     void syncExtent();
 
-    void projectRead();
+    void projectReady();
     void blankProject();
 
     //! Place an OSG model on the globe
