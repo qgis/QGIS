@@ -116,8 +116,6 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   {
     xPosNew = releaseCoords.x() - mClickOffsetX;
     yPosNew = releaseCoords.y() - mClickOffsetY;
-
-    //todo: consider hali/vali if there
   }
   else
   {
@@ -131,69 +129,6 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   vlayer->endEditCommand();
 
   mCanvas->refresh();
-}
-
-bool QgsMapToolMoveLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const
-{
-  xSuccess = false;
-  ySuccess = false;
-
-  if ( !vlayer )
-  {
-    return false;
-  }
-
-  if ( !layerIsMoveable( vlayer, xCol, yCol ) )
-  {
-    return false;
-  }
-
-  QgsFeature f;
-  if ( !vlayer->featureAtId( featureId, f, false, true ) )
-  {
-    return false;
-  }
-
-  QgsAttributeMap attributes = f.attributeMap();
-  x = attributes[xCol].toDouble( &xSuccess );
-  y = attributes[yCol].toDouble( &ySuccess );
-
-  return true;
-}
-
-bool QgsMapToolMoveLabel::layerIsMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
-{
-  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
-  if ( !vlayer || !vlayer->isEditable() )
-  {
-    return false;
-  }
-
-  bool xColOk, yColOk;
-
-  QVariant xColumn = ml->customProperty( "labeling/dataDefinedProperty9" );
-  if ( !xColumn.isValid() )
-  {
-    return false;
-  }
-  xCol = xColumn.toInt( &xColOk );
-  if ( !xColOk )
-  {
-    return false;
-  }
-
-  QVariant yColumn = ml->customProperty( "labeling/dataDefinedProperty10" );
-  if ( !yColumn.isValid() )
-  {
-    return false;
-  }
-  yCol = yColumn.toInt( &yColOk );
-  if ( !yColOk )
-  {
-    return false;
-  }
-
-  return true;
 }
 
 
