@@ -72,6 +72,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     mQDockWidget( tr( "Globe" ) ),
     mSettingsDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
     mTileSource( 0 ),
+    mQgisMapLayer( 0 ),
     mElevationManager( NULL ),
     mObjectPlacer( NULL )
 {
@@ -195,20 +196,14 @@ void GlobePlugin::setupMap()
     return;
   }
 
-  osg::ref_ptr<Map> map = earthFile.getMap();
-
-  // Add QGIS layer to the map
-  mTileSource = new QgsOsgEarthTileSource( mQGisIface );
-  mTileSource->initialize( "" );
-  mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
-  map->addMapLayer( mQgisMapLayer );
-  mQgisMapLayer->setCache( 0 ); //disable caching
-
   mRootNode = new osg::Group();
 
   // The MapNode will render the Map object in the scene graph.
-  mMapNode = new osgEarth::MapNode( map );
+  mMapNode = new osgEarth::MapNode( earthFile.getMap() );
   mRootNode->addChild( mMapNode );
+
+  // Add layers to the map
+  layersChanged();
 
   // model placement utils
   mElevationManager = new osgEarthUtil::ElevationManager( mMapNode->getMap() );
@@ -589,18 +584,72 @@ typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
 void GlobePlugin::layersChanged()
 {
   QgsDebugMsg( "layersChanged" );
-  if( mTileSource && mMapNode->getMap()->getImageMapLayers().size() > 1 )
+
+  osg::ref_ptr<Map> map = mMapNode->getMap();
+
+  if( map->getImageMapLayers().size() > 1 || map->getHeightFieldMapLayers().size() > 1)
   {
     viewer.getDatabasePager()->clear();
-    QgsDebugMsg( "removeMapLayer" );
-    mMapNode->getMap()->removeMapLayer( mQgisMapLayer );
-    QgsDebugMsg( "addMapLayer" );
-    mTileSource = new QgsOsgEarthTileSource( mQGisIface );
-    mTileSource->initialize( "", 0 );
-    mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
-    mMapNode->getMap()->addMapLayer( mQgisMapLayer );
-    mQgisMapLayer->setCache( 0 ); //disable caching
   }
+
+  // Remove elevation layers
+  MapLayerList list = map->getHeightFieldMapLayers();
+  for( MapLayerList::iterator i = list.begin(); i != list.end(); i++ )
+  {
+    map->removeMapLayer( *i );
+  }
+
+  // Add elevation layers
+  QSettings settings;
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  QTableWidget* table = mSettingsDialog.elevationDatasources();
+  for(int i = 0; i < table->rowCount(); ++i)
+  {
+    QString type = table->item(i, 0)->text();
+    QString uri = table->item(i, 1)->text();
+    MapLayer* layer = 0;
+
+    if( "Raster" == type)
+    {
+      GDALOptions* options = new GDALOptions();
+      options->url() = uri.toStdString();
+      layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
+    }
+    else if ( "Worldwind" == type )
+    {
+      EarthFile* tmpEarth = new EarthFile(); //Hack for programatic WorldWind layer generation
+      std::string xml = "<map name=\"Dummy\" type=\"geocentric\"><heightfield name=\"WorldWind bil\" driver=\"worldwind\"><worldwind_cache>" + cacheDirectory.toStdString() + "/globe/worldwind_srtm</worldwind_cache></heightfield></map>";
+      std::stringstream strstr(xml);
+      tmpEarth->readXML( strstr, "" );
+      layer = tmpEarth->getMap()->getHeightFieldMapLayers().front();
+    }
+    else if ( "TMS" == type )
+    {
+      TMSOptions* options = new TMSOptions();
+      options->url() = uri.toStdString();
+      layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
+      //osgEarth 2.0 API:
+      //TMSOptions tms( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
+      //map->addElevationLayer( new osgEarth::ElevationLayer( "SRTM", tms ) );
+    }
+    map->addMapLayer( layer );
+    layer->setCache( 0 ); //TODO: from dialog
+  }
+
+  //remove QGIS layer
+  if( mQgisMapLayer )
+  {
+    QgsDebugMsg( "removeMapLayer" );
+    map->removeMapLayer( mQgisMapLayer );
+  }
+
+  //add QGIS layer
+  QgsDebugMsg( "addMapLayer" );
+  mTileSource = new QgsOsgEarthTileSource( mQGisIface );
+  mTileSource->initialize( "", 0 );
+  mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
+  map->addMapLayer( mQgisMapLayer );
+  mQgisMapLayer->setCache( 0 ); //disable caching
 }
 
 void GlobePlugin::unload()

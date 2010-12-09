@@ -26,11 +26,13 @@
     </heightfield>
     -->
     
+    <!--
     <heightfield name="WorldWind bil" driver="worldwind">
       <worldwind_cache>/home/pi/devel/gis/qgis/.qgis/cache/globe/worldwind_srtm</worldwind_cache>
       <cache_enabled>false</cache_enabled>
     </heightfield>
-    
+    -->
+
     <!--
     <heightfield name="aster_dem" driver="gdal">
       <url>/home/pi/data/geodata/Lech/ASTGTM_N47E010/ASTGTM_N47E010_dem.tif</url>
