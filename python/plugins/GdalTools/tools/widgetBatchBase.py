@@ -101,6 +101,10 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
         msg = QString( "Processing of the following files ended with error: <br><br>" ).append( self.errors.join( "<br><br>" ) )
         QErrorMessage( self ).showMessage( msg )
 
+      # load layers managing the render flag to avoid waste of time
+      canvas = self.iface.mapCanvas()
+      previousRenderFlag = canvas.renderFlag()
+      canvas.setRenderFlag( False )
       notCreatedList = QStringList()
       for item in self.outFiles:
         fileInfo = QFileInfo( item )
@@ -109,6 +113,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
             self.addLayerIntoCanvas( fileInfo )
         else:
           notCreatedList << item
+      canvas.setRenderFlag( previousRenderFlag )
 
       if notCreatedList.isEmpty():
         QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Operation completed." ) )
