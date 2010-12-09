@@ -25,27 +25,19 @@
       <url>http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml</url>
     </heightfield>
     -->
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
     <!--
     <heightfield name="WorldWind bil" driver="worldwind">
       <worldwind_cache>/home/marco/.qgis/cache/globe/worldwind_srtm</worldwind_cache>
       <cache_enabled>false</cache_enabled>
     </heightfield>
     -->
-<<<<<<< Updated upstream
 
-    <!--
-=======
-    
->>>>>>> Stashed changes
+
     <heightfield name="aster_dem" driver="gdal">
       <url>/home/marco/data/geodata/Lech/ASTGTM_N47E010/ASTGTM_N47E010_dem.tif</url>
       <cache_enabled>false</cache_enabled>
     </heightfield>
-    
+
     <!--
     <vertical_scale>2</vertical_scale>
     <sample_ratio>0.25</sample_ratio>
