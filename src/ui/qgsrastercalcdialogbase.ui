@@ -211,6 +211,9 @@
         <property name="text">
          <string>Add result to project</string>
         </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>
