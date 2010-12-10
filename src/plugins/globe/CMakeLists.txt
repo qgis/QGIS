@@ -27,6 +27,7 @@ SET (globe_plugin_MOC_HDRS
      globe_plugin.h
      globe_plugin_gui.h
      globe_plugin_dialog.h
+     qgsosgviewer.h
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)

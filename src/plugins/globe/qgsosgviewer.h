@@ -29,6 +29,7 @@ using Qt::WindowFlags;
 
 class QgsGLWidgetAdapter : public QGLWidget
 {
+  Q_OBJECT
     public:
 
         QgsGLWidgetAdapter( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WindowFlags f = 0 );
