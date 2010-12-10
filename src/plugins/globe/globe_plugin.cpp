@@ -76,6 +76,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     mElevationManager( NULL ),
     mObjectPlacer( NULL )
 {
+  mIsGlobeRunning = false;
 }
 
 //destructor
@@ -104,12 +105,19 @@ void GlobePlugin::initGui()
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
-  //connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
-  //         this, SLOT( layersChanged() ) );
+  connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
+           this, SLOT( layersChanged() ) );
+  //FIXME: fix sender objact, must be mSettingsDialog
+  connect( mQGisIface->mapCanvas(), SIGNAL( elevationDatasourcesChanged() ),
+           this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProjectCreated() ), this,
-           SLOT( blankProject() ) );
+           SLOT( blankProjectReady() ) );
+  //FIXME: fix sender objact, must be mSettingsDialog
+  connect( mQGisIface->mainWindow(), SIGNAL( globeClosed() ), this,
+           SLOT( setGlobeNotRunning() ) );
+
 }
 
 void GlobePlugin::run()
@@ -158,6 +166,8 @@ void GlobePlugin::run()
 #ifdef GLOBE_OSG_STANDALONE_VIEWER
   viewer.run();
 #endif
+
+  mIsGlobeRunning = true;
 }
 
 void GlobePlugin::settings()
@@ -259,7 +269,7 @@ void GlobePlugin::projectReady()
   mSettingsDialog.readElevationDatasources();
 }
 
-void GlobePlugin::blankProject()
+void GlobePlugin::blankProjectReady()
 {//TODO
   QMessageBox m;
   m.setText("new");
@@ -600,74 +610,80 @@ typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
 void GlobePlugin::layersChanged()
 {
   QgsDebugMsg( "layersChanged" );
+  if ( mIsGlobeRunning ){
+    osg::ref_ptr<Map> map = mMapNode->getMap();
 
-  osg::ref_ptr<Map> map = mMapNode->getMap();
-
-  if( map->getImageMapLayers().size() > 1 || map->getHeightFieldMapLayers().size() > 1)
-  {
-    viewer.getDatabasePager()->clear();
-  }
-
-  // Remove elevation layers
-  MapLayerList list = map->getHeightFieldMapLayers();
-  for( MapLayerList::iterator i = list.begin(); i != list.end(); i++ )
-  {
-    map->removeMapLayer( *i );
-  }
-
-  // Add elevation layers
-  QSettings settings;
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  QTableWidget* table = mSettingsDialog.elevationDatasources();
-  for(int i = 0; i < table->rowCount(); ++i)
-  {
-    QString type = table->item(i, 0)->text();
-    bool cache = table->item(i, 1)->checkState();
-    QString uri = table->item(i, 2)->text();
-    MapLayer* layer = 0;
-
-    if( "Raster" == type)
+    if( map->getImageMapLayers().size() > 1 || map->getHeightFieldMapLayers().size() > 1)
     {
-      GDALOptions* options = new GDALOptions();
-      options->url() = uri.toStdString();
-      layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
+      viewer.getDatabasePager()->clear();
     }
-    else if ( "Worldwind" == type )
-    {
-      EarthFile* tmpEarth = new EarthFile(); //Hack for programatic WorldWind layer generation
-      std::string xml = "<map name=\"Dummy\" type=\"geocentric\"><heightfield name=\"WorldWind bil\" driver=\"worldwind\"><worldwind_cache>" + cacheDirectory.toStdString() + "/globe/worldwind_srtm</worldwind_cache></heightfield></map>";
-      std::stringstream strstr(xml);
-      tmpEarth->readXML( strstr, "" );
-      layer = tmpEarth->getMap()->getHeightFieldMapLayers().front();
-    }
-    else if ( "TMS" == type )
-    {
-      TMSOptions* options = new TMSOptions();
-      options->url() = uri.toStdString();
-      layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
-      //osgEarth 2.0 API:
-      //TMSOptions tms( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
-      //map->addElevationLayer( new osgEarth::ElevationLayer( "SRTM", tms ) );
-    }
-    map->addMapLayer( layer );
 
-    if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
+    // Remove elevation layers
+    MapLayerList list = map->getHeightFieldMapLayers();
+    for( MapLayerList::iterator i = list.begin(); i != list.end(); i++ )
+    {
+      map->removeMapLayer( *i );
+    }
+
+    // Add elevation layers
+    QSettings settings;
+    QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+    QTableWidget* table = mSettingsDialog.elevationDatasources();
+    for(int i = 0; i < table->rowCount(); ++i)
+    {
+      QString type = table->item(i, 0)->text();
+      bool cache = table->item(i, 1)->checkState();
+      QString uri = table->item(i, 2)->text();
+      MapLayer* layer = 0;
+
+      if( "Raster" == type)
+      {
+        GDALOptions* options = new GDALOptions();
+        options->url() = uri.toStdString();
+        layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
+      }
+      else if ( "Worldwind" == type )
+      {
+        EarthFile* tmpEarth = new EarthFile(); //Hack for programatic WorldWind layer generation
+        std::string xml = "<map name=\"Dummy\" type=\"geocentric\"><heightfield name=\"WorldWind bil\" driver=\"worldwind\"><worldwind_cache>" + cacheDirectory.toStdString() + "/globe/worldwind_srtm</worldwind_cache></heightfield></map>";
+        std::stringstream strstr(xml);
+        tmpEarth->readXML( strstr, "" );
+        layer = tmpEarth->getMap()->getHeightFieldMapLayers().front();
+      }
+      else if ( "TMS" == type )
+      {
+        TMSOptions* options = new TMSOptions();
+        options->url() = uri.toStdString();
+        layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
+        //osgEarth 2.0 API:
+        //TMSOptions tms( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
+        //map->addElevationLayer( new osgEarth::ElevationLayer( "SRTM", tms ) );
+      }
+      map->addMapLayer( layer );
+
+      if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
+    }
+
+    //remove QGIS layer
+    if( mQgisMapLayer )
+    {
+      QgsDebugMsg( "removeMapLayer" );
+      map->removeMapLayer( mQgisMapLayer );
+    }
+
+    //add QGIS layer
+    QgsDebugMsg( "addMapLayer" );
+    mTileSource = new QgsOsgEarthTileSource( mQGisIface );
+    mTileSource->initialize( "", 0 );
+    mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
+    map->addMapLayer( mQgisMapLayer );
+    mQgisMapLayer->setCache( 0 ); //disable caching
   }
-
-  //remove QGIS layer
-  if( mQgisMapLayer )
+  else
   {
-    QgsDebugMsg( "removeMapLayer" );
-    map->removeMapLayer( mQgisMapLayer );
+    QgsDebugMsg( "EXITING layersChanged, globe not running" );
+    return;
   }
-
-  //add QGIS layer
-  QgsDebugMsg( "addMapLayer" );
-  mTileSource = new QgsOsgEarthTileSource( mQGisIface );
-  mTileSource->initialize( "", 0 );
-  mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
-  map->addMapLayer( mQgisMapLayer );
-  mQgisMapLayer->setCache( 0 ); //disable caching
 }
 
 void GlobePlugin::unload()
@@ -723,6 +739,11 @@ void GlobePlugin::copyFolder( QString sourceFolder, QString destFolder )
     QString destName = destFolder + "/" + files[i];
     copyFolder( srcName, destName );
   }
+}
+
+void GlobePlugin::setGlobeNotRunning()
+{
+  mIsGlobeRunning = false;
 }
 
 bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )

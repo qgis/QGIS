@@ -70,7 +70,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     void syncExtent();
 
     void projectReady();
-    void blankProject();
+    void blankProjectReady();
+    void setGlobeNotRunning();
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );
@@ -86,7 +87,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //!  Setup map controls
     void setupControls();
 
-  private:
+  private://! Checks if the globe is open
     int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
@@ -114,6 +115,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarthUtil::ElevationManager* mElevationManager;
     //! Object placer
     osgEarthUtil::ObjectPlacer* mObjectPlacer;
+    //! tracks if the globe is open
+    bool mIsGlobeRunning;
 };
 
 class FlyToExtentHandler : public osgGA::GUIEventHandler

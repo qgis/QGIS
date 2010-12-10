@@ -85,3 +85,10 @@ void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 {
     _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_DOWN : osgGA::GUIEventAdapter::SCROLL_UP);
 }
+
+//reimplement the close event to emit a signal
+void QgsGLWidgetAdapter::closeEvent(QCloseEvent *event)
+{
+  emit globeClosed();
+  event->accept();
+}

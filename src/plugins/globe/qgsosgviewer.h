@@ -48,9 +48,13 @@ class QgsGLWidgetAdapter : public QGLWidget
         virtual void mouseReleaseEvent( QMouseEvent* event );
         virtual void mouseMoveEvent( QMouseEvent* event );
         virtual void wheelEvent( QWheelEvent * event );
+        virtual void closeEvent(QCloseEvent *event);
 
         osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
-        
+
+    signals:
+      void globeClosed();
+
 };
 
 
@@ -70,12 +74,12 @@ class QgsOsgViewer : public osgViewer::Viewer, public QgsGLWidgetAdapter
             connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
             _timer.start(10);
         }
-      
+
         virtual void paintGL()
         {
             frame();
         }
-    
+
     protected:
 
         QTimer _timer;
