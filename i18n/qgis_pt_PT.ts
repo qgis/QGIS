@@ -1814,7 +1814,7 @@ Você de terminá-lo mesmo assim?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="unfinished">Parâmetros inválidos.</translation>
+        <translation>Parâmetros inválidos.</translation>
     </message>
 </context>
 <context>
@@ -8212,7 +8212,7 @@ Esta cópia do QGIS foi construída com QWT %1.</translation>
     <message>
         <location filename="../src/ui/qgisappbase.ui" line="13"/>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
 </context>
 <context>
@@ -8421,7 +8421,7 @@ ou entre em contato pelo e-mail qgisbrasil@gmail.com</translation>
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="111"/>
         <source>Select frame color</source>
-        <translation type="unfinished">Selecione a cor da moldura</translation>
+        <translation>Seleccione a cor da moldura</translation>
     </message>
 </context>
 <context>
@@ -8704,7 +8704,7 @@ ou entre em contato pelo e-mail qgisbrasil@gmail.com</translation>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="203"/>
         <source>Attributes - %1</source>
-        <translation type="unfinished">Atributos - %1</translation>
+        <translation>Atributos - %1</translation>
     </message>
 </context>
 <context>
@@ -8783,13 +8783,13 @@ ou entre em contato pelo e-mail qgisbrasil@gmail.com</translation>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="149"/>
         <source>Ascending</source>
-        <translation type="unfinished">Crescente</translation>
+        <translation>Crescente</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="71"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="77"/>
         <source>Descending</source>
-        <translation type="unfinished">Decrescente</translation>
+        <translation>Decrescente</translation>
     </message>
 </context>
 <context>
@@ -8840,7 +8840,7 @@ ou entre em contato pelo e-mail qgisbrasil@gmail.com</translation>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledelegate.cpp" line="110"/>
         <source>Attribute changed</source>
-        <translation type="unfinished">Atributo modificado</translation>
+        <translation>Atributo modificado</translation>
     </message>
 </context>
 <context>
@@ -9156,7 +9156,7 @@ ou entre em contato pelo e-mail qgisbrasil@gmail.com</translation>
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="501"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributos modificados</translation>
     </message>
 </context>
 <context>
@@ -10248,7 +10248,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished">Opções gerais</translation>
+        <translation>Opções gerais</translation>
     </message>
 </context>
 <context>
@@ -10324,7 +10324,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/core/composer/qgscomposerlegend.cpp" line="32"/>
         <source>Legend</source>
-        <translation type="unfinished">Legenda</translation>
+        <translation>Legenda</translation>
     </message>
 </context>
 <context>
@@ -11105,7 +11105,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="33"/>
         <source>General options</source>
-        <translation type="unfinished">Opções gerais</translation>
+        <translation>Opções gerais</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="62"/>
@@ -11246,7 +11246,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="130"/>
         <source>Quantum GIS</source>
-        <translation type="unfinished">Quantum GIS</translation>
+        <translation>Quantum GIS</translation>
     </message>
 </context>
 <context>
@@ -12191,7 +12191,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="13"/>
         <source>Delete Attributes</source>
-        <translation type="unfinished">Excluir atributos</translation>
+        <translation>Apagar atributos</translation>
     </message>
 </context>
 <context>
@@ -12541,7 +12541,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdisplayanglebase.ui" line="14"/>
         <source>Angle</source>
-        <translation type="unfinished">Ângulo</translation>
+        <translation>Ângulo</translation>
     </message>
 </context>
 <context>
@@ -12938,7 +12938,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="25"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -16215,7 +16215,7 @@ na linha %2 coluna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3101"/>
         <source>Selected categories</source>
-        <translation type="unfinished">Categorias selecionadas</translation>
+        <translation>Categorias seleccionadas</translation>
     </message>
 </context>
 <context>
@@ -17247,12 +17247,12 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="39"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished">Ctrl+Shift+V</translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="40"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished">Ctrl+Shift+C</translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
 </context>
 <context>
@@ -17827,7 +17827,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="47"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="55"/>
         <source>&amp;Interpolation</source>
-        <translation type="unfinished">&amp;Interpolação</translation>
+        <translation>&amp;Interpolação</translation>
     </message>
 </context>
 <context>
@@ -18277,12 +18277,12 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="418"/>
         <source>pt</source>
-        <translation type="unfinished"></translation>
+        <translation>pt</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="421"/>
         <source>map units</source>
-        <translation type="unfinished">unidades do mapa</translation>
+        <translation>unidades de mapa</translation>
     </message>
 </context>
 <context>
@@ -18791,14 +18791,14 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="28"/>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="73"/>
         <source>Millimeter</source>
-        <translation type="unfinished">Milímetro</translation>
+        <translation>Milímetro</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="29"/>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="77"/>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="98"/>
         <source>Map units</source>
-        <translation type="unfinished">Unidade do Mapa</translation>
+        <translation>Unidade de Mapa</translation>
     </message>
 </context>
 <context>
@@ -20003,17 +20003,17 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="52"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished">Número inteiro (unidade)</translation>
+        <translation>Número inteiro (unidade)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="53"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished">Número decimal (real)</translation>
+        <translation>Número decimal (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="54"/>
         <source>Text (string)</source>
-        <translation type="unfinished">Texto (string)</translation>
+        <translation>Texto (string)</translation>
     </message>
 </context>
 <context>
@@ -20815,7 +20815,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/osm/osmprovider.cpp" line="412"/>
         <source>Open Street Map format</source>
-        <translation type="unfinished">Formato Open Street Map</translation>
+        <translation>Formato Open Street Map</translation>
     </message>
 </context>
 <context>
@@ -20998,17 +20998,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="193"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished">número inteiro (inteiro)</translation>
+        <translation>Número inteiro (inteiro)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="194"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished">número decimal (real)</translation>
+        <translation>Número decimal (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="195"/>
         <source>Text (string)</source>
-        <translation type="unfinished">Texto (string)</translation>
+        <translation>Texto (string)</translation>
     </message>
 </context>
 <context>
@@ -23381,7 +23381,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">nenhuma mensagem de erro recebida</translation>
+        <translation>nenhuma mensagem de erro recebida</translation>
     </message>
 </context>
 <context>
@@ -27158,22 +27158,22 @@ O erro foi:
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="121"/>
         <source>Text</source>
-        <translation type="unfinished">Texto</translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="120"/>
         <source>Binary object (BLOB)</source>
-        <translation type="unfinished">Objeto binário (BLOB)</translation>
+        <translation>Objecto binário (BLOB)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="122"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished">Número decimal (dobrado)</translation>
+        <translation>Número decimal (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="123"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished">Número inteiro (integer)</translation>
+        <translation>Número inteiro (integer)</translation>
     </message>
 </context>
 <context>
@@ -28513,7 +28513,7 @@ Você deseja substituir a [%2] relação?</translation>
     <message>
         <location filename="../src/ui/qgstilescalewidgetbase.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished">Formulário</translation>
+        <translation>Formulário</translation>
     </message>
 </context>
 <context>
