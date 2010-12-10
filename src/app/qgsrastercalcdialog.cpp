@@ -212,11 +212,13 @@ void QgsRasterCalcDialog::on_mButtonBox_accepted()
   //save last output format
   QSettings s;
   s.setValue( "/RasterCalculator/lastOutputFormat", QVariant( mOutputFormatComboBox->currentText() ) );
+  s.setValue( "/RasterCalculator/lastOutputDir", QVariant( QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() ) );
 }
 
 void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
 {
-  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ) );
+  QSettings s;
+  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ), s.value( "/RasterCalculator/lastOutputDir" ).toString() );
   if ( !saveFileName.isNull() )
   {
     mOutputLayerLineEdit->setText( saveFileName );
