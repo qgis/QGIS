@@ -113,7 +113,7 @@ void GlobePlugin::initGui()
            SLOT( projectReady() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProjectCreated() ), this,
            SLOT( blankProjectReady() ) );
-  connect( &viewer, SIGNAL( globeClosed() ), this,
+  connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
 
 }
@@ -741,9 +741,7 @@ void GlobePlugin::copyFolder( QString sourceFolder, QString destFolder )
 
 void GlobePlugin::setGlobeNotRunning()
 {
-  QMessageBox m;
-  m.setText("globe not running");
-  m.exec();
+  QgsDebugMsg( "Globe Closed" );
   mIsGlobeRunning = false;
 }
 

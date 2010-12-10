@@ -25,7 +25,6 @@
 #include "globe_plugin_dialog.h"
 #include "Controls"
 #include <QObject>
-#include <QDockWidget>
 #include <osgEarth/MapNode>
 #include <osgEarth/MapLayer>
 #include <osgEarthUtil/EarthManipulator>
@@ -98,7 +97,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! OSG Viewer
     QgsOsgViewer viewer;
     //! Dock widget for viewer
-    QDockWidget mQDockWidget;
+    QDockWidgetGlobe mQDockWidget;
     //! Settings Dialog
     QgsGlobePluginDialog mSettingsDialog;
     //! OSG root node

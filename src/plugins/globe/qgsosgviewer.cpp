@@ -23,6 +23,22 @@
 #include <QString>
 #include <QMessageBox>
 
+QDockWidgetGlobe::QDockWidgetGlobe(const QString &title, QWidget *parent, Qt::WindowFlags flags):
+    QDockWidget(title, parent, flags)
+{
+};
+
+QDockWidgetGlobe::QDockWidgetGlobe(QWidget *parent, Qt::WindowFlags flags):
+    QDockWidget(parent, flags)
+{
+};
+
+//reimplement the close event to emit a signal
+void QDockWidgetGlobe::closeEvent(QCloseEvent* event)
+{
+  emit globeClosed();
+  event->accept();
+}
 
 QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, const QGLWidget * shareWidget, WindowFlags f):
     QGLWidget(parent, shareWidget, f)
@@ -84,14 +100,4 @@ void QgsGLWidgetAdapter::mouseMoveEvent( QMouseEvent* event )
 void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 {
     _gw->getEventQueue()->mouseScroll((event->delta()>0) ? osgGA::GUIEventAdapter::SCROLL_DOWN : osgGA::GUIEventAdapter::SCROLL_UP);
-}
-
-//reimplement the close event to emit a signal
-void QgsGLWidgetAdapter::closeEvent(QCloseEvent *event)
-{
-  QMessageBox m;
-  m.setText("close event");
-  m.exec();
-  emit globeClosed();
-  event->accept();
 }

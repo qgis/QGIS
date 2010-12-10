@@ -22,10 +22,29 @@
 #include <osgViewer/Viewer>
 
 #include <QtOpenGL/QGLWidget>
+#include <QtGui/QDockWidget>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QTimer>
 
 using Qt::WindowFlags;
+
+class QDockWidgetGlobe : public QDockWidget
+{
+  Q_OBJECT
+
+    public:
+      QDockWidgetGlobe(const QString& title, QWidget* parent = 0, WindowFlags flags = 0);
+      QDockWidgetGlobe(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+
+      virtual ~QDockWidgetGlobe() {}
+
+    protected:
+      virtual void closeEvent(QCloseEvent *event);
+
+    signals:
+      void globeClosed();
+};
+
 
 class QgsGLWidgetAdapter : public QGLWidget
 {
@@ -49,12 +68,9 @@ class QgsGLWidgetAdapter : public QGLWidget
         virtual void mouseReleaseEvent( QMouseEvent* event );
         virtual void mouseMoveEvent( QMouseEvent* event );
         virtual void wheelEvent( QWheelEvent * event );
-        virtual void closeEvent(QCloseEvent *event);
 
         osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 
-    signals:
-      void globeClosed();
 
 };
 
