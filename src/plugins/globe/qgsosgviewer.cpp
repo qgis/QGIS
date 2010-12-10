@@ -89,6 +89,9 @@ void QgsGLWidgetAdapter::wheelEvent(QWheelEvent *event)
 //reimplement the close event to emit a signal
 void QgsGLWidgetAdapter::closeEvent(QCloseEvent *event)
 {
+  QMessageBox m;
+  m.setText("close event");
+  m.exec();
   emit globeClosed();
   event->accept();
 }

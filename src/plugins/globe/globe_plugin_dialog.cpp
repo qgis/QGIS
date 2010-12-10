@@ -309,6 +309,7 @@ void QgsGlobePluginDialog::saveElevationDatasources()
   if (keysCount > rowsCount )
   {
     //elminate superfluous keys
+    somethingChanged = true;
     for (int i = rowsCount; i < keysCount; ++i) {
       QString iNum;
       iNum.setNum(i);

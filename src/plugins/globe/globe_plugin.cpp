@@ -107,15 +107,13 @@ void GlobePlugin::initGui()
            this, SLOT( extentsChanged() ) );
   connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
            this, SLOT( layersChanged() ) );
-  //FIXME: fix sender objact, must be mSettingsDialog
-  connect( mQGisIface->mapCanvas(), SIGNAL( elevationDatasourcesChanged() ),
+  connect( &mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
            this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProjectCreated() ), this,
            SLOT( blankProjectReady() ) );
-  //FIXME: fix sender objact, must be mSettingsDialog
-  connect( mQGisIface->mainWindow(), SIGNAL( globeClosed() ), this,
+  connect( &viewer, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
 
 }
@@ -272,7 +270,7 @@ void GlobePlugin::projectReady()
 void GlobePlugin::blankProjectReady()
 {//TODO
   QMessageBox m;
-  m.setText("new");
+  m.setText("new project loaded");
   m.exec();
   mSettingsDialog.elevationDatasources()->clearContents();
   mSettingsDialog.elevationDatasources()->setRowCount(0);
@@ -743,6 +741,9 @@ void GlobePlugin::copyFolder( QString sourceFolder, QString destFolder )
 
 void GlobePlugin::setGlobeNotRunning()
 {
+  QMessageBox m;
+  m.setText("globe not running");
+  m.exec();
   mIsGlobeRunning = false;
 }
 
