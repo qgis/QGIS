@@ -132,6 +132,7 @@ void GlobePlugin::run()
   osgViewer::Viewer viewer;
 #endif
 
+  mIsGlobeRunning = true;
   setupProxy();
 
   // install the programmable manipulator.
@@ -165,7 +166,6 @@ void GlobePlugin::run()
   viewer.run();
 #endif
 
-  mIsGlobeRunning = true;
 }
 
 void GlobePlugin::settings()
@@ -607,8 +607,8 @@ typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
 
 void GlobePlugin::layersChanged()
 {
-  QgsDebugMsg( "layersChanged" );
   if ( mIsGlobeRunning ){
+    QgsDebugMsg( "layersChanged: Globe Running, executing" );
     osg::ref_ptr<Map> map = mMapNode->getMap();
 
     if( map->getImageMapLayers().size() > 1 || map->getHeightFieldMapLayers().size() > 1)
@@ -679,7 +679,7 @@ void GlobePlugin::layersChanged()
   }
   else
   {
-    QgsDebugMsg( "EXITING layersChanged, globe not running" );
+    QgsDebugMsg( "layersChanged: Globe NOT running, skipping" );
     return;
   }
 }
