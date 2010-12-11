@@ -19,11 +19,11 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName ): mType( tRaste
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
 {
-  if( mLeft )
+  if ( mLeft )
   {
     delete mLeft;
   }
-  if( mRight )
+  if ( mRight )
   {
     delete mRight;
   }
@@ -34,10 +34,10 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   //if type is raster ref: return a copy of the corresponding matrix
 
   //if type is operator, call the proper matrix operations
-  if( mType == tRasterRef )
+  if ( mType == tRasterRef )
   {
     QMap<QString, QgsRasterMatrix*>::iterator it = rasterData.find( mRasterName );
-    if( it == rasterData.end() )
+    if ( it == rasterData.end() )
     {
       return false;
     }
@@ -48,20 +48,20 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     result.setData(( *it )->nColumns(), ( *it )->nRows(), data, ( *it )->nodataValue() );
     return true;
   }
-  else if( mType == tOperator )
+  else if ( mType == tOperator )
   {
     QgsRasterMatrix leftMatrix, rightMatrix;
     QgsRasterMatrix resultMatrix;
-    if( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
+    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
     {
       return false;
     }
-    if( mRight && !mRight->calculate( rasterData, rightMatrix ) )
+    if ( mRight && !mRight->calculate( rasterData, rightMatrix ) )
     {
       return false;
     }
 
-    switch( mOperator )
+    switch ( mOperator )
     {
       case opPLUS:
         leftMatrix.add( rightMatrix );
@@ -96,6 +96,12 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
       case opLE:
         leftMatrix.lesserEqual( rightMatrix );
         break;
+      case opAND:
+        leftMatrix.logicalAnd( rightMatrix );
+        break;
+      case opOR:
+        leftMatrix.logicalOr( rightMatrix );
+        break;
       case opSQRT:
         leftMatrix.squareRoot();
         break;
@@ -125,7 +131,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     result.setData( newNColumns, newNRows, leftMatrix.takeData(), leftMatrix.nodataValue() );
     return true;
   }
-  else if( mType == tNumber )
+  else if ( mType == tNumber )
   {
     float* data = new float[1];
     data[0] = mNumber;

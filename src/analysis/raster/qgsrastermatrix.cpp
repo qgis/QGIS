@@ -122,6 +122,16 @@ bool QgsRasterMatrix::lesserEqual( const QgsRasterMatrix& other )
   return twoArgumentOperation( opLE, other );
 }
 
+bool QgsRasterMatrix::logicalAnd( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opAND, other );
+}
+
+bool QgsRasterMatrix::logicalOr( const QgsRasterMatrix& other )
+{
+  return twoArgumentOperation( opOR, other );
+}
+
 bool QgsRasterMatrix::squareRoot()
 {
   return oneArgumentOperation( opSQRT );
@@ -266,6 +276,12 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
       case opLE:
         mData[0] = mData[0] <= other.number() ? 1.0f : 0.0f;
         break;
+      case opAND:
+        mData[0] = mData[0] && other.number() ? 1.0f : 0.0f;
+        break;
+      case opOR:
+        mData[0] = mData[0] || other.number() ? 1.0f : 0.0f;
+        break;
     }
     return true;
   }
@@ -334,6 +350,12 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
             break;
           case opLE:
             mData[i] = value1 <= value2 ? 1.0f : 0.0f;
+            break;
+          case opAND:
+            mData[i] = value1 && value2 ? 1.0f : 0.0f;
+            break;
+          case opOR:
+            mData[i] = value1 || value2 ? 1.0f : 0.0f;
             break;
         }
       }
@@ -417,6 +439,12 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         case opLE:
           mData[i] = value <= matrix[i] ? 1.0f : 0.0f;
           break;
+        case opAND:
+          mData[i] = value && matrix[i] ? 1.0f : 0.0f;
+          break;
+        case opOR:
+          mData[i] = value || matrix[i] ? 1.0f : 0.0f;
+          break;
       }
     }
     return true;
@@ -490,6 +518,12 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
           break;
         case opLE:
           mData[i] = mData[i] <= value ? 1.0f : 0.0f;
+          break;
+        case opAND:
+          mData[i] = mData[i] && value ? 1.0f : 0.0f;
+          break;
+        case opOR:
+          mData[i] = mData[i] || value ? 1.0f : 0.0f;
           break;
       }
     }
