@@ -68,6 +68,13 @@ class QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
     void on_mATanButton_clicked();
     void on_mOpenBracketPushButton_clicked();
     void on_mCloseBracketPushButton_clicked();
+    void on_mLessButton_clicked();
+    void on_mGreaterButton_clicked();
+    void on_mEqualButton_clicked();
+    void on_mLesserEqualButton_clicked();
+    void on_mGreaterEqualButton_clicked();
+    void on_mAndButton_clicked();
+    void on_mOrButton_clicked();
 
   private:
     //insert available GDAL drivers that support the create() option

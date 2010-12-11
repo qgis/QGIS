@@ -55,6 +55,8 @@
 %type <node> root
 %type <node> raster_exp
 
+%left AND
+%left OR
 %left NE
 %left GE
 %left LE
@@ -71,6 +73,8 @@ root: raster_exp{}
 
 raster_exp:
   FUNCTION '(' raster_exp ')'   { $$ = new QgsRasterCalcNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
+  | raster_exp AND raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opAND, $1, $3 ); joinTmpNodes($$,$1,$3); }
+  | raster_exp OR raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opOR, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp '=' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opEQ, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp NE raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opNE, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp '>' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opGT, $1, $3 ); joinTmpNodes($$, $1, $3); }

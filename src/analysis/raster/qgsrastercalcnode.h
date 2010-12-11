@@ -55,6 +55,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opLT,         // <
       opGE,         // >=
       opLE,         // <=
+      opAND,
+      opOR
     };
 
     QgsRasterCalcNode();

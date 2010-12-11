@@ -35,6 +35,8 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opLT,         // <
       opGE,         // >=
       opLE,         // <=
+      opAND,
+      opOR
     };
 
     enum OneArgOperator
@@ -85,6 +87,8 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool lesserThan( const QgsRasterMatrix& other );
     bool greaterEqual( const QgsRasterMatrix& other );
     bool lesserEqual( const QgsRasterMatrix& other );
+    bool logicalAnd( const QgsRasterMatrix& other );
+    bool logicalOr( const QgsRasterMatrix& other );
 
     bool squareRoot();
     bool sinus();
@@ -100,7 +104,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     float* mData;
     double mNodataValue;
 
-    /**+,-,*,/,^,<,>,<=,>=,=,!=*/
+    /**+,-,*,/,^,<,>,<=,>=,=,!=, and, or*/
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other );
     /*sqrt, sin, cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );

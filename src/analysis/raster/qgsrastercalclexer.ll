@@ -58,6 +58,8 @@ raster_band_ref ({raster_ref_char}+)@{dig}
 "acos" { rasterlval.op = QgsRasterCalcNode::opACOS; return FUNCTION;}
 "atan" { rasterlval.op = QgsRasterCalcNode::opATAN; return FUNCTION;}
 
+"AND" { return AND; }
+"OR" { return OR; }
 "!=" { return NE; }
 "<=" { return LE; }
 ">=" { return GE; }

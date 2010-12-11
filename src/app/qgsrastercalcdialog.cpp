@@ -389,3 +389,38 @@ void QgsRasterCalcDialog::on_mCloseBracketPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( " ) " );
 }
+
+void QgsRasterCalcDialog::on_mLessButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " < " );
+}
+
+void QgsRasterCalcDialog::on_mGreaterButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " > " );
+}
+
+void QgsRasterCalcDialog::on_mEqualButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " = " );
+}
+
+void QgsRasterCalcDialog::on_mLesserEqualButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " <= " );
+}
+
+void QgsRasterCalcDialog::on_mGreaterEqualButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " >= " );
+}
+
+void QgsRasterCalcDialog::on_mAndButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " AND " );
+}
+
+void QgsRasterCalcDialog::on_mOrButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " OR " );
+}
