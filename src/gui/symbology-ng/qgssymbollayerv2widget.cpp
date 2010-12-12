@@ -769,8 +769,11 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( QWidget* par
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
   connect( btnColor, SIGNAL( clicked() ), this, SLOT( setColor() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle( double ) ) );
+  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
+  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( widgetChar, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
 }
+
 
 void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
@@ -785,6 +788,15 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinSize->setValue( mLayer->size() );
   btnColor->setColor( mLayer->color() );
   spinAngle->setValue( mLayer->angle() );
+
+  //block
+  spinOffsetX->blockSignals( true );
+  spinOffsetX->setValue( mLayer->offset().x() );
+  spinOffsetX->blockSignals( false );
+  spinOffsetY->blockSignals( true );
+  spinOffsetY->setValue( mLayer->offset().y() );
+  spinOffsetY->blockSignals( false );
+
 }
 
 QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
@@ -825,6 +837,12 @@ void QgsFontMarkerSymbolLayerV2Widget::setAngle( double angle )
 void QgsFontMarkerSymbolLayerV2Widget::setCharacter( const QChar& chr )
 {
   mLayer->setCharacter( chr );
+  emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setOffset()
+{
+  mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
 
