@@ -4192,43 +4192,43 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Um erro ocorreu enquanto executava o seguinte código Python:</translation>
+        <translation>Ocorreu um erro durante a execução do seguinte código Python:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Versão do Python:</translation>
+        <translation>Versão do Python:</translation>
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="unfinished">Versão do QGIS</translation>
+        <translation>Versão do QGIS:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Caminho para o Python:</translation>
+        <translation>Caminho para o Python:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Erro Python</translation>
+        <translation>Erro Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished">Impossível carregar complemento &apos;%1&apos; de [&apos;%2&apos;]</translation>
+        <translation>Não foi possível carregar a Extensão &apos;%1&apos; de [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Impossível carregar complemento %1</translation>
+        <translation>Não foi possível carregar a extensão %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 devido um erro ao chamar seu método classFactory()</translation>
+        <translation>%1 devido um erro ao chamar o método classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 devido um erro ao chamar seu método initGui()</translation>
+        <translation>%1 devido um erro ao chamar o método initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Erro enquanto carregava o complemento %1</translation>
+        <translation>Erro durante o carregamento da extensão %1</translation>
     </message>
 </context>
 <context>
@@ -5732,7 +5732,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
         <location filename="../src/app/qgisapp.cpp" line="2814"/>
         <location filename="../src/app/qgisapp.cpp" line="6594"/>
         <source>Invalid Data Source</source>
-        <translation type="unfinished">Fonte de Dados Inválida</translation>
+        <translation>Fonte de Dados Inválida</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2986"/>
@@ -5754,22 +5754,22 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5327"/>
         <source>There is a new version of QGIS available</source>
-        <translation type="unfinished">Existe uma nova versão do QGIS disponível</translation>
+        <translation>Existe uma nova versão do QGIS disponível</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5333"/>
         <source>You are running a development version of QGIS</source>
-        <translation type="unfinished">Você está executando uma versão de desenvolvimento do QGIS</translation>
+        <translation>Está a usar uma versão de desenvolvimento do QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5337"/>
         <source>You are running the current version of QGIS</source>
-        <translation type="unfinished">Você está rodando a versão atual do QGIS</translation>
+        <translation>Está a usar a versão actual do QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5342"/>
         <source>Would you like more information?</source>
-        <translation type="unfinished">Gostaria de obter mais informações?</translation>
+        <translation>Gostaria de obter mais informações?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5345"/>
@@ -5777,27 +5777,27 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
         <location filename="../src/app/qgisapp.cpp" line="5363"/>
         <location filename="../src/app/qgisapp.cpp" line="5391"/>
         <source>QGIS Version Information</source>
-        <translation type="unfinished">Informações sobre a versão do QGIS</translation>
+        <translation>Informações sobre a versão do QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5363"/>
         <source>Unable to get current version information from server</source>
-        <translation type="unfinished">Impossível obter informações sobre a versão atual</translation>
+        <translation>Não foi possível obter informações do servidor sobre a versão actual</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5377"/>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished">Conexão recusada - o servidor pode estar indisponível</translation>
+        <translation>Ligação recusada - o servidor pode estar indisponível</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5380"/>
         <source>QGIS server was not found</source>
-        <translation type="unfinished">Servidor do QGIS não foi encontrado</translation>
+        <translation>Servidor do QGIS não foi encontrado</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4120"/>
         <source>Problem deleting features</source>
-        <translation type="unfinished">Problema ao excluir feições</translation>
+        <translation type="unfinished">Problema ao apagar elementos</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4121"/>
@@ -5877,12 +5877,12 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="400"/>
         <source>Reading settings</source>
-        <translation type="unfinished">Lendo características</translation>
+        <translation>A ler configurações</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="403"/>
         <source>Setting up the GUI</source>
-        <translation type="unfinished">Configurar o GUI</translation>
+        <translation>Configurar a Interface Gráfica de Utilizador</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="395"/>
@@ -5892,7 +5892,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="480"/>
         <source>Restoring loaded plugins</source>
-        <translation type="unfinished">Restaurando complementos carregados</translation>
+        <translation>A recuperar as extensões carregadas</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="490"/>
@@ -5907,62 +5907,62 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="522"/>
         <source>QGIS Ready!</source>
-        <translation type="unfinished">QGIS pronto!</translation>
+        <translation>QGIS preparado!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="669"/>
         <source>&amp;New Project</source>
-        <translation type="unfinished">&amp;Novo Projeto</translation>
+        <translation>&amp;Novo Projecto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>New Project</source>
-        <translation type="unfinished">Novo Projeto</translation>
+        <translation>Novo Projecto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="674"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished">&amp;Abrir Projeto...</translation>
+        <translation>&amp;Abrir Projecto...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="676"/>
         <source>Open a Project</source>
-        <translation type="unfinished">Abre um Projeto</translation>
+        <translation>Abrir um Projecto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>&amp;Save Project</source>
-        <translation type="unfinished">Salvar &amp;Projeto</translation>
+        <translation>&amp;Guardar Projecto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="681"/>
         <source>Save Project</source>
-        <translation type="unfinished">Salvar Projeto</translation>
+        <translation>Guardar Projecto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Save Project &amp;As...</source>
-        <translation type="unfinished">Salvar Projeto &amp;Como...</translation>
+        <translation>Guardar Projecto &amp;Como...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="686"/>
         <source>Save Project under a new name</source>
-        <translation type="unfinished">Salva Projeto com um novo nome</translation>
+        <translation>Guardar Projecto com um novo nome</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="689"/>
         <source>Save as Image...</source>
-        <translation type="unfinished">Salva como imagem...</translation>
+        <translation>Guardar como imagem...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="691"/>
         <source>Save map as image</source>
-        <translation type="unfinished">Salva mapa como imagem</translation>
+        <translation>Guardar mapa como imagem</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="703"/>
         <source>Exit</source>
-        <translation type="unfinished">Sair</translation>
+        <translation>Sair</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="704"/>
@@ -6041,32 +6041,32 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1162"/>
         <source>Project Properties...</source>
-        <translation type="unfinished">Propriedades do projeto...</translation>
+        <translation>Propriedades do projecto...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1164"/>
         <source>Set project properties</source>
-        <translation type="unfinished">Gerencie as propriedades do projeto</translation>
+        <translation>Definir as propriedades do projecto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1167"/>
         <source>Options...</source>
-        <translation type="unfinished">Opções...</translation>
+        <translation>Opções...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1169"/>
         <source>Change various QGIS options</source>
-        <translation type="unfinished">Modificar várias opções do QGIS</translation>
+        <translation>Alterar várias opções do QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1208"/>
         <source>Help Contents</source>
-        <translation type="unfinished">Conteúdo da Ajuda</translation>
+        <translation>Conteúdos de Ajuda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1214"/>
         <source>Help Documentation</source>
-        <translation type="unfinished">Documentação da ajuda</translation>
+        <translation>Documentação de Ajuda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1219"/>
@@ -6103,24 +6103,24 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="999"/>
         <source>Refresh</source>
-        <translation type="unfinished">Atualizar</translation>
+        <translation>Actualizar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1000"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1001"/>
         <source>Refresh Map</source>
-        <translation type="unfinished">Atualizar mapa</translation>
+        <translation>Actualizar mapa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="886"/>
         <location filename="../src/app/qgisapp.cpp" line="888"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Aproximar</translation>
+        <translation>Aproximar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="887"/>
@@ -6132,7 +6132,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
         <location filename="../src/app/qgisapp.cpp" line="891"/>
         <location filename="../src/app/qgisapp.cpp" line="893"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Afastar</translation>
+        <translation>Afastar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="892"/>
@@ -6143,7 +6143,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="952"/>
         <source>Zoom Full</source>
-        <translation type="unfinished">Ver tudo</translation>
+        <translation>Ver tudo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
@@ -6153,12 +6153,12 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="881"/>
         <source>Pan Map</source>
-        <translation type="unfinished">Panorâmica no Mapa</translation>
+        <translation>Deslocar Mapa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="883"/>
         <source>Pan the map</source>
-        <translation type="unfinished">Panorâmica no mapa</translation>
+        <translation>Deslocar o mapa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="967"/>
@@ -6195,22 +6195,22 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Measure Line </source>
-        <translation type="unfinished">Medir linha</translation>
+        <translation>Medir linha</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="940"/>
         <source>Measure a Line</source>
-        <translation type="unfinished">Mede uma linha</translation>
+        <translation>Medir uma linha</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="943"/>
         <source>Measure Area</source>
-        <translation type="unfinished">Medir Área</translation>
+        <translation>Medir Área</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Measure an Area</source>
-        <translation type="unfinished">Mede uma área</translation>
+        <translation>Medir uma área</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="994"/>
@@ -6278,7 +6278,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
         <location filename="../src/app/qgisapp.cpp" line="794"/>
         <location filename="../src/app/qgisapp.cpp" line="796"/>
         <source>Delete Selected</source>
-        <translation type="unfinished">Excluir seleção</translation>
+        <translation>Apagar selecção</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="801"/>
@@ -6290,13 +6290,13 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
         <location filename="../src/app/qgisapp.cpp" line="813"/>
         <location filename="../src/app/qgisapp.cpp" line="815"/>
         <source>Delete Vertex</source>
-        <translation type="unfinished">Exclui vértice</translation>
+        <translation>Apagar Vértice</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="807"/>
         <location filename="../src/app/qgisapp.cpp" line="809"/>
         <source>Move Vertex</source>
-        <translation type="unfinished">Mover vértice</translation>
+        <translation>Mover vértice</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1405"/>
@@ -6306,7 +6306,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1409"/>
         <source>&amp;Open Recent Projects</source>
-        <translation type="unfinished">&amp;Abrir projetos recentes</translation>
+        <translation>&amp;Abrir projectos recentes</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1493"/>
@@ -7946,13 +7946,13 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgisapp.cpp" line="2615"/>
         <source>
 This copy of QGIS has been built with QWT %1.</source>
-        <translation type="unfinished">
-Esta cópia do QGIS foi construída com QWT %1.</translation>
+        <translation>
+Esta cópia do QGIS foi compilada com QWT %1.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="2629"/>
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation type="unfinished">O que há de novo na versão 1.6.0 &apos;Capiapó&apos;?</translation>
+        <translation>O que há de novo na versão 1.6.0 &apos;Capiapó&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2631"/>
@@ -8033,7 +8033,7 @@ Esta cópia do QGIS foi construída com QWT %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2650"/>
         <location filename="../src/app/qgisapp.cpp" line="2671"/>
         <source>Read More.</source>
-        <translation type="unfinished">Saiba mais.</translation>
+        <translation>Saiba mais.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2651"/>
@@ -8173,7 +8173,7 @@ Esta cópia do QGIS foi construída com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7104"/>
         <source>Warning</source>
-        <translation type="unfinished">Atenção</translation>
+        <translation>Aviso</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7104"/>
@@ -10026,7 +10026,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="310"/>
         <source>Refresh</source>
-        <translation type="unfinished">Atualizar</translation>
+        <translation>Actualizar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="327"/>
@@ -10177,7 +10177,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="447"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="455"/>
@@ -12288,7 +12288,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="151"/>
         <source>Comma</source>
-        <translation>Virgula</translation>
+        <translation>Vírgula</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="158"/>
@@ -15241,7 +15241,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
-        <translation type="unfinished">Simbologia</translation>
+        <translation>Simbologia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
@@ -17932,7 +17932,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="240"/>
         <source>Transparency </source>
-        <translation type="unfinished">Transparência</translation>
+        <translation>Transparência</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="256"/>
@@ -17967,22 +17967,22 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="877"/>
         <source>QGIS Rocks!</source>
-        <translation type="unfinished">QGIS é animal!</translation>
+        <translation>QGIS Rocks!</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="432"/>
         <source>Font</source>
-        <translation type="unfinished">Fonte</translation>
+        <translation>Fonte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="351"/>
         <source>Font size</source>
-        <translation type="unfinished">Tamanho da fonte</translation>
+        <translation>Tamanho da fonte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="237"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="724"/>
@@ -17992,32 +17992,32 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="747"/>
         <source>Size:</source>
-        <translation type="unfinished">Tamanho:</translation>
+        <translation>Tamanho:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="94"/>
         <source>Above</source>
-        <translation type="unfinished">Acima</translation>
+        <translation>Acima</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="84"/>
         <source>Over</source>
-        <translation type="unfinished">Sobre</translation>
+        <translation>Sobre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="101"/>
         <source>Left</source>
-        <translation type="unfinished">Esquerda</translation>
+        <translation>Esquerda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="77"/>
         <source>Below</source>
-        <translation type="unfinished">Abaixo</translation>
+        <translation>Abaixo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="70"/>
         <source>Right</source>
-        <translation type="unfinished">Direita</translation>
+        <translation>Direita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="115"/>
@@ -18069,13 +18069,13 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="215"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="445"/>
         <source>Color</source>
-        <translation type="unfinished">Cor</translation>
+        <translation>Cor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="364"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="532"/>
         <source>Angle (deg)</source>
-        <translation type="unfinished">Ângulo (graus)</translation>
+        <translation>Ângulo (graus)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
@@ -18165,7 +18165,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="674"/>
@@ -19385,7 +19385,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptooldeletevertex.cpp" line="83"/>
         <source>Vertex deleted</source>
-        <translation type="unfinished">Vértice excluído</translation>
+        <translation>Vértice apagado</translation>
     </message>
 </context>
 <context>
@@ -19409,7 +19409,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="266"/>
         <source>Length</source>
-        <translation type="unfinished">Comprimento</translation>
+        <translation>Comprimento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="272"/>
@@ -19436,7 +19436,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="287"/>
         <source>Area</source>
-        <translation type="unfinished">Área</translation>
+        <translation>Área</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="121"/>
@@ -20277,12 +20277,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="47"/>
         <source>Whole number</source>
-        <translation type="unfinished">Número inteiro</translation>
+        <translation>Número inteiro</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="48"/>
         <source>Decimal number</source>
-        <translation type="unfinished">Número decimal</translation>
+        <translation>Número decimal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="97"/>
@@ -25194,21 +25194,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1749"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1808"/>
         <source>Red</source>
-        <translation type="unfinished">Vermelho</translation>
+        <translation>Vermelho</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="345"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1750"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1808"/>
         <source>Green</source>
-        <translation type="unfinished">Verde</translation>
+        <translation>Verde</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="346"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1751"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1808"/>
         <source>Blue</source>
-        <translation type="unfinished">Azul</translation>
+        <translation>Azul</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="347"/>
@@ -25269,7 +25269,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2441"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2523"/>
         <source>Textfile (*.txt)</source>
-        <translation type="unfinished">Arquivo de texto (*.txt)</translation>
+        <translation>Ficheiro de texto (*.txt)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1805"/>
@@ -25279,7 +25279,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1906"/>
         <source>Band %1</source>
-        <translation type="unfinished">Banda %1</translation>
+        <translation>Banda %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1959"/>
@@ -25348,7 +25348,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2933"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2999"/>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="129"/>
@@ -27199,13 +27199,13 @@ O erro foi:
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="55"/>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="118"/>
         <source>Table</source>
-        <translation type="unfinished">Tabela</translation>
+        <translation>Tabela</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="56"/>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="122"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="57"/>
