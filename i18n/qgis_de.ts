@@ -826,7 +826,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify output file.</source>
-        <translation>Bitte eine Ausgabedatei angeben</translation>
+        <translation>Bitte eine Ausgabedatei angeben.</translation>
     </message>
     <message>
         <source>Created projected shapefile:
@@ -12538,12 +12538,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextProvider</name>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="543"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="549"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="544"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="550"/>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
 </source>
         <translation>Beachte: Die folgenden Linien wurden nicht geladen, da QGIS die Werte für die X und Y Koordinaten nicht herausfinden konnte:
@@ -13003,7 +13003,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="260"/>
         <source>rownum</source>
-        <translation>Zeilennr.</translation>
+        <translation>Zeilennr</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="267"/>
@@ -19509,7 +19509,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapToolMoveLabel</name>
     <message>
-        <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="128"/>
+        <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="126"/>
         <source>Label moved</source>
         <translation>Beschriftung verschoben</translation>
     </message>
@@ -19583,7 +19583,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapToolRotateLabel</name>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="144"/>
+        <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="160"/>
         <source>Label rotated</source>
         <translation>Beschriftung gedreht</translation>
     </message>
@@ -20927,7 +20927,7 @@ Primärschlüssel erzeugen</translation>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="123"/>
         <source>Converting to offline project.</source>
-        <translation>Konvertiere zu Offline-Projekt</translation>
+        <translation>Konvertiere zu Offline-Projekt.</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="124"/>
@@ -22583,7 +22583,7 @@ mit PostGIS-Geometrie haben.</translation>
     </message>
     <message>
         <source>The Plugin Installer has been updated. Please restart QGIS prior to using it</source>
-        <translation>Die Erweiterungsinstallation wurde aktualsiert. Bitte vor deren Verwendung neustarten.</translation>
+        <translation>Die Erweiterungsinstallation wurde aktualsiert. Bitte vor deren Verwendung neustarten</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
@@ -24527,17 +24527,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterCalcDialog</name>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="219"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="221"/>
         <source>Enter result file</source>
         <translation>Ergebnisdatei angeben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="260"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="262"/>
         <source>Expression valid</source>
         <translation>Ausdruck gültig</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="269"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="271"/>
         <source>Expression invalid</source>
         <translation>Ausdruck ungültig</translation>
     </message>
@@ -24615,82 +24615,117 @@ p, li { white-space: pre-wrap; }
         <translation>Ergebnis zum Projekt hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="222"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="225"/>
         <source>Operators</source>
         <translation>Operatoren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="228"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="231"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="235"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="238"/>
         <source>*</source>
         <translation>*</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="242"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="245"/>
         <source>sqrt</source>
         <translation>sqrt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="249"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="252"/>
         <source>sin</source>
         <translation>sin</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="256"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="259"/>
         <source>^</source>
         <translation>^</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="263"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="266"/>
         <source>acos</source>
         <translation>acos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="270"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="273"/>
         <source>(</source>
         <translation>(</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="277"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="280"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="284"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="287"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="291"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="294"/>
         <source>cos</source>
         <translation>cos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="298"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="301"/>
         <source>asin</source>
         <translation>asin</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="305"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="308"/>
         <source>tan</source>
         <translation>tan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="312"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="315"/>
         <source>atan</source>
         <translation>atan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="319"/>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="322"/>
         <source>)</source>
         <translation>)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="329"/>
+        <source>&lt;</source>
+        <translation>&lt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="336"/>
+        <source>&gt;</source>
+        <translation>&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="343"/>
+        <source>=</source>
+        <translation>=</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="350"/>
+        <source>OR</source>
+        <translation>ODER</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="357"/>
+        <source>AND</source>
+        <translation>UND</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="364"/>
+        <source>&lt;=</source>
+        <translation>&lt;=</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="371"/>
+        <source>&gt;=</source>
+        <translation>&gt;=</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="381"/>
         <source>Raster calculator expression</source>
         <translation>Rasterrechnerausdruck</translation>
     </message>
@@ -26096,62 +26131,67 @@ p, li { white-space: pre-wrap; }
         <translation>Regeleigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="22"/>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="354"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="25"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="365"/>
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="32"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="41"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="48"/>
         <source>Test</source>
         <translation>Testen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="41"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="57"/>
         <source>Scale range</source>
         <translation>Maßstabsbereich</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="53"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="69"/>
         <source>Min. scale</source>
         <translation>Min. Maßstab</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="63"/>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="92"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="79"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="108"/>
         <source>1 : </source>
         <translation>1 : </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="82"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="98"/>
         <source>Max. scale</source>
         <translation>Max. Maßstab</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="120"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="136"/>
         <source>Symbol</source>
         <translation>Symbol</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="333"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="337"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="344"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="337"/>
         <source>Filter expression parsing error:
 </source>
         <translation>Filterausdrucksfehler:
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="333"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="344"/>
         <source>Filter is empty</source>
         <translation>Filter ist leer</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="354"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="365"/>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
         <translation>
@@ -26163,24 +26203,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRendererRulesTreeWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="421"/>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="464"/>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="483"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="432"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="475"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="494"/>
         <source>(no filter)</source>
         <translation>(kein Filter)</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="424"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="435"/>
         <source>, scale </source>
         <translation>, Maßstab </translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="450"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="461"/>
         <source>scale </source>
         <translation>Maßstab </translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="452"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="463"/>
         <source>any scale</source>
         <translation>jeder Maßstab</translation>
     </message>
@@ -26324,32 +26364,32 @@ p, li { white-space: pre-wrap; }
         <translation>Regelgruppen können nicht bearbeitet werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="234"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="235"/>
         <source>Refine a rule to categories</source>
         <translation>Eine Regel für Kategorien präzisieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="256"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="257"/>
         <source>Refine a rule to ranges</source>
         <translation>Eine Regel für Maßstäbe präzisieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="277"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="278"/>
         <source>Scale refinement</source>
         <translation>Eine Regel für Maßstäbe präzisieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="278"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="279"/>
         <source>Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):</source>
         <translation>Bitte geben Sie einen Maßstabsnenner an bei dem die Regel aufgeteilt werden soll. Trennen Sie sie durch Kommata (z.B. 1000,5000):</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="291"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="291"/>
         <source>&quot;%1&quot; is not valid scale denominator, ignoring it.</source>
         <translation>&quot;%1&quot; wird als ungültiger Nenner ignoriert.</translation>
     </message>
@@ -26665,126 +26705,126 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsSearchQueryBuilder</name>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="43"/>
         <source>Search query builder</source>
         <translation>Abfrageeditor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="45"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="45"/>
         <source>&amp;Test</source>
         <translation>&amp;Testen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="49"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="49"/>
         <source>&amp;Clear</source>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="53"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="53"/>
         <source>&amp;Save...</source>
         <translation>&amp;Speichern...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="55"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="55"/>
         <source>Save query to an xml file</source>
         <translation>Abfrage in eine XML-Datei speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="58"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="58"/>
         <source>&amp;Load...</source>
         <translation>&amp;Laden...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="60"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="60"/>
         <source>Load query from xml file</source>
         <translation>Abfrage aus einer XML-Datei laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="185"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="189"/>
         <source>Search results</source>
         <translation>Suchergebnisse</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="194"/>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="424"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="198"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="431"/>
         <source>Search string parsing error</source>
         <translation>Fehler im Suchbegriff</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="252"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="259"/>
         <source>No Records</source>
         <translation>Keine Einträge</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="252"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="259"/>
         <source>The query you specified results in zero records being returned.</source>
         <translation>Die angegebene Abfrage gibt keine Datensätze zurück.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="368"/>
         <source>Save query to file</source>
         <translation>Abfrage in Datei speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="370"/>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="401"/>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="407"/>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="414"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="377"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="408"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="414"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="421"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="370"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="377"/>
         <source>Could not open file for writing</source>
         <translation>Konnte Datei nicht zum Schreiben öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="399"/>
         <source>Load query from file</source>
         <translation>Abfragen aus Datei laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="399"/>
         <source>Query files</source>
         <translation>Abfragedateien</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="399"/>
         <source>All files</source>
         <translation>Alle Dateien</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="401"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="408"/>
         <source>Could not open file for reading</source>
         <translation>Konnte Datei nicht zum Lesen öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="407"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="414"/>
         <source>File is not a valid xml document</source>
         <translation>Die Datei ist kein gültiges XML-Dokument</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="414"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="421"/>
         <source>File is not a valid query document</source>
         <translation>Die Datei ist kein gültiges Abfragedokument</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="431"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="438"/>
         <source>Error creating search tree</source>
         <translation>Fehler beim Erzeugen des Suchbaums</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="454"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="461"/>
         <source>Select attribute</source>
         <translation>Attribut wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="454"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="461"/>
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
         <translation>Es gibt kein Attribut &apos;%1&apos; im aktuellen Vektorlayer. Bitte wählen Sie ein vorhandenes Attribut</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="185"/>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="189"/>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
         <translation>
@@ -28152,6 +28192,14 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     </message>
 </context>
 <context>
+    <name>QgsSymbolV2PropertiesDialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2propertiesdialog.cpp" line="174"/>
+        <source>Outline: %1</source>
+        <translation>Rand: %1</translation>
+    </message>
+</context>
+<context>
     <name>QgsSymbolV2SelectorDialog</name>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="220"/>
@@ -28239,7 +28287,7 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="282"/>
         <source>Save as style</source>
-        <translation>Stil speichern...</translation>
+        <translation>Als Stil speichern</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="300"/>
@@ -30209,88 +30257,88 @@ URL %1 versucht</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="980"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1003"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1837"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1838"/>
         <source>Dom Exception</source>
         <translation>DOM-Ausnahme</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Anfrage verlangt ein CRS für einen oder mehrere Layer, die der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1904"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Anfrage enthält ein SRS für einen oder mehrere Layer, die der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1907"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1908"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>GetMap-Anfrage für einen Layer, den der Server nicht anbietet oder GetFeature-Anfrage für einen Layer, der nicht auf der Karte angezeigt wird.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1913"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Anfrage für einen Layer in einem Stil, den der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1916"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1917"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>GetFeatureInfo-Anfrage wird auf einen Layer bezogen, der nicht als abfragbar deklariert ist.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1920"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1921"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>GetFeatureInfo-Anfrage enthält einen ungültigen X- oder Y-Wert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1924"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1925"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage entspricht dem aktuellen Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1929"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1930"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage ist größer als der aktuelle Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1934"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1935"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Anfrage enthält keinen beispielhaften Dimensionswert, und der Server selbst definiert auch keinen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1939"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1940"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Anfrage enthält einen ungültigen beispielhaften Dimensionswert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1943"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1944"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Anfrage ist für eine optionale Operation, die der Server nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1954"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1955"/>
         <source>The WMS vendor also reported: </source>
         <translation>Der WMS-Betreiber meldete folgendes: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2166"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2362"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2542"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2605"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2167"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2363"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2543"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2606"/>
         <source>Property</source>
         <translation>Eigenschaft</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2169"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2365"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2545"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2608"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2170"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2366"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2546"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2609"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2269"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2270"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation>
@@ -30299,168 +30347,168 @@ URL %1 versucht</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2331"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2332"/>
         <source>Selected Layers</source>
         <translation>Gewählte Layer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2333"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2334"/>
         <source>Other Layers</source>
         <translation>Andere Layer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2370"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2371"/>
         <source>WMS Version</source>
         <translation>WMS-Version</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2182"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2294"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2378"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2183"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2295"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2379"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2190"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2302"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2386"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2191"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2303"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2387"/>
         <source>Abstract</source>
         <translation>Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2394"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2395"/>
         <source>Keywords</source>
         <translation>Schlüsselworte</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2402"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2403"/>
         <source>Online Resource</source>
         <translation>Online-Quelle</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2410"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2411"/>
         <source>Contact Person</source>
         <translation>Kontaktperson</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2422"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
         <source>Fees</source>
         <translation>Kosten</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2430"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2431"/>
         <source>Access Constraints</source>
         <translation>Zugriffsbeschränkungen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2439"/>
         <source>Image Formats</source>
         <translation>Bildformate</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2446"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2447"/>
         <source>Identify Formats</source>
         <translation>Abfrageformate</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2454"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2455"/>
         <source>Layer Count</source>
         <translation>Layeranzahl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2464"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2465"/>
         <source>Tileset Count</source>
         <translation>Tileset-Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2549"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2550"/>
         <source>Selected</source>
         <translation>Ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2201"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2209"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2217"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2552"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2202"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2210"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2218"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2553"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2201"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2209"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2217"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2552"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2202"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2210"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2218"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2553"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2174"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2175"/>
         <source>Visibility</source>
         <translation>Sichtbarkeit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2177"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2178"/>
         <source>Visible</source>
         <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2177"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2178"/>
         <source>Hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2198"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2199"/>
         <source>Can Identify</source>
         <translation>Kann abgefragt werden</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2206"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2207"/>
         <source>Can be Transparent</source>
         <translation>Kann transparent sein</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2222"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2223"/>
         <source>Cascade Count</source>
         <translation>Kaskadiere Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2230"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2231"/>
         <source>Fixed Width</source>
         <translation>Feste Breite</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2238"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2239"/>
         <source>Fixed Height</source>
         <translation>Feste Höhe</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2246"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2247"/>
         <source>WGS 84 Bounding Box</source>
         <translation>WGS84-Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2256"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2266"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2257"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2267"/>
         <source>Available in CRS</source>
         <translation>Verfügbar in KBS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2277"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2278"/>
         <source>Available in style</source>
         <translation>Verfügbar im Stil</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2286"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2287"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2597"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2598"/>
         <source>Cache stats</source>
         <translation>Cache-Statistik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2558"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2559"/>
         <source>Styles</source>
         <translation>Stile</translation>
     </message>
@@ -30507,7 +30555,7 @@ Antwort war:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1839"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1840"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4
 
 Response was:
@@ -30520,83 +30568,83 @@ Antwort war:
 %5</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1895"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Anfrage enthält ein Format, dass der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2473"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2474"/>
         <source>GetCapabilitiesUrl</source>
         <translation>GetCapabilities-URL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2480"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2481"/>
         <source>GetMapUrl</source>
         <translation>GetMap-URL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2483"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2490"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2484"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2491"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(gemeldet, aber ignoriert)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2499"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2500"/>
         <source>Selected Layers:</source>
         <translation>Gewählte Layer:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2512"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2513"/>
         <source>Other layers:</source>
         <translation>Andere Layer:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2566"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2567"/>
         <source>CRS</source>
         <translation>KBS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2573"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2574"/>
         <source>Bounding Box</source>
         <translation>Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2580"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2581"/>
         <source>Available in Resolutions</source>
         <translation>Verfügbare Auflösungen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2612"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2613"/>
         <source>Hits</source>
         <translation>Treffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2618"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2619"/>
         <source>Misses</source>
         <translation>Fehlgriffe</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2624"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2625"/>
         <source>Errors</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2696"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2697"/>
         <source>Layer cannot be queried in plain text.</source>
         <translation>Layer kann in Klartext abgefragt werden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2702"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2703"/>
         <source>Layer cannot be queried.</source>
         <translation>Layer kann nicht abgefragt werden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2746"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2747"/>
         <source>identify request redirected.</source>
         <translation>Identify-Anfrage umgeleitet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2214"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2215"/>
         <source>Can Zoom In</source>
         <translation>Kann herangezoomt werden</translation>
     </message>
@@ -30647,39 +30695,39 @@ Antwort war:
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="812"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2762"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2763"/>
         <source>map request error %1: %2</source>
         <translation>Kartenanfragefehler %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2327"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2353"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2328"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2354"/>
         <source>Server Properties</source>
         <translation>Server-Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2339"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2340"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2528"/>
         <source>Tileset Properties</source>
         <translation>Tileset-Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2344"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2345"/>
         <source>Cache Stats</source>
         <translation>Cache-Statistik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2487"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2488"/>
         <source>GetFeatureInfoUrl</source>
         <translation>GetFeatureInfoUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1947"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1948"/>
         <source>(No error code was reported)</source>
         <translation>(Kein Fehlercode zurückgegeben)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1951"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1952"/>
         <source>(Unknown error code)</source>
         <translation>(Unbekannter Fehlercode)</translation>
     </message>
@@ -31030,34 +31078,39 @@ Antwort war:
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="22"/>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="34"/>
         <source>Font family</source>
         <translation>Schriftfamilie</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="32"/>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="44"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="39"/>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="51"/>
         <source>Change</source>
         <translation>Ändern</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="46"/>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="58"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="53"/>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="65"/>
         <source>Rotation</source>
         <translation>Drehung</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="60"/>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="72"/>
         <source>°</source>
         <translation>°</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="92"/>
+        <source>Offset X,Y</source>
+        <translation>X-,Y-Versatz</translation>
     </message>
 </context>
 <context>
