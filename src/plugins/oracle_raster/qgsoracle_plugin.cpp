@@ -22,6 +22,7 @@ static const QString sName = QObject::tr( "Oracle Spatial GeoRaster" );
 static const QString sDescription = QObject::tr( "Access Oracle Spatial GeoRaster" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = ":/oracleplugin/oracleplugin.png";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -143,6 +144,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Delete ourself

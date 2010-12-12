@@ -60,6 +60,7 @@ static const QString name_ = QObject::tr( "NorthArrow" );
 static const QString description_ = QObject::tr( "Displays a north arrow overlayed onto the map" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QString icon_ = ":/north_arrow.png";
 
 const double QgsNorthArrowPlugin::PI = 3.14159265358979323846;
 //  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
@@ -453,6 +454,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 // Delete ourself

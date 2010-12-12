@@ -64,6 +64,7 @@ static const QString name_ = QObject::tr( "ScaleBar" );
 static const QString description_ = QObject::tr( "Draws a scale bar" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QString icon_ = ":/scale_bar.png";
 
 
 /**
@@ -658,6 +659,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 // Delete ourself

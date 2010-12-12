@@ -50,6 +50,7 @@ static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QString icon_ = ":/icons/spatialquery.png";
 
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -192,6 +193,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 // Delete ourself

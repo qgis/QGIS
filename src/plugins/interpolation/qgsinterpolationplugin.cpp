@@ -25,6 +25,7 @@
 static const QString name_ = QObject::tr( "Interpolation plugin" );
 static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
 static const QString version_ = QObject::tr( "Version 0.001" );
+static const QString icon_ = ":/interpolation.png";
 
 QgsInterpolationPlugin::QgsInterpolationPlugin( QgisInterface* iface ): mIface( iface ), mInterpolationAction( 0 )
 {
@@ -105,6 +106,11 @@ QGISEXTERN QString description()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 QGISEXTERN int type()

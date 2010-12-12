@@ -32,6 +32,7 @@ static const QString sName = QObject::tr( "OfflineEditing" );
 static const QString sDescription = QObject::tr( "Allow offline editing and synchronizing with database" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
@@ -172,6 +173,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Delete ourself

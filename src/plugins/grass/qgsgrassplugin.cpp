@@ -50,6 +50,7 @@ extern "C"
 }
 
 static const QString pluginVersion = QObject::tr( "Version 0.1" );
+static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png";
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -907,6 +908,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return pluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return pluginIcon;
 }
 
 // Delete ourself

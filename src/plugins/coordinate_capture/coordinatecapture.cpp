@@ -53,6 +53,7 @@ static const char * const sIdent = "$Id: plugin.cpp 8053 2008-01-26 13:59:53Z ti
 static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
+static const QString sPluginIcon = ":/coordinate_capture/coordinate_capture.png";
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -341,6 +342,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Delete ourself

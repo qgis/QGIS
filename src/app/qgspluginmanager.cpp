@@ -44,7 +44,7 @@
 #include "qgslogger.h"
 
 // Do we need this?
-// #define TESTLIB 
+// #define TESTLIB
 #ifdef TESTLIB
 // This doesn't work on WIN32 and causes problems with plugins
 // on OS X (the code doesn't cause a problem but including dlfcn.h
@@ -174,8 +174,9 @@ void QgsPluginManager::getPythonPluginDescriptions()
     QString pluginName  = mPythonUtils->getPluginMetadata( packageName, "name" );
     QString description = mPythonUtils->getPluginMetadata( packageName, "description" );
     QString version     = mPythonUtils->getPluginMetadata( packageName, "version" );
+    QString iconName    = mPythonUtils->getPluginMetadata( packageName, "icon" );
 
-    if ( pluginName == "???" || description == "???" || version == "???" ) continue;
+    if ( pluginName == "__error__" || description == "__error__" || version == "__error__" ) continue;
 
     bool isCompatible = QgsPluginRegistry::instance()->isPythonPluginCompatible( packageName );
     QString compatibleString; // empty by default
@@ -200,6 +201,19 @@ void QgsPluginManager::getPythonPluginDescriptions()
     myData.setCheckable( true );
     myData.setRenderAsWidget( false );
     myData.setChecked( false ); //start off assuming false
+    if ( iconName == "__error__" )
+      myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+    else
+    {
+      bool relative = QFileInfo( iconName ).isRelative();
+      if ( relative )
+      {
+        QString pluginDir;
+        mPythonUtils->evalString( QString( "qgis.utils.pluginDirectory('%1')" ).arg( packageName ), pluginDir );
+        iconName = pluginDir + "/" + iconName;
+      }
+      myData.setIcon( QPixmap( iconName ) );
+    }
 
     // check to see if the plugin is loaded and set the checkbox accordingly
     QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
@@ -296,6 +310,7 @@ void QgsPluginManager::getPluginDescriptions()
     name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
     description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
     version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
+    icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
 
     // show the values (or lack of) for each function
     if ( pName )
@@ -322,6 +337,10 @@ void QgsPluginManager::getPluginDescriptions()
     {
       QgsDebugMsg( "Plugin version not returned when queried" );
     }
+    if ( pIcon )
+    {
+      QgsDebugMsg( "Plugin icon: " + pIcon() );
+    }
 
     if ( !pName || !pDesc || !pVersion )
     {
@@ -333,6 +352,7 @@ void QgsPluginManager::getPluginDescriptions()
     QString pluginName = pName();
     QString pluginDesc = pDesc();
     QString pluginVersion = pVersion();
+    QString pluginIconFileName = ( pIcon ? pIcon() : QString() );
     QString baseName = QFileInfo( lib ).baseName();
 
     QString myLibraryName = pluginDir[i];
@@ -347,6 +367,10 @@ void QgsPluginManager::getPluginDescriptions()
     myData.setRenderAsWidget( false );
     myData.setCheckable( true );
     myData.setChecked( false ); //start unchecked - we will check it later if needed
+    if ( pluginIconFileName.isEmpty() )
+      myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+    else
+      myData.setIcon( QPixmap( pluginIconFileName ) );
 
     QgsDebugMsg( "Getting an instance of the QgsPluginRegistry" );
 

@@ -51,6 +51,7 @@ static const char * const ident_ = "$Id$";
 static const QString name_ = QObject::tr( "CopyrightLabel" );
 static const QString description_ = QObject::tr( "Draws copyright information" );
 static const QString version_ = QObject::tr( "Version 0.1" );
+static const QString icon_ = ":/copyright_label.png";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 
@@ -316,6 +317,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 // Delete ourself

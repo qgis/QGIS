@@ -40,6 +40,7 @@ static const QString sName = QObject::tr( "Quick Print" );
 static const QString sDescription = QObject::tr( "Quick Print is a plugin to quickly print a map with minimal effort." );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = ":/quick_print.png";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -184,6 +185,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Delete ourself

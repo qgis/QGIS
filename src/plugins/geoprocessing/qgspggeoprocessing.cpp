@@ -46,6 +46,7 @@ static const QString name_ = QObject::tr( "PostgreSQL Geoprocessing" );
 static const QString description_ = QObject::tr( "Geoprocessing functions for working with PostgreSQL/PostGIS layers" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QString icon_ = ":/geoprocessing.png";
 
 
 /**
@@ -476,6 +477,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 // Delete ourself

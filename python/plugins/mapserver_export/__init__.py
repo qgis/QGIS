@@ -27,6 +27,8 @@ def version():
   return "Version 0.4.3" 
 def qgisMinimumVersion(): 
   return "1.0"
+def icon():
+  return "mapserver_export.png"
 def authorName():
   return "Gary E. Sherman"
 def classFactory(iface): 

@@ -43,6 +43,8 @@ Functions:
 
 static const QString pluginVersion = QObject::tr( "Version 0.2" );
 static const QString description_ = QObject::tr( "Loads and displays delimited text files containing x,y coordinates" );
+static const QString icon_ = ":/delimited_text.png";
+
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
@@ -204,6 +206,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return pluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 // Delete ourself
