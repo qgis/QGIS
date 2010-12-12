@@ -276,6 +276,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( const QChar& chr );
+    void setOffset();
 
   protected:
     QgsFontMarkerSymbolLayerV2* mLayer;
