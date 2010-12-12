@@ -51,6 +51,10 @@ def qgisMinimumVersion():
 
     return "1.0.0"
 
+def icon():
+    import resources_rc
+    return ":/plugins/osm_plugin/images/osm_load.png"
+
 
 def classFactory(iface):
     """Function returns OSM Plugin instance.

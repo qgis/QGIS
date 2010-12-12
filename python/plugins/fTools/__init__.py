@@ -25,6 +25,9 @@ def version():
   
 def qgisMinimumVersion():
 	return "1.0"
+
+def icon():
+	return "icons/logo_small.png"
 	
 def authorName():
 	return "Carson J. Q. Farmer"

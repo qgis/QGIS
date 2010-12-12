@@ -34,6 +34,7 @@ static const QString sName = QObject::tr( "OGR Layer Converter" );
 static const QString sDescription = QObject::tr( "Translates vector layers between formats supported by OGR library" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = ":/ogr_converter.png";
 
 //////////////////////////////////////////////////////////////////////////////
 // THE FOLLOWING METHODS ARE MANDATORY FOR ALL PLUGINS
@@ -164,6 +165,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Delete ourself

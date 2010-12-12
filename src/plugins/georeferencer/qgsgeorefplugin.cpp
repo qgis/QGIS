@@ -66,6 +66,7 @@ static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Georeferencing rasters using GDAL" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = ":/icons/mGeorefRun.png";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -234,6 +235,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Delete ourself

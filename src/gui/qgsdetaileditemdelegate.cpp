@@ -147,10 +147,28 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
   QPixmap myDecoPixmap = theData.icon();
   if ( !myDecoPixmap.isNull() )
   {
-    thepPainter->drawPixmap( myTextStartX,
-                             myTextStartY + ( myDecoPixmap.height() / 2 ),
-                             myDecoPixmap );
-    myTextStartX += myDecoPixmap.width() + horizontalSpacing();
+    int iconWidth = 32, iconHeight = 32;
+
+    if ( myDecoPixmap.width() <= iconWidth && myDecoPixmap.height() <= iconHeight )
+    {
+      // the pixmap has reasonable size
+      int offsetX = 0, offsetY = 0;
+      if ( myDecoPixmap.width() < iconWidth )
+        offsetX = ( iconWidth - myDecoPixmap.width() ) / 2;
+      if ( myDecoPixmap.height() < iconHeight )
+        offsetY = ( iconHeight - myDecoPixmap.height() ) / 2;
+
+      thepPainter->drawPixmap( myTextStartX + offsetX,
+                               myTextStartY + offsetY,
+                               myDecoPixmap );
+    }
+    else
+    {
+      // shrink the pixmap, it's too big
+      thepPainter->drawPixmap( myTextStartX, myTextStartY, iconWidth, iconHeight, myDecoPixmap );
+    }
+
+    myTextStartX += iconWidth + horizontalSpacing();
   }
   //
   // Draw the title

@@ -25,6 +25,8 @@ def version():
   return "Version 1.2.18" 
 def qgisMinimumVersion():
   return "1.0"
+def icon():
+  return "icons/raster-info.png"
 def classFactory(iface): 
   # load GdalTools class from file GdalTools
   from GdalTools import GdalTools 

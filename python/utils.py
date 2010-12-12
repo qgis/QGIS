@@ -266,6 +266,10 @@ def showPluginHelp(packageName=None,filename="index",section=""):
     iface.openURL(url,False)
 
 
+def pluginDirectory(packageName):
+  """ return directory where the plugin resides. Plugin must be loaded already """
+  return os.path.dirname(sys.modules[packageName].__file__)
+
 #######################
 # IMPORT wrapper
 

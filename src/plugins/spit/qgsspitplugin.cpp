@@ -37,6 +37,7 @@ static const QString name_ = QObject::tr( "SPIT" );
 static const QString description_ = QObject::tr( "Shapefile to PostgreSQL/PostGIS Import Tool" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QString icon_ = ":/spit.png";
 
 
 
@@ -153,6 +154,11 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return version_;
+}
+
+QGISEXTERN QString icon()
+{
+  return icon_;
 }
 
 

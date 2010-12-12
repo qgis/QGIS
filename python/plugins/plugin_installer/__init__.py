@@ -23,6 +23,10 @@ def description():
 def qgisMinimumVersion():
   return "1.0"
 
+def icon():
+  import resources_rc
+  return ":/plugins/installer/plugin_installer.png"
+
 def authorName():
   return "Matthew Perry, Borys Jurgiel"
 

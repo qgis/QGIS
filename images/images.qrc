@@ -247,6 +247,7 @@
     <file>themes/default/mIconUnknownLayerType.png</file>
     <file>themes/default/mIconWaitingForLayerType.png</file>
     <file>themes/default/mMapserverExport.png</file>
+    <file>themes/default/plugin.png</file>
     <file>themes/default/rendererCategorizedSymbol.png</file>
     <file>themes/default/rendererGraduatedSymbol.png</file>
     <file>themes/default/rendererSingleSymbol.png</file>

@@ -178,5 +178,8 @@ typedef int type_t();
 //! Typedef for getting the plugin version without instantiating the plugin
 typedef QString version_t();
 
+//! Typedef for getting the plugin icon file name without instantiating the plugin
+typedef QString icon_t();
+
 
 #endif //qgisplugin_h
