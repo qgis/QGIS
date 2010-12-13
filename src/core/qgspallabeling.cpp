@@ -268,6 +268,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
   bool fontItalic = layer->customProperty( "labeling/fontItalic" ).toBool();
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
+  textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
+  textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textColor = _readColor( layer, "labeling/textColor" );
   enabled = layer->customProperty( "labeling/enabled" ).toBool();
@@ -300,6 +302,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fontSize", textFont.pointSizeF() );
   layer->setCustomProperty( "labeling/fontWeight", textFont.weight() );
   layer->setCustomProperty( "labeling/fontItalic", textFont.italic() );
+  layer->setCustomProperty( "labeling/fontStrikeout", textFont.strikeOut() );
+  layer->setCustomProperty( "labeling/fontUnderline", textFont.underline() );
 
   _writeColor( layer, "labeling/textColor", textColor );
   layer->setCustomProperty( "labeling/enabled", enabled );
