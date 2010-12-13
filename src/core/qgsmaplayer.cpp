@@ -177,6 +177,12 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( "|" );
   }
+  else if ( provider == "delimitedtext" )
+  {
+    QStringList theURIParts = mDataSource.split( "?" );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    mDataSource = theURIParts.join( "?" );
+  }
   else
   {
     mDataSource = QgsProject::instance()->readPath( mDataSource );
@@ -300,6 +306,12 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     QStringList theURIParts = src.split( "|" );
     theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0] );
     src = theURIParts.join( "|" );
+  }
+  else if ( vlayer && vlayer->providerType() == "delimitedtext" )
+  {
+    QStringList theURIParts = src.split( "?" );
+    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0] );
+    src = theURIParts.join( "?" );
   }
   else
   {
@@ -668,6 +680,11 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   if ( vlayer && vlayer->providerType() == "ogr" )
   {
     QStringList theURIParts = theURI.split( "|" );
+    filename = theURIParts[0];
+  }
+  else if ( vlayer && vlayer->providerType() == "delimitedtext" )
+  {
+    QStringList theURIParts = theURI.split( "?" );
     filename = theURIParts[0];
   }
   else
