@@ -60,7 +60,7 @@ Qt::PenStyle QgsSymbolLayerV2Utils::decodePenStyle( QString str )
   if ( str == "dash" ) return Qt::DashLine;
   if ( str == "dot" ) return Qt::DotLine;
   if ( str == "dash dot" ) return Qt::DashDotLine;
-  if ( str == "dast dot dot" ) return Qt::DashDotDotLine;
+  if ( str == "dash dot dot" ) return Qt::DashDotDotLine;
   return Qt::SolidLine;
 }
 
