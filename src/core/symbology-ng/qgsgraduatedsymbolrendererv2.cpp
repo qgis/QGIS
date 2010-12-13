@@ -558,6 +558,11 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   }
 
   int n = values.count();
+  if ( classes >= n )
+  {
+    return values;
+  }
+
   QList<double> sample;
 
   // if we have lots of values, we need to take a random sample
@@ -768,8 +773,6 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   r->setMode( mode );
   return r;
 }
-
-
 
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element )
 {
