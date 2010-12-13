@@ -406,14 +406,22 @@ static QgsGeometry *fromGeosGeom( GEOSGeometry *geom )
 
 QgsGeometry* QgsGeometry::fromWkt( QString wkt )
 {
+  try
+  {
 #if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR>=3)
-  GEOSWKTReader *reader = GEOSWKTReader_create();;
-  QgsGeometry *g = fromGeosGeom( GEOSWKTReader_read( reader, wkt.toLocal8Bit().data() ) );
-  GEOSWKTReader_destroy( reader );
-  return g;
+    GEOSWKTReader *reader = GEOSWKTReader_create();
+    QgsGeometry *g = fromGeosGeom( GEOSWKTReader_read( reader, wkt.toLocal8Bit().data() ) );
+    GEOSWKTReader_destroy( reader );
+    return g;
 #else
-  return fromGeosGeom( GEOSGeomFromWKT( wkt.toLocal8Bit().data() ) );
+    return fromGeosGeom( GEOSGeomFromWKT( wkt.toLocal8Bit().data() ) );
 #endif
+  }
+  catch ( GEOSException &e )
+  {
+    Q_UNUSED( e );
+    return 0;
+  }
 }
 
 QgsGeometry* QgsGeometry::fromPoint( const QgsPoint& point )
