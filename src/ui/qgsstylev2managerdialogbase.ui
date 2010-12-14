@@ -6,29 +6,104 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>369</height>
+    <width>625</width>
+    <height>395</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Style Manager</string>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Style item type</string>
+    <widget class="QTabWidget" name="tabItemType">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="buddy">
-      <cstring>cboItemType</cstring>
+     <property name="currentIndex">
+      <number>0</number>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>22</width>
+       <height>22</height>
+      </size>
+     </property>
+     <property name="documentMode">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="tabMarker">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/styleicons/style-point.png</normaloff>:/images/themes/default/styleicons/style-point.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Marker</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabLine">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/styleicons/style-line.png</normaloff>:/images/themes/default/styleicons/style-line.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Line</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabFill">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/styleicons/style-polygon.png</normaloff>:/images/themes/default/styleicons/style-polygon.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Fill</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabColorRamp">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/styleicons/color.png</normaloff>:/images/themes/default/styleicons/color.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Color ramp</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="cboItemType"/>
-   </item>
-   <item>
     <widget class="QListView" name="listItems">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>3</verstretch>
+      </sizepolicy>
+     </property>
      <property name="editTriggers">
       <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
@@ -59,6 +134,9 @@
        <property name="toolTip">
         <string>Add item</string>
        </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -66,12 +144,18 @@
        <property name="toolTip">
         <string>Edit item</string>
        </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnRemoveItem">
        <property name="toolTip">
         <string>Remove item</string>
+       </property>
+       <property name="text">
+        <string>Remove</string>
        </property>
       </widget>
      </item>
@@ -103,14 +187,15 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>cboItemType</tabstop>
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnEditItem</tabstop>
   <tabstop>btnRemoveItem</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -279,6 +279,10 @@
     <file>themes/default/propertyicons/rendering.png</file>
     <file>themes/default/propertyicons/symbology.png</file>
     <file>themes/default/propertyicons/transparency.png</file>
+    <file>themes/default/styleicons/color.png</file>
+    <file>themes/default/styleicons/style-point.png</file>
+    <file>themes/default/styleicons/style-line.png</file>
+    <file>themes/default/styleicons/style-polygon.png</file>
     <file>icons/qgis-icon-16x16.png</file>
     <file>icons/qgis-icon-60x60.png</file>
     <file>themes/gis/mActionAddArrow.png</file>
