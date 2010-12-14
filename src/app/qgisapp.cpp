@@ -903,7 +903,7 @@ void QgisApp::createActions()
   mActionSelect->setEnabled( false );
 
   QString selectOptionTip( tr( ", hold shift to select by containment" ) + singleSelectOptTip );
-  
+
   mActionSelectRectangle = new QAction( getThemeIcon( "mActionSelectRectangle.png" ), tr( "Select features by rectangle" ), this );
   shortcuts->registerAction( mActionSelectRectangle );
   mActionSelectRectangle->setStatusTip( tr( "Select features by rectangle" ) + selectOptionTip );
@@ -4220,12 +4220,15 @@ QgsComposer* QgisApp::createNewComposer()
   mLastComposerId++;
   //create new composer object
   QgsComposer* newComposerObject = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
+
   //add it to the map of existing print composers
   mPrintComposers.insert( newComposerObject );
   //and place action into print composers menu
   mPrintComposersMenu->addAction( newComposerObject->windowAction() );
   newComposerObject->open();
   emit composerAdded( newComposerObject->view() );
+  connect( newComposerObject, SIGNAL( composerAdded( QgsComposerView* ) ), this, SIGNAL( composerAdded( QgsComposerView* ) ) );
+  connect( newComposerObject, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ), this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
   return newComposerObject;
 }
 
@@ -4262,6 +4265,8 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
       composer->close();
     }
     emit composerAdded( composer->view() );
+    connect( composer, SIGNAL( composerAdded( QgsComposerView* ) ), this, SIGNAL( composerAdded( QgsComposerView* ) ) );
+    connect( composer, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ), this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
   }
   return true;
 }
