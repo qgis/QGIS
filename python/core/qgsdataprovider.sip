@@ -5,6 +5,22 @@ class QgsDataProvider : QObject
 %TypeHeaderCode
 #include <qgsdataprovider.h>
 %End
+
+%ConvertToSubClassCode
+    if (sipCpp->inherits("QgsVectorDataProvider"))
+    {
+        sipClass = sipClass_QgsVectorDataProvider;
+    }
+    else if (sipCpp->inherits("QgsRasterDataProvider"))
+    {
+	sipClass = sipClass_QgsRasterDataProvider;
+    }
+    else
+    {
+        sipClass = 0;
+    }
+%End
+
   
   public: 
 
