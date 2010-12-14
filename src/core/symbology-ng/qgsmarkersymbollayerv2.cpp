@@ -22,6 +22,15 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 
 
+static QPointF _rotatedOffset( const QPointF& offset, double angle )
+{
+  angle = DEG2RAD( angle );
+  double c = cos( angle ), s = sin( angle );
+  return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
+}
+
+//////
+
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle )
 {
   mName = name;
@@ -342,13 +351,17 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     return;
   }
 
+  QPointF off( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  if ( mAngle )
+    off = _rotatedOffset( off, mAngle );
+
   if ( mUsingCache )
   {
     // we will use cached image
     QImage &img = context.selected() ? mSelCache : mCache;
     double s = img.width() / context.renderContext().rasterScaleFactor();
-    p->drawImage( QRectF( point.x() - s / 2.0 + context.outputLineWidth( mOffset.x() ),
-                          point.y() - s / 2.0 + context.outputLineWidth( mOffset.y() ),
+    p->drawImage( QRectF( point.x() - s / 2.0 + off.x(),
+                          point.y() - s / 2.0 + off.y(),
                           s, s ), img );
   }
   else
@@ -359,8 +372,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
 
     // move to the desired position
-    transform.translate( point.x() + context.outputLineWidth( mOffset.x() ),
-                         point.y() + context.outputLineWidth( mOffset.y() ) );
+    transform.translate( point.x() + off.x(), point.y() + off.y() );
 
     // resize if necessary
     if ( hasDataDefinedSize )
@@ -499,6 +511,8 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
   p->save();
   QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  if ( mAngle )
+    outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
 
   if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
@@ -700,6 +714,8 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
 
   p->save();
   QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  if ( mAngle )
+    outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
 
   if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
