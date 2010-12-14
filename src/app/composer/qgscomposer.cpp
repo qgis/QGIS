@@ -959,6 +959,8 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
     return;
   }
 
+  emit composerWillBeRemoved( mView );
+
   QDomDocument templateDocument;
   if ( !templateDocument.setContent( &templateFile, false ) )
   {
@@ -968,6 +970,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
 
   deleteItems();
   readXML( templateDocument );
+  emit composerAdded( mView );
 }
 
 void QgsComposer::on_mActionMoveItemContent_triggered()

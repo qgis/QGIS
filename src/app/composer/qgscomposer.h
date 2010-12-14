@@ -103,6 +103,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Is emitted every time the view zoom has changed
     void zoomLevelChanged();
 
+    void composerAdded( QgsComposerView* v );
+    //!Composer deletes the old composerview when loading a template
+    void composerWillBeRemoved( QgsComposerView* v );
+
 
   public slots:
     //! Zoom to full extent of the paper
