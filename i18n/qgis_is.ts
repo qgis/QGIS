@@ -1526,7 +1526,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="unfinished"></translation>
+        <translation>Næstum svart</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
@@ -1534,11 +1534,11 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>Varpa</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Varpa myndi í nýtt hnitakerfi</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -1546,39 +1546,39 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="unfinished"></translation>
+        <translation>Búa til rasta úr dreyfðum gögnum</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Þýða</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Breytir rastagögnum milli mismunadi sniða</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Upplýsingar</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrifar út upplýsingar um rastagögn</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið vörpun</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við vörpunarupplýsingum í rasta</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation type="unfinished"></translation>
+        <translation>Búa til yfirlit</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="unfinished"></translation>
+        <translation>Býr til eða endurbyggir yfirlitsmyndir</translation>
     </message>
     <message>
         <source>Clipper</source>
@@ -1755,7 +1755,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Setja á strigann þegar lokið</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
@@ -1791,11 +1791,11 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið vörpun</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Þessi rasti er þegar á kortastriganum</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
@@ -1811,15 +1811,15 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the input file for Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið inntaksskrá sem á að varpa</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið intaksskráarsafn með skrám sem á að varpa</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið úttaksskráarsafn til að vista niðurstöðu í</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
@@ -1827,15 +1827,15 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið skrárnar sem á að sameina</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið staðsetningu þar sem vista á sameinað úttak</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið inntaksskrá sem á að breyta</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
@@ -1855,19 +1855,19 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekkert virkt rastalag. Þú verður að bæta við einu rastalagi til að halda áfram.</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið inntaksskrá sem á að þýða</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið inntaksskráarsafn með skrám sem á að þýða</translation>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Þýða - srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
@@ -4194,12 +4194,12 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="565"/>
         <source>Unknown error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Óþekkt villa!</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="15"/>
         <source>Single Symbol</source>
-        <translation type="unfinished">Stakt merki</translation>
+        <translation>Stakt merki</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="18"/>
@@ -4224,7 +4224,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="53"/>
         <source>Coordinate Capture</source>
-        <translation type="unfinished">Grípa hnit</translation>
+        <translation>Grípa hnit</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="54"/>
@@ -4250,22 +4250,22 @@ use qgis.utils.iface object (instance of QgisInterface class).
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="38"/>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="33"/>
         <source>Version 0.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Útgáfa 0.1</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="51"/>
         <source>CopyrightLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Höfundarréttarmerki</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="52"/>
         <source>Draws copyright information</source>
-        <translation type="unfinished"></translation>
+        <translation>Teiknar merki höfundarréttar</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="44"/>
         <source>Version 0.2</source>
-        <translation type="unfinished"></translation>
+        <translation>Útgáfa 0.2</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="45"/>
@@ -4334,7 +4334,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished">Þetta verkfæri styður aðeins vigurgögn</translation>
+        <translation>Þetta verkfæri styður aðeins vigurgögn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
@@ -4389,17 +4389,17 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
         <source>GPS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS Verkfæri</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="54"/>
         <source>Tools for loading and importing GPS data</source>
-        <translation type="unfinished"></translation>
+        <translation>Verkfæri til að lesa inn og breyta GPS gögnum</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="113"/>
         <source>Location: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Staðsetning: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="116"/>
@@ -4720,7 +4720,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="34"/>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished">Þýða vigurlög milli kerfa studd af OGR kerfi</translation>
+        <translation>Þýða vigurlög milli kerfa studd af OGR kerfi</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
@@ -5172,7 +5172,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="111"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="128"/>
         <source>Crosses</source>
-        <translation type="unfinished">Krossar</translation>
+        <translation>Krossar</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="112"/>
@@ -5261,7 +5261,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="39"/>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekkert virkt vigurlag</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="40"/>
@@ -5512,7 +5512,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="685"/>
         <source>Save Project &amp;As...</source>
-        <translation>Vista verkefni &amp;Sem...</translation>
+        <translation>Vist&amp;a verkefni sem...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="686"/>
@@ -7726,7 +7726,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6964"/>
         <source>Project file is older</source>
-        <translation type="unfinished"></translation>
+        <translation>Verkefnisskrá er eldri</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6965"/>
@@ -7737,12 +7737,12 @@ Errors: %2
         <location filename="../src/app/qgisapp.cpp" line="6981"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tt&gt;Stillingar:Eiginleikar:Almennt&lt;/tt&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6982"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Vara mig við þegar verkefni er opnað í eldri útgafu af QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1640"/>
@@ -8197,22 +8197,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
         <source>Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="252"/>
         <source>Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
         <source>Mac</source>
-        <translation type="unfinished"></translation>
+        <translation>Mac</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="257"/>
         <source>Unix</source>
-        <translation type="unfinished"></translation>
+        <translation>Unix</translation>
     </message>
 </context>
 <context>
@@ -8353,7 +8353,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="569"/>
         <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation>Niðurstaða leitar</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="569"/>
@@ -11211,7 +11211,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="559"/>
         <source>Scale bar added</source>
-        <translation type="unfinished"></translation>
+        <translation>Kvarðastiku bætt við</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="569"/>
@@ -12158,7 +12158,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="28"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Rúmfræðidálkur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="29"/>
@@ -13436,18 +13436,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
         <source>&amp;Gps Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;GPS verkfæri</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="91"/>
         <source>&amp;Create new GPX layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Búa til nýtt GPX lag</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="94"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="95"/>
         <source>Creates a new GPX layer and displays it on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Býr til nýtt GPX lag og byrtir það á kortastriganum</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="100"/>
@@ -13455,38 +13455,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="203"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="204"/>
         <source>&amp;Gps</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="164"/>
         <source>Save new GPX file as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista nýja GPX skrá sem...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="166"/>
         <source>GPS eXchange file (*.gpx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS eXchange skrá (*.gpx)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="173"/>
         <source>Could not create file</source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki búið til skrá</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
         <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Get ekki búið til GPX skrá með þessu nafni. Prófaðu aftur með öðru nafni eða í öðru skráarsafni.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="217"/>
         <source>GPX Loader</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX leasari</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Get ekki lesið valda skrá.
+Vinsamlega endurveljið gilda skrá.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="268"/>
@@ -13494,7 +13495,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="437"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="529"/>
         <source>Could not start process</source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki ræst ferli</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="269"/>
@@ -13502,13 +13503,13 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="438"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="530"/>
         <source>Could not start GPSBabel!</source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki ræst GPSBabel!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="274"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="350"/>
         <source>Importing data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Les inn gögn...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="274"/>
@@ -13523,24 +13524,24 @@ Please reselect a valid file.</source>
         <source>Could not import data from %1!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki lesið inn gögn frá %1!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="290"/>
         <source>Error importing data</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa í innlestri gagna</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="363"/>
         <source>Could not convert data from %1!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki breytt gögnum frá %1!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="366"/>
         <source>Error converting data</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa í umbreytingu gagna</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="424"/>
@@ -13563,34 +13564,34 @@ Please reselect a valid file.</source>
         <source>Could not download data from GPS!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki lesið inn gögn frá GPS tæki!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="458"/>
         <source>Error downloading data</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa í innlestri gagna</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="518"/>
         <source>This device does not support uploading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Þetta tæki styður ekki upphleðslu %1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="535"/>
         <source>Uploading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Upphleðsla gagna...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="548"/>
         <source>Error while uploading data to GPS!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Villa við upphleðslu gagna í GPS tæki!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="550"/>
         <source>Error uploading data</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa við upphleðslu gagna</translation>
     </message>
 </context>
 <context>
@@ -13627,7 +13628,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="379"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="400"/>
         <source>GPS eXchange format (*.gpx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS eXchange gagnasnið (*.gpx)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="248"/>
@@ -17216,12 +17217,12 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="39"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="40"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
 </context>
 <context>
@@ -18021,7 +18022,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Nota kvarðastýrða birtingu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="144"/>
@@ -18066,7 +18067,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="501"/>
         <source>Data defined placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Byrting skilgreind í gögnum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="548"/>
@@ -18151,7 +18152,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="877"/>
         <source>QGIS Rocks!</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS virkar!</translation>
     </message>
 </context>
 <context>
@@ -18209,7 +18210,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="127"/>
         <source>Label distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægt merkis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="137"/>
@@ -18973,7 +18974,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="684"/>
         <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="unfinished"></translation>
+        <translation>Skráarsafnið sem inniheldur gagnasafnið verður að vera skrifanlegt!</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="698"/>
@@ -20054,7 +20055,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="64"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="77"/>
@@ -20141,7 +20142,11 @@ Frekari villuupplýsingar:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="104"/>
@@ -20550,7 +20555,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="274"/>
         <source>CRS ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenni Hnitviðmiðskerfis (CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="291"/>
@@ -20561,7 +20566,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="297"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilgreindu hnitviðmiðskerfi (CRS)</translation>
     </message>
 </context>
 <context>
@@ -20594,18 +20599,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="97"/>
         <source>Creates a north arrow that is displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Býr til áttavitaör sem er byrt á kortastriga</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="106"/>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="258"/>
         <source>&amp;Decorations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aukahlutir</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="249"/>
         <source>North arrow pixmap not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Áttavitamynd fannst ekki</translation>
     </message>
 </context>
 <context>
@@ -21046,7 +21051,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="46"/>
         <source>Source type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tegund uppruna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="52"/>
@@ -21085,7 +21090,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="122"/>
         <source>URI</source>
-        <translation type="unfinished"></translation>
+        <translation>URI</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="150"/>
@@ -23349,7 +23354,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="25"/>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation type="unfinished"></translation>
+        <translation>Til að virkja / afvirkja viðbót, smellið í valkassan eða á lýsinguna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="45"/>
@@ -24013,27 +24018,27 @@ reyna að finna týnd lög?</translation>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="627"/>
         <source>User Defined Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Hnitviðmiðskerfi skilgreint af notanda</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="702"/>
         <source>Geographic Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Landfræðilegt hnitakerfi</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="711"/>
         <source>Projected Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Varpað hnitakerfi</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>Find projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Finna vörpun</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>No matching projection found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Engin viðeigandi vörpun fannst.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1144"/>
@@ -26704,7 +26709,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="50"/>
         <source>Point Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Tákn punts</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="56"/>
@@ -27153,12 +27158,12 @@ The error was:
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="571"/>
         <source>Missing reference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Viðmiðunarlag vantar</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="571"/>
         <source>Select reference layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið viðmiðunarlag!</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="576"/>
@@ -27986,7 +27991,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="14"/>
         <source>Symbol selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Táknaval</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="323"/>
@@ -30569,7 +30574,7 @@ Response was:
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="14"/>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Veljið Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="36"/>
@@ -30599,7 +30604,7 @@ Response was:
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
         <source>Subdatasets</source>
-        <translation type="unfinished"></translation>
+        <translation>Undirgagnasöfn</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="148"/>
