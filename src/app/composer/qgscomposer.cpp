@@ -818,6 +818,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   //height in pixel
   int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
   generator.setSize( QSize( width, height ) );
+  generator.setViewBox( QRect( 0, 0, width, height ) );
   generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
 
   QPainter p( &generator );
