@@ -60,11 +60,11 @@ void QgsStyleV2ManagerDialog::onFinished()
 
 void QgsStyleV2ManagerDialog::populateTypes()
 {
+#if 0
   // save current selection index in types combo
   int current = ( tabItemType->count() > 0 ? tabItemType->currentIndex() : 0 );
 
  // no counting of style items
-/*
   int markerCount = 0, lineCount = 0, fillCount = 0;
 
   QStringList symbolNames = mStyle->symbolNames();
@@ -88,7 +88,7 @@ void QgsStyleV2ManagerDialog::populateTypes()
 
   // update current index to previous selection
   cboItemType->setCurrentIndex( current );
-*/
+#endif
 }
 
 void QgsStyleV2ManagerDialog::populateList()
