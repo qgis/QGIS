@@ -2957,8 +2957,10 @@ bool QgsPostgresProvider::deduceEndian()
     if ( i < PQnfields( res ) )
     {
       // get the table name
-      res = connectionRO->PQexec( QString( "SELECT relname FROM pg_class WHERE oid=%1" ).arg( oidValue ) );
-      query = QString::fromUtf8( PQgetvalue( res, 0, 0 ) );
+      res = connectionRO->PQexec( QString( "SELECT pg_namespace.nspname,pg_class.relname FROM pg_class,pg_namespace WHERE pg_class.relnamespace=pg_namespace.oid AND pg_class.oid=%1" ).arg( oidValue ) );
+      QString schemaName = QString::fromUtf8( PQgetvalue( res, 0, 0 ) );
+      QString tableName = QString::fromUtf8( PQgetvalue( res, 0, 1 ) );
+      query = quotedIdentifier( schemaName ) + "." + quotedIdentifier( tableName );
     }
     else
     {
@@ -2972,6 +2974,7 @@ bool QgsPostgresProvider::deduceEndian()
     Result oidResult = connectionRO->PQexec( firstOid );
     // get the int value from a "normal" select
     oidValue = QString::fromUtf8( PQgetvalue( oidResult, 0, 0 ) );
+    query = mQuery;
   }
 
   QgsDebugMsg( "Creating binary cursor" );
