@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/sqlanywhere/" >
+        <file>sqlanywhere.png</file>
+    </qresource>
+</RCC>

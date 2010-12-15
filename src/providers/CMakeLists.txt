@@ -1,5 +1,5 @@
 
-SUBDIRS (memory ogr wms delimitedtext osm)
+SUBDIRS (memory ogr wms delimitedtext osm sqlanywhere)
 
 IF (POSTGRES_FOUND)
   SUBDIRS (postgres)

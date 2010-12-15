@@ -1,0 +1,344 @@
+<ui version="4.0" >
+ <class>SaNewConnectionBase</class>
+ <widget class="QDialog" name="SaNewConnectionBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>323</width>
+    <height>274</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>Create a new SQL Anywhere connection</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="GroupBox1" >
+     <property name="title" >
+      <string>Connection Information</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>5</number>
+      </property>
+      <item row="0" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="TextLabel1" >
+            <property name="text" >
+             <string>Name</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtName</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel2" >
+            <property name="text" >
+             <string>Host</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtHost</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel3" >
+            <property name="text" >
+		<string>Port</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtPort</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel4" >
+            <property name="text" >
+             <string>Server</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtServer</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel5" >
+            <property name="text" >
+             <string>Database</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtDatabase</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel6" >
+            <property name="text" >
+             <string>Connection Parameters</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtParameters</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel7" >
+            <property name="text" >
+             <string>Username</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtUsername</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="TextLabel8" >
+            <property name="text" >
+             <string>Password</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtPassword</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="txtName" >
+            <property name="toolTip" >
+             <string>Name of the new connection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtHost" >
+            <property name="toolTip" >
+             <string>Name or IP address of computer hosting the database server (leave blank for local connections)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtPort" >
+            <property name="toolTip" >
+		<string>Port number used by the database server (leave blank for default 2638)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtServer" >
+            <property name="toolTip" >
+		<string>Name of the database server (leave blank for default server on host)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtDatabase" >
+            <property name="toolTip" >
+		<string>Name of the database (leave blank for default database on server)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtParameters" >
+            <property name="toolTip" >
+		<string>Additional connection parameters</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtUsername" >
+            <property name="toolTip" >
+		<string>Database username</string>
+            </property>
+	   </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtPassword" >
+            <property name="echoMode" >
+             <enum>QLineEdit::Password</enum>
+            </property>
+            <property name="toolTip" >
+		<string>Database password</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" >
+       <layout class="QGridLayout" name="gridLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <item row="0" column="0" >
+         <widget class="QCheckBox" name="chkStoreUsername" >
+          <property name="text" >
+           <string>Save Username</string>
+          </property>
+          <property name="toolTip" >
+	   <string>Save the connection username in the registry</string>
+          </property>
+         </widget>
+        </item>
+        <item rowspan="2" row="0" column="1" >
+         <widget class="QPushButton" name="btnConnect" >
+          <property name="text" >
+           <string>&amp;Test Connect</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QCheckBox" name="chkStorePassword" >
+          <property name="text" >
+           <string>Save Password</string>
+          </property>
+          <property name="toolTip" >
+	   <string>Save the connection password in the registry (WARNING: NOT SECURE)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QCheckBox" name="chkSimpleEncryption" >
+          <property name="text" >
+           <string>Simple Encryption</string>
+          </property>
+          <property name="toolTip" >
+	   <string>Encrypt packets using simple encryption</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" >
+         <widget class="QCheckBox" name="chkEstimateMetadata" >
+          <property name="text" >
+           <string>Estimate table metadata</string>
+          </property>
+          <property name="toolTip" >
+	   <string>Use estimates for certain layer properties such as cardinality, extent, etc. (improves performance)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" >
+         <widget class="QCheckBox" name="chkOtherSchemas" >
+          <property name="text" >
+           <string>Search other users' tables</string>
+          </property>
+          <property name="toolTip" >
+	   <string>Search for geometry columns in tables owned by other users</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtHost</tabstop>
+  <tabstop>txtPort</tabstop>
+  <tabstop>txtServer</tabstop>
+  <tabstop>txtDatabase</tabstop>
+  <tabstop>txtParameters</tabstop>
+  <tabstop>txtUsername</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>chkStoreUsername</tabstop>
+  <tabstop>chkStorePassword</tabstop>
+  <tabstop>chkSimpleEncryption</tabstop>
+  <tabstop>chkEstimateMetadata</tabstop>
+  <tabstop>chkOtherSchemas</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SaNewConnectionBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>313</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>451</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>SaNewConnectionBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>395</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>450</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

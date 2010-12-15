@@ -13,6 +13,7 @@ SUBDIRS (copyright_label
   evis
   point_displacement_renderer
   spatialquery
+  sqlanywhere
   )
 
 IF (WITH_SPATIALITE)
