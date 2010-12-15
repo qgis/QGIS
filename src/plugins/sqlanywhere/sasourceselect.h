@@ -1,16 +1,16 @@
 /***************************************************************************
   sasourceselect.h
-  Dialogue box for defining vector layers from a SQL Anywhere database 
+  Dialogue box for defining vector layers from a SQL Anywhere database
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
   The author gratefully acknowledges that portions of this class were copied
   from QgsPgSourceSelect, and so the following copyright holds on the
   original content:
-			 qgpgsourceselect.h
+    qgpgsourceselect.h
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc.com
@@ -91,7 +91,7 @@ class SaSourceSelectDelegate : public QItemDelegate
  * \brief Dialog to create connections and add tables from SQL Anywhere.
  *
  * This dialog allows the user to define and save connection information
- * for SQL Anywhere databases.  The user can then connect and add 
+ * for SQL Anywhere databases.  The user can then connect and add
  * tables from the database to the map canvas.
  */
 class SaSourceSelect : public QDialog, private Ui::SaSourceSelectBase

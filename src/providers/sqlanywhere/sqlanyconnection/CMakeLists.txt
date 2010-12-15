@@ -6,11 +6,6 @@ SET (SACONN_SRCS
     sqlanyconnection.cpp
     sacapi/sacapidll.c
 )
-SET (SACONN_MOC_HDRS 
-    sqlanystatement.h
-    sqlanyconnection.h
-    sacapi/sacapidll.h
-)
 
 IF (WIN32)
   IF (MSVC)
@@ -25,13 +20,11 @@ ENDIF (WIN32)
 ########################################################
 # Build
 
-QT4_WRAP_CPP (SACONN_MOC_SRCS  ${SACONN_MOC_HDRS})
-
 INCLUDE_DIRECTORIES(
      ../../../core 
 )
 
-ADD_LIBRARY (sqlanyconnection SHARED ${SACONN_SRCS} ${SACONN_MOC_SRCS})
+ADD_LIBRARY (sqlanyconnection SHARED ${SACONN_SRCS})
 
 SET_TARGET_PROPERTIES(sqlanyconnection PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
 

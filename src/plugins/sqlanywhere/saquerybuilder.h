@@ -4,13 +4,13 @@
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
- This class was copied and modified from QgsQueryBuilder because that 
+ This class was copied and modified from QgsQueryBuilder because that
  class is not accessible to QGIS plugins.  Therefore, the author gratefully
  acknowledges the following copyright on the original content:
-			 qgsquerybuilder.cpp
+    qgsquerybuilder.cpp
     Date                 : 2004-11-19
     Copyright            : (C) 2004 by Gary E.Sherman
     Email                : sherman at mrcc.com
@@ -68,7 +68,7 @@ class SaQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
      * @param fl dialog flags
      */
     SaQueryBuilder( QgsVectorLayer *layer, QWidget *parent = 0,
-                     Qt::WFlags fl = QgisGui::ModalDialogFlags );
+                    Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
     ~SaQueryBuilder();
 

@@ -21,7 +21,6 @@ SET (sqlanywhere_MOC_HDRS
      sanewconnection.h
      salayer.h
      sadbtablemodel.h
-     sadbfilterproxymodel.h
      saquerybuilder.h
 )
 

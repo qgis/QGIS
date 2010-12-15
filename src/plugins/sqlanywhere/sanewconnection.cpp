@@ -1,10 +1,10 @@
 /***************************************************************************
   sanewconnection.h
-  Dialogue box for defining new connections to a SQL Anywhere database 
+  Dialogue box for defining new connections to a SQL Anywhere database
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
@@ -47,12 +47,12 @@ SaNewConnection::SaNewConnection( QWidget *parent, const QString& connName, Qt::
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
     txtParameters->setText( settings.value( key + "/parameters" ).toString() );
 
-    if ( settings.value( key + "/saveUsername", true ).toBool() ) 
+    if ( settings.value( key + "/saveUsername", true ).toBool() )
     {
-	txtUsername->setText( settings.value( key + "/username" ).toString() );
-	chkStoreUsername->setChecked( true );
+      txtUsername->setText( settings.value( key + "/username" ).toString() );
+      chkStoreUsername->setChecked( true );
     }
-    if ( settings.value( key + "/savePassword", false ).toBool() ) 
+    if ( settings.value( key + "/savePassword", false ).toBool() )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
@@ -61,7 +61,7 @@ SaNewConnection::SaNewConnection( QWidget *parent, const QString& connName, Qt::
     chkEstimateMetadata->setChecked( settings.value( key + "/estimateMetadata", false ).toBool() );
     chkOtherSchemas->setChecked( settings.value( key + "/otherSchemas", false ).toBool() );
 
-  } 
+  }
 }
 
 SaNewConnection::~SaNewConnection()
@@ -116,49 +116,55 @@ void SaNewConnection::on_btnConnect_clicked()
 
 void SaNewConnection::testConnection()
 {
-    char		errbuf[SACAPI_ERROR_SIZE];
-    sacapi_i32		code;
-    SqlAnyConnection	*conn;
-   
-    // load the SQL Anywhere interface
-    if( !SqlAnyConnection::initApi() ) {
-	QMessageBox::information( this,
-		tr("Failed to load interface" ),
-		tr( SqlAnyConnection::failedInitMsg() ) );
-	return;
-    }
-   
-    // establish read-only connection to the database
-    conn = SqlAnyConnection::connect( txtName->text()
-		, txtHost->text(), txtPort->text(), txtServer->text()
-		, txtDatabase->text(), txtParameters->text(), txtUsername->text()
-		, txtPassword->text(), chkSimpleEncryption->isChecked()
-		, chkEstimateMetadata->isChecked(), true
-		, code, errbuf, sizeof( errbuf ) );
-    if( conn ) {
-	// retrieve the username and password, in case the user adjusted them
-	QgsDataSourceURI    theUri( conn->uri() );
-	if ( chkStoreUsername->isChecked() ) {
-		txtUsername->setText( theUri.username() );
-	}
-	if ( chkStorePassword->isChecked() ) {
-	    txtPassword->setText( theUri.password() );
-	}
-	conn->release();
+  char  errbuf[SACAPI_ERROR_SIZE];
+  sacapi_i32  code;
+  SqlAnyConnection *conn;
 
-	QMessageBox::information( this,
+  // load the SQL Anywhere interface
+  if ( !SqlAnyConnection::initApi() )
+  {
+    QMessageBox::information( this,
+                              tr( "Failed to load interface" ),
+                              tr( SqlAnyConnection::failedInitMsg() ) );
+    return;
+  }
+
+  // establish read-only connection to the database
+  conn = SqlAnyConnection::connect( txtName->text()
+                                    , txtHost->text(), txtPort->text(), txtServer->text()
+                                    , txtDatabase->text(), txtParameters->text(), txtUsername->text()
+                                    , txtPassword->text(), chkSimpleEncryption->isChecked()
+                                    , chkEstimateMetadata->isChecked(), true
+                                    , code, errbuf, sizeof( errbuf ) );
+  if ( conn )
+  {
+    // retrieve the username and password, in case the user adjusted them
+    QgsDataSourceURI    theUri( conn->uri() );
+    if ( chkStoreUsername->isChecked() )
+    {
+      txtUsername->setText( theUri.username() );
+    }
+    if ( chkStorePassword->isChecked() )
+    {
+      txtPassword->setText( theUri.password() );
+    }
+    conn->release();
+
+    QMessageBox::information( this,
                               tr( "Test connection" ),
                               tr( "Connection to %1 was successful" )
-				  .arg( txtDatabase->text() ) );
-    } else {
-	QMessageBox::information( this,
+                              .arg( txtDatabase->text() ) );
+  }
+  else
+  {
+    QMessageBox::information( this,
                               tr( "Test connection" ),
                               tr( "Connection failed. "
-				  "Check settings and try again.\n\n"
-				  "SQL Anywhere error code: %1\n"
-				  "Description: %2" ) 
-				  .arg( code ) 
-				  .arg( errbuf ) );
-    }
-    SqlAnyConnection::releaseApi();
+                                  "Check settings and try again.\n\n"
+                                  "SQL Anywhere error code: %1\n"
+                                  "Description: %2" )
+                              .arg( code )
+                              .arg( errbuf ) );
+  }
+  SqlAnyConnection::releaseApi();
 }

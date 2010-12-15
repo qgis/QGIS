@@ -4,7 +4,7 @@
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
@@ -69,124 +69,126 @@ SqlAnywhere::~SqlAnywhere()
 }
 
 /*
- * Initialize the GUI interface for the plugin 
- * This is only called once when the plugin is added to the plugin registry 
+ * Initialize the GUI interface for the plugin
+ * This is only called once when the plugin is added to the plugin registry
  * in the QGIS application.
  *
  * Also add an entry to the plugin layer registry
  */
 void SqlAnywhere::initGui()
 {
-    // Create the action for tool
-    mActionAddSqlAnywhereLayer = new QAction( QIcon( ":/sqlanywhere/sqlanywhere.png" ), tr( "Add SQL Anywhere Layer..." ), this );
-    mActionAddSqlAnywhereLayer->setWhatsThis( tr( "Store vector layers within a SQL Anywhere database" ) );
-    connect( mActionAddSqlAnywhereLayer, SIGNAL( triggered() ), this, SLOT( addSqlAnywhereLayer() ) );
+  // Create the action for tool
+  mActionAddSqlAnywhereLayer = new QAction( QIcon( ":/sqlanywhere/sqlanywhere.png" ), tr( "Add SQL Anywhere Layer..." ), this );
+  mActionAddSqlAnywhereLayer->setWhatsThis( tr( "Store vector layers within a SQL Anywhere database" ) );
+  connect( mActionAddSqlAnywhereLayer, SIGNAL( triggered() ), this, SLOT( addSqlAnywhereLayer() ) );
 
-    // Add the icon to the new layers toolbar
-    //  mQGisIface->addToolBarIcon( mActionAddSqlAnywhereLayer );
-    mQGisIface->layerToolBar()->addAction( mActionAddSqlAnywhereLayer );  
+  // Add the icon to the new layers toolbar
+  //  mQGisIface->addToolBarIcon( mActionAddSqlAnywhereLayer );
+  mQGisIface->layerToolBar()->addAction( mActionAddSqlAnywhereLayer );
 
-    // Add menu option to Plugins menu
-    mQGisIface->addPluginToMenu( tr( "&SQL Anywhere" ), mActionAddSqlAnywhereLayer );
-    // Also add to Layer menu, immediately before the first separator
-    mQGisIface->layerMenu()->insertAction( mQGisIface->actionLayerSeparator1(), mActionAddSqlAnywhereLayer );
+  // Add menu option to Plugins menu
+  mQGisIface->addPluginToMenu( tr( "&SQL Anywhere" ), mActionAddSqlAnywhereLayer );
+  // Also add to Layer menu, immediately before the first separator
+  mQGisIface->layerMenu()->insertAction( mQGisIface->actionLayerSeparator1(), mActionAddSqlAnywhereLayer );
 }
 
 //method defined in interface
 void SqlAnywhere::help()
 {
-    //implement me!
+  //implement me!
 }
 
 // Slot called when the menu item is triggered
 void SqlAnywhere::addSqlAnywhereLayer()
 {
-    QgsMapCanvas *mMapCanvas = mQGisIface->mapCanvas();
-    if ( mMapCanvas && mMapCanvas->isDrawing() )
+  QgsMapCanvas *mMapCanvas = mQGisIface->mapCanvas();
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  // show the data source dialog
+  SaSourceSelect *dbs = new SaSourceSelect( mQGisIface->mainWindow() );
+
+  mMapCanvas->freeze();
+
+  if ( dbs->exec() )
+  {
+    // add files to the map canvas
+    QStringList tables = dbs->selectedTables();
+    SaDebugMsg( "Selected tables:\n" + tables.join( "\n" ) + "\n\n" );
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    // retrieve database connection string
+    QString connectionInfo = dbs->connectionInfo();
+
+    // create a new map layer for each selected table and register it
+    for ( QStringList::Iterator it = tables.begin() ; it != tables.end() ; it++ )
     {
-	return;
+      // create the layer
+      SaDebugMsg( "Creating layer " + *it );
+      SaLayer *layer = new SaLayer( connectionInfo + " " + *it, *it );
+      if ( layer->isValid() )
+      {
+        // set initial layer name to table name
+        SaDebugMsg( "Beautifying layer name.  old: " + layer->name() );
+
+        QgsDataSourceURI layerUri = QgsDataSourceURI( *it );
+        QString newName = QString( "%1 (%2)" )
+                          .arg( layerUri.table() )
+                          .arg( layerUri.geometryColumn() );
+        if ( QgsMapLayerRegistry::instance()->mapLayers().contains( newName ) )
+        {
+          newName = QString( "%1.%2 (%3)" )
+                    .arg( layerUri.schema() )
+                    .arg( layerUri.table() )
+                    .arg( layerUri.geometryColumn() );
+
+          if ( QgsMapLayerRegistry::instance()->mapLayers().contains( newName ) )
+          {
+            // give up and revert to original name
+            newName = layer->name();
+          }
+        }
+        layer->setLayerName( newName );
+        SaDebugMsg( "Beautifying layer name.  new: " + layer->name() );
+
+        // register this layer with the central layers registry
+        QgsMapLayerRegistry::instance()->addMapLayer(( QgsVectorLayer* )layer );
+      }
+      else
+      {
+        SaDebugMsg(( *it ) + " is an invalid layer - not loaded" );
+        QMessageBox::critical( mQGisIface->mainWindow(), tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
+        delete layer;
+      }
     }
 
-    // show the data source dialog
-    SaSourceSelect *dbs = new SaSourceSelect( mQGisIface->mainWindow() );
+    QApplication::restoreOverrideCursor();
 
-    mMapCanvas->freeze();
+    (( QMainWindow * ) mQGisIface->mainWindow() )->statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+  }
 
-    if ( dbs->exec() )
-    {
-	// add files to the map canvas
-	QStringList tables = dbs->selectedTables();
-	SaDebugMsg( "Selected tables:\n" + tables.join("\n") + "\n\n" );
+  delete dbs;
 
-	QApplication::setOverrideCursor( Qt::WaitCursor );
+  // update UI
+  qApp->processEvents();
 
-	// retrieve database connection string
-	QString connectionInfo = dbs->connectionInfo();
-	
-	// create a new map layer for each selected table and register it
-	for( QStringList::Iterator it = tables.begin() ; it != tables.end() ; it++ ) 
-	{
-	    // create the layer
-	    SaDebugMsg( "Creating layer " + *it );
-	    SaLayer *layer = new SaLayer( connectionInfo + " " + *it, *it );
-	    if ( layer->isValid() )
-	    {
-		// set initial layer name to table name
-		SaDebugMsg( "Beautifying layer name.  old: " + layer->name() );
-
-		QgsDataSourceURI layerUri = QgsDataSourceURI( *it );
-		QString newName = QString( "%1 (%2)" )
-			.arg( layerUri.table() )
-			.arg( layerUri.geometryColumn() );
-		if( QgsMapLayerRegistry::instance()->mapLayers().contains( newName ) ) {
-		    newName = QString( "%1.%2 (%3)" )
-			.arg( layerUri.schema() )
-			.arg( layerUri.table() )
-			.arg( layerUri.geometryColumn() );
-
-		    if( QgsMapLayerRegistry::instance()->mapLayers().contains( newName ) ) {
-			// give up and revert to original name
-			newName = layer->name();
-		    }
-		}
-		layer->setLayerName( newName );
-		SaDebugMsg( "Beautifying layer name.  new: " + layer->name() );
-
-		// register this layer with the central layers registry
-		QgsMapLayerRegistry::instance()->addMapLayer( (QgsVectorLayer*)layer );
-	    }
-	    else
-	    {
-		SaDebugMsg(( *it ) + " is an invalid layer - not loaded" );
-		QMessageBox::critical( mQGisIface->mainWindow(), tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
-		delete layer;
-	    }
-	}
-
-	QApplication::restoreOverrideCursor();
-
-	((QMainWindow *) mQGisIface->mainWindow())->statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
-    }
-
-    delete dbs;
-
-    // update UI
-    qApp->processEvents();
-
-    // draw the map
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+  // draw the map
+  mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
 
 } // SqlAnywhere::addSqlAnywhereLayer()
 
 // Unload the plugin and clean up the GUI
 void SqlAnywhere::unload()
 {
-    mQGisIface->removePluginMenu( "&SQL Anywhere", mActionAddSqlAnywhereLayer );
-    mQGisIface->layerMenu()->removeAction( mActionAddSqlAnywhereLayer );
-    //mQGisIface->removeToolBarIcon( mActionAddSqlAnywhereLayer );
-    mQGisIface->layerToolBar()->removeAction( mActionAddSqlAnywhereLayer );
-    delete mActionAddSqlAnywhereLayer;
+  mQGisIface->removePluginMenu( "&SQL Anywhere", mActionAddSqlAnywhereLayer );
+  mQGisIface->layerMenu()->removeAction( mActionAddSqlAnywhereLayer );
+  //mQGisIface->removeToolBarIcon( mActionAddSqlAnywhereLayer );
+  mQGisIface->layerToolBar()->removeAction( mActionAddSqlAnywhereLayer );
+  delete mActionAddSqlAnywhereLayer;
 }
 
 QIcon SqlAnywhere::getThemeIcon( const QString theName )

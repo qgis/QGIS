@@ -1,10 +1,10 @@
 /***************************************************************************
   salayer.h
-  Definition of vector layer backed by a SQL Anywhere database 
+  Definition of vector layer backed by a SQL Anywhere database
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
@@ -36,23 +36,24 @@ class SaLayer : public QgsVectorLayer
   public:
     //! Constructor
     SaLayer( QString path = QString::null
-	    , QString baseName = QString::null
-	    , bool loadDefaultStyleFlag = true )
-	: QgsVectorLayer( path, baseName, "sqlanywhere", loadDefaultStyleFlag )
+                            , QString baseName = QString::null
+                                                 , bool loadDefaultStyleFlag = true )
+        : QgsVectorLayer( path, baseName, "sqlanywhere", loadDefaultStyleFlag )
     {
-	if( isValid() ) {
-	    // The parent QgsMapLayer initialized mDataSource = path.
-	    // Reset this to the value mDataProvider.dataSourceUri()
-	    // so that any modifications to the URI made by the 
-	    // data provider make it back into the layer definition.
-	    mDataSource = dataProvider()->dataSourceUri();
-	    SaDebugMsg( "Modified layer source: " + mDataSource );
-	}
+      if ( isValid() )
+      {
+        // The parent QgsMapLayer initialized mDataSource = path.
+        // Reset this to the value mDataProvider.dataSourceUri()
+        // so that any modifications to the URI made by the
+        // data provider make it back into the layer definition.
+        mDataSource = dataProvider()->dataSourceUri();
+        SaDebugMsg( "Modified layer source: " + mDataSource );
+      }
     }
 
     //! Destructor
     ~SaLayer()
-    { 
+    {
     }
 };
 

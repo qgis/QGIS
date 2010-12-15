@@ -4,13 +4,13 @@
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
- This class was copied and modified from QgsQueryBuilder because that 
+ This class was copied and modified from QgsQueryBuilder because that
  class is not accessible to QGIS plugins.  Therefore, the author gratefully
  acknowledges the following copyright on the original content:
-			 qgsquerybuilder.cpp
+    qgsquerybuilder.cpp
     Date                 : 2004-11-19
     Copyright            : (C) 2004 by Gary E.Sherman
     Email                : sherman at mrcc.com
@@ -39,7 +39,7 @@
 // constructor used when the query builder must make its own
 // connection to the database
 SaQueryBuilder::SaQueryBuilder( QgsVectorLayer *layer,
-                                  QWidget *parent, Qt::WFlags fl )
+                                QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mLayer( layer )
 {
   setupUi( this );
@@ -52,9 +52,9 @@ SaQueryBuilder::SaQueryBuilder( QgsVectorLayer *layer,
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, SIGNAL( clicked() ), this, SLOT( clear() ) );
-  
-  // remove the ILIKE button since ILIKE is a PostgreSQL special 
-  // not supported by SQL Anywhere 
+
+  // remove the ILIKE button since ILIKE is a PostgreSQL special
+  // not supported by SQL Anywhere
   btnILike->setVisible( false );
 
   setupGuiViews();
