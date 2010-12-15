@@ -1,8 +1,9 @@
 qgis (1.7.0) UNRELEASED; urgency=low
 
   * new development version after 1.7 branch
+  * include sql anywhere plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 08 Nov 2010 12:55:04 +0100
+ -- J�rgen E. Fischer <jef@norbit.de>  Wed, 15 Dec 2010 23:49:44 +0100
 
 qgis (1.6.0) UNRELEASED; urgency=low
 
