@@ -1,10 +1,10 @@
 /***************************************************************************
   sanewconnection.h
-  Dialogue box for defining new connections to a SQL Anywhere database 
+  Dialogue box for defining new connections to a SQL Anywhere database
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
  ***************************************************************************

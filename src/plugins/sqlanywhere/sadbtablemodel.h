@@ -5,13 +5,13 @@
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
- This class was copied and modified from QgsDbTableModel because that 
+ This class was copied and modified from QgsDbTableModel because that
  class is not accessible to QGIS plugins.  Therefore, the author gratefully
  acknowledges the following copyright on the original content:
-			 qgsdbtablemodel.cpp
+    qgsdbtablemodel.cpp
     begin                : Dec 2007
     copyright            : (C) 2007 by Marco Hugentobler
     email                : marco dot hugentobler at karto dot baug dot ethz dot ch

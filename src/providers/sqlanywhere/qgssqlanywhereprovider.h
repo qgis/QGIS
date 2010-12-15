@@ -3,7 +3,7 @@
     ------------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
@@ -38,13 +38,13 @@ class QgsField;
   \class QgsSqlAnywhereProvider
   \brief Data provider for SQL Anywhere layers.
 
-  This provider implements the interface defined in the QgsDataProvider 
+  This provider implements the interface defined in the QgsDataProvider
   class to provide access to spatial data residing in a SQL Anywhere database.
   */
 class QgsSqlAnywhereProvider: public QgsVectorDataProvider
 {
-  Q_OBJECT 
-    
+    Q_OBJECT
+
   public:
     /**
      * Constructor of the vector provider
@@ -107,7 +107,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      */
     QGis::WkbType geometryType() const { return mGeomType; }
 
-    /** 
+    /**
      * return the number of layers for the current data source
      */
     size_t layerCount() const { return 1; }
@@ -117,7 +117,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      */
     long featureCount() const { return mNumberFeatures; }
 
-    /** 
+    /**
      * Return the extent for this data layer
     */
     virtual QgsRectangle extent();
@@ -213,14 +213,14 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     /**
      * Sets mNumberFeatures
      */
-    void countFeatures(); 
-    /** 
+    void countFeatures();
+    /**
      * loads fields to member mAttributeFields and mAttributeDefaults
      */
     bool loadFields();
     /**
      * retrieves attribute's default value from database schema
-     */ 
+     */
     QString getDefaultValue( QString attrName );
     /**
      * Populates QgsVectorDataProvider::mNativeTypes
@@ -234,7 +234,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      * Sets mIsTable, mTableId, mIsComputed, mGeomType, mSrid
      */
     bool checkLayerType();
-    /** 
+    /**
      * sets mCrs, mSrsExtent
      */
     bool checkSrs();
@@ -256,7 +256,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      */
     const QgsField field( int index ) const;
 
-    /** 
+    /**
      * Ensures that a database connections is live,
      * connecting or reconnecting if necessary.
      *
@@ -284,7 +284,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     QString geomColIdent() const { return quotedIdentifier( mGeometryColumn ) + mGeometryProjStr; }
 
     /**
-     * static internal utility functions 
+     * static internal utility functions
      */
     static QGis::WkbType lookupWkbType( QString type );
     static void showMessageBox( const QString& title, const QString& text );
@@ -312,7 +312,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
        */
     bool mValid;
     /**
-     * Use estimated metadata when determining table counts, 
+     * Use estimated metadata when determining table counts,
      * geometry type, and extent.
      */
     bool mUseEstimatedMetadata;
@@ -354,7 +354,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      */
     QGis::WkbType mGeomType;
     /**
-     * Flag indicating whether mGeometryColumn originates from a 
+     * Flag indicating whether mGeometryColumn originates from a
      *   computed expression
      */
     bool mIsComputed;
@@ -378,7 +378,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      */
     QgsCoordinateReferenceSystem mCrs;
     /**
-     * SRS boundaries (used to threshold rectangle queries) 
+     * SRS boundaries (used to threshold rectangle queries)
      */
     QgsRectangle mSrsExtent;
 
@@ -395,18 +395,18 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     /**
      * Statement handle for fetching of features by bounding rectangle
      */
-    SqlAnyStatement	*mStmt;
-    QgsAttributeList	mStmtAttributesToFetch;
-    bool		mStmtFetchGeom; 
-    QgsRectangle	mStmtRect;
-    bool		mStmtUseIntersect;
+    SqlAnyStatement *mStmt;
+    QgsAttributeList mStmtAttributesToFetch;
+    bool  mStmtFetchGeom;
+    QgsRectangle mStmtRect;
+    bool  mStmtUseIntersect;
 
     /**
      * Statement handle for fetching of features by ID
      */
-    SqlAnyStatement	*mIdStmt;
-    QgsAttributeList	mIdStmtAttributesToFetch;
-    bool		mIdStmtFetchGeom; 
+    SqlAnyStatement *mIdStmt;
+    QgsAttributeList mIdStmtAttributesToFetch;
+    bool  mIdStmtFetchGeom;
 
     /**
      * Read-only connection to SQL Anywhere database

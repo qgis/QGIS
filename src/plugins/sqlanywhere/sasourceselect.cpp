@@ -1,16 +1,16 @@
 /***************************************************************************
   sasourceselect.cpp
-  Dialogue box for defining vector layers from a SQL Anywhere database 
+  Dialogue box for defining vector layers from a SQL Anywhere database
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
   The author gratefully acknowledges that portions of this class were copied
   from QgsPgSourceSelect, and so the following copyright holds on the
   original content:
-			 qgpgsourceselect.cpp
+    qgpgsourceselect.cpp
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc.com
@@ -45,9 +45,9 @@
 #include <QStringList>
 
 static const int sGeomTypeSelectLimit = 100;
-    
-QString 
-quotedIdentifier( QString id ) 
+
+QString
+quotedIdentifier( QString id )
 {
   id.replace( "\"", "\"\"" );
   return id.prepend( "\"" ).append( "\"" );
@@ -180,7 +180,7 @@ void SaSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 
 void SaSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-    setSql( index );
+  setSql( index );
 }
 
 void SaSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
@@ -237,8 +237,8 @@ void SaSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &
 }
 
 void SaSourceSelect::setLayerType( QString schema,
-      QString table, QString column, QString type, 
-      QString srid, QString interp )
+                                   QString table, QString column, QString type,
+                                   QString srid, QString interp )
 {
   mTableModel.setGeometryTypesForTable( schema, table, column, type, srid, interp );
   mTablesTreeView->sortByColumn( SaDbTableModel::dbtmTable, Qt::AscendingOrder );
@@ -346,39 +346,42 @@ void SaSourceSelect::on_btnConnect_clicked()
   QSettings settings;
 
   // load the SQL Anywhere interface
-  if( !SqlAnyConnection::initApi() ) {
+  if ( !SqlAnyConnection::initApi() )
+  {
     QMessageBox::information( this,
-	    tr("Failed to load interface" ),
-	    tr( SqlAnyConnection::failedInitMsg() ) );
+                              tr( "Failed to load interface" ),
+                              tr( SqlAnyConnection::failedInitMsg() ) );
     return;
   }
-   
+
   // compute connection information
   QString key = "/SQLAnywhere/connections/" + cmbConnections->currentText();
   mEstimateMetadata = settings.value( key + "/estimateMetadata", false ).toBool();
   mOtherSchemas = settings.value( key + "/otherSchemas", false ).toBool();
   mConnInfo = SqlAnyConnection::makeUri( key
-		    , settings.value( key + "/host" ).toString()
-		    , settings.value( key + "/port" ).toString()
-		    , settings.value( key + "/server" ).toString()
-		    , settings.value( key + "/database" ).toString()
-		    , settings.value( key + "/parameters" ).toString()
-		    , settings.value( key + "/username" ).toString()
-		    , settings.value( key + "/password" ).toString()
-		    , settings.value( key + "/simpleEncryption", false ).toBool()
-		    , mEstimateMetadata );
+                                         , settings.value( key + "/host" ).toString()
+                                         , settings.value( key + "/port" ).toString()
+                                         , settings.value( key + "/server" ).toString()
+                                         , settings.value( key + "/database" ).toString()
+                                         , settings.value( key + "/parameters" ).toString()
+                                         , settings.value( key + "/username" ).toString()
+                                         , settings.value( key + "/password" ).toString()
+                                         , settings.value( key + "/simpleEncryption", false ).toBool()
+                                         , mEstimateMetadata );
   SaDebugMsg( "Connection info: " + mConnInfo );
 
   // establish read-only connection to the database
-  char		    errbuf[SACAPI_ERROR_SIZE];
-  sacapi_i32	    code;
-  SqlAnyConnection  *conn = SqlAnyConnection::connect( mConnInfo, true, code, errbuf, sizeof( errbuf ) ); 
+  char      errbuf[SACAPI_ERROR_SIZE];
+  sacapi_i32     code;
+  SqlAnyConnection  *conn = SqlAnyConnection::connect( mConnInfo, true, code, errbuf, sizeof( errbuf ) );
 
-  if( conn ) {
+  if ( conn )
+  {
     // get the list of suitable tables and columns and populate the UI
     geomCol details;
 
-    if ( getTableInfo( conn->addRef(), mOtherSchemas ) ) {
+    if ( getTableInfo( conn->addRef(), mOtherSchemas ) )
+    {
       // Start the thread that gets the geometry type for relations that
       // may take a long time to return
       if ( mColumnTypeThread != NULL )
@@ -390,23 +393,27 @@ void SaSourceSelect::on_btnConnect_clicked()
         mColumnTypeThread->start();
       }
 
-    } else {
+    }
+    else
+    {
       SaDebugMsg( "Unable to get list of spatially enabled tables "
-		    "from the database" );
+                  "from the database" );
     }
     if ( cmbConnections->count() > 0 ) mAddButton->setEnabled( true );
 
     conn->release();
 
-  } else {
+  }
+  else
+  {
     QMessageBox::warning( this, tr( "Connection failed" ),
-	  tr( "Connection to database %1 failed. "
-	      "Check settings and try again.\n\n"
-	      "SQL Anywhere error code: %2\n"
-	      "Description: %3" ) 
-	      .arg( settings.value( key + "/database" ).toString() )
-	      .arg( code ) 
-	      .arg( errbuf ) );
+                          tr( "Connection to database %1 failed. "
+                              "Check settings and try again.\n\n"
+                              "SQL Anywhere error code: %2\n"
+                              "Description: %3" )
+                          .arg( settings.value( key + "/database" ).toString() )
+                          .arg( code )
+                          .arg( errbuf ) );
   }
 
   mTablesTreeView->sortByColumn( SaDbTableModel::dbtmTable, Qt::AscendingOrder );
@@ -472,84 +479,95 @@ void SaSourceSelect::addSearchGeometryColumn( const QString &schema, const QStri
   mColumnTypeThread->addGeometryColumn( schema, table, column, geomtype, sridstr, lineinterp );
 }
 
-// Accepts ownership of given connection pointer. 
+// Accepts ownership of given connection pointer.
 bool SaSourceSelect::getTableInfo( SqlAnyConnection *conn, bool searchOtherSchemas )
 {
-    QString	    sql;
-    SqlAnyStatement *stmt;
-    int		    n = 0;
+  QString     sql;
+  SqlAnyStatement *stmt;
+  int      n = 0;
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    sql = "SELECT g.table_schema, g.table_name, g.column_name, "
-	    "COALESCE( UCASE(g.geometry_type_name), 'ST_GEOMETRY' ), "
-	    "g.srs_id, "
-	    "IF s.round_earth = 'Y' THEN 'ROUND EARTH' ELSE 'PLANAR' ENDIF "
-	  "FROM SYS.ST_GEOMETRY_COLUMNS g "
-	      "LEFT OUTER JOIN SYS.ST_SPATIAL_REFERENCE_SYSTEMS s "
-	      "ON g.srs_id = s.srs_id ";
-    if( !searchOtherSchemas ) {
-	sql += QString( "WHERE g.table_schema=USER " );
+  sql = "SELECT g.table_schema, g.table_name, g.column_name, "
+        "COALESCE( UCASE(g.geometry_type_name), 'ST_GEOMETRY' ), "
+        "g.srs_id, "
+        "IF s.round_earth = 'Y' THEN 'ROUND EARTH' ELSE 'PLANAR' ENDIF "
+        "FROM SYS.ST_GEOMETRY_COLUMNS g "
+        "LEFT OUTER JOIN SYS.ST_SPATIAL_REFERENCE_SYSTEMS s "
+        "ON g.srs_id = s.srs_id ";
+  if ( !searchOtherSchemas )
+  {
+    sql += QString( "WHERE g.table_schema=USER " );
+  }
+
+  stmt = conn->execute_direct( sql );
+  if ( stmt->isValid() )
+  {
+    for ( ; stmt->fetchNext() ; n++ )
+    {
+      QString schema;
+      QString tabname;
+      QString colname;
+      int     srid = -1;
+      QString sridstr;
+      QString lineinterp;
+      QString geomtype;
+      bool    waiting = false;
+
+      stmt->getString( 0, schema );
+      stmt->getString( 1, tabname );
+      stmt->getString( 2, colname );
+      stmt->getString( 3, geomtype );
+      stmt->getInt( 4, srid );
+      stmt->getString( 5, lineinterp );
+
+      if ( srid == -1 )  // null srid and lineinterp
+      {
+        sridstr = lineinterp = "WAITING";
+        waiting = true;
+      }
+      else
+      {
+        sridstr = QString::number( srid );
+      }
+      if ( geomtype == "ST_GEOMETRY" )
+      {
+        geomtype = "WAITING";
+        waiting = true;
+      }
+
+      if ( waiting )
+      {
+        addSearchGeometryColumn( schema, tabname, colname, geomtype, sridstr, lineinterp );
+      }
+
+      mTableModel.addTableEntry( geomtype, schema, tabname, sridstr, lineinterp, colname, "" );
     }
 
-    stmt = conn->execute_direct( sql );
-    if( stmt->isValid() ) {
-	for( ; stmt->fetchNext() ; n++ ) {
-	    QString schema;
-	    QString tabname;
-	    QString colname;
-	    int	    srid = -1;
-	    QString sridstr;
-	    QString lineinterp;
-	    QString geomtype;
-	    bool    waiting = false;
+  }
+  else
+  {
+    SaDebugMsg( QString( "SQL Anywhere error %1: %2" )
+                .arg( stmt->errCode() )
+                .arg( stmt->errMsg() ) );
+  }
+  delete stmt;
+  conn->release();
 
-	    stmt->getString( 0, schema );
-	    stmt->getString( 1, tabname );
-	    stmt->getString( 2, colname );
-	    stmt->getString( 3, geomtype );
-	    stmt->getInt( 4, srid );
-	    stmt->getString( 5, lineinterp );
+  QApplication::restoreOverrideCursor();
 
-	    if( srid == -1 ) { // null srid and lineinterp
-		sridstr = lineinterp = "WAITING";
-		waiting = true;
-	    } else {
-		sridstr = QString::number( srid );
-	    }
-	    if( geomtype == "ST_GEOMETRY" ) {
-		geomtype = "WAITING";
-		waiting = true;
-	    }
+  if ( n == 0 )
+  {
+    QMessageBox::warning( this,
+                          tr( "No accessible tables found" ),
+                          tr( "Database connection was successful, but no tables "
+                              "containing geometry columns were %1." )
+                          .arg( searchOtherSchemas ?
+                                "found" : "found in your schema" )
+                        );
+  }
 
-	    if( waiting ) {
-		addSearchGeometryColumn( schema, tabname, colname, geomtype, sridstr, lineinterp );
-	    }
-
-	    mTableModel.addTableEntry( geomtype, schema, tabname, sridstr, lineinterp, colname, "" );
-	}
-
-    } else {
-	SaDebugMsg( QString( "SQL Anywhere error %1: %2" )
-			.arg( stmt->errCode() )
-			.arg( stmt->errMsg() ) );
-    }
-    delete stmt;
-    conn->release();
-
-    QApplication::restoreOverrideCursor();
-
-    if ( n == 0 ) {
-	QMessageBox::warning( this,
-	      tr( "No accessible tables found" ),
-	      tr( "Database connection was successful, but no tables "
-		  "containing geometry columns were %1." )
-		    .arg( searchOtherSchemas ? 
-			    "found" : "found in your schema" )
-	);
-    }
-
-    return n > 0;
+  return n > 0;
 }
 
 QString SaSourceSelect::fullDescription( QString schema, QString table,
@@ -596,7 +614,7 @@ void SaSourceSelect::setConnectionListPosition()
 void SaSourceSelect::setSearchExpression( const QString& regexp )
 {
 }
- 
+
 void SaGeomColTypeThread::setConnInfo( QString conninfo, bool estMeta, bool otherSchemas )
 {
   mConnInfo = conninfo;
@@ -621,112 +639,130 @@ void SaGeomColTypeThread::stop()
 
 void SaGeomColTypeThread::getLayerTypes()
 {
-    mStopped = false; 
+  mStopped = false;
 
-    // establish read-only connection to the database
-    char		errbuf[SACAPI_ERROR_SIZE];
-    sacapi_i32		code;
-    SqlAnyConnection	*conn = SqlAnyConnection::connect( mConnInfo, true, code, errbuf, sizeof( errbuf ) ); 
+  // establish read-only connection to the database
+  char  errbuf[SACAPI_ERROR_SIZE];
+  sacapi_i32  code;
+  SqlAnyConnection *conn = SqlAnyConnection::connect( mConnInfo, true, code, errbuf, sizeof( errbuf ) );
 
-    if( conn ) {
-	for ( uint i = 0; i < schemas.size() && !mStopped; i++ ) {
-	    QString geomtype = geomtypes[i];
-	    QString sridstr = sridstrs[i];
-	    QString lineinterp = lineinterps[i];
+  if ( conn )
+  {
+    for ( uint i = 0; i < schemas.size() && !mStopped; i++ )
+    {
+      QString geomtype = geomtypes[i];
+      QString sridstr = sridstrs[i];
+      QString lineinterp = lineinterps[i];
 
-    	    QString sql;
-	    QString quotedTableName;
-	    QString fromStr;
-	    SqlAnyStatement *stmt;
+      QString sql;
+      QString quotedTableName;
+      QString fromStr;
+      SqlAnyStatement *stmt;
 
-	    quotedTableName = QString( "%1.%2" )
-		    .arg( quotedIdentifier( schemas[i] ) )
-		    .arg( quotedIdentifier( tables[i] ) );
-	    if( mEstimateMetadata ) {
-		fromStr = QString( "(SELECT TOP %1 %2 FROM %3 WHERE %2 IS NOT NULL ) AS sampleGeoms ")
-		    .arg( sGeomTypeSelectLimit )
-		    .arg( quotedIdentifier( columns[i] ) )
-		    .arg( quotedTableName );
-	    } else {
-		fromStr = quotedTableName;
-	    }
+      quotedTableName = QString( "%1.%2" )
+                        .arg( quotedIdentifier( schemas[i] ) )
+                        .arg( quotedIdentifier( tables[i] ) );
+      if ( mEstimateMetadata )
+      {
+        fromStr = QString( "(SELECT TOP %1 %2 FROM %3 WHERE %2 IS NOT NULL ) AS sampleGeoms " )
+                  .arg( sGeomTypeSelectLimit )
+                  .arg( quotedIdentifier( columns[i] ) )
+                  .arg( quotedTableName );
+      }
+      else
+      {
+        fromStr = quotedTableName;
+      }
 
-	    // retrieve distinct geometry types
-	    if( geomtype == "WAITING" ) {
-		QStringList types;
+      // retrieve distinct geometry types
+      if ( geomtype == "WAITING" )
+      {
+        QStringList types;
 
-		sql = QString( 
-		     "SELECT DISTINCT "
-		     "CASE "
-			 "WHEN UCASE(%1.ST_GeometryType()) IN ('ST_POINT','ST_MULTIPOINT') THEN 'ST_POINT' "
-			 "WHEN UCASE(%1.ST_GeometryType()) IN ('ST_LINESTRING','ST_MULTILINESTRING') THEN 'ST_LINESTRING' "
-			 "WHEN UCASE(%1.ST_GeometryType()) IN ('ST_POLYGON','ST_MULTIPOLYGON') THEN 'ST_POLYGON' "
-			 "ELSE 'ST_GEOMETRY' "
-		     "END "
-		     "FROM %2 " )
-		    .arg( quotedIdentifier( columns[i] ) )
-		    .arg( fromStr );
+        sql = QString(
+                "SELECT DISTINCT "
+                "CASE "
+                "WHEN UCASE(%1.ST_GeometryType()) IN ('ST_POINT','ST_MULTIPOINT') THEN 'ST_POINT' "
+                "WHEN UCASE(%1.ST_GeometryType()) IN ('ST_LINESTRING','ST_MULTILINESTRING') THEN 'ST_LINESTRING' "
+                "WHEN UCASE(%1.ST_GeometryType()) IN ('ST_POLYGON','ST_MULTIPOLYGON') THEN 'ST_POLYGON' "
+                "ELSE 'ST_GEOMETRY' "
+                "END "
+                "FROM %2 " )
+              .arg( quotedIdentifier( columns[i] ) )
+              .arg( fromStr );
 
-		stmt = conn->execute_direct( sql );
-		if( stmt->isValid() ) {
-		    while( stmt->fetchNext() ) {
-			QString type;
-			stmt->getString( 0, type );
-			types += type;
-		    }
-		}
-		delete stmt;
+        stmt = conn->execute_direct( sql );
+        if ( stmt->isValid() )
+        {
+          while ( stmt->fetchNext() )
+          {
+            QString type;
+            stmt->getString( 0, type );
+            types += type;
+          }
+        }
+        delete stmt;
 
-		if( types.isEmpty() ) {
-		    geomtype = "ST_GEOMETRY";
-		} else {
-		    geomtype = types.join( "," );
-		}
-	    }
+        if ( types.isEmpty() )
+        {
+          geomtype = "ST_GEOMETRY";
+        }
+        else
+        {
+          geomtype = types.join( "," );
+        }
+      }
 
-	    // retrieve distinct srids
-	    if( sridstr == "WAITING" ) {
-		QStringList srids;
-		QStringList interps;
+      // retrieve distinct srids
+      if ( sridstr == "WAITING" )
+      {
+        QStringList srids;
+        QStringList interps;
 
-		sql = QString( 
-		    "SELECT srid, "
-			"IF round_earth = 'Y' THEN 'ROUND EARTH' ELSE 'PLANAR' ENDIF "
-		    "FROM ( "
-			"SELECT DISTINCT %1.ST_SRID() AS srid FROM %2 "
-		    ") AS sridlist, SYS.ST_SPATIAL_REFERENCE_SYSTEMS " 
-		    "WHERE srid = srs_id " )
-		    .arg( quotedIdentifier( columns[i] ) )
-		    .arg( fromStr );
+        sql = QString(
+                "SELECT srid, "
+                "IF round_earth = 'Y' THEN 'ROUND EARTH' ELSE 'PLANAR' ENDIF "
+                "FROM ( "
+                "SELECT DISTINCT %1.ST_SRID() AS srid FROM %2 "
+                ") AS sridlist, SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
+                "WHERE srid = srs_id " )
+              .arg( quotedIdentifier( columns[i] ) )
+              .arg( fromStr );
 
-		stmt = conn->execute_direct( sql );
-		if( stmt->isValid() ) {
-		    while( stmt->fetchNext() ) {
-			int	srid;
-			QString interp;
-			stmt->getInt( 0, srid );
-			stmt->getString( 1, interp );
-			srids += QString::number( srid );
-			if( !interps.contains( interp ) ) {
-			    interps += interp;
-			}
-		    }
-		}
-		delete stmt;
+        stmt = conn->execute_direct( sql );
+        if ( stmt->isValid() )
+        {
+          while ( stmt->fetchNext() )
+          {
+            int srid;
+            QString interp;
+            stmt->getInt( 0, srid );
+            stmt->getString( 1, interp );
+            srids += QString::number( srid );
+            if ( !interps.contains( interp ) )
+            {
+              interps += interp;
+            }
+          }
+        }
+        delete stmt;
 
-		if( srids.isEmpty() ) {
-		    sridstr = "UNKNOWN";
-		    lineinterp = "UNKNOWN";
-		} else {
-		    sridstr = srids.join( "," );
-		    lineinterp = interps.join( "," );
-		}
-	    }
+        if ( srids.isEmpty() )
+        {
+          sridstr = "UNKNOWN";
+          lineinterp = "UNKNOWN";
+        }
+        else
+        {
+          sridstr = srids.join( "," );
+          lineinterp = interps.join( "," );
+        }
+      }
 
-	    // Now tell the layer list dialog box...
-	    emit setLayerType( schemas[i], tables[i], columns[i], geomtype, sridstr, lineinterp );
-	}
-
-	conn->release();
+      // Now tell the layer list dialog box...
+      emit setLayerType( schemas[i], tables[i], columns[i], geomtype, sridstr, lineinterp );
     }
+
+    conn->release();
+  }
 }

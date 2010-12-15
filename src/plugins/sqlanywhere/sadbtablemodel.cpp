@@ -5,13 +5,13 @@
   -------------------
     begin                : Dec 2010
     copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author		 : David DeHaan
+    author               : David DeHaan
     email                : ddehaan at sybase dot com
 
- This class was copied and modified from QgsDbTableModel because that 
+ This class was copied and modified from QgsDbTableModel because that
  class is not accessible to QGIS plugins.  Therefore, the author gratefully
  acknowledges the following copyright on the original content:
-			 qgsdbtablemodel.cpp
+    qgsdbtablemodel.cpp
     begin                : Dec 2007
     copyright            : (C) 2007 by Marco Hugentobler
     email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -171,35 +171,44 @@ void SaDbTableModel::setSql( const QModelIndex &index, const QString &sql )
 QString
 makeSubsetSql( QString prevSql, QString geomCol, QString geomType )
 {
-    QString	sql;
-    QStringList types;
-    if( geomType == "ST_POINT" ) {
-	types << "'ST_POINT'";
-	types << "'ST_MULTIPOINT'";
+  QString sql;
+  QStringList types;
+  if ( geomType == "ST_POINT" )
+  {
+    types << "'ST_POINT'";
+    types << "'ST_MULTIPOINT'";
 
-    } else if( geomType == "ST_LINESTRING" ) {
-	types << "'ST_LINESTRING'";
-	types << "'ST_MULTILINESTRING'";
+  }
+  else if ( geomType == "ST_LINESTRING" )
+  {
+    types << "'ST_LINESTRING'";
+    types << "'ST_MULTILINESTRING'";
 
-    } else if( geomType == "ST_POLYGON" ) {
-	types << "'ST_POLYGON'";
-	types << "'ST_MULTIPOLYGON'";
+  }
+  else if ( geomType == "ST_POLYGON" )
+  {
+    types << "'ST_POLYGON'";
+    types << "'ST_MULTIPOLYGON'";
+  }
+
+  if ( types.isEmpty() )
+  {
+    sql = prevSql;
+
+  }
+  else
+  {
+    sql = geomCol
+          + ".ST_GeometryType() IN ( "
+          + types.join( "," )
+          + " ) ";
+    if ( !prevSql.isEmpty() )
+    {
+      sql += "AND ( " + prevSql + ") ";
     }
-   
-    if( types.isEmpty() ) {
-	sql = prevSql;
+  }
 
-    } else {
-	sql = geomCol 
-	    + ".ST_GeometryType() IN ( " 
-	    + types.join( "," )
-	    + " ) ";
-	if( !prevSql.isEmpty() ) {
-	    sql += "AND ( " + prevSql + ") ";
-	}
-    }
-
-    return sql;
+  return sql;
 }
 
 void SaDbTableModel::setGeometryTypesForTable( const QString& schema, const QString& table, const QString& attribute, const QString& type, const QString& srid, const QString& lineInterp )
@@ -241,23 +250,23 @@ void SaDbTableModel::setGeometryTypesForTable( const QString& schema, const QStr
     currentSqlIndex = currentChildIndex.sibling( i, dbtmSql );
     QString sqlText = itemFromIndex( currentSqlIndex )->text();
 
-    if ( !currentTypeIndex.isValid() 
-	    || !currentTableIndex.isValid() 
-	    || !currentSridIndex.isValid() 
-	    || !currentLineInterpIndex.isValid() 
-	    || !currentSqlIndex.isValid() 
-	    || !currentGeomColumnIndex.isValid() )
+    if ( !currentTypeIndex.isValid()
+         || !currentTableIndex.isValid()
+         || !currentSridIndex.isValid()
+         || !currentLineInterpIndex.isValid()
+         || !currentSqlIndex.isValid()
+         || !currentGeomColumnIndex.isValid() )
     {
       continue;
     }
 
-    if ( itemFromIndex( currentTableIndex )->text() == table 
-	    && ( geomColText == attribute ) )
+    if ( itemFromIndex( currentTableIndex )->text() == table
+         && ( geomColText == attribute ) )
     {
-      if ( type.isEmpty() ) 
+      if ( type.isEmpty() )
       {
-	//the table has no valid geometry entry and so the item for 
-	//this table should be removed
+        //the table has no valid geometry entry and so the item for
+        //this table should be removed
         removeRow( i, indexFromItem( schemaItem ) );
         return;
       }
