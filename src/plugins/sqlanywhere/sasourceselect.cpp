@@ -563,7 +563,7 @@ bool SaSourceSelect::getTableInfo( SqlAnyConnection *conn, bool searchOtherSchem
                           tr( "Database connection was successful, but no tables "
                               "containing geometry columns were %1." )
                           .arg( searchOtherSchemas ?
-                                "found" : "found in your schema" )
+                                tr( "found" ) : tr( "found in your schema" ) )
                         );
   }
 
