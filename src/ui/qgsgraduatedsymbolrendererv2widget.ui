@@ -150,6 +150,9 @@
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
