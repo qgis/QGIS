@@ -602,7 +602,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
       QgsFieldMap::const_iterator it;
       for ( it = fields.begin(); it != fields.end(); it++ )
       {
-        if ( it->name().toLower() == mText.toLower() ) // TODO: optimize
+        if ( QString::compare( it->name(), mText, Qt::CaseInsensitive ) == 0 )
           break;
       }
 

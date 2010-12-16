@@ -221,7 +221,7 @@ int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 
   for ( QgsFieldMap::const_iterator it = theFields.constBegin(); it != theFields.constEnd(); ++it )
   {
-    if ( it->name() == fieldName )
+    if ( QString::compare( it->name(), fieldName, Qt::CaseInsensitive ) == 0 )
     {
       return it.key();
     }
