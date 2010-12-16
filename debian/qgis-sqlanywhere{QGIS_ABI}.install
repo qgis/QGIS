@@ -1,0 +1,3 @@
+usr/lib/qgis/plugins/libsqlanywhereplugin.so
+usr/lib/qgis/plugins/libsqlanywhereprovider.so
+usr/lib/libsqlanyconnection.so.{QGIS_ABI}

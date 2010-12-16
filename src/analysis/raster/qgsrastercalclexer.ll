@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 %option noyywrap
+%option nounput
 %option case-insensitive
 %option never-interactive
 
