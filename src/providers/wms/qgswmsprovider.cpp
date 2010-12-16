@@ -849,6 +849,8 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
   {
     QString url = mBaseUrl + "SERVICE=WMS&REQUEST=GetCapabilities";
 
+    mError = "";
+
     QNetworkRequest request( url );
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -866,8 +868,11 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
     if ( httpcapabilitiesresponse.isEmpty() )
     {
-      mErrorFormat = "text/plain";
-      mError = tr( "empty capabilities document" );
+      if ( mError.isEmpty() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "empty capabilities document" );
+      }
       return false;
     }
 
