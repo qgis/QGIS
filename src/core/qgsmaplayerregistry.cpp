@@ -102,19 +102,19 @@ void QgsMapLayerRegistry::removeMapLayer( QString theLayerId, bool theEmitSignal
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
   // moved before physically removing the layers
-  emit removedAll();            // now let all canvas Observers know to clear
-  // themselves, and then consequently any of
-  // their map legends
+  emit removedAll();
 
-  QMap<QString, QgsMapLayer *>::iterator it;
-  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
+  // now let all canvas observers know to clear themselves,
+  // and then consequently any of their map legends
+  while ( mMapLayers.size() > 0 )
   {
-    emit layerWillBeRemoved( it.key() );
-    delete it.value(); // delete the map layer
-    mMapLayers.remove( it.key() );
+    QString id = mMapLayers.begin().key();
+    emit layerWillBeRemoved( id );
+    delete mMapLayers[ id ]; // delete the map layer
+    mMapLayers.remove( id );
   }
-  mMapLayers.clear();
 
+  mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
 //Added in QGIS 1.4
