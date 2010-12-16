@@ -7,4 +7,3 @@ usr/lib/qgis/plugins/libwmsprovider.so
 usr/lib/qgis/plugins/libmemoryprovider.so
 usr/lib/qgis/plugins/libspatialiteprovider.so
 usr/lib/qgis/plugins/libosmprovider.so 
-usr/lib/qgis/plugins/libsqlanywhereprovider.so

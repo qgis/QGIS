@@ -31,9 +31,6 @@
        <height>22</height>
       </size>
      </property>
-     <property name="documentMode">
-      <bool>true</bool>
-     </property>
      <widget class="QWidget" name="tabMarker">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Ignored">

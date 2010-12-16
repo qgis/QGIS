@@ -173,3 +173,12 @@ Description: Quantum GIS mapserver
  .
  This package contains the Quantum GIS mapserver.
 
+Package: qgis-sqlanywhere{QGIS_ABI}
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quantum GIS sql anywhere plugin and provider
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the Quantum GIS sqlanywhere plugin and provider.
+

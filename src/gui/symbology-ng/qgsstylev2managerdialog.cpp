@@ -26,6 +26,10 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   setupUi( this );
 
+#if QT_VERSION >= 0x40500
+  tabItemType->setDocumentMode( true );
+#endif
+
   // setup icons
   btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnEditItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
