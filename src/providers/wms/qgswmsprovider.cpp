@@ -291,6 +291,13 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
   QgsDebugMsg( "Entering with layer list of " + layers.join( ", " )
                + " and style list of " + styles.join( ", " ) );
 
+  if ( layers.size() != styles.size() )
+  {
+    QgsDebugMsg( "number of layers and styles don't match" );
+    valid = false;
+    return;
+  }
+
   // TODO: Make activeSubLayers a std::map in order to avoid duplicates
   activeSubLayers += layers;
   activeSubStyles += styles;

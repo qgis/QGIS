@@ -3250,11 +3250,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
         QgsDebugMsg( "Instantiated the data provider plugin" +
                      QString( " with layer list of " ) + layers.join( ", " ) + " and style list of " + styles.join( ", " ) +
                      " and format of " + format +  " and CRS of " + crs );
-        if ( mDataProvider->isValid() )
-        {
-          mValid = true;
+        mValid = mDataProvider->isValid();
 
+        if ( mValid )
+        {
           mDataProvider->addLayers( layers, styles );
+          mValid = mDataProvider->isValid();
+        }
+
+        if ( mValid )
+        {
           mDataProvider->setImageEncoding( format );
           mDataProvider->setImageCrs( crs );
 
@@ -3286,6 +3291,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           {
             *mCRS = QgsCoordinateReferenceSystem( mDataProvider->crs() );
           }
+        }
+        else
+        {
+          QgsLogger::warning( "QgsRasterLayer::setDataProvider: invalid layer" );
         }
       }
       else
