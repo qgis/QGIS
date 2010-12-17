@@ -353,6 +353,22 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     static const QStringList &availableEncodings();
 
+    /* provider has errors to report
+     * @note added in 1.7
+     */
+    bool hasErrors();
+
+    /* clear recorded errors
+     * @note added in 1.7
+     */
+    void clearErrors();
+
+    /* get recorded errors
+     * @note added in 1.7
+     */
+    QStringList errors();
+
+
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
 
@@ -377,11 +393,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**The names of the providers native types*/
     QList< NativeType > mNativeTypes;
 
+    void pushError( QString msg );
+
   private:
     /** old notation **/
     QMap<QString, QVariant::Type> mOldTypeList;
 
+    // list of errors
+    QStringList mErrors;
+
+
     static QStringList smEncodings;
+
 };
 
 #endif

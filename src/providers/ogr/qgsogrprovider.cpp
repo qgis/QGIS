@@ -240,6 +240,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
 
     if ( !ogrLayer )
     {
+      pushError( QString( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
       ogrLayer = prevLayer;
       mSubsetString = prevSubsetString;
       return false;

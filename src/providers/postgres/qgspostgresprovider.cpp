@@ -1620,9 +1620,6 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
 bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 {
   // Check to see if the given column contains unique data
-
-  bool isUnique = false;
-
   QString sql = QString( "select count(distinct %1)=count(%1) from %2" )
                 .arg( quotedIdentifier( colName ) )
                 .arg( mQuery );
@@ -1634,10 +1631,14 @@ bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 
   Result unique = connectionRO->PQexec( sql );
 
-  if ( PQntuples( unique ) == 1 && QString::fromUtf8( PQgetvalue( unique, 0, 0 ) ).startsWith( "t" ) )
-    isUnique = true;
+  if ( PQresultStatus( unique ) != PGRES_TUPLES_OK )
+  {
+    pushError( QString::fromUtf8( PQresultErrorMessage( unique ) ) );
+    return false;
+  }
 
-  return isUnique;
+  return PQntuples( unique ) == 1
+         && QString::fromUtf8( PQgetvalue( unique, 0, 0 ) ).startsWith( "t" );
 }
 
 int QgsPostgresProvider::SRCFromViewColumn( const QString& ns, const QString& relname, const QString& attname_table, const QString& attname_view, const QString& viewDefinition, SRC& result ) const
@@ -2778,6 +2779,23 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
   QString prevWhere = sqlWhereClause;
 
   sqlWhereClause = theSQL.trimmed();
+
+  QString sql = QString( "select * from %1" ).arg( mQuery );
+
+  if ( !sqlWhereClause.isEmpty() )
+  {
+    sql += QString( " where %1" ).arg( sqlWhereClause );
+  }
+
+  sql += " limit 0";
+
+  Result res = connectionRO->PQexec( sql );
+  if ( PQresultStatus( res ) != PGRES_COMMAND_OK && PQresultStatus( res ) != PGRES_TUPLES_OK )
+  {
+    pushError( QString::fromUtf8( PQresultErrorMessage( res ) ) );
+    sqlWhereClause = prevWhere;
+    return false;
+  }
 
   if ( !mIsDbPrimaryKey && !uniqueData( mQuery, primaryKey ) )
   {

@@ -299,4 +299,19 @@ class QgsVectorDataProvider : QgsDataProvider
 
       /** Returns a list of available encodings */
       static const QStringList &availableEncodings();
+
+      /* provider has errors to report
+       * @note added in 1.7
+       */
+      bool hasErrors();
+
+      /* clear recorded errors 
+       * @note added in 1.7
+       */
+      void clearErrors();
+
+      /* get recorded errors
+       * @note added in 1.7
+       */
+      QStringList errors();
 };
