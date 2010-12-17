@@ -151,11 +151,19 @@ void QgsQueryBuilder::test()
                               tr( "Query Result" ),
                               tr( "The where clause returned %n row(s).", "returned test rows", mLayer->featureCount() ) );
   }
+  else if ( mLayer->dataProvider()->hasErrors() )
+  {
+    QMessageBox::warning( this,
+                          tr( "Query Failed" ),
+                          tr( "An error occurred when executing the query." )
+                          + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( "\n" ) ) );
+    mLayer->dataProvider()->clearErrors();
+  }
   else
   {
     QMessageBox::warning( this,
                           tr( "Query Failed" ),
-                          tr( "An error occurred when executing the query" ) );
+                          tr( "An error occurred when executing the query." ) );
   }
 }
 
@@ -167,7 +175,18 @@ void QgsQueryBuilder::accept()
     if ( !mLayer->setSubsetString( txtSQL->toPlainText() ) )
     {
       //error in query - show the problem
-      QMessageBox::warning( this, tr( "Error in Query" ), tr( "The subset string could not be set" ) );
+      if ( mLayer->dataProvider()->hasErrors() )
+      {
+        QMessageBox::warning( this,
+                              tr( "Query Failed" ),
+                              tr( "An error occurred when executing the query." )
+                              + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( "\n" ) ) );
+        mLayer->dataProvider()->clearErrors();
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Error in Query" ), tr( "The subset string could not be set" ) );
+      }
       return;
     }
   }

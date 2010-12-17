@@ -491,4 +491,24 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
   return smEncodings;
 }
 
+void QgsVectorDataProvider::clearErrors()
+{
+  mErrors.clear();
+}
+
+bool QgsVectorDataProvider::hasErrors()
+{
+  return !mErrors.isEmpty();
+}
+
+QStringList QgsVectorDataProvider::errors()
+{
+  return mErrors;
+}
+
+void QgsVectorDataProvider::pushError( QString msg )
+{
+  mErrors << msg;
+}
+
 QStringList QgsVectorDataProvider::smEncodings;
