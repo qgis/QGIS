@@ -132,9 +132,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       workDir = QDir( inputDir )
       workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
       workDir.setNameFilters( filter )
-      if workDir.entryList().count() > 0:
-        fl = inputDir + "/" + workDir.entryList()[ 0 ]
-        self.targetSRSEdit.setText( Utils.getRasterSRS( self, fl ) )
+
+      # search for a valid SRS, then use it as default target SRS
+      srs = QString()
+      for fname in workDir.entryList():
+        fl = inputDir + "/" + fname
+        srs = Utils.getRasterSRS( self, fl )
+        if not srs.isEmpty():
+          break
+      self.targetSRSEdit.setText( srs )
+
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()

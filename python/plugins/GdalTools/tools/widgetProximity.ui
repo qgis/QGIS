@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>356</width>
-    <height>257</height>
+    <width>327</width>
+    <height>253</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -90,31 +90,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QSpinBox" name="valueSpin1">
-         <property name="maximum">
-          <number>65000</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="valueSpin2">
-         <property name="maximum">
-          <number>65000</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="valueSpin3">
-         <property name="maximum">
-          <number>65000</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
      <item row="3" column="0">
       <widget class="QCheckBox" name="distUnitsCheck">
        <property name="text">
@@ -178,6 +153,13 @@
       <widget class="QSpinBox" name="fixedBufValSpin">
        <property name="maximum">
         <number>65000</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="valuesEdit">
+       <property name="text">
+        <string>0</string>
        </property>
       </widget>
      </item>

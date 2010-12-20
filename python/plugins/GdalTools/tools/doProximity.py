@@ -26,7 +26,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         [
           (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
-          ([self.valueSpin1, self.valueSpin2, self.valueSpin3], SIGNAL("valueChanged(int)"), self.valuesCheck),
+          (self.valuesEdit, SIGNAL("textChanged(const QString &)"), self.valuesCheck),
           (self.distUnitsCombo, SIGNAL("currentIndexChanged(int)"), self.distUnitsCheck),
           (self.maxDistSpin, SIGNAL("valueChanged(int)"), self.maxDistCheck),
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck),
@@ -73,8 +73,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << self.inputLayerCombo.currentText()
       arguments << self.outputFileEdit.text()
       if self.valuesCheck.isChecked():
-        arguments << "-values"
-        arguments << ",".join([str(self.valueSpin1.value()), str(self.valueSpin2.value()), str(self.valueSpin3.value())])
+        values = self.valuesEdit.text().trimmed()
+        if not values.isEmpty():
+          arguments << "-values"
+          arguments << values.replace(' ', ',')
       if self.distUnitsCheck.isChecked() and self.distUnitsCombo.currentIndex() >= 0:
         arguments << "-distunits"
         arguments << self.distUnitsCombo.currentText()
