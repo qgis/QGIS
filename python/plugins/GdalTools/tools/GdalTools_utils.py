@@ -184,10 +184,12 @@ def getRasterSRS( parent, fileName ):
       arr = processSRS.readAllStandardOutput()
       processSRS.close()
 
-    if not arr.isEmpty():
-      info = QString( arr ).split( "\n" ).filter( "AUTHORITY" )
-      if info.count() == 0:
-        return QString()
+    if arr.isEmpty():
+      return QString()
+
+    info = QString( arr ).split( "\n" ).filter( "AUTHORITY" )
+    if info.count() == 0:
+      return QString()
 
     srs = info[ info.count() - 1 ]
     srs = srs.simplified().remove( "AUTHORITY[" )
@@ -294,7 +296,7 @@ class FileFilter:
 
       # workaround for QGis < 1.5 (see #2376)
       # separates multiple extensions that joined by a slash 
-      if QGis.QGIS_VERSION[0:3] < "1.8":
+      if QGis.QGIS_VERSION[0:3] < "1.5":
           formats = self.rastersFilter.split( ";;" )
           self.rastersFilter = QString()
           for f in formats:
