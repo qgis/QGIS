@@ -231,7 +231,7 @@ void QgsSpatiaLiteProvider::loadFields()
         if ( type == NULL )
           type = "TEXT";
 
-        if ( name != mPrimaryKey )
+        if ( name == mPrimaryKey )
         {
           pkCount++;
           pkName = name;
