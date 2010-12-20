@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>352</width>
-    <height>153</height>
+    <height>182</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -133,6 +133,13 @@
       <widget class="QSpinBox" name="srcNoDataSpin">
        <property name="maximum">
         <number>65000</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="separateCheck">
+       <property name="text">
+        <string>Se&amp;parate</string>
        </property>
       </widget>
      </item>
