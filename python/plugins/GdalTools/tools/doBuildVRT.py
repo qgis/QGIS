@@ -23,7 +23,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.inputFilesEdit, SIGNAL("textChanged(const QString &)")), 
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
           (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
-          (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0")
+          (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0"),
+          (self.separateCheck, SIGNAL("stateChanged(int)"), None, "1.7.0")
         ]
       )
 
@@ -51,6 +52,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.resolutionCheck.isChecked() and self.resolutionComboBox.currentIndex() >= 0:
         arguments << "-resolution"
         arguments << self.resolutions[self.resolutionComboBox.currentIndex()]
+      if self.separateCheck.isChecked():
+        arguments << "-separate"
       if self.srcNoDataCheck.isChecked():
         arguments << "-srcnodata"
         arguments << str(self.srcNoDataSpin.value())
