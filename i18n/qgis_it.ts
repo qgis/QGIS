@@ -451,7 +451,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="111"/>
         <source>Use only the nearest (k) target points</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa solo i (k) punti di destinazione più vicini</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
@@ -520,7 +520,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun file di output</translation>
     </message>
     <message>
         <source>Please specify output file.</source>
@@ -533,7 +533,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>There were %1 vertices in original dataset which
 were reduced to %2 vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>C&apos;erano %1 vertici nel set di dati originale;
+sono stati ridotti a %2 dopo la semplificazione</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -1415,7 +1416,7 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Select by layers in the folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona su layer nella cartella</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="27"/>
@@ -1435,7 +1436,7 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="23"/>
         <source>Input line or polygon layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vettore lineare o poligonale in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="49"/>
@@ -2202,7 +2203,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="128"/>
         <source>&amp;Source No Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sorgente No Data</translation>
     </message>
     <message>
         <source>&amp;Resolution:</source>
@@ -2225,7 +2226,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="59"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="90"/>
         <source>&amp;No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valore &amp;No data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="75"/>
@@ -2308,12 +2309,12 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="65"/>
         <source>&amp;Output directory for contour lines (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella di &amp;output per le curve di livello (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="96"/>
         <source>I&amp;nterval between contour lines</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;ntervallo tra curve di livello</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="121"/>
@@ -2416,12 +2417,12 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="157"/>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenza</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="171"/>
         <source>Smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisciatura</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="188"/>
@@ -2450,14 +2451,14 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="239"/>
         <source>Max points</source>
-        <translation type="unfinished"></translation>
+        <translation>Max punti</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="253"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="352"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="562"/>
         <source>Min points</source>
-        <translation type="unfinished"></translation>
+        <translation>Min punti</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="267"/>
@@ -2471,7 +2472,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="485"/>
         <source>Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Misure</translation>
     </message>
     <message>
         <source>Power:</source>
@@ -2559,7 +2560,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="130"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="297"/>
         <source>&amp;Creation Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni di &amp;creazione</translation>
     </message>
     <message>
         <source>&amp;Creation Options:</source>
@@ -2573,7 +2574,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="96"/>
         <source>How &amp;far from black (or white)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quanto distante dal nero (o bianco)</translation>
     </message>
     <message>
         <source>How &amp;far from black (or white):</source>
@@ -2670,7 +2671,7 @@ si può scegliere la qualità JPEG.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="186"/>
         <source>JPEG Quality (1-100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualità JPEG (1-100)</translation>
     </message>
     <message>
         <source>JPEG Quality (1-100):</source>
@@ -2698,12 +2699,12 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
         <source>&amp;Output file for polygons (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>File di &amp;output per i poligoni (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
         <source>&amp;Field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome &amp;campo</translation>
     </message>
     <message>
         <source>&amp;Output file for polygons (shapefile):</source>
@@ -2731,7 +2732,7 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="80"/>
         <source>Desired SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema di riferimento spaziale richiesto</translation>
     </message>
     <message>
         <source>Desired SRS:</source>
@@ -2767,12 +2768,12 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
         <source>&amp;Values</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Valori</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
         <source>&amp;Dist units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unità di &amp;Distanza</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
@@ -2787,17 +2788,17 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="145"/>
         <source>&amp;Max dist</source>
-        <translation type="unfinished"></translation>
+        <translation>Dist &amp;max</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="159"/>
         <source>&amp;No data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;No data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
         <source>&amp;Fixed buf val</source>
-        <translation type="unfinished"></translation>
+        <translation>Valore di buf &amp;Fisso</translation>
     </message>
     <message>
         <source>&amp;Max dist:</source>
@@ -2819,17 +2820,17 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
         <source>&amp;Input file (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>File di &amp;input (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="65"/>
         <source>&amp;Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo &amp;attributi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="85"/>
         <source>&amp;Output file for rasterized vectors (raster, must exists)</source>
-        <translation type="unfinished"></translation>
+        <translation>FIle di &amp;Output per vettori rasterizzati (il raster deve esistere)</translation>
     </message>
     <message>
         <source>&amp;Input file (shapefile):</source>
@@ -2851,12 +2852,12 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="96"/>
         <source>&amp;Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Soglia</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="110"/>
         <source>&amp;Pixel connections</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Connessioni fra pixel</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="118"/>
@@ -2927,23 +2928,23 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
         <source>&amp;Input Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer in &amp;input</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="120"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
         <source>&amp;Target SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SRS di destinazione</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensione output</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Espandi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
@@ -2969,12 +2970,12 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="235"/>
         <source>Srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Finestra sorgente</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="252"/>
         <source>Prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Finestra proiezione</translation>
     </message>
     <message>
         <source>Srcwin:</source>
@@ -3060,17 +3061,17 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS &amp;Sorgente</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
         <source>&amp;Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metodo di &amp;Ricampionamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="205"/>
         <source>&amp;Memory used for caching</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Memoria usata per il caching</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="227"/>
@@ -4798,12 +4799,12 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="392"/>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Region&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Regione&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="398"/>
         <source>Cannot open region header</source>
-        <translation>Impossibile aprire l&apos;intestazione della region</translation>
+        <translation>Impossibile aprire l&apos;intestazione della regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="406"/>
@@ -4903,17 +4904,17 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="981"/>
         <source>Cannot read raster map region</source>
-        <translation>Impossibile leggere la region della mappa raster</translation>
+        <translation>Impossibile leggere la regione della mappa raster</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="998"/>
         <source>Cannot read vector map region</source>
-        <translation>Impossibile leggere la region del vettore</translation>
+        <translation>Impossibile leggere la regione del vettore</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1034"/>
         <source>Cannot read region</source>
-        <translation>Impossibile leggere la region</translation>
+        <translation>Impossibile leggere la regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="45"/>
@@ -7482,7 +7483,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Manage the background snapping options</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestisci le opzioni di snapping allo sfondo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="926"/>
@@ -7693,17 +7694,17 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2631"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2634"/>
         <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2637"/>
         <source>General Improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Miglioramenti generali</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2639"/>
@@ -7769,7 +7770,7 @@ This copy of QGIS has been built with QWT %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="2650"/>
         <location filename="../src/app/qgisapp.cpp" line="2671"/>
         <source>Read More.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulteriori informazioni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2651"/>
@@ -7874,7 +7875,7 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2681"/>
         <source>Map Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Compositore di mappe</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2683"/>
@@ -7904,7 +7905,7 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4408"/>
         <source>Merged feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributi geometria uniti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7104"/>
@@ -8382,7 +8383,7 @@ Questa copia di QGIS è stata compilata senza il supporto a SpatiaLite.</transla
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1635"/>
         <source>&amp;Raster</source>
-        <translation type="unfinished">&amp;Raster</translation>
+        <translation>&amp;Raster</translation>
     </message>
 </context>
 <context>
@@ -8506,7 +8507,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="181"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Per la lista degli individui e istituzioni che hanno donato per sostenere lo sviluppo di QGIS e altri costi del progetto vedi &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="228"/>
@@ -15113,7 +15114,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="464"/>
         <source>Cannot write new region</source>
-        <translation>Impossibile scrivere una nuova region</translation>
+        <translation>Impossibile salvare una nuova regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="270"/>
@@ -15983,7 +15984,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="484"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="537"/>
         <source>Cannot get current region</source>
-        <translation>Impossibile recuperare la region attuale</translation>
+        <translation>Impossibile recuperare la regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="768"/>
@@ -16035,12 +16036,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="516"/>
         <source>Cannot check region of map %1</source>
-        <translation>Impossibile verificare la region della mappa %1</translation>
+        <translation>Impossibile verificare la regione della mappa %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="572"/>
         <source>Cannot get region of map %1</source>
-        <translation>Impossibile recuperare la region della mappa %1</translation>
+        <translation>Impossibile recuperare la regione della mappa %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1067"/>
@@ -16117,12 +16118,12 @@ alla linea %2 colonna %3</translation>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1261"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1288"/>
         <source>Cannot get input region</source>
-        <translation>Impossibile leggere la region di input</translation>
+        <translation>Impossibile leggere la regione di input</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1277"/>
         <source>Use Input Region</source>
-        <translation>Utilizza la region in Input</translation>
+        <translation>Utilizza la regione in input</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1480"/>
@@ -16203,7 +16204,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1272"/>
         <source>Input %1 outside current region!</source>
-        <translation>L`input %1 è fuori dalla region in uso!</translation>
+        <translation>L&apos;input %1 è fuori dalla regione in uso!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1300"/>
@@ -16353,7 +16354,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2276"/>
         <source>Use region of this map</source>
-        <translation>Usa la region di questa mappa</translation>
+        <translation>Usa la regione di questa mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2153"/>
@@ -16442,7 +16443,7 @@ alla linea %2 colonna %3</translation>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="852"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="907"/>
         <source>Cannot get current region</source>
-        <translation>Impossibile recuperare la region attuale</translation>
+        <translation>Impossibile recuperare la regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="324"/>
@@ -16486,12 +16487,12 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="884"/>
         <source>Cannot check region of map %1</source>
-        <translation>Impossibile verificare la region della mappa %1</translation>
+        <translation>Impossibile verificare la regione della mappa %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="944"/>
         <source>Cannot set region of map %1</source>
-        <translation>Impossibile definire la region della mappa %1</translation>
+        <translation>Impossibile definire la regione della mappa %1</translation>
     </message>
 </context>
 <context>
@@ -16572,7 +16573,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="557"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation>Impossibile riproiettare la region selezionata precedentemente, verrà impostata la region predefinita.</translation>
+        <translation>Impossibile riproiettare la regione selezionata precedentemente, verrà impostata la regione predefinita.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="684"/>
@@ -16587,12 +16588,12 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="881"/>
         <source>Cannot reproject selected region.</source>
-        <translation>Impossibile riproiettare la region selezionata.</translation>
+        <translation>Impossibile riproiettare la regione selezionata.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="966"/>
         <source>Cannot reproject region</source>
-        <translation>Impossibile riproiettare la region</translation>
+        <translation>Impossibile riproiettare la regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1184"/>
@@ -16673,7 +16674,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="733"/>
         <source>Regions file (%1) not found.</source>
-        <translation>Il file delle region (%1) non è stato trovato.</translation>
+        <translation>Il file delle regioni (%1) non è stato trovato.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="739"/>
@@ -16782,7 +16783,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1839"/>
         <source>Region Error</source>
-        <translation>Errore region</translation>
+        <translation>Errore regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1870"/>
@@ -16886,7 +16887,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1716"/>
         <source>Default GRASS Region</source>
-        <translation>GRASS Region predefinita</translation>
+        <translation>Regione di GRASS predefinita</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1747"/>
@@ -16898,7 +16899,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; 
-}&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;La GRASS region definisce un&apos;area di lavoro per i moduli raster. La region predefinita è valida per una sola location. È possibile definire un insieme di region per ogni mapset. La region predefinita può essere modificata successivamente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+}&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;La regione di GRASS definisce un&apos;area di lavoro per i moduli raster. La regione predefinita è valida per una sola location. È possibile definire un insieme di regioni per ogni mapset. La regione predefinita può essere modificata successivamente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2033"/>
@@ -16994,17 +16995,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="136"/>
         <source>Display Current Grass Region</source>
-        <translation>Visualizza Grass Region attuale</translation>
+        <translation>Visualizza la regione di GRASS attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="139"/>
         <source>Edit Current Grass Region</source>
-        <translation>Modifica GRASS Region attuale</translation>
+        <translation>Modifica la regione di GRASS attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="140"/>
         <source>Edit Grass Vector layer</source>
-        <translation>Modifica vettore Grass</translation>
+        <translation>Modifica vettore GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="143"/>
@@ -17019,12 +17020,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="146"/>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation>Visualizza, nell&apos;area mappa, la region GRASS attuale</translation>
+        <translation>Visualizza, nell&apos;area mappa, la regione di GRASS attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="147"/>
         <source>Edit the current GRASS region</source>
-        <translation>Modifica la GRASS region attuale</translation>
+        <translation>Modifica la regione di GRASS attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="148"/>
@@ -17049,7 +17050,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="141"/>
         <source>Create new Grass Vector</source>
-        <translation>Crea un nuovo vettore Grass</translation>
+        <translation>Crea un nuovo vettore GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="314"/>
@@ -17105,7 +17106,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="586"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation>GISDBASE, LOCATION_NAME o MAPSET non impostati, impossibile visualizzare la region corrente.</translation>
+        <translation>GISDBASE, LOCATION_NAME o MAPSET non impostati, impossibile visualizzare la regione corrente.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="354"/>
@@ -17127,7 +17128,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="597"/>
         <source>Cannot read current region: %1</source>
-        <translation>Impossibile leggere la region corrente: %1</translation>
+        <translation>Impossibile leggere la regione corrente: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="698"/>
@@ -17170,17 +17171,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="156"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation>GISDBASE, LOCATION_NAME o MAPSET non impostati, impossibile visualizzare la region corrente.</translation>
+        <translation>GISDBASE, LOCATION_NAME o MAPSET non impostati, impossibile visualizzare la regione corrente.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="420"/>
         <source>Cannot write region</source>
-        <translation>Impossibile scrivere la region</translation>
+        <translation>Impossibile scrivere la regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="164"/>
         <source>Cannot read current region: %1</source>
-        <translation>Impossibile leggere la region corrente: %1</translation>
+        <translation>Impossibile leggere la regione corrente: %1</translation>
     </message>
 </context>
 <context>
@@ -17188,7 +17189,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="14"/>
         <source>GRASS Region Settings</source>
-        <translation>Impostazioni della GRASS Region</translation>
+        <translation>Impostazioni della regione di GRASS</translation>
     </message>
     <message>
         <source>N</source>
@@ -17451,7 +17452,7 @@ o cambia i valori qui di seguito</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="56"/>
         <source>GRASS Tools</source>
-        <translation>Grass Tools</translation>
+        <translation>GRASS Tools</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="156"/>
@@ -17507,7 +17508,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="20"/>
         <source>Grass Tools</source>
-        <translation>Grass Tools</translation>
+        <translation>GRASS Tools</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="30"/>
@@ -21705,17 +21706,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="245"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation>Apri i risultati di una interrogazione in una finestra staccabile (è necessario riavviare QGIS)</translation>
+        <translation>Apri i risultati di una interrogazione in una finestra agganciata (è necessario riavviare QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="252"/>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri le opzioni di snap in una finestra agganciata (richiede il riavvio di QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="259"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri la tabella degli attributi in una finestra agganciata (richiede il riavvio di QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="266"/>
@@ -21780,7 +21781,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="785"/>
         <source>Overlays</source>
-        <translation type="unfinished"></translation>
+        <translation>Sovrapposizioni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1145"/>
@@ -26076,7 +26077,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1203"/>
         <source>Reset to file defined null</source>
-        <translation type="unfinished"></translation>
+        <translation>Reimposta ad un nullo definito da file</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1240"/>
@@ -26298,7 +26299,26 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Lasciato intatto</translatorcomment>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1815"/>
@@ -32892,7 +32912,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation>Utility di interpolazione bilineare per mappe raster</translation>
+        <translation>Interpolazione bilineare per mappe raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
@@ -33082,12 +33102,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
         <source>Compress and decompress raster</source>
-        <translation>Comprime e decomprime raster</translation>
+        <translation>Comprimi e decomprimi raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Compress raster</source>
-        <translation>Comprime raster</translation>
+        <translation>Comprimi raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
@@ -33112,107 +33132,107 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
-        <translation>Connette i nodi selezionati utilizzando l&apos;algoritmo dell&apos;albero di Steiner</translation>
+        <translation>Connetti i nodi selezionati utilizzando l&apos;algoritmo dell&apos;albero di Steiner</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
         <source>Connect vector to database</source>
-        <translation>Connette un vettore al database</translation>
+        <translation>Connetti un vettore al database</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Convert 2D vector to 3D by sampling raster</source>
-        <translation>Converte un vettore da 2D a 3D mediante il campionamento del raster</translation>
+        <translation>Converti un vettore da 2D a 3D mediante il campionamento del raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation>Converte un vettore da 2D a 3D mediante il campionamento di raster dell&apos;altitudine. Per default utilizza il campionamento al vicino più prossimo</translation>
+        <translation>Converti un vettore da 2D a 3D mediante il campionamento di raster dell&apos;altitudine. Per default utilizza il campionamento al vicino più prossimo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
-        <translation>Converte un vettore GRASS binario in un vettore GRASS ASCII</translation>
+        <translation>Converti un vettore GRASS binario in un vettore GRASS ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert a raster to vector</source>
-        <translation>Converte un raster in vettore</translation>
+        <translation>Converti un raster in vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert a raster to vector within GRASS</source>
-        <translation>Converte un raster in vettore entro GRASS</translation>
+        <translation>Converti un raster in vettore entro GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert a vector to raster</source>
-        <translation>Converte un vettore in raster</translation>
+        <translation>Converti un vettore in raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
         <source>Convert a vector to raster within GRASS</source>
-        <translation>Converte un vettore in raster entro GRASS</translation>
+        <translation>Converti un vettore in raster entro GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
-        <translation>Converte le misure di direzione e distanza in coordinate e vice-versa</translation>
+        <translation>Converti le misure di direzione e distanza in coordinate e vice-versa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
         <source>Convert boundaries to lines</source>
-        <translation>Converte contorni in linee</translation>
+        <translation>Converti contorni in linee</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
         <source>Convert centroids to points</source>
-        <translation>Converte centroidi in punti</translation>
+        <translation>Converti centroidi in punti</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
         <source>Convert coordinates</source>
-        <translation>Converte coordinate</translation>
+        <translation>Converti coordinate</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
-        <translation>Converte coordinate da una proiezione ad un&apos;altra (con frontend cs2cs)</translation>
+        <translation>Converti coordinate da una proiezione ad un&apos;altra (con cs2cs)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
         <source>Convert lines to boundaries</source>
-        <translation>Converte linee in contorni</translation>
+        <translation>Converti linee in contorni</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
         <source>Convert points to centroids</source>
-        <translation>Converte punti in centroidi</translation>
+        <translation>Converti punti in centroidi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
         <source>Convert raster to vector areas</source>
-        <translation>Converte raster in aree vettoriali</translation>
+        <translation>Converti raster in aree vettoriali</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
         <source>Convert raster to vector lines</source>
-        <translation>Converte raster in linee vettoriali</translation>
+        <translation>Converti raster in linee vettoriali</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
         <source>Convert raster to vector points</source>
-        <translation>Converte raster in punti vettoriali</translation>
+        <translation>Converti raster in punti vettoriali</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
         <source>Convert vector to raster using attribute values</source>
-        <translation>Converte vettori in raster usando i valori degli attributi</translation>
+        <translation>Converti vettori in raster usando i valori degli attributi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
         <source>Convert vector to raster using constant</source>
-        <translation>Converte vettori in raster usando valori costanti</translation>
+        <translation>Converti vettori in raster usando valori costanti</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
@@ -33327,7 +33347,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
         <source>Create new vector with current region extent</source>
-        <translation>Crea un nuovo vettore con le estensioni della region attuale</translation>
+        <translation>Crea un nuovo vettore con le estensioni della regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
@@ -33602,7 +33622,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
-        <translation>Dissolve i contorni tra aree adiacenti che condividono una categoria comune o un attributo</translation>
+        <translation>Dissolvi i contorni tra aree adiacenti che condividono una categoria comune o un attributo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
@@ -33622,7 +33642,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
         <source>Execute any SQL statement</source>
-        <translation>Esegue qualsiasi istruzione SQL</translation>
+        <translation>Esegui qualsiasi istruzione SQL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
@@ -33632,7 +33652,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation>Esporta 3 raster GRASS (R,G,B) in formato PPM alla risoluzione della region attuale</translation>
+        <translation>Esporta 3 raster GRASS (R,G,B) in formato PPM alla risoluzione della regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
@@ -33662,7 +33682,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
-        <translation>Esporta il raster in immagine TIFF 8/24 bit alla risoluzione della region attuale</translation>
+        <translation>Esporta il raster in immagine TIFF 8/24 bit alla risoluzione della regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
@@ -33692,7 +33712,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation>Esporta il raster in formato PPM alla risoluzione della region attuale</translation>
+        <translation>Esporta il raster in formato PPM alla risoluzione della regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
@@ -33732,27 +33752,27 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera un raster di costi cumulativi di spostamento tra posizioni basato su una raster dei costi in input e coordinate del/dei punto/i di inizio</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera un raster di costi cumulativi di spostamento tra posizioni basato su una raster dei costi in input e raster del/dei punto/i di inizio</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera un raster di costi cumulativi di spostamento tra posizioni basato su una raster dei costi in input e vettore del/dei punto/i di inizio</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera un raster di costi cumulativi di spostamento tra posizioni basato su raster dell&apos;altitudine e dell&apos;impedenza e coordinate del/dei punto/i di inizio</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera un raster di costi cumulativi di spostamento tra posizioni basato su raster dell&apos;altitudine e dell&apos;impedenza e vettore del/dei punto/i di inizio</translation>
     </message>
     <message>
         <source>Export vector table</source>
@@ -33836,7 +33856,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>Extracts terrain parameters from DEM</source>
-        <translation>Estrae parametri del terreno da un DEM</translation>
+        <translation>Estrai parametri del terreno da un DEM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
@@ -33866,7 +33886,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
-        <translation>Riempie le aree no-data di un raster usando l&apos;interpolazione spline di v.surf.rst</translation>
+        <translation>Riempi le aree no-data di un raster usando l&apos;interpolazione spline di v.surf.rst</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
@@ -34227,7 +34247,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Locate the closest points between objects in two raster maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Trova i punti più vicini fra oggetti in due mapper raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
@@ -34263,7 +34283,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
         <source>Map algebra</source>
-        <translation>Map algebra</translation>
+        <translation>Algebra delle mappe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
@@ -34398,7 +34418,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation>Esegue una trasformazione affine (spostamento, scalatura e rotazione, o con GCP) su un vettore</translation>
+        <translation>Esegui una trasformazione affine (spostamento, scalatura e rotazione, o con GCP) su un vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
@@ -34428,7 +34448,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
         <source>Put geometry variables in database</source>
-        <translation>Inserisce le variabili geometriche in database</translation>
+        <translation>Inserisci le variabili geometriche in database</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
@@ -34444,7 +34464,7 @@ Il plugin non sarà abilitato.</translation>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
         <source>Randomly partition points into test/train sets</source>
         <translatorcomment>train == allenamento, ma non convince.</translatorcomment>
-        <translation>Suddivide casualmente i punti in sottogruppi per verifica/training</translation>
+        <translation>Suddividi casualmente i punti in sottogruppi per verifica/training</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
@@ -34479,7 +34499,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation>Ricostruisce la topologia per tutti i vettori nel mapset</translation>
+        <translation>Ricostruisci la topologia per tutti i vettori nel mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
@@ -34534,7 +34554,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
         <source>Reconnect vector to a new database</source>
-        <translation>Riconnette un vettore ad un nuovo database</translation>
+        <translation>Riconnetti un vettore ad un nuovo database</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
@@ -34544,12 +34564,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Region</source>
-        <translation>Region</translation>
+        <translation>Regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
         <source>Region settings</source>
-        <translation>Impostazioni della region</translation>
+        <translation>Impostazioni della regione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
@@ -34569,7 +34589,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
         <source>Remove all lines or boundaries of zero length</source>
-        <translation>Rimuove tutte le linee o i contorni di lunghezza nulla</translation>
+        <translation>Rimuovi tutte le linee o i contorni di lunghezza nulla</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
@@ -34584,22 +34604,22 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
         <source>Remove duplicate area centroids</source>
-        <translation>Rimuove centroidi duplicati di un&apos;area</translation>
+        <translation>Rimuovi centroidi duplicati di un&apos;area</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Remove duplicate lines (pay attention to categories!)</source>
-        <translation>Rimuove linee duplicate (attenzione alle categorie!)</translation>
+        <translation>Rimuovi linee duplicate (attenzione alle categorie!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
         <source>Remove existing attribute table of vector</source>
-        <translation>Rimuove la tabella attributi esistente di un vettore</translation>
+        <translation>Rimuovi la tabella attributi esistente di un vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
         <source>Remove outliers from vector point data</source>
-        <translation>Rimuove i valori anomali dai dati un vettore puntuale</translation>
+        <translation>Rimuovi i valori anomali dai dati un vettore puntuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
@@ -34659,7 +34679,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Resample raster. Set new resolution first</source>
-        <translation>Ricampiona un raster. Impostare prima la nuova risoluzione</translation>
+        <translation>Ricampiona un raster. Imposta prima la nuova risoluzione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
@@ -34674,7 +34694,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
         <source>Save the current region as a named region</source>
-        <translation>Salva la region attuale con nome</translation>
+        <translation>Salva la regione attuale con nome</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
@@ -34719,7 +34739,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Set boundary definitions to current or default region</source>
-        <translation>Imposta la definizione del contorno alla region attuale o alla region di default</translation>
+        <translation>Imposta la definizione del contorno alla regione attuale o alla regione di default</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
@@ -34759,17 +34779,17 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
         <source>Set region to align to raster</source>
-        <translation>Imposta la region in base al raster</translation>
+        <translation>Imposta la regione in base al raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Set the region to match multiple rasters</source>
-        <translation>Imposta la region in base a più raster</translation>
+        <translation>Imposta la regione in base a più raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
         <source>Set the region to match multiple vectors</source>
-        <translation>Imposta la region in base a più vettori</translation>
+        <translation>Imposta la regione in base a più vettori</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
@@ -34779,7 +34799,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
         <source>Sets the boundary definitions for a raster map</source>
-        <translation>Definisce le impostazioni del contorno (boundary) per una mappa raster</translation>
+        <translation>Definisci le impostazioni del contorno (boundary) per una mappa raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
@@ -34794,7 +34814,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
         <source>Simple map algebra</source>
-        <translation>Map algebra semplice</translation>
+        <translation>Algebra delle mappe semplice</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
@@ -34804,7 +34824,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
         <source>Snap lines to vertex in threshold</source>
-        <translation>Aggancia le linee al vertice all&apos;interno della soglia</translation>
+        <translation>Aggancia le linee al vertice entro la soglia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
@@ -34854,7 +34874,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation>Prende dati vettoriali di flusso, li converte a raster e sottrae la profondità dal DEM in output</translation>
+        <translation>Prendi dati vettoriali di flusso, convertili a raster e sottrai la profondità dal DEM in output</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
@@ -34874,12 +34894,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
         <source>Tassled cap vegetation index</source>
-        <translation>Indice di vegetazione tasseled cap</translation>
+        <translation>Indice di vegetazione Tasseled Cap</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Terrain analysis</source>
-        <translation>Analisi del terreno</translation>
+        <translation>Analisi geomorfologica</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
@@ -35024,17 +35044,17 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="446"/>
         <source>Which column for the X coordinate? The first is 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quale colonna per la coordinata X? La prima è 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="447"/>
         <source>Which column for the Y coordinate?</source>
-        <translation type="unfinished"></translation>
+        <translation>Quale colonna per la coordinata Y?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="448"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Quale colonna per la coordinata Z? Se 0, la coordinata Z non è usata</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="449"/>
