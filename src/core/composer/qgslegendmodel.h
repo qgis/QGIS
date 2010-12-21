@@ -85,7 +85,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
     void setAutoUpdate( bool autoUpdate );
-    bool AutoUpdaet() { return mAutoUpdate; }
+    bool autoUpdate() { return mAutoUpdate; }
 
   public slots:
     void removeLayer( const QString& layerId );
