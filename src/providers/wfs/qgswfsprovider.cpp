@@ -1967,6 +1967,14 @@ QDomElement QgsWFSProvider::createCoordinateElem( const QVector<QgsPoint> points
   coordElem.setAttribute( "cs", "," );
   coordElem.setAttribute( "ts", " " );
 
+  //precision 4 for meters / feet, precision 8 for degrees
+  int precision = 8;
+  if ( mSourceCRS.mapUnits() == QGis::Meters
+       || mSourceCRS.mapUnits() == QGis::Feet )
+  {
+    precision = 4;
+  }
+
   QString coordString;
   QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
   for ( ; pointIt != points.constEnd(); ++pointIt )
@@ -1975,9 +1983,9 @@ QDomElement QgsWFSProvider::createCoordinateElem( const QVector<QgsPoint> points
     {
       coordString += " ";
     }
-    coordString += QString::number( pointIt->x() );
+    coordString += QString::number( pointIt->x(), 'f', precision );
     coordString += ",";
-    coordString += QString::number( pointIt->y() );
+    coordString += QString::number( pointIt->y(), 'f', precision );
   }
 
   QDomText coordText = doc.createTextNode( coordString );
