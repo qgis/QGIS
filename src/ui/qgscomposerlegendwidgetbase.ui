@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>471</height>
+    <width>371</width>
+    <height>476</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>367</width>
-        <height>469</height>
+        <width>369</width>
+        <height>474</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
@@ -48,8 +48,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>349</width>
-            <height>397</height>
+            <width>338</width>
+            <height>404</height>
            </rect>
           </property>
           <attribute name="label">
@@ -183,15 +183,31 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>349</width>
-            <height>397</height>
+            <width>351</width>
+            <height>394</height>
            </rect>
           </property>
           <attribute name="label">
            <string>Legend items</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0" colspan="7">
+           <item row="0" column="0" colspan="4">
+            <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Auto Update</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="8">
             <widget class="QTreeView" name="mItemTreeView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -199,54 +215,67 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
              <property name="headerHidden">
               <bool>true</bool>
              </property>
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="2" column="0">
             <widget class="QToolButton" name="mMoveDownToolButton">
              <property name="text">
-              <string>v</string>
+              <string/>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="1">
             <widget class="QToolButton" name="mMoveUpToolButton">
              <property name="text">
-              <string>^</string>
+              <string/>
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
+           <item row="2" column="2">
+            <widget class="QToolButton" name="mAddToolButton">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
             <widget class="QToolButton" name="mRemoveToolButton">
              <property name="text">
-              <string>X</string>
+              <string/>
              </property>
             </widget>
            </item>
-           <item row="1" column="3">
+           <item row="2" column="4">
             <widget class="QToolButton" name="mEditPushButton">
              <property name="text">
-              <string>Edit</string>
+              <string/>
              </property>
             </widget>
            </item>
-           <item row="1" column="4">
+           <item row="2" column="5">
             <widget class="QToolButton" name="mUpdatePushButton">
              <property name="text">
               <string>Update</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="5">
+           <item row="2" column="6">
             <widget class="QToolButton" name="mUpdateAllPushButton">
              <property name="text">
               <string>All</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="6">
+           <item row="2" column="7">
             <widget class="QToolButton" name="mAddGroupButton">
              <property name="text">
               <string>Add group</string>

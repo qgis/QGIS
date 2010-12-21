@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QMimeData>
 #include <QSettings>
+#include <QMessageBox>
 
 QgsLegendModel::QgsLegendModel(): QStandardItemModel()
 {
@@ -40,6 +41,7 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel()
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
   }
+
   setItemPrototype( new QgsComposerSymbolItem() );
 
   QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
@@ -673,4 +675,25 @@ bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
   }
   emit layersChanged();
   return true;
+}
+
+void QgsLegendModel::setAutoUpdate(bool autoUpdate)
+{
+  mAutoUpdate = autoUpdate;
+  if ( autoUpdate )
+  {
+    if ( QgsMapLayerRegistry::instance() )
+    {
+      connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
+      connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
+    }
+  }
+  else
+  {
+    if ( QgsMapLayerRegistry::instance() )
+    {
+      disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
+      disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
+    }
+  }
 }
