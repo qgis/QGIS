@@ -50,11 +50,13 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
     void on_mBoxSpaceSpinBox_valueChanged( double d );
+    void on_mCheckBoxAutoUpdate_stateChanged (int state ); 
 
     //item manipulation
     void on_mMoveDownToolButton_clicked();
     void on_mMoveUpToolButton_clicked();
     void on_mRemoveToolButton_clicked();
+    void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mUpdatePushButton_clicked();
     void on_mUpdateAllPushButton_clicked();

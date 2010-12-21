@@ -103,6 +103,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposershapewidget.cpp
   composer/qgscomposertablewidget.cpp
   composer/qgscomposerlegenditemdialog.cpp
+  composer/qgscomposerlegendlayersdialog.cpp
   composer/qgscomposerlegendwidget.cpp
   composer/qgscompositionwidget.cpp
   composer/qgsitempositiondialog.cpp

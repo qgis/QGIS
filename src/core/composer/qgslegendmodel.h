@@ -84,6 +84,8 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Implements the drop operation*/
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
+    void setAutoUpdate( bool autoUpdate );
+    bool AutoUpdaet() { return mAutoUpdate; }
 
   public slots:
     void removeLayer( const QString& layerId );
@@ -112,6 +114,9 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**True if this application has toplevel windows (normally true). If this is false, this means that the application
        might not have a running x-server on unix systems and so QPixmap and QIcon cannot be used*/
     bool mHasTopLevelWindow;
+
+    /**True if the legend is auto updated when layers are added or removed from the map canvas */
+    bool mAutoUpdate;
 };
 
 #endif
