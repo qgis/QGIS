@@ -1,81 +1,82 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="windowModality" >
+ <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
-  <property name="geometry" >
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
+    <width>439</width>
     <height>466</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Spatial Join</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" colspan="3" >
-    <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="3">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_3" >
-       <property name="text" >
+      <widget class="QLabel" name="label_3">
+       <property name="text">
         <string>Target vector layer</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="inShape" />
+      <widget class="QComboBox" name="inShape"/>
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="3" >
-    <layout class="QVBoxLayout" >
+   <item row="1" column="0" colspan="3">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Join vector layer</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="joinShape" />
+      <widget class="QComboBox" name="joinShape"/>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="3" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
+   <item row="2" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
       <string>Attribute Summary</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" colspan="6" >
-       <widget class="QRadioButton" name="rdoFirst" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="7">
+       <widget class="QRadioButton" name="rdoFirst">
+        <property name="text">
          <string>Take attributes of first located feature</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="6" >
-       <widget class="QRadioButton" name="rdoSummary" >
-        <property name="text" >
+      <item row="1" column="0" colspan="7">
+       <widget class="QRadioButton" name="rdoSummary">
+        <property name="text">
          <string>Take summary of intersecting features</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
+      <item row="2" column="0">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -83,55 +84,55 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="1" >
-       <widget class="QCheckBox" name="chkMean" >
-        <property name="enabled" >
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="chkMean">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Mean</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" >
-       <widget class="QCheckBox" name="chkMin" >
-        <property name="enabled" >
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="chkMin">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Min</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="3" >
-       <widget class="QCheckBox" name="chkMax" >
-        <property name="enabled" >
+      <item row="2" column="3">
+       <widget class="QCheckBox" name="chkMax">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Max</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="4" >
-       <widget class="QCheckBox" name="chkSum" >
-        <property name="enabled" >
+      <item row="2" column="4">
+       <widget class="QCheckBox" name="chkSum">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Sum</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="5" >
+      <item row="2" column="6">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -139,30 +140,40 @@
         </property>
        </spacer>
       </item>
+      <item row="2" column="5">
+       <widget class="QCheckBox" name="chkMedian">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Median</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3" >
-    <layout class="QVBoxLayout" >
+   <item row="3" column="0" colspan="3">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Output Shapefile</string>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" >
+      <layout class="QHBoxLayout">
        <item>
-        <widget class="QLineEdit" name="outShape" >
-         <property name="readOnly" >
+        <widget class="QLineEdit" name="outShape">
+         <property name="readOnly">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolOut" >
-         <property name="text" >
+        <widget class="QToolButton" name="toolOut">
+         <property name="text">
           <string>Browse</string>
          </property>
         </widget>
@@ -171,38 +182,38 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="3" >
-    <widget class="QGroupBox" name="groupBox_3" >
-     <property name="title" >
+   <item row="4" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
       <string>Output table</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QRadioButton" name="rdoMatch" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="rdoMatch">
+        <property name="text">
          <string>Only keep matching records</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QRadioButton" name="rdoKeep" >
-        <property name="text" >
-         <string>Keep all records (includeing non-matching target records)</string>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="rdoKeep">
+        <property name="text">
+         <string>Keep all records (including non-matching target records)</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item rowspan="3" row="5" column="0" colspan="3" >
+   <item row="5" column="0" rowspan="3" colspan="3">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>359</width>
        <height>16</height>
@@ -210,25 +221,25 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="1" >
-    <widget class="QProgressBar" name="progressBar" >
-     <property name="value" >
+   <item row="7" column="1">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
       <number>24</number>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
-     <property name="textVisible" >
+     <property name="textVisible">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="6" column="2" >
-    <widget class="QDialogButtonBox" name="buttonBox_2" >
-     <property name="orientation" >
+   <item row="6" column="2" rowspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox_2">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -243,11 +254,11 @@
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>142</x>
-     <y>359</y>
+    <hint type="sourcelabel">
+     <x>367</x>
+     <y>450</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>215</x>
      <y>290</y>
     </hint>
@@ -259,11 +270,11 @@
    <receiver>Dialog</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>68</x>
-     <y>359</y>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>450</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>132</x>
      <y>239</y>
     </hint>
@@ -275,13 +286,13 @@
    <receiver>chkMin</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>154</x>
-     <y>183</y>
+    <hint type="sourcelabel">
+     <x>180</x>
+     <y>207</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>173</x>
-     <y>212</y>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>235</y>
     </hint>
    </hints>
   </connection>
@@ -291,13 +302,13 @@
    <receiver>chkMax</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>211</x>
      <y>190</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>219</x>
-     <y>213</y>
+    <hint type="destinationlabel">
+     <x>240</x>
+     <y>235</y>
     </hint>
    </hints>
   </connection>
@@ -307,11 +318,11 @@
    <receiver>chkSum</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>162</x>
      <y>187</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>283</x>
      <y>214</y>
     </hint>
@@ -323,13 +334,29 @@
    <receiver>chkMean</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>69</x>
-     <y>182</y>
+    <hint type="sourcelabel">
+     <x>95</x>
+     <y>207</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>93</x>
-     <y>210</y>
+    <hint type="destinationlabel">
+     <x>123</x>
+     <y>235</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoSummary</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>chkMedian</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>199</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>226</y>
     </hint>
    </hints>
   </connection>

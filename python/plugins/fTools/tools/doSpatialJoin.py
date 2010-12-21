@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# 
+#
 # Spatial Join
 #
 # Performing an attribute join between vector layers based on spatial
@@ -14,23 +14,23 @@
 # WEB  : www.geog.uvic.ca/spar/carson
 #
 #-----------------------------------------------------------
-# 
+#
 # licensed under the terms of GNU GPL 2
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-# 
+#
 #---------------------------------------------------------------------
 
 from PyQt4.QtCore import *
@@ -38,6 +38,23 @@ from PyQt4.QtGui import *
 import ftools_utils
 from qgis.core import *
 from ui_frmSpatialJoin import Ui_Dialog
+
+def myself(L):
+    #median computation
+    nVal = len(L)
+    if nVal == 1:
+        return L[0]
+    L.sort()
+    #test for list length
+    medianVal = 0
+    if nVal > 1:
+        if ( nVal % 2 ) == 0:
+            #index begin at 0
+            #remove 1 to index in standard median computation
+            medianVal = 0.5 * ( (L[ (nVal) / 2  - 1]) + (L[ (nVal) / 2 ] ))
+        else:
+            medianVal = L[ (nVal + 1) / 2 - 1]
+    return medianVal
 
 class Dialog(QDialog, Ui_Dialog):
 
@@ -55,7 +72,7 @@ class Dialog(QDialog, Ui_Dialog):
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
         self.joinShape.addItems(layers)
-    
+
     def accept(self):
         self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
@@ -64,7 +81,7 @@ class Dialog(QDialog, Ui_Dialog):
             QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify output shapefile") )
         elif self.joinShape.currentText() == "":
             QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify join vector layer") )
-        elif self.rdoSummary.isChecked() and not (self.chkMean.isChecked() or self.chkSum.isChecked() or self.chkMin.isChecked() or self.chkMax.isChecked() or self.chkMean.isChecked()):
+        elif self.rdoSummary.isChecked() and not (self.chkMean.isChecked() or self.chkSum.isChecked() or self.chkMin.isChecked() or self.chkMax.isChecked() or self.chkMean.isChecked() or self.chkMedian.isChecked()):
             QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify at least one summary statistic") )
         else:
             inName = self.inShape.currentText()
@@ -77,6 +94,7 @@ class Dialog(QDialog, Ui_Dialog):
                 if self.chkMean.isChecked(): sumList.append("MEAN")
                 if self.chkMin.isChecked(): sumList.append("MIN")
                 if self.chkMax.isChecked(): sumList.append("MAX")
+                if self.chkMedian.isChecked(): sumList.append("MED")
             else:
                 summary = False
                 sumList = ["all"]
@@ -120,7 +138,7 @@ class Dialog(QDialog, Ui_Dialog):
         provider2.select(allAttrs)
         fieldList2 = ftools_utils.getFieldList(layer2)
         fieldList = []
-        if provider1.crs() <> provider2.crs():
+        if provider1.crs() != provider2.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
         if not summary:
             fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList2.values())
@@ -141,7 +159,7 @@ class Dialog(QDialog, Ui_Dialog):
             fieldList1.extend(fieldList)
             seq = range(0, len(fieldList1))
             fieldList1 = dict(zip(seq, fieldList1))
-        
+
         # check for correct field names
         longNames = ftools_utils.checkFieldNameLength( fieldList1 )
         if not longNames.isEmpty():
@@ -149,7 +167,7 @@ class Dialog(QDialog, Ui_Dialog):
                         self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%1' )
                         .arg( longNames.join( '\n' ) ) )
             return False
-        
+
         sRs = provider1.crs()
         progressBar.setValue(13)
         check = QFile(self.shapefileName)
@@ -215,6 +233,7 @@ class Dialog(QDialog, Ui_Dialog):
                             if k == "SUM": atMap.append(QVariant(sum(numFields[j])))
                             elif k == "MEAN": atMap.append(QVariant(sum(numFields[j]) / count))
                             elif k == "MIN": atMap.append(QVariant(min(numFields[j])))
+                            elif k == "MED": atMap.append(QVariant(myself(numFields[j])))
                             else: atMap.append(QVariant(max(numFields[j])))
                         numFields[j] = []
                     atMap.append(QVariant(count))
