@@ -10,4 +10,5 @@
         <flag key="z" answer="off" hidden="no" advanced="yes"/>
         <flag key="e" answer="off" hidden="no" advanced="yes"/>
         <option key="snap" advanced="yes" /> 
+        <option key="min_area" advanced="yes" />
 </qgisgrassmodule>

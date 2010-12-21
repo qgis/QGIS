@@ -260,12 +260,12 @@
 				<grass name="r.contour2"/>
 			</section>
 			<section label="Interpolate surface">
-				<grass name="r.bilinear"/>
 				<grass name="v.surf.bspline"/>
-				<grass name="r.surf.idw"/>
-				<grass name="r.surf.idw2"/>
 				<grass name="v.surf.idw"/>
 				<grass name="v.surf.rst"/>
+                                <grass name="r.bilinear"/>
+                                <grass name="r.surf.idw"/>
+                                <grass name="r.surf.idw2"/>
 				<grass name="r.fillnulls"/>
                                 <grass name="r.surf.contour"/>
 			</section>
