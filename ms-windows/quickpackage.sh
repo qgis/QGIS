@@ -15,7 +15,7 @@ makensis \
 -DVERSION_NUMBER='1.6.0' \
 -DVERSION_NAME='Capiapo' \
 -DSVN_REVISION='0' \
--DQGIS_BASE='Quantum GIS 1.6.0' \
+-DQGIS_BASE='Quantum GIS' \
 -DINSTALLER_NAME='QGIS-1-6-0-Setup.exe' \
 -DDISPLAYED_NAME='Quantum GIS 1.6.0' \
 -DBINARY_REVISION=1 \
