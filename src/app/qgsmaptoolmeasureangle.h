@@ -59,6 +59,9 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     /**Deletes the rubber band and the dialog*/
     void stopMeasuring();
 
+    /** recalculate angle if projection state changed*/
+    void changeProjectionEnabledState();
+
 };
 
 #endif // QGSMAPTOOLMEASUREANGLE_H
