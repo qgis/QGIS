@@ -31,7 +31,7 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="2">
+   <item row="2" column="2">
     <widget class="QLineEdit" name="editTotal">
      <property name="font">
       <font>
@@ -47,7 +47,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <spacer>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -63,7 +63,7 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="textLabel2">
      <property name="text">
       <string>Total</string>
@@ -73,7 +73,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3">
+   <item row="1" column="0" colspan="3">
     <widget class="QTreeWidget" name="mTable">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
@@ -91,10 +91,17 @@
      </column>
     </widget>
    </item>
-   <item row="2" column="2">
+   <item row="3" column="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3">
+    <widget class="QCheckBox" name="mcbProjectionEnabled">
+     <property name="text">
+      <string>Ellipsoidal (WGS84)</string>
      </property>
     </widget>
    </item>

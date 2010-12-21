@@ -29,6 +29,15 @@ class QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
     /**Sets the measured angle value (in radians). The value is going to
       be converted to degrees / gon automatically if necessary*/
     void setValueInRadians( double value );
+
+    bool projectionEnabled();
+
+  signals:
+    void changeProjectionEnabledState();
+  
+  private slots:
+    void changeState();
+
 };
 
 #endif // QGSDISPLAYANGLE_H

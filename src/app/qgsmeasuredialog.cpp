@@ -52,7 +52,14 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   //mTable->setHeaderLabels(QStringList() << tr("Segments (in meters)") << tr("Total") << tr("Azimuth") );
 
   QSettings settings;
+  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
+  if ( s == 2 )
+    mcbProjectionEnabled->setCheckState( Qt::Checked );
+  else
+    mcbProjectionEnabled->setCheckState( Qt::Unchecked );
 
+  connect( mcbProjectionEnabled, SIGNAL( stateChanged(int) ), 
+      this, SLOT( changeProjectionEnabledState() ));
 
   updateUi();
 }
@@ -91,21 +98,27 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
   QSettings settings;
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
+  // Create QgsDistance Area for customization ProjectionEnabled setting
+  QgsDistanceArea myDa;  
+  myDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
+  myDa.setEllipsoid( mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() );
+  myDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
-  // and adding moving point at the end
+  // and adding moving point at the end  
   if ( mMeasureArea && mTool->points().size() > 1 )
   {
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
-    double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( tmpPoints );
+    double area = myDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area, decimalPlaces ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
   {
     QgsPoint p1( mTool->points().last() ), p2( point );
 
-    double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
+    double d = myDa.measureLine( p1, p2 );
     editTotal->setText( formatDistance( mTotal + d, decimalPlaces ) );
     QGis::UnitType myDisplayUnits;
     // Ignore units
@@ -120,10 +133,16 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   QSettings settings;
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
+  // Create QgsDistance Area for customization ProjectionEnabled setting
+  QgsDistanceArea myDa;  
+  myDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
+  myDa.setEllipsoid( mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() );
+  myDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
-    double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( mTool->points() );
+    double area = myDa.measurePolygon( mTool->points() );
     editTotal->setText( formatArea( area, decimalPlaces ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
@@ -132,7 +151,7 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
 
     QgsPoint p1 = mTool->points()[last], p2 = mTool->points()[last+1];
 
-    double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
+    double d = myDa.measureLine( p1, p2 );
 
     mTotal += d;
     editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
@@ -252,17 +271,17 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   QGis::UnitType myUnits = mTool->canvas()->mapUnits();
   if (( myUnits == QGis::Degrees || myUnits == QGis::Feet ) &&
       mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() != "NONE" &&
-      mTool->canvas()->mapRenderer()->distanceArea()->hasCrsTransformEnabled() )
+      mcbProjectionEnabled->isChecked() )
   {
     // Measuring on an ellipsoid returns meters, and so does using projections???
     myUnits = QGis::Meters;
     QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
   }
-
+   
   // Get the units for display
   QSettings settings;
   QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-
+  
   // Only convert between meters and feet
   if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
   {
@@ -288,4 +307,69 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   }
 
   u = myUnits;
+}
+
+void QgsMeasureDialog::changeProjectionEnabledState()
+{
+  // store value
+  QSettings settings;
+  if ( mcbProjectionEnabled->isChecked() )
+    settings.setValue( "/qgis/measure/projectionEnabled", 2);
+  else
+    settings.setValue( "/qgis/measure/projectionEnabled", 0);
+
+  // clear interface
+  mTable->clear();
+  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( QString::number( 0, 'f', 1 ) ) );
+  item->setTextAlignment( 0, Qt::AlignRight );
+  mTable->addTopLevelItem( item );
+  mTotal = 0;
+  updateUi();
+
+  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+ 
+  // create DistanceArea
+  QgsDistanceArea myDa;  
+  myDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
+  myDa.setEllipsoid( mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() );
+  myDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+  
+  if ( mMeasureArea )
+  {
+    double area = 0.0;
+    if ( mTool->points().size() > 1 )
+    {
+      area = myDa.measurePolygon( mTool->points() );
+    }
+    editTotal->setText( formatArea( area, decimalPlaces ) );
+  }else
+  {
+    QList<QgsPoint>::const_iterator it;
+    bool b = true; // first point
+  
+    QgsPoint p1,p2;
+     
+    for (it=mTool->points().constBegin(); it != mTool->points().constEnd(); ++it)
+    {
+      p2 = *it;
+      if ( !b )
+      {
+        double d  = myDa.measureLine( p1, p2 );
+        mTotal += d;
+        editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
+        QGis::UnitType myDisplayUnits;
+
+        convertMeasurement( d, myDisplayUnits, false );
+
+        QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
+        item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
+        item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', decimalPlaces ) ) );
+        item->setTextAlignment( 0, Qt::AlignRight );
+        mTable->addTopLevelItem( item );
+        mTable->scrollToItem( item );
+      }
+      p1 = p2;
+      b = false;
+    }
+  }
 }
