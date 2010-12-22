@@ -5,7 +5,7 @@
 <qgisgrassmodule label="Watershed Analysis" module="r.watershed">
 
 	<option key="elevation" />
-	<option key="threshold" />
+	<option key="threshold" label="Minimum size for each basin (number of cells)"/>
 	<flag key="m" answer="off" hidden="no" />
 	<option key="accumulation" />
 	<option key="drainage" />
