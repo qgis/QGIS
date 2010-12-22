@@ -16608,17 +16608,17 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1212"/>
         <source>Database: </source>
-        <translation>Database:</translation>
+        <translation>Database: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1223"/>
         <source>Location: </source>
-        <translation>Location:</translation>
+        <translation>Location: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1225"/>
         <source>Mapset: </source>
-        <translation>Mapset:</translation>
+        <translation>Mapset: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1264"/>
