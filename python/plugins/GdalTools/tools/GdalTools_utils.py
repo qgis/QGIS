@@ -117,6 +117,32 @@ def getVectorLayers():
       count = count +1
   return (layers, names)
 
+def getRasterFiles(path, recursive=False):
+  rasters = QStringList()
+  if not QFileInfo(path).exists():
+    return rasters
+
+  filter = getRasterExtensions()
+  workDir = QDir( path )
+  workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
+  workDir.setNameFilters( filter )
+  files = workDir.entryList()
+  for f in files:
+    rasters << path + "/" + f
+
+  if recursive:
+    import os
+    for myRoot, myDirs, myFiles in os.walk( unicode(path) ):
+      for dir in myDirs:
+        workDir = QDir( myRoot + "/" + dir )
+        workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
+        workDir.setNameFilters( filter )
+        workFiles = workDir.entryList()
+        for f in workFiles:
+          rasters << myRoot + "/" + dir + "/" + f
+
+  return rasters
+
 def fillRasterOutputFormat(aFilter = None, filename = None):
   shortName = QString()
 
