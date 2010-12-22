@@ -23,11 +23,24 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
   def isBatchEnabled(self):
       return False
 
-  def setProgressRange(self, maximum ):
+  def isRecursiveScanEnabled(self):
+      return False
+
+  def setProgressRange(self, maximum):
       pass
 
   def updateProgress(self, value, maximum):
       pass
+
+  def getBatchOutputFileName(self, fn):
+      inDir = self.getInputFileName()
+      outDir = self.getOutputFileName()
+
+      # if overwrites existent files
+      if outDir == None or outDir == inDir:
+        return QString( fn ).append( ".tmp" )
+
+      return QString( fn ).mid( len(inDir) ).prepend( outDir )
 
   def onRun( self ):
       if not self.isBatchEnabled():
@@ -41,22 +54,18 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       self.base.setCursor( Qt.WaitCursor )
 
       inDir = self.getInputFileName()
-      outDir = self.getOutputFileName()
 
       filter = Utils.getRasterExtensions()
       workDir = QDir( inDir )
       workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
       workDir.setNameFilters( filter )
-      files = workDir.entryList()
+      workFiles = workDir.entryList()
 
-      self.inFiles = []
+      self.inFiles = Utils.getRasterFiles( inDir, self.isRecursiveScanEnabled() )
       self.outFiles = []
 
-      for f in files:
-        self.inFiles.append( inDir + "/" + f )
-        if outDir != None:
-          outFile = f.replace( QRegExp( "\.[a-zA-Z0-9]{2,4}" ), ".tif" )
-          self.outFiles.append( outDir + "/" + outFile )
+      for f in self.inFiles:
+        self.outFiles.append( self.getBatchOutputFileName( f ) )
 
       self.errors = QStringList()
       self.batchIndex = 0
@@ -91,6 +100,15 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
 
       self.base.process.close()
 
+      # overwrite existent files
+      inDir = self.getInputFileName()
+      outDir = self.getOutputFileName()
+      if outDir == None or inDir == outDir:
+        oldFile = QFile( self.inFiles[self.batchIndex] )
+        newFile = QFile( self.outFiles[self.batchIndex] )
+        if oldFile.remove():
+          newFile.rename(self.inFiles[self.batchIndex])
+
       self.batchIndex += 1
       self.runItem( self.batchIndex, self.batchTotal )
 
@@ -100,6 +118,11 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       if not self.errors.isEmpty():
         msg = QString( "Processing of the following files ended with error: <br><br>" ).append( self.errors.join( "<br><br>" ) )
         QErrorMessage( self ).showMessage( msg )
+
+      inDir = self.getInputFileName()
+      outDir = self.getOutputFileName()
+      if outDir == None or inDir == outDir:
+        self.outFiles = self.inFiles
 
       # load layers managing the render flag to avoid waste of time
       canvas = self.iface.mapCanvas()

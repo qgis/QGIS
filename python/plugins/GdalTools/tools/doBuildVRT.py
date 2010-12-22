@@ -18,18 +18,42 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdalbuildvrt")
 
+      self.recurseCheck.hide()
+
       self.setParamsStatus(
         [
           (self.inputFilesEdit, SIGNAL("textChanged(const QString &)")), 
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
           (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
           (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0"),
-          (self.separateCheck, SIGNAL("stateChanged(int)"), None, "1.7.0")
+          (self.separateCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
+          (self.inputDirCheck, SIGNAL("stateChanged(int)")),
+          (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck)
         ]
       )
 
       self.connect(self.selectInputFilesButton, SIGNAL("clicked()"), self.fillInputFilesEdit)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect( self.inputDirCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
+
+  def switchToolMode(self):
+      self.inputFilesEdit.clear()
+
+      if self.inputDirCheck.isChecked():
+        self.inFileLabel = self.label.text()
+        self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
+
+        self.recurseCheck.show()
+
+        QObject.disconnect( self.selectInputFilesButton, SIGNAL( "clicked()" ), self.fillInputFilesEdit )
+        QObject.connect( self.selectInputFilesButton, SIGNAL( "clicked()" ), self.fillInputDir )
+      else:
+        self.label.setText( self.inFileLabel )
+
+        self.recurseCheck.hide()
+
+        QObject.connect( self.selectInputFilesButton, SIGNAL( "clicked()" ), self.fillInputFilesEdit )
+        QObject.disconnect( self.selectInputFilesButton, SIGNAL( "clicked()" ), self.fillInputDir )
 
   def fillInputFilesEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -47,6 +71,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.outputFileEdit.setText(outputFile)
 
+  def fillInputDir( self ):
+      inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files for VRT" ))
+      if inputDir.isEmpty():
+        return
+
+      self.inputFilesEdit.setText( inputDir )
+
   def getArguments(self):
       arguments = QStringList()
       if self.resolutionCheck.isChecked() and self.resolutionComboBox.currentIndex() >= 0:
@@ -58,7 +89,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << "-srcnodata"
         arguments << str(self.srcNoDataSpin.value())
       arguments << self.outputFileEdit.text()
-      arguments << self.inputFilesEdit.text().split(",")
+      if self.inputDirCheck.isChecked():
+        arguments << Utils.getRasterFiles( self.inputFilesEdit.text(), self.recurseCheck.isChecked() )
+      else:
+        arguments << self.inputFilesEdit.text().split(",")
       return arguments
 
   def getOutputFileName(self):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
-    <height>182</height>
+    <width>344</width>
+    <height>234</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,14 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
-     <item row="0" column="0">
+     <item row="0" column="0" colspan="2">
+      <widget class="QCheckBox" name="inputDirCheck">
+       <property name="text">
+        <string>Choose input directory instead of files</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>&amp;Input files</string>
@@ -35,7 +42,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="1" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QLineEdit" name="inputFilesEdit">
@@ -56,7 +63,14 @@
        </item>
       </layout>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="recurseCheck">
+       <property name="text">
+        <string>Recurse subdirectories</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>&amp;Output file</string>
@@ -66,7 +80,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLineEdit" name="outputFileEdit">
@@ -87,14 +101,14 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
+     <item row="4" column="0">
       <widget class="QCheckBox" name="resolutionCheck">
        <property name="text">
         <string>&amp;Resolution</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="4" column="1">
       <widget class="QComboBox" name="resolutionComboBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -122,21 +136,21 @@
        </item>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="5" column="0">
       <widget class="QCheckBox" name="srcNoDataCheck">
        <property name="text">
         <string>&amp;Source No Data</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="5" column="1">
       <widget class="QSpinBox" name="srcNoDataSpin">
        <property name="maximum">
         <number>65000</number>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="6" column="0">
       <widget class="QCheckBox" name="separateCheck">
        <property name="text">
         <string>Se&amp;parate</string>

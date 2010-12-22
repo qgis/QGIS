@@ -11,128 +11,21 @@ import GdalTools_utils as Utils
 
 import os.path
 
-class GdalToolsBatchProjectionWidget(BaseBatchWidget):
-  def __init__(self, iface, commandName, helpFileBaseName = None):
-      BaseBatchWidget.__init__(self, iface, commandName, helpFileBaseName)
 
-      layerMap = QgsMapLayerRegistry.instance().mapLayers()
-      self.layerList = []
-      for name, layer in layerMap.iteritems():
-        if layer.type() == QgsMapLayer.RasterLayer:
-          self.layerList.append( unicode( layer.name() ) )
-
-  def batchRun(self):
-      self.base.enableRun( False )
-      self.base.setCursor( Qt.WaitCursor )
-
-      inDir = self.getInputFileName()
-      outDir = self.getOutputFileName()
-
-      filter = Utils.getRasterExtensions()
-      self.inFiles = []
-      self.outFiles = []
-
-      if self.recurseCheck.isChecked():
-        workDir = QDir( inDir )
-        workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-        workDir.setNameFilters( filter )
-        workFiles = workDir.entryList()
-        for f in workFiles:
-          self.inFiles.append( QString( inDir + "/" + f ) )
-        for myRoot, myDirs, myFiles in os.walk( str( inDir ) ):
-          for dir in myDirs:
-            workDir = QDir( myRoot + "/" + dir )
-            workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-            workDir.setNameFilters( filter )
-            workFiles = workDir.entryList()
-            for f in workFiles:
-              self.inFiles.append( QString( myRoot + "/" + dir + "/" + f ) )
-        for f in self.inFiles:
-          if outDir != None:
-            outFile = QString( f ).insert( f.indexOf( "." ), "_1" ).replace( QRegExp( "\.[a-zA-Z]{3,4}$" ), ".tif" )
-            self.outFiles.append( outFile )
-      else:
-        workDir = QDir( inDir )
-        workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-        workDir.setNameFilters( filter )
-        files = workDir.entryList()
-        for f in files:
-          self.inFiles.append( inDir + "/" + f )
-          if outDir != None:
-            outFile = QString( f ).insert( f.indexOf( "." ), "_1" ).replace( QRegExp( "\.[a-zA-Z]{3,4}$" ), ".tif" )
-            self.outFiles.append( outDir + "/" + outFile )
-
-      #files = QStringList()
-      #for myRoot, myDirs, myFiles in os.walk( str( inDir ) ):
-      #  for dir in myDirs:
-      #    print "DIR", dir
-      #    workDir = QDir( myRoot + "/" + dir )
-      #    workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      #    workDir.setNameFilters( filter )
-      #    workFiles = workDir.entryList()
-      #    print "ENTRY", workFiles.join( " " )
-      #    for f in workFiles:
-      #      files.append( QString( myRoot + "/" + dir + "/" + f ) )
-
-      #print "FILES", files.join( "\n" )
-
-      #filter = Utils.getRasterExtensions()
-      #workDir = QDir( inDir )
-      #workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      #workDir.setNameFilters( filter )
-      #files = workDir.entryList()
-
-      #self.inFiles = []
-      #self.outFiles = []
-
-      #for f in files:
-      #  self.inFiles.append( inDir + "/" + f )
-      #  if outDir != None:
-      #    outFile = QString( f ).insert( f.indexOf( "." ), "_1" ).replace( QRegExp( "\.[a-zA-Z]{3,4}$" ), ".tif" )
-      #    self.outFiles.append( outDir + "/" + outFile )
-
-      self.errors = QStringList()
-      self.batchIndex = 0
-      self.batchTotal = len( self.inFiles )
-      self.setProgressRange( self.batchTotal )
-
-      self.runItem( self.batchIndex, self.batchTotal )
-
-  def runItem(self, index, total):
-      if index >= total:
-        self.outFiles = self.inFiles
-
-      BaseBatchWidget.runItem(self, index, total)
-
-  def onFinished(self, exitCode, status):
-      if not self.isBatchEnabled():
-        BaseBatchWidget.onFinished(self, exitCode, status)
-        return
-
-      oldFile = QFile( self.inFiles[self.batchIndex] )
-      newFile = QFile( self.outFiles[self.batchIndex] )
-      if oldFile.remove():
-        newFile.rename(self.inFiles[self.batchIndex])
-
-      BaseBatchWidget.onFinished(self, exitCode, status)
-
-
-class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
+class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def __init__( self, iface ):
       QWidget.__init__( self )
       self.iface = iface
 
       self.setupUi( self )
-      GdalToolsBatchProjectionWidget.__init__( self, self.iface, "gdalwarp" )
+      BaseBatchWidget.__init__( self, self.iface, "gdalwarp" )
 
       # set the default QSpinBoxes and QProgressBar value
       self.progressBar.setValue(0)
 
       self.progressBar.hide()
       self.recurseCheck.hide()
-      # store temporary file name
-      self.tempFile = QString()
 
       self.setParamsStatus(
         [
@@ -155,7 +48,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
 
       if self.batchCheck.isChecked():
         self.inFileLabel = self.label.text()
-        self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory:" ) )
+        self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
 
         self.progressBar.show()
         self.recurseCheck.show()
@@ -163,7 +56,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
         QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFileEdit )
         QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
 
-        QObject.disconnect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
+        #QObject.disconnect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
       else:
         self.label.setText( self.inFileLabel )
 
@@ -173,7 +66,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
         QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFileEdit )
         QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
 
-        QObject.connect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
+        #QObject.connect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
 
   def enableRecurse( self ):
     if self.recurseCheck.isChecked():
@@ -186,28 +79,19 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
 
   def fillInputFileEdit( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      file = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if file.isEmpty():
+      inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
+      if inputFile.isEmpty():
         return
-
-      outFile = QString( file ).insert( file.indexOf( "." ), "_1" ).replace( QRegExp( "\.[a-zA-Z]{3,4}$" ), ".tif" )
-      self.tempFile = outFile
-      #self.outputFormat = Utils.fillOutputFormat( lastUsedFilter, file )
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
-      self.inputFileEdit.setText( file )
+      #self.outputFormat = Utils.fillOutputFormat( lastUsedFilter, file )
+      self.inputFileEdit.setText( inputFile )
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Assign projection" ))
       if inputDir.isEmpty():
         return
 
-      self.inputPath = inputDir
       self.inputFileEdit.setText( inputDir )
-
-      filter = Utils.getRasterExtensions()
-      workDir = QDir( inputDir )
-      workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      workDir.setNameFilters( filter )
 
   def fillDesiredSRSEdit( self ):
       dialog = SRSDialog( "Select desired SRS" )
@@ -225,6 +109,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
       if self.batchCheck.isChecked():
         return arguments
       arguments << self.inputFileEdit.text()
+      self.tempFile = self.inputFileEdit.text().replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" ).append( ".tmp" )
       arguments << self.tempFile
       return arguments
 
@@ -234,24 +119,33 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
   def getOutputFileName( self ):
       return self.inputFileEdit.text()
 
+  def getBatchOutputFileName(self, fn):
+      # get GeoTiff
+      fn = QString( fn ).replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" )
+      return BaseBatchWidget.getBatchOutputFileName( self, fn )
+
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
 
   def checkLayer( self ):
-      layerMap = QgsMapLayerRegistry.instance().mapLayers()
       layerList = []
+
+      layerMap = QgsMapLayerRegistry.instance().mapLayers()
       for name, layer in layerMap.iteritems():
         if layer.type() == QgsMapLayer.RasterLayer:
-          layerList.append( unicode( layer.name() ) )
-      fileName = QString( os.path.split( str( self.inputFileEdit.text() ) )[ 1 ] )
-      fileName = fileName.left( fileName.indexOf( "." ) )
-      if fileName in layerList:
+          layerList.append( unicode( layer.source() ) )
+
+      if unicode( self.inputFileEdit.text() ) in layerList:
         QMessageBox.warning( self, self.tr( "Assign projection" ), self.tr( "This raster already found in map canvas" ) )
         return
+
       self.onRun()
 
   def isBatchEnabled(self):
       return self.batchCheck.isChecked()
+
+  def isRecursiveScanEnabled(self):
+      return self.recurseCheck.isChecked()
 
   def setProgressRange(self, maximum):
       self.progressBar.setRange(0, maximum)
@@ -267,66 +161,4 @@ class GdalToolsDialog( QWidget, Ui_Widget, GdalToolsBatchProjectionWidget ):
       newFile = QFile( self.tempFile )
       if oldFile.remove():
         newFile.rename( self.inputFileEdit.text() )
-
-#  def batchRun( self ):
-#      self.base.buttonBox.button( QDialogButtonBox.Ok ).setEnabled( False )
-#      self.base.setCursor( Qt.WaitCursor )
-#
-#      filter = Utils.getRasterExtensions()
-#      inDir = self.inputFileEdit.text()
-#      outDir = inDir
-#      workDir = QDir( inDir )
-#      workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-#      workDir.setNameFilters( filter )
-#      files = workDir.entryList()
-#
-#      inFiles = []
-#      self.outFiles = []
-#      for f in files:
-#        inFiles.append( inDir + "/" + f )
-#        outFile = QString( f ).insert( f.indexOf( "." ), "_1" ).replace( QRegExp( "\.[a-zA-Z]{3,4}$" ), ".tif" )
-#        #outFile = f.replace( QRegExp( "\.[a-zA-Z0-9]{2,4}" ), ".tif" )
-#        self.outFiles.append( outDir + "/" + outFile )
-#
-#      args = QStringList()
-#      for i in range( self.base.arguments.count() ):
-#        args.append( self.base.arguments[ i ] )
-#
-#      self.errors = QStringList()
-#      count = 1
-#      total = len( inFiles )
-#      for i, item in enumerate( inFiles ):
-#        #print "PROCESS", i
-#        #self.lblProgress.setText( self.tr( "Processed: %1 from %2" ).arg( count ).arg( total ) )
-#        #QCoreApplication.processEvents()
-#        count = count + 1
-#
-#        itemArgs = QStringList()
-#        itemArgs << args
-#        itemArgs << item
-#        itemArgs << self.outFiles[ i ]
-#
-#        self.base.process.start( self.base.command, itemArgs, QIODevice.ReadOnly )
-#        if self.base.process.waitForFinished():
-#          msg = QString( self.base.process.readAllStandardError() )
-#          if not msg.isEmpty():
-#            self.errors.append( item )
-#          self.base.process.close()
-#
-#        oldFile = QFile( item )
-#        newFile = QFile( self.outFiles[ i ] )
-#        if oldFile.remove():
-#          newFile.rename( item )
-#
-#      #self.lblProgress.setText( self.tr( "Finished" ) )
-#      self.batchFinished()
-#
-#  def batchFinished( self ):
-#      self.base.buttonBox.button( QDialogButtonBox.Ok ).setEnabled( True )
-#      self.base.setCursor( Qt.ArrowCursor )
-#
-#      if not self.errors.isEmpty():
-#        message = QErrorMessage( self )
-#        msg = QString( "Processing of the following files ended with error:\n\n" ).append( self.errors.join( "\n" ) )
-#        message.showMessage( msg )
 

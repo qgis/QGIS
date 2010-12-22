@@ -51,8 +51,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if self.batchCheck.isChecked():
         self.inFileLabel = self.label.text()
         self.outFileLabel = self.label_2.text()
-        self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory:" ) )
-        self.label_2.setText( QCoreApplication.translate( "GdalTools", "&Output directory:" ) )
+        self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
+        self.label_2.setText( QCoreApplication.translate( "GdalTools", "&Output directory" ) )
 
         self.progressBar.show()
 
