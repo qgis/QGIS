@@ -525,11 +525,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select files to merge</source>
-        <translation type="unfinished">Wybierz pliki do złączenia</translation>
+        <translation>Wybierz pliki do złączenia</translation>
     </message>
     <message>
         <source>Input files</source>
-        <translation type="unfinished">Pliki źródłowe</translation>
+        <translation>Pliki źródłowe</translation>
     </message>
     <message>
         <source>No output file</source>
@@ -2300,22 +2300,22 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
         <source>&amp;Input file (raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik źró&amp;dłowy (raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="65"/>
         <source>&amp;Output directory for contour lines (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Katalog docelowy dla warstwic</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="96"/>
         <source>I&amp;nterval between contour lines</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cięcie warstwicowe</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="121"/>
         <source>&amp;Attribute name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa &amp;atrybutu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="133"/>
@@ -2356,7 +2356,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="35"/>
         <source>&amp;Input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik ź&amp;ródłowy</translation>
     </message>
     <message>
         <source>&amp;Input file:</source>
@@ -2383,12 +2383,12 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
         <source>&amp;Z Field</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Z</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="106"/>
         <source>&amp;Algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Algorytm</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="114"/>
@@ -2413,12 +2413,12 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="157"/>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Potęga</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="171"/>
         <source>Smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygładzanie</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="188"/>
@@ -2426,7 +2426,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="400"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="511"/>
         <source>Radius1</source>
-        <translation type="unfinished">Promień 2: {1?}</translation>
+        <translation>Promień 1</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="205"/>
@@ -2434,7 +2434,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="417"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="528"/>
         <source>Radius2</source>
-        <translation type="unfinished">Promień 2: {2?}</translation>
+        <translation>Promień 2</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="222"/>
@@ -2442,19 +2442,19 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="434"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="545"/>
         <source>Angle</source>
-        <translation type="unfinished">Kąt</translation>
+        <translation>Kąt</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="239"/>
         <source>Max points</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. punktów</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="253"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="352"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="562"/>
         <source>Min points</source>
-        <translation type="unfinished"></translation>
+        <translation>Min. punktów</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="267"/>
@@ -2463,12 +2463,12 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="576"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="189"/>
         <source>No data</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak danych</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="485"/>
         <source>Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statystyki</translation>
     </message>
     <message>
         <source>Power:</source>
@@ -2561,7 +2561,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="130"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="297"/>
         <source>&amp;Creation Options</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opcje generowania</translation>
     </message>
     <message>
         <source>&amp;Creation Options:</source>
@@ -2575,7 +2575,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="96"/>
         <source>How &amp;far from black (or white)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Margines czarnego (lub białego)</translation>
     </message>
     <message>
         <source>How &amp;far from black (or white):</source>
@@ -2673,7 +2673,7 @@ z możliwością zdefiniowania jakości.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="186"/>
         <source>JPEG Quality (1-100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Jakość JPEG (1-100)</translation>
     </message>
     <message>
         <source>JPEG Quality (1-100):</source>
@@ -2701,12 +2701,12 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
         <source>&amp;Output file for polygons (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Plik docelowy dla poligonów</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
         <source>&amp;Field name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nazwa pola</translation>
     </message>
     <message>
         <source>&amp;Output file for polygons (shapefile):</source>
@@ -2734,7 +2734,7 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="80"/>
         <source>Desired SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Docelowy układ współrzędnych</translation>
     </message>
     <message>
         <source>Desired SRS:</source>
@@ -2770,12 +2770,12 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
         <source>&amp;Values</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wartości</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
         <source>&amp;Dist units</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Jednostki odległości</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
@@ -2790,17 +2790,17 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="145"/>
         <source>&amp;Max dist</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Max. odległość</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="159"/>
         <source>&amp;No data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Brak danych</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
         <source>&amp;Fixed buf val</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stała wartość bufora</translation>
     </message>
     <message>
         <source>&amp;Max dist:</source>
@@ -2822,17 +2822,17 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
         <source>&amp;Input file (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik źró&amp;dłowy (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="65"/>
         <source>&amp;Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole &amp;atrybutu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="85"/>
         <source>&amp;Output file for rasterized vectors (raster, must exists)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Docelowy plik rastrowy (istniejący)</translation>
     </message>
     <message>
         <source>&amp;Input file (shapefile):</source>
@@ -2854,12 +2854,12 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="96"/>
         <source>&amp;Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Próg</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="110"/>
         <source>&amp;Pixel connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączonych &amp;komórek</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="118"/>
@@ -2929,23 +2929,23 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
         <source>&amp;Input Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa &amp;wejściowa</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="120"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
         <source>&amp;Target SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
         <source>Outsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeskalowanie</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozciągnij</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="214"/>
@@ -2972,12 +2972,12 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="235"/>
         <source>Srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Srcwin</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="252"/>
         <source>Prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Prjwin</translation>
     </message>
     <message>
         <source>Srcwin:</source>
@@ -3063,17 +3063,17 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Ź&amp;ródłowy układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
         <source>&amp;Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metoda &amp;resamplingu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="205"/>
         <source>&amp;Memory used for caching</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj &amp;pamięci jako cache</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="227"/>
@@ -7788,7 +7788,7 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="874"/>
         <source>Snapping Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje przyciągania...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="876"/>
@@ -7899,32 +7899,32 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1237"/>
         <source>Move Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesuwanie etykiet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1238"/>
         <source>Move labels interactively</source>
-        <translation type="unfinished"></translation>
+        <translation>Interaktywne przesuwanie etykiet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1241"/>
         <source>Rotate Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Obracanie etykiet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1242"/>
         <source>Rotate labels interactively</source>
-        <translation type="unfinished"></translation>
+        <translation>Interaktywne obracanie etykiet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1245"/>
         <source>Change label</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie etykietami</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1246"/>
         <source>Change label properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmiana ustawień etykiet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1249"/>
@@ -7939,12 +7939,12 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1630"/>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bazy danych</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1870"/>
         <source>Label</source>
-        <translation type="unfinished">Etykieta</translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2404"/>
@@ -8144,7 +8144,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2673"/>
         <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
-        <translation type="unfinished"></translation>
+        <translation>W nowych stylach możliwość definiowania rozmiaru i kąta obrotu opartych na danych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2674"/>
@@ -8234,7 +8234,7 @@ Ta wersja QGIS została skompilowana ze wsparciem QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4408"/>
         <source>Merged feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączone atrybuty obiektu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4873"/>
@@ -8356,7 +8356,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1635"/>
         <source>&amp;Raster</source>
-        <translation type="unfinished">&amp;Raster</translation>
+        <translation>&amp;Raster</translation>
     </message>
 </context>
 <context>
@@ -8380,7 +8380,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <location filename="../src/app/qgisappinterface.cpp" line="399"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono atrybuty</translation>
     </message>
 </context>
 <context>
@@ -9074,7 +9074,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="794"/>
         <source>Geometryless feature added</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano obiekt bez geometrii</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="14"/>
@@ -10807,7 +10807,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="184"/>
         <source>Draw map canvas items</source>
-        <translation type="unfinished">Rysuj obiekty okna mapy</translation>
+        <translation>Rysuj obiekty okna mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="216"/>
@@ -18358,17 +18358,17 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="252"/>
         <source>Label font</source>
-        <translation type="unfinished">Czcionka etykiety</translation>
+        <translation>Czcionka etykiety</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="265"/>
         <source>Font color</source>
-        <translation type="unfinished">Kolor czcionki</translation>
+        <translation>Kolor czcionki</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="279"/>
         <source>Buffer color</source>
-        <translation type="unfinished">Kolor</translation>
+        <translation>Kolor bufora</translation>
     </message>
 </context>
 <context>
@@ -19510,7 +19510,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptoolchangelabelproperties.cpp" line="61"/>
         <source>Label properties changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia etykiet zostaly zmienione</translation>
     </message>
 </context>
 <context>
@@ -19667,7 +19667,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="128"/>
         <source>Label moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta została przesunięta</translation>
     </message>
 </context>
 <context>
@@ -19741,7 +19741,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="144"/>
         <source>Label rotated</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta została obrócona</translation>
     </message>
 </context>
 <context>
@@ -21127,7 +21127,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="70"/>
         <source>Show only editable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż tylko edytowalne</translation>
     </message>
 </context>
 <context>
@@ -21497,12 +21497,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="231"/>
         <source>Create raster icons in legend</source>
-        <translation>Pokazuj miniaturki rastrów w legendzie</translation>
+        <translation>&amp;Pokazuj miniaturki rastrów w legendzie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="238"/>
         <source>Hide splash screen at startup</source>
-        <translation>Nie pokazuj ekranu powitalnego przy starcie</translation>
+        <translation>Nie pokazuj &amp;ekranu powitalnego przy starcie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="375"/>
@@ -21627,12 +21627,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="77"/>
         <source>Prompt to save project changes when required</source>
-        <translation>Informuj o konieczności zapisu gdy projekt ulegnie zmianie</translation>
+        <translation>Informuj o konieczności &amp;zapisu gdy projekt ulegnie zmianie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="84"/>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
-        <translation>Ostrzegaj przy otwieraniu projektów zapisanych w starszych wersjach QGIS</translation>
+        <translation>Ostrzegaj przy otwieraniu projektów zapisanych w &amp;starszych wersjach QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="94"/>
@@ -21656,32 +21656,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="183"/>
         <source>Icon theme</source>
-        <translation>Motyw ikon</translation>
+        <translation>&amp;Motyw ikon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="217"/>
         <source>Capitalise layer names in legend</source>
-        <translation>Nazwy warstw w legendzie dużymi literami</translation>
+        <translation>&amp;Nazwy warstw w legendzie dużymi literami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="245"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation>Otwórz wyniki identyfikacji w oknie dokowalnym (wymaga restartu QGISa)</translation>
+        <translation>Otwórz wyniki &amp;identyfikacji w oknie dokowalnym (wymaga restartu QGIS-a)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="266"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation>Uprość wybór i dodawanie warstw PostGIS</translation>
+        <translation>Uprość wybór i dodawanie warstw &amp;PostGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="273"/>
         <source>Add new layers to selected group</source>
-        <translation>Nowe warstwy dodawaj do wybranej grupy</translation>
+        <translation>Nowe warstwy dodawaj do wybranej &amp;grupy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="288"/>
         <source>Attribute table behaviour</source>
-        <translation>Właściwości tabeli atrybutów</translation>
+        <translation>Właściwości tabeli &amp;atrybutów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="355"/>
@@ -21736,22 +21736,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="169"/>
         <source>Application</source>
-        <translation type="unfinished">Program</translation>
+        <translation>Program</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="252"/>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz opcje przyciągania w oknie dokowalnym (wymaga re&amp;startu QGIS-a)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="259"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz &amp;tabelę atrybutówi w oknie dokowalnym (wymaga restartu QGIS-a)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="334"/>
         <source>Rendering</source>
-        <translation type="unfinished">Renderowanie</translation>
+        <translation>Renderowanie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="440"/>
@@ -21791,7 +21791,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="785"/>
         <source>Overlays</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nakładki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="812"/>
@@ -21801,7 +21801,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1145"/>
         <source>Reuse last entered attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj ostatniej wprowadzonej wartości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1377"/>
@@ -23159,7 +23159,7 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="243"/>
         <source>Upgrade all</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj wszystkie</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="275"/>
@@ -25665,7 +25665,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="45"/>
         <source>Style</source>
-        <translation type="unfinished">Styl</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1434"/>
@@ -27211,7 +27211,7 @@ Komunikat błędu:%2</translation>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="56"/>
         <source>Snapping Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje przyciągania</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="153"/>
@@ -28429,7 +28429,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="273"/>
         <source>Transparency %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>Przezroczystość %1%</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
@@ -28446,7 +28446,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="50"/>
         <source>Change...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="63"/>
@@ -28501,17 +28501,17 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="282"/>
         <source>Save as style</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz jako styl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="300"/>
         <source>Saved styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisane style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="363"/>
         <source>Symbol Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa symbolu</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -28767,12 +28767,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="22"/>
         <source>Transformation type:</source>
-        <translation type="unfinished">Rodzaj transformacji</translation>
+        <translation>Rodzaj transformacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="39"/>
         <source>Resampling method:</source>
-        <translation type="unfinished">Metoda resamplingu</translation>
+        <translation>Metoda resamplingu</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="53"/>
@@ -28797,7 +28797,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="81"/>
         <source>Compression:</source>
-        <translation>Kompresja:</translation>
+        <translation>Kompresja</translation>
     </message>
     <message>
         <source>NONE</source>
@@ -28818,7 +28818,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="101"/>
         <source>Output raster:</source>
-        <translation type="unfinished">Raster wynikowy</translation>
+        <translation>Raster wynikowy</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="113"/>
@@ -28831,12 +28831,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
         <source>Target SRS:</source>
-        <translation type="unfinished">Układ współrzędnych</translation>
+        <translation>Układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
         <source>Generate pdf report:</source>
-        <translation type="unfinished">Utwórz raport w pdf</translation>
+        <translation>Utwórz raport w pdf</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="164"/>
@@ -29525,12 +29525,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="166"/>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="167"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="172"/>
@@ -29540,7 +29540,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="173"/>
         <source>Alias</source>
-        <translation type="unfinished">Alias</translation>
+        <translation>Alias</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="296"/>
@@ -29744,12 +29744,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="83"/>
         <source>Style</source>
-        <translation type="unfinished">Styl</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="238"/>
         <source>Fields</source>
-        <translation type="unfinished">Pola</translation>
+        <translation>Pola</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="457"/>
@@ -29907,7 +29907,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="142"/>
         <source>Skip attribute creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomiń tworzenie pól</translation>
     </message>
 </context>
 <context>
@@ -31298,35 +31298,35 @@ Tried URL: %1</source>
     <name>ValidateDialog</name>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Sprawdź poprawność geometrii</translation>
+        <translation>Sprawdź poprawność geometrii</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Błędy geometrii</translation>
+        <translation>Błędy geometrii</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Łącznie znalezionych błędów</translation>
+        <translation>Łącznie znalezionych błędów</translation>
     </message>
     <message>
         <source>Error!</source>
-        <translation type="unfinished">Błąd!</translation>
+        <translation>Błąd!</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Podaj wejściową warstwę wektorową</translation>
+        <translation>Podaj wejściową warstwę wektorową</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Podaj pole wejściowe</translation>
+        <translation>Podaj pole wejściowe</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Anuluj</translation>
+        <translation>Anuluj</translation>
     </message>
     <message>
         <source>Feature</source>
-        <translation type="unfinished">Obiekt</translation>
+        <translation>Obiekt</translation>
     </message>
     <message>
         <source>Error(s)</source>
@@ -32534,7 +32534,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Vect&amp;or</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wektor</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -34082,7 +34082,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Import text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Import pliku tekstowego</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
