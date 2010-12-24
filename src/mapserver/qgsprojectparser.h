@@ -85,6 +85,14 @@ class QgsProjectParser: public QgsConfigParser
     /**Return project title*/
     QString projectTitle() const;
 
+    const QDomDocument* xmlDoc() const { return mXMLDoc; }
+
+    /**Creates a composition from the project file (probably delegated to the fallback parser)*/
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* > labelList ) const;
+
+    /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
+    void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+
   private:
     /**Content of project file*/
     QDomDocument* mXMLDoc;
@@ -118,6 +126,9 @@ class QgsProjectParser: public QgsConfigParser
                     const QStringList &nonIdentifiableLayers,
                     const QgsRectangle &mapExtent,
                     const QgsCoordinateReferenceSystem &mapCRS ) const;
+
+    /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
+    QDomElement composerByName( const QString& composerName ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

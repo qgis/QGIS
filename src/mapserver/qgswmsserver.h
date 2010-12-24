@@ -60,6 +60,11 @@ class QgsWMSServer
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
 
+    /**Returns printed page as binary
+      @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
+      @return printed page as binary or 0 in case of error*/
+    QByteArray* getPrint( QString& formatString );
+
     /**Creates an xml document that describes the result of the getFeatureInfo request.
        @return 0 in case of success*/
     int getFeatureInfo( QDomDocument& result );
@@ -70,6 +75,15 @@ class QgsWMSServer
   private:
     /**Don't use the default constructor*/
     QgsWMSServer();
+
+    /**Initializes WMS layers and configures mMapRendering.
+      @param layersList out: list with WMS layer names
+      @param stylesList out: list with WMS style names
+      @param layerIdList out: list with QGIS layer ids
+      @param outputFormat out: name of requested output format
+      @return image configured together with mMapRenderer (or 0 in case of error). The calling function takes ownership of the image*/
+    QImage* initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList, QString& outputFormat );
+
     /**Creates a QImage from the HEIGHT and WIDTH parameters
      @param width image width (or -1 if width should be taken from WIDTH wms parameter)
      @param height image height (or -1 if height should be taken from HEIGHT wms parameter)

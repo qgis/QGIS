@@ -40,6 +40,7 @@ class QgsRequestHandler
     virtual void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const = 0;
     virtual void sendServiceException( const QgsMapServiceException& ex ) const = 0;
     virtual void sendGetStyleResponse( const QDomDocument& doc ) const = 0;
+    virtual void sendGetPrintResponse( QByteArray* ba, const QString& formatString ) const = 0;
   protected:
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/
     QString mFormat;

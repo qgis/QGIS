@@ -382,6 +382,28 @@ int main( int argc, char * argv[] )
       continue;
 
     }
+    else if ( requestIt->second == "GetPrint" )
+    {
+      QByteArray* printOutput = 0;
+      QString formatString;
+      try
+      {
+        printOutput = theServer->getPrint( formatString );
+      }
+      catch ( QgsMapServiceException& ex )
+      {
+        theRequestHandler->sendServiceException( ex );
+      }
+
+      if ( printOutput )
+      {
+        theRequestHandler->sendGetPrintResponse( printOutput, formatString );
+      }
+      delete printOutput;
+      delete theRequestHandler;
+      delete theServer;
+      continue;
+    }
     else//unknown request
     {
       QgsMapServiceException e( "OperationNotSupported", "Operation " + requestIt->second + " not supported" );

@@ -107,10 +107,6 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
       {
         formatString = "PNG";
       }
-      else
-      {
-        throw QgsMapServiceException( "InvalidFormat", "Invalid format, only jpg and png are supported" );
-      }
       mFormat = formatString;
     }
   }
@@ -300,4 +296,9 @@ void QgsGetRequestHandler::sendServiceException( const QgsMapServiceException& e
 
   QByteArray ba = exceptionDoc.toByteArray();
   sendHttpResponse( &ba, "text/xml" );
+}
+
+void QgsGetRequestHandler::sendGetPrintResponse( QByteArray* ba, const QString& formatString ) const
+{
+  sendHttpResponse( ba, formatString );
 }

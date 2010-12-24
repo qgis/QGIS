@@ -68,6 +68,12 @@ class QgsSLDParser: public QgsConfigParser
 
     virtual void setParameterMap( const std::map<QString, QString>& parameterMap ) { mParameterMap = parameterMap; }
 
+    /**Creates a composition from the project file (delegated to the fallback parser)*/
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* > labelList ) const;
+
+    /**Adds print capabilities to xml document. Delegated to fallback parser*/
+    void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+
   private:
     /**Don't use the default constructor*/
     QgsSLDParser();

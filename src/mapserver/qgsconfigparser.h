@@ -24,6 +24,9 @@
 #include <QList>
 #include <QSet>
 
+class QgsComposition;
+class QgsComposerLabel;
+class QgsComposerMap;
 class QDomElement;
 
 /**Interface class for configuration parsing, e.g. SLD configuration or QGIS project file*/
@@ -56,6 +59,7 @@ class QgsConfigParser
 
     /**Sets fallback parser (does not take ownership)*/
     void setFallbackParser( QgsConfigParser* p );
+    const QgsConfigParser* fallbackParser() { return mFallbackParser; }
 
     void setScaleDenominator( double denom ) {mScaleDenominator = denom;}
 
@@ -87,6 +91,15 @@ class QgsConfigParser
 
     /**Returns information about vector attributes with hidden edit type. Key is layer id, value is a set containing the names of the hidden attributes*/
     virtual QMap< QString, QSet<QString> > hiddenAttributes() const { return QMap< QString, QSet<QString> >(); }
+
+    /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
+    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
+
+    /**Creates a composition from the project file (probably delegated to the fallback parser)*/
+    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* > labelList ) const = 0;
+
+    /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
+    virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/

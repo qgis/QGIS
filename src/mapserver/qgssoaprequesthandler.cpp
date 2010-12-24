@@ -469,7 +469,10 @@ void QgsSOAPRequestHandler::sendGetStyleResponse( const QDomDocument& infoDoc ) 
   sendHttpResponse( &ba, "text/xml" );
 }
 
-
+void QgsSOAPRequestHandler::sendGetPrintResponse( QByteArray* ba, const QString& formatString ) const
+{
+  //soon...
+}
 
 void QgsSOAPRequestHandler::sendServiceException( const QgsMapServiceException& ex ) const
 {
