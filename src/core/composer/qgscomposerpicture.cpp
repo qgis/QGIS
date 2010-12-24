@@ -28,15 +28,16 @@
 
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QgsComposerItem( composition ), mMode( Unknown ), \
-    mSvgCacheUpToDate( false ), mCachedDpi( 0 ), mCachedRotation( 0 ), mCachedViewScaleFactor( -1 ), mRotationMap( 0 )
+    mRotationMap( 0 )
 {
   mPictureWidth = rect().width();
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mCachedRotation( 0 ), mCachedViewScaleFactor( -1 ), mRotationMap( 0 )
+QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mRotationMap( 0 )
 {
   mPictureHeight = rect().height();
 }
+
 
 QgsComposerPicture::~QgsComposerPicture()
 {
@@ -53,12 +54,6 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   drawBackground( painter );
 
   int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
-  double viewScaleFactor = horizontalViewScaleFactor();
-
-  if ( newDpi != mCachedDpi || mCachedRotation != mRotation || mCachedViewScaleFactor != viewScaleFactor )
-  {
-    mSvgCacheUpToDate = false;
-  }
 
   if ( mMode != Unknown )
   {
@@ -79,34 +74,22 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     double boundImageWidth = boundRect.width();
     double boundImageHeight = boundRect.height();
 
-    if ( mMode == SVG )
-    {
-      if ( !mSvgCacheUpToDate )
-      {
-        //make nicer preview
-        if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
-        {
-          boundImageWidth *= qMin( viewScaleFactor, 10.0 );
-          boundImageHeight *= qMin( viewScaleFactor, 10.0 );
-        }
-        mImage = QImage( boundImageWidth, boundImageHeight, QImage::Format_ARGB32 );
-        updateImageFromSvg();
-      }
-    }
-
     painter->save();
     painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
     painter->rotate( mRotation );
     painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
 
-    painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+    if ( mMode == SVG )
+    {
+      mSVG.render( painter, QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ) );
+    }
+    else if ( mMode == RASTER )
+    {
+      painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+    }
 
     painter->restore();
   }
-
-  mCachedDpi = newDpi;
-  mCachedRotation = mRotation;
-  mCachedViewScaleFactor = viewScaleFactor;
 
   //frame and selection boxes
   drawFrame( painter );
@@ -129,14 +112,13 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
   {
     //try to open svg
-    QSvgRenderer validTestRenderer( mSourceFile.fileName() );
-    if ( validTestRenderer.isValid() )
+    mSVG.load( mSourceFile.fileName() );
+    if ( mSVG.isValid() )
     {
       mMode = SVG;
-      QRect viewBox = validTestRenderer.viewBox(); //take width/height ratio from view box instead of default size
+      QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
       mDefaultSvgSize.setWidth( viewBox.width() );
       mDefaultSvgSize.setHeight( viewBox.height() );
-      mSvgCacheUpToDate = false;
     }
     else
     {
@@ -217,21 +199,8 @@ QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeig
 }
 #endif //0
 
-void QgsComposerPicture::updateImageFromSvg()
-{
-  mImage.fill( 0 );
-  QPainter p( &mImage );
-  p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing, true );
-  QSvgRenderer theRenderer( mSourceFile.fileName() );
-  theRenderer.render( &p );
-  mSvgCacheUpToDate = true;
-}
-
-
-
 void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 {
-  mSvgCacheUpToDate = false;
   QgsComposerItem::setSceneRect( rectangle );
 
   //consider to change size of the shape if the rectangle changes width and/or height
@@ -333,9 +302,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   }
 
 
-  mSvgCacheUpToDate = false;
   mDefaultSvgSize = QSize( 0, 0 );
-  mCachedDpi = 0;
 
   QString fileName = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
   setPictureFile( fileName );
