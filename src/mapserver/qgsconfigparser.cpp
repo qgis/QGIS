@@ -374,5 +374,5 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
 
   //replace composer label text
 
-  return c; //soon...
+  return c;
 }

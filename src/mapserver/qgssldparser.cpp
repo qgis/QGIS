@@ -520,7 +520,7 @@ bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleEle
   r->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
 
   //set pseudo color mode
-  return true; //soon
+  return true;
 }
 
 // ---------------labelSettingsFromUserStyle-----------------------
