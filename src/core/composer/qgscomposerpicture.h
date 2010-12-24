@@ -20,6 +20,7 @@
 #include "qgscomposeritem.h"
 #include <QFile>
 #include <QImage>
+#include <QSvgRenderer>
 
 /** \ingroup MapComposer
  * A composer class that displays svg files or raster format (jpg, png, ...)
@@ -84,18 +85,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Calculates bounding rect for image such that aspect ratio is correct*/
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
 
-    /**Updates content of mImage using svg generator*/
-    void updateImageFromSvg();
-
 
     QImage mImage;
+    QSvgRenderer mSVG;
     QFile mSourceFile;
     Mode mMode;
-    /**False if image needs to be rendered from svg*/
-    bool mSvgCacheUpToDate;
-    int mCachedDpi; //store dpis for which the svg cache is valid
-    double mCachedRotation; //store last rotation value to generate new pixmap from svg on change
-    double mCachedViewScaleFactor;
 
     QSize mDefaultSvgSize;
     /**Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
