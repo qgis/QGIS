@@ -79,6 +79,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlNamePair );
   if ( it == mEntries.end() )
   {
+    QgsMSDebugMsg( "Layer not found in cache" )
     return 0;
   }
   else
@@ -92,6 +93,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
       vl->removeOverlay( "diagram" );
     }
 #endif //DIAGRAMSERVER
+    QgsMSDebugMsg( "Layer found in cache" )
     return it->layerPointer;
   }
 }

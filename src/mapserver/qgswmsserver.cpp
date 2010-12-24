@@ -45,6 +45,12 @@
 #include <QTextStream>
 #include <QDir>
 
+//for printing
+#include "qgscomposition.h"
+#include <QBuffer>
+#include <QPrinter>
+#include <QSvgGenerator>
+
 QgsWMSServer::QgsWMSServer( std::map<QString, QString> parameters, QgsMapRenderer* renderer )
     : mParameterMap( parameters )
     , mConfigParser( 0 )
@@ -208,18 +214,27 @@ QDomDocument QgsWMSServer::getCapabilities()
   exceptionElement.appendChild( exFormatElement );
   capabilityElement.appendChild( exceptionElement );
 
+  //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
+  if ( mConfigParser )
+  {
+    mConfigParser->printCapabilities( capabilityElement, doc );
+  }
+
   //add the xml content for the individual layers/styles
   QgsMSDebugMsg( "calling layersAndStylesCapabilities" )
-  mConfigParser->layersAndStylesCapabilities( capabilityElement, doc );
+  if ( mConfigParser )
+  {
+    mConfigParser->layersAndStylesCapabilities( capabilityElement, doc );
+  }
   QgsMSDebugMsg( "layersAndStylesCapabilities returned" )
 
   //for debugging: save the document to disk
-  QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
+  /*QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
   if ( capabilitiesFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream capabilitiesStream( &capabilitiesFile );
     doc.save( capabilitiesStream, 4 );
-  }
+  }*/
   return doc;
 }
 
@@ -340,81 +355,104 @@ QDomDocument QgsWMSServer::getStyle()
   return mConfigParser->getStyle( styleName, layerName );
 }
 
-QImage* QgsWMSServer::getMap()
+QByteArray* QgsWMSServer::getPrint( QString& formatString )
 {
-  QgsMSDebugMsg( "Entering" )
-  if ( !mConfigParser )
-  {
-    QgsMSDebugMsg( "Error: mSLDParser is 0" )
-    return 0;
-  }
-
-  if ( !mMapRenderer )
-  {
-    QgsMSDebugMsg( "Error: mMapRenderer is 0" )
-    return 0;
-  }
-
-  QStringList layersList, stylesList;
-  QString formatString;
-
-  if ( readLayersAndStyles( layersList, stylesList ) != 0 )
-  {
-    QgsMSDebugMsg( "error reading layers and styles" )
-    return 0;
-  }
-
-  if ( initializeSLDParser( layersList, stylesList ) != 0 )
-  {
-    return 0;
-  }
-
-  //pass external GML to the SLD parser.
-  std::map<QString, QString>::const_iterator gmlIt = mParameterMap.find( "GML" );
-  if ( gmlIt != mParameterMap.end() )
-  {
-    QDomDocument* gmlDoc = new QDomDocument();
-    if ( gmlDoc->setContent( gmlIt->second, true ) )
-    {
-      QString layerName = gmlDoc->documentElement().attribute( "layerName" );
-      QgsMSDebugMsg( "Adding entry with key: " + layerName + " to external GML data" )
-      mConfigParser->addExternalGMLData( layerName, gmlDoc );
-    }
-    else
-    {
-      QgsMSDebugMsg( "Error, could not add external GML to QgsSLDParser" )
-      delete gmlDoc;
-    }
-  }
-
-  //get output format
-  std::map<QString, QString>::const_iterator outIt = mParameterMap.find( "FORMAT" );
-  if ( outIt == mParameterMap.end() )
-  {
-    QgsMSDebugMsg( "Error, no parameter FORMAT found" )
-    return 0; //output format parameter also mandatory
-  }
-
-  QImage* theImage = createImage();
+  QStringList layersList, stylesList, layerIdList;
+  QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, formatString );
   if ( !theImage )
   {
     return 0;
   }
+  delete theImage;
 
-  if ( configureMapRender( theImage ) != 0 )
+  //GetPrint request needs a template parameter
+  std::map<QString, QString>::const_iterator templateIt = mParameterMap.find( "TEMPLATE" );
+  if ( templateIt == mParameterMap.end() )
   {
     return 0;
   }
-  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
-  //find out the current scale denominater and set it to the SLD parser
-  QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2 , mMapRenderer->destinationSrs().mapUnits() );
-  QgsRectangle mapExtent = mMapRenderer->extent();
-  mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
+  QgsComposition* c = mConfigParser->createPrintComposition( templateIt->second, mMapRenderer, QMap<QString, QString>( mParameterMap ) );
+  if ( !c )
+  {
+    return 0;
+  }
 
-  //create objects for qgis rendering
-  QStringList theLayers = layerSet( layersList, stylesList, mMapRenderer->destinationSrs() );
-  mMapRenderer->setLayerSet( theLayers );
+  QByteArray* ba = 0;
+  c->setPlotStyle( QgsComposition::Print );
+
+  //SVG export without a running X-Server is a problem. See e.g. http://developer.qt.nokia.com/forums/viewthread/2038
+  if ( formatString.compare( "svg", Qt::CaseInsensitive ) == 0 )
+  {
+    c->setPlotStyle( QgsComposition::Print );
+
+    QSvgGenerator generator;
+    ba = new QByteArray();
+    QBuffer svgBuffer( ba );
+    generator.setOutputDevice( &svgBuffer );
+    int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
+    int height = ( int )( c->paperHeight() * c->printResolution() / 25.4 ); //height in pixel
+    generator.setSize( QSize( width, height ) );
+    generator.setResolution( c->printResolution() ); //because the rendering is done in mm, convert the dpi
+
+    QPainter p( &generator );
+    QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
+    QRectF targetArea( 0, 0, width, height );
+    c->render( &p, targetArea, sourceArea );
+    p.end();
+  }
+  else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
+  {
+    int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
+    int height = ( int )( c->paperHeight() * c->printResolution() / 25.4 ); //height in pixel
+    QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+    image.setDotsPerMeterX( c->printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterY( c->printResolution() / 25.4 * 1000 );
+    image.fill( 0 );
+    QPainter p( &image );
+    QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
+    QRectF targetArea( 0, 0, width, height );
+    c->render( &p, targetArea, sourceArea );
+    p.end();
+    ba = new QByteArray();
+    QBuffer buffer( ba );
+    buffer.open( QIODevice::WriteOnly );
+    image.save( &buffer, "png", -1 );
+  }
+  else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
+  {
+    QTemporaryFile tempFile;
+    if ( !tempFile.open() )
+    {
+      delete c;
+      return 0;
+    }
+
+    QPrinter printer;
+    printer.setOutputFormat( QPrinter::PdfFormat );
+    printer.setOutputFileName( tempFile.fileName() );
+    printer.setPaperSize( QSizeF( c->paperWidth(), c->paperHeight() ), QPrinter::Millimeter );
+    printer.setResolution( c->printResolution() );
+
+    QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
+    QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
+    QPainter p( &printer );
+    c->render( &p, paperRectPixel, paperRectMM );
+    p.end();
+
+    ba = new QByteArray();
+    *ba = tempFile.readAll();
+  }
+
+  delete c;
+  return ba;
+}
+
+QImage* QgsWMSServer::getMap()
+{
+  QStringList layersList, stylesList, layerIdList;
+  QString outputFormat;
+  QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, outputFormat );
 
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
@@ -610,6 +648,82 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
   return 0;
 }
 
+QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList, QString& outputFormat )
+{
+  if ( !mConfigParser )
+  {
+    QgsMSDebugMsg( "Error: mSLDParser is 0" )
+    return 0;
+  }
+
+  if ( !mMapRenderer )
+  {
+    QgsMSDebugMsg( "Error: mMapRenderer is 0" )
+    return 0;
+  }
+
+  if ( readLayersAndStyles( layersList, stylesList ) != 0 )
+  {
+    QgsMSDebugMsg( "error reading layers and styles" )
+    return 0;
+  }
+
+  if ( initializeSLDParser( layersList, stylesList ) != 0 )
+  {
+    return 0;
+  }
+
+  //pass external GML to the SLD parser.
+  std::map<QString, QString>::const_iterator gmlIt = mParameterMap.find( "GML" );
+  if ( gmlIt != mParameterMap.end() )
+  {
+    QDomDocument* gmlDoc = new QDomDocument();
+    if ( gmlDoc->setContent( gmlIt->second, true ) )
+    {
+      QString layerName = gmlDoc->documentElement().attribute( "layerName" );
+      QgsMSDebugMsg( "Adding entry with key: " + layerName + " to external GML data" )
+      mConfigParser->addExternalGMLData( layerName, gmlDoc );
+    }
+    else
+    {
+      QgsMSDebugMsg( "Error, could not add external GML to QgsSLDParser" )
+      delete gmlDoc;
+    }
+  }
+
+  //get output format
+  std::map<QString, QString>::const_iterator outIt = mParameterMap.find( "FORMAT" );
+  if ( outIt == mParameterMap.end() )
+  {
+    QgsMSDebugMsg( "Error, no parameter FORMAT found" )
+    return 0; //output format parameter also mandatory
+  }
+  outputFormat = outIt->second;
+
+  QImage* theImage = createImage();
+  if ( !theImage )
+  {
+    return 0;
+  }
+
+  if ( configureMapRender( theImage ) != 0 )
+  {
+    delete theImage;
+    return 0;
+  }
+  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
+
+  //find out the current scale denominater and set it to the SLD parser
+  QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2 , mMapRenderer->destinationSrs().mapUnits() );
+  QgsRectangle mapExtent = mMapRenderer->extent();
+  mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
+
+  //create objects for qgis rendering
+  QStringList theLayers = layerSet( layersList, stylesList, mMapRenderer->destinationSrs() );
+  mMapRenderer->setLayerSet( theLayers );
+  return theImage;
+}
+
 QImage* QgsWMSServer::createImage( int width, int height ) const
 {
   bool conversionSuccess;
@@ -619,12 +733,12 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
     std::map<QString, QString>::const_iterator wit = mParameterMap.find( "WIDTH" );
     if ( wit == mParameterMap.end() )
     {
-      return 0; //width parameter is mandatory
+      width = 0; //width parameter is mandatory
     }
     width = wit->second.toInt( &conversionSuccess );
     if ( !conversionSuccess )
     {
-      return 0;
+      width = 0;
     }
   }
 
@@ -633,12 +747,12 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
     std::map<QString, QString>::const_iterator hit = mParameterMap.find( "HEIGHT" );
     if ( hit == mParameterMap.end() )
     {
-      return 0; //height parameter is mandatory
+      height = 0; //height parameter is mandatory
     }
     height = hit->second.toInt( &conversionSuccess );
     if ( !conversionSuccess )
     {
-      return 0;
+      height = 0;
     }
   }
 
@@ -718,23 +832,27 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   std::map<QString, QString>::const_iterator bbIt = mParameterMap.find( "BBOX" );
   if ( bbIt == mParameterMap.end() )
   {
-    return 2;
+    //GetPrint request is allowed to have missing BBOX parameter
+    minx = 0; miny = 0; maxx = 0; maxy = 0;
   }
-  bool bboxOk = true;
-  QString bbString = bbIt->second;
-  minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {bboxOk = false;}
-  miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {bboxOk = false;}
-  maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {bboxOk = false;}
-  maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {bboxOk = false;}
-
-  if ( !bboxOk )
+  else
   {
-    //throw a service exception
-    throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
+    bool bboxOk = true;
+    QString bbString = bbIt->second;
+    minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
+    if ( !conversionSuccess ) {bboxOk = false;}
+    miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
+    if ( !conversionSuccess ) {bboxOk = false;}
+    maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
+    if ( !conversionSuccess ) {bboxOk = false;}
+    maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
+    if ( !conversionSuccess ) {bboxOk = false;}
+
+    if ( !bboxOk )
+    {
+      //throw a service exception
+      throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
+    }
   }
 
   QGis::UnitType mapUnits = QGis::Degrees;

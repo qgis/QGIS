@@ -22,6 +22,16 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
+#include "qgscomposition.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerattributetable.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposermap.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
+
 QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc ): QgsConfigParser(), mXMLDoc( xmlDoc )
 {
   mOutputUnits = QgsMapRenderer::Millimeters;
@@ -812,5 +822,163 @@ QString QgsProjectParser::layerIdFromLegendLayer( const QDomElement& legendLayer
   }
 
   return legendLayerFileList.at( 0 ).toElement().attribute( "layerid" );
+}
+
+QgsComposition* QgsProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* > labelList ) const
+{
+  //Create composition from xml
+  QDomElement composerElem = composerByName( composerTemplate );
+  if ( composerElem.isNull() )
+  {
+    return 0;
+  }
+
+  QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    return 0;
+  }
+
+  QgsComposition* composition = new QgsComposition( mapRenderer ); //set resolution, paper size from composer element attributes
+  if ( !composition->readXML( compositionElem, *mXMLDoc ) )
+  {
+    delete composition;
+    return 0;
+  }
+
+  QList<QDomElement> scaleBarElemList;
+
+  //go through all the item elements and add them to the composition (and to the lists)
+  QDomNodeList itemNodes = composerElem.childNodes();
+  for ( int i = 0; i < itemNodes.size(); ++i )
+  {
+    QDomElement currentElem = itemNodes.at( i ).toElement();
+    QString elemName = currentElem.tagName();
+    if ( elemName == "ComposerMap" )
+    {
+      QgsComposerMap* map = new QgsComposerMap( composition );
+      map->readXML( currentElem, *mXMLDoc );
+      composition->addItem( map );
+      mapList.push_back( map );
+    }
+    else if ( elemName == "ComposerLabel" )
+    {
+      QgsComposerLabel* label = new QgsComposerLabel( composition );
+      label->readXML( currentElem, *mXMLDoc );
+      composition->addItem( label );
+      labelList.push_back( label );
+    }
+    else if ( elemName == "ComposerLegend" )
+    {
+      QgsComposerLegend* legend = new QgsComposerLegend( composition );
+      legend->readXML( currentElem, *mXMLDoc );
+      composition->addItem( legend );
+    }
+    else if ( elemName == "ComposerPicture" )
+    {
+      QgsComposerPicture* picture = new QgsComposerPicture( composition );
+      picture->readXML( currentElem, *mXMLDoc );
+      composition->addItem( picture );
+    }
+    else if ( elemName == "ComposerScaleBar" )
+    {
+      //scalebars need to be loaded after the composer maps
+      scaleBarElemList.push_back( currentElem );
+    }
+    else if ( elemName == "ComposerShape" )
+    {
+      QgsComposerShape* shape = new QgsComposerShape( composition );
+      shape->readXML( currentElem, *mXMLDoc );
+      composition->addItem( shape );
+    }
+    else if ( elemName == "ComposerArrow" )
+    {
+      QgsComposerArrow* arrow = new QgsComposerArrow( composition );
+      arrow->readXML( currentElem, *mXMLDoc );
+      composition->addItem( arrow );
+    }
+    else if ( elemName == "ComposerAttributeTable" )
+    {
+      QgsComposerAttributeTable* table = new QgsComposerAttributeTable( composition );
+      table->readXML( currentElem, *mXMLDoc );
+      composition->addItem( table );
+    }
+  }
+
+  //scalebars need to be loaded after the composer maps to receive the correct size
+  QList<QDomElement>::const_iterator scaleBarIt = scaleBarElemList.constBegin();
+  for ( ; scaleBarIt != scaleBarElemList.constEnd(); ++scaleBarIt )
+  {
+    QgsComposerScaleBar* bar = new QgsComposerScaleBar( composition );
+    bar->readXML( *scaleBarIt, *mXMLDoc );
+    composition->addItem( bar );
+  }
+
+  return composition;
+}
+
+void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
+  for ( int i = 0; i < composerNodeList.size(); ++i )
+  {
+    QDomElement composerTemplateElem = doc.createElement( "ComposerTemplate" );
+    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    if ( currentComposerElem.isNull() )
+    {
+      continue;
+    }
+
+    composerTemplateElem.setAttribute( "name", currentComposerElem.attribute( "title" ) );
+    composerTemplateElem.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
+    composerTemplateElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+    composerTemplateElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
+
+    //add available composer maps and their size in mm
+    QDomNodeList composerMapList = currentComposerElem.elementsByTagName( "ComposerMap" );
+    for ( int j = 0; j < composerMapList.size(); ++j )
+    {
+      QDomElement cmap = composerMapList.at( j ).toElement();
+      QDomElement citem = cmap.firstChildElement( "ComposerItem" );
+      if ( citem.isNull() )
+      {
+        continue;
+      }
+
+      QDomElement composerMapElem = doc.createElement( "ComposerMap" );
+      composerMapElem.setAttribute( "name", "map" + cmap.attribute( "id" ) );
+      composerMapElem.setAttribute( "width", citem.attribute( "width" ) );
+      composerMapElem.setAttribute( "height", citem.attribute( "height" ) );
+      composerTemplateElem.appendChild( composerMapElem );
+    }
+
+    parentElement.appendChild( composerTemplateElem );
+  }
+}
+
+QDomElement QgsProjectParser::composerByName( const QString& composerName ) const
+{
+  QDomElement composerElem;
+  if ( !mXMLDoc )
+  {
+    return composerElem;
+  }
+
+  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
+  for ( int i = 0; i < composerNodeList.size(); ++i )
+  {
+    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    if ( currentComposerElem.attribute( "title" ) == composerName )
+    {
+      return currentComposerElem;
+    }
+  }
+
+  return composerElem;
 }
 
