@@ -82,7 +82,6 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
 
   def fillCoords(self):
       rect = self.getExtent()
-
       self.blockSignals(True)
       if rect != None:
         self.x1CoordEdit.setText( str(rect.xMinimum()) )
@@ -95,8 +94,7 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
         self.y1CoordEdit.clear()
         self.y2CoordEdit.clear()
       self.blockSignals(False)
-
-      self.coordsChanged()
+      self.emit( SIGNAL( "newExtentDefined()" ) )
 
 class RectangleMapTool(QgsMapToolEmitPoint):
   def __init__(self, canvas):
