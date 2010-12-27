@@ -3,7 +3,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
-from osgeo import ogr
 
 from ui_widgetGrid import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -14,11 +13,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def __init__(self, iface):
       QWidget.__init__(self)
       self.iface = iface
+      self.canvas = self.iface.mapCanvas()
       self.algorithm = ('invdist', 'average', 'nearest', 'datametrics')
       self.datametrics = ('minimum', 'maximum', 'range')
 
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_grid")
+
+      self.extentSelector.setCanvas(self.canvas)
+      #self.extentSelector.stop()
 
       # set the default QSpinBoxes value
       self.invdistPowerSpin.setValue(2.0)
@@ -40,16 +43,25 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           ([self.nearestRadius1Spin, self.nearestRadius2Spin, self.nearestAngleSpin, self.nearestNoDataSpin], SIGNAL("valueChanged(double)")),
           (self.datametricsCombo, SIGNAL("currentIndexChanged(int)")),
           ([self.datametricsRadius1Spin, self.datametricsRadius2Spin, self.datametricsAngleSpin, self.datametricsNoDataSpin], SIGNAL("valueChanged(double)")),
-          (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)"))
+          (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)")), 
+          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup)
         ]
       )
 
       self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
       self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillFieldsCombo)
+      self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChenged)
 
       # fill layers combo
       self.fillInputLayerCombo()
+
+  def onClosing(self):
+      self.extentSelector.stop()
+      BasePluginWidget.onClosing(self)
+
+  def onExtentCheckedChenged(self, enabled):
+        self.extentSelector.start() if enabled else self.extentSelector.stop()
 
   def fillInputLayerCombo(self):
       self.inputLayerCombo.clear()
@@ -98,6 +110,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       elif not self.inputLayerCombo.currentText().isEmpty():
         arguments << "-l"
         arguments << QFileInfo(self.inputLayerCombo.currentText()).baseName()
+      if self.extentGroup.isChecked():
+        rect = self.extentSelector.getExtent()
+        if rect != None:
+          arguments << "-txe"
+          arguments << str(rect.xMinimum())
+          arguments << str(rect.xMaximum())
+          arguments << "-tye"
+          arguments << str(rect.yMaximum())
+          arguments << str(rect.yMinimum())
       if self.algorithmCheck.isChecked() and self.algorithmCombo.currentIndex() >= 0:
         arguments << "-a"
         arguments << self.algorithmArguments(self.algorithmCombo.currentIndex())
@@ -109,8 +130,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       return arguments
 
   def getInputFileName(self):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[self.inputLayerCombo.currentIndex()].source()
+      #if self.inputLayerCombo.currentIndex() >= 0:
+      #  return self.layers[self.inputLayerCombo.currentIndex()].source()
       return self.inputLayerCombo.currentText()
 
   def getOutputFileName(self):
