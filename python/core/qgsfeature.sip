@@ -1,5 +1,20 @@
 
 
+// key = field index, value = field value
+typedef QMap<int, QVariant> QgsAttributeMap;
+
+// key = feature id, value = changed attributes
+typedef QMap<int, QMap<int, QVariant> > QgsChangedAttributesMap;
+
+// key = feature id, value = changed geometry
+typedef QMap<int, QgsGeometry> QgsGeometryMap;
+
+// key = field index, value = field name
+typedef QMap<int, QString> QgsFieldNameMap;
+
+typedef QList<QgsFeature> QgsFeatureList;
+
+
 class QgsFeature
 {
 %TypeHeaderCode

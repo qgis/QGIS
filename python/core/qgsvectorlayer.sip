@@ -1,3 +1,9 @@
+
+typedef QList<int> QgsAttributeList;
+typedef QSet<int> QgsFeatureIds;
+typedef QSet<int> QgsAttributeIds;
+
+
 class QgsVectorLayer : QgsMapLayer
 {
 %TypeHeaderCode
@@ -573,6 +579,16 @@ signals:
   void layerDeleted();
 
   void attributeValueChanged(int fid, int idx, const QVariant &);
+
+  /** Signals emitted after committing changes
+    \note added in v1.6 */
+  void committedAttributesDeleted( const QString& layerId, const QgsAttributeIds& deletedAttributeIds );
+  void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
+  void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
+  void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );
+  void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
+  void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
+
 
 private:                       // Private methods
 
