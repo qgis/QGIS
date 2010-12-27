@@ -629,7 +629,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     void attributeValueChanged( int fid, int idx, const QVariant & );
 
-    /** Signals emitted after committing changes */
+    /** Signals emitted after committing changes
+      \note added in v1.6 */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeIds& deletedAttributeIds );
     void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
     void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
