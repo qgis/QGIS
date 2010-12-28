@@ -180,19 +180,12 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
     QgsRasterLayer * mRasterLayer;
 
-    /** \brief If the underlying raster layer is of GDAL type (i.e. non-provider)
+    /** \brief If the underlying raster layer doesn't have a provider
 
         This variable is used to determine if various parts of the Properties UI are
         included or not
      */
-    bool mRasterLayerIsGdal;
-
-    /** \brief If the underlying raster layer is of WMS type (i.e. WMS data provider)
-
-        This variable is used to determine if various parts of the Properties UI are
-        included or not
-     */
-    bool mRasterLayerIsWms;
+    bool mRasterLayerIsInternal;
 
     /** \brief Clear current color map table and population with values from new list */
     void populateColorMapTable( const QList<QgsColorRampShader::ColorRampItem>& );
