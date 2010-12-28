@@ -71,8 +71,6 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
     double boundRectWidthMM = boundRect.width() / newDpi * 25.4;
     double boundRectHeightMM = boundRect.height() / newDpi * 25.4;
-    double boundImageWidth = boundRect.width();
-    double boundImageHeight = boundRect.height();
 
     painter->save();
     painter->translate( rect().width() / 2.0, rect().height() / 2.0 );

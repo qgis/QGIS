@@ -312,8 +312,6 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
 
 void QgsLegendModel::removeLayer( const QString& layerId )
 {
-  QStandardItem* currentLayerItem = 0;
-
   int numRootItems = rowCount();
   for ( int i = 0; i < numRootItems ; ++i )
   {
