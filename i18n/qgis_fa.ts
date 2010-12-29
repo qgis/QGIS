@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="111"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;شخصیت: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
     </message>
 </context>
 <context>
@@ -15,53 +15,53 @@
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="97"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="161"/>
         <source>Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصات دریافت</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="99"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="145"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>بر روی نقشه کلیک کنید تا مختصات نمایش و به حافظه موقت ارسال گردد.</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="102"/>
         <source>&amp;Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;مختصات دریافت</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="117"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation type="unfinished"></translation>
+        <translation>برای نمایش مختصات در صفحه بر روی CRS مورد نظر کلیک کنید</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
         <source>Coordinate in your selected CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصات به CRS انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="129"/>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصات در سامانه مرجع مختصات ترسیم نقشه</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="132"/>
         <source>Copy to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>کپی در حافظه موقت</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation type="unfinished"></translation>
+        <translation>برای ردگیری موشواره کلیک کنید. برای توقف بر روی محل ترسیم کلیک کنید</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="142"/>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation>آغاز دریافت</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="143"/>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation>برای دریافت مختصات اینجا را کلیک کن</translation>
     </message>
 </context>
 <context>
@@ -79,7 +79,7 @@
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="46"/>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>نسخه x.x-xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="102"/>
@@ -92,17 +92,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="125"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>راهنما</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="132"/>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>وب</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="139"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>بستن</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
@@ -112,24 +112,24 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه جهت ورود خط یا چندضلعی برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>دامنه تغییرات</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>مشخصه فیلد یکتا</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>مقصد خروجی فایل (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="126"/>
@@ -152,12 +152,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="61"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="119"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>جستجو</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>پردازش جغرافیایی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="28"/>
@@ -165,7 +165,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="25"/>
         <source>Input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد لایه برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="49"/>
@@ -173,32 +173,32 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="40"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>استفاده از مشخصه‌های انتخاب شده</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>برش لایه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="94"/>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>فاصله میانی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="134"/>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد فاصله میانی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="141"/>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد تلاقی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="189"/>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished"></translation>
+        <translation>نتیجه تلاقی میانی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="213"/>
@@ -206,38 +206,38 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="48"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="305"/>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>خروجی shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="262"/>
         <source>Segments to approximate</source>
-        <translation type="unfinished"></translation>
+        <translation>تقسیم بندی به تقریب</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>محل اشتراک خط ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه خطی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب فیلد منحصر به فرد</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه خطی مشترک</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد منحصر به فرد اشتراک</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
@@ -249,82 +249,82 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="161"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>خروجی shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="17"/>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>ادغام خصوصیات</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="28"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="28"/>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه برداری خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="42"/>
         <source>Target join field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد ادغام خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="54"/>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation>ادغام داده‌ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="62"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="42"/>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ادغام لایه‌ برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="79"/>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation>ادغام جدول dbf</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="114"/>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد ادغام</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="128"/>
         <source>Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>رمز گذاری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="172"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="188"/>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>جدول خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="178"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="194"/>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>فقط ردیفهای متناظر را نگهداری کن</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="188"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="204"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>نگهداری تمامی ردیفها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>تولید نقطه مرکزی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد میزان</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="69"/>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>شماره استاندارد خطا</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
@@ -334,93 +334,93 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
         <source>Merge shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>ترکیب کردن shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Select by layers in the folder</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه‌ها در شاخه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="27"/>
         <source>Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>پوشه ورودی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="69"/>
         <source>Add result to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن نتیجه در محل ترسیم نقشه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>ساخت ماتریس فاصله‌ای</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه نقطه‌ای</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه نقطه‌ای خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد منحصر به فرد خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="81"/>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع ماتریس خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="87"/>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>ماتریس فاصله‌ای خطی (N*K x 3)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="97"/>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>ماتریس فاصله‌ای استاندارد (N x T)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="104"/>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation>خلاصه ماتریس فاصله‌ای (میانگین، انحراف معیار،حد پایین، حد بالا)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="111"/>
         <source>Use only the nearest (k) target points</source>
-        <translation type="unfinished"></translation>
+        <translation>استفاده از نزدیکترین نقطه (K)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="149"/>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>خروجی ماتریس فاصله‌ای</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>شمارش نقطه‌ها در چند ضلعی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه چندضلعی برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه نقطه‌ای برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
         <source>Output count field name</source>
-        <translation type="unfinished"></translation>
+        <translation>نام فیلد خروجی شمارش</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
@@ -430,18 +430,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="17"/>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>تولید نقاط تصادفی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="32"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه مرزی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="42"/>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation>اندازه نمونه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="55"/>
@@ -473,20 +473,20 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="14"/>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>ابزار انتخاب تصادفی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="23"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد لایه برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="33"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="55"/>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب تصادفی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="42"/>
@@ -509,52 +509,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="16"/>
         <source>Projection Management Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>ابزار مدیریت تصویر</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="35"/>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب سیستم مرجع فضایی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="49"/>
         <source>Output spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>خروجی سیستم مرجع فضایی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="55"/>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>استفاده از سیستم مرجع فضایی از پیش تعریف شده</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>بدست آورردن سیستم مرجع فضایی از لایه های موجود</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن سیستم مرجع فضایی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="17"/>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>تولید نقاط منظم</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="26"/>
         <source>Area</source>
-        <translation type="unfinished"></translation>
+        <translation>منطقه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>وارد کردن مختصات‌ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="52"/>
@@ -583,17 +583,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="111"/>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>فضای شطرنجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>استفاده از این فضای نقطه‌ای</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>اعمال حاشیه تصادفی به فضای نقطه‌ای</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
@@ -603,37 +603,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="17"/>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>ساده سازی هندسی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="23"/>
         <source>Input line or polygon layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه خط یا چندضلعی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="49"/>
         <source>Simplify tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>ساده سازی دامنه تغییرات</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="76"/>
         <source>Save to new file</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیرا در فایل جدید</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="105"/>
         <source>Add result to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن نتیجه به ترسیم</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="17"/>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation>به هم پیوستن فضاها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="54"/>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>خلاصه خصوصیات</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="60"/>
@@ -648,47 +648,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="93"/>
         <source>Mean</source>
-        <translation type="unfinished"></translation>
+        <translation>میانگین</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="106"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation>حد پایین</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="116"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>حد بالا</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="126"/>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation>مجموع</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="149"/>
         <source>Median</source>
-        <translation type="unfinished"></translation>
+        <translation>میانه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="14"/>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب تصادفی از داخل زیر مجموعه ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="39"/>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب فیلد زیر مجموعه (فیلد اختصاصی)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>مجموع مسافت خط ها در چند ضلعی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="27"/>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation>نام فیلد خروجی حاصلجمع مسافت‌ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="34"/>
@@ -698,32 +698,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب لایه خطی برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
         <source>Generate Vector Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>تولید صفحه شطرنجی برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation>اندازه صفحه شطرنجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>دریافت اندازه‌ها از لایه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>دریافت اندازه‌ها از صفحه ترسیم</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="172"/>
         <source>Parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>ورودی‌ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="191"/>
@@ -733,7 +733,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="214"/>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>نسبت یک به یک</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="253"/>
@@ -743,47 +743,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="279"/>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>خروجی صفحه شطرنجی به صورت چند ضلعی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="289"/>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>خروجی صفحه شطرنجی به صورت خطی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="16"/>
         <source>Vector Split</source>
-        <translation type="unfinished"></translation>
+        <translation>تقسیم برداری</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="45"/>
         <source>Output folder</source>
-        <translation type="unfinished"></translation>
+        <translation>پوشه خروجی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="17"/>
         <source>List Unique Values</source>
-        <translation type="unfinished"></translation>
+        <translation>لیست متغییرهای منحصر به فرد</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="53"/>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد مشخص</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="67"/>
         <source>Unique values list</source>
-        <translation type="unfinished"></translation>
+        <translation>لیست متغییرهای منحصر به فرد</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="115"/>
         <source>Unique value count</source>
-        <translation type="unfinished"></translation>
+        <translation>تعداد متغییرهای منحصر به فرد</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="158"/>
         <source>Press Ctrl+C to copy results to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>برای کپی نتایج به حافظه موقت Ctrl+C را بزنید</translation>
     </message>
     <message>
         <source>
@@ -828,59 +828,63 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب تصادفی در داخل زیر مجموعه ها</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا  لایه برداری را معین کنید</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا فیلد ورودی را معین کنید</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>تعداد نقاط در چند ضلعی</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>تعداد نقاط در چند ضلعی</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا لایه چند ضلعی برداری را معین کنید</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا فایل خروجی را معین کنید</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا لایه نقطه‌ای برداری را معین کنید</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا فیلد شمارش را معین کنید</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>ساخت فایل خروجی :
+%1
+
+آیا مایلید لایه ساخته شده جدید را به لیست لایه‌ها اضافه کنید ؟</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>هشدار سیسم مرجع مختصاتی (CRS)!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="unfinished"></translation>
+        <translation>هشدار: لایه انتخابی با هیچگونه از سیسم مرجع مختصاتی منطبق نشد.
+این ممکن است باعث تنیجه غیر منتظره شود.</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد شمارش نقطه</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -888,7 +892,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا  لایه خطی را معین کنید</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
@@ -896,7 +900,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا فیلد منحصز به فردی را معین کنید</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
@@ -907,20 +911,23 @@ This may cause unexpected results.</source>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل ترسیمی نقطه ساخته شد:
+%1
+
+آیا مایلید لایه ساخته شده جدید را به لیست لایه‌ها اضافه کنید ؟</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>خطای در بارگذاری فایل ترسیمی خروجی: %1</translation>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>نقاط تصادفی</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>هیچ لایه ای معین نشده است</translation>
     </message>
     <message>
         <source>unstratified</source>
@@ -932,31 +939,31 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>density</source>
-        <translation type="unfinished"></translation>
+        <translation>چگالی</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلد</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع لایه ناشناخته ...</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>خطا در پاک کردن</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل %1 را نمی توان پاک کرد</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>لغو</translation>
     </message>
     <message>
         <source>Simplify results</source>
-        <translation type="unfinished"></translation>
+        <translation>ساده سازی نتایج</translation>
     </message>
     <message>
         <source>There were %1 vertices in original dataset which
@@ -965,19 +972,19 @@ were reduced to %2 vertices after simplification</source>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="unfinished"></translation>
+        <translation>ادغام کردن</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>خصوصیات مشترک</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا  لایه برداری مقصد را معین کنید</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا  لایه‌ی برداری اشتراکی را معین کنید</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
@@ -989,7 +996,7 @@ were reduced to %2 vertices after simplification</source>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا جدول ورودی را معین کنید</translation>
     </message>
     <message>
         <source>Join Table</source>
@@ -997,57 +1004,63 @@ were reduced to %2 vertices after simplification</source>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>جدول انتخابی وجود ندارد</translation>
     </message>
     <message>
         <source>Unable to read input table!</source>
-        <translation type="unfinished"></translation>
+        <translation>جدول انتخاب شده قابل خواندن نمی باشد!</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="unfinished"></translation>
+        <translation>نام های فیلدها اشتباه است</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>هیچ خروجی ساخته نشد.
+نامهای فیلدها از ۱۰ حرف بیشتر می‌باشد:
+
+%1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>خطا در پاک کردن فایل ترسیمی</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل %1 ترسیمی موجود را نمی توان حذف کرد</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="unfinished"></translation>
+        <translation>فیلدهای مشترک</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد خروجی در نقشه جدید</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation>تعریفهای نقشه فعلی</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفا سیستم مرجع فضایی را مشخص کنید</translation>
     </message>
     <message>
         <source>Created projected shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل ترسیمی نقشه ساخته شد:
+%1
+
+آیا مایلید لایه جدید ترسیم شود‌؟</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب خروجی سیستم مرجع مختصاتی:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
@@ -1687,27 +1700,28 @@ http://trac.faunalia.it/GdalTools-plugin</source>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>تمام شده</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>عملیات تکمیل شد.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>هشدار</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل‌های پیوستی ساخته نشدند: 
+%1</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>هشدار</translation>
     </message>
     <message>
         <source>The command is still running. 
@@ -5407,7 +5421,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1640"/>
         <source>&amp;Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;تصویر</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="271"/>
@@ -5429,12 +5443,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="395"/>
         <source>Checking database</source>
-        <translation type="unfinished"></translation>
+        <translation>بررسی پایگاه داده ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="400"/>
         <source>Reading settings</source>
-        <translation type="unfinished"></translation>
+        <translation>خواندن تنظیمات</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="403"/>
@@ -5444,7 +5458,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="408"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>ترسیم نقشه. محلی است برای نمایش لایه‌های تصویری و برداری اضافه شده به نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="453"/>
@@ -5454,106 +5468,106 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="469"/>
         <source>Checking provider plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>بررسی عرضه کننده‌های پلاگین</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="473"/>
         <source>Starting Python</source>
-        <translation type="unfinished"></translation>
+        <translation>راه انداری پایتون</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="480"/>
         <source>Restoring loaded plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>بازیابی پلاگین‌های قبلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="490"/>
         <source>Initializing file filters</source>
-        <translation type="unfinished"></translation>
+        <translation>مقدار دهی اولیه فیلترینگ فایل ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="518"/>
         <source>Restoring window state</source>
-        <translation type="unfinished"></translation>
+        <translation>بازیابی وضعیت پنجره</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="522"/>
         <source>QGIS Ready!</source>
-        <translation type="unfinished"></translation>
+        <translation>برنامه آماده است!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="670"/>
         <source>&amp;New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>پروژه &amp;جدید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="672"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>پروژه جدید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="675"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;باز کردن پروژه ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="676"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="677"/>
         <source>Open a Project</source>
-        <translation type="unfinished"></translation>
+        <translation>باز کردن یک پروژه </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="680"/>
         <source>&amp;Save Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ذخیره پروژه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="681"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="682"/>
         <source>Save Project</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره پروژه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="685"/>
         <source>Save Project &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره پروژه به &amp;نام ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="686"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="687"/>
         <source>Save Project under a new name</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره پروژه به یک نام جدید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="690"/>
         <source>Save as Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره به صورت تصویری...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="692"/>
         <source>Save map as image</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره نقشه به صورت فایل تصویری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="695"/>
@@ -5564,7 +5578,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="697"/>
@@ -5584,18 +5598,18 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="704"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>خروج</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="705"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="706"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>خروج از برنامه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="713"/>
@@ -5611,7 +5625,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="715"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>انتقال انتخاب‌های جاری به حافظه موقت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="718"/>
@@ -5627,7 +5641,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="720"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>کپی انتخاب‌های جاری به حافظه موقت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="723"/>
@@ -5643,7 +5657,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="725"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>انتقال محتوی حافظه موقت به محل انتخابی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="729"/>
@@ -5658,7 +5672,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Undo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>برگشت به عملیات قبلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="735"/>
@@ -5673,7 +5687,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="737"/>
         <source>Redo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>تکرار عملیات قبلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="741"/>
@@ -5708,7 +5722,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>Capture Point</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب یک نقطه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="760"/>
@@ -5719,12 +5733,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="761"/>
         <source>Capture Points</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب نقاط</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>Capture Line</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب خط</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="766"/>
@@ -5735,131 +5749,131 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="767"/>
         <source>Capture Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب خطوط</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="771"/>
         <source>Capture Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب چند ضلعی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="772"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="773"/>
         <source>Capture Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخای چند ضلعی‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="777"/>
         <location filename="../src/app/qgisapp.cpp" line="779"/>
         <source>Move Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>حرکت دادن موجودیت(ها)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="783"/>
         <location filename="../src/app/qgisapp.cpp" line="785"/>
         <source>Reshape Features</source>
-        <translation type="unfinished"></translation>
+        <translation>تغییر شکل موجودیت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="789"/>
         <location filename="../src/app/qgisapp.cpp" line="791"/>
         <source>Split Features</source>
-        <translation type="unfinished"></translation>
+        <translation>تقسیم موجودیتها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="795"/>
         <location filename="../src/app/qgisapp.cpp" line="797"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف انتخاب شده‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="802"/>
         <location filename="../src/app/qgisapp.cpp" line="804"/>
         <source>Add Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>اضفه کردن راس</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="808"/>
         <location filename="../src/app/qgisapp.cpp" line="810"/>
         <source>Move Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>حرکت دادن راس</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="814"/>
         <location filename="../src/app/qgisapp.cpp" line="816"/>
         <source>Delete Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف راس</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="821"/>
         <location filename="../src/app/qgisapp.cpp" line="823"/>
         <source>Add Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن حلقه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="827"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن قسمت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Add part to multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن قسمت به چندتا چند ضلعی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="833"/>
         <location filename="../src/app/qgisapp.cpp" line="835"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>ساده سازی موجودیت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف حلقه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="841"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف راس از حلقه با کلیک کردن بر روی ان</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="845"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف قسمت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="847"/>
         <source>Click a vertex of the part to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف راس از قسمت با کلیک کردن بر روی ان</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="851"/>
         <location filename="../src/app/qgisapp.cpp" line="853"/>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>ترکیب کردن موجودیت ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="857"/>
         <location filename="../src/app/qgisapp.cpp" line="859"/>
         <source>Merge attributes of selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>ترکیب خصوصیات موجودیتهای انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="863"/>
         <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>ابزار گره</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="869"/>
         <location filename="../src/app/qgisapp.cpp" line="871"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>نچرخش نماد نقطه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="875"/>
@@ -5874,18 +5888,18 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="882"/>
         <source>Pan Map</source>
-        <translation type="unfinished"></translation>
+        <translation>حرک دادن نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="884"/>
         <source>Pan the map</source>
-        <translation type="unfinished"></translation>
+        <translation>حرک دادن نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="887"/>
         <location filename="../src/app/qgisapp.cpp" line="889"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>بزرگنمایی به داخل</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="888"/>
@@ -5897,7 +5911,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="892"/>
         <location filename="../src/app/qgisapp.cpp" line="894"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>بزرگنمایی به خارج</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="893"/>
@@ -5908,17 +5922,17 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="897"/>
         <source>, hold ctrl to add/subtract current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>، برای اضافه/کم کردن انتخاب‌ها دکمه Ctrl را نگه دارید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="899"/>
         <source>Select single feature</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب یک موجودیت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Select single features</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب یک موجودیت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="905"/>
@@ -5929,36 +5943,36 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="907"/>
         <location filename="../src/app/qgisapp.cpp" line="909"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب موجودیت‌ها با کشیدن مستطیل</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="913"/>
         <location filename="../src/app/qgisapp.cpp" line="915"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب موجودیت‌ها با کشیدن چند ضلعی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="919"/>
         <location filename="../src/app/qgisapp.cpp" line="921"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب موجودیت‌ها با کشیدن آزاد</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="925"/>
         <location filename="../src/app/qgisapp.cpp" line="927"/>
         <source>Select features by radius</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب موجودیت‌ها با کشیدن دایره</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="931"/>
         <location filename="../src/app/qgisapp.cpp" line="933"/>
         <source>Deselect features from all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف حالت انتخاب موجودیتها از تمامی لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="937"/>
         <source>Identify Features</source>
-        <translation type="unfinished"></translation>
+        <translation>شناسه موجودیت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="938"/>
@@ -5969,12 +5983,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Click on features to identify them</source>
-        <translation type="unfinished"></translation>
+        <translation>برای شناسایی موجودیتها بر روی آنها کلیک کنید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="943"/>
         <source>Measure Line </source>
-        <translation type="unfinished"></translation>
+        <translation>اندازه گیری خطی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="944"/>
@@ -5985,12 +5999,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Measure a Line</source>
-        <translation type="unfinished"></translation>
+        <translation>خط اندازه گیری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="948"/>
         <source>Measure Area</source>
-        <translation type="unfinished"></translation>
+        <translation>اندازه گیری مساحتی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="949"/>
@@ -6007,12 +6021,12 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="953"/>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Measure Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>اندازه گیری زاویه‌ای</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="957"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش همه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="958"/>
@@ -6029,13 +6043,13 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="962"/>
         <location filename="../src/app/qgisapp.cpp" line="964"/>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش لایه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="967"/>
         <location filename="../src/app/qgisapp.cpp" line="969"/>
         <source>Zoom to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش موجودیتهای انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="968"/>
@@ -6046,7 +6060,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="972"/>
         <source>Zoom Last</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش حالت قبلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="974"/>
@@ -6056,7 +6070,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="977"/>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش حالت بعدی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="979"/>
@@ -6066,7 +6080,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="982"/>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش اندازه واقعی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="984"/>
@@ -6081,196 +6095,196 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="990"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش اطلاعات درباره موجودیت در زمانی که موشواره بر روی ان قرار می‌گیرد</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="994"/>
         <source>New Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>نشانه جدید ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="995"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="996"/>
         <location filename="../src/app/qgisapp.cpp" line="6936"/>
         <source>New Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>نشانه جدید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="999"/>
         <location filename="../src/app/qgisapp.cpp" line="1001"/>
         <source>Show Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش نشانه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1000"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1004"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>به روز رسانی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1006"/>
         <source>Refresh Map</source>
-        <translation type="unfinished"></translation>
+        <translation>به روز رسانی نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1009"/>
         <source>Text Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>حاشیه نویسی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Form annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>حاشیه نویسی به صورت فرم</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1017"/>
         <source>Move Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>جا به جا کردن حاشیه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1021"/>
         <location filename="../src/app/qgisapp.cpp" line="3951"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>بر چسب زدن</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1026"/>
         <source>New Shapefile Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد یک فایل ترسیمی ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1027"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Shapefile layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1028"/>
         <source>Create a New Shapefile layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد یک فایل جدید ترسیمی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1032"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد لایه SpatiaLite ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>Ctrl+Shift+A</source>
         <comment>Create a New SpatiaLite Layer </comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1034"/>
         <source>Create a New SpatiaLite Layer </source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد لایه SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1038"/>
         <source>Raster calculator ...</source>
-        <translation type="unfinished"></translation>
+        <translation>محاسبه گر تصویری ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1041"/>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن یک لایه برداری ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1043"/>
         <source>Add a Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن یک لایه برداری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1046"/>
         <source>Add Raster Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن یک لایه تصویری ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1048"/>
         <source>Add a Raster Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن یک لایه تصویری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1051"/>
         <source>Add PostGIS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن لایه PostGis ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1052"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1053"/>
         <source>Add a PostGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن لایه PostGis ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1056"/>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد لایه SpatiaLite ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1057"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>Add a SpatiaLite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد لایه SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1061"/>
         <source>Add WMS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن لایه WMS ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1062"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1063"/>
         <source>Add a Web Mapping Server Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن یک لایه از طریق سرویس دهنده نقشه وب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1066"/>
         <location filename="../src/app/qgisapp.cpp" line="1068"/>
         <source>Open Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>باز کردن جدول خصوصیات</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1072"/>
@@ -6285,44 +6299,44 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1079"/>
         <source>Save edits</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره ویرایش‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1081"/>
         <source>Save edits to current layer, but continue editing</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره تغییرات در لایه جاری و ادامه دادن به کار ویرایش</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1085"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره به ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1087"/>
         <source>Save the current layer as a vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره لایه جاری با قالب برداری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1091"/>
         <source>Save Selection as vector file...</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره موجودیتهای انتخاب شده در قالب برداری ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1093"/>
         <source>Save the selection as a vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره موجودیتهای انتخاب شده در قالب برداری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1097"/>
         <location filename="../src/app/qgisapp.cpp" line="1099"/>
         <source>Remove Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف لایه(ها)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1098"/>
         <source>Ctrl+D</source>
         <comment>Remove Layer(s)</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1103"/>
@@ -6337,193 +6351,193 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1109"/>
         <source>Live GPS tracking</source>
-        <translation type="unfinished"></translation>
+        <translation>ردیابی زنده با GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1111"/>
         <source>Show GPS tool</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش ابزار GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1115"/>
         <source>Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>خصوصیات ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1117"/>
         <source>Set properties of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>تنظیم خصوصیات لایه جاری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1121"/>
         <source>Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>جستجو ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1123"/>
         <source>Set subset query of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>تنظیم زیرمجموعه جستجو برای لایه جاری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1127"/>
         <source>Add to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن به مرورگر کلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1128"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1129"/>
         <source>Add current layer to overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن لایه جاری به مرورگر کلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1133"/>
         <source>Add All to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن همه به مرورگر کلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1135"/>
         <source>Show all layers in the overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش کل لایه‌ها در مرورگر کلی نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1138"/>
         <source>Remove All From Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف همه از مرورگر کلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1140"/>
         <source>Remove all layers from overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف کل لایه‌ها از مرورگر کلی نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1143"/>
         <source>Show All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش کل لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1144"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1145"/>
         <source>Show all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش کل لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1148"/>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>پنهان کردن کل لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1149"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1150"/>
         <source>Hide all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>پنهان کردن کل لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1155"/>
         <source>Manage Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>مدیریت پلاگین ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1157"/>
         <source>Open the plugin manager</source>
-        <translation type="unfinished"></translation>
+        <translation>باز کردن پنجره مدیریت پلاگین‌</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1162"/>
         <source>Toggle Full Screen Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>حالت تمام صفحه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1163"/>
         <source>Ctrl+F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1164"/>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>حالت تمام صفحه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1167"/>
         <source>Project Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>مشخصات پروژه ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1168"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1169"/>
         <source>Set project properties</source>
-        <translation type="unfinished"></translation>
+        <translation>تنظیم کردن مشخصات پروژه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>مشخصات ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1174"/>
         <source>Change various QGIS options</source>
-        <translation type="unfinished"></translation>
+        <translation>تغییرات گوناگون مشخصات برای QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1178"/>
         <source>Custom CRS...</source>
-        <translation type="unfinished"></translation>
+        <translation>سیستم مرجع مختصاتی ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1180"/>
         <source>Manage custom coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>مدیریت بر روی سیستم مرجع مشخصات</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1184"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>پیکربندی کلیدهای میانبر ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1186"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>پیکربندی کلیدهای میانبر</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1192"/>
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>به حداقل رساندن</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1193"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1194"/>
         <source>Minimizes the active window to the dock</source>
-        <translation type="unfinished"></translation>
+        <translation>به حداقل رساندن پنجره جاری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1197"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>بزرگنمایی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1199"/>
@@ -6543,24 +6557,24 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1213"/>
         <source>Help Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>مفاد راهنما</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1215"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1217"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1219"/>
         <source>Help Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>مستندات راهنما</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1222"/>
@@ -6572,67 +6586,67 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1224"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1231"/>
         <source>Check Qgis Version</source>
-        <translation type="unfinished"></translation>
+        <translation>بررسی نسخه فعلی برنامه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1233"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation type="unfinished"></translation>
+        <translation>بررسی به روز بودن نسخه برنامه (نیاز به دسترسی اینترنت)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1236"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>درباره</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1238"/>
         <source>About QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>درباره برنامه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1242"/>
         <source>Move Label</source>
-        <translation type="unfinished"></translation>
+        <translation>جا به جا کردن بر چسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1243"/>
         <source>Move labels interactively</source>
-        <translation type="unfinished"></translation>
+        <translation>جا به جا کردن بر چسب به صورت محاوره‌ای</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1246"/>
         <source>Rotate Label</source>
-        <translation type="unfinished"></translation>
+        <translation>چرخش بر چسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1247"/>
         <source>Rotate labels interactively</source>
-        <translation type="unfinished"></translation>
+        <translation>چرخش بر چسب به صورت محاوره‌ای</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1250"/>
         <source>Change label</source>
-        <translation type="unfinished"></translation>
+        <translation>تغییر بر چسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1251"/>
         <source>Change label properties</source>
-        <translation type="unfinished"></translation>
+        <translation>تغییر خصوصیات بر چسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1254"/>
         <source>Style manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>مدیریت سبک نگارش ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1256"/>
         <source>Show style manager V2</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش سبک نگارش نسخه ۲</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1296"/>
@@ -6641,22 +6655,22 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="4974"/>
         <location filename="../src/app/qgisapp.cpp" line="6954"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>خطا</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1296"/>
         <source>Failed to open Python console:</source>
-        <translation type="unfinished"></translation>
+        <translation>کنسول پیتون باز نشد:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1410"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;پرونده</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1414"/>
         <source>&amp;Open Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>باز کردن آخرین پروژه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1433"/>
@@ -6666,173 +6680,173 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1440"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ویرایش</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1493"/>
         <source>Panels</source>
-        <translation type="unfinished"></translation>
+        <translation>پنل‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1494"/>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>نوار ابزار</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1498"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;نمایش</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1515"/>
         <source>Measure</source>
-        <translation type="unfinished"></translation>
+        <translation>اندازه گیری</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1549"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;لایه‌</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1552"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>جدید</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1594"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;تنظیمات</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1614"/>
         <source>&amp;Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;پلاگین</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1623"/>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;پنجره</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1635"/>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;پایگاه داده‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1648"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;راهنما</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1670"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>پرونده</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1682"/>
         <source>Manage Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>مدیریت لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1703"/>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>دیجیتالی نمودن</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1724"/>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>دیجیتالی نمودن پیشرفته</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1744"/>
         <source>Map Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>نقشه نوردی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1760"/>
         <source>Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>خصوصیات</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1861"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>پلاگین‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1867"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>راهنما</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1875"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>بر چسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1894"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation type="unfinished"></translation>
+        <translation>نوار پردازش که نمایش وضعیت رندر لایه‌ها و دیگر عملیات متمرکز را بر عهده دارد</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1908"/>
         <source>Toggle extents and mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش موقعیت موشواره و اندازه نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1921"/>
         <location filename="../src/app/qgisapp.cpp" line="5934"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصات:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1922"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصال جاری نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1936"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش مختصات محل زیر موشواره در نقشه. زمان بروز رسانی موقع حرکت موشواره است. می‌توان برای تغییر مرکز ترسیم نقشه ویرایش دستی شود.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1940"/>
         <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصات فعلی نقشه بر حسب x,y</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1952"/>
         <source>Scale </source>
-        <translation type="unfinished"></translation>
+        <translation>مقیاس</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1953"/>
         <source>Current map scale</source>
-        <translation type="unfinished"></translation>
+        <translation>مقیاس جاری نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1967"/>
         <source>Displays the current map scale</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش مقیاس جاری نقشه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1968"/>
         <source>Current map scale (formatted as x:y)</source>
-        <translation type="unfinished"></translation>
+        <translation>مختصات فعلی نقشه بر حسب x,y</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1977"/>
         <source>Stop map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>رندر کردن نقشه متوقف گردد</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1980"/>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation>رندر</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1983"/>
