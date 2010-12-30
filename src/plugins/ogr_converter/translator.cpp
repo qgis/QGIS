@@ -19,6 +19,7 @@
 #include <QString>
 
 #include <ogr_api.h>
+#include <cpl_error.h>
 
 Translator::Translator()
     : mDstUpdate( false ), mDstLayerOverwrite( true )
@@ -201,6 +202,13 @@ bool Translator::translateLayer( OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDa
     dstLayer = OGR_DS_CreateLayer( dstDs, mDstLayer.toAscii().constData(),
                                    dstLayerSrs, geomType, 0 );
   }
+
+  if ( 0 == dstLayer )
+  {
+    qWarning( QString( "Layer %1 not found and CreateLayer failed [OGR: %2]\n" ).arg( mDstLayer ).arg( CPLGetLastErrorMsg() ).toUtf8() );
+    return false;
+  }
+
   // TODO: Append and createion options not implemented
   // else if (!mDstLayerAppend)
 
