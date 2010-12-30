@@ -132,7 +132,12 @@ ELSE(WIN32)
         #MESSAGE("DBG  GEOS_LIB_NAME=${GEOS_LIB_NAME}")
 
         IF (APPLE)
-          SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.dylib CACHE STRING INTERNAL)
+          IF (NOT GEOS_LIBRARY)
+            # work around empty GEOS_LIBRARY left by framework check
+            # while still preserving user setting if given
+            # ***FIXME*** need to improve framework check so below not needed
+            SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.dylib CACHE STRING INTERNAL FORCE)
+          ENDIF (NOT GEOS_LIBRARY)
         ELSE (APPLE)
           SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.so CACHE STRING INTERNAL)
         ENDIF (APPLE)

@@ -135,7 +135,12 @@ ELSE(WIN32)
         ENDIF (GDAL_LIB_NAME_WITH_PREFIX)
 
         IF (APPLE)
-          SET(GDAL_LIBRARY ${GDAL_LINK_DIRECTORIES}/lib${GDAL_LIB_NAME}.dylib CACHE STRING INTERNAL)
+          IF (NOT GDAL_LIBRARY)
+            # work around empty GDAL_LIBRARY left by framework check
+            # while still preserving user setting if given
+            # ***FIXME*** need to improve framework check so below not needed
+            SET(GDAL_LIBRARY ${GDAL_LINK_DIRECTORIES}/lib${GDAL_LIB_NAME}.dylib CACHE STRING INTERNAL FORCE)
+          ENDIF (NOT GDAL_LIBRARY)
         ELSE (APPLE)
           SET(GDAL_LIBRARY ${GDAL_LINK_DIRECTORIES}/lib${GDAL_LIB_NAME}.so CACHE STRING INTERNAL)
         ENDIF (APPLE)
