@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "globe_plugin.h"
-#include "globe_plugin_gui.h"
 #include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
 

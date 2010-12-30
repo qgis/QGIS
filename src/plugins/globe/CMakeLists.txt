@@ -11,7 +11,6 @@ FIND_PACKAGE(Threads)
 
 SET (globe_plugin_SRCS
      globe_plugin.cpp
-     globe_plugin_gui.cpp
      qgsosgviewer.cpp
      qgsosgearthtilesource.cpp
      Controls.cpp
@@ -19,13 +18,11 @@ SET (globe_plugin_SRCS
 )
 
 SET (globe_plugin_UIS
-     globe_plugin_guibase.ui
      globe_plugin_dialog_guibase.ui
      )
 
 SET (globe_plugin_MOC_HDRS
      globe_plugin.h
-     globe_plugin_gui.h
      globe_plugin_dialog.h
      qgsosgviewer.h
 )
