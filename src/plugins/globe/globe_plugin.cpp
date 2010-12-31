@@ -27,6 +27,9 @@
 #include <qgslogger.h>
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
+#include <qgsfeature.h>
+#include <qgsgeometry.h>
+#include <qgspoint.h>
 
 #include <QAction>
 #include <QToolBar>
@@ -169,6 +172,7 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
+  mSettingsDialog.updatePointLayers();
   if( mSettingsDialog.exec() )
   {
     //viewer stereo settings set by mSettingsDialog and stored in QSettings
@@ -220,45 +224,24 @@ void GlobePlugin::setupMap()
   mElevationManager->setMaxTilesToCache( 50 );
 
   mObjectPlacer = new osgEarthUtil::ObjectPlacer( mMapNode );
-
-#if 0
-  // model placement test
-
-  // create simple tree model from primitives
-  osg::TessellationHints* hints = new osg::TessellationHints();
-  hints->setDetailRatio( 0.1 );
-
-  osg::Cylinder* cylinder = new osg::Cylinder( osg::Vec3( 0 , 0, 5 ), 0.5, 10 );
-  osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable( cylinder, hints );
-  cylinderDrawable->setColor( osg::Vec4( 0.5, 0.25, 0.125, 1.0 ) );
-  osg::Geode* cylinderGeode = new osg::Geode();
-  cylinderGeode->addDrawable( cylinderDrawable );
-
-  osg::Cone* cone = new osg::Cone( osg::Vec3( 0 , 0, 10 ), 4, 10 );
-  osg::ShapeDrawable* coneDrawable = new osg::ShapeDrawable( cone, hints );
-  coneDrawable->setColor( osg::Vec4( 0.0, 0.5, 0.0, 1.0 ) );
-  osg::Geode* coneGeode = new osg::Geode();
-  coneGeode->addDrawable( coneDrawable );
-
-  osg::Group* model = new osg::Group();
-  model->addChild( cylinderGeode );
-  model->addChild( coneGeode );
-
-  // place models on jittered grid
-  srand( 23 );
-  double lat = 47.1786;
-  double lon = 10.111;
-  double gridSize = 0.001;
-  for( int i = 0; i < 10; i++ )
+  if ( mSettingsDialog.modelLayer() && !mSettingsDialog.modelPath().isEmpty() )
   {
-    for( int j = 0; j < 10; j++ )
+    osg::Node* model = osgDB::readNodeFile( mSettingsDialog.modelPath().toStdString() );
+    if ( model )
     {
-      double dx = gridSize * ( rand() / (( double ) RAND_MAX + 1.0 ) - 0.5 );
-      double dy = gridSize * ( rand() / (( double ) RAND_MAX + 1.0 ) - 0.5 );
-      placeNode( model, lat + i * gridSize + dx, lon + j * gridSize + dy );
+      QgsVectorLayer* layer = mSettingsDialog.modelLayer();
+      QgsAttributeList fetchAttributes;
+      layer->select( fetchAttributes ); //TODO: select only visible features
+      QgsFeature feature;
+      while ( layer->nextFeature( feature ) )
+      {
+        QgsPoint point = feature.geometry()->asPoint();
+        QgsDebugMsg( "placeNode" + point.toString() );
+        placeNode( model, point.y(), point.x() );
+      }
     }
   }
-#endif
+
 }
 
 void GlobePlugin::projectReady()

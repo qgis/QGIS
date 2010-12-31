@@ -25,6 +25,7 @@
 #include "qgsosgviewer.h"
 #include "qgscontexthelp.h"
 #include <qgsproject.h>
+#include <qgsvectorlayer.h>
 
 class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBase
 {
@@ -35,12 +36,14 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     ~QgsGlobePluginDialog();
     void readElevationDatasources();
     QTableWidget *elevationDatasources() { return elevationDatasourcesWidget; }
-
+    void updatePointLayers();
+    QgsVectorLayer* modelLayer();
+    QString modelPath() { return modelPathLineEdit->text(); }
   private:
     QgsOsgViewer* mViewer;
     QSettings settings;
   private:
-    QString openFile();
+    QString openRasterFile();
     void updateStereoDialog();
     bool validateResource( QString type, QString uri, QString& error);
     void saveElevationDatasources();
@@ -48,6 +51,7 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     QList<QTableWidgetItem*> takeRow( QTableWidget* widget, int row);
     void setRow( QTableWidget* widget, int row, const QList< QTableWidgetItem* >& rowItems);
     void showMessageBox( QString text);
+    QList<QgsVectorLayer*> pointLayers();
     //! Set osg/DisplaySettings
     void setStereoConfig();
     //! Init dialog from settings using defaults from osg/DisplaySettings
@@ -72,6 +76,9 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_splitStereoHorizontalEyeMapping_currentIndexChanged(int value);
     void on_splitStereoVerticalEyeMapping_currentIndexChanged(int value);
     void on_resetStereoDefaults_clicked();
+
+    //MODEL
+    void on_modelBrowse_clicked();
 
     //ELEVATION
     void on_elevationCombo_currentIndexChanged(QString type);

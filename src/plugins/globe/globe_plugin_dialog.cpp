@@ -21,6 +21,8 @@
 
 #include <qgsapplication.h>
 #include <qgsproject.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsmaplayer.h>
 #include <qgslogger.h>
 #include <qgscontexthelp.h>
 #include <QtAlgorithms>
@@ -55,7 +57,7 @@ QgsGlobePluginDialog::~QgsGlobePluginDialog()
 {
 }
 
-QString QgsGlobePluginDialog::openFile()
+QString QgsGlobePluginDialog::openRasterFile()
 {
   //see http://www.gdal.org/formats_list.html
   const char* filter = "GDAL files (*.dem *.tif *.tiff *.jpg *.jpeg *.asc) \
@@ -161,7 +163,7 @@ void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged(QString type)
 
 void QgsGlobePluginDialog::on_elevationBrowse_clicked()
 {
-  QString newPath = openFile();
+  QString newPath = openRasterFile();
   if ( ! newPath.isEmpty() )
   {
     elevationPath->setText( newPath );
@@ -325,6 +327,63 @@ void QgsGlobePluginDialog::saveElevationDatasources()
   }
 }
 //END ELEVATION
+
+//MODEL
+QList<QgsVectorLayer*> QgsGlobePluginDialog::pointLayers()
+{
+  QList<QgsVectorLayer*> list;
+  QMap< QString, QgsMapLayer *> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMapIterator<QString, QgsMapLayer *> it(layers);
+  while (it.hasNext())
+  {
+     it.next();
+     QgsMapLayer* layer = it.value();
+     if (layer->type() == QgsMapLayer::VectorLayer)
+     {
+       QgsVectorLayer* vectorLayer = static_cast<QgsVectorLayer*>(layer);
+       if ( vectorLayer->geometryType() == QGis::Point )
+       {
+          list.append( vectorLayer );
+       }
+     }
+  }
+  return list;
+}
+
+void QgsGlobePluginDialog::updatePointLayers()
+{
+  modelLayerCombo->clear();
+  QList<QgsVectorLayer*> layers = pointLayers();
+  QListIterator<QgsVectorLayer*> it(layers);
+  while (it.hasNext())
+  {
+     QgsVectorLayer* layer = it.next();
+     modelLayerCombo->addItem( layer->name() );
+  }
+}
+
+QgsVectorLayer* QgsGlobePluginDialog::modelLayer()
+{
+  QList<QgsVectorLayer*> layers = pointLayers();
+  return ( modelLayerCombo->currentIndex() == -1 ) ? NULL : layers.at( modelLayerCombo->currentIndex() );
+}
+
+void QgsGlobePluginDialog::on_modelBrowse_clicked()
+{
+  //see http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/Plugins
+  const char* filter = "Model files (*.3dc *.asc *.3ds *.ac *.bsp *.dae *.dw *.dxf *.fbx *.gem *.geo *.iv *.wrl *.ive *.logo *.lwo *.lw *.geo *.lws *.md2 *.obj *.ogr *.flt *.osg *.shp *.stl *.sta *.wrl *.x) \
+  ;;All files (*.*)";
+  QString path = QFileDialog::getOpenFileName( this,
+                                            tr( "Open 3D model file" ),
+                                            QDir::homePath (),
+                                            tr( filter ) );
+
+  if ( ! path.isEmpty() )
+  {
+    modelPathLineEdit->setText( path );
+  }
+}
+//END MODEL
 
 //STEREO
 void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()
