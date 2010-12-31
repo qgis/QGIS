@@ -15,6 +15,7 @@ which are not wrapped by PyQt:
 */
 
 %Feature QSETINT_CONVERSION
+%Feature QSETTYPE_CONVERSION
 
 %ModuleHeaderCode
 // From Python 2.5, some functions use Py_ssize_t instead of int
@@ -320,7 +321,7 @@ template <TYPE>
 };
 %End
 
-
+%If (QSETTYPE_CONVERSION)
 template <TYPE>
 %MappedType QSet<TYPE>
 {
@@ -394,8 +395,7 @@ template <TYPE>
 %End
 
 };
-
-
+%End
 
 template<TYPE>
 %MappedType QMap<int, QMap<int, TYPE> >
