@@ -589,6 +589,8 @@ void QgsMapCanvas::zoomToPreviousExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
+    // notify canvas items of change
+    updateCanvasItemPositions();
   }
 
 } // zoomToPreviousExtent
@@ -611,6 +613,8 @@ void QgsMapCanvas::zoomToNextExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
+    // notify canvas items of change
+    updateCanvasItemPositions();
   }
 }// zoomToNextExtent
 
