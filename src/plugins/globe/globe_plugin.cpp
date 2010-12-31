@@ -224,6 +224,8 @@ void GlobePlugin::setupMap()
   mElevationManager->setMaxTilesToCache( 50 );
 
   mObjectPlacer = new osgEarthUtil::ObjectPlacer( mMapNode );
+
+  // place 3D model on point layer
   if ( mSettingsDialog.modelLayer() && !mSettingsDialog.modelPath().isEmpty() )
   {
     osg::Node* model = osgDB::readNodeFile( mSettingsDialog.modelPath().toStdString() );
@@ -236,7 +238,6 @@ void GlobePlugin::setupMap()
       while ( layer->nextFeature( feature ) )
       {
         QgsPoint point = feature.geometry()->asPoint();
-        QgsDebugMsg( "placeNode" + point.toString() );
         placeNode( model, point.y(), point.x() );
       }
     }
