@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="111"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation>&lt;p&gt;Carácter: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
+        <translation>&lt;p&gt;Caracter: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
     </message>
 </context>
 <context>
@@ -41,7 +41,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="unfinished">Coordenada no sistema de coordenadas do mapa</translation>
+        <translation>Coordenadas no sistema de coordenadas do mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
@@ -51,8 +51,8 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translatorcomment>Dúvida na tradução de &quot;Mouse Tracking&quot;. Outra hipótese era o &quot;seguimento do rato&quot; ou &quot;monitorização da posição do rato&quot;</translatorcomment>
-        <translation type="unfinished">Clique para activar a monitorização do rato. Clique no mapa para desactivar</translation>
+        <translatorcomment>Dúvida na tradução de &quot;Mouse Tracking&quot;. Outra hipótese era o &quot;seguimento do rato&quot; ou &quot;monitorização da posição do rato&quot;. Resolvi com rastreio (to track). Usei terminar para (to) stop.</translatorcomment>
+        <translation>Clique para activar o rastreio do rato. Clique no mapa para terminar</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
@@ -70,7 +70,7 @@
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
         <source>Connect</source>
-        <translation type="unfinished">Conectar</translation>
+        <translation>Conectar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="126"/>
@@ -93,95 +93,95 @@
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="61"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="119"/>
         <source>Browse</source>
-        <translation type="unfinished">Buscar</translation>
+        <translation>Explorar</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="192"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="426"/>
         <source>OGR Converter</source>
-        <translation type="unfinished">Conversor OGR</translation>
+        <translation>Conversor OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
         <source>Open OGR file</source>
-        <translation type="unfinished">Abrir arquivo OGR</translation>
+        <translation>Abrir ficheiro OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="218"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="436"/>
         <source>OGR File Data Source (*.*)</source>
-        <translation type="unfinished">Arquivo de Fonte de dados OGR (*.*)</translation>
+        <translation>Ficheiro de dados OGR (*.*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="226"/>
         <source>Open Directory</source>
-        <translation type="unfinished">Abrir pasta</translation>
+        <translation>Abrir pasta</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="242"/>
         <source>Input OGR dataset is missing!</source>
-        <translation type="unfinished">Base de dados OGR está faltando!</translation>
+        <translation>Dados OGR de entrada em falta!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="250"/>
         <source>Input OGR layer name is missing!</source>
-        <translation type="unfinished">Camada de entrada OGR está faltando!</translation>
+        <translation>Nome da camada OGR de entrada em falta!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="265"/>
         <source>Target OGR format not selected!</source>
-        <translation type="unfinished">Formato OGR de destino não selecionado!</translation>
+        <translation>Formato OGR de destino não selecionado!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="273"/>
         <source>Output OGR dataset is missing!</source>
-        <translation type="unfinished">Base de dados OGR de saída está faltando!</translation>
+        <translation>Dados OGR de saída em falta!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="281"/>
         <source>Output OGR layer name is missing!</source>
-        <translation type="unfinished">Camada de saída OGR está faltando!</translation>
+        <translation>Camada OGR de saída em falta!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="435"/>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">Escolha um nome de arquivo para salvar para</translation>
+        <translation>Escolha um nome de ficheiro para guardar</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="193"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="423"/>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished">Impossível estabelecer conexão com &apos;%1&apos;</translation>
+        <translation>Impossível estabelecer conexão com &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="304"/>
         <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="unfinished">Camada  &apos;%1&apos; transformada com sucesso</translation>
+        <translation>Camada &apos;%1&apos; convertida com sucesso</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="310"/>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished">Falha ao converter camada &apos;%1&apos;</translation>
+        <translation>Falha ao converter camada &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="419"/>
         <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="unfinished">Conectado a &apos;%1&apos; com sucesso</translation>
+        <translation>Conectado a &apos;%1&apos; com sucesso</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="13"/>
         <source>fTools About</source>
-        <translation type="unfinished">Sobre o fTools</translation>
+        <translation>Sobre o fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="36"/>
         <source>fTools</source>
-        <translation type="unfinished">fTools</translation>
+        <translation>fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="46"/>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished">Versão 0.5.10</translation>
+        <translation>Versão x.x-xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="102"/>
@@ -189,7 +189,7 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -202,7 +202,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="132"/>
         <source>Web</source>
-        <translation type="unfinished">Internet</translation>
+        <translation>Internet</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="139"/>
@@ -212,34 +212,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished">Extrair nós</translation>
+        <translation>Extrair Nós</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished">Selecione a camada de linha ou polígono</translation>
+        <translation>Selecione a camada de entrada de linhas ou polígonos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation type="unfinished">Tolerância</translation>
+        <translation>Tolerância</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation type="unfinished">Campo de identificação exclusivo</translation>
+        <translation>Campo de ID único</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished">Local de saída para o arquivo shape</translation>
+        <translation>Ficheiro shapefile de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished">Geoprocessamento</translation>
+        <translation>Geoprocessamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="28"/>
@@ -247,32 +247,33 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="25"/>
         <source>Input vector layer</source>
-        <translation type="unfinished">Entrar com camada vetorial</translation>
+        <translation>Camada vectorial de entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
         <source>Intersect layer</source>
-        <translation type="unfinished">Camada a interceptar</translation>
+        <translation>Camada de intersecção</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="94"/>
         <source>Buffer distance</source>
-        <translation type="unfinished">Distância de buffer</translation>
+        <translatorcomment>buffer=??proximidade??</translatorcomment>
+        <translation type="unfinished">Distância de proximidade</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="134"/>
         <source>Buffer distance field</source>
-        <translation type="unfinished">Campo de distância de buffer</translation>
+        <translation type="unfinished">Campo de distância de proximidade</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="141"/>
         <source>Dissolve field</source>
-        <translation type="unfinished">Dissolver a partir do campo</translation>
+        <translation>Dissolver a partir do campo</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="189"/>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished">dissolver resultados de buffer</translation>
+        <translation type="unfinished">Dissolver resultados de proximidade</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="213"/>
@@ -280,38 +281,38 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="48"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="305"/>
         <source>Output shapefile</source>
-        <translation type="unfinished">Local de saída para o arquivo shape</translation>
+        <translation>Ficheiro de saída shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="262"/>
         <source>Segments to approximate</source>
-        <translation type="unfinished">Seguimentos para aproximar</translation>
+        <translation>Segmentos a aproximar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished">Localizar intersecções de linhas</translation>
+        <translation>Localizar Intersecções de Linhas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation type="unfinished">Entrar com camada de linha</translation>
+        <translation>Camada de linhas de entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
-        <translation type="unfinished">Entrar com o campo de identificação exclusivo</translation>
+        <translation>Campo de ID único de entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation type="unfinished">Camada de linhas a interceptar</translation>
+        <translation>Camada de linhas a intersectar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished">Campo de identificação a interceptar</translation>
+        <translation>Campo de ID único a intersectar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
@@ -323,136 +324,136 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="150"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished">Local de saída para o arquivo shape</translation>
+        <translation>Ficheiro de saída shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="17"/>
         <source>Join Attributes</source>
-        <translation type="unfinished">Unir atributos</translation>
+        <translation>Unir Atributos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="28"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="27"/>
         <source>Target vector layer</source>
-        <translation type="unfinished">Camada vetorial alvo</translation>
+        <translation>Camada alvo vectorial</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="42"/>
         <source>Target join field</source>
-        <translation type="unfinished">Campo alvo a unir</translation>
+        <translation>Campo alvo a unir</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="54"/>
         <source>Join data</source>
-        <translation type="unfinished">Unir dados</translation>
+        <translation>Unir dados</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="62"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="41"/>
         <source>Join vector layer</source>
-        <translation type="unfinished">Unir camada vetorial</translation>
+        <translation>Unir camada vectorial</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="79"/>
         <source>Join dbf table</source>
-        <translation type="unfinished">Unir tabela DBF</translation>
+        <translation>Unir tabela dbf</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="114"/>
         <source>Join field</source>
-        <translation type="unfinished">Unir campo</translation>
+        <translation>Unir campo</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="128"/>
         <source>Encoding</source>
-        <translation type="unfinished">Codificação</translation>
+        <translation>Codificação</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="172"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="177"/>
         <source>Output table</source>
-        <translation type="unfinished">Tabela de saída</translation>
+        <translation>Tabela de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="178"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="183"/>
         <source>Only keep matching records</source>
-        <translation type="unfinished">Apenas manter registros de congruência</translation>
+        <translation>Apenas manter registos com correspondência</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="188"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation type="unfinished">Manter todos os registros (incluindo registros-alvo não combinados)</translation>
+        <translation>Manter todos os registos (incluindo registos alvo sem correspondência)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="193"/>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="unfinished">Manter todos registros (incluindo registros-alvo sem congruência)</translation>
+        <translation>Manter todos registos (incluindo registos alvo sem correspondência)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
         <source>Generate Centroids</source>
-        <translation type="unfinished">Gerar centroides</translation>
+        <translation>Gerar centróides</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
         <source>Weight field</source>
-        <translation type="unfinished">Campo de peso</translation>
+        <translation>Campo de ponderação</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="69"/>
         <source>Number of standard deviations</source>
-        <translation type="unfinished">Número de desvios padrão</translation>
+        <translation>Número de desvios padrão</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
-        <translation type="unfinished">Desvio Padrão</translation>
+        <translation>Desvio Padrão</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished">Cria uma matriz de distância</translation>
+        <translation>Criar Matriz de Distâncias</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation type="unfinished">Entrar com camada de ponto</translation>
+        <translation>Camada de entrada de pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
-        <translation type="unfinished">Local da camada de ponto alvo</translation>
+        <translation>Camada alvo de pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
         <source>Target unique ID field</source>
-        <translation type="unfinished">Campo exclusivo de identificação alvo</translation>
+        <translation>Campo alvo de ID único</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="81"/>
         <source>Output matrix type</source>
-        <translation type="unfinished">Tipo de matriz de saída</translation>
+        <translation>Tipo de matriz de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="87"/>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished">Matriz de distância Linear (N*k x 3)</translation>
+        <translation>Matriz de distâncias linear (N*k x 3)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="97"/>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished">Matriz de distância padrão (N x T)</translation>
+        <translation>Matriz de distâncias padrão (N x T)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="104"/>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished">Sumário da matriz de distância (média, desvio padrão, mín., máx)</translation>
+        <translation>Sumário da matriz de distâncias (média, desvio padrão, mín, máx)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="111"/>
         <source>Use only the nearest (k) target points</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar apenas os (k) pontos alvo mais próximos</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
@@ -461,7 +462,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="149"/>
         <source>Output distance matrix</source>
-        <translation type="unfinished">Matriz de distância de saída</translation>
+        <translation>Matriz de distâncias de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="49"/>
@@ -469,28 +470,28 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="40"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Use only selected features</source>
-        <translation type="unfinished">Usar apenas feições selecionadas</translation>
+        <translation>Usar apenas elementos seleccionados</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished">Contar pontos nos polígonos</translation>
+        <translation>Contar Pontos em Polígonos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Selecione a camada vetorial de polígonos</translation>
+        <translation>Camada vectorial de entrada de polígonos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Selecione a camada vetorial de pontos</translation>
+        <translation>Camada vectorial de entrada de pontos </translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
         <source>Output count field name</source>
-        <translation type="unfinished">Nome para o campo de saída</translation>
+        <translation>Nome para o campo de saída de contagem</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
@@ -500,13 +501,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="17"/>
         <source>Generate Random Points</source>
-        <translation type="unfinished">Gerar pontos aleatoriamente</translation>
+        <translation>Gerar Pontos Aleatórios</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="32"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished">Selecione a camada limite</translation>
+        <translation>Camada de Entrada de Limites</translation>
     </message>
     <message>
         <source>Minimum distance between points</source>
@@ -515,105 +516,105 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="42"/>
         <source>Sample Size</source>
-        <translation type="unfinished">Tamanho da amostra</translation>
+        <translation>Tamanho da Amostra</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="55"/>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished">Desenho de amostra não estratificado (camada inteira)</translation>
+        <translation>Método de Amostragem Não Estratificada (Camada Inteira)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="64"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="149"/>
         <source>Use this number of points</source>
-        <translation type="unfinished">Usar este número de pontos</translation>
+        <translation>Usar este número de pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="96"/>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished">Desenho de amostra estratificado (polígonos individuais)</translation>
+        <translation>Método de Amostragem Estratificada (Polígonos Individuais)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="129"/>
         <source>Use this density of points</source>
-        <translation type="unfinished">Usar esta densidade de pontos</translation>
+        <translation>Usar esta densidade de pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="159"/>
         <source>Use value from input field</source>
-        <translation type="unfinished">Usar valores de um campo de entrada</translation>
+        <translation>Usar valores de um campo de entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="14"/>
         <source>Random Selection Tool</source>
-        <translation type="unfinished">Ferramenta de seleção aleatória</translation>
+        <translation>Ferramenta de Selecção Aleatória</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="23"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
         <source>Input Vector Layer</source>
-        <translation type="unfinished">Selecione a camada vetorial</translation>
+        <translation>Camada de Entrada Vectorial</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="33"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="55"/>
         <source>Randomly Select</source>
-        <translation type="unfinished">Seleção aleatória</translation>
+        <translation>Selecção Aleatória</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="42"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="64"/>
         <source>Number of Features</source>
-        <translation type="unfinished">Número de feições</translation>
+        <translation>Número de Elementos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="76"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="100"/>
         <source>Percentage of Features</source>
-        <translation type="unfinished">Percentagem de feições</translation>
+        <translation>Percentagem de Elementos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="96"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="120"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="16"/>
         <source>Projection Management Tool</source>
-        <translation type="unfinished">Ferramenta de gerenciamento de projeção</translation>
+        <translation>Ferramenta de Gestao de Projecção</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="35"/>
         <source>Input spatial reference system</source>
-        <translation type="unfinished">Entrar com sistema de referência espacial</translation>
+        <translation>Sistema de Referência de Coordenadas de entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="49"/>
         <source>Output spatial reference system</source>
-        <translation type="unfinished">Sistema de referência espacial de saída</translation>
+        <translation>Sistema de Referência de Coordenadas de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="55"/>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished">Usar sistema de referência espacial pré-definido</translation>
+        <translation>Usar Sistema de Referência de Coordenadas pré-definido</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
         <source>Choose</source>
-        <translation type="unfinished">Escolher</translation>
+        <translation>Escolher</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished">Importar um sistema de referência espacial de uma camada</translation>
+        <translation>Importar Sistema de Referência de Coordenadas de uma camada existente</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar Sistema de Referência de Coordenadas</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
@@ -622,17 +623,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="17"/>
         <source>Generate Regular Points</source>
-        <translation type="unfinished">Gerar pontos regulares</translation>
+        <translatorcomment>Não sei se Regular é usado em PT, ou se é Uniforme</translatorcomment>
+        <translation>Gerar Rede Regular de Pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="26"/>
         <source>Area</source>
-        <translation type="unfinished">Área</translation>
+        <translation>Área</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
         <source>Input Coordinates</source>
-        <translation type="unfinished">Inserir coordenadas</translation>
+        <translation>Coordenadas de Entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="52"/>
@@ -661,17 +663,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="111"/>
         <source>Grid Spacing</source>
-        <translation type="unfinished">Espaçamento da grade</translation>
+        <translation>Espaçamento da malha</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
-        <translation type="unfinished">Usar este espaçamento de pontos</translation>
+        <translation>Usar este espaçamento de pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished">Aplicar deslocamento aleatório ao espaçamento de pontos</translation>
+        <translatorcomment>neste caso, deslocamento é melhor que afastamento (do glossário)</translatorcomment>
+        <translation>Aplicar deslocamento aleatório ao espaçamento de pontos</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
