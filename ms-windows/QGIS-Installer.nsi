@@ -427,18 +427,20 @@ Section "Quantum GIS" SecQGIS
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
 
 !if ${INSTALLER_TYPE} == "OSGeo4W"
-       Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
-       CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
-       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+	IfFileExists "$INSTALL_DIR\etc\reboot" SetRebootFlag true
 
-       Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
-       CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
-       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+        Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !else
-       CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
-       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-       CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
-       "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+        CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !endif
 
 SectionEnd
