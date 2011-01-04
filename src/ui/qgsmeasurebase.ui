@@ -101,7 +101,7 @@
    <item row="0" column="0" colspan="3">
     <widget class="QCheckBox" name="mcbProjectionEnabled">
      <property name="text">
-      <string>Ellipsoidal (WGS84)</string>
+      <string>Ellipsoidal</string>
      </property>
     </widget>
    </item>

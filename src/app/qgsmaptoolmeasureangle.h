@@ -62,6 +62,9 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     /** recalculate angle if projection state changed*/
     void changeProjectionEnabledState();
 
+    //! Configures distance area objects with ellipsoid / output crs
+    void configureDistanceArea( QgsDistanceArea& da );
+
 };
 
 #endif // QGSMAPTOOLMEASUREANGLE_H
