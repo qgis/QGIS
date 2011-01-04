@@ -58,8 +58,8 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   else
     mcbProjectionEnabled->setCheckState( Qt::Unchecked );
 
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged(int) ), 
-      this, SLOT( changeProjectionEnabledState() ));
+  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
+           this, SLOT( changeProjectionEnabledState() ) );
 
   updateUi();
 }
@@ -99,14 +99,12 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
   // Create QgsDistance Area for customization ProjectionEnabled setting
-  QgsDistanceArea myDa;  
-  myDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
-  myDa.setEllipsoid( mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() );
-  myDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+  QgsDistanceArea myDa;
+  configureDistanceArea( myDa );
 
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
-  // and adding moving point at the end  
+  // and adding moving point at the end
   if ( mMeasureArea && mTool->points().size() > 1 )
   {
     QList<QgsPoint> tmpPoints = mTool->points();
@@ -134,10 +132,8 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
   // Create QgsDistance Area for customization ProjectionEnabled setting
-  QgsDistanceArea myDa;  
-  myDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
-  myDa.setEllipsoid( mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() );
-  myDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+  QgsDistanceArea myDa;
+  configureDistanceArea( myDa );
 
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
@@ -269,19 +265,18 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   // The parameter &u is out only...
 
   QGis::UnitType myUnits = mTool->canvas()->mapUnits();
-  if (( myUnits == QGis::Degrees || myUnits == QGis::Feet ) &&
-      mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() != "NONE" &&
+  if (( myUnits == QGis::Degrees || myUnits == QGis::Feet )  &&
       mcbProjectionEnabled->isChecked() )
   {
     // Measuring on an ellipsoid returns meters, and so does using projections???
     myUnits = QGis::Meters;
     QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
   }
-   
+
   // Get the units for display
   QSettings settings;
   QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-  
+
   // Only convert between meters and feet
   if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
   {
@@ -314,9 +309,9 @@ void QgsMeasureDialog::changeProjectionEnabledState()
   // store value
   QSettings settings;
   if ( mcbProjectionEnabled->isChecked() )
-    settings.setValue( "/qgis/measure/projectionEnabled", 2);
+    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
   else
-    settings.setValue( "/qgis/measure/projectionEnabled", 0);
+    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
 
   // clear interface
   mTable->clear();
@@ -327,13 +322,11 @@ void QgsMeasureDialog::changeProjectionEnabledState()
   updateUi();
 
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
- 
+
   // create DistanceArea
-  QgsDistanceArea myDa;  
-  myDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
-  myDa.setEllipsoid( mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() );
-  myDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
-  
+  QgsDistanceArea myDa;
+  configureDistanceArea( myDa );
+
   if ( mMeasureArea )
   {
     double area = 0.0;
@@ -342,14 +335,15 @@ void QgsMeasureDialog::changeProjectionEnabledState()
       area = myDa.measurePolygon( mTool->points() );
     }
     editTotal->setText( formatArea( area, decimalPlaces ) );
-  }else
+  }
+  else
   {
     QList<QgsPoint>::const_iterator it;
     bool b = true; // first point
-  
-    QgsPoint p1,p2;
-     
-    for (it=mTool->points().constBegin(); it != mTool->points().constEnd(); ++it)
+
+    QgsPoint p1, p2;
+
+    for ( it = mTool->points().constBegin(); it != mTool->points().constEnd(); ++it )
     {
       p2 = *it;
       if ( !b )
@@ -372,4 +366,13 @@ void QgsMeasureDialog::changeProjectionEnabledState()
       b = false;
     }
   }
+}
+
+void QgsMeasureDialog::configureDistanceArea( QgsDistanceArea& da )
+{
+  QSettings settings;
+  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  da.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
+  da.setEllipsoid( ellipsoidId );
+  da.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
 }

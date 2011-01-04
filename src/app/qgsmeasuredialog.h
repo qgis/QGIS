@@ -80,6 +80,9 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Converts the measurement, depending on settings in options and current transformation
     void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
 
+    //! Configures distance area objects with ellipsoid / output crs
+    void configureDistanceArea( QgsDistanceArea& da );
+
     double mTotal;
 
     //! indicates whether we're measuring distances or areas
