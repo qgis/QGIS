@@ -158,7 +158,7 @@ bool QgsFeatureAction::addFeature()
   mLayer->beginEditCommand( text() );
 
   // show the dialog to enter attribute values
-  bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", true ).toBool();
+  bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
   if ( isDisabledAttributeValuesDlg )
   {
     res = mLayer->addFeature( mFeature );
