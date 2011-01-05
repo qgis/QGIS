@@ -1320,11 +1320,11 @@ Sicuro di voler proseguire?</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation>Specifica la lunghezza del campo di output</translation>
+        <translation>Specifica il campo di output per la lunghezza</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation>lunghezza del campo</translation>
+        <translation>campo della lunghezza</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
@@ -7709,12 +7709,12 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2639"/>
         <source>Added gpsd support to live gps tracking.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunto il supporto a gpsd al tracking dinamico del gps.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2640"/>
         <source>A new plugin has been included that allows for offline editing.</source>
-        <translation type="unfinished"></translation>
+        <translation>E&apos; stato incluso un nuovo plugin per l&apos;editing offline.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2641"/>
@@ -9755,7 +9755,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="261"/>
         <source>The selected color ramp is not available.</source>
-        <translation>La rampa colori selezionata non è disponibile.</translation>
+        <translation>La scala di colori selezionata non è disponibile.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="273"/>
@@ -9788,7 +9788,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp</source>
-        <translation>Rampa di colore</translation>
+        <translation>Scala di colori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -9826,7 +9826,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="40"/>
         <source>New color ramp...</source>
-        <translation>Nuova rampa colore...</translation>
+        <translation>Nuova scala di colori...</translation>
     </message>
 </context>
 <context>
@@ -12567,12 +12567,12 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="180"/>
         <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-        <translation>Delimitatore utilizzato per dividere in campi il file di testo. Il delimitatore può essere di 1 o più caratteri di lunghezza.</translation>
+        <translation>Delimitatore utilizzato per dividere in campi il file di testo. Il delimitatore può essere di 1 o più caratteri.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="183"/>
         <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation>Delimitatore utilizzato per dividere in campi il file di testo. Il delimitatore può essere di 1 o più caratteri di lunghezza.</translation>
+        <translation>Delimitatore utilizzato per dividere in campi il file di testo. Il delimitatore può essere di 1 o più caratteri.</translation>
     </message>
     <message>
         <source>Geometry</source>
@@ -12972,7 +12972,7 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="82"/>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
-        <translation>Larghezza dell&apos;output completo. Ad es. 123,456 equivale ad un&apos;ampiezza di 6.</translation>
+        <translation>Larghezza dell&apos;output completo. Ad es. 123,456 equivale ad una larghezza di 6.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="95"/>
@@ -14880,7 +14880,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="162"/>
         <source>The selected color ramp is not available.</source>
-        <translation>La rampa colore selezionata non è disponibile.</translation>
+        <translation>La scala di colori selezionata non è disponibile.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="48"/>
@@ -14906,7 +14906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="81"/>
         <source>Color ramp</source>
-        <translation>Rampa di colore</translation>
+        <translation>Scala di colori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="94"/>
@@ -18871,7 +18871,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="546"/>
         <source>&amp;Make to toplevel item</source>
-        <translation>Crea all&apos;oggetto in ci&amp;ma</translation>
+        <translation>&amp;Muovi fuori dal gruppo</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="558"/>
@@ -20520,7 +20520,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="325"/>
         <source>Error Creating Geometry Column</source>
-        <translation>Errore nella creazione della Colonna Geometria</translation>
+        <translation>Errore nella creazione della colonna geometrica</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="326"/>
@@ -20532,7 +20532,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="336"/>
         <source>Error Creating Spatial Index</source>
-        <translation>Errore nella creazione dell&apos;Indice Spaziale</translation>
+        <translation>Errore nella creazione dell&apos;indice spaziale</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="337"/>
@@ -21547,7 +21547,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="414"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
-        <translation>Disegna le linee meno dettagliate in favore di migliori prestazioni di disegno</translation>
+        <translation>Rendi le linee meno irregolari a spese delle prestazioni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="361"/>
@@ -22060,7 +22060,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1155"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation>Chiudi finestra di pop-up degli attributi dopo la creazione di ogni geometria</translation>
+        <translation>Non aprire la finestra degli attributi dopo la creazione di ogni geometria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1461"/>
@@ -24098,7 +24098,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="174"/>
         <source>Text, limited variable length (varchar)</source>
-        <translation>Testo a lunghezza limitata (varchar)</translation>
+        <translation>Testo a lunghezza variabile limitata (varchar)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="175"/>
@@ -25521,7 +25521,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2076"/>
         <source>Color Ramp</source>
-        <translation>Rampa colore</translation>
+        <translation>Scala di colori</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2853"/>
@@ -25627,7 +25627,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="564"/>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation>&lt;h3&gt;Note immagine scala di grigi&lt;/h3&gt;&lt;p&gt;È possibile rimappare queste scale di grigio con pseudocolori utilizzando una rampa colori automatica.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Note immagine scala di grigi&lt;/h3&gt;&lt;p&gt;È possibile rimappare queste scale di grigio con pseudocolori utilizzando una scala di colori automatica.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="734"/>
@@ -28381,7 +28381,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="85"/>
         <source>Color ramp (%1)</source>
-        <translation>Rampa colore (%1)</translation>
+        <translation>Scala di colore (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="214"/>
@@ -28419,27 +28419,27 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="235"/>
         <source>Color ramp type</source>
-        <translation>Tipo di rampa colore</translation>
+        <translation>Tipo di scala di colori</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="236"/>
         <source>Please select color ramp type:</source>
-        <translation>Seleziona il tipo di rampa colore:</translation>
+        <translation>Seleziona il tipo di scala di colori:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="280"/>
         <source>Color ramp name</source>
-        <translation>Nome rampa colore</translation>
+        <translation>Nome scala di colori</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="281"/>
         <source>Please enter name for new color ramp:</source>
-        <translation>Inserire un nome per la nuova rampa colore:</translation>
+        <translation>Inserire un nome per la nuova scala di colori:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="281"/>
         <source>new color ramp</source>
-        <translation>nuova rampa colore</translation>
+        <translation>nuova scala di colori</translation>
     </message>
 </context>
 <context>
@@ -29028,7 +29028,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="14"/>
         <source>ColorBrewer ramp</source>
-        <translation>Rampa ColoriBrewer</translation>
+        <translation>Scala ColorBrewer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
@@ -29113,7 +29113,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
-        <translation>Gradiente rampa colore</translation>
+        <translation>Scala di colori a gradiente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="32"/>
@@ -29989,7 +29989,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="14"/>
         <source>Random color ramp</source>
-        <translation>Rampa colore casuale</translation>
+        <translation>Scala di colori casuale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="22"/>
