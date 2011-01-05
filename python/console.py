@@ -24,6 +24,7 @@ TODO:
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.utils import iface
 import sys
 import traceback
 import code
@@ -31,23 +32,26 @@ import code
 
 _init_commands = ["from qgis.core import *", "import qgis.utils"]
 
-
 _console = None
 
 def show_console():
   """ called from QGIS to open the console """
   global _console
   if _console is None:
-    _console = PythonConsole()
-  _console.show()
-  _console.raise_()
-  _console.setWindowState( _console.windowState() & ~Qt.WindowMinimized )
-  _console.activateWindow()
- 
+    _console = PythonConsole(iface.mainWindow())
+    _console.show() # force show even if it was restored as hidden
+  else:
+    _console.setVisible(not _console.isVisible())
+  # set focus to the edit box so the user can start typing
+  if _console.isVisible():
+    _console.activateWindow()
+    _console.edit.setFocus()
 
+  
 
 _old_stdout = sys.stdout
 _console_output = None
+
 
 # hook for python console so all output will be redirected
 # and then shown in console
@@ -69,26 +73,26 @@ class QgisOutputCatcher:
 
 sys.stdout = QgisOutputCatcher()
 
-
-class PythonConsole(QWidget):
+class PythonConsole(QDockWidget):
   def __init__(self, parent=None):
-    QWidget.__init__(self, parent)
-
+    QDockWidget.__init__(self, parent)
+    self.setObjectName("Python Console")
+    self.setAllowedAreas(Qt.BottomDockWidgetArea)
+    self.widget = QWidget()
+    self.l = QVBoxLayout(self.widget)
     self.edit = PythonEdit()
-    self.l = QVBoxLayout()
     self.l.addWidget(self.edit)
-    self.setLayout(self.l)
+    self.setWidget(self.widget)
     self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-
-    s = QSettings()
-    self.restoreGeometry(s.value("/python/console/geometry").toByteArray())
+    # try to restore position from stored main window state
+    if not iface.mainWindow().restoreDockWidget(self):
+      iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
+    
 
   def sizeHint(self):
     return QSize(500,300)
 
   def closeEvent(self, event):
-    s = QSettings()
-    s.setValue("/python/console/geometry", QVariant(self.saveGeometry()))
     QWidget.closeEvent(self, event)
 
 
