@@ -24,13 +24,13 @@ TODO:
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from qgis.utils import iface 
 import sys
 import traceback
 import code
 
 
 _init_commands = ["from qgis.core import *", "import qgis.utils"]
+
 
 _console = None
 
@@ -39,11 +39,15 @@ def show_console():
   global _console
   if _console is None:
     _console = PythonConsole()
-  _console.setVisible(True)
+  _console.show()
+  _console.raise_()
+  _console.setWindowState( _console.windowState() & ~Qt.WindowMinimized )
+  _console.activateWindow()
+ 
+
 
 _old_stdout = sys.stdout
 _console_output = None
-
 
 # hook for python console so all output will be redirected
 # and then shown in console
@@ -65,18 +69,17 @@ class QgisOutputCatcher:
 
 sys.stdout = QgisOutputCatcher()
 
-class PythonConsole(QDockWidget):
-  def __init__(self, parent=None):
-    QDockWidget.__init__(self, parent)
-   
-    self.widget = QWidget()
-    self.l = QVBoxLayout(self.widget)
-    self.edit = PythonEdit()
-    self.l.addWidget(self.edit)
-    self.setWidget(self.widget)
 
+class PythonConsole(QWidget):
+  def __init__(self, parent=None):
+    QWidget.__init__(self, parent)
+
+    self.edit = PythonEdit()
+    self.l = QVBoxLayout()
+    self.l.addWidget(self.edit)
+    self.setLayout(self.l)
     self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-    iface.addDockWidget(Qt.BottomDockWidgetArea,self)
+
     s = QSettings()
     self.restoreGeometry(s.value("/python/console/geometry").toByteArray())
 
