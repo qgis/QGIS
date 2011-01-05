@@ -48,9 +48,15 @@ def show_console():
     _console.edit.setFocus()
 
   
-
 _old_stdout = sys.stdout
 _console_output = None
+
+
+def clearConsole():
+  global _console
+  if _console is None:
+    return
+  _console.edit.clearConsole()
 
 
 # hook for python console so all output will be redirected
@@ -135,10 +141,8 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
     self.setFont(monofont)
 
     self.buffer = []
-
-    self.insertTaggedText(QCoreApplication.translate("PythonConsole", "To access Quantum GIS environment from this console\n"
-                          "use qgis.utils.iface object (instance of QgisInterface class).\n\n"),
-			  ConsoleHighlighter.INIT)
+    
+    self.insertInitText()
 
     for line in _init_commands:
       self.runsource(line)
@@ -149,6 +153,16 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
     self.historyIndex = 0
 
     self.high = ConsoleHighlighter(self)
+    
+  def insertInitText(self):
+    self.insertTaggedText(QCoreApplication.translate("PythonConsole", "To access Quantum GIS environment from this console\n"
+                          "use qgis.utils.iface object (instance of QgisInterface class).\n\n"),
+                          ConsoleHighlighter.INIT)
+
+
+  def clearConsole(self):
+    self.clear()
+    self.insertInitText()
 
   def displayPrompt(self, more=False):
     self.currentPrompt = "... " if more else ">>> "
