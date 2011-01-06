@@ -24,25 +24,28 @@ INCLUDE_DIRECTORIES(
      ../../../core 
 )
 
-ADD_LIBRARY (sqlanyconnection SHARED ${SACONN_SRCS})
+ADD_LIBRARY (qgissqlanyconnection SHARED ${SACONN_SRCS})
 
-SET_TARGET_PROPERTIES(sqlanyconnection PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
+SET_TARGET_PROPERTIES(qgissqlanyconnection PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
 
-TARGET_LINK_LIBRARIES(sqlanyconnection
+TARGET_LINK_LIBRARIES(qgissqlanyconnection
   qgis_core
 )
 
+IF (APPLE)
+  SET_TARGET_PROPERTIES(qgissqlanyconnection PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
+ENDIF (APPLE)
 
 ########################################################
 # Install
 
 IF (WIN32)
-    INSTALL(TARGETS sqlanyconnection
+    INSTALL(TARGETS qgissqlanyconnection
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
       )
 ELSE (WIN32)
-    INSTALL(TARGETS sqlanyconnection
+    INSTALL(TARGETS qgissqlanyconnection
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_LIB_DIR}
       )
