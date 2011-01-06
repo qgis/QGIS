@@ -64,7 +64,7 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(sqlanywhereplugin
   qgis_core
   qgis_gui
-  sqlanyconnection
+  qgissqlanyconnection
 )
 
 ########################################################
