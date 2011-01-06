@@ -35,7 +35,7 @@ ADD_LIBRARY (sqlanywhereprovider MODULE ${SA_SRCS} ${SA_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(sqlanywhereprovider
   qgis_core
-  sqlanyconnection
+  qgissqlanyconnection
 )
 
 
