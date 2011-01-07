@@ -89,13 +89,18 @@ void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent * e )
     }
   }
 
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
-  QgsGeometry* selectGeom = mRubberBand->asGeometry();
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, e );
-  delete selectGeom;
+  if ( mRubberBand )
+  {
+    QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 
-  mRubberBand->reset( true );
-  delete mRubberBand;
-  mRubberBand = 0;
+    QgsGeometry* selectGeom = mRubberBand->asGeometry();
+    QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, e );
+    delete selectGeom;
+
+    mRubberBand->reset( true );
+    delete mRubberBand;
+    mRubberBand = 0;
+  }
+
   mDragging = false;
 }
