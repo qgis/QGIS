@@ -33,8 +33,8 @@ email                : jpalmer at linz dot govt dot nz
 QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
 {
   QgsVectorLayer* vlayer = NULL;
-  if( !canvas->currentLayer()
-      || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == NULL )
+  if ( !canvas->currentLayer()
+       || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == NULL )
   {
     QMessageBox::warning( canvas, QObject::tr( "No active vector layer" ),
                           QObject::tr( "To select features, you must choose a "
@@ -49,11 +49,15 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
   const QgsMapToPixel* transform = canvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
   QgsPoint ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
-  rubberBand->reset( true );
-  rubberBand->addPoint( ll, false );
-  rubberBand->addPoint( QgsPoint( ur.x(), ll.y() ), false );
-  rubberBand->addPoint( ur, false );
-  rubberBand->addPoint( QgsPoint( ll.x(), ur.y() ), true );
+
+  if ( rubberBand )
+  {
+    rubberBand->reset( true );
+    rubberBand->addPoint( ll, false );
+    rubberBand->addPoint( QgsPoint( ur.x(), ll.y() ), false );
+    rubberBand->addPoint( ur, false );
+    rubberBand->addPoint( QgsPoint( ll.x(), ur.y() ), true );
+  }
 }
 
 void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
@@ -61,7 +65,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
     QPoint point )
 {
   int boxSize = 0;
-  if( vlayer->geometryType() != QGis::Polygon )
+  if ( vlayer->geometryType() != QGis::Polygon )
   {
     //if point or line use an artificial bounding box of 10x10 pixels
     //to aid the user to click on a feature accurately
@@ -84,12 +88,12 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     bool doDifference,
     bool singleSelect )
 {
-  if( selectGeometry->type() != QGis::Polygon )
+  if ( selectGeometry->type() != QGis::Polygon )
   {
     return;
   }
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
-  if( vlayer == NULL )
+  if ( vlayer == NULL )
   {
     return;
   }
@@ -100,14 +104,14 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   // and then click somewhere off the globe, an exception will be thrown.
   QgsGeometry selectGeomTrans( *selectGeometry );
 
-  if( canvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( canvas->mapRenderer()->hasCrsTransformEnabled() )
   {
     try
     {
       QgsCoordinateTransform ct( canvas->mapRenderer()->destinationSrs(), vlayer->crs() );
       selectGeomTrans.transform( ct );
     }
-    catch( QgsCsException &cse )
+    catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
       // catch exception for 'invalid' point and leave existing selection unchanged
@@ -132,10 +136,10 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   int closestFeatureId = 0;
   bool foundSingleFeature = false;
   double closestFeatureDist = std::numeric_limits<double>::max();
-  while( vlayer->nextFeature( f ) )
+  while ( vlayer->nextFeature( f ) )
   {
     QgsGeometry* g = f.geometry();
-    if( doContains )
+    if ( doContains )
     {
       if ( !selectGeomTrans.contains( g ) )
         continue;
@@ -145,11 +149,11 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
       if ( !selectGeomTrans.intersects( g ) )
         continue;
     }
-    if( singleSelect )
+    if ( singleSelect )
     {
       foundSingleFeature = true;
       double distance = g->distance( selectGeomTrans );
-      if( distance <= closestFeatureDist )
+      if ( distance <= closestFeatureDist )
       {
         closestFeatureDist = distance;
         closestFeatureId = f.id();
@@ -160,7 +164,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
       newSelectedFeatures.insert( f.id() );
     }
   }
-  if( singleSelect && foundSingleFeature )
+  if ( singleSelect && foundSingleFeature )
   {
     newSelectedFeatures.insert( closestFeatureId );
   }
@@ -168,14 +172,14 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
 
   QgsFeatureIds layerSelectedFeatures;
-  if( doDifference )
+  if ( doDifference )
   {
     layerSelectedFeatures = vlayer->selectedFeaturesIds();
     QgsFeatureIds::const_iterator i = newSelectedFeatures.constEnd();
-    while( i != newSelectedFeatures.constBegin() )
+    while ( i != newSelectedFeatures.constBegin() )
     {
       --i;
-      if( layerSelectedFeatures.contains( *i ) )
+      if ( layerSelectedFeatures.contains( *i ) )
       {
         layerSelectedFeatures.remove( *i );
       }
