@@ -97,6 +97,17 @@ IF (@POSTGRES_LIBRARY@ MATCHES ".*libpq.dylib")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@POSTGRES_LIBRARY@" "${QLIBDIR}/libpq.dylib")
     GET_INSTALL_NAME ("@POSTGRES_LIBRARY@" "libpq" PQLIB)
     UPDATEQGISPATHS (${PQLIB} libpq.dylib)
+    # may have been built with libintl
+    GET_INSTALL_NAME ("@POSTGRES_LIBRARY@" "libintl" INTLLIB)
+    IF (INTLLIB)
+        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${INTLLIB}" "${QLIBDIR}/libintl.dylib")
+        SET (LIB_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libintl.dylib")
+        IF (@OSX_HAVE_LOADERPATH@)
+            SET (LIB_CHG_TO "${ATLOADER}/libintl.dylib")
+        ENDIF (@OSX_HAVE_LOADERPATH@)
+        MESSAGE(STATUS "INSTALLNAMETOOL_CHANGE (${INTLLIB} ${LIB_CHG_TO} ${QLIBDIR}/libpq.dylib")
+        INSTALLNAMETOOL_CHANGE (${INTLLIB} ${LIB_CHG_TO} "${QLIBDIR}/libpq.dylib")
+    ENDIF (INTLLIB)
 ENDIF ()
 
 # libfcgi (non-system)
@@ -108,4 +119,3 @@ IF (@FCGI_LIBRARY@ MATCHES ".*libfcgi.dylib" AND NOT @FCGI_LIBRARY@ MATCHES "/us
     GET_INSTALL_NAME ("@FCGI_LIBRARY@" "libfcgi" FCGILIB)
     UPDATEQGISPATHS (${FCGILIB} libfcgi.dylib)
 ENDIF ()
-
