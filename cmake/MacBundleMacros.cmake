@@ -10,13 +10,14 @@
 # regex stuff taken from GetPrerequisites
 
 FUNCTION (GET_INSTALL_NAME LIBFILE LIBNAME OUTVAR)
-    EXECUTE_PROCESS (COMMAND otool -D "${LIBFILE}" OUTPUT_VARIABLE iname_out)
+    EXECUTE_PROCESS (COMMAND otool -L "${LIBFILE}" OUTPUT_VARIABLE iname_out)
+    # remove 1st line, it's just path to lib file
     STRING (REGEX REPLACE ".*:\n" "" iname "${iname_out}")
     IF (iname)
-        # trim it
-        STRING (REGEX MATCH "[^\n ].*[^\n ]" iname "${iname}")
-        SET (${OUTVAR} ${iname} PARENT_SCOPE)
+        # find libname
+        STRING (REGEX MATCH "[^\n\t ]*${LIBNAME}[^\n ]*" iname "${iname}")
     ENDIF (iname)
+    SET (${OUTVAR} ${iname} PARENT_SCOPE)
 ENDFUNCTION (GET_INSTALL_NAME)
 
 # message only if verbose makefiles
