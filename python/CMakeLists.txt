@@ -1,6 +1,8 @@
 SUBDIRS(plugins)
 
 IF (WITH_INTERNAL_SPATIALITE)
+  SUBDIRS(pyspatialite)
+
   INCLUDE_DIRECTORIES(
     ../src/core/spatialite/headers
     ../src/core/spatialite/headers/spatialite
