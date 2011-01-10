@@ -59,7 +59,7 @@ class QgsMapCanvas::CanvasProperties
 {
   public:
 
-    CanvasProperties() : panSelectorDown( false ) { }
+    CanvasProperties() : panSelectorDown( false ), mouseButtonDown( false ) { }
 
     //!Flag to indicate status of mouse button
     bool mouseButtonDown;
