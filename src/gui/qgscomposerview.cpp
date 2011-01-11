@@ -550,7 +550,7 @@ void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
   {
     scaleBar->setComposerMap( mapItemList.at( 0 ) );
   }
-  scaleBar->applyDefaultSettings(); //4 segments, 1/5 of composer map width
+  scaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
   scene()->addItem( scaleBar );
   emit composerScaleBarAdded( scaleBar );
   scene()->clearSelection();

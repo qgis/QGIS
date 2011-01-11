@@ -31,6 +31,7 @@
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ), mSegmentMillimeters( 0.0 )
 {
   applyDefaultSettings();
+  applyDefaultSize();
 }
 
 QgsComposerScaleBar::~QgsComposerScaleBar()
@@ -130,7 +131,10 @@ void QgsComposerScaleBar::applyDefaultSettings()
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
+}
 
+void QgsComposerScaleBar::applyDefaultSize()
+{
   if ( mComposerMap )
   {
     //calculate mNumUnitsPerSegment
