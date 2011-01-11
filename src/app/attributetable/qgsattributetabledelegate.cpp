@@ -60,7 +60,7 @@ int QgsAttributeTableDelegate::featureId( const QModelIndex &index ) const
 
   const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
   if ( fm )
-    return fm->tableModel()->rowToId( index.row() );
+    return fm->tableModel()->rowToId( fm->mapToSource( index ).row() );
 
   return -1;
 }
