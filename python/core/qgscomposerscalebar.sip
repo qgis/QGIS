@@ -58,8 +58,11 @@ class QgsComposerScaleBar: QgsComposerItem
 
     double segmentMillimeters() const;
 
-    /**Apply default settings (scale bar 1/5 of map item width)*/
+    /**Apply default settings*/
     void applyDefaultSettings();
+    /**Apply default size (scale bar 1/5 of map item width)
+      @note this method was added in version 1.7*/
+    void applyDefaultSize();
 
     /**Sets style by name
      @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
