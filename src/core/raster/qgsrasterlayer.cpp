@@ -3151,7 +3151,7 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
     return false;
   }
 
-  QgsDebugMsg( "Color table loaded sucessfully" );
+  QgsDebugMsg( "Color table loaded successfully" );
   return true;
 }
 
