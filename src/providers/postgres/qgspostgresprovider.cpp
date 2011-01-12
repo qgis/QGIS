@@ -569,14 +569,14 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       {
         // Contributed by #qgis irc "creeping"
         // This version actually invokes PostGIS's use of spatial indexes
-        whereClause = QString( "%1 && setsrid('BOX3D(%2)'::box3d,%3) and intersects(%1,setsrid('BOX3D(%2)'::box3d,%3))" )
+        whereClause = QString( "%1 && st_setsrid('BOX3D(%2)'::box3d,%3) and st_intersects(%1,st_setsrid('BOX3D(%2)'::box3d,%3))" )
                       .arg( quotedIdentifier( geometryColumn ) )
                       .arg( rect.asWktCoordinates() )
                       .arg( srid );
       }
       else
       {
-        whereClause = QString( "%1 && setsrid('BOX3D(%2)'::box3d,%3)" )
+        whereClause = QString( "%1 && st_setsrid('BOX3D(%2)'::box3d,%3)" )
                       .arg( quotedIdentifier( geometryColumn ) )
                       .arg( rect.asWktCoordinates() )
                       .arg( srid );
@@ -2032,12 +2032,12 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, c
   enumValues.clear();
 
   //is it a domain type with a check constraint?
-  QString domainSql = QString( "SELECT domain_name from information_schema.columns where table_name = %1 and column_name = %2" ).arg( quotedValue( mTableName ) ).arg( quotedValue( attributeName ) );
+  QString domainSql = QString( "SELECT domain_name from information_schema.columns where table_name=%1 and column_name=%2" ).arg( quotedValue( mTableName ) ).arg( quotedValue( attributeName ) );
   Result domainResult = connectionRO->PQexec( domainSql );
   if ( PQresultStatus( domainResult ) == PGRES_TUPLES_OK && PQntuples( domainResult ) > 0 )
   {
     //a domain type
-    QString domainCheckDefinitionSql = QString( "SELECT consrc FROM pg_constraint where conname = (SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name = %1)" ).arg( quotedValue( PQgetvalue( domainResult, 0, 0 ) ) );
+    QString domainCheckDefinitionSql = QString( "SELECT consrc FROM pg_constraint where conname=(SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name=%1)" ).arg( quotedValue( PQgetvalue( domainResult, 0, 0 ) ) );
     Result domainCheckRes = connectionRO->PQexec( domainCheckDefinitionSql );
     if ( PQresultStatus( domainCheckRes ) == PGRES_TUPLES_OK && PQntuples( domainCheckRes ) > 0 )
     {
@@ -2048,7 +2048,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, c
       //normally, postgresql creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
 
       //todo: ANY must occure before ARRAY
-      int anyPos = checkDefinition.indexOf( "VALUE = ANY" );
+      int anyPos = checkDefinition.indexOf( "VALUE=ANY" );
       int arrayPosition = checkDefinition.lastIndexOf( "ARRAY[" );
       int closingBracketPos = checkDefinition.indexOf( "]", arrayPosition + 6 );
 
@@ -2274,7 +2274,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     if ( !geometryColumn.isNull() )
     {
       insert += quotedIdentifier( geometryColumn );
-      values += QString( "GeomFromWKB($%1%2,%3)" )
+      values += QString( "st_geomfromwkb($%1%2,%3)" )
                 .arg( offset )
                 .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
                 .arg( srid );
@@ -2346,7 +2346,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         }
         else if ( fit->typeName() == "geometry" )
         {
-          values += QString( "%1geomfromewkt(%2)" ).arg( delim ).arg( quotedValue( it->toString() ) );
+          values += QString( "%1st_geomfromewkt(%2)" ).arg( delim ).arg( quotedValue( it->toString() ) );
         }
         else if ( fit->typeName() == "geography" )
         {
@@ -2362,7 +2362,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         // value is not unique => add parameter
         if ( fit->typeName() == "geometry" )
         {
-          values += QString( "%1geomfromewkt($%2)" ).arg( delim ).arg( defaultValues.size() + offset );
+          values += QString( "%1st_geomfromewkt($%2)" ).arg( delim ).arg( defaultValues.size() + offset );
         }
         else if ( fit->typeName() == "geography" )
         {
@@ -2632,7 +2632,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else
             first = false;
 
-          sql += QString( fld.typeName() == "geometry" ? "%1=geomfromewkt(%2)" :
+          sql += QString( fld.typeName() == "geometry" ? "%1=st_geomfromewkt(%2)" :
                           fld.typeName() == "geography" ? "%1=st_geographyfromewkt(%2)" :
                           "%1=%2" )
                  .arg( quotedIdentifier( fld.name() ) )
@@ -2695,7 +2695,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     // Start the PostGIS transaction
     connectionRW->PQexecNR( "BEGIN" );
 
-    QString update = QString( "UPDATE %1 SET %2=GeomFromWKB($1%3,%4) WHERE %5=$2" )
+    QString update = QString( "UPDATE %1 SET %2=st_geomfromwkb($1%3,%4) WHERE %5=$2" )
                      .arg( mQuery )
                      .arg( quotedIdentifier( geometryColumn ) )
                      .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
@@ -2879,7 +2879,7 @@ QgsRectangle QgsPostgresProvider::extent()
       {
         if ( QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toInt() > 0 )
         {
-          sql = QString( "select estimated_extent(%1,%2,%3)" )
+          sql = QString( "select st_estimated_extent(%1,%2,%3)" )
                 .arg( quotedValue( mSchemaName ) )
                 .arg( quotedValue( mTableName ) )
                 .arg( quotedValue( geometryColumn ) );
@@ -2907,7 +2907,7 @@ QgsRectangle QgsPostgresProvider::extent()
 
     if ( ext.isEmpty() )
     {
-      sql = QString( "select extent(%1) from %2" )
+      sql = QString( "select st_extent(%1) from %2" )
             .arg( quotedIdentifier( geometryColumn ) )
             .arg( mQuery );
 
@@ -3125,7 +3125,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select srid(%1), geometrytype(%1) from %2" )
+    sql = QString( "select st_srid(%1),st_geometrytype(%1) from %2" )
           .arg( quotedIdentifier( geometryColumn ) )
           .arg( mQuery );
 
@@ -3154,9 +3154,9 @@ bool QgsPostgresProvider::getGeometryDetails()
       // check to see if there is a unique geometry type
       sql = QString( "select distinct "
                      "case"
-                     " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                     " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                     " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                     " when st_geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                     " when st_geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                     " when st_geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
                      "from " ).arg( quotedIdentifier( geometryColumn ) );
       if ( mUseEstimatedMetadata )
