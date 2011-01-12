@@ -218,7 +218,7 @@ void QgsLabelPropertyDialog::fillValiComboBox()
 
 void QgsLabelPropertyDialog::on_mLabelDistanceSpinBox_valueChanged( double d )
 {
-
+  insertChangedValue( QgsPalLayerSettings::LabelDistance, d );
 }
 
 void QgsLabelPropertyDialog::on_mXCoordSpinBox_valueChanged( double d )
