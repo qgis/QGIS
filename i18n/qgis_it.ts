@@ -29574,7 +29574,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="541"/>
         <source>Value map</source>
-        <translation>Valore mappa</translation>
+        <translation>Mappa valori</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="542"/>
