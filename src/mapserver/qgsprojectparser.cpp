@@ -846,8 +846,6 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     return 0;
   }
 
-  QList<QDomElement> scaleBarElemList;
-
   //go through all the item elements and add them to the composition (and to the lists)
   QDomNodeList itemNodes = composerElem.childNodes();
   for ( int i = 0; i < itemNodes.size(); ++i )
@@ -874,17 +872,6 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
       legend->readXML( currentElem, *mXMLDoc );
       composition->addItem( legend );
     }
-    else if ( elemName == "ComposerPicture" )
-    {
-      QgsComposerPicture* picture = new QgsComposerPicture( composition );
-      picture->readXML( currentElem, *mXMLDoc );
-      composition->addItem( picture );
-    }
-    else if ( elemName == "ComposerScaleBar" )
-    {
-      //scalebars need to be loaded after the composer maps
-      scaleBarElemList.push_back( currentElem );
-    }
     else if ( elemName == "ComposerShape" )
     {
       QgsComposerShape* shape = new QgsComposerShape( composition );
@@ -905,13 +892,23 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     }
   }
 
-  //scalebars need to be loaded after the composer maps to receive the correct size
-  QList<QDomElement>::const_iterator scaleBarIt = scaleBarElemList.constBegin();
-  for ( ; scaleBarIt != scaleBarElemList.constEnd(); ++scaleBarIt )
+  //scalebars and pictures need to be loaded after the maps to receive the correct size / rotation
+  for ( int i = 0; i < itemNodes.size(); ++i )
   {
-    QgsComposerScaleBar* bar = new QgsComposerScaleBar( composition );
-    bar->readXML( *scaleBarIt, *mXMLDoc );
-    composition->addItem( bar );
+    QDomElement currentElem = itemNodes.at( i ).toElement();
+    QString elemName = currentElem.tagName();
+    if ( elemName == "ComposerPicture" )
+    {
+      QgsComposerPicture* picture = new QgsComposerPicture( composition );
+      picture->readXML( currentElem, *mXMLDoc );
+      composition->addItem( picture );
+    }
+    else if ( elemName == "ComposerScaleBar" )
+    {
+      QgsComposerScaleBar* bar = new QgsComposerScaleBar( composition );
+      bar->readXML( currentElem, *mXMLDoc );
+      composition->addItem( bar );
+    }
   }
 
   return composition;
