@@ -435,7 +435,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
           values += val;
         }
         query += "," + QgsPgUtil::quotedIdentifier( geom_col );
-        values += QString( ",GeometryFromText(%1,%2)" )
+        values += QString( ",st_geometryfromtext(%1,%2)" )
                   .arg( QgsPgUtil::quotedValue( geometry ) )
                   .arg( srid );
 
