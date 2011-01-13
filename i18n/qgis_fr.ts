@@ -5667,12 +5667,12 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
         <translation>Pour sélectionner un objet, vous devez choisir une couche vectorielle en cliquant sur son nom dans la légende</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="115"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="119"/>
         <source>CRS Exception</source>
         <translation>Erreur de SCR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="116"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="120"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation>La sélection s&apos;étend au-delà du système de coordonnée de la couche</translation>
     </message>
@@ -13371,8 +13371,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsdisplayanglebase.ui" line="50"/>
+        <source>Ellipsoidal</source>
+        <translation>Ellipsoïdale</translation>
+    </message>
+    <message>
         <source>Ellipsoidal (WGS84)</source>
-        <translation>Ellipsoïdale (WGS84)</translation>
+        <translation type="obsolete">Ellipsoïdale (WGS84)</translation>
     </message>
 </context>
 <context>
@@ -14286,6 +14290,11 @@ p, li { white-space: pre-wrap; }
         <translation>Ne peut créer le fichier</translation>
     </message>
     <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="175"/>
+        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
+        <translation>Impossible de créer un fichier GPX avec ce nom. Essayez avec un autre nom ou dans un autre répertoire.</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
         <source>GPX Loader</source>
         <translation>GPX Loader</translation>
@@ -14400,9 +14409,8 @@ Please reselect a valid file.</source>
 Veuillez sélectionner un fichier valide.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="175"/>
         <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
-        <translation>Impossible de créer un fichier GPX avec ce nom. Essayez avec un autre ou dans un autre répertoire.</translation>
+        <translation type="obsolete">Impossible de créer un fichier GPX avec ce nom. Essayez avec un autre ou dans un autre répertoire.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="426"/>
@@ -20773,8 +20781,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui" line="104"/>
+        <source>Ellipsoidal</source>
+        <translation>Ellipsoïdale</translation>
+    </message>
+    <message>
         <source>Ellipsoidal (WGS84)</source>
-        <translation>Ellipsoïdale (WGS84)</translation>
+        <translation type="obsolete">Ellipsoïdale (WGS84)</translation>
     </message>
 </context>
 <context>
@@ -20785,22 +20797,22 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="239"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="235"/>
         <source>Segments (in meters)</source>
         <translation>Segments (en mètres)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="242"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="238"/>
         <source>Segments (in feet)</source>
         <translation>Segements (en pieds)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="247"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="243"/>
         <source>Segments (in degrees)</source>
         <translation>Segments (en degrés)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="250"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="246"/>
         <source>Segments</source>
         <translation>Segments</translation>
     </message>
@@ -28031,7 +28043,7 @@ M&apos;erreur était :
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="81"/>
         <source>Avoid Int.</source>
-        <translation>Éviter Entier</translation>
+        <translation>Éviter Intersections</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="84"/>
