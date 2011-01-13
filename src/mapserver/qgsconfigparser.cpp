@@ -304,6 +304,9 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     QMap< QString, QString >::const_iterator titleIt = parameterMap.find( "MAP" + QString::number( currentMap->id() ) );
     if ( titleIt == parameterMap.constEnd() )
     {
+      //remove map from composition if not referenced by the request
+      c->removeItem( *mapIt );
+      delete( *mapIt );
       continue;
     }
     QString replaceString = titleIt.value();
