@@ -328,15 +328,15 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
 
     if ( typeName == "POINT" )
     {
-      geomFilter = QString( "st_geometrytype(\"%1\") IN ('POINT','MULTIPOINT')" ).arg( geomColumnName );
+      geomFilter = QString( "geometrytype(\"%1\") IN ('POINT','MULTIPOINT')" ).arg( geomColumnName );
     }
     else if ( typeName == "LINESTRING" )
     {
-      geomFilter = QString( "st_geometrytype(\"%1\") IN ('LINESTRING','MULTILINESTRING')" ).arg( geomColumnName );
+      geomFilter = QString( "geometrytype(\"%1\") IN ('LINESTRING','MULTILINESTRING')" ).arg( geomColumnName );
     }
     else if ( typeName == "POLYGON" )
     {
-      geomFilter = QString( "st_geometrytype(\"%1\") IN ('POLYGON','MULTIPOLYGON')" ).arg( geomColumnName );
+      geomFilter = QString( "geometrytype(\"%1\") IN ('POLYGON','MULTIPOLYGON')" ).arg( geomColumnName );
     }
 
     if ( !geomFilter.isEmpty() && !sql.contains( geomFilter ) )
@@ -941,9 +941,9 @@ void QgsGeomColumnTypeThread::getLayerTypes()
     {
       QString query = QString( "select distinct "
                                "case"
-                               " when st_geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                               " when st_geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                               " when st_geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                               " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                               " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                               " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                                " end "
                                "from " ).arg( "\"" + columns[i] + "\"" );
       if ( mUseEstimatedMetadata )

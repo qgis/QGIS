@@ -3125,7 +3125,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select st_srid(%1),st_geometrytype(%1) from %2" )
+    sql = QString( "select st_srid(%1),geometrytype(%1) from %2" )
           .arg( quotedIdentifier( geometryColumn ) )
           .arg( mQuery );
 
@@ -3154,9 +3154,9 @@ bool QgsPostgresProvider::getGeometryDetails()
       // check to see if there is a unique geometry type
       sql = QString( "select distinct "
                      "case"
-                     " when st_geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                     " when st_geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                     " when st_geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                     " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                     " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                     " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
                      "from " ).arg( quotedIdentifier( geometryColumn ) );
       if ( mUseEstimatedMetadata )
