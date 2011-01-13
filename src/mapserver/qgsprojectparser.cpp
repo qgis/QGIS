@@ -868,8 +868,11 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     }
     else if ( elemName == "ComposerLegend" )
     {
+      //legend needs to be loaded indirectly to have generic content
+      //and to avoid usage of x-server with pixmap icons
       QgsComposerLegend* legend = new QgsComposerLegend( composition );
-      legend->readXML( currentElem, *mXMLDoc );
+      legend->_readXML( currentElem.firstChildElement( "ComposerItem" ), *mXMLDoc );
+      legend->updateLegend();
       composition->addItem( legend );
     }
     else if ( elemName == "ComposerShape" )
