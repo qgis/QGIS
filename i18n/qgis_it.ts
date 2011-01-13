@@ -10166,7 +10166,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="235"/>
         <source>Add Label</source>
-        <translation>Aggiungi etichetta</translation>
+        <translation>Aggiungi testo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="247"/>
