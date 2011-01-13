@@ -82,6 +82,8 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mCacheHits( 0 )
     , mCacheMisses( 0 )
     , mErrors( 0 )
+    , mUserName( QString::null )
+    , mPassword( QString::null )
 {
   // URL may contain username/password information for a WMS
   // requiring authentication. In this case the URL is prefixed
@@ -113,8 +115,6 @@ void QgsWmsProvider::parseUri( QString uri )
   // Strip off and store the user name and password (if they exist)
   if ( !uri.startsWith( " http:" ) )
   {
-    mUserName = "";
-    mPassword = "";
     mTiled = false;
     mTileWidth = 0;
     mTileHeight = 0;
@@ -176,7 +176,6 @@ void QgsWmsProvider::parseUri( QString uri )
         }
       }
     }
-
   }
 }
 
@@ -520,6 +519,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     QgsDebugMsg( QString( "getmap: %1" ).arg( url ) );
     QNetworkRequest request( url );
+    setAuthorization( request );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
     cacheReply = QgsNetworkAccessManager::instance()->get( request );
     connect( cacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
@@ -638,6 +638,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         turl += urlargs;
 
         QNetworkRequest request( turl );
+        setAuthorization( request );
         QgsDebugMsg( QString( "tileRequest %1 %2/%3: %4" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( turl ) );
         request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
         request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -711,6 +712,7 @@ void QgsWmsProvider::tileReplyFinished()
     if ( !redirect.isNull() )
     {
       QNetworkRequest request( redirect.toUrl() );
+      setAuthorization( request );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
       request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), tileReqNo );
@@ -859,6 +861,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
     mError = "";
 
     QNetworkRequest request( url );
+    setAuthorization( request );
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -925,6 +928,7 @@ void QgsWmsProvider::capabilitiesReplyFinished()
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
       QNetworkRequest request( redirect.toUrl() );
+      setAuthorization( request );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -2829,6 +2833,14 @@ void QgsWmsProvider::reloadData()
 {
   delete cachedImage;
   cachedImage = 0;
+}
+
+void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
+{
+  if ( !mUserName.isNull() || !mPassword.isNull() )
+  {
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+  }
 }
 
 /**

@@ -200,6 +200,11 @@ QString QgsDataSourceURI::removePassword( const QString& aUri )
     regexp.setPattern( " password=.* " );
     safeName.replace( regexp, " " );
   }
+  else if ( aUri.contains( ",password=" ) )
+  {
+    regexp.setPattern( ",password=.*," );
+    safeName.replace( regexp, "," );
+  }
   else if ( aUri.contains( "IDB:" ) )
   {
     regexp.setPattern( " pass=.* " );
