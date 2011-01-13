@@ -10834,7 +10834,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="216"/>
         <source>Extents</source>
-        <translation>Estensioni</translation>
+        <translation>Estensione mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="231"/>
@@ -10929,7 +10929,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="436"/>
         <source>Draw annotation</source>
-        <translation>Scrivi le annotazioni</translation>
+        <translation>Scrivi le coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="478"/>
@@ -11056,7 +11056,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="267"/>
         <source>Sync from map</source>
-        <translation>Sincronizza dalla mappa</translation>
+        <translation>Sincronizza alla mappa</translation>
     </message>
 </context>
 <context>
@@ -11272,7 +11272,7 @@ Should the existing classes be deleted before classification?</source>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation>Rotazione</translation>
+        <translation>Rotazione </translation>
     </message>
 </context>
 <context>
@@ -29849,7 +29849,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="419"/>
         <source>Edit UI</source>
-        <translation>Modifica UI</translation>
+        <translation>Modulo di inserimento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="431"/>
