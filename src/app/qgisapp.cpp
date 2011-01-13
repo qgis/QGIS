@@ -3444,7 +3444,7 @@ bool QgisApp::addProject( QString projectFile )
   int defaultAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
   int myRed = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", defaultRed );
   int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
-  int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultBlue );
+  int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
   int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
   QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
