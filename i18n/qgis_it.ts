@@ -22238,7 +22238,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="16"/>
         <source>Solid Line</source>
-        <translation>Linea solida</translation>
+        <translation>Linea continua</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="17"/>
