@@ -372,7 +372,7 @@ QString QgsPostgresProvider::fieldExpression( const QgsField &fld ) const
   }
   else if ( type == "geometry" )
   {
-    return QString( "asewkt(%1)" ).arg( quotedIdentifier( fld.name() ) );
+    return QString( "st_asewkt(%1)" ).arg( quotedIdentifier( fld.name() ) );
   }
   else if ( type == "geography" )
   {
@@ -407,7 +407,7 @@ bool QgsPostgresProvider::declareCursor(
       }
       else
       {
-        query += QString( ",asbinary(%1,'%2')" )
+        query += QString( ",st_asbinary(%1,'%2')" )
                  .arg( quotedIdentifier( geometryColumn ) )
                  .arg( endianString() );
       }
