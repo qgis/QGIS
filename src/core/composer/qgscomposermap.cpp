@@ -47,7 +47,20 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mComposition = composition;
-  mId = mComposition->composerMapItems().size();
+
+  //mId = mComposition->composerMapItems().size();
+  int maxId = -1;
+  QList<const QgsComposerMap*> mapList = mComposition->composerMapItems();
+  QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
+  for ( ; mapIt != mapList.constEnd(); ++mapIt )
+  {
+    if (( *mapIt )->id() > maxId )
+    {
+      maxId = ( *mapIt )->id();
+    }
+  }
+  mId = maxId + 1;
+
   mMapRenderer = mComposition->mapRenderer();
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
