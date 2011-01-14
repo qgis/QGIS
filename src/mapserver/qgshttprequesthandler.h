@@ -30,6 +30,9 @@ class QgsHttpRequestHandler: public QgsRequestHandler
 
   protected:
     void sendHttpResponse( QByteArray* ba, const QString& format ) const;
+    /**Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
+      @return mime string (or the entered string if not found)*/
+    QString formatToMimeType( const QString& format ) const;
 };
 
 #endif

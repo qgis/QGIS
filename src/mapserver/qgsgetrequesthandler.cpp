@@ -99,14 +99,24 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
       QgsMapServerLogger::instance()->printMessage( "formatString is: " + formatString );
 
       //remove the image/ in front of the format
-      if ( formatString == "image/jpeg" || formatString == "image/jpg" || formatString == "JPG" || formatString == "jpg" )
-      {
-        formatString = "JPG";
-      }
-      else if ( formatString == "image/png" || formatString == "PNG" || formatString == "png" )
+      if ( formatString.compare( "image/png", Qt::CaseInsensitive ) == 0 || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "PNG";
       }
+      else if ( formatString.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.compare( "image/jpg", Qt::CaseInsensitive ) == 0 \
+                || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
+      {
+        formatString = "JPG";
+      }
+      else if ( formatString.compare( "svg", Qt::CaseInsensitive ) == 0 )
+      {
+        formatString = "SVG";
+      }
+      else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
+      {
+        formatString = "PDF";
+      }
+
       mFormat = formatString;
     }
   }
@@ -119,25 +129,19 @@ void QgsGetRequestHandler::sendGetMapResponse( const QString& service, QImage* i
 {
   if ( img )
   {
+    if ( mFormat != "PNG" && mFormat != "JPG" )
+    {
+      sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
+      return;
+    }
+
     //store the image in a QByteArray and send it directly
     QByteArray ba;
     QBuffer buffer( &ba );
     buffer.open( QIODevice::WriteOnly );
     img->save( &buffer, mFormat.toLocal8Bit().data(), -1 );
-    QString mimetype; //official mime-type string differs sometimes
-    if ( mFormat == "PNG" )
-    {
-      mimetype = "image/png";
-    }
-    else if ( mFormat == "JPG" )
-    {
-      mimetype = "image/jpeg";
-    }
-    else
-    {
-      //we don't support other formats yet...
-    }
-    sendHttpResponse( &ba, mimetype );
+
+    sendHttpResponse( &ba, formatToMimeType( mFormat ) );
   }
 }
 
@@ -298,7 +302,7 @@ void QgsGetRequestHandler::sendServiceException( const QgsMapServiceException& e
   sendHttpResponse( &ba, "text/xml" );
 }
 
-void QgsGetRequestHandler::sendGetPrintResponse( QByteArray* ba, const QString& formatString ) const
+void QgsGetRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
 {
-  sendHttpResponse( ba, formatString );
+  sendHttpResponse( ba, formatToMimeType( mFormat ) );
 }

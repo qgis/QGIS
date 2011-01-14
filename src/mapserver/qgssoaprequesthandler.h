@@ -34,7 +34,7 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
     void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
     void sendServiceException( const QgsMapServiceException& ex ) const;
     void sendGetStyleResponse( const QDomDocument& doc ) const;
-    void sendGetPrintResponse( QByteArray* ba, const QString& formatString ) const;
+    void sendGetPrintResponse( QByteArray* ba ) const;
   private:
     /**Parses the xml of a getMap request and fills the parameters into the map. Returns 0 in case of success*/
     int parseGetMapElement( std::map<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;

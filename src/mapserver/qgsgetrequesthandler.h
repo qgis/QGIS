@@ -29,5 +29,5 @@ class QgsGetRequestHandler: public QgsHttpRequestHandler
     void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
     void sendServiceException( const QgsMapServiceException& ex ) const;
     void sendGetStyleResponse( const QDomDocument& doc ) const;
-    void sendGetPrintResponse( QByteArray* ba, const QString& formatString ) const;
+    void sendGetPrintResponse( QByteArray* ba ) const;
 };

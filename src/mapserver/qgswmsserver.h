@@ -63,7 +63,7 @@ class QgsWMSServer
     /**Returns printed page as binary
       @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
       @return printed page as binary or 0 in case of error*/
-    QByteArray* getPrint( QString& formatString );
+    QByteArray* getPrint( const QString& formatString );
 
     /**Creates an xml document that describes the result of the getFeatureInfo request.
        @return 0 in case of success*/
@@ -80,9 +80,8 @@ class QgsWMSServer
       @param layersList out: list with WMS layer names
       @param stylesList out: list with WMS style names
       @param layerIdList out: list with QGIS layer ids
-      @param outputFormat out: name of requested output format
       @return image configured together with mMapRenderer (or 0 in case of error). The calling function takes ownership of the image*/
-    QImage* initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList, QString& outputFormat );
+    QImage* initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList );
 
     /**Creates a QImage from the HEIGHT and WIDTH parameters
      @param width image width (or -1 if width should be taken from WIDTH wms parameter)
