@@ -19,6 +19,7 @@
 #include "qgsepsgcache.h"
 #include "qgsmslayercache.h"
 #include "qgsmapserverlogger.h"
+#include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
@@ -31,6 +32,7 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+
 
 QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc ): QgsConfigParser(), mXMLDoc( xmlDoc )
 {
@@ -824,13 +826,13 @@ QString QgsProjectParser::layerIdFromLegendLayer( const QDomElement& legendLayer
   return legendLayerFileList.at( 0 ).toElement().attribute( "layerid" );
 }
 
-QgsComposition* QgsProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* > labelList ) const
+QgsComposition* QgsProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList ) const
 {
   //Create composition from xml
   QDomElement composerElem = composerByName( composerTemplate );
   if ( composerElem.isNull() )
   {
-    return 0;
+    throw QgsMapServiceException( "Error", "Composer template not found" );
   }
 
   QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
@@ -955,6 +957,16 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
       composerMapElem.setAttribute( "width", citem.attribute( "width" ) );
       composerMapElem.setAttribute( "height", citem.attribute( "height" ) );
       composerTemplateElem.appendChild( composerMapElem );
+    }
+
+    //add available composer labels
+    QDomNodeList composerLabelList = currentComposerElem.elementsByTagName( "ComposerLabel" );
+    for ( int j = 0; j < composerLabelList.size(); ++j )
+    {
+      QDomElement clabel = composerLabelList.at( j ).toElement();
+      QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
+      composerLabelElem.setAttribute( "name", "label" + clabel.attribute( "id" ) );
+      composerTemplateElem.appendChild( composerLabelElem );
     }
 
     parentElement.appendChild( composerTemplateElem );

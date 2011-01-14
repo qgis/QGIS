@@ -369,7 +369,7 @@ QByteArray* QgsWMSServer::getPrint( QString& formatString )
   std::map<QString, QString>::const_iterator templateIt = mParameterMap.find( "TEMPLATE" );
   if ( templateIt == mParameterMap.end() )
   {
-    return 0;
+    throw QgsMapServiceException( "ParameterMissing", "The TEMPLATE parameter is required for the GetPrint request" );
   }
 
   QgsComposition* c = mConfigParser->createPrintComposition( templateIt->second, mMapRenderer, QMap<QString, QString>( mParameterMap ) );
@@ -401,7 +401,7 @@ QByteArray* QgsWMSServer::getPrint( QString& formatString )
     c->render( &p, targetArea, sourceArea );
     p.end();
   }
-  else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
+  else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
   {
     int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
     int height = ( int )( c->paperHeight() * c->printResolution() / 25.4 ); //height in pixel
@@ -417,7 +417,7 @@ QByteArray* QgsWMSServer::getPrint( QString& formatString )
     ba = new QByteArray();
     QBuffer buffer( ba );
     buffer.open( QIODevice::WriteOnly );
-    image.save( &buffer, "png", -1 );
+    image.save( &buffer, formatString.toLocal8Bit().data(), -1 );
   }
   else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
   {
@@ -442,6 +442,10 @@ QByteArray* QgsWMSServer::getPrint( QString& formatString )
 
     ba = new QByteArray();
     *ba = tempFile.readAll();
+  }
+  else //unknown format
+  {
+    throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
 
   delete c;

@@ -17,6 +17,7 @@
 
 #include "qgsconfigparser.h"
 #include "qgsapplication.h"
+#include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgsrasterlayer.h"
@@ -375,7 +376,25 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     }
   }
 
-  //replace composer label text
+  //replace label text
+  QList<QgsComposerLabel*>::const_iterator labelIt = composerLabels.constBegin();
+  QgsComposerLabel* currentLabel = 0;
+
+  for ( ; labelIt != composerLabels.constEnd(); ++labelIt )
+  {
+    currentLabel = *labelIt;
+    QMap< QString, QString >::const_iterator titleIt = parameterMap.find( "LABEL" + QString::number( currentLabel->id() ) );
+    if ( titleIt == parameterMap.constEnd() )
+    {
+      //remove label
+      c->removeItem( *labelIt );
+      delete( *labelIt );
+      continue;
+    }
+
+    currentLabel->setText( titleIt.value() );
+    currentLabel->adjustSizeToText();
+  }
 
   return c;
 }

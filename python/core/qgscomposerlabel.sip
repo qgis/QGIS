@@ -48,4 +48,7 @@ class QgsComposerLabel: QgsComposerItem
        * @param node is Dom node corresponding to 'ComposerLabel' tag
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+    /**Get label identification number*/
+    int id() const;
 };
