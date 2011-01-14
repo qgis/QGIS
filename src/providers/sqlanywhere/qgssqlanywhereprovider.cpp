@@ -901,7 +901,7 @@ QgsSqlAnywhereProvider::makeSelectSql( QString whereClause ) const
   QString sql = QString( "SELECT %1" ).arg( quotedIdentifier( mKeyColumn ) );
   if ( mFetchGeom )
   {
-    sql += QString( ", %1 .ST_AsBinary('WKB(Version=1.2;endian=%2)') " )
+    sql += QString( ", %1 .ST_AsBinary('WKB(Version=1.1;endian=%2)') " )
            .arg( geomColIdent() )
            .arg( QgsApplication::endian() == QgsApplication::XDR ?  "xdr" : "ndr" );
   }
