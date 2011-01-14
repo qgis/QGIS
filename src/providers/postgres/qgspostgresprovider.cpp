@@ -1996,35 +1996,21 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
 bool QgsPostgresProvider::parseEnumRange( QStringList& enumValues, const QString& attributeName ) const
 {
   enumValues.clear();
-  QString enumRangeSql = QString( "SELECT enum_range(%1) from %2 limit 1" )
-                         .arg( quotedIdentifier( attributeName ) )
-                         .arg( mQuery );
+
+  QString enumRangeSql = QString( "SELECT enumlabel FROM pg_catalog.pg_enum WHERE enumtypid=(SELECT atttypid::regclass FROM pg_attribute WHERE attrelid=%1::regclass AND attname=%2)" )
+                         .arg( quotedValue( mQuery ) )
+                         .arg( quotedValue( attributeName ) );
   Result enumRangeRes = connectionRO->PQexec( enumRangeSql );
-  if ( PQresultStatus( enumRangeRes ) == PGRES_TUPLES_OK && PQntuples( enumRangeRes ) > 0 )
+
+  if ( PQresultStatus( enumRangeRes ) != PGRES_TUPLES_OK )
+    return false;
+
+  for ( int i = 0; i < PQntuples( enumRangeRes ); i++ )
   {
-    QString enumRangeString = PQgetvalue( enumRangeRes, 0, 0 );
-    //strip away the brackets at begin and end
-    enumRangeString.chop( 1 );
-    enumRangeString.remove( 0, 1 );
-    QStringList rangeSplit = enumRangeString.split( "," );
-    QStringList::const_iterator range_it = rangeSplit.constBegin();
-    for ( ; range_it != rangeSplit.constEnd(); ++range_it )
-    {
-      QString currentEnumValue = *range_it;
-      //remove quotes from begin and end of the value
-      if ( currentEnumValue.startsWith( "'" ) || currentEnumValue.startsWith( "\"" ) )
-      {
-        currentEnumValue.remove( 0, 1 );
-      }
-      if ( currentEnumValue.endsWith( "'" ) || currentEnumValue.endsWith( "\"" ) )
-      {
-        currentEnumValue.chop( 1 );
-      }
-      enumValues << currentEnumValue;
-    }
-    return true;
+    enumValues << QString::fromUtf8( PQgetvalue( enumRangeRes, i, 0 ) );
   }
-  return false;
+
+  return true;
 }
 
 bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const
