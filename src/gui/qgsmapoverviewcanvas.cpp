@@ -85,9 +85,21 @@ QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
 
 void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
 {
-  mPixmap = QPixmap( e->size() );
-  mMapRenderer->setOutputSize( e->size(), mPixmap.logicalDpiX() );
-  refresh();
+  mNewSize = e->size();
+}
+
+void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
+{
+  if( mNewSize.isValid() )
+  {
+    mPixmap = QPixmap( mNewSize );
+    mMapRenderer->setOutputSize( mNewSize, mPixmap.logicalDpiX() );
+    mNewSize = QSize();
+    refresh();
+  }
+
+  QPainter paint( this );
+  paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
 }
 
 
@@ -233,16 +245,9 @@ void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
 }
 
 
-void QgsMapOverviewCanvas::paintEvent( QPaintEvent * pe )
-{
-  QPainter paint( this );
-  paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
-}
-
-
 void QgsMapOverviewCanvas::refresh()
 {
-  if ( mPixmap.isNull() )
+  if ( mPixmap.isNull() || mPixmap.paintingActive() )
     return;
 
   mPixmap.fill( mBgColor ); //palette().color(backgroundRole());

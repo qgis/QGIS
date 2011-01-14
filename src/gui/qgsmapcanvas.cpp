@@ -932,52 +932,59 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 {
-  static bool isAlreadyIn = false;
-  static QSize lastSize = QSize( -1, -1 );
+  mNewSize = e->size();
+}
 
-  lastSize = e->size();
-
-  if ( isAlreadyIn || mDrawing )
+void QgsMapCanvas::paintEvent( QPaintEvent *e )
+{
+  if( mNewSize.isValid() )
   {
-    //cancel current render progress
-    if ( mMapRenderer )
+    static bool isAlreadyIn = false;
+    static QSize lastSize = QSize();
+
+    lastSize = mNewSize;
+    mNewSize = QSize();
+
+    if ( isAlreadyIn || mDrawing )
     {
-      QgsRenderContext* theRenderContext = mMapRenderer->rendererContext();
-      if ( theRenderContext )
+      //cancel current render progress
+      if ( mMapRenderer )
       {
-        theRenderContext->setRenderingStopped( true );
+        QgsRenderContext* theRenderContext = mMapRenderer->rendererContext();
+        if ( theRenderContext )
+        {
+          theRenderContext->setRenderingStopped( true );
+        }
       }
+      return;
     }
-    return;
-  }
-  isAlreadyIn = true;
+    isAlreadyIn = true;
 
-  while ( lastSize != QSize( -1, -1 ) )
-  {
-    int width = lastSize.width();
-    int height = lastSize.height();
-    lastSize = QSize( -1, -1 );
+    while ( lastSize.isValid() )
+    {
+      int width = lastSize.width();
+      int height = lastSize.height();
+      lastSize = QSize();
 
-    //set map size before scene size helps keep scene indexes updated properly
-    // this was the cause of rubberband artifacts
-    mMap->resize( QSize( width, height ) );
-    mScene->setSceneRect( QRectF( 0, 0, width, height ) );
+      //set map size before scene size helps keep scene indexes updated properly
+      // this was the cause of rubberband artifacts
+      mMap->resize( QSize( width, height ) );
+      mScene->setSceneRect( QRectF( 0, 0, width, height ) );
 
-    // notify canvas items of change
-    updateCanvasItemPositions();
+      // notify canvas items of change
+      updateCanvasItemPositions();
 
-    updateScale();
-#if QT_VERSION >= 0x40600
-    // FIXME: temporary workaround for #2714
-    QTimer::singleShot( 1, this, SLOT( refresh() ) );
-#else
-    refresh();
-#endif
-    emit extentsChanged();
-  }
+      updateScale();
+
+      refresh();
+
+      emit extentsChanged();
+    }
   isAlreadyIn = false;
-} // resizeEvent
+  }
 
+  QGraphicsView::paintEvent( e );
+} // paintEvent
 
 void QgsMapCanvas::updateCanvasItemPositions()
 {

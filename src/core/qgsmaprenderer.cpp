@@ -38,8 +38,7 @@
 #include <QListIterator>
 #include <QSettings>
 #include <QTime>
-#include "qgslogger.h"
-
+#include <QCoreApplication>
 
 QgsMapRenderer::QgsMapRenderer()
 {
@@ -229,14 +228,22 @@ void QgsMapRenderer::render( QPainter* painter )
     return;
   }
 
-  if ( mDrawing )
+  QPaintDevice* thePaintDevice = painter->device();
+  if ( !thePaintDevice )
   {
     return;
   }
 
-  QPaintDevice* thePaintDevice = painter->device();
-  if ( !thePaintDevice )
+  // wait
+  if( mDrawing )
   {
+    QgsDebugMsg( "already rendering" );
+    QCoreApplication::processEvents();
+  }
+
+  if( mDrawing )
+  {
+    QgsDebugMsg( "still rendering - skipping" );
     return;
   }
 
@@ -599,7 +606,6 @@ void QgsMapRenderer::render( QPainter* painter )
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
 
   mDrawing = false;
-
 }
 
 void QgsMapRenderer::setMapUnits( QGis::UnitType u )
@@ -1073,3 +1079,5 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
 
   mLabelingEngine = iface;
 }
+
+bool QgsMapRenderer::mDrawing = false;
