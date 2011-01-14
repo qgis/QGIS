@@ -15,8 +15,10 @@
 // QGIS
 #include <qgsapplication.h>
 #include <qgslogger.h>
+
 // Qt4
 #include <QString>
+#include <QtDebug>
 
 #include <ogr_api.h>
 #include <cpl_error.h>
@@ -205,7 +207,7 @@ bool Translator::translateLayer( OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDa
 
   if ( 0 == dstLayer )
   {
-    qWarning( QString( "Layer %1 not found and CreateLayer failed [OGR: %2]\n" ).arg( mDstLayer ).arg( CPLGetLastErrorMsg() ).toUtf8() );
+    qWarning() << QString("Layer %1 not found and CreateLayer failed [OGR: %2]\n" ).arg( mDstLayer ).arg( CPLGetLastErrorMsg() );
     return false;
   }
 
@@ -217,7 +219,7 @@ bool Translator::translateLayer( OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDa
   // Transfer attributes schema
   if ( !copyFields( srcLayerDefn, dstLayer ) )
   {
-    QgsDebugMsg( "Faild to copy fields from layer " + mSrcLayer );
+    QgsDebugMsg( "Failed to copy fields from layer " + mSrcLayer );
     return false;
   }
 
