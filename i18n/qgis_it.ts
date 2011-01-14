@@ -28816,7 +28816,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="168"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 rrichiede almeno %2 GCP. E&apos; necessario specificare ulteriori punti</translation>
+        <translation>%1 richiede almeno %2 GCP. E&apos; necessario specificare ulteriori punti</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="182"/>
