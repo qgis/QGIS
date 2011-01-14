@@ -144,7 +144,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maximumValue( int index ) { return minmaxValue( index, "MIN" ); }
+    QVariant maximumValue( int index ) { return minmaxValue( index, "MAX" ); }
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
