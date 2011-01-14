@@ -48,3 +48,24 @@ void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& for
   printf( "\n" );
   fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
 }
+
+QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
+{
+  if ( format.compare( "png", Qt::CaseInsensitive ) )
+  {
+    return "image/png";
+  }
+  else if ( format.compare( "jpg", Qt::CaseInsensitive ) )
+  {
+    return "image/jpeg";
+  }
+  else if ( format.compare( "svg", Qt::CaseInsensitive ) )
+  {
+    return "image/svg+xml";
+  }
+  else if ( format.compare( "pdf", Qt::CaseInsensitive ) )
+  {
+    return "application/pdf";
+  }
+  return format;
+}

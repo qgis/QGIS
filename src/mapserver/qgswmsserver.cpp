@@ -355,10 +355,11 @@ QDomDocument QgsWMSServer::getStyle()
   return mConfigParser->getStyle( styleName, layerName );
 }
 
-QByteArray* QgsWMSServer::getPrint( QString& formatString )
+QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 {
   QStringList layersList, stylesList, layerIdList;
-  QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, formatString );
+  QString dummyFormat;
+  QImage* theImage = initializeRendering( layersList, stylesList, layerIdList );
   if ( !theImage )
   {
     return 0;
@@ -455,8 +456,7 @@ QByteArray* QgsWMSServer::getPrint( QString& formatString )
 QImage* QgsWMSServer::getMap()
 {
   QStringList layersList, stylesList, layerIdList;
-  QString outputFormat;
-  QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, outputFormat );
+  QImage* theImage = initializeRendering( layersList, stylesList, layerIdList );
 
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
@@ -652,7 +652,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
   return 0;
 }
 
-QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList, QString& outputFormat )
+QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList )
 {
   if ( !mConfigParser )
   {
@@ -694,15 +694,6 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
       delete gmlDoc;
     }
   }
-
-  //get output format
-  std::map<QString, QString>::const_iterator outIt = mParameterMap.find( "FORMAT" );
-  if ( outIt == mParameterMap.end() )
-  {
-    QgsMSDebugMsg( "Error, no parameter FORMAT found" )
-    return 0; //output format parameter also mandatory
-  }
-  outputFormat = outIt->second;
 
   QImage* theImage = createImage();
   if ( !theImage )

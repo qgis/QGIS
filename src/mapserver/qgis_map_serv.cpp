@@ -385,10 +385,9 @@ int main( int argc, char * argv[] )
     else if ( requestIt->second == "GetPrint" )
     {
       QByteArray* printOutput = 0;
-      QString formatString;
       try
       {
-        printOutput = theServer->getPrint( formatString );
+        printOutput = theServer->getPrint( theRequestHandler->format() );
       }
       catch ( QgsMapServiceException& ex )
       {
@@ -397,7 +396,7 @@ int main( int argc, char * argv[] )
 
       if ( printOutput )
       {
-        theRequestHandler->sendGetPrintResponse( printOutput, formatString );
+        theRequestHandler->sendGetPrintResponse( printOutput );
       }
       delete printOutput;
       delete theRequestHandler;
