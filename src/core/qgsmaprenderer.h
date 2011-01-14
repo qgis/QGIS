@@ -249,7 +249,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
   protected:
 
     //! indicates drawing in progress
-    bool mDrawing;
+    static bool mDrawing;
 
     //! map units per pixel
     double mMapUnitsPerPixel;

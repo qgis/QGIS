@@ -108,6 +108,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     //! indicates whether antialiasing will be used for rendering
     bool mAntiAliasing;
+
+    //! resized canvas size
+    QSize mNewSize;
 };
 
 #endif
