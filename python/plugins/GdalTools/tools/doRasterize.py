@@ -104,8 +104,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       try:
         (fields, names) = Utils.getVectorFields(vectorFile)
-      except Exception, e:
-        QErrorMessage(self).showMessage( str(e) )
+      except Utils.UnsupportedOGRFormat, e:
+        QErrorMessage(self).showMessage( e.args[0] )
 
         self.inputLayerCombo.clearEditText()
         self.inputLayerCombo.setCurrentIndex(-1)
