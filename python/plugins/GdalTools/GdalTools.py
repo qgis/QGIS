@@ -32,7 +32,7 @@ try:
   from osgeo import gdal
   from osgeo import ogr
 except ImportError, e:
-  error_str = str(e)
+  error_str = e.args[0]
   error_mod = error_str.replace( "No module named ", "" )
   if req_mods.has_key( error_mod ):
     error_str = error_str.replace( error_mod, req_mods[error_mod] )

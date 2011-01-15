@@ -181,10 +181,15 @@ def fillVectorOutputFormat(aFilter = None, filename = None):
 
   return shortName
 
+class UnsupportedOGRFormat(Exception):
+    def __init__(self): 
+      msg = QCoreApplication.translate( "GdalTools", "The selected file is not a supported OGR format" )
+      Exception.__init__(self, msg) 
+
 def getVectorFields(vectorFile):
     hds = ogr.Open( unicode(vectorFile).encode('utf8') )
     if hds == None:
-      raise Exception( QCoreApplication.translate( "GdalTools", "The selected file is not a supported OGR format" ) )
+      raise UnsupportedOGRFormat()
 
     fields = []
     names = []
