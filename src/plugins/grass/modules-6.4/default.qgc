@@ -392,7 +392,6 @@
 				<grass name="v.mkgrid.region"/>
 			</section>
 			<section label="Create points">
-				<grass name="v.in.db"/>
 				<grass name="v.random"/>
 				<grass name="v.perturb"/>
 			</section>
