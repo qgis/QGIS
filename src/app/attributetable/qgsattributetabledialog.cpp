@@ -647,11 +647,25 @@ void QgsAttributeTableDialog::search()
     sensString = "LIKE";
   }
 
-  QString str = QString( "%1 %2 '%3'" )
-                .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
-                .arg( numeric ? "=" : sensString )
-                .arg( numeric ? mQuery->displayText().replace( "'", "''" ) :
-                      "%" + mQuery->displayText().replace( "'", "''" ) + "%" ); // escape quotes
+  QSettings settings;
+  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+
+  QString str;
+  if ( mQuery->displayText() == nullValue )
+  {
+    str = QString( "%1 IS NULL" ).arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) );
+  }
+  else
+  {
+    str = QString( "%1 %2 '%3'" )
+          .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
+          .arg( numeric ? "=" : sensString )
+          .arg( numeric
+                ? mQuery->displayText().replace( "'", "''" )
+                :
+                "%" + mQuery->displayText().replace( "'", "''" ) + "%" ); // escape quotes
+  }
+
   doSearch( str );
 }
 

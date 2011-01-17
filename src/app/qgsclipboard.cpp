@@ -23,6 +23,7 @@
 #include <QString>
 #include <QStringList>
 #include <QClipboard>
+#include <QSettings>
 
 #include "qgsclipboard.h"
 #include "qgsfeature.h"
@@ -75,7 +76,10 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
     if ( it->geometry() )
       textFields += it->geometry()->exportToWkt();
     else
-      textFields += "NULL";
+    {
+      QSettings settings;
+      textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
+    }
 
     // QgsDebugMsg("about to traverse fields.");
     //

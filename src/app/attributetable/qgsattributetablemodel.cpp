@@ -414,7 +414,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
     else
     {
-      return QVariant( "NULL" );
+      QSettings settings;
+      return settings.value( "qgis/nullValue", "NULL" );
     }
   }
 
@@ -497,6 +498,7 @@ void QgsAttributeTableModel::featureForm( QModelIndex &idx )
   QgsFeature f;
   QgsAttributeMap attributes;
 
+  f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
     f.changeAttribute( i, data( index( idx.row(), i ), Qt::EditRole ) );

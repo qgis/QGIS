@@ -253,6 +253,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddNewLayersToCurrentGroup->setChecked( settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", true ).toBool() );
+  leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
 
   //set the color for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
@@ -524,6 +525,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
   settings.setValue( "qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
+  settings.setValue( "qgis/nullValue", leNullValue->text() );
 
   //overlay placement method
   int overlayIndex = mOverlayAlgorithmComboBox->currentIndex();
