@@ -37,6 +37,7 @@
 #include <QDial>
 #include <QCalendarWidget>
 #include <QDialogButtonBox>
+#include <QSettings>
 
 void QgsAttributeEditor::selectFileName( void )
 {
@@ -451,12 +452,15 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   bool modified = false;
   QString text;
 
+  QSettings settings;
+  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+
   QLineEdit *le = qobject_cast<QLineEdit *>( widget );
   if ( le )
   {
     text = le->text();
     modified = le->isModified();
-    if ( text == "NULL" )
+    if ( text == nullValue )
     {
       text = QString::null;
     }
@@ -467,7 +471,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     text = te->toHtml();
     modified = te->document()->isModified();
-    if ( text == "NULL" )
+    if ( text == nullValue )
     {
       text = QString::null;
     }
@@ -478,7 +482,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     text = pte->toPlainText();
     modified = pte->document()->isModified();
-    if ( text == "NULL" )
+    if ( text == nullValue )
     {
       text = QString::null;
     }
@@ -492,11 +496,16 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
          editType == QgsVectorLayer::Classification )
     {
       text = cb->itemData( cb->currentIndex() ).toString();
+      if ( text == nullValue )
+      {
+        text = QString::null;
+      }
     }
     else
     {
       text = cb->currentText();
     }
+    modified = true;
   }
 
   QSpinBox *sb = qobject_cast<QSpinBox *>( widget );
@@ -614,6 +623,9 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
   const QgsField &field = vl->pendingFields()[idx];
   QVariant::Type myFieldType = field.type();
 
+  QSettings settings;
+  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+
   switch ( editType )
   {
     case QgsVectorLayer::Classification:
@@ -621,11 +633,17 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::ValueMap:
     {
+      QVariant v = value;
       QComboBox *cb = qobject_cast<QComboBox *>( editor );
       if ( cb == NULL )
         return false;
 
-      int idx = cb->findData( value );
+      if ( v.isNull() )
+      {
+        v = nullValue;
+      }
+
+      int idx = cb->findData( v );
       if ( idx < 0 )
         return false;
 
@@ -693,7 +711,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
         if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong )
           text = "";
         else
-          text = "NULL";
+          text = nullValue;
       else
         text = value.toString();
 

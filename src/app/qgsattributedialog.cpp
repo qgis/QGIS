@@ -25,6 +25,8 @@
 #include "qgssymbol.h"
 #include "qgsattributeeditor.h"
 #include "qgsrubberband.h"
+#include "qgssearchstring.h"
+#include "qgssearchtreenode.h"
 
 #include "qgisapp.h"
 
@@ -192,6 +194,48 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       mpIndizes << it.key();
       mpWidgets << myWidget;
+    }
+
+    foreach( QLineEdit *le, mDialog->findChildren<QLineEdit*>() )
+    {
+      if ( !le->objectName().startsWith( "expr_" ) )
+        continue;
+
+      le->setReadOnly( true );
+      QString expr = le->text();
+      le->setText( tr( "Error" ) );
+
+      QgsSearchString ss;
+      if ( !ss.setString( expr ) )
+        continue;
+
+      QgsSearchTreeNode *st = ss.tree();
+      if ( !st )
+        continue;
+
+      if ( !mFeature->geometry() && st->needsGeometry() )
+      {
+        QgsFeature f;
+        if ( vl->featureAtId( mFeature->id(), f, true, false ) && f.geometry() )
+        {
+          mFeature->setGeometry( *f.geometry() );
+        }
+      }
+
+      QgsSearchTreeValue value;
+      st->getValue( value, st, vl->pendingFields(), *mFeature );
+
+      if ( !value.isError() )
+      {
+        if ( value.isNumeric() )
+          le->setText( QString::number( value.number() ) );
+        else
+          le->setText( value.string() );
+      }
+      else
+      {
+        le->setText( tr( "Error: %1" ).arg( st->errorMsg() ) );
+      }
     }
   }
 

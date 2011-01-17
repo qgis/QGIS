@@ -74,7 +74,7 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
   QMap<QString, QgsMapLayer*>::iterator layer_it = QgsMapLayerRegistry::instance()->mapLayers().begin();
   for ( ; layer_it != QgsMapLayerRegistry::instance()->mapLayers().end(); layer_it++ )
   {
-    layerComboBox->addItem( layer_it.key() );
+    layerComboBox->addItem( layer_it.value()->name(), layer_it.key() );
   }
 }
 
@@ -89,7 +89,7 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
     return;
   }
 
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
+  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( vLayer == NULL )
   {
@@ -120,7 +120,7 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   }
   int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
   int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
+  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( vLayer == NULL )
   {
@@ -170,7 +170,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   mValueMap.clear();
   int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
   int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
+  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( vLayer == NULL )
   {
