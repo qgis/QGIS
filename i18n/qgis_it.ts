@@ -739,7 +739,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="111"/>
         <source>Grid Spacing</source>
-        <translation>Spaziatura griglia</translation>
+        <translation>Spaziatura reticolato</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
@@ -775,7 +775,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Griglia vettoriale</translation>
+        <translation>Reticolato vettoriale</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -882,7 +882,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
         <source>Grid extent</source>
-        <translation>Estensione griglia</translation>
+        <translation>Estensione reticolato</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
@@ -917,12 +917,12 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="279"/>
         <source>Output grid as polygons</source>
-        <translation>Griglia di output come poligoni</translation>
+        <translation>Reticolato di output come poligoni</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="289"/>
         <source>Output grid as lines</source>
-        <translation>Griglia di output come linee</translation>
+        <translation>Reticolato di output come linee</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="16"/>
@@ -1269,7 +1269,7 @@ Questo può provocare risultati inattesi.</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
         <source>Generate Vector Grid</source>
-        <translation>Genera una griglia vettoriale</translation>
+        <translation>Genera un reticolato vettoriale</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
@@ -5832,7 +5832,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1975"/>
         <source>Render</source>
-        <translation>Visualizza</translation>
+        <translation type="unfinished">Aggiorna</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2363"/>
@@ -7392,7 +7392,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="694"/>
         <source>&amp;New Print Composer</source>
-        <translation>&amp;Nuovo sistema di stampa</translation>
+        <translation>&amp;Nuova composizione di stampa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="695"/>
@@ -10106,12 +10106,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="226"/>
         <source>Add new map</source>
-        <translation>Aggiungi nuova mappa</translation>
+        <translation>Aggiungi mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="238"/>
         <source>Add new label</source>
-        <translation>Aggiungi nuova etichetta</translation>
+        <translation>Aggiungi etichetta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="250"/>
@@ -10241,7 +10241,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="354"/>
         <source>Raise selected items</source>
-        <translation>Muove sopra gli oggetti selezionati</translation>
+        <translation>Muovi gli oggetti selezionati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="359"/>
@@ -10291,12 +10291,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="396"/>
         <source>Align selected items left</source>
-        <translation>Allinea gli oggetti selezionati a sinistra</translation>
+        <translation>Allinea gli oggetti selezionati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="401"/>
         <source>Align center</source>
-        <translation>Allinea al centro</translation>
+        <translation>Allinea su asse verticale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="404"/>
@@ -10327,7 +10327,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerbase.ui" line="425"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="428"/>
         <source>Align center vertical</source>
-        <translation>Allinea al centro verticalmente</translation>
+        <translation>Allinea su asse orizzontale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="433"/>
@@ -10849,17 +10849,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="333"/>
         <source>Grid</source>
-        <translation>Griglia</translation>
+        <translation>Reticolato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="339"/>
         <source>Show grid?</source>
-        <translation>Mostra griglia?</translation>
+        <translation>Mostra reticolato?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="354"/>
         <source>Grid &amp;type</source>
-        <translation>&amp;Tipo griglia</translation>
+        <translation>&amp;Tipo reticolato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="370"/>
@@ -11297,7 +11297,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="217"/>
         <source>Select grid color</source>
-        <translation>Scegli il colore della griglia</translation>
+        <translation>Scegli il colore del reticolato</translation>
     </message>
 </context>
 <context>
@@ -32672,7 +32672,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Griglia vettoriale</translation>
+        <translation>Reticolato vettoriale</translation>
     </message>
     <message>
         <source>Select by location</source>
@@ -33302,7 +33302,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create grid in current region</source>
-        <translation>Crea una griglia nella regione attuale</translation>
+        <translation>Crea un reticolato nella regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
