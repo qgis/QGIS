@@ -224,13 +224,14 @@ void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
   if ( rect.isEmpty() )
   {
     mSpatialFilter = mExtent;
+    mSelectedFeatures = mFeatures.keys();
   }
   else
   {
     mSpatialFilter = rect;
+    mSelectedFeatures = mSpatialIndex->intersects( mSpatialFilter );
   }
 
-  mSelectedFeatures = mSpatialIndex->intersects( mSpatialFilter );
   mFeatureIterator = mSelectedFeatures.begin();
 }
 
