@@ -558,7 +558,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
       else if ( modified )
       {
-        value = QVariant( theField.type() );
+        value = QVariant();
       }
     }
     break;
@@ -573,7 +573,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
       else if ( modified )
       {
-        value = QVariant( theField.type() );
+        value = QVariant();
       }
     }
     case QVariant::Double:
@@ -587,7 +587,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
       else if ( modified )
       {
-        value = QVariant( theField.type() );
+        value = QVariant();
       }
     }
     break;
@@ -601,7 +601,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
       else if ( modified )
       {
-        value = QVariant( theField.type() );
+        value = QVariant();
       }
     }
     break;
