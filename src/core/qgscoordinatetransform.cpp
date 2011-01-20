@@ -557,7 +557,7 @@ const char *finder( const char *name )
 
 void QgsCoordinateTransform::setFinder()
 {
-#ifdef WIN32
+#if 0
   // Attention! It should be possible to set PROJ_LIB
   // but it can happen that it was previously set by installer
   // (version 0.7) and the old installation was deleted
