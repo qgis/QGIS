@@ -72,8 +72,13 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /**Get label identification number*/
-    int id() const { return mId; }
+    /**Get label identification number
+      @note this method was added in version 1.7*/
+    QString id() const { return mId; }
+
+    /**Set label identification number
+      @note this method was added in version 1.7*/
+    void setId( const QString& id ) { mId = id; }
 
   private:
     // Text
@@ -95,13 +100,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     Qt::AlignmentFlag mVAlignment;
 
     // Label id (unique within the same composition)
-    int mId;
+    QString mId;
 
     /**Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
     void replaceDateText( QString& text ) const;
-
-    /**Returns maximum id of all label items or -1 if no item is in the scene. Used to generate new ids in the constructor*/
-    int maximumLabelId( const QgsComposition* c ) const;
 };
 
 #endif

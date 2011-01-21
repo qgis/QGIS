@@ -383,10 +383,15 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
   for ( ; labelIt != composerLabels.constEnd(); ++labelIt )
   {
     currentLabel = *labelIt;
-    QMap< QString, QString >::const_iterator titleIt = parameterMap.find( "LABEL" + QString::number( currentLabel->id() ) );
+    QMap< QString, QString >::const_iterator titleIt = parameterMap.find( currentLabel->id().toUpper() );
     if ( titleIt == parameterMap.constEnd() )
     {
-      //keep label with default text and size
+      //remove exported labels not referenced in the request
+      if ( !currentLabel->id().isEmpty() )
+      {
+        c->removeItem( currentLabel );
+        delete( currentLabel );
+      }
       continue;
     }
 

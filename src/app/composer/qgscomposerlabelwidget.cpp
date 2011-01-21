@@ -162,6 +162,16 @@ void QgsComposerLabelWidget::on_mMiddleRadioButton_clicked()
   }
 }
 
+void QgsComposerLabelWidget::on_mLabelIdLineEdit_textChanged( const QString& text )
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->beginCommand( tr( "Label id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
+    mComposerLabel->setId( text );
+    mComposerLabel->endCommand();
+  }
+}
+
 void QgsComposerLabelWidget::setGuiElementValues()
 {
   blockAllSignals( true );
@@ -173,6 +183,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
+  mLabelIdLineEdit->setText( mComposerLabel->id() );
   blockAllSignals( false );
 }
 
@@ -186,4 +197,5 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
+  mLabelIdLineEdit->blockSignals( block );
 }
