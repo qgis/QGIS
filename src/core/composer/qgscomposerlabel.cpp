@@ -25,9 +25,6 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerIt
 {
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
-
-  //get new id
-  mId = maximumLabelId( composition ) + 1;
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -173,7 +170,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   mVAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "valign" ).toInt() );
 
   //id
-  mId = itemElem.attribute( "id", "0" ).toInt();
+  mId = itemElem.attribute( "id", "" );
 
   //font
   QDomNodeList labelFontList = itemElem.elementsByTagName( "LabelFont" );
@@ -207,28 +204,4 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   }
   emit itemChanged();
   return true;
-}
-
-int QgsComposerLabel::maximumLabelId( const QgsComposition* c ) const
-{
-  int id = -1;
-  if ( !c )
-  {
-    return id;
-  }
-
-  QList<QGraphicsItem *> itemList = c->items();
-  QList<QGraphicsItem *>::const_iterator itemIt = itemList.constBegin();
-  for ( ; itemIt != itemList.constEnd(); ++itemIt )
-  {
-    const QgsComposerLabel* label = dynamic_cast<const QgsComposerLabel *>( *itemIt );
-    if ( label )
-    {
-      if ( label->id() > id )
-      {
-        id = label->id();
-      }
-    }
-  }
-  return id;
 }

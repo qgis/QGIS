@@ -941,6 +941,16 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     composerTemplateElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
     composerTemplateElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
 
+    //get paper width and hight in mm from composition
+    QDomElement compositionElem = currentComposerElem.firstChildElement( "Composition" );
+    if ( compositionElem.isNull() )
+    {
+      continue;
+    }
+    composerTemplateElem.setAttribute( "width", compositionElem.attribute( "paperWidth" ) );
+    composerTemplateElem.setAttribute( "height", compositionElem.attribute( "paperHeight" ) );
+
+
     //add available composer maps and their size in mm
     QDomNodeList composerMapList = currentComposerElem.elementsByTagName( "ComposerMap" );
     for ( int j = 0; j < composerMapList.size(); ++j )
@@ -964,8 +974,13 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     for ( int j = 0; j < composerLabelList.size(); ++j )
     {
       QDomElement clabel = composerLabelList.at( j ).toElement();
+      QString id = clabel.attribute( "id" );
+      if ( id.isEmpty() ) //only export labels with ids for text replacement
+      {
+        continue;
+      }
       QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
-      composerLabelElem.setAttribute( "name", "label" + clabel.attribute( "id" ) );
+      composerLabelElem.setAttribute( "name", id );
       composerTemplateElem.appendChild( composerLabelElem );
     }
 

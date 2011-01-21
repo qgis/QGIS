@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>362</height>
+    <width>547</width>
+    <height>425</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>486</width>
-        <height>320</height>
+        <width>513</width>
+        <height>402</height>
        </rect>
       </property>
       <attribute name="label">
@@ -65,7 +65,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="mMarginTextLabel">
          <property name="text">
           <string>Margin (mm)</string>
@@ -75,7 +75,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="7" column="0">
         <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox"/>
        </item>
        <item row="3" column="0">
@@ -139,6 +139,16 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLineEdit" name="mLabelIdLineEdit"/>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="mIdLabel">
+         <property name="text">
+          <string>Label id</string>
+         </property>
         </widget>
        </item>
       </layout>

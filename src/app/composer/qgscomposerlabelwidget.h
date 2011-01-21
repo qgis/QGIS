@@ -42,6 +42,7 @@ class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidget
     void on_mTopRadioButton_clicked();
     void on_mBottomRadioButton_clicked();
     void on_mMiddleRadioButton_clicked();
+    void on_mLabelIdLineEdit_textChanged( const QString& text );
 
   private slots:
     void setGuiElementValues();
