@@ -386,9 +386,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     QMap< QString, QString >::const_iterator titleIt = parameterMap.find( "LABEL" + QString::number( currentLabel->id() ) );
     if ( titleIt == parameterMap.constEnd() )
     {
-      //remove label
-      c->removeItem( *labelIt );
-      delete( *labelIt );
+      //keep label with default text and size
       continue;
     }
 
