@@ -461,7 +461,7 @@ ELSE (SVN_MARKER)
     IF(GIT)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        COMMAND echo \\\#define QGSSVNVERSION \\\"`${GIT} svn info | sed -ne "s/Revision: //p"`\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+        COMMAND echo \\\#define QGSSVNVERSION \\\"`${GIT} log -n1 --grep='git-svn-id' | sed -ne 's/^  *git-svn-id:.*@\([0-9]*\).*$\/\1/p'`\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
