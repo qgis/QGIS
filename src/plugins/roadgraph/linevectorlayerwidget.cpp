@@ -37,100 +37,100 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
     : QWidget( parent )
 {
   // create base widgets;
-  QTabWidget *tab = new QTabWidget(this);
-  QVBoxLayout *v= new QVBoxLayout(this);
-  v->addWidget(tab);
- 
+  QTabWidget *tab = new QTabWidget( this );
+  QVBoxLayout *v = new QVBoxLayout( this );
+  v->addWidget( tab );
+
   // transportation layer
-  QFrame *frame = new QFrame(this);
-  tab->addTab( frame, tr("Transportation layer") );
-  v = new QVBoxLayout(frame);
-  QLabel *l = new QLabel(tr("Layer"), frame);
-  mcbLayers = new QComboBox(frame);
-  QHBoxLayout *h = new QHBoxLayout(this);
+  QFrame *frame = new QFrame( this );
+  tab->addTab( frame, tr( "Transportation layer" ) );
+  v = new QVBoxLayout( frame );
+  QLabel *l = new QLabel( tr( "Layer" ), frame );
+  mcbLayers = new QComboBox( frame );
+  QHBoxLayout *h = new QHBoxLayout( this );
 
-  h->addWidget(l);
-  h->addWidget(mcbLayers);
-  v->addLayout(h);
-
-  h = new QHBoxLayout();
-  l = new QLabel( tr("Direction field"), frame );
-  mcbDirection = new QComboBox(frame);
-  h->addWidget(l);
-  h->addWidget(mcbDirection);
-  v->addLayout(h);
+  h->addWidget( l );
+  h->addWidget( mcbLayers );
+  v->addLayout( h );
 
   h = new QHBoxLayout();
-  h->addWidget( new QLabel( tr("Direct direction"), frame) );
+  l = new QLabel( tr( "Direction field" ), frame );
+  mcbDirection = new QComboBox( frame );
+  h->addWidget( l );
+  h->addWidget( mcbDirection );
+  v->addLayout( h );
+
+  h = new QHBoxLayout();
+  h->addWidget( new QLabel( tr( "Direct direction" ), frame ) );
   mleFirstPointToLastPointDirection = new QLineEdit( s->mFirstPointToLastPointDirectionVal, frame );
   h->addWidget( mleFirstPointToLastPointDirection );
-  v->addLayout(h);
+  v->addLayout( h );
 
   h = new QHBoxLayout();
-  h->addWidget( new QLabel( tr("Reverse direction"), frame) );
+  h->addWidget( new QLabel( tr( "Reverse direction" ), frame ) );
   mleLastPointToFirstPointDirection = new QLineEdit( s->mLastPointToFirstPointDirectionVal, frame );
   h->addWidget( mleLastPointToFirstPointDirection );
-  v->addLayout(h);
+  v->addLayout( h );
 
   h = new QHBoxLayout();
-  h->addWidget( new QLabel( tr("Both direction"), frame) );
+  h->addWidget( new QLabel( tr( "Both direction" ), frame ) );
   mleBothDirection = new QLineEdit( s->mBothDirectionVal, frame );
   h->addWidget( mleBothDirection );
-  v->addLayout(h);
+  v->addLayout( h );
 
   h = new QHBoxLayout();
-  l = new QLabel( tr("Speed field"), frame );
-  mcbSpeed = new QComboBox(frame);
-  h->addWidget(l);
-  h->addWidget(mcbSpeed);
-  v->addLayout(h);
-  
-  frame = new QFrame(tab);
-  tab->addTab( frame, tr("Default settings") );
-  v = new QVBoxLayout(frame);
+  l = new QLabel( tr( "Speed field" ), frame );
+  mcbSpeed = new QComboBox( frame );
+  h->addWidget( l );
+  h->addWidget( mcbSpeed );
+  v->addLayout( h );
+
+  frame = new QFrame( tab );
+  tab->addTab( frame, tr( "Default settings" ) );
+  v = new QVBoxLayout( frame );
   h = new QHBoxLayout();
-  l = new QLabel( tr("Direction"), frame );
-  mcbDirectionDefault = new QComboBox(frame);
-  mcbDirectionDefault->insertItem( 0, tr("Both direction") );
-  mcbDirectionDefault->insertItem( 1, tr("Direct direction") );
-  mcbDirectionDefault->insertItem( 2, tr("Reverse direction") );
-  connect( mcbLayers, SIGNAL(currentIndexChanged(int)), this, SLOT(on_mcbLayers_selectItem()) );
+  l = new QLabel( tr( "Direction" ), frame );
+  mcbDirectionDefault = new QComboBox( frame );
+  mcbDirectionDefault->insertItem( 0, tr( "Both direction" ) );
+  mcbDirectionDefault->insertItem( 1, tr( "Direct direction" ) );
+  mcbDirectionDefault->insertItem( 2, tr( "Reverse direction" ) );
+  connect( mcbLayers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_mcbLayers_selectItem() ) );
 
-  h->addWidget(l);
-  h->addWidget(mcbDirectionDefault);
-  v->addLayout(h);
-  
-  h = new QHBoxLayout(frame);
-  l = new QLabel( tr("Cost"), frame );
-  h->addWidget(l);
-  l = new QLabel( tr("lines length"), frame );
-  h->addWidget(l);
-  v->addLayout(h);
+  h->addWidget( l );
+  h->addWidget( mcbDirectionDefault );
+  v->addLayout( h );
 
-  h = new QHBoxLayout(frame);
-  l = new QLabel( tr("Speed"), frame );
+  h = new QHBoxLayout( frame );
+  l = new QLabel( tr( "Cost" ), frame );
+  h->addWidget( l );
+  l = new QLabel( tr( "lines length" ), frame );
+  h->addWidget( l );
+  v->addLayout( h );
+
+  h = new QHBoxLayout( frame );
+  l = new QLabel( tr( "Speed" ), frame );
   msbSpeedDefault = new QSpinBox( frame );
   msbSpeedDefault->setMinimum( 1 );
   msbSpeedDefault->setMaximum( 10000000 );
   h->addWidget( l );
   h->addWidget( msbSpeedDefault );
   v->addLayout( h );
-  
-  frame = new QFrame(tab);
-  tab->addTab( frame, tr("Units") );
+
+  frame = new QFrame( tab );
+  tab->addTab( frame, tr( "Units" ) );
   v = new QVBoxLayout( frame );
   h = new QHBoxLayout();
-  l = new QLabel( tr("Unit of speed") );
-  mcbUnitOfSpeed = new QComboBox(this);
-  h->addWidget(l);
-  h->addWidget( mcbUnitOfSpeed );  
+  l = new QLabel( tr( "Unit of speed" ) );
+  mcbUnitOfSpeed = new QComboBox( this );
+  h->addWidget( l );
+  h->addWidget( mcbUnitOfSpeed );
   v->addLayout( h );
 
-  mcbUnitOfSpeed->insertItem( 0, tr("km/h") );
-  mcbUnitOfSpeed->insertItem( 0, tr("m/s") );
-  if ( s->mSpeedUnitName == "km/h" ) 
+  mcbUnitOfSpeed->insertItem( 0, tr( "km/h" ) );
+  mcbUnitOfSpeed->insertItem( 0, tr( "m/s" ) );
+  if ( s->mSpeedUnitName == "km/h" )
     mcbUnitOfSpeed->setCurrentIndex( 1 );
-  else if (s->mSpeedUnitName == "m/s" )
+  else if ( s->mSpeedUnitName == "m/s" )
     mcbUnitOfSpeed->setCurrentIndex( 0 );
 
   // fill list of layers
@@ -144,38 +144,38 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
       continue;
     if ( vl->geometryType() != QGis::Line )
       continue;
-    mcbLayers->insertItem( 0, vl->name() );  
+    mcbLayers->insertItem( 0, vl->name() );
   }
-  
+
   //sets current settings
-  msbSpeedDefault->setValue( static_cast<int>( s->mDefaultSpeed ) );  
+  msbSpeedDefault->setValue( static_cast<int>( s->mDefaultSpeed ) );
 
   int idx = mcbLayers->findText( s->mLayer );
-  if (idx != -1)
+  if ( idx != -1 )
   {
     mcbLayers->setCurrentIndex( idx );
   }
-    
+
   idx = mcbDirection->findText( s->mDirection );
-  if (idx != -1)
+  if ( idx != -1 )
     mcbDirection->setCurrentIndex( idx );
-  
+
   idx = mcbSpeed->findText( s->mSpeed );
-  if (idx != -1)
+  if ( idx != -1 )
     mcbSpeed->setCurrentIndex( idx );
-  
-  
-  switch( s->mDefaultDirection )
+
+
+  switch ( s->mDefaultDirection )
   {
-  case RgLineVectorLayerSettings::Both:
-    mcbDirectionDefault->setCurrentIndex(0);
-    break;
-  case RgLineVectorLayerSettings::FirstPointToLastPoint:
-    mcbDirectionDefault->setCurrentIndex(1);
-    break;
-  case RgLineVectorLayerSettings::LastPointToFirstPoint:
-    mcbDirectionDefault->setCurrentIndex(2);
-    break;
+    case RgLineVectorLayerSettings::Both:
+      mcbDirectionDefault->setCurrentIndex( 0 );
+      break;
+    case RgLineVectorLayerSettings::FirstPointToLastPoint:
+      mcbDirectionDefault->setCurrentIndex( 1 );
+      break;
+    case RgLineVectorLayerSettings::LastPointToFirstPoint:
+      mcbDirectionDefault->setCurrentIndex( 2 );
+      break;
   }
 } // RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget()
 
@@ -203,8 +203,8 @@ void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()
   mcbDirection->clear();
   mcbSpeed->clear();
 
-  mcbDirection->insertItem( 0, tr("Always use default") );
-  mcbSpeed->insertItem( 0, tr("Always use default") );
+  mcbDirection->insertItem( 0, tr( "Always use default" ) );
+  mcbSpeed->insertItem( 0, tr( "Always use default" ) );
 
   QgsVectorLayer* vl = selectedLayer();
   if ( !vl )
@@ -213,20 +213,20 @@ void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()
   QgsVectorDataProvider* provider = vl->dataProvider();
   if ( !provider )
     return;
-  
+
   const QgsFieldMap& fields = provider->fields();
   QgsFieldMap::const_iterator it;
-  for (it = fields.constBegin(); it != fields.constEnd(); ++it)
+  for ( it = fields.constBegin(); it != fields.constEnd(); ++it )
   {
     QgsField currentField = it.value();
     QVariant currentType = currentField.type();
     if ( currentType == QVariant::Int || currentType == QVariant::String )
     {
-      mcbDirection->insertItem(1, currentField.name());
+      mcbDirection->insertItem( 1, currentField.name() );
     }
     if ( currentType == QVariant::Int || currentType == QVariant::Double )
     {
-      mcbSpeed->insertItem(1, currentField.name());
+      mcbSpeed->insertItem( 1, currentField.name() );
     }
   }
 

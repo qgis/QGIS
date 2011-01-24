@@ -23,8 +23,8 @@ Unit::Unit()
   mMultipler = 1.0;
 }
 
-Unit::Unit(const QString& name, double multipler) :
-  mName(name), mMultipler(multipler)
+Unit::Unit( const QString& name, double multipler ) :
+    mName( name ), mMultipler( multipler )
 {
 }
 
@@ -37,7 +37,7 @@ double Unit::multipler() const
 {
   return mMultipler;
 }
-Unit Unit::byName( const QString& name)
+Unit Unit::byName( const QString& name )
 {
   if ( name == "h" )
     return Unit( name, 60*60 );
@@ -51,43 +51,43 @@ Unit Unit::byName( const QString& name)
 }
 
 SpeedUnit::SpeedUnit() :
-  mTimeUnit("",1), mDistanceUnit("",1)
+    mTimeUnit( "", 1 ), mDistanceUnit( "", 1 )
 {
- 
+
 }
 
-SpeedUnit::SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit) :
-  mTimeUnit( timeUnit ), mDistanceUnit( distanceUnit )
+SpeedUnit::SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit ) :
+    mTimeUnit( timeUnit ), mDistanceUnit( distanceUnit )
 {
 }
 
 QString SpeedUnit::name() const
-{ 
+{
   if ( mDistanceUnit.name().isNull() || mTimeUnit.name().isNull() )
     return QString();
-  return mDistanceUnit.name() + QString("/") + mTimeUnit.name(); 
+  return mDistanceUnit.name() + QString( "/" ) + mTimeUnit.name();
 }
 
 SpeedUnit SpeedUnit::byName( const QString& name )
 {
-  if ( name=="km/h" )
-    return SpeedUnit( Unit::byName("km"), Unit::byName("h") );
-  else if ( name=="m/s" )
-    return SpeedUnit( Unit::byName("m"), Unit::byName("s") );
+  if ( name == "km/h" )
+    return SpeedUnit( Unit::byName( "km" ), Unit::byName( "h" ) );
+  else if ( name == "m/s" )
+    return SpeedUnit( Unit::byName( "m" ), Unit::byName( "s" ) );
   return SpeedUnit();
 }
 
 double SpeedUnit::multipler() const
-{ 
-  return mDistanceUnit.multipler()/mTimeUnit.multipler(); 
+{
+  return mDistanceUnit.multipler() / mTimeUnit.multipler();
 }
 
 Unit SpeedUnit::timeUnit() const
-{ 
-  return mTimeUnit; 
+{
+  return mTimeUnit;
 }
 
 Unit SpeedUnit::distanceUnit() const
-{  
-  return mDistanceUnit; 
+{
+  return mDistanceUnit;
 }

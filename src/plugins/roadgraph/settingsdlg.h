@@ -11,7 +11,7 @@
 *   the Free Software Foundation; either version 2 of the License, or      *
 *   (at your option) any later version.                                    *
 *                                                                          *
-***************************************************************************/          
+***************************************************************************/
 #ifndef ROADGRAPH_SETTINGSDLG_H
 #define ROADGRAPH_SETTINGSDLG_H
 
@@ -36,44 +36,44 @@ class RgSettingsDlg : public QDialog
 {
     Q_OBJECT
   public:
-  RgSettingsDlg( RgGraphDirector *director, QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~RgSettingsDlg();
+    RgSettingsDlg( RgGraphDirector *director, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~RgSettingsDlg();
 
-  QString timeUnitName();
+    QString timeUnitName();
 
-  void setTimeUnitName( const QString&  );
+    void setTimeUnitName( const QString& );
 
-  QString distanceUnitName();
-  
-  void setDistanceUnitName( const QString& );
+    QString distanceUnitName();
 
-private:
-  static const int context_id = 0;
+    void setDistanceUnitName( const QString& );
 
-private slots:
-  void on_buttonBox_accepted();
-  void on_buttonBox_rejected();
-  void on_buttonBox_helpRequested();
+  private:
+    static const int context_id = 0;
 
-private:
-  // futurame by used
-  QComboBox *mcbGraphDirector;
-  
-  /**
-   * current graph director
-   */
-  RgGraphDirector *mDirector;
-  
-  QWidget *mSettingsWidget;
-  
-  /**
-   * plugin distance unit
-   */
-  QComboBox *mcbPluginsDistanceUnit;
-  
-  /**
-   * plugin time unit
-   */
-  QComboBox *mcbPluginsTimeUnit;
+  private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
+
+  private:
+    // futurame by used
+    QComboBox *mcbGraphDirector;
+
+    /**
+     * current graph director
+     */
+    RgGraphDirector *mDirector;
+
+    QWidget *mSettingsWidget;
+
+    /**
+     * plugin distance unit
+     */
+    QComboBox *mcbPluginsDistanceUnit;
+
+    /**
+     * plugin time unit
+     */
+    QComboBox *mcbPluginsTimeUnit;
 };
 #endif

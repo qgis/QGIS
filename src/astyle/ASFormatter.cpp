@@ -180,7 +180,7 @@ void ASFormatter::staticInit()
  *
  * init() should be called every time a ASFormatter object is to start
  * formatting a NEW source file.
- * init() recieves a pointer to a DYNAMICALLY CREATED ASSourceIterator object
+ * init() receives a pointer to a DYNAMICALLY CREATED ASSourceIterator object
  * that will be used to iterate through the source code. This object will be
  * deleted during the ASFormatter's destruction, and thus should not be
  * deleted elsewhere.
@@ -307,7 +307,7 @@ string ASFormatter::nextLine()
 		}
 		else // stuff to do when reading a new character...
 		{
-			// make sure that a virgin '{' at the begining ofthe file will be treated as a block...
+			// make sure that a virgin '{' at the beginning ofthe file will be treated as a block...
 			if (isInVirginLine && currentChar == '{' && lineBeginsWith('{'))
 				previousCommandChar = '{';
 			isPreviousCharPostComment = isCharImmediatelyPostComment;
@@ -322,7 +322,7 @@ string ASFormatter::nextLine()
 		{
 			appendCurrentChar();
 
-			// explicitely break a line when a line comment's end is found.
+			// explicitly break a line when a line comment's end is found.
 			if (charNum + 1 == (int) currentLine.length())
 			{
 				isInLineBreak = true;
@@ -404,7 +404,7 @@ string ASFormatter::nextLine()
 			formattedLineCommentNum = formattedLine.length();
 			appendSequence(AS_OPEN_LINE_COMMENT);
 			goForward(1);
-			// explicitely break a line when a line comment's end is found.
+			// explicitly break a line when a line comment's end is found.
 			if (charNum + 1 == (int) currentLine.length())
 			{
 				isInLineBreak = true;
@@ -448,7 +448,7 @@ string ASFormatter::nextLine()
 			previousCommandChar = previousNonWSChar = previousChar = '{';
 
 		// check if in preprocessor
-		// ** isInPreprocessor will be automatically reset at the begining
+		// ** isInPreprocessor will be automatically reset at the beginning
 		//    of a new line in getnextChar()
 		if (isCStyle && currentChar == '#')
 		{
@@ -1263,7 +1263,7 @@ bool ASFormatter::isBeforeLineEndComment(int startPos) const
 * get the next character, increasing the current placement in the process.
 * the new character is inserted into the variable currentChar.
 *
-* @return   whether succeded to recieve the new character.
+* @return   whether succeded to receive the new character.
 */
 bool ASFormatter::getNextChar()
 {

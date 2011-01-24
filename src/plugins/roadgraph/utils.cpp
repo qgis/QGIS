@@ -22,7 +22,7 @@
 // Qgis includes
 #include <qgspoint.h>
 
-// standart includes
+// standard includes
 #include <set>
 #include <cmath>
 
@@ -34,35 +34,35 @@ double infinity()
 // return distance between line of two points and center
 double distance( const QgsPoint& p1, const QgsPoint& p2, const QgsPoint& p, QgsPoint& center )
 {
-  
+
   // first line
-  double A1,B1,C1;
+  double A1, B1, C1;
   A1 = p1.y() - p2.y();
   B1 = p2.x() - p1.x();
-  C1 = p1.x()*(-A1) + p1.y()*(-B1);
-        
+  C1 = p1.x() * ( -A1 ) + p1.y() * ( -B1 );
+
   // second line. First and second line is perpendicular.
-  double A2,B2,C2;
+  double A2, B2, C2;
   A2 = B1;
   B2 = -A1;
-  C2 = -p.x()*A2 - p.y()*B2;
+  C2 = -p.x() * A2 - p.y() * B2;
 
   // union point
-  double x,y,det;
-  det = A1*B2 - B1*A2;
-  x = (C2*B1 - B2*C1)/det;
-  y = (-A1*C2 + C1*A2)/det;
-  
-  center = QgsPoint(x,y);
-  
-  det = sqrt(A1*A1+B1*B1);
+  double x, y, det;
+  det = A1 * B2 - B1 * A2;
+  x = ( C2 * B1 - B2 * C1 ) / det;
+  y = ( -A1 * C2 + C1 * A2 ) / det;
+
+  center = QgsPoint( x, y );
+
+  det = sqrt( A1 * A1 + B1 * B1 );
   A1 /= det;
   B1 /= det;
   C1 /= det;
   if ( std::min( p1.x(), p2.x() ) <= x && std::max( p1.x(), p2.x() ) >= x &&
-    std::min( p1.y(), p2.y() ) <= y && std::max( p1.y(), p2.y() ) >= y )
-    return std::abs( A1*p.x()+B1*p.y()+C1 );
-  
+       std::min( p1.y(), p2.y() ) <= y && std::max( p1.y(), p2.y() ) >= y )
+    return std::abs( A1*p.x() + B1*p.y() + C1 );
+
   return infinity();
 }// RoadGraphPlugin::distance()
 
@@ -78,14 +78,14 @@ ArcAttributes::ArcAttributes()
   mTime = infinity();
 }
 ArcAttributes::ArcAttributes( double cost, double time, int featureId ) :
-  mCost( cost ), mTime( time ), mFeatureId( featureId )
+    mCost( cost ), mTime( time ), mFeatureId( featureId )
 {
-  
+
 }
 
 
 DijkstraFinder::DijkstraFinder( const AdjacencyMatrix& m, DijkstraFinder::OptimizationCriterion c ):
-  mAdjacencyMatrix (m), mCriterion(c)
+    mAdjacencyMatrix( m ), mCriterion( c )
 {
 }
 
@@ -95,7 +95,7 @@ std::map< QgsPoint , DijkstraFinder::DijkstraIterator, QgsPointCompare> Dijkstra
   std::set< DijkstraIterator, CompareDijkstraIterator > not_begin( ci );
   std::set< DijkstraIterator, CompareDijkstraIterator >::iterator it;
   std::map< QgsPoint, DijkstraIterator, QgsPointCompare> res;
-  if (mAdjacencyMatrix.find( p ) == mAdjacencyMatrix.end() )
+  if ( mAdjacencyMatrix.find( p ) == mAdjacencyMatrix.end() )
   {
     return res;
   }
@@ -122,13 +122,13 @@ std::map< QgsPoint , DijkstraFinder::DijkstraIterator, QgsPointCompare> Dijkstra
       continue;
     }
     end = mAdjacencyMatrix.find( i.mBackPoint )->second.end();
-    for (arcIt = mAdjacencyMatrix.find( i.mBackPoint )->second.begin(); arcIt != end; ++arcIt)
+    for ( arcIt = mAdjacencyMatrix.find( i.mBackPoint )->second.begin(); arcIt != end; ++arcIt )
     {
       DijkstraIterator di = i;
       di.mCost += arcIt->second.mCost;
       di.mTime += arcIt->second.mTime;
 
-      if ( ci(di, res[ arcIt->first ] ) ) 
+      if ( ci( di, res[ arcIt->first ] ) )
       {
         di.mFrontPoint = di.mBackPoint;
         di.mBackPoint = arcIt->first;
@@ -151,7 +151,7 @@ AdjacencyMatrix DijkstraFinder::find( const QgsPoint& frontPoint, const QgsPoint
 
   AdjacencyMatrix m;
   QgsPoint nextPoint = backPoint;
-  QgsPoint firstPoint = backPoint; 
+  QgsPoint firstPoint = backPoint;
   while ( true )
   {
     if ( firstPoint != nextPoint )

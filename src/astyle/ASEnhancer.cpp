@@ -475,7 +475,7 @@ bool ASEnhancer::findKeyword(const string &line, int i, const char *keyword) con
 	if (line.compare(i, strlen(keyword), keyword) == 0)
 	{
 		// check that this is a header and not a part of a longer word
-		// (e.g. not at its begining, not at its middle...)
+		// (e.g. not at its beginning, not at its middle...)
 
 		int lineLength = line.length();
 		int wordEnd = i + strlen(keyword);

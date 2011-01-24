@@ -12,7 +12,7 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-          
+
 #ifndef ROADGRAPH_LINEVECTORLAYERSETTINGSWIDGET_H
 #define ROADGRAPH_LINEVECTORLAYERSETTINGSWIDGET_H
 
@@ -34,64 +34,64 @@ class QgsVectorLayer;
 */
 /**
 * \class RgLineVectorLayerSettingsWidget
-* \brief 
+* \brief
 */
 class RgLineVectorLayerSettingsWidget : public QWidget
 {
-  Q_OBJECT
-public:
-  RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = 0 );
+    Q_OBJECT
+  public:
+    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = 0 );
 
-private slots:
-  void on_mcbLayers_selectItem();
+  private slots:
+    void on_mcbLayers_selectItem();
 
-private:
-   QgsVectorLayer * selectedLayer();
+  private:
+    QgsVectorLayer * selectedLayer();
 
-public:
-  /**
-   * list of passible layers
-   */
-  QComboBox *mcbLayers;
-  
-  /**
-   * list of possible fields for use as direction
-   */
-  QComboBox *mcbDirection;
-  
-  /**
-   *
-   */
-  QLineEdit *mleFirstPointToLastPointDirection;
+  public:
+    /**
+     * list of passible layers
+     */
+    QComboBox *mcbLayers;
 
-  /**
-   *
-   */
-  QLineEdit *mleLastPointToFirstPointDirection;
+    /**
+     * list of possible fields for use as direction
+     */
+    QComboBox *mcbDirection;
 
-  /**
-   *
-   */
-  QLineEdit *mleBothDirection;
+    /**
+     *
+     */
+    QLineEdit *mleFirstPointToLastPointDirection;
 
-  /**
-   * default direction value
-   */ 
-  QComboBox *mcbDirectionDefault;
+    /**
+     *
+     */
+    QLineEdit *mleLastPointToFirstPointDirection;
 
-  /**
-   * list of possible fields for use as speed
-   */  
-  QComboBox *mcbSpeed;
-    
-  /**
-   * Default speed value
-   */
-  QSpinBox *msbSpeedDefault;
-  
-  /**
-   * Unit of speed
-   */
-  QComboBox *mcbUnitOfSpeed;
+    /**
+     *
+     */
+    QLineEdit *mleBothDirection;
+
+    /**
+     * default direction value
+     */
+    QComboBox *mcbDirectionDefault;
+
+    /**
+     * list of possible fields for use as speed
+     */
+    QComboBox *mcbSpeed;
+
+    /**
+     * Default speed value
+     */
+    QSpinBox *msbSpeedDefault;
+
+    /**
+     * Unit of speed
+     */
+    QComboBox *mcbUnitOfSpeed;
 };
 #endif

@@ -11,7 +11,7 @@
 *   the Free Software Foundation; either version 2 of the License, or      *
 *   (at your option) any later version.                                    *
 *                                                                          *
-***************************************************************************/          
+***************************************************************************/
 #ifndef ROADGRAPH_EXPORTDLG_H
 #define ROADGRAPH_EXPORTDLG_H
 
@@ -35,20 +35,20 @@ class QgsVectorLayer;
 class RgExportDlg : public QDialog
 {
     Q_OBJECT
-public:
-  RgExportDlg( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~RgExportDlg();
-public:
-  QgsVectorLayer* mapLayer() const;
-private:
-  static const int context_id = 0;
+  public:
+    RgExportDlg( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~RgExportDlg();
+  public:
+    QgsVectorLayer* mapLayer() const;
+  private:
+    static const int context_id = 0;
 
-private slots:
-  void on_buttonBox_accepted();
-  void on_buttonBox_rejected();
-  void on_buttonBox_helpRequested();
+  private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
 
-private:
-  QComboBox *mcbLayers;
+  private:
+    QComboBox *mcbLayers;
 };
 #endif

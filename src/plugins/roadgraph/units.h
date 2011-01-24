@@ -32,59 +32,59 @@
  */
 class Unit
 {
-public:
-  /**
-   * default constructor
-   */
-  Unit();
-  
-  /**
-   * constructor
-   */
-  Unit( const QString& name, double multipler );
-  
-  /**
-   * return unit name
-   */
-  QString name() const;
-  
-  /**
-   * return unit multipler. You can use multipler to conver unit to metric system
-   */
-  double multipler() const;
+  public:
+    /**
+     * default constructor
+     */
+    Unit();
 
-  /**
-   * return unit by name
-   */
-  static Unit byName( const QString& name );
-private:
-  
-  /**
-   * units name
-   */
-  QString mName;
-  
-  /**
-   * units multipler
-   */
-  double mMultipler;
+    /**
+     * constructor
+     */
+    Unit( const QString& name, double multipler );
+
+    /**
+     * return unit name
+     */
+    QString name() const;
+
+    /**
+     * return unit multipler. You can use multipler to conver unit to metric system
+     */
+    double multipler() const;
+
+    /**
+     * return unit by name
+     */
+    static Unit byName( const QString& name );
+  private:
+
+    /**
+     * units name
+     */
+    QString mName;
+
+    /**
+     * units multipler
+     */
+    double mMultipler;
 };
 
 class SpeedUnit
 {
-public:
-  SpeedUnit();
-  SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit );
+  public:
+    SpeedUnit();
+    SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit );
 
-  QString name() const;
-  double multipler() const;
+    QString name() const;
+    double multipler() const;
 
-  Unit timeUnit() const;
-  Unit distanceUnit() const;
-  
-  static SpeedUnit byName( const QString& name );
-protected:
-  Unit mTimeUnit;
-  Unit mDistanceUnit;
+    Unit timeUnit() const;
+    Unit distanceUnit() const;
+
+    static SpeedUnit byName( const QString& name );
+  protected:
+    Unit mTimeUnit;
+    Unit mDistanceUnit;
 };
 #endif

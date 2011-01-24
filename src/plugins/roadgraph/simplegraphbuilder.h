@@ -34,30 +34,30 @@ class QgsCoordinateTransform;
 
 class RgSimpleGraphBuilder : public RgGraphBuilder
 {
-public:
-  /**
-   * default constructor
-   */
-  RgSimpleGraphBuilder();
-  /**
-   * MANDATORY DIRECTOR PROPERTY DECLARATION
-   */
-  ~RgSimpleGraphBuilder();
-  void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
-  void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
-  void addVertex( const QgsPoint& pt );
-  void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double speed );
-  QgsPoint tiePoint( const QgsPoint& pt, bool& ok );
-  
-  /**
-   * return Adjacecncy matrix;
-   */
-  AdjacencyMatrix adjacencyMatrix();
-private:
-  AdjacencyMatrix mMatrix;
-  
-  QgsDistanceArea* mDistanceArea;
+  public:
+    /**
+     * default constructor
+     */
+    RgSimpleGraphBuilder();
+    /**
+     * MANDATORY DIRECTOR PROPERTY DECLARATION
+     */
+    ~RgSimpleGraphBuilder();
+    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+    void addVertex( const QgsPoint& pt );
+    void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double speed );
+    QgsPoint tiePoint( const QgsPoint& pt, bool& ok );
 
-  QgsCoordinateTransform* mCoordinateTransform;
+    /**
+     * return Adjacecncy matrix;
+     */
+    AdjacencyMatrix adjacencyMatrix();
+  private:
+    AdjacencyMatrix mMatrix;
+
+    QgsDistanceArea* mDistanceArea;
+
+    QgsCoordinateTransform* mCoordinateTransform;
 };
 #endif //SIMPLEGRAPHBUILDER

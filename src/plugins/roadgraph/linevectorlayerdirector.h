@@ -32,22 +32,22 @@ class RgGraphBuilder;
 */
 class RgLineVectorLayerDirector : public RgGraphDirector
 {
-public:
-  RgLineVectorLayerDirector();
-  //! Destructor
-  virtual ~RgLineVectorLayerDirector();
-  /**
-   * MANDATORY DIRECTOR PROPERTY DECLARATION
-   */
-  void makeGraph( RgGraphBuilder * ) const;
-  
-  RgSettings* settings();
+  public:
+    RgLineVectorLayerDirector();
+    //! Destructor
+    virtual ~RgLineVectorLayerDirector();
+    /**
+     * MANDATORY DIRECTOR PROPERTY DECLARATION
+     */
+    void makeGraph( RgGraphBuilder * ) const;
 
-  QString name() const;
-private:
-  /**
-   * settings of this director
-   */
-  RgLineVectorLayerSettings mSettings;
+    RgSettings* settings();
+
+    QString name() const;
+  private:
+    /**
+     * settings of this director
+     */
+    RgLineVectorLayerSettings mSettings;
 };
 #endif //GRAPHDIRECTOR

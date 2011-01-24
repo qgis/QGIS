@@ -32,38 +32,38 @@
 */
 class RgGraphBuilder
 {
-public:
-  //! Destructor
-  virtual ~RgGraphBuilder()
-  {};
-  /**
-   * set source CRS
-   */
-  virtual void setSourceCrs( const QgsCoordinateReferenceSystem& crs ) = 0;
+  public:
+    //! Destructor
+    virtual ~RgGraphBuilder()
+    {};
+    /**
+     * set source CRS
+     */
+    virtual void setSourceCrs( const QgsCoordinateReferenceSystem& crs ) = 0;
 
-  /**
-   * set destionation CRS
-   */
-  virtual void setDestinationCrs( const QgsCoordinateReferenceSystem& crs ) = 0;
-  
-  /**
-   * add vertex
-   */
-  virtual void addVertex( const QgsPoint& pt ) = 0;
-  
-  /**
-   * add arc
-   */
-  virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double speed ) = 0;
+    /**
+     * set destionation CRS
+     */
+    virtual void setDestinationCrs( const QgsCoordinateReferenceSystem& crs ) = 0;
 
-  /**
-   * tie point
-   * @param pt maps point
-   * @param pt ok = false if tiePoint failed.
-   * @return Graph vertex corresponding pt.
-   * @note: graph can be modified
-   */
-  virtual QgsPoint tiePoint( const QgsPoint &pt, bool &ok ) = 0;
+    /**
+     * add vertex
+     */
+    virtual void addVertex( const QgsPoint& pt ) = 0;
+
+    /**
+     * add arc
+     */
+    virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double speed ) = 0;
+
+    /**
+     * tie point
+     * @param pt maps point
+     * @param pt ok = false if tiePoint failed.
+     * @return Graph vertex corresponding pt.
+     * @note: graph can be modified
+     */
+    virtual QgsPoint tiePoint( const QgsPoint &pt, bool &ok ) = 0;
 
 };
 #endif //GRAPHBUILDER

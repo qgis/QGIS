@@ -27,21 +27,21 @@
 //standard includes
 
 RgSettingsDlg::RgSettingsDlg( RgGraphDirector *director, QWidget* parent, Qt::WFlags fl )
-    : mDirector(director), QDialog( parent, fl )
+    : mDirector( director ), QDialog( parent, fl )
 {
   // create base widgets;
-  setWindowTitle( tr("Road graph plugins settings") );
+  setWindowTitle( tr( "Road graph plugins settings" ) );
   QVBoxLayout *v = new QVBoxLayout( this );
-  
+
   QHBoxLayout *h = new QHBoxLayout();
-  QLabel *l = new QLabel( tr("Plugins time unit:"), this );
+  QLabel *l = new QLabel( tr( "Plugins time unit:" ), this );
   h->addWidget( l );
   mcbPluginsTimeUnit = new QComboBox( this );
   h->addWidget( mcbPluginsTimeUnit );
   v->addLayout( h );
 
   h = new QHBoxLayout();
-  l = new QLabel( tr("Plugins distance unit:"), this );
+  l = new QLabel( tr( "Plugins distance unit:" ), this );
   h->addWidget( l );
   mcbPluginsDistanceUnit = new QComboBox( this );
   h->addWidget( mcbPluginsDistanceUnit );
@@ -55,18 +55,18 @@ RgSettingsDlg::RgSettingsDlg( RgGraphDirector *director, QWidget* parent, Qt::WF
   h->addWidget(mcbGraphDirector);
   v->addLayout(h);
   */
-  mSettingsWidget = director->settings()->getGui(this);
+  mSettingsWidget = director->settings()->getGui( this );
   v->addWidget( mSettingsWidget );
 
   QDialogButtonBox *bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  connect( bb, SIGNAL(accepted()), this, SLOT(on_buttonBox_accepted()) );
-  connect( bb, SIGNAL(rejected()), this, SLOT(on_buttonBox_rejected()) );
+  connect( bb, SIGNAL( accepted() ), this, SLOT( on_buttonBox_accepted() ) );
+  connect( bb, SIGNAL( rejected() ), this, SLOT( on_buttonBox_rejected() ) );
   v->addWidget( bb );
 
-  mcbPluginsTimeUnit->addItem( tr("second"), QVariant( "s" ) );
-  mcbPluginsTimeUnit->addItem( tr("hour"), QVariant( "h" ) );
-  mcbPluginsDistanceUnit->addItem( tr("meter"), QVariant( "m" ) );
-  mcbPluginsDistanceUnit->addItem( tr("kilometer"), QVariant( "km" ) );
+  mcbPluginsTimeUnit->addItem( tr( "second" ), QVariant( "s" ) );
+  mcbPluginsTimeUnit->addItem( tr( "hour" ), QVariant( "h" ) );
+  mcbPluginsDistanceUnit->addItem( tr( "meter" ), QVariant( "m" ) );
+  mcbPluginsDistanceUnit->addItem( tr( "kilometer" ), QVariant( "km" ) );
 
 } // RgSettingsDlg::RgSettingsDlg()
 
@@ -95,10 +95,10 @@ QString RgSettingsDlg::timeUnitName()
   return mcbPluginsTimeUnit->itemData( mcbPluginsTimeUnit->currentIndex() ).toString();
 }
 
-void RgSettingsDlg::setTimeUnitName( const QString& name)
+void RgSettingsDlg::setTimeUnitName( const QString& name )
 {
   int i = mcbPluginsTimeUnit->findData( QVariant( name ) );
-  if (i != -1)
+  if ( i != -1 )
   {
     mcbPluginsTimeUnit->setCurrentIndex( i );
   }
@@ -109,10 +109,10 @@ QString RgSettingsDlg::distanceUnitName()
   return mcbPluginsDistanceUnit->itemData( mcbPluginsDistanceUnit->currentIndex() ).toString();
 }
 
-void RgSettingsDlg::setDistanceUnitName( const QString& name)
+void RgSettingsDlg::setDistanceUnitName( const QString& name )
 {
   int i = mcbPluginsDistanceUnit->findData( QVariant( name ) );
-  if (i != -1)
+  if ( i != -1 )
   {
     mcbPluginsDistanceUnit->setCurrentIndex( i );
   }

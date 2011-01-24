@@ -88,7 +88,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
 
   if ( serviceName == "WFS" )
   {
-    //support for old format where type is explicitely given and not part of url
+    //support for old format where type is explicitly given and not part of url
     QString tname = onlineResourceElement.attribute( "type" );
     if ( !tname.isEmpty() )
     {

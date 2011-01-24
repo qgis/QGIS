@@ -4448,7 +4448,7 @@ SQLITE_API int sqlite3_release_memory(int);
 ** <li> Memory accounting is disabled using a combination of the
 **      [sqlite3_config]([SQLITE_CONFIG_MEMSTATUS],...) start-time option and
 **      the [SQLITE_DEFAULT_MEMSTATUS] compile-time option.
-** <li> An alternative page cache implementation is specifed using
+** <li> An alternative page cache implementation is specified using
 **      [sqlite3_config]([SQLITE_CONFIG_PCACHE],...).
 ** <li> The page cache allocates from its own memory pool supplied
 **      by [sqlite3_config]([SQLITE_CONFIG_PAGECACHE],...) rather than

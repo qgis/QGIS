@@ -50,96 +50,96 @@
 
 RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin *thePlugin )   : QDockWidget( theParent ), mPlugin( thePlugin )
 {
-  setWindowTitle( tr("Shortest path") );
+  setWindowTitle( tr( "Shortest path" ) );
   setObjectName( "ShortestPathDock" );
   setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
-  QWidget *myWidget = new QWidget(this);
+  QWidget *myWidget = new QWidget( this );
   setWidget( myWidget );
 
   QVBoxLayout *v = new QVBoxLayout( myWidget );
   QHBoxLayout *h = NULL;
   QLabel *l = NULL;
-  
-  l = new QLabel(tr("Start:"), myWidget );
+
+  l = new QLabel( tr( "Start:" ), myWidget );
   v->addWidget( l );
   h = new QHBoxLayout();
   mFrontPointLineEdit = new QLineEdit( myWidget );
   mFrontPointLineEdit->setReadOnly( true );
   QToolButton *selectFrontPoint = new QToolButton( myWidget );
   selectFrontPoint->setCheckable( true );
-  selectFrontPoint->setIcon( QPixmap(":/roadgraph/coordinate_capture.png") );
+  selectFrontPoint->setIcon( QPixmap( ":/roadgraph/coordinate_capture.png" ) );
   h->addWidget( mFrontPointLineEdit );
   h->addWidget( selectFrontPoint );
-  v->addLayout(h);
+  v->addLayout( h );
 
-  l = new QLabel(tr("Stop:"), myWidget );
+  l = new QLabel( tr( "Stop:" ), myWidget );
   v->addWidget( l );
   h = new QHBoxLayout();
   mBackPointLineEdit = new QLineEdit( myWidget );
   mBackPointLineEdit->setReadOnly( true );
   QToolButton *selectBackPoint = new QToolButton( myWidget );
   selectBackPoint->setCheckable( true );
-  selectBackPoint->setIcon( QPixmap(":/roadgraph/coordinate_capture.png") );  
+  selectBackPoint->setIcon( QPixmap( ":/roadgraph/coordinate_capture.png" ) );
   h->addWidget( mBackPointLineEdit );
   h->addWidget( selectBackPoint );
   v->addLayout( h );
 
   h = new QHBoxLayout( this );
-  l = new QLabel(tr("Criterion:"), myWidget );
+  l = new QLabel( tr( "Criterion:" ), myWidget );
   mCriterionName = new QComboBox( myWidget );
-  mCriterionName->insertItem(0, tr("Length"));
-  mCriterionName->insertItem(1, tr("Time")  );
+  mCriterionName->insertItem( 0, tr( "Length" ) );
+  mCriterionName->insertItem( 1, tr( "Time" ) );
   h->addWidget( l );
   h->addWidget( mCriterionName );
   v->addLayout( h );
-  
+
   h = new QHBoxLayout( myWidget );
-  l = new QLabel( tr("Length:"), myWidget );
+  l = new QLabel( tr( "Length:" ), myWidget );
   mPathCostLineEdit = new QLineEdit( myWidget );
-  mPathCostLineEdit->setReadOnly ( true );
+  mPathCostLineEdit->setReadOnly( true );
   h->addWidget( l );
   h->addWidget( mPathCostLineEdit );
   v->addLayout( h );
 
   h = new QHBoxLayout( myWidget );
-  l = new QLabel( tr("Time:"), myWidget );
+  l = new QLabel( tr( "Time:" ), myWidget );
   mPathTimeLineEdit = new QLineEdit( myWidget );
-  mPathTimeLineEdit->setReadOnly ( true );
+  mPathTimeLineEdit->setReadOnly( true );
   h->addWidget( l );
   h->addWidget( mPathTimeLineEdit );
   v->addLayout( h );
-  
+
   h = new QHBoxLayout( myWidget );
-  mCalculate = new QPushButton( tr("Calculate"), myWidget );
+  mCalculate = new QPushButton( tr( "Calculate" ), myWidget );
   h->addWidget( mCalculate );
-  QPushButton *pbExport = new QPushButton( tr("Export"), myWidget );
+  QPushButton *pbExport = new QPushButton( tr( "Export" ), myWidget );
   h->addWidget( pbExport );
-  
-  connect( pbExport, SIGNAL( clicked(bool) ), this, SLOT(exportPath()) );
-  
-  mClear =  new QPushButton( tr("Clear"), myWidget );
+
+  connect( pbExport, SIGNAL( clicked( bool ) ), this, SLOT( exportPath() ) );
+
+  mClear =  new QPushButton( tr( "Clear" ), myWidget );
   h->addWidget( mClear );
   v->addLayout( h );
   v->addStretch();
 
   mFrontPointMapTool = new QgsMapToolEmitPoint( mPlugin->iface()->mapCanvas() );
-  mFrontPointMapTool->setButton ( selectFrontPoint );
-  
+  mFrontPointMapTool->setButton( selectFrontPoint );
+
   mBackPointMapTool  = new QgsMapToolEmitPoint( mPlugin->iface()->mapCanvas() );
-  mBackPointMapTool->setButton ( selectBackPoint );
+  mBackPointMapTool->setButton( selectBackPoint );
 
-  connect( selectFrontPoint, SIGNAL( clicked(bool) ), this, SLOT( onSelectFrontPoint() ) );
-  connect( mFrontPointMapTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ), 
-    this, SLOT( setFrontPoint( const QgsPoint& ) ) );
+  connect( selectFrontPoint, SIGNAL( clicked( bool ) ), this, SLOT( onSelectFrontPoint() ) );
+  connect( mFrontPointMapTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ),
+           this, SLOT( setFrontPoint( const QgsPoint& ) ) );
 
-  connect( selectBackPoint, SIGNAL( clicked(bool) ), this, SLOT( onSelectBackPoint() ) );
-  connect( mBackPointMapTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ), 
-    this, SLOT( setBackPoint( const QgsPoint& ) ) );
+  connect( selectBackPoint, SIGNAL( clicked( bool ) ), this, SLOT( onSelectBackPoint() ) );
+  connect( mBackPointMapTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ),
+           this, SLOT( setBackPoint( const QgsPoint& ) ) );
 
-  connect( mCalculate, SIGNAL(clicked(bool) ), this, SLOT( findingPath() ) );
-  connect( mClear, SIGNAL(clicked(bool)), this, SLOT(clear()) );
-  
+  connect( mCalculate, SIGNAL( clicked( bool ) ), this, SLOT( findingPath() ) );
+  connect( mClear, SIGNAL( clicked( bool ) ), this, SLOT( clear() ) );
+
   mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), true );
   mrbFrontPoint->setColor( Qt::green );
   mrbFrontPoint->setWidth( 2 );
@@ -151,7 +151,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), false );
   mrbPath->setWidth( 2 );
 
-  connect(mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
+  connect( mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
 
 } //RgShortestPathWidget::RgShortestPathWidget()
 RgShortestPathWidget::~RgShortestPathWidget()
@@ -169,7 +169,7 @@ void RgShortestPathWidget::mapCanvasExtentsChanged()
   // update rubberbands
   if ( mFrontPointLineEdit->text().length() > 0 )
     setFrontPoint( mFrontPoint );
-  if ( mBackPointLineEdit->text().length() > 0  )
+  if ( mBackPointLineEdit->text().length() > 0 )
     setBackPoint( mBackPoint );
 }
 
@@ -181,17 +181,17 @@ void RgShortestPathWidget::onSelectFrontPoint()
 void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mFrontPointMapTool );
-  mFrontPointLineEdit->setText( QString("(")+QString().setNum(pt.x()) + QString(",") + 
-    QString().setNum(pt.y()) + QString(")") );
+  mFrontPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QString( "," ) +
+                                QString().setNum( pt.y() ) + QString( ")" ) );
   mFrontPoint = pt;
 
-  double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel()*2;
+  double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbFrontPoint->reset(true);
-  mrbFrontPoint->addPoint( QgsPoint( pt.x()-mupp, pt.y()-mupp), false );
-  mrbFrontPoint->addPoint( QgsPoint( pt.x()+mupp, pt.y()-mupp), false );
-  mrbFrontPoint->addPoint( QgsPoint( pt.x()+mupp, pt.y()+mupp), false );
-  mrbFrontPoint->addPoint( QgsPoint( pt.x()-mupp, pt.y()+mupp), true );
+  mrbFrontPoint->reset( true );
+  mrbFrontPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
+  mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
+  mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
+  mrbFrontPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() + mupp ), true );
   mrbFrontPoint->show();
 } //RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 
@@ -203,43 +203,43 @@ void RgShortestPathWidget::onSelectBackPoint()
 void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mBackPointMapTool );
-  
-  mBackPoint = pt;
-  mBackPointLineEdit->setText( QString("(")+QString().setNum(pt.x()) + QString(",") + 
-    QString().setNum(pt.y()) + QString(")") );
-  
-  double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel()*2;
 
-  mrbBackPoint->reset(true);
-  mrbBackPoint->addPoint( QgsPoint( pt.x()-mupp, pt.y()-mupp), false );
-  mrbBackPoint->addPoint( QgsPoint( pt.x()+mupp, pt.y()-mupp), false );
-  mrbBackPoint->addPoint( QgsPoint( pt.x()+mupp, pt.y()+mupp), false );
-  mrbBackPoint->addPoint( QgsPoint( pt.x()-mupp, pt.y()+mupp), true );
+  mBackPoint = pt;
+  mBackPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QString( "," ) +
+                               QString().setNum( pt.y() ) + QString( ")" ) );
+
+  double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
+
+  mrbBackPoint->reset( true );
+  mrbBackPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
+  mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
+  mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
+  mrbBackPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() + mupp ), true );
   mrbBackPoint->show();
 }
 
-bool RgShortestPathWidget::getPath(AdjacencyMatrix& matrix, QgsPoint& p1, QgsPoint& p2)
+bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPoint& p2 )
 {
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
-    return false; 
+    return false;
   RgSimpleGraphBuilder builder;
-  builder.setDestinationCrs ( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
-  mPlugin->director()->makeGraph(&builder);
+  builder.setDestinationCrs( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
+  mPlugin->director()->makeGraph( &builder );
   bool ok;
 
-  p1 = builder.tiePoint(mFrontPoint, ok);
+  p1 = builder.tiePoint( mFrontPoint, ok );
   if ( !ok )
     return false;
-  p2 = builder.tiePoint(mBackPoint, ok);
+  p2 = builder.tiePoint( mBackPoint, ok );
   if ( !ok )
     return false;
   AdjacencyMatrix m = builder.adjacencyMatrix();
 
   DijkstraFinder::OptimizationCriterion criterion = DijkstraFinder::byCost;
-  if (mCriterionName->currentIndex() == 1)
+  if ( mCriterionName->currentIndex() == 1 )
     criterion = DijkstraFinder::byTime;
-    
-  DijkstraFinder f(m, criterion);
+
+  DijkstraFinder f( m, criterion );
 
   matrix = f.find( p1, p2 );
 
@@ -250,13 +250,13 @@ void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
   AdjacencyMatrix path;
-  if ( !getPath(path, p1, p2) )
+  if ( !getPath( path, p1, p2 ) )
     return;
 
   mrbPath->reset( false );
   double time = 0.0;
   double cost = 0.0;
-  
+
   AdjacencyMatrix::iterator it = path.find( p1 );
   if ( it == path.end() )
     return;
@@ -275,45 +275,45 @@ void RgShortestPathWidget::findingPath()
   Unit timeUnit = Unit::byName( mPlugin->timeUnitName() );
   Unit distanceUnit = Unit::byName( mPlugin->distanceUnitName() );
 
-  mPathCostLineEdit->setText( QString().setNum( cost/distanceUnit.multipler() ) + distanceUnit.name() );
-  mPathTimeLineEdit->setText( QString().setNum( time/timeUnit.multipler() ) + timeUnit.name() );
+  mPathCostLineEdit->setText( QString().setNum( cost / distanceUnit.multipler() ) + distanceUnit.name() );
+  mPathTimeLineEdit->setText( QString().setNum( time / timeUnit.multipler() ) + timeUnit.name() );
 
   mrbPath->setColor( Qt::red );
 }
 
 void RgShortestPathWidget::clear()
 {
-  mFrontPointLineEdit->setText(QString());
-  mrbFrontPoint->reset(true);
-  mBackPointLineEdit->setText(QString());
-  mrbBackPoint->reset(true);
+  mFrontPointLineEdit->setText( QString() );
+  mrbFrontPoint->reset( true );
+  mBackPointLineEdit->setText( QString() );
+  mrbBackPoint->reset( true );
   mrbPath->reset();
 }
 
 void RgShortestPathWidget::exportPath()
 {
-  RgExportDlg dlg(this);
+  RgExportDlg dlg( this );
   if ( !dlg.exec() )
     return;
-  
-  QgsPoint p1,p2;
+
+  QgsPoint p1, p2;
   AdjacencyMatrix path;
   if ( !getPath( path, p1, p2 ) )
     return;
-  
-  QgsVectorLayer *vl = dlg.mapLayer(); 
-  if ( vl == NULL )
-    return; 
 
-  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs(), 
-        vl->crs() );
+  QgsVectorLayer *vl = dlg.mapLayer();
+  if ( vl == NULL )
+    return;
+
+  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs(),
+                             vl->crs() );
 
   QVector< QgsPoint > points;
   AdjacencyMatrix::iterator it = path.find( p1 );
   if ( it == path.end() )
     return;
   points.append( ct.transform( it->first ) );
- 
+
   while ( it != path.end() )
   {
     AdjacencyMatrixString::iterator it2 = it->second.begin();
@@ -328,7 +328,7 @@ void RgShortestPathWidget::exportPath()
   f.setGeometry( QgsGeometry::fromPolyline( points ) );
   vl->addFeature( f );
   vl->updateExtents();
-  
+
   mPlugin->iface()->mapCanvas()->update();
-  
+
 }
