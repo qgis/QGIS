@@ -101,6 +101,9 @@ class QgsConfigParser
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
+    /**Appends service metadata to the capabilities document*/
+    virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;
