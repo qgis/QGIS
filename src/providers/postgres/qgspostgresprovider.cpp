@@ -372,7 +372,9 @@ QString QgsPostgresProvider::fieldExpression( const QgsField &fld ) const
   }
   else if ( type == "geometry" )
   {
-    return QString( "st_asewkt(%1)" ).arg( quotedIdentifier( fld.name() ) );
+    return QString( "%1(%2)" )
+           .arg( connectionRO->majorVersion() < 2 ? "asewkt" : "st_asewkt" )
+           .arg( quotedIdentifier( fld.name() ) );
   }
   else if ( type == "geography" )
   {
@@ -403,11 +405,13 @@ bool QgsPostgresProvider::declareCursor(
     {
       if ( isGeography )
       {
-        query += QString( ",st_asbinary(%1)" ).arg( quotedIdentifier( geometryColumn ) );
+        query += QString( ",st_asbinary(%1)" )
+                 .arg( quotedIdentifier( geometryColumn ) );
       }
       else
       {
-        query += QString( ",st_asbinary(%1,'%2')" )
+        query += QString( ",%1(%2,'%3')" )
+                 .arg( connectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
                  .arg( quotedIdentifier( geometryColumn ) )
                  .arg( endianString() );
       }
@@ -564,20 +568,22 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
     if ( whereClause.isEmpty() )
     {
-
       if ( useIntersect )
       {
         // Contributed by #qgis irc "creeping"
         // This version actually invokes PostGIS's use of spatial indexes
-        whereClause = QString( "%1 && st_setsrid('BOX3D(%2)'::box3d,%3) and st_intersects(%1,st_setsrid('BOX3D(%2)'::box3d,%3))" )
+        whereClause = QString( "%1 && %2('BOX3D(%3)'::box3d,%4) and %5(%1,%2('BOX3D(%3)'::box3d,%4))" )
                       .arg( quotedIdentifier( geometryColumn ) )
+                      .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
                       .arg( rect.asWktCoordinates() )
-                      .arg( srid );
+                      .arg( srid )
+                      .arg( connectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" );
       }
       else
       {
-        whereClause = QString( "%1 && st_setsrid('BOX3D(%2)'::box3d,%3)" )
+        whereClause = QString( "%1 && %2('BOX3D(%3)'::box3d,%4)" )
                       .arg( quotedIdentifier( geometryColumn ) )
+                      .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
                       .arg( rect.asWktCoordinates() )
                       .arg( srid );
       }
@@ -2260,7 +2266,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     if ( !geometryColumn.isNull() )
     {
       insert += quotedIdentifier( geometryColumn );
-      values += QString( "st_geomfromwkb($%1%2,%3)" )
+      values += QString( "%1($%2%3,%4)" )
+                .arg( connectionRO->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
                 .arg( offset )
                 .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
                 .arg( srid );
@@ -2332,11 +2339,16 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         }
         else if ( fit->typeName() == "geometry" )
         {
-          values += QString( "%1st_geomfromewkt(%2)" ).arg( delim ).arg( quotedValue( it->toString() ) );
+          values += QString( "%1%2(%3)" )
+                    .arg( delim )
+                    .arg( connectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
+                    .arg( quotedValue( it->toString() ) );
         }
         else if ( fit->typeName() == "geography" )
         {
-          values += QString( "%1st_geographyfromewkt(%2)" ).arg( delim ).arg( quotedValue( it->toString() ) );
+          values += QString( "%1st_geographyfromewkt(%2)" )
+                    .arg( delim )
+                    .arg( quotedValue( it->toString() ) );
         }
         else
         {
@@ -2348,15 +2360,22 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         // value is not unique => add parameter
         if ( fit->typeName() == "geometry" )
         {
-          values += QString( "%1st_geomfromewkt($%2)" ).arg( delim ).arg( defaultValues.size() + offset );
+          values += QString( "%1%2($%3)" )
+                    .arg( delim )
+                    .arg( connectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
+                    .arg( defaultValues.size() + offset );
         }
         else if ( fit->typeName() == "geography" )
         {
-          values += QString( "%1st_geographyfromewkt($%2)" ).arg( delim ).arg( defaultValues.size() + offset );
+          values += QString( "%1st_geographyfromewkt($%2)" )
+                    .arg( delim )
+                    .arg( defaultValues.size() + offset );
         }
         else
         {
-          values += QString( "%1$%2" ).arg( delim ).arg( defaultValues.size() + offset );
+          values += QString( "%1$%2" )
+                    .arg( delim )
+                    .arg( defaultValues.size() + offset );
         }
         defaultValues.append( defVal );
         fieldId.append( it.key() );
@@ -2618,11 +2637,23 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else
             first = false;
 
-          sql += QString( fld.typeName() == "geometry" ? "%1=st_geomfromewkt(%2)" :
-                          fld.typeName() == "geography" ? "%1=st_geographyfromewkt(%2)" :
-                          "%1=%2" )
-                 .arg( quotedIdentifier( fld.name() ) )
-                 .arg( quotedValue( siter->toString() ) );
+          sql += QString( "%1=" ).arg( quotedIdentifier( fld.name() ) );
+
+          if ( fld.typeName() == "geometry" )
+          {
+            sql += QString( "%1(%2)" )
+                   .arg( connectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
+                   .arg( quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == "geography" )
+          {
+            sql += QString( "st_geographyfromewkt(%1)" )
+                   .arg( quotedValue( siter->toString() ) );
+          }
+          else
+          {
+            sql += quotedValue( siter->toString() );
+          }
         }
         catch ( PGFieldNotFound )
         {
@@ -2681,9 +2712,10 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     // Start the PostGIS transaction
     connectionRW->PQexecNR( "BEGIN" );
 
-    QString update = QString( "UPDATE %1 SET %2=st_geomfromwkb($1%3,%4) WHERE %5=$2" )
+    QString update = QString( "UPDATE %1 SET %2=%3($1%4,%5) WHERE %6=$2" )
                      .arg( mQuery )
                      .arg( quotedIdentifier( geometryColumn ) )
+                     .arg( connectionRW->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
                      .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
                      .arg( srid )
                      .arg( quotedIdentifier( primaryKey ) );
@@ -2865,7 +2897,8 @@ QgsRectangle QgsPostgresProvider::extent()
       {
         if ( QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toInt() > 0 )
         {
-          sql = QString( "select st_estimated_extent(%1,%2,%3)" )
+          sql = QString( "select %1(%2,%3,%4)" )
+                .arg( connectionRO->majorVersion() < 2 ? "estimated_extent" : "st_estimated_extent" )
                 .arg( quotedValue( mSchemaName ) )
                 .arg( quotedValue( mTableName ) )
                 .arg( quotedValue( geometryColumn ) );
@@ -2893,7 +2926,8 @@ QgsRectangle QgsPostgresProvider::extent()
 
     if ( ext.isEmpty() )
     {
-      sql = QString( "select st_extent(%1) from %2" )
+      sql = QString( "select %1(%2) from %3" )
+            .arg( connectionRO->majorVersion() < 2 ? "extent" : "st_extent" )
             .arg( quotedIdentifier( geometryColumn ) )
             .arg( mQuery );
 
@@ -3111,7 +3145,8 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select st_srid(%1),geometrytype(%1) from %2" )
+    sql = QString( "select %1(%2),geometrytype(%2) from %3" )
+          .arg( connectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
           .arg( quotedIdentifier( geometryColumn ) )
           .arg( mQuery );
 
