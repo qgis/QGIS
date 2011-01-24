@@ -28,7 +28,7 @@
 //standard includes
 
 RgLineVectorLayerSettings::RgLineVectorLayerSettings()
-{  
+{
   mLayer = "";
   mDirection = "";
   mDefaultDirection = Both;
@@ -42,13 +42,13 @@ RgLineVectorLayerSettings::~RgLineVectorLayerSettings()
 bool RgLineVectorLayerSettings::test()
 {
   // implement me
-  
+
   // check default speed
-  if (mDefaultSpeed <= 0.0)
+  if ( mDefaultSpeed <= 0.0 )
   {
     return false;
   }
-  if (mLayer == "")
+  if ( mLayer == "" )
   {
     return false;
   }
@@ -61,25 +61,25 @@ void RgLineVectorLayerSettings::read( const QgsProject *project )
 {
   int dd          = project->readNumEntry( "roadgraphplugin", "/defaultDirection" );
   mDirection    = project->readEntry( "roadgraphplugin", "/directionField" );
-  mFirstPointToLastPointDirectionVal = 
+  mFirstPointToLastPointDirectionVal =
     project->readEntry( "roadgraphplugin", "/FirstPointToLastPointDirectionVal" );
-  mLastPointToFirstPointDirectionVal = 
+  mLastPointToFirstPointDirectionVal =
     project->readEntry( "roadgraphplugin", "/LastPointToFirstPointDirectionVal" );
   mBothDirectionVal = project->readEntry( "roadgraphplugin", "/BothDirectionVal" );
   mSpeed        = project->readEntry( "roadgraphplugin", "/speedField" );
   mDefaultSpeed = project->readDoubleEntry( "roadgraphplugin", "/defaultSpeed" );
   mLayer        = project->readEntry( "roadgraphplugin", "/layer" );
-  mSpeedUnitName= project->readEntry( "roadgraphplugin","/speedUnitName" );
+  mSpeedUnitName = project->readEntry( "roadgraphplugin", "/speedUnitName" );
 
-  if (dd == 1)
+  if ( dd == 1 )
   {
     mDefaultDirection = FirstPointToLastPoint;
   }
-  else if (dd == 2)
+  else if ( dd == 2 )
   {
     mDefaultDirection = LastPointToFirstPoint;
   }
-  else if (dd == 3)
+  else if ( dd == 3 )
   {
     mDefaultDirection = Both;
   }
@@ -90,10 +90,10 @@ void RgLineVectorLayerSettings::write( QgsProject *project )
 {
   project->writeEntry( "roadgraphplugin", "/defaultDirection", mDefaultDirection );
   project->writeEntry( "roadgraphplugin", "/directionField",   mDirection );
-  project->writeEntry( "roadgraphplugin", "/FirstPointToLastPointDirectionVal", 
-    mFirstPointToLastPointDirectionVal );
-  project->writeEntry( "roadgraphplugin", "/LastPointToFirstPointDirectionVal", 
-    mLastPointToFirstPointDirectionVal );
+  project->writeEntry( "roadgraphplugin", "/FirstPointToLastPointDirectionVal",
+                       mFirstPointToLastPointDirectionVal );
+  project->writeEntry( "roadgraphplugin", "/LastPointToFirstPointDirectionVal",
+                       mLastPointToFirstPointDirectionVal );
   project->writeEntry( "roadgraphplugin", "/BothDirectionVal", mBothDirectionVal );
   project->writeEntry( "roadgraphplugin", "/speedField",   mSpeed );
   project->writeEntry( "roadgraphplugin", "/defaultSpeed", mDefaultSpeed );
@@ -103,13 +103,13 @@ void RgLineVectorLayerSettings::write( QgsProject *project )
 
 QWidget* RgLineVectorLayerSettings::getGui( QWidget *parent )
 {
-    return new RgLineVectorLayerSettingsWidget( this, parent );
+  return new RgLineVectorLayerSettingsWidget( this, parent );
 }
 
 void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
 {
   RgLineVectorLayerSettingsWidget* w = dynamic_cast<RgLineVectorLayerSettingsWidget*>( myGui );
-  if (w == NULL)
+  if ( w == NULL )
     return;
 
   mFirstPointToLastPointDirectionVal  = w->mleFirstPointToLastPointDirection->text();
@@ -122,15 +122,15 @@ void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
   {
     mDefaultDirection = Both;
   }
-  else if ( w->mcbDirectionDefault->currentIndex() == 1  )
+  else if ( w->mcbDirectionDefault->currentIndex() == 1 )
   {
     mDefaultDirection = FirstPointToLastPoint;
   }
-  else if ( w->mcbDirectionDefault->currentIndex() == 2  )
+  else if ( w->mcbDirectionDefault->currentIndex() == 2 )
   {
     mDefaultDirection = LastPointToFirstPoint;
   }
-  
+
   mSpeed = w->mcbSpeed->currentText();
   mDefaultSpeed = w->msbSpeedDefault->value();
 

@@ -45,7 +45,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 
-// standart includes
+// standard includes
 
 static const char * const sIdent = "$Id: roadgraphplugin.cpp 9327 2009-04-20 10:09:44Z YEKST $";
 static const QString sName = QObject::tr( "Road graph plugin" );
@@ -92,13 +92,13 @@ void RoadGraphPlugin::initGui()
 
   // Create the action for tool
   mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Road graph settings" ), this );
-  mQShowDirectionAction  = new QAction( QIcon( ":/roadgraph/showdirect.png" ), tr("Show roads direction"), this );
+  mQShowDirectionAction  = new QAction( QIcon( ":/roadgraph/showdirect.png" ), tr( "Show roads direction" ), this );
   mInfoAction = new QAction( QIcon( ":/roadgraph/about.png" ), tr( "About" ), this );
 
   // Set the what's this text
-  mQSettingsAction->setWhatsThis( tr("Road graph plugin settings") );
-  mQShowDirectionAction->setWhatsThis( tr("Roads direction viewer") );
-  mInfoAction->setWhatsThis( tr("About Road graph plugin") );
+  mQSettingsAction->setWhatsThis( tr( "Road graph plugin settings" ) );
+  mQShowDirectionAction->setWhatsThis( tr( "Roads direction viewer" ) );
+  mInfoAction->setWhatsThis( tr( "About Road graph plugin" ) );
 
   mQShowDirectionAction->setCheckable( true );
 
@@ -116,7 +116,7 @@ void RoadGraphPlugin::initGui()
   mQGisIface->addPluginToMenu( tr( "Road graph" ), mQShowDirectionAction );
   mQGisIface->addPluginToMenu( tr( "Road graph" ), mInfoAction );
 
-  connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete(QPainter*) ), this, SLOT( render(QPainter*) ) );
+  connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter* ) ), this, SLOT( render( QPainter* ) ) );
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( mQGisIface , SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
   // load settings
@@ -127,13 +127,13 @@ void RoadGraphPlugin::initGui()
 void RoadGraphPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr("Road graph"), mQSettingsAction );
-  mQGisIface->removePluginMenu( tr("Road graph"), mQShowDirectionAction );
+  mQGisIface->removePluginMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->removePluginMenu( tr( "Road graph" ), mQShowDirectionAction );
 
   mQGisIface->removeToolBarIcon( mQShowDirectionAction );
 
-   // disconnect
-  disconnect( mQGisIface->mapCanvas(), SIGNAL( renderComplete(QPainter*) ), this, SLOT( render(QPainter*) ) );
+  // disconnect
+  disconnect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter* ) ), this, SLOT( render( QPainter* ) ) );
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( newProject() ) );
 
@@ -166,7 +166,7 @@ void RoadGraphPlugin::newProject()
 
 void RoadGraphPlugin::property()
 {
-  RgSettingsDlg dlg(mDirector, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  RgSettingsDlg dlg( mDirector, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
 
   dlg.setTimeUnitName( mTimeUnitName );
   dlg.setDistanceUnitName( mDistanceUnitName );
@@ -251,7 +251,7 @@ const RgGraphDirector* RoadGraphPlugin::director() const
 {
   return mDirector;
 }
-void RoadGraphPlugin::render(QPainter *painter)
+void RoadGraphPlugin::render( QPainter *painter )
 {
   if ( mDirector == NULL )
     return;
@@ -271,26 +271,26 @@ void RoadGraphPlugin::render(QPainter *painter)
       QgsPoint p1 =  mQGisIface->mapCanvas()->getCoordinateTransform()->transform( it1->first );
       QgsPoint p2 =  mQGisIface->mapCanvas()->getCoordinateTransform()->transform( it2->first );
       double  x1 = p1.x(),
-              y1 = p1.y(),
-              x2 = p2.x(),
-              y2 = p2.y();
+                   y1 = p1.y(),
+                        x2 = p2.x(),
+                             y2 = p2.y();
 
-      double length = sqrt( pow( x2-x1, 2.0) + pow( y2-y1, 2.0 ) );
-      double Cos = (x2-x1)/length;
-      double Sin = (y2-y1)/length;
-      double centerX = (x1+x2)/2;
-      double centerY = (y1+y2)/2;
+      double length = sqrt( pow( x2 - x1, 2.0 ) + pow( y2 - y1, 2.0 ) );
+      double Cos = ( x2 - x1 ) / length;
+      double Sin = ( y2 - y1 ) / length;
+      double centerX = ( x1 + x2 ) / 2;
+      double centerY = ( y1 + y2 ) / 2;
       double r = mArrowSize;
 
-      QPointF pt1(centerX - Sin*r, centerY + Cos*r);
-      QPointF pt2(centerX + Sin*r, centerY - Cos*r);
+      QPointF pt1( centerX - Sin*r, centerY + Cos*r );
+      QPointF pt2( centerX + Sin*r, centerY - Cos*r );
 
       QVector<QPointF> tmp;
-      tmp.resize(3);
-      tmp[0] = QPointF( centerX + Cos*r*2, centerY + Sin*r*2 );
+      tmp.resize( 3 );
+      tmp[0] = QPointF( centerX + Cos * r * 2, centerY + Sin * r * 2 );
       tmp[1] = pt1;
       tmp[2] = pt2;
-      painter->drawPolygon(tmp);
+      painter->drawPolygon( tmp );
     }
   }
 

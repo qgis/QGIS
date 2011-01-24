@@ -40,121 +40,121 @@ class RgShortestPathWidget;
 */
 class RoadGraphPlugin: public QObject, public QgisPlugin
 {
-  Q_OBJECT
-public:
-  /**
-   * Constructor for a plugin. The QgisInterface pointer is passed by
-   * QGIS when it attempts to instantiate the plugin.
-   * @param theInterface Pointer to the QgisInterface object.
-   */
-  RoadGraphPlugin( QgisInterface * theInterface );
-  //! Destructor
-  virtual ~RoadGraphPlugin();
-  /**
-   * return pointer to my Interface
-   */
-  QgisInterface *iface();
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for a plugin. The QgisInterface pointer is passed by
+     * QGIS when it attempts to instantiate the plugin.
+     * @param theInterface Pointer to the QgisInterface object.
+     */
+    RoadGraphPlugin( QgisInterface * theInterface );
+    //! Destructor
+    virtual ~RoadGraphPlugin();
+    /**
+     * return pointer to my Interface
+     */
+    QgisInterface *iface();
 
-  /**
-   * return pointer to my Graph director
-   */
-  const RgGraphDirector* director() const;
+    /**
+     * return pointer to my Graph director
+     */
+    const RgGraphDirector* director() const;
 
-  /**
-   * get time unit name
-   */
-  QString timeUnitName();
+    /**
+     * get time unit name
+     */
+    QString timeUnitName();
 
-  /**
-   * get distance unit name
-   */
-  QString distanceUnitName();
+    /**
+     * get distance unit name
+     */
+    QString distanceUnitName();
 
-public slots:
-  void render(QPainter *painter);
-  //! init the gui
-  virtual void initGui();
-  
-  //!set values onthe gui when a project is read or the gui first loaded
-  virtual void projectRead();
-  
-  //!set default values for new project
-  void newProject();
-  
-  //! Show the property dialog box
-  void property();
-  
-  //! unload the plugin
-  void unload();
-  
-  //! show the help document
-  void help();
+  public slots:
+    void render( QPainter *painter );
+    //! init the gui
+    virtual void initGui();
 
-  //! show about window
-  void about();
-private slots:
-  /**
-   * set show roads direction
-   */
-  void onShowDirection();
+    //!set values onthe gui when a project is read or the gui first loaded
+    virtual void projectRead();
 
-private:
-  /**
-   * set all gui elements to default status
-   */
-  void setGuiElementsToDefault( );
+    //!set default values for new project
+    void newProject();
 
-private:
+    //! Show the property dialog box
+    void property();
 
-  ////////////////////////////////////////////////////////////////////
-  //
-  // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
-  //
-  ////////////////////////////////////////////////////////////////////
-  int mPluginType;
- 
-  //! Pointer to the QGIS interface object
-  QgisInterface *mQGisIface;
- 
-  ////////////////////////////////////////////////////////////////////
-  // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
-  //
-  ////////////////////////////////////////////////////////////////////
-   /**
-   * on show settings
-   */
-  QAction * mQSettingsAction;
-  
-  /**
-   * pointer ot the direction show action
-   */
-  QAction * mQShowDirectionAction;
-  
-  /**
-   * pointer ot the about action
-   */
-  QAction * mInfoAction;
-  /**
-   * GUI for use shortest path finder
-   */
-  RgShortestPathWidget *mQShortestPathDock;
+    //! unload the plugin
+    void unload();
 
-  /**
-   * My Graph Director
-   */
-  RgGraphDirector *mDirector;
+    //! show the help document
+    void help();
 
-  /**
-   *  time unit for results presentation
-   */
-  QString mTimeUnitName;
+    //! show about window
+    void about();
+  private slots:
+    /**
+     * set show roads direction
+     */
+    void onShowDirection();
 
-  /**
-   * distance unit for results presentation
-   */
-  QString mDistanceUnitName;
-private:
-  static const int mArrowSize = 5;
+  private:
+    /**
+     * set all gui elements to default status
+     */
+    void setGuiElementsToDefault( );
+
+  private:
+
+    ////////////////////////////////////////////////////////////////////
+    //
+    // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
+    //
+    ////////////////////////////////////////////////////////////////////
+    int mPluginType;
+
+    //! Pointer to the QGIS interface object
+    QgisInterface *mQGisIface;
+
+    ////////////////////////////////////////////////////////////////////
+    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
+    //
+    ////////////////////////////////////////////////////////////////////
+    /**
+    * on show settings
+    */
+    QAction * mQSettingsAction;
+
+    /**
+     * pointer ot the direction show action
+     */
+    QAction * mQShowDirectionAction;
+
+    /**
+     * pointer ot the about action
+     */
+    QAction * mInfoAction;
+    /**
+     * GUI for use shortest path finder
+     */
+    RgShortestPathWidget *mQShortestPathDock;
+
+    /**
+     * My Graph Director
+     */
+    RgGraphDirector *mDirector;
+
+    /**
+     *  time unit for results presentation
+     */
+    QString mTimeUnitName;
+
+    /**
+     * distance unit for results presentation
+     */
+    QString mDistanceUnitName;
+  private:
+    static const int mArrowSize = 5;
 };
 
 #endif //ROADGRAPHPLUGIN

@@ -1140,7 +1140,7 @@ QgsSqlAnywhereProvider::addFeatures( QgsFeatureList & flist )
 
   if ( ok )
   {
-    // expand extents to accomodate new geometries
+    // expand extents to accommodate new geometries
     mSrsExtent.unionRect( rect );
     if ( !mLayerExtent.isEmpty() )
     {
@@ -1565,7 +1565,7 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
 
   if ( ok )
   {
-    // expand SRS and layer extents to accomodate new geometries
+    // expand SRS and layer extents to accommodate new geometries
     mSrsExtent.unionRect( rect );
     if ( !mLayerExtent.isEmpty() )
     {

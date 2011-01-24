@@ -19,7 +19,7 @@
 
 // Qgis includes
 
-// standart includes
+// standard includes
 
 // forward declaration Qgis-classes
 class QWidget;
@@ -34,77 +34,77 @@ class QWidget;
 
 class RgLineVectorLayerSettings: public RgSettings
 {
-public:
-  /**
-   * \enum  DirectionType
-   * \brief DirectionType enumeration discribe 
-   */
-  enum DirectionType {  FirstPointToLastPoint=1, LastPointToFirstPoint=2, Both=3 };
- 
-public:
-  /**
-   * default constructor.
-   */
-  RgLineVectorLayerSettings();
-  
-  /**
-   * destructor
-   */
-  ~RgLineVectorLayerSettings();
-public:
-  /*
-   * MANDATORY SETTINGS PROPERTY DECLARATIONS
-   */
-  void write( QgsProject * );
-  void read( const QgsProject * );
-  bool test();
-  QWidget *getGui( QWidget* Parent );
-  void    setFromGui( QWidget* );
-public:
+  public:
+    /**
+     * \enum  DirectionType
+     * \brief DirectionType enumeration discribe
+     */
+    enum DirectionType {  FirstPointToLastPoint = 1, LastPointToFirstPoint = 2, Both = 3 };
 
-  /**
-   * contained Layer name
-   */
-  QString mLayer;
+  public:
+    /**
+     * default constructor.
+     */
+    RgLineVectorLayerSettings();
 
-  /**
-   * contained direction field name
-   */
-  QString mDirection;
-  
-  /**
-   * mDirection field value as first point to last point value
-   */
-  QString mFirstPointToLastPointDirectionVal;
-  
-  /**
-   * mDirection field value as last point to first point value
-   */
-  QString mLastPointToFirstPointDirectionVal;
-  
-  /**
-   * mDirection field value as both direction
-   */
-  QString mBothDirectionVal;
+    /**
+     * destructor
+     */
+    ~RgLineVectorLayerSettings();
+  public:
+    /*
+     * MANDATORY SETTINGS PROPERTY DECLARATIONS
+     */
+    void write( QgsProject * );
+    void read( const QgsProject * );
+    bool test();
+    QWidget *getGui( QWidget* Parent );
+    void    setFromGui( QWidget* );
+  public:
 
-  /**
-   * contained Default direction
-   */
-  DirectionType mDefaultDirection;
+    /**
+     * contained Layer name
+     */
+    QString mLayer;
 
-  /**
-   * contained speed filed name
-   */
-  QString mSpeed;
+    /**
+     * contained direction field name
+     */
+    QString mDirection;
 
-  /**
-   * сontained default speed value;
-   */
-  double mDefaultSpeed;
-  
-  /*
-   * name of speed unit
-   */
-  QString mSpeedUnitName;
+    /**
+     * mDirection field value as first point to last point value
+     */
+    QString mFirstPointToLastPointDirectionVal;
+
+    /**
+     * mDirection field value as last point to first point value
+     */
+    QString mLastPointToFirstPointDirectionVal;
+
+    /**
+     * mDirection field value as both direction
+     */
+    QString mBothDirectionVal;
+
+    /**
+     * contained Default direction
+     */
+    DirectionType mDefaultDirection;
+
+    /**
+     * contained speed filed name
+     */
+    QString mSpeed;
+
+    /**
+     * сontained default speed value;
+     */
+    double mDefaultSpeed;
+
+    /*
+     * name of speed unit
+     */
+    QString mSpeedUnitName;
 };
 #endif

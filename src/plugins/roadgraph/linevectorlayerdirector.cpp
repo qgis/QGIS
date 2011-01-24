@@ -43,7 +43,7 @@ RgSettings* RgLineVectorLayerDirector::settings()
   return &mSettings;
 }
 
-QString RgLineVectorLayerDirector::name() const 
+QString RgLineVectorLayerDirector::name() const
 {
   return QString( "Vector line" );
 }
@@ -63,13 +63,13 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
   }
   if ( vl == NULL )
     return;
- 
+
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>( vl->dataProvider() );
   if ( provider == NULL )
     return;
 
   int directionFieldId = provider->fieldNameIndex( mSettings.mDirection );
-  int speedFieldId     = provider->fieldNameIndex( mSettings.mSpeed     );
+  int speedFieldId     = provider->fieldNameIndex( mSettings.mSpeed );
 
   builder->setSourceCrs( vl->crs() );
   QgsAttributeList la;
@@ -82,12 +82,12 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
 
   vl->select( la );
   QgsFeature feature;
-  while ( vl->nextFeature(feature) )
+  while ( vl->nextFeature( feature ) )
   {
     QgsAttributeMap attr = feature.attributeMap();
     RgLineVectorLayerSettings::DirectionType directionType = mSettings.mDefaultDirection;
     QgsAttributeMap::const_iterator it;
-    // What direction have feature?   
+    // What direction have feature?
     for ( it = attr.constBegin(); it != attr.constEnd(); ++it )
     {
       if ( it.key() != directionFieldId )
@@ -110,23 +110,23 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
     }
     // What speed have feature?
     double speed = 0.0;
-    for (it = attr.constBegin(); it != attr.constEnd(); ++it)
+    for ( it = attr.constBegin(); it != attr.constEnd(); ++it )
     {
-      if ( it.key() != speedFieldId ) 
+      if ( it.key() != speedFieldId )
       {
         continue;
       }
       speed = it.value().toDouble();
     }
-    if (speed <= 0.0)
+    if ( speed <= 0.0 )
     {
       speed = mSettings.mDefaultSpeed;
     }
 
     // begin features segments and add arc to the Graph;
     QgsPoint pt1, pt2;
-        
-    bool isFirstPoint=true;
+
+    bool isFirstPoint = true;
     QgsPolyline pl = feature.geometry()->asPolyline();
     QgsPolyline::iterator pointIt;
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
@@ -135,18 +135,18 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
       if ( !isFirstPoint )
       {
         if ( directionType == RgLineVectorLayerSettings::FirstPointToLastPoint ||
-            directionType  == RgLineVectorLayerSettings::Both )
+             directionType  == RgLineVectorLayerSettings::Both )
         {
-          builder->addArc(pt1, pt2, speed*su.multipler() );
+          builder->addArc( pt1, pt2, speed*su.multipler() );
         }
-        if (directionType == RgLineVectorLayerSettings::LastPointToFirstPoint ||
-            directionType == RgLineVectorLayerSettings::Both )
+        if ( directionType == RgLineVectorLayerSettings::LastPointToFirstPoint ||
+             directionType == RgLineVectorLayerSettings::Both )
         {
           builder->addArc( pt2, pt1, speed*su.multipler() );
         }
       }
       pt1 = pt2;
-      isFirstPoint=false;
+      isFirstPoint = false;
     } // for (it = pl.begin(); it != pl.end(); ++it)
 
   } // while( vl->nextFeature(feature) )

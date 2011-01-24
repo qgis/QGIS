@@ -28,6 +28,7 @@ SET (VRP_RCCS  roadgraph.qrc)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${GEOS_INCLUDE_DIR}
   ../../core 
   ../../gui
   ..

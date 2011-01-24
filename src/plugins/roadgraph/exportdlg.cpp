@@ -31,27 +31,27 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   // create base widgets;
-  setWindowTitle( tr("Export feature") );
+  setWindowTitle( tr( "Export feature" ) );
   QVBoxLayout *v = new QVBoxLayout( this );
-  
-  QHBoxLayout *h = new QHBoxLayout();
-  QLabel *l = new QLabel( tr("Select destination layer:"), this);
-  h->addWidget(l);
-  mcbLayers = new QComboBox( this );
-  h->addWidget(mcbLayers);
-  v->addLayout(h);
 
-  QDialogButtonBox *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-  connect(bb, SIGNAL(accepted()), this, SLOT(on_buttonBox_accepted()) );
-  connect(bb, SIGNAL(rejected()), this, SLOT(on_buttonBox_rejected()) );
-  v->addWidget(bb);
+  QHBoxLayout *h = new QHBoxLayout();
+  QLabel *l = new QLabel( tr( "Select destination layer:" ), this );
+  h->addWidget( l );
+  mcbLayers = new QComboBox( this );
+  h->addWidget( mcbLayers );
+  v->addLayout( h );
+
+  QDialogButtonBox *bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  connect( bb, SIGNAL( accepted() ), this, SLOT( on_buttonBox_accepted() ) );
+  connect( bb, SIGNAL( rejected() ), this, SLOT( on_buttonBox_rejected() ) );
+  v->addWidget( bb );
 
   //fill list of layers
-  mcbLayers->insertItem( 0, tr("new temporary layer"), QVariant("-1") );
-  
+  mcbLayers->insertItem( 0, tr( "new temporary layer" ), QVariant( "-1" ) );
+
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
-  
+
   for ( ; layer_it != mapLayers.end(); ++layer_it )
   {
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
@@ -72,33 +72,34 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
 {
   QgsVectorLayer* myLayer = NULL;
   QString layerId = mcbLayers->itemData( mcbLayers->currentIndex() ).toString();
-  
-  if ( layerId == QString("-1") )
+
+  if ( layerId == QString( "-1" ) )
   {
     // create a temporary layer
     myLayer = new QgsVectorLayer( "LineString", "shortest path", "memory" );
 
     QgsVectorDataProvider *prov = myLayer->dataProvider();
-    if ( prov == NULL)
-     return NULL;
+    if ( prov == NULL )
+      return NULL;
 
     QList<QgsField> attrList;
-    attrList.append( QgsField("one", QVariant::Int) );
+    attrList.append( QgsField( "one", QVariant::Int ) );
     prov->addAttributes( attrList );
-    QgsMapLayerRegistry::instance()->addMapLayer( myLayer );  
+    QgsMapLayerRegistry::instance()->addMapLayer( myLayer );
 
-  }else
+  }
+  else
   {
     // retrun selected layer
     myLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
   }
-  
+
   return myLayer;
 } // QgsVectorLayer* RgExportDlg::vectorLayer() const
 
 void RgExportDlg::on_buttonBox_accepted()
-{  
-   accept();
+{
+  accept();
 } // void RgExportDlg::on_buttonBox_accepted()
 
 void RgExportDlg::on_buttonBox_rejected()

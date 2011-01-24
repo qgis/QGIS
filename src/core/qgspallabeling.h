@@ -90,7 +90,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Hali, //horizontal alignment for data defined label position (Left, Center, Right)
       Vali, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       LabelDistance,
-      Rotation //data defined rotation (only usefull in connection with data defined position)
+      Rotation //data defined rotation (only useful in connection with data defined position)
     };
 
     QString fieldName;

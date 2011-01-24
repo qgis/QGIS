@@ -82,24 +82,24 @@ ADD_EXECUTABLE(qgis_mapserv.fcgi
   )
 
 INCLUDE_DIRECTORIES(
-     ${GDAL_INCLUDE_DIR}
-     ${FCGI_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}
-     ${PROJ_INCLUDE_DIR}
-     ${POSTGRES_INCLUDE_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${QT_INCLUDE_DIR}
-     ${QGIS_INCLUDE_DIR}
-     ../core
-     ../core/raster
-     ../core/renderer
-     ../core/symbology
-     ../core/symbology-ng
-     ../core/composer
-     ../analysis/interpolation
-     ../plugins/diagram_overlay
-     .
-)
+  ${GDAL_INCLUDE_DIR}
+  ${FCGI_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
+  ${POSTGRES_INCLUDE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${QT_INCLUDE_DIR}
+  ${QGIS_INCLUDE_DIR}
+  ../core
+  ../core/raster
+  ../core/renderer
+  ../core/symbology
+  ../core/symbology-ng
+  ../core/composer
+  ../analysis/interpolation
+  ../plugins/diagram_overlay
+  .
+  )
 
 IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE ../core/spatialite/headers/spatialite)

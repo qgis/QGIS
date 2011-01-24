@@ -629,6 +629,8 @@ QList<QDomElement> QgsProjectParser::legendGroupElements() const
   {
     groupList.push_back( groupNodeList.at( i ).toElement() );
   }
+
+	return groupList;
 }
 
 QMap< QString, QDomElement > QgsProjectParser::projectLayerElementsById() const

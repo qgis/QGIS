@@ -1555,7 +1555,7 @@ You can take care of both with the PyQwt source from:
 
 
 Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
-Normal compilation does both Qwt and PyQwt at the same time, but Qwt is staically linked
+Normal compilation does both Qwt and PyQwt at the same time, but Qwt is statically linked
 into PyQwt, and Qgis can't use it.  So, we need to split the build.
 
 First edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so

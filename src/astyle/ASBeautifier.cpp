@@ -1596,7 +1596,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			/*
 			 * Create a temporary snapshot of the current block's header-list in the
 			 * uppermost inner stack in tempStacks, and clear the headerStack up to
-			 * the begining of the block.
+			 * the beginning of the block.
 			 * Thus, the next future statement will think it comes one indent past
 			 * the block's '{' unless it specifically checks for a companion-header
 			 * (such as a previous 'if' for an 'else' header) within the tempStacks,
@@ -1758,7 +1758,7 @@ string ASBeautifier::beautify(const string &originalLine)
 	if (lineCommentNoBeautify || blockCommentNoBeautify || isInQuoteContinuation)
 		tabCount = spaceTabCount = 0;
 
-	// finally, insert indentations into begining of line
+	// finally, insert indentations into beginning of line
 
 	prevFinalLineSpaceTabCount = spaceTabCount;
 	prevFinalLineTabCount = tabCount;
@@ -1897,7 +1897,7 @@ const string *ASBeautifier::findHeader(const string &line, int i, const vector<c
 		if (line.compare(i, header->length(), header->c_str()) == 0)
 		{
 			// check that this is a header and not a part of a longer word
-			// (e.g. not at its begining, not at its middle...)
+			// (e.g. not at its beginning, not at its middle...)
 
 			int lineLength = line.length();
 			int headerEnd = i + header->length();

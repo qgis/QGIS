@@ -20,9 +20,9 @@
 // Qgis includes
 #include <qgspoint.h>
 
-// standart includes
+// standard includes
 
-// forward declaration 
+// forward declaration
 
 class QComboBox;
 class QLineEdit;
@@ -43,137 +43,137 @@ class RoadGraphPlugin;
  */
 class RgShortestPathWidget : public QDockWidget
 {
-  Q_OBJECT
-public:
-  /**
-   * Standart construct
-   */
-  RgShortestPathWidget( QWidget * , RoadGraphPlugin *);
-  
-  /**
-   * destructor
-   */
-  ~RgShortestPathWidget();
-  
-private slots:
-  /**
-   * export path
-   */
-  void exportPath();
-  
-  /**
-   * update rubberbands where extents changed
-   */
-  void mapCanvasExtentsChanged();
-  
-  /**
-   * on canvas click mouse button
-   */
-  void setFrontPoint( const QgsPoint& );
-  
-  /**
-   * on canvas click mouse button
-   */
-  void setBackPoint( const QgsPoint& );
-  
-  /**
-   * Activate map tool for coordinate capture
-   */
-  void onSelectFrontPoint();
-  
-  /**
-   * Activate map tool for coordinate capture
-   */
-  void onSelectBackPoint();
-  
-  /**
-   * finding path
-   */
-  void findingPath();
-  
-  /**
-   * clear
-   */
-  void clear(); 
-  
-  /**
-   * retrun path as a graph
-   */
-  bool getPath(AdjacencyMatrix &m, QgsPoint& p1, QgsPoint& p2);
-private:
-  /**
-   * This line edit show front points coordinates
-   */
-  QLineEdit *mFrontPointLineEdit;
-  
-  /**
-   * This line edit show back points coordinates
-   */
-  QLineEdit *mBackPointLineEdit;
-  
-  /**
-   * This combobox conteined criterion name
-   */
-  QComboBox *mCriterionName;
-  
-  /**
-   * This line edit show length calculated path
-   */
-  QLineEdit *mPathCostLineEdit;
-  
-  /**
-   * This line edit show time calculated path
-   */
-  QLineEdit *mPathTimeLineEdit;
+    Q_OBJECT
+  public:
+    /**
+     * Standard constructor
+     */
+    RgShortestPathWidget( QWidget * , RoadGraphPlugin * );
 
-  /**
-   * this button called to find shortest path
-   */
-  QPushButton *mCalculate;
-  
-  /**
-   * this button called to clear line edits and clar current path
-   */
-  QPushButton *mClear;
+    /**
+     * destructor
+     */
+    ~RgShortestPathWidget();
 
-  /**
-   * this map tool use for select coordinates
-   */
-  QgsMapToolEmitPoint *mFrontPointMapTool;
-  
-  /**
-   * this map tool use for select coordinates
-   */
-  QgsMapToolEmitPoint *mBackPointMapTool;
+  private slots:
+    /**
+     * export path
+     */
+    void exportPath();
 
-  /**
-   * pointer to Plugin
-   */
-  RoadGraphPlugin *mPlugin;
-  
-  /**
-   * Front point
-   */
-  QgsPoint mFrontPoint;
-  
-  /**
-   * Back point
-   */
-  QgsPoint mBackPoint;
-  
-  /**
-   * show front point
-   */
-  QgsRubberBand *mrbFrontPoint;
-  
-  /**
-   * show back point
-   */
-  QgsRubberBand *mrbBackPoint;
-  
-  /**
-   * show shortest path
-   */
-  QgsRubberBand *mrbPath;
+    /**
+     * update rubberbands where extents changed
+     */
+    void mapCanvasExtentsChanged();
+
+    /**
+     * on canvas click mouse button
+     */
+    void setFrontPoint( const QgsPoint& );
+
+    /**
+     * on canvas click mouse button
+     */
+    void setBackPoint( const QgsPoint& );
+
+    /**
+     * Activate map tool for coordinate capture
+     */
+    void onSelectFrontPoint();
+
+    /**
+     * Activate map tool for coordinate capture
+     */
+    void onSelectBackPoint();
+
+    /**
+     * finding path
+     */
+    void findingPath();
+
+    /**
+     * clear
+     */
+    void clear();
+
+    /**
+     * retrun path as a graph
+     */
+    bool getPath( AdjacencyMatrix &m, QgsPoint& p1, QgsPoint& p2 );
+  private:
+    /**
+     * This line edit show front points coordinates
+     */
+    QLineEdit *mFrontPointLineEdit;
+
+    /**
+     * This line edit show back points coordinates
+     */
+    QLineEdit *mBackPointLineEdit;
+
+    /**
+     * This combobox conteined criterion name
+     */
+    QComboBox *mCriterionName;
+
+    /**
+     * This line edit show length calculated path
+     */
+    QLineEdit *mPathCostLineEdit;
+
+    /**
+     * This line edit show time calculated path
+     */
+    QLineEdit *mPathTimeLineEdit;
+
+    /**
+     * this button called to find shortest path
+     */
+    QPushButton *mCalculate;
+
+    /**
+     * this button called to clear line edits and clar current path
+     */
+    QPushButton *mClear;
+
+    /**
+     * this map tool use for select coordinates
+     */
+    QgsMapToolEmitPoint *mFrontPointMapTool;
+
+    /**
+     * this map tool use for select coordinates
+     */
+    QgsMapToolEmitPoint *mBackPointMapTool;
+
+    /**
+     * pointer to Plugin
+     */
+    RoadGraphPlugin *mPlugin;
+
+    /**
+     * Front point
+     */
+    QgsPoint mFrontPoint;
+
+    /**
+     * Back point
+     */
+    QgsPoint mBackPoint;
+
+    /**
+     * show front point
+     */
+    QgsRubberBand *mrbFrontPoint;
+
+    /**
+     * show back point
+     */
+    QgsRubberBand *mrbBackPoint;
+
+    /**
+     * show shortest path
+     */
+    QgsRubberBand *mrbPath;
 };
 #endif
