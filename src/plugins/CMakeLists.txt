@@ -14,6 +14,7 @@ SUBDIRS (copyright_label
   point_displacement_renderer
   spatialquery
   sqlanywhere
+  roadgraph
   )
 
 IF (WITH_SPATIALITE)
