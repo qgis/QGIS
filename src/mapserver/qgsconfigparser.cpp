@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include <sqlite3.h>
+#include <QFile>
 
 
 QgsConfigParser::QgsConfigParser()
@@ -400,4 +401,21 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
   }
 
   return c;
+}
+
+void QgsConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  QFile wmsService( "wms_metadata.xml" );
+  if ( wmsService.open( QIODevice::ReadOnly ) )
+  {
+    QDomDocument externServiceDoc;
+    QString parseError;
+    int errorLineNo;
+    if ( externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
+    {
+      wmsService.close();
+      QDomElement service = externServiceDoc.firstChildElement();
+      parentElement.appendChild( service );
+    }
+  }
 }

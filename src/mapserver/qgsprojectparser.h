@@ -93,6 +93,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    /**Reads service metadata from projectfile or falls back to parent class method if not there*/
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+
   private:
     /**Content of project file*/
     QDomDocument* mXMLDoc;

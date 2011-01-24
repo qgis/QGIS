@@ -422,7 +422,7 @@ QSet<int> QgsProjectParser::supportedOutputCrsSet() const
   {
     return epsgSet;
   }
-  QDomNodeList valueList = propertiesElem.elementsByTagName( "value" );
+  QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
   bool conversionOk;
   for ( int i = 0; i < valueList.size(); ++i )
   {
@@ -1007,5 +1007,22 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
   }
 
   return composerElem;
+}
+
+void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomNodeList serviceCapabilitiesList = qgisElem.elementsByTagName( "WMSServiceCapabilities" );
+  if ( serviceCapabilitiesList.size() < 1 ) //service capabilities not embedded in the project file. Use wms_metadata.xml as fallback
+  {
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
+  }
+
+  QDomElement serviceElem = serviceCapabilitiesList.at( 0 ).firstChildElement( "Service" );
+  if ( !serviceElem.isNull() )
+  {
+    parentElement.appendChild( doc.importNode( serviceElem, true ) );
+  }
 }
 

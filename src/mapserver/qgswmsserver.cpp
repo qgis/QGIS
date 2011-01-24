@@ -78,27 +78,9 @@ QDomDocument QgsWMSServer::getCapabilities()
   wmsCapabilitiesElement.setAttribute( "version", "1.3.0" );
   doc.appendChild( wmsCapabilitiesElement );
 
-  QFile wmsService( "wms_metadata.xml" );
-  if ( !wmsService.open( QIODevice::ReadOnly ) )
+  if ( mConfigParser )
   {
-    //throw an exception...
-    QgsMSDebugMsg( "external wms service capabilities not found" )
-  }
-  else
-  {
-    QDomDocument externServiceDoc;
-    QString parseError;
-    int errorLineNo;
-    if ( !externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
-    {
-      QgsMSDebugMsg( "parse error at setting content of external wms service capabilities: "
-                     + parseError + " at line " + QString::number( errorLineNo ) )
-      wmsService.close();
-    }
-    wmsService.close();
-
-    QDomElement service = externServiceDoc.firstChildElement();
-    wmsCapabilitiesElement.appendChild( service );
+    mConfigParser->serviceCapabilities( wmsCapabilitiesElement, doc );
   }
 
   //wms:Capability element
