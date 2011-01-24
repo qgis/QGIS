@@ -310,16 +310,16 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   //maybe the layer is a goup. Check if lName is contained in the group list
   QMap< QString, QDomElement > idLayerMap = projectLayerElementsById();
 
-  QList< GroupLayerInfo > groupInfo = groupLayerRelationshipFromProject();
-  QList< GroupLayerInfo >::const_iterator groupIt = groupInfo.constBegin();
-  for ( ; groupIt != groupInfo.constEnd(); ++groupIt )
+  QList<QDomElement> legendGroups = legendGroupElements();
+  QList<QDomElement>::const_iterator groupIt = legendGroups.constBegin();
+  for ( ; groupIt != legendGroups.constEnd(); ++groupIt )
   {
-    if ( groupIt->first == lName )
+    if ( groupIt->attribute( "name" ) == lName )
     {
-      QList< QString >::const_iterator layerIdIt = groupIt->second.constBegin();
-      for ( ; layerIdIt != groupIt->second.constEnd(); ++layerIdIt )
+      QDomNodeList layerFileList = groupIt->elementsByTagName( "legendlayerfile" );
+      for ( int i = 0; i < layerFileList.size(); ++i )
       {
-        QMap< QString, QDomElement >::const_iterator layerEntry = idLayerMap.find( *layerIdIt );
+        QMap< QString, QDomElement >::const_iterator layerEntry = idLayerMap.find( layerFileList.at( i ).toElement().attribute( "layerid" ) );
         if ( layerEntry != idLayerMap.constEnd() )
         {
           layerList.push_back( createLayerFromElement( layerEntry.value() ) );
@@ -327,6 +327,7 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
       }
     }
   }
+
   return layerList;
 }
 
@@ -607,6 +608,27 @@ QList<QDomElement> QgsProjectParser::projectLayerElements() const
     layerElemList.push_back( layerNodeList.at( i ).toElement() );
   }
   return layerElemList;
+}
+
+QList<QDomElement> QgsProjectParser::legendGroupElements() const
+{
+  QList<QDomElement> groupList;
+  if ( !mXMLDoc )
+  {
+    return groupList;
+  }
+
+  QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElement.isNull() )
+  {
+    return groupList;
+  }
+
+  QDomNodeList groupNodeList = legendElement.elementsByTagName( "legendgroup" );
+  for ( int i = 0; i < groupNodeList.size(); ++i )
+  {
+    groupList.push_back( groupNodeList.at( i ).toElement() );
+  }
 }
 
 QMap< QString, QDomElement > QgsProjectParser::projectLayerElementsById() const
