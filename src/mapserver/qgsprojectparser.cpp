@@ -1033,18 +1033,101 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  QDomElement qgisElem = mXMLDoc->documentElement();
-  QDomNodeList serviceCapabilitiesList = qgisElem.elementsByTagName( "WMSServiceCapabilities" );
-  if ( serviceCapabilitiesList.size() < 1 ) //service capabilities not embedded in the project file. Use wms_metadata.xml as fallback
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
   {
     QgsConfigParser::serviceCapabilities( parentElement, doc );
     return;
   }
 
-  QDomElement serviceElem = serviceCapabilitiesList.at( 0 ).firstChildElement( "Service" );
-  if ( !serviceElem.isNull() )
+  QDomElement serviceCapabilityElem = propertiesElem.firstChildElement( "WMSServiceCapabilities" );
+  if ( serviceCapabilityElem.isNull() || serviceCapabilityElem.text().compare( "true", Qt::CaseInsensitive ) != 0 )
   {
-    parentElement.appendChild( doc.importNode( serviceElem, true ) );
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
   }
+
+  //Service name is always WMS
+  QDomElement wmsNameElem = doc.createElement( "Name" );
+  QDomText wmsNameText = doc.createTextNode( "WMS" );
+  wmsNameElem.appendChild( wmsNameText );
+  parentElement.appendChild( wmsNameElem );
+
+  //WMS title
+  QDomElement titleElem = propertiesElem.firstChildElement( "WMSServiceTitle" );
+  if ( !titleElem.isNull() )
+  {
+    QDomElement wmsTitleElem = doc.createElement( "Title" );
+    QDomText wmsTitleText = doc.createTextNode( titleElem.text() );
+    wmsTitleElem.appendChild( wmsTitleText );
+    parentElement.appendChild( wmsTitleElem );
+  }
+
+  //WMS abstract
+  QDomElement abstractElem = propertiesElem.firstChildElement( "WMSServiceAbstract" );
+  if ( !abstractElem.isNull() )
+  {
+    QDomElement wmsAbstractElem = doc.createElement( "Abstract" );
+    QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
+    wmsAbstractElem.appendChild( wmsAbstractText );
+    parentElement.appendChild( wmsAbstractElem );
+  }
+
+  //Contact information
+  QDomElement contactInfoElem = doc.createElement( "ContactInformation" );
+
+  //Contact person primary
+  QDomElement contactPersonPrimaryElem = doc.createElement( "ContactPersonPrimary" );
+
+  //Contact person
+  QDomElement contactPersonElem = propertiesElem.firstChildElement( "WMSContactPerson" );
+  if ( !contactPersonElem.isNull() )
+  {
+    QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
+    QDomText contactPersonText = doc.createTextNode( contactPersonElem.text() );
+    wmsContactPersonElem.appendChild( contactPersonText );
+    contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+  }
+
+  //Contact organisation
+  QDomElement contactOrganisationElem = propertiesElem.firstChildElement( "WMSContactOrganisation" );
+  if ( !contactOrganisationElem.isNull() )
+  {
+    QDomElement wmsContactOrganisationElem = doc.createElement( "ContactOrganization" );
+    QDomText contactOrganisationText = doc.createTextNode( contactOrganisationElem.text() );
+    wmsContactOrganisationElem.appendChild( contactOrganisationText );
+    contactPersonPrimaryElem.appendChild( wmsContactOrganisationElem );
+  }
+
+  contactInfoElem.appendChild( contactPersonPrimaryElem );
+
+  //Contact address
+  QDomElement contactAddressElem = doc.createElement( "ContactAddress" );
+
+  //
+
+  contactInfoElem.appendChild( contactAddressElem );
+
+  //phone
+  QDomElement phoneElem = propertiesElem.firstChildElement( "WMSContactPhone" );
+  if ( !phoneElem.isNull() )
+  {
+    QDomElement wmsPhoneElem = doc.createElement( "ContactVoiceTelephone" );
+    QDomText wmsPhoneText = doc.createTextNode( phoneElem.text() );
+    wmsPhoneElem.appendChild( wmsPhoneText );
+    contactInfoElem.appendChild( wmsPhoneElem );
+  }
+
+  //mail
+  QDomElement mailElem = propertiesElem.firstChildElement( "WMSContactMail" );
+  if ( !mailElem.isNull() )
+  {
+    QDomElement wmsMailElem = doc.createElement( "ContactElectronicMailAddress" );
+    QDomText wmsMailText = doc.createTextNode( mailElem.text() );
+    wmsMailElem.appendChild( wmsMailText );
+    contactInfoElem.appendChild( wmsMailElem );
+  }
+
+  parentElement.appendChild( contactInfoElem );
 }
 
