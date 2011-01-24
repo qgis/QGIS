@@ -102,6 +102,8 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Get all layers of the project (ordered same as in the project file)*/
     QList<QDomElement> projectLayerElements() const;
+    /**Returns all legend group elements*/
+    QList<QDomElement> legendGroupElements() const;
     /**Get all layers of the project, accessible by layer id*/
     QMap< QString, QDomElement > projectLayerElementsById() const;
     /**Get all layers of the project, accessible by layer name*/
