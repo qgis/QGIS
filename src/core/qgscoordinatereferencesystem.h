@@ -57,10 +57,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     ~QgsCoordinateReferenceSystem();
 
     /*!
-     * Constructs a CRS object from a Wkt string
-     * @param theWkt A String containing a valid Wkt def
+     * Constructs a CRS object from a string definition as defined in the createFromString 
+     * member function (by default a WKT definition).
+     * @param theDefinition A String containing a coordinate reference system definition.
      */
-    explicit QgsCoordinateReferenceSystem( QString theWkt );
+    explicit QgsCoordinateReferenceSystem( QString theDefinition );
 
     /*! Use this constructor when you want to create a CRS object using
      *  a postgis SRID, an EpsgCrsId id or a QGIS CRS_ID.
@@ -79,7 +80,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     // Misc helper functions -----------------------
 
-    void createFromId( const long theId, CrsType theType = PostgisCrsId );
+    bool createFromId( const long theId, CrsType theType = PostgisCrsId );
 
     /**
      * \brief Set up this CRS from the given OGC CRS
@@ -161,6 +162,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return bool TRUE if sucess else false
      */
     bool createFromProj4( const QString theProjString );
+    
+    /*! Set up this srs from a string definition, by default a WKT definition.  Otherwise
+     * the string defines a authority, followed by a colon, followed by the definition.
+     * The authority can be one of "epsg", "postgis", "internal" for integer definitions,
+     * and "wkt" or "proj4" for string definitions.  The implementation of each authority
+     * uses the corresponding createFrom... function.
+     * @param theDefinition A String containing a coordinate reference system definition.
+     */
+    bool createFromString( const QString theDefinition );
 
     /*! Find out whether this CRS is correctly initialised and usable */
     bool isValid() const;

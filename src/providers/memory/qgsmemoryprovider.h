@@ -34,6 +34,12 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
+
+    virtual QString dataSourceUri() const;
+
+    /**
+     * Returns the permanent storage type for this layer as a friendly name.
+     */
     virtual QString storageType() const;
 
     /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
@@ -185,6 +191,9 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     void updateExtent();
 
   private:
+    // Coordinate reference system
+    QgsCoordinateReferenceSystem mCrs;
+
     // fields
     QgsFieldMap mFields;
     QGis::WkbType mWkbType;

@@ -22,6 +22,9 @@
 #include "qgsspatialindex.h"
 #include "qgscoordinatereferencesystem.h"
 
+#include <QUrl>
+#include <QRegExp>
+
 
 static const QString TEXT_PROVIDER_KEY = "memory";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
@@ -31,20 +34,40 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
     mSelectRectGeom( NULL ),
     mSpatialIndex( NULL )
 {
-  if ( uri == "Point" )
+  // Initiallize the geometry with the uri to support old style uri's 
+  // (ie, just 'point', 'line', 'polygon')
+  QUrl url = QUrl::fromEncoded(uri.toUtf8());
+  QString geometry;
+  if( url.hasQueryItem("geometry")) 
+  {
+      geometry = url.queryItemValue("geometry");
+  }
+  else
+  {
+      geometry = url.path();
+  }
+
+  geometry = geometry.toLower();
+  if ( geometry == "point" )
     mWkbType = QGis::WKBPoint;
-  else if ( uri == "LineString" )
+  else if ( geometry == "linestring" )
     mWkbType = QGis::WKBLineString;
-  else if ( uri == "Polygon" )
+  else if ( geometry == "polygon" )
     mWkbType = QGis::WKBPolygon;
-  else if ( uri == "MultiPoint" )
+  else if ( geometry == "multipoint" )
     mWkbType = QGis::WKBMultiPoint;
-  else if ( uri == "MultiLineString" )
+  else if ( geometry == "multilinestring" )
     mWkbType = QGis::WKBMultiLineString;
-  else if ( uri == "MultiPolygon" )
+  else if ( geometry == "multipolygon" )
     mWkbType = QGis::WKBMultiPolygon;
   else
     mWkbType = QGis::WKBUnknown;
+
+  if( url.hasQueryItem("crs"))
+  {
+      QString crsDef = url.queryItemValue("crs");
+      mCrs.createFromString(crsDef);
+  }
 
   mNextFeatureId = 1;
 
@@ -53,12 +76,132 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 5 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
   ;
+
+  if( url.hasQueryItem("field"))
+  {
+    QList<QgsField> attributes;
+    QRegExp reFieldDef("\\:" 
+                       "(int|integer|real|double|string)" // type
+                       "(?:\\((\\d+)"                // length
+                       "(?:\\,(\\d+))?"                // precision
+                       "\\))?"
+                       "$", Qt::CaseInsensitive);
+    QStringList fields = url.allQueryItemValues("field");
+    for( int i = 0; i < fields.size(); i++ )
+    {
+        QString name = fields.at(i);
+        QVariant::Type type = QVariant::String;
+        QString typeName("string");
+        int length = 255;
+        int precision = 0;
+        
+        int pos = reFieldDef.indexIn(name);
+        if( pos >= 0 )
+        {
+            name = name.mid(0,pos);
+            typeName = reFieldDef.cap(1).toLower();
+            if( typeName == "int" || typeName == "integer" )
+            {
+                type = QVariant::Int;
+                typeName = "integer";
+                length = 10;
+            }
+            else if( typeName == "real" || typeName == "double" )
+            {
+                type = QVariant::Double;
+                typeName = "double";
+                length=20;
+                precision = 5;
+            }
+
+            if( reFieldDef.cap(2) != "" )
+            {
+                length = reFieldDef.cap(2).toInt();
+            }
+            if( reFieldDef.cap(3) != "" )
+            {
+                precision = reFieldDef.cap(3).toInt();
+            }
+        }
+       if( name != "" ) attributes.append(QgsField(name,type,typeName,length,precision));
+    }
+    addAttributes(attributes);
+  }
+
+  if( url.hasQueryItem("index") && url.queryItemValue("index") == "yes" )
+  {
+      createSpatialIndex();
+  }
+
 }
 
 QgsMemoryProvider::~QgsMemoryProvider()
 {
   delete mSpatialIndex;
   delete mSelectRectGeom;
+}
+
+QString QgsMemoryProvider::dataSourceUri() const
+{
+    QUrl uri("memory");
+    QString geometry("");
+    switch(mWkbType)
+    {
+    case QGis::WKBPoint :
+        geometry="Point";
+        break;
+    case QGis::WKBLineString :
+        geometry="LineString";
+        break;
+    case QGis::WKBPolygon :
+        geometry="Polygon";
+        break;
+    case QGis::WKBMultiPoint :
+        geometry="MultiPoint";
+        break;
+    case QGis::WKBMultiLineString :
+        geometry="MultiLineString";
+        break;
+    case QGis::WKBMultiPolygon :
+        geometry="MultiPolygon";
+        break;
+    }
+    uri.addQueryItem("geometry",geometry);
+
+    if( mCrs.isValid())
+    {
+        QString crsDef("");
+        long srid = mCrs.epsg();
+        if( srid )
+        {
+            crsDef = QString("epsg:%1").arg(srid);
+        }
+        else if(  srid=mCrs.postgisSrid() )
+        {
+            crsDef = QString("postgis:%1").arg(srid);
+        }
+        else
+        {
+            crsDef = QString("wkt:%1").arg(mCrs.toWkt());
+        }
+        uri.addQueryItem("crs",crsDef);
+    }
+    if( mSpatialIndex )
+    {
+        uri.addQueryItem("index","yes");
+    }
+
+    QgsAttributeList attrs = const_cast<QgsMemoryProvider *>(this)->attributeIndexes();
+    for( int i = 0; i < attrs.size(); i++ )
+    {
+        QgsField field = mFields[attrs[i]];
+        QString fieldDef = field.name();
+        fieldDef.append(QString(":%2(%3,%4)").arg(field.typeName()).arg(field.length()).arg(field.precision()));
+        uri.addQueryItem("field",fieldDef);
+    }
+
+    return QString(uri.toEncoded());
+
 }
 
 QString QgsMemoryProvider::storageType() const
@@ -231,7 +374,7 @@ bool QgsMemoryProvider::isValid()
 QgsCoordinateReferenceSystem QgsMemoryProvider::crs()
 {
   // TODO: make provider projection-aware
-  return QgsCoordinateReferenceSystem(); // return default CRS
+  return mCrs; // return default CRS
 }
 
 

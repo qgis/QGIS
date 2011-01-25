@@ -51,13 +51,13 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
   mCRS = OSRNewSpatialReference( NULL );
 }
 
-QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
+QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theDefinition )
     : mMapUnits( QGis::UnknownUnit )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
 {
   mCRS = OSRNewSpatialReference( NULL );
-  createFromWkt( theWkt );
+  createFromString( theDefinition );
 }
 
 
@@ -75,23 +75,56 @@ QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem()
   OSRDestroySpatialReference( mCRS );
 }
 
-void QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theType )
+bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theType )
 {
+  bool result = false;
   switch ( theType )
   {
     case InternalCrsId:
-      createFromSrsId( theId );
+      result = createFromSrsId( theId );
       break;
     case PostgisCrsId:
-      createFromSrid( theId );
+      result = createFromSrid( theId );
       break;
     case EpsgCrsId:
-      createFromEpsg( theId );
+      result = createFromEpsg( theId );
       break;
     default:
       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
       QgsDebugMsg( "Unexpected case reached!" );
   };
+  return result;
+}
+
+bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition )
+{
+  bool result = false;
+  QRegExp reCrsId("^(epsg|postgis|internal)\\:(\\d+)$",Qt::CaseInsensitive);
+  if( reCrsId.indexIn(theDefinition) == 0)
+  {
+      QString authName = reCrsId.cap(1).toLower();
+      CrsType type = InternalCrsId;
+      if( authName == "epsg" ) type = EpsgCrsId;
+      if( authName == "postgis" ) type = PostgisCrsId;
+      long id = reCrsId.cap(2).toLong();
+      result = createFromId(id,type);
+  }
+  else
+  {
+      QRegExp reCrsStr("^(?:(wkt|proj4)\\:)?(.+)$",Qt::CaseInsensitive);
+      if( reCrsStr.indexIn(theDefinition) == 0 )
+      {
+          if( reCrsStr.cap(1).toLower() == "proj4" )
+          {
+             result = createFromProj4(reCrsStr.cap(2));
+          }
+          else
+          {
+              result = createFromWkt(reCrsStr.cap(2));
+          }
+      }
+  }
+  return result;
 }
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )

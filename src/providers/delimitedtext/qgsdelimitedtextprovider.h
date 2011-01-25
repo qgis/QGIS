@@ -241,6 +241,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     };
     wkbPoint mWKBpt;
 
+    // Coordinate reference sytem
+    QgsCoordinateReferenceSystem mCrs;
+
     QGis::WkbType mWkbType;
 
     QString readLine( QTextStream *stream );

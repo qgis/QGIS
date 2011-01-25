@@ -37,6 +37,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     bool haveValidFileAndDelimiters();
     void updateFieldLists();
     void getOpenFileName();
+    QString selectedChars();
 
     QgisInterface * qI;
     QAbstractButton *pbnOK;
