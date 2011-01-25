@@ -261,7 +261,8 @@ QImage* QgsWMSServer::getLegendGraphics()
   iconLabelSpace = mConfigParser->legendIconLabelSpace() * mmToPixelFactor;
   symbolWidth = mConfigParser->legendSymbolWidth() * mmToPixelFactor;
   symbolHeight = mConfigParser->legendSymbolHeight() * mmToPixelFactor;
-  double maxX = 0;
+  double maxTextWidth = 0;
+  double maxSymbolWidth = 0;
   double currentY = 0;
   double fontOversamplingFactor = 10.0;
   QFont layerFont = mConfigParser->legendLayerFont();
@@ -288,14 +289,15 @@ QImage* QgsWMSServer::getLegendGraphics()
     QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
     if ( layerItem )
     {
-      drawLegendLayerItem( layerItem, 0, maxX, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace,
+
+      drawLegendLayerItem( layerItem, 0, maxTextWidth, maxSymbolWidth, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace,
                            iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor, theImage->dotsPerMeterX() * 0.0254 );
     }
   }
   currentY += boxSpace;
 
   //create second image with the right dimensions
-  QImage* paintImage = createImage( maxX, currentY );
+  QImage* paintImage = createImage( maxTextWidth + maxSymbolWidth, currentY );
 
   //go through the items a second time for painting
   QPainter p( paintImage );
@@ -307,7 +309,7 @@ QImage* QgsWMSServer::getLegendGraphics()
     QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
     if ( layerItem )
     {
-      drawLegendLayerItem( layerItem, &p, maxX, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace,
+      drawLegendLayerItem( layerItem, &p, maxTextWidth, maxSymbolWidth, currentY, layerFont, itemFont, boxSpace, layerSpace, symbolSpace,
                            iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor, theImage->dotsPerMeterX() * 0.0254 );
     }
   }
@@ -1155,7 +1157,7 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
   return layerKeys;
 }
 
-void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxX, double& currentY, const QFont& layerFont,
+void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
                                         const QFont& itemFont, double boxSpace, double layerSpace, double symbolSpace,
                                         double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor,
                                         double dpi ) const
@@ -1177,13 +1179,16 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
     p->restore();
   }
+  else
+  {
+    double layerItemWidth = layerFontMetrics.width( item->text() ) / fontOversamplingFactor + boxSpace;
+    if ( layerItemWidth > maxTextWidth )
+    {
+      maxTextWidth = layerItemWidth;
+    }
+  }
 
   currentY += layerSpace;
-  double layerItemWidth = layerFontMetrics.width( item->text() ) / fontOversamplingFactor + 2 * boxSpace;
-  if ( layerItemWidth > maxX )
-  {
-    maxX = layerItemWidth;
-  }
 
   int opacity = 0;
   QgsMapLayer* layerInstance = QgsMapLayerRegistry::instance()->mapLayer( item->layerID() );
@@ -1192,7 +1197,7 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     opacity = layerInstance->getTransparency(); //maplayer says transparency but means opacity
   }
 
-  //then draw all the childs
+  //then draw all the children
   if ( p )
   {
     p->setFont( itemFont );
@@ -1211,7 +1216,8 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     }
 
     double currentSymbolHeight = symbolHeight;
-    double currentSymbolWidth = symbolWidth;
+    double currentSymbolWidth = symbolWidth; //symbol width (without box space and icon/label space
+    double currentTextWidth = 0;
 
     //if the font is larger than the standard symbol size, try to draw the symbol centered (shifting towards the bottom)
     double symbolDownShift = ( itemFontMetrics.ascent() / fontOversamplingFactor - symbolHeight ) / 2.0;
@@ -1233,44 +1239,46 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
         drawRasterSymbol( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, symbolDownShift );
         break;
       case QgsComposerLegendItem::GroupItem:
-        QgsDebugMsg( "GroupItem not handled" );
+        //QgsDebugMsg( "GroupItem not handled" );
         break;
       case QgsComposerLegendItem::LayerItem:
-        QgsDebugMsg( "GroupItem not handled" );
+        //QgsDebugMsg( "GroupItem not handled" );
         break;
     }
 
     //finally draw text
+    currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
     double symbolItemHeight = qMax( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
 
     if ( p )
     {
       p->save();
       p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-      p->drawText(( boxSpace + currentSymbolWidth + iconLabelSpace ) * fontOversamplingFactor,
-                  ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
+      p->drawText( maxSymbolWidth * fontOversamplingFactor,
+                   ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
       p->restore();
+    }
+    else
+    {
+      if ( currentTextWidth > maxTextWidth )
+      {
+        maxTextWidth = currentTextWidth;
+      }
+      double symbolWidth = boxSpace + currentSymbolWidth + iconLabelSpace;
+      if ( symbolWidth > maxSymbolWidth )
+      {
+        maxSymbolWidth = symbolWidth;
+      }
     }
 
     currentY += symbolItemHeight;
-    double symbolItemWidth = 2 * boxSpace + currentSymbolWidth + iconLabelSpace + itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
-
     currentY += symbolSpace;
-    if ( symbolItemWidth > maxX )
-    {
-      maxX = symbolItemWidth;
-    }
   }
 }
 
 void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity,
                                      double dpi, double yDownShift ) const
 {
-  if ( !p )
-  {
-    return;
-  }
-
   QgsComposerSymbolItem* symbolItem = dynamic_cast< QgsComposerSymbolItem* >( item );
   if ( !symbolItem )
   {
@@ -1304,7 +1312,7 @@ void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, d
 
 void QgsWMSServer::drawPointSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity, double dpi ) const
 {
-  if ( !s || !p )
+  if ( !s )
   {
     return;
   }
@@ -1371,14 +1379,9 @@ void QgsWMSServer::drawLineSymbol( QPainter* p, QgsSymbol* s, double boxSpace, d
   p->restore();
 }
 
-void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth,
-                                       double symbolHeight, double dpi, double yDownShift ) const
+void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth,
+                                       double& symbolHeight, double dpi, double yDownShift ) const
 {
-  if ( !p )
-  {
-    return;
-  }
-
   QgsComposerSymbolV2Item* symbolItem = dynamic_cast< QgsComposerSymbolV2Item* >( item );
   if ( !symbolItem )
   {
@@ -1390,13 +1393,24 @@ void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p,
     return;
   }
 
+  //markers might have a different size
+  QgsMarkerSymbolV2* markerSymbol = dynamic_cast< QgsMarkerSymbolV2* >( symbol );
+  if ( markerSymbol )
+  {
+    symbolWidth = markerSymbol->size() * dpi / 25.4;
+    symbolHeight = markerSymbol->size() * dpi / 25.4;
+  }
+
   double rasterScaleFactor = dpi / 2.0 / 25.4;
 
-  p->save();
-  p->translate( boxSpace, currentY + yDownShift );
-  p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-  symbol->drawPreviewIcon( p, QSize( symbolWidth * rasterScaleFactor, symbolHeight * rasterScaleFactor ) );
-  p->restore();
+  if ( p )
+  {
+    p->save();
+    p->translate( boxSpace, currentY + yDownShift );
+    p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+    symbol->drawPreviewIcon( p, QSize( symbolWidth * rasterScaleFactor, symbolHeight * rasterScaleFactor ) );
+    p->restore();
+  }
 }
 
 void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const

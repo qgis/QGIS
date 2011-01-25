@@ -374,7 +374,8 @@ int main( int argc, char * argv[] )
       }
       else
       {
-        QgsMSDebugMsg( "Error, 0 image in GetLegendGraphics" )
+        //do some error handling
+        QgsMSDebugMsg( "result image is 0" )
       }
       delete result;
       delete theRequestHandler;
