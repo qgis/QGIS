@@ -22,7 +22,6 @@ GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 
 CMAKE_OPTS := \
-	-Wno-dev \
 	-D GRASS_PREFIX=/usr/lib/grass64 \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_SKIP_RPATH=TRUE \
