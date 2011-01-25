@@ -15,6 +15,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       QWidget.__init__(self)
       self.iface = iface
       self.canvas = self.iface.mapCanvas()
+      self.expand_method = ( 'gray', 'rgb', 'rgba' )
 
       self.setupUi(self)
       BaseBatchWidget.__init__(self, self.iface, "gdal_translate")
@@ -188,7 +189,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
               arguments << self.outsizeSpin.text()
       if self.expandCheck.isChecked():
           arguments << "-expand"
-          arguments << self.expandCombo.currentText().toLower()
+          arguments << self.expand_method[self.expandCombo.currentIndex()]
       if self.nodataCheck.isChecked():
           arguments << "-a_nodata"
           arguments << str(self.nodataSpin.value())
