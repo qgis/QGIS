@@ -255,6 +255,9 @@ class QgsMapCanvas : QGraphicsView
     */
     void renderComplete(QPainter *);
 
+    //! Overridden paint event
+    void paintEvent(QPaintEvent *);
+
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
     void renderStarting();
