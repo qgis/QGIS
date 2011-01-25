@@ -622,19 +622,6 @@ void QgsLineDecorationSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& conte
 {
 }
 
-static double _calculateAngle( double x1, double y1, double x2, double y2 )
-{
-  // return angle (in radians) between two points
-  if ( x1 == x2 )
-    return  M_PI *( y2 >= y1 ? 1 / 2 : 3 / 2 );  // angle is 90 or 270
-
-  double t = ( y2 - y1 ) / ( x2 - x1 );
-  if ( t >= 0 )
-    return atan( t ) + ( y2 >= y1 ? 0 : M_PI );
-  else // t < 0
-    return atan( t ) + ( y2 >= y1 ? M_PI : 0 ); // atan is positive / negative
-}
-
 void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
   // draw arrow at the end of line
@@ -648,8 +635,8 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   int cnt = points.count();
   QPointF p1 = points.at( cnt - 2 );
   QPointF p2 = points.at( cnt - 1 );
-  double angle = _calculateAngle( p1.x(), p1.y(), p2.x(), p2.y() );
 
+  double angle = atan2( p2.y() - p1.y(), p2.x() - p1.x() );
   double size = context.outputLineWidth( mWidth * 8 );
   double angle1 = angle + M_PI / 6;
   double angle2 = angle - M_PI / 6;
