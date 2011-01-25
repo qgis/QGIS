@@ -23,11 +23,12 @@ class QgsCoordinateReferenceSystem
 
         ~QgsCoordinateReferenceSystem();
         
-        /*! 
-         * Constructs a CRS object from a Wkt string
-         * @param theWkt A String containing a valid Wkt def
+        /*!
+         * Constructs a CRS object from a string definition as defined in the createFromString 
+         * member function (by default a WKT definition).
+         * @param theDefinition A String containing a coordinate reference system definition.
          */
-        explicit QgsCoordinateReferenceSystem(QString theWkt);
+        explicit QgsCoordinateReferenceSystem( QString theDefinition );
 
         /*! Use this constructor when you want to create a CRS object using 
          *  a postgis SRID, an Epsg Id id or a QGIS CRS_ID.
@@ -38,7 +39,7 @@ class QgsCoordinateReferenceSystem
 
         // Misc helper functions -----------------------
 
-        void createFromId(const long theId, CrsType theType=PostgisCrsId);
+        bool createFromId(const long theId, CrsType theType=PostgisCrsId);
 
         /**
          * \brief Set up this CRS from the given OGC CRS
@@ -70,6 +71,15 @@ class QgsCoordinateReferenceSystem
          * @return bool TRUE if sucess else false
          */
         bool createFromWkt(const QString theWkt);
+        
+        /*! Set up this srs from a string definition, by default a WKT definition.  Otherwise
+         * the string defines a authority, followed by a colon, followed by the definition.
+         * The authority can be one of "epsg", "postgis", "internal" for integer definitions,
+         * and "wkt" or "proj4" for string definitions.  The implementation of each authority
+         * uses the corresponding createFrom... function.
+         * @param theDefinition A String containing a coordinate reference system definition.
+         */
+        bool createFromString( const QString theDefinition );
 
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. First the system level read only srs.db will be checked

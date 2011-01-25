@@ -25,6 +25,7 @@
 #include <QRegExp>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QUrl>
 #include "qgslogger.h"
 
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget * parent, Qt::WFlags fl )
@@ -55,6 +56,13 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   {
     delimiterRegexp->setChecked( true );
   }
+
+  QString delimiterChars = settings.value( key + "/delimiterChars", " " ).toString();
+  cbxDelimSpace->setChecked( delimiterChars.contains(" "));
+  cbxDelimTab->setChecked( delimiterChars.contains("\\t"));
+  cbxDelimColon->setChecked( delimiterChars.contains(":"));
+  cbxDelimSemicolon->setChecked( delimiterChars.contains(":"));
+  cbxDelimComma->setChecked( delimiterChars.contains(","));
 
   cmbXField->setDisabled( true );
   cmbYField->setDisabled( true );
@@ -99,34 +107,33 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     else if ( delimiterRegexp->isChecked() )
       delimiterType = "regexp";
 
-    QString uri = QString( "%1?delimiter=%2&delimiterType=%3" )
-                  .arg( txtFilePath->text() )
-                  .arg( txtDelimiter->text() )
-                  .arg( delimiterType );
+    QUrl url(txtFilePath->text());
+    url.addQueryItem("delimiter",txtDelimiter->text());
+    url.addQueryItem("delimiterType",delimiterType);
 
     if ( geomTypeXY->isChecked() )
     {
       if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
       {
-        uri += QString( "&xField=%1&yField=%2" )
-               .arg( cmbXField->currentText() )
-               .arg( cmbYField->currentText() );
+          url.addQueryItem("xField",cmbXField->currentText());
+          url.addQueryItem("yField",cmbYField->currentText());
       }
     }
     else
     {
       if ( ! cmbWktField->currentText().isEmpty() )
       {
-        uri += QString( "&wktField=%1" )
-               .arg( cmbWktField->currentText() );
+        url.addQueryItem("wktField",cmbWktField->currentText());
       }
     }
 
     int skipLines = rowCounter->value();
     if ( skipLines > 0 )
-      uri += QString( "&skipLines=%1" ).arg( skipLines );
+        url.addQueryItem("skipLines",QString( "%1" ).arg( skipLines ));
 
     // add the layer to the map
+
+    QString uri(url.toEncoded());
     emit drawVectorLayer( uri, txtLayerName->text(), "delimitedtext" );
     // store the settings
 
@@ -138,10 +145,11 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
 
     if ( delimiterSelection->isChecked() )
       settings.setValue( key + "/delimiterType", "selection" );
-    if ( delimiterPlain->isChecked() )
+    else if ( delimiterPlain->isChecked() )
       settings.setValue( key + "/delimiterType", "plain" );
     else
       settings.setValue( key + "/delimiterType", "regexp" );
+    settings.setValue( key + "/delimiterChars", selectedChars());
 
     accept();
   }
@@ -154,6 +162,17 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
 void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
 {
   reject();
+}
+
+QString QgsDelimitedTextPluginGui::selectedChars()
+{
+    QString chars = "";
+    if ( cbxDelimSpace->isChecked() ) chars += " ";
+    if ( cbxDelimTab->isChecked() ) chars += "\\t";
+    if ( cbxDelimSemicolon->isChecked() ) chars += ";";
+    if ( cbxDelimComma->isChecked() ) chars += ",";
+    if ( cbxDelimColon->isChecked() ) chars += ":";
+    return chars;
 }
 
 QStringList QgsDelimitedTextPluginGui::splitLine( QString line )
@@ -171,11 +190,7 @@ QStringList QgsDelimitedTextPluginGui::splitLine( QString line )
   else if ( delimiterSelection->isChecked() )
   {
     delimiter = "[";
-    if ( cbxDelimSpace->isChecked() ) delimiter += " ";
-    if ( cbxDelimTab->isChecked() ) delimiter += "\t";
-    if ( cbxDelimSemicolon->isChecked() ) delimiter += ";";
-    if ( cbxDelimComma->isChecked() ) delimiter += ",";
-    if ( cbxDelimColon->isChecked() ) delimiter += ":";
+    delimiter += selectedChars();
     delimiter += "]";
     txtDelimiter->setText( delimiter );
     fieldList = line.split( QRegExp( delimiter ) );

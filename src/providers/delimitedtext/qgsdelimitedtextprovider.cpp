@@ -18,7 +18,6 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-
 #include <QtGlobal>
 #include <QFile>
 #include <QDataStream>
@@ -135,48 +134,41 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri )
     , mHasWktField( false )
     , mFieldCount( 0 )
-    , mXFieldIndex( -1 ), mYFieldIndex( -1 )
+    , mXFieldIndex( -1 ) 
+    , mYFieldIndex( -1 )
     , mWktFieldIndex( -1 )
+    , mDelimiterType( "plain" )
+    , mDelimiter( "," )
+    , mDelimiterRegexp()
     , mWktHasZM( false )
     , mWktZMRegexp( "\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive )
     , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
+    , mSkipLines(0)
     , mFirstDataLine( 0 )
     , mShowInvalidLines( true )
     , mWkbType( QGis::WKBNoGeometry )
+    , mCrs()
 {
-  // Get the file name and mDelimiter out of the uri
-  mFileName = uri.left( uri.indexOf( "?" ) );
-  // split the string up on & to get the individual parameters
-  QStringList parameters = uri.mid( uri.indexOf( "?" ) ).split( "&", QString::SkipEmptyParts );
 
-  QgsDebugMsg( "Parameter count after split on &" + QString::number( parameters.size() ) );
+  QUrl url = QUrl::fromEncoded(uri.toUtf8());
 
-  // get the individual parameters and assign values
-  QStringList temp = parameters.filter( "delimiter=" );
-  mDelimiter = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
-  temp = parameters.filter( "delimiterType=" );
-  mDelimiterType = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
-  temp = parameters.filter( "wktField=" );
-  QString wktField = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
-  temp = parameters.filter( "xField=" );
-  QString xField = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
-  temp = parameters.filter( "yField=" );
-  QString yField = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "";
-  temp = parameters.filter( "skipLines=" );
-  QString skipLines = temp.size() ? temp[0].mid( temp[0].indexOf( "=" ) + 1 ) : "0";
-  // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
-  mFileName  = QUrl::fromPercentEncoding( mFileName.toUtf8() );
-  mDelimiter = QUrl::fromPercentEncoding( mDelimiter.toUtf8() );
-  mDelimiterType = QUrl::fromPercentEncoding( mDelimiterType.toUtf8() );
-  wktField = QUrl::fromPercentEncoding( wktField.toUtf8() );
-  xField = QUrl::fromPercentEncoding( xField.toUtf8() );
-  yField = QUrl::fromPercentEncoding( yField.toUtf8() );
+  // Extract the provider definition from the url
+
+  mFileName = url.path();
+
+  QString wktField("");
+  QString xField("");
+  QString yField("");
+
+  if( url.hasQueryItem("delimiter")) mDelimiter = url.queryItemValue("delimiter");
+  if( url.hasQueryItem("delimiterType")) mDelimiterType = url.queryItemValue("delimiterType");
+  if( url.hasQueryItem("wktField")) wktField = url.queryItemValue("wktField");
+  if( url.hasQueryItem("xField")) xField = url.queryItemValue("xField");
+  if( url.hasQueryItem("yField")) yField = url.queryItemValue("yField");
+  if( url.hasQueryItem("skipLines")) mSkipLines = url.queryItemValue("skipLines").toInt();
+  if( url.hasQueryItem("crs")) mCrs.createFromString( url.queryItemValue("crs"));
 
   mHasWktField = wktField != "";
-
-  skipLines = QUrl::fromPercentEncoding( skipLines.toUtf8() );
-
-  mSkipLines = skipLines.toInt();
 
   QgsDebugMsg( "Data source uri is " + uri );
   QgsDebugMsg( "Delimited text file is: " + mFileName );
@@ -481,7 +473,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
         geom = 0;
       }
       mFid++;
-      if ( !boundsCheck( geom ) )
+      if ( geom && !boundsCheck( geom ) )
       {
         delete geom;
         geom = 0;
@@ -682,8 +674,7 @@ int QgsDelimitedTextProvider::capabilities() const
 
 QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs()
 {
-  // TODO: make provider projection-aware
-  return QgsCoordinateReferenceSystem(); // return default CRS
+  return mCrs;
 }
 
 
