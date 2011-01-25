@@ -441,12 +441,14 @@ QStringList QgsPythonUtilsImpl::extraPluginsPaths()
     return QStringList();
 
   QString paths = QString::fromLocal8Bit( cpaths );
-  if ( paths.contains( ';' ) ) // keep windows users happy
-    return paths.split( ';' );
-  else if ( paths.contains( ':' ) ) // keep unix users happy
+#ifndef Q_OS_WIN
+  if ( paths.contains( ':' ) )
     return paths.split( ':' );
+#endif
+  if ( paths.contains( ';' ) )
+    return paths.split( ';' );
   else
-    return QStringList( paths ); // just one path
+    return QStringList( paths );
 }
 
 
