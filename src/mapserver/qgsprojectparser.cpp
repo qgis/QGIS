@@ -630,7 +630,7 @@ QList<QDomElement> QgsProjectParser::legendGroupElements() const
     groupList.push_back( groupNodeList.at( i ).toElement() );
   }
 
-	return groupList;
+  return groupList;
 }
 
 QMap< QString, QDomElement > QgsProjectParser::projectLayerElementsById() const
@@ -1104,11 +1104,8 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   contactInfoElem.appendChild( contactPersonPrimaryElem );
 
   //Contact address
-  QDomElement contactAddressElem = doc.createElement( "ContactAddress" );
-
-  //
-
-  contactInfoElem.appendChild( contactAddressElem );
+  //QDomElement contactAddressElem = doc.createElement( "ContactAddress" );
+  //contactInfoElem.appendChild( contactAddressElem );
 
   //phone
   QDomElement phoneElem = propertiesElem.firstChildElement( "WMSContactPhone" );
