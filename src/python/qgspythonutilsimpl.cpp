@@ -443,10 +443,10 @@ QStringList QgsPythonUtilsImpl::extraPluginsPaths()
   QString paths = QString::fromLocal8Bit( cpaths );
 #ifndef Q_OS_WIN
   if ( paths.contains( ':' ) )
-    return paths.split( ':' );
+    return paths.split( ':', QString::SkipEmptyParts );
 #endif
   if ( paths.contains( ';' ) )
-    return paths.split( ';' );
+    return paths.split( ';', QString::SkipEmptyParts );
   else
     return QStringList( paths );
 }
