@@ -27,8 +27,7 @@
 
 /**
 * \class RgGraphDirector
-* \brief Determine making the graph
-* contained the settings
+* \brief Determine making the graph, contained the settings
 */
 class RgGraphBuilder
 {
@@ -59,7 +58,7 @@ class RgGraphBuilder
     /**
      * tie point
      * @param pt maps point
-     * @param pt ok = false if tiePoint failed.
+     * @param ok ok = false if tiePoint failed.
      * @return Graph vertex corresponding pt.
      * @note: graph can be modified
      */

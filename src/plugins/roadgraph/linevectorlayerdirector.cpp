@@ -10,7 +10,7 @@
  ***************************************************************************/
 
 /**
- * \file linevectorlayersettins.cpp
+ * \file linevectorlayerdirector.cpp
  * \brief implementation of RgLineVectorLayerDirector
  */
 

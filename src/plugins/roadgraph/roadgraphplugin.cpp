@@ -62,7 +62,7 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 /**
  * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
- * @param theQGisInterface - Pointer to the QGIS interface object
+ * @param theQgisInterface - Pointer to the QGIS interface object
  */
 RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface ):
     QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),

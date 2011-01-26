@@ -28,8 +28,7 @@ class QgsCoordinateTransform;
 
 /**
 * \class RgSimpleGraphBuilder
-* \brief This class making the simple graph for visualisation
-* contained the settings
+* \brief This class making the simple graph
 */
 
 class RgSimpleGraphBuilder : public RgGraphBuilder
