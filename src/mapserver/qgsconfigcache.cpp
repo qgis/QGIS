@@ -86,7 +86,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   }
   else if ( documentElem.tagName() == "qgis" )
   {
-    configParser = new QgsProjectParser( configDoc );
+    configParser = new QgsProjectParser( configDoc, filePath );
   }
   else
   {

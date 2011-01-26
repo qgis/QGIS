@@ -32,7 +32,7 @@ class QgsProjectParser: public QgsConfigParser
 {
   public:
     /**Constructor. Takes ownership of xml document*/
-    QgsProjectParser( QDomDocument* xmlDoc );
+    QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     virtual ~QgsProjectParser();
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
@@ -100,6 +100,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Content of project file*/
     QDomDocument* mXMLDoc;
 
+    /**Absolute project file path (including file name)*/
+    QString mProjectPath;
+
     /**Get all layers of the project (ordered same as in the project file)*/
     QList<QDomElement> projectLayerElements() const;
     /**Returns all legend group elements*/
@@ -134,6 +137,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
     QDomElement composerByName( const QString& composerName ) const;
+
+    /**Converts a (possibly relative) path to absolute*/
+    QString convertToAbsolutePath( const QString& file ) const;
 };
 
 #endif // QGSPROJECTPARSER_H
