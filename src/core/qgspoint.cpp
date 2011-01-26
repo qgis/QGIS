@@ -18,6 +18,7 @@
 
 
 #include "qgspoint.h"
+#include "qgis.h"
 #include <cmath>
 #include <QTextStream>
 #include <QObject> // for tr()
@@ -272,5 +273,13 @@ double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, Q
     minDistPoint.setY( y1 + t *( y2 - y1 ) );
   }
 
-  return ( sqrDist( minDistPoint ) );
+  double dist = sqrDist( minDistPoint );
+  //prevent rounding errors if the point is directly on the segment
+  if ( doubleNear( dist, 0.0 ) )
+  {
+    minDistPoint.setX( m_x );
+    minDistPoint.setY( m_y );
+    return 0.0;
+  }
+  return dist;
 }
