@@ -51,19 +51,19 @@ void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& for
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 {
-  if ( format.compare( "png", Qt::CaseInsensitive ) )
+  if ( format.compare( "png", Qt::CaseInsensitive ) == 0 )
   {
     return "image/png";
   }
-  else if ( format.compare( "jpg", Qt::CaseInsensitive ) )
+  else if ( format.compare( "jpg", Qt::CaseInsensitive ) == 0 )
   {
     return "image/jpeg";
   }
-  else if ( format.compare( "svg", Qt::CaseInsensitive ) )
+  else if ( format.compare( "svg", Qt::CaseInsensitive ) == 0 )
   {
     return "image/svg+xml";
   }
-  else if ( format.compare( "pdf", Qt::CaseInsensitive ) )
+  else if ( format.compare( "pdf", Qt::CaseInsensitive ) == 0 )
   {
     return "application/pdf";
   }
