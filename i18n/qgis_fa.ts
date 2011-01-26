@@ -1390,57 +1390,57 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="14"/>
         <source>Symbol properties</source>
-        <translation type="unfinished"></translation>
+        <translation>مشخصات نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
         <source>Symbol layers</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه‌های نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع لایه نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="49"/>
         <source>Symbol layer properties</source>
-        <translation type="unfinished"></translation>
+        <translation>مشخصات لایه نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="65"/>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>این لایه نماد رابط کاربری گرافیکی برای تنظیمات ندارد.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="99"/>
         <source>Add symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن لایه نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="112"/>
         <source>Remove symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف لایه نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="141"/>
         <source>Lock layer&apos;s color</source>
-        <translation type="unfinished"></translation>
+        <translation>قفل کردن رنگهای لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="173"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>جابجایی به بالا</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="186"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>جابجایی به پایین</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="195"/>
         <source>Symbol preview</source>
-        <translation type="unfinished"></translation>
+        <translation>پیش نمایشی از نماد</translation>
     </message>
 </context>
 <context>
@@ -6893,7 +6893,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2308"/>
         <source>Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>بررسی اجمالی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2368"/>
@@ -6903,7 +6903,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2369"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه‌ها</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2409"/>
@@ -6978,7 +6978,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2633"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>نسخه</translation>
     </message>
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="2634"/>
@@ -7774,7 +7774,7 @@ Ignore errors?</source>
     <message>
         <location filename="../src/app/qgisappinterface.cpp" line="399"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>ویژگیهای تغییر داده شده</translation>
     </message>
 </context>
 <context>
@@ -7952,7 +7952,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="111"/>
         <source>Select frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب رنگ چهارچوب</translation>
     </message>
 </context>
 <context>
@@ -8215,7 +8215,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="204"/>
         <source>Attributes - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ویژگی‌ها - %1</translation>
     </message>
 </context>
 <context>
@@ -8335,7 +8335,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledelegate.cpp" line="110"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>ویژگیهای تغییر داده شده</translation>
     </message>
 </context>
 <context>
@@ -8596,7 +8596,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="505"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>ویژگیهای تغییر داده شده</translation>
     </message>
 </context>
 <context>
@@ -9784,23 +9784,23 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>گزینه‌های عمومی</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="44"/>
         <source>Label text changed</source>
-        <translation type="unfinished"></translation>
+        <translation>نوشته برچسب تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="64"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="94"/>
         <source>Label font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع قلم برچسب تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="76"/>
         <source>Label margin changed</source>
-        <translation type="unfinished"></translation>
+        <translation>حاشیه برچسب تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="103"/>
@@ -9810,7 +9810,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="147"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="158"/>
         <source>Label alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>تراز برچسب تغییر کرد</translation>
     </message>
 </context>
 <context>
@@ -9818,67 +9818,67 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="20"/>
         <source>Label Options</source>
-        <translation type="unfinished"></translation>
+        <translation>گزینه‌های برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="57"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="64"/>
         <source>Font color...</source>
-        <translation type="unfinished"></translation>
+        <translation>رنگ قلم ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="71"/>
         <source>Margin (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>حاشیه (میلی متر)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="84"/>
         <source>Horizontal Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>تراز افقی:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="93"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>چپ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="100"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>مرکز</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="107"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>راست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="117"/>
         <source>Vertical Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>تراز عمودی:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="123"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>بالا</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="130"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>وسط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="137"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>پایین</translation>
     </message>
 </context>
 <context>
@@ -9886,7 +9886,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/composer/qgscomposerlegend.cpp" line="32"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>رسته</translation>
     </message>
 </context>
 <context>
@@ -9894,12 +9894,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="13"/>
         <source>Legend item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>خصوصیات اقلام رسته</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
-        <translation type="unfinished"></translation>
+        <translation>نوشته اقلام</translation>
     </message>
 </context>
 <context>
@@ -9907,7 +9907,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendlayersdialogbase.ui" line="14"/>
         <source>Add layer to legend</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن لابه به رسته</translation>
     </message>
 </context>
 <context>
@@ -9915,78 +9915,78 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="46"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation>گزینه‌های اقلام</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="99"/>
         <source>Legend title changed</source>
-        <translation type="unfinished"></translation>
+        <translation>تیتر رسته تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="111"/>
         <source>Legend symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>عرض نماد رسته</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="123"/>
         <source>Legend symbol height</source>
-        <translation type="unfinished"></translation>
+        <translation>ارتفاع نماد رسته</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="135"/>
         <source>Legend layer space</source>
-        <translation type="unfinished"></translation>
+        <translation>فضای لایه رسته</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="147"/>
         <source>Legend symbol space</source>
-        <translation type="unfinished"></translation>
+        <translation>فضای نماد رسته</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="159"/>
         <source>Legend icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>فضای آیکون برچسب رسته</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="180"/>
         <source>Title font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم عنوان تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="202"/>
         <source>Legend group font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم گروه رسته تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="224"/>
         <source>Legend layer font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم لایه رسته تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="246"/>
         <source>Legend item font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم اقلام رسته تغییر کرد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="260"/>
         <source>Legend box space</source>
-        <translation type="unfinished"></translation>
+        <translation>فضای مربعی رسته</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="492"/>
         <source>Legend item edited</source>
-        <translation type="unfinished"></translation>
+        <translation>اقلام رسته ویرایش شدند</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="525"/>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="555"/>
         <source>Legend updated</source>
-        <translation type="unfinished"></translation>
+        <translation>رسته به روز رسانی شد</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="544"/>
         <source>Legend group added</source>
-        <translation type="unfinished"></translation>
+        <translation>گروه رسته اضافه شد</translation>
     </message>
 </context>
 <context>
@@ -9994,42 +9994,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="20"/>
         <source>Barscale Options</source>
-        <translation type="unfinished"></translation>
+        <translation>گزینه‌های نوار مقیاس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="56"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>عمومی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="62"/>
         <source>&amp;Title</source>
-        <translation type="unfinished"></translation>
+        <translation>عنوان</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم عنوان ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Group Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم گروه ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم لایه ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>قلم اقلام ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="109"/>
         <source>Symbol width </source>
-        <translation type="unfinished"></translation>
+        <translation>عرض نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
@@ -10039,57 +10039,57 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="162"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation>میلی متر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="119"/>
         <source>Symbol height </source>
-        <translation type="unfinished"></translation>
+        <translation>ارتفاع نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="129"/>
         <source>Layer space </source>
-        <translation type="unfinished"></translation>
+        <translation>فضای لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="139"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation>فضای نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="149"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation>فضای آیکون برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="159"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>فضای جعبه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="191"/>
         <source>Legend items</source>
-        <translation type="unfinished"></translation>
+        <translation>اقلام رسته</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
         <source>Auto Update</source>
-        <translation type="unfinished"></translation>
+        <translation>به روز رسانی خودکار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="267"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="274"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="281"/>
         <source>Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>اضافه کردن گروه</translation>
     </message>
 </context>
 <context>
@@ -12177,7 +12177,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="13"/>
         <source>Delete Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف ویژگی‌ها</translation>
     </message>
 </context>
 <context>
@@ -12607,7 +12607,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfeatureaction.cpp" line="51"/>
         <source>Run actions</source>
-        <translation type="unfinished"></translation>
+        <translation>اجرای عملیات</translation>
     </message>
 </context>
 <context>
