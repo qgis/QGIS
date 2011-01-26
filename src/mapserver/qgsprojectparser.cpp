@@ -951,6 +951,16 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
   }
 
   QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
+  if ( composerNodeList.size() < 1 )
+  {
+    return;
+  }
+
+  QDomElement composerTemplatesElem = doc.createElement( "ComposerTemplates" );
+  composerTemplatesElem.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
+  composerTemplatesElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  composerTemplatesElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
+
   for ( int i = 0; i < composerNodeList.size(); ++i )
   {
     QDomElement composerTemplateElem = doc.createElement( "ComposerTemplate" );
@@ -961,9 +971,6 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     }
 
     composerTemplateElem.setAttribute( "name", currentComposerElem.attribute( "title" ) );
-    composerTemplateElem.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
-    composerTemplateElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    composerTemplateElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
 
     //get paper width and hight in mm from composition
     QDomElement compositionElem = currentComposerElem.firstChildElement( "Composition" );
@@ -1008,8 +1015,9 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
       composerTemplateElem.appendChild( composerLabelElem );
     }
 
-    parentElement.appendChild( composerTemplateElem );
+    composerTemplatesElem.appendChild( composerTemplateElem );
   }
+  parentElement.appendChild( composerTemplatesElem );
 }
 
 QDomElement QgsProjectParser::composerByName( const QString& composerName ) const
