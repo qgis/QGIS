@@ -11,7 +11,7 @@
  ***************************************************************************/
 
 /**
- * \file shortestpahtwidget.cpp
+ * \file shortestpathwidget.cpp
  * \brief implemetation UI for find shotest path
  */
 

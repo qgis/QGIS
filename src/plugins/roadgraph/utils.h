@@ -29,7 +29,6 @@
 */
 
 /**
- * \function infinity()
  * \brief return big const double value
  */
 double infinity();

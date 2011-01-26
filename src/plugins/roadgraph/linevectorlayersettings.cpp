@@ -10,7 +10,7 @@
  ***************************************************************************/
 
 /**
- * \file linevectorlayersettins.cpp
+ * \file linevectorlayersettings.cpp
  * \brief implementation of RgLineVectorLayerSettings
  */
 
