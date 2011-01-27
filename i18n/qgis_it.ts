@@ -6407,7 +6407,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1677"/>
         <source>Manage Layers</source>
-        <translation>Gestisci layer</translation>
+        <translation>Gestione layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1862"/>
@@ -6417,7 +6417,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1698"/>
         <source>Digitizing</source>
-        <translation>Digitalizza</translation>
+        <translation>Digitalizzazione</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1739"/>
