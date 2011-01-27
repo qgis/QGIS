@@ -343,15 +343,26 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       }
     }
 
-    //get layer list from string
+    //get forced scale from string
     if ( replacementList.size() > 2 )
     {
-      QStringList layerSet;
-      QStringList wmsLayerList = replacementList.at( 2 ).split( "," );
-      QStringList wmsStyleList;
-      if ( replacementList.size() > 3 )
+      bool conversionOk;
+      double scale = replacementList.at( 2 ).toDouble( &conversionOk );
+      if ( conversionOk )
       {
-        wmsStyleList = replacementList.at( 3 ).split( "," );
+        currentMap->setNewScale( scale );
+      }
+    }
+
+    //get layer list from string
+    if ( replacementList.size() > 3 )
+    {
+      QStringList layerSet;
+      QStringList wmsLayerList = replacementList.at( 3 ).split( "," );
+      QStringList wmsStyleList;
+      if ( replacementList.size() > 4 )
+      {
+        wmsStyleList = replacementList.at( 4 ).split( "," );
       }
 
       for ( int i = 0; i < wmsLayerList.size(); ++i )
