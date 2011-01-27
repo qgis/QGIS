@@ -8,6 +8,7 @@
 #include "qgsrendererv2registry.h"
 
 #include "qgsrendercontext.h"
+#include "qgsclipper.h"
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
@@ -54,30 +55,44 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
   double x, y;
 
-  pts.resize( nPoints );
-
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
   double z = 0; // dummy variable for coordiante transform
 
-  for ( unsigned int i = 0; i < nPoints; ++i )
+  //apply clipping for large lines to achieve a better rendering performance
+  if ( nPoints > 100 )
   {
-    x = *(( double * ) wkb );
-    wkb += sizeof( double );
-    y = *(( double * ) wkb );
-    wkb += sizeof( double );
+    const QgsRectangle& e = context.extent();
+    double cw = e.width() / 10; double ch = e.height() / 10;
+    QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
+    wkb = QgsClipper::clippedLineWKB( wkb - ( 2 * sizeof( unsigned int ) + 1 ), clipRect, pts );
+  }
+  else
+  {
+    pts.resize( nPoints );
 
-    if ( hasZValue ) // ignore Z value
+    for ( unsigned int i = 0; i < nPoints; ++i )
+    {
+      x = *(( double * ) wkb );
+      wkb += sizeof( double );
+      y = *(( double * ) wkb );
       wkb += sizeof( double );
 
-    // TODO: maybe to the transform at once (faster?)
-    if ( ct )
-      ct->transformInPlace( x, y, z );
-    mtp.transformInPlace( x, y );
+      if ( hasZValue ) // ignore Z value
+        wkb += sizeof( double );
 
-    pts[i] = QPointF( x, y );
-
+      pts[i] = QPointF( x, y );
+    }
   }
+
+  //transform the QPolygonF to screen coordinates
+  for ( unsigned int i = 0; i < pts.size(); ++i )
+  {
+    if ( ct )
+      ct->transformInPlace( pts[i].rx(), pts[i].ry(), z );
+    mtp.transformInPlace( pts[i].rx(), pts[i].ry() );
+  }
+
 
   return wkb;
 }
