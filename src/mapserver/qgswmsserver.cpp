@@ -414,10 +414,11 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     }
 
     QPrinter printer;
+    printer.setResolution( c->printResolution() );
+    printer.setFullPage( true );
     printer.setOutputFormat( QPrinter::PdfFormat );
     printer.setOutputFileName( tempFile.fileName() );
     printer.setPaperSize( QSizeF( c->paperWidth(), c->paperHeight() ), QPrinter::Millimeter );
-    printer.setResolution( c->printResolution() );
 
     QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
