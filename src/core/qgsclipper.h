@@ -22,9 +22,12 @@
 
 #include "qgis.h"
 #include "qgspoint.h"
+#include "qgsrectangle.h"
 
 #include <vector>
 #include <utility>
+
+#include <QPolygonF>
 
 /** \ingroup core
  * A class to trim lines and polygons to within a rectangular region.
@@ -76,6 +79,12 @@ class CORE_EXPORT QgsClipper
                              std::vector<double>& y,
                              bool shapeOpen );
 
+    /**Reads a polyline from WKB and clips it to clipExtent
+      @param wkb pointer to the start of the line wkb
+      @param clipExtent clipping bounds
+      @param line out: clipped line coordinates*/
+    static unsigned char* clippedLineWKB( unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
+
   private:
 
     // Used when testing for equivalance to 0.0
@@ -98,6 +107,30 @@ class CORE_EXPORT QgsClipper
     static QgsPoint intersect( const double x1, const double y1,
                                const double x2, const double y2,
                                Boundary b );
+
+    //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
+    static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double& x0, double& y0, double& x1, double& y1 );
+
+    /**Connects two lines splitted by the clip (by inserting points on the clip border)
+      @param x0 x-coordinate of the first line end
+      @param y0 y-coordinate of the first line end
+      @param x1 x-coordinate of the second line start
+      @param y1 y-coordinate of the second line start
+      @param clipRect clip rectangle
+      @param pts: in/out array of clipped points
+      @param writePtr in/out: writing poisiton in the wkb array*/
+    static void connectSeparatedLines( double x0, double y0, double x1, double y1,
+                                       const QgsRectangle& clipRect, QPolygonF& pts );
+
+    //low level clip methods for fast clip algorithm
+    static void clipStartTop( double& x0, double& y0, const double& x1, const double& y1, double yMax );
+    static void clipStartBottom( double& x0, double& y0, const double& x1, const double& y1, double yMin );
+    static void clipStartRight( double& x0, double& y0, const double& x1, const double& y1, double xMax );
+    static void clipStartLeft( double& x0, double& y0, const double& x1, const double& y1, double xMin );
+    static void clipEndTop( const double& x0, const double& y0, double& x1, double& y1, double yMax );
+    static void clipEndBottom( const double& x0, const double& y0, double& x1, double& y1, double yMin );
+    static void clipEndRight( const double& x0, const double& y0, double& x1, double& y1, double xMax );
+    static void clipEndLeft( const double& x0, const double& y0, double& x1, double& y1, double xMin );
 };
 
 // The inline functions
@@ -281,6 +314,443 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
   }
 
   return p;
+}
+
+inline void QgsClipper::clipStartTop( double& x0, double& y0, const double& x1, const double& y1, double yMax )
+{
+  x0 += ( x1 - x0 )  * ( yMax - y0 ) / ( y1 - y0 );
+  y0 = yMax;
+}
+
+inline void QgsClipper::clipStartBottom( double& x0, double& y0, const double& x1, const double& y1, double yMin )
+{
+  x0 += ( x1 - x0 ) * ( yMin - y0 ) / ( y1 - y0 );
+  y0 = yMin;
+}
+
+inline void QgsClipper::clipStartRight( double& x0, double& y0, const double& x1, const double& y1, double xMax )
+{
+  y0 += ( y1 - y0 ) * ( xMax - x0 ) / ( x1 - x0 );
+  x0 = xMax;
+}
+
+inline void QgsClipper::clipStartLeft( double& x0, double& y0, const double& x1, const double& y1, double xMin )
+{
+  y0 += ( y1 - y0 ) * ( xMin - x0 ) / ( x1 - x0 );
+  x0 = xMin;
+}
+
+inline void QgsClipper::clipEndTop( const double& x0, const double& y0, double& x1, double& y1, double yMax )
+{
+  x1 += ( x1 - x0 ) * ( yMax - y1 ) / ( y1 - y0 );
+  y1 = yMax;
+}
+
+inline void QgsClipper::clipEndBottom( const double& x0, const double& y0, double& x1, double& y1, double yMin )
+{
+  x1 += ( x1 - x0 ) * ( yMin - y1 ) / ( y1 - y0 );
+  y1 = yMin;
+}
+
+inline void QgsClipper::clipEndRight( const double& x0, const double& y0, double& x1, double& y1, double xMax )
+{
+  y1 += ( y1 - y0 ) * ( xMax - x1 ) / ( x1 - x0 );
+  x1 = xMax;
+}
+
+inline void QgsClipper::clipEndLeft( const double& x0, const double& y0, double& x1, double& y1, double xMin )
+{
+  y1 += ( y1 - y0 ) * ( xMin - x1 ) / ( x1 - x0 );
+  x1 = xMin;
+}
+
+//'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
+inline bool QgsClipper::clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double& x0, double& y0, double& x1, double& y1 )
+{
+  int lineCode = 0;
+
+  if ( y1 < yBottom )
+    lineCode |= 4;
+  else if ( y1 > yTop )
+    lineCode |= 8;
+
+  if ( x1 > xRight )
+    lineCode |= 2;
+  else if ( x1 < xLeft )
+    lineCode |= 1;
+
+  if ( y0 < yBottom )
+    lineCode |= 64;
+  else if ( y0 > yTop )
+    lineCode |= 128;
+
+  if ( x0 > xRight )
+    lineCode |= 32;
+  else if ( x0 < xLeft )
+    lineCode |= 16;
+
+  switch ( lineCode )
+  {
+    case 0: //completely inside
+      return true;
+
+    case 1:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 2:
+      clipEndRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 4:
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 5:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 6:
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 8:
+      clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 9:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 > yTop )
+        clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 10:
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 > yTop )
+        clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 16:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 18:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      clipEndRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 20:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 < yBottom )
+        return false;
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 22:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 < yBottom )
+        return false;
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      if ( x1 > xRight )
+        clipEndRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 24:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 > yTop )
+        return false;
+      clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 26:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 > yTop )
+        return false;
+      clipEndTop( x0, y0, x1, y1, yTop );
+      if ( x1 > xRight )
+        clipEndRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 32:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 33:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 36:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 < yBottom )
+        return false;
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 37:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 < yBottom )
+        return false;
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      if ( x1 < xLeft )
+        clipEndLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 40:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 > yTop )
+        return false;
+      clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 41:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 > yTop )
+        return false;
+      clipEndTop( x0, y0, x1, y1, yTop );
+      if ( x1 < xLeft )
+        clipEndLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 64:
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 65:
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 < xLeft )
+        return false;
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 66:
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 > xRight )
+        return false;
+      clipEndRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 72:
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 73:
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 < xLeft )
+        return false;
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 > yTop )
+        clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 74:
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 > xRight )
+        return false;
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 > yTop )
+        clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 80:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 < yBottom )
+        clipStartBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 82:
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 < yBottom )
+        return false;
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 < xLeft )
+        clipStartLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 88:
+      clipEndTop( x0, y0, x1, y1, yTop );
+      if ( x1 < xLeft )
+        return false;
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 < xLeft )
+        clipStartLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 90:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 > yTop )
+        return false;
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 < yBottom )
+        return false;
+      if ( y0 < yBottom )
+        clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( y1 > yTop )
+        clipEndTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 96:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 < yBottom )
+        clipStartBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 97:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 < yBottom )
+        return false;
+      clipStartBottom( x0, y0, x1, y1, yBottom );
+      if ( x0 > xRight )
+        clipStartRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 104:
+      clipEndTop( x0, y0, x1, y1, yTop );
+      if ( x1 > xRight )
+        return false;
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 < yBottom )
+        clipStartBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 105:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 < yBottom )
+        return false;
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 > yTop )
+        return false;
+      if ( y1 > yTop )
+        clipEndTop( x0, y0, x1, y1, yTop );
+      if ( y0 < yBottom )
+        clipStartBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 128:
+      clipStartTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 129:
+      clipStartTop( x0, y0, x1, y1, yTop );
+      if ( x0 < xLeft )
+        return false;
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 130:
+      clipStartTop( x0, y0, x1, y1, yTop );
+      if ( x0 > xRight )
+        return false;
+      clipEndRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 132:
+      clipStartTop( x0, y0, x1, y1, yTop );
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 133:
+      clipStartTop( x0, y0, x1, y1, yTop );
+      if ( x0 < xLeft )
+        return false;
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 134:
+      clipStartTop( x0, y0, x1, y1, yTop );
+      if ( x0 > xRight )
+        return false;
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 144:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 > yTop )
+        clipStartTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 146:
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 > yTop )
+        return false;
+      clipStartTop( x0, y0, x1, y1, yTop );
+      if ( x0 < xLeft )
+        clipStartLeft( x0, y0, x1, y1, xLeft );
+      return true;
+
+    case 148:
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      if ( x1 < xLeft )
+        return false;
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 > yTop )
+        clipStartTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 150:
+      clipStartLeft( x0, y0, x1, y1, xLeft );
+      if ( y0 < yBottom )
+        return false;
+      clipEndRight( x0, y0, x1, y1, xRight );
+      if ( y1 > yTop )
+        return false;
+      if ( y0 > yTop )
+        clipStartTop( x0, y0, x1, y1, yTop );
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      return true;
+
+    case 160:
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 > yTop )
+        clipStartTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 161:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 > yTop )
+        return false;
+      clipStartTop( x0, y0, x1, y1, yTop );
+      if ( x0 > xRight )
+        clipStartRight( x0, y0, x1, y1, xRight );
+      return true;
+
+    case 164:
+      clipEndBottom( x0, y0, x1, y1, yBottom );
+      if ( x1 > xRight )
+        return false;
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 > yTop )
+        clipStartTop( x0, y0, x1, y1, yTop );
+      return true;
+
+    case 165:
+      clipEndLeft( x0, y0, x1, y1, xLeft );
+      if ( y1 > yTop )
+        return false;
+      clipStartRight( x0, y0, x1, y1, xRight );
+      if ( y0 < yBottom )
+        return false;
+      if ( y1 < yBottom )
+        clipEndBottom( x0, y0, x1, y1, yBottom );
+      if ( y0 > yTop )
+        clipStartTop( x0, y0, x1, y1, yTop );
+      return true;
+  }
+
+  return false;
+
 }
 
 
