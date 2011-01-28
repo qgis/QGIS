@@ -1682,15 +1682,47 @@ void QgisApp::createToolBars()
   mLayerToolBar = addToolBar( tr( "Manage Layers" ) );
   mLayerToolBar->setIconSize( myIconSize );
   mLayerToolBar->setObjectName( "LayerToolBar" );
-  mLayerToolBar->addAction( mActionAddOgrLayer );
-  mLayerToolBar->addAction( mActionAddRasterLayer );
+
+  QToolButton *bt = new QToolButton( mLayerToolBar );
+  bt->setObjectName( "AddLayer" );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionAddOgrLayer );
+  bt->addAction( mActionAddRasterLayer );
 #ifdef HAVE_POSTGRESQL
-  mLayerToolBar->addAction( mActionAddPgLayer );
+  bt->addAction( mActionAddPgLayer );
 #endif
 #ifdef HAVE_SPATIALITE
-  mLayerToolBar->addAction( mActionAddSpatiaLiteLayer );
+  bt->addAction( mActionAddSpatiaLiteLayer );
 #endif
-  mLayerToolBar->addAction( mActionAddWmsLayer );
+  bt->addAction( mActionAddWmsLayer );
+
+  QSettings settings;
+  switch ( settings.value( "/UI/addLayer", 0 ).toInt() )
+  {
+    default:
+    case 0:
+      bt->setDefaultAction( mActionAddOgrLayer );
+      break;
+
+    case 1:
+      bt->setDefaultAction( mActionAddRasterLayer );
+      break;
+
+    case 2:
+      bt->setDefaultAction( mActionAddPgLayer );
+      break;
+
+    case 3:
+      bt->setDefaultAction( mActionAddSpatiaLiteLayer );
+      break;
+
+    case 4:
+      bt->setDefaultAction( mActionAddWmsLayer );
+      break;
+  }
+  mLayerToolBar->addWidget( bt );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   mLayerToolBar->addAction( mActionNewVectorLayer );
   mLayerToolBar->addAction( mActionRemoveLayer );
   //commented out for QGIS 1.4 by Tim
@@ -1762,7 +1794,7 @@ void QgisApp::createToolBars()
   mAttributesToolBar->setObjectName( "Attributes" );
   mAttributesToolBar->addAction( mActionIdentify );
 
-  QToolButton *bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mAttributesToolBar );
   bt->setObjectName( "SelectTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelect );
@@ -1771,7 +1803,6 @@ void QgisApp::createToolBars()
   bt->addAction( mActionSelectFreehand );
   bt->addAction( mActionSelectRadius );
 
-  QSettings settings;
   switch ( settings.value( "/UI/selectTool", 0 ).toInt() )
   {
     default:
@@ -7337,6 +7368,16 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/annotationTool", 1 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 2 );
+  else if ( action == mActionAddOgrLayer )
+    settings.setValue( "/UI/addLayer", 0 );
+  else if ( action == mActionAddRasterLayer )
+    settings.setValue( "/UI/addLayer", 1 );
+  else if ( action == mActionAddPgLayer )
+    settings.setValue( "/UI/addLayer", 2 );
+  else if ( action == mActionAddSpatiaLiteLayer )
+    settings.setValue( "/UI/addLayer", 3 );
+  else if ( action == mActionAddWmsLayer )
+    settings.setValue( "/UI/addLayer", 4 );
 
   bt->setDefaultAction( action );
 }
