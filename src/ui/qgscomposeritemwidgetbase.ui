@@ -70,7 +70,7 @@
    <item row="6" column="0">
     <widget class="QPushButton" name="mPositionButton">
      <property name="text">
-      <string>Position...</string>
+      <string>Position and size...</string>
      </property>
     </widget>
    </item>
