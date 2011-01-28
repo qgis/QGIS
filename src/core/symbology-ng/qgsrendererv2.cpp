@@ -133,7 +133,10 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
       // TODO: maybe to the transform at once (faster?)
       if ( ct )
+      {
+        z = 0;
         ct->transformInPlace( x, y, z );
+      }
       mtp.transformInPlace( x, y );
 
       poly[jdx] = QPointF( x, y );
