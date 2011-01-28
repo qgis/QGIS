@@ -103,7 +103,7 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   h = new QHBoxLayout( frame );
   l = new QLabel( tr( "Cost" ), frame );
   h->addWidget( l );
-  l = new QLabel( tr( "lines length" ), frame );
+  l = new QLabel( tr( "Line lengths" ), frame );
   h->addWidget( l );
   v->addLayout( h );
 

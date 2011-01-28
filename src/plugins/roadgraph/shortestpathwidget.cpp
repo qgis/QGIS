@@ -62,7 +62,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   QHBoxLayout *h = NULL;
   QLabel *l = NULL;
 
-  l = new QLabel( tr( "Start:" ), myWidget );
+  l = new QLabel( tr( "Start" ), myWidget );
   v->addWidget( l );
   h = new QHBoxLayout();
   mFrontPointLineEdit = new QLineEdit( myWidget );
@@ -74,7 +74,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( selectFrontPoint );
   v->addLayout( h );
 
-  l = new QLabel( tr( "Stop:" ), myWidget );
+  l = new QLabel( tr( "Stop" ), myWidget );
   v->addWidget( l );
   h = new QHBoxLayout();
   mBackPointLineEdit = new QLineEdit( myWidget );
@@ -87,7 +87,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   v->addLayout( h );
 
   h = new QHBoxLayout( this );
-  l = new QLabel( tr( "Criterion:" ), myWidget );
+  l = new QLabel( tr( "Criterion" ), myWidget );
   mCriterionName = new QComboBox( myWidget );
   mCriterionName->insertItem( 0, tr( "Length" ) );
   mCriterionName->insertItem( 1, tr( "Time" ) );
@@ -96,7 +96,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   v->addLayout( h );
 
   h = new QHBoxLayout( myWidget );
-  l = new QLabel( tr( "Length:" ), myWidget );
+  l = new QLabel( tr( "Length" ), myWidget );
   mPathCostLineEdit = new QLineEdit( myWidget );
   mPathCostLineEdit->setReadOnly( true );
   h->addWidget( l );
@@ -104,7 +104,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   v->addLayout( h );
 
   h = new QHBoxLayout( myWidget );
-  l = new QLabel( tr( "Time:" ), myWidget );
+  l = new QLabel( tr( "Time" ), myWidget );
   mPathTimeLineEdit = new QLineEdit( myWidget );
   mPathTimeLineEdit->setReadOnly( true );
   h->addWidget( l );
@@ -228,7 +228,7 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
   {
     const RgGraphDirector *director = mPlugin->director();
     director->makeGraph( &builder );
-  
+
     // not need
     delete director;
   }
@@ -238,13 +238,13 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
   p1 = builder.tiePoint( mFrontPoint, ok );
   if ( !ok )
   {
-    QMessageBox::critical (this, tr("Tie point failed"), tr("Start point don't tie to the road!") );
+    QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
     return false;
   }
   p2 = builder.tiePoint( mBackPoint, ok );
   if ( !ok )
   {
-    QMessageBox::critical (this, tr("Tie point failed"), tr("Stop point don't tie to the road!") );
+    QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
     return false;
   }
   AdjacencyMatrix m = builder.adjacencyMatrix();

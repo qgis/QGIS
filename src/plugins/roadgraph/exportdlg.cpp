@@ -35,7 +35,7 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WFlags fl )
   QVBoxLayout *v = new QVBoxLayout( this );
 
   QHBoxLayout *h = new QHBoxLayout();
-  QLabel *l = new QLabel( tr( "Select destination layer:" ), this );
+  QLabel *l = new QLabel( tr( "Select destination layer" ), this );
   h->addWidget( l );
   mcbLayers = new QComboBox( this );
   h->addWidget( mcbLayers );
@@ -47,7 +47,7 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WFlags fl )
   v->addWidget( bb );
 
   //fill list of layers
-  mcbLayers->insertItem( 0, tr( "new temporary layer" ), QVariant( "-1" ) );
+  mcbLayers->insertItem( 0, tr( "New temporary layer" ), QVariant( "-1" ) );
 
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();

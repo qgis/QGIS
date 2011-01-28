@@ -33,13 +33,13 @@ class QgsVectorLayer;
 class RgLineVectorLayerDirector : public RgGraphDirector
 {
   public:
-    RgLineVectorLayerDirector( const QString& layerId, 
+    RgLineVectorLayerDirector( const QString& layerId,
                                int directionFiledId,
                                const QString& directDirectionValue,
                                const QString& reverseDirectionValue,
                                const QString& bothDirectionValue,
-                               int defaultDirection, 
-                               const QString& speedValueUnit = QString("m/s"),
+                               int defaultDirection,
+                               const QString& speedValueUnit = QString( "m/s" ),
                                int speedFieldId = -1,
                                double defaultSpeed = 1.0 );
 
@@ -51,19 +51,19 @@ class RgLineVectorLayerDirector : public RgGraphDirector
     void makeGraph( RgGraphBuilder * ) const;
 
     QString name() const;
-  
+
   private:
 
     QgsVectorLayer* myLayer() const;
 
   private:
-  
+
     QString mLayerId;
 
     int mSpeedFieldId;
 
     double mDefaultSpeed;
-    
+
     QString mSpeedUnitName;
 
     int mDirectionFieldId;
@@ -73,7 +73,7 @@ class RgLineVectorLayerDirector : public RgGraphDirector
     QString mReverseDirectionValue;
 
     QString mBothDirectionValue;
-    
+
     //FIXME: need enum
     int mDefaultDirection;
 };
