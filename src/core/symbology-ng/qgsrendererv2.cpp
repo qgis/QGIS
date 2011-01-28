@@ -53,11 +53,10 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   wkb += sizeof( unsigned int );
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
-  double x, y;
+  double x, y, z;
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
-  double z = 0; // dummy variable for coordiante transform
 
   //apply clipping for large lines to achieve a better rendering performance
   if ( nPoints > 100 )
@@ -89,7 +88,10 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   for ( unsigned int i = 0; i < pts.size(); ++i )
   {
     if ( ct )
+    {
+      z = 0;
       ct->transformInPlace( pts[i].rx(), pts[i].ry(), z );
+    }
     mtp.transformInPlace( pts[i].rx(), pts[i].ry() );
   }
 

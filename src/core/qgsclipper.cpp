@@ -85,7 +85,7 @@ unsigned char* QgsClipper::clippedLineWKB( unsigned char* wkb, const QgsRectangl
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
                             p0x, p0y, p1x_c,  p1y_c ) )
       {
-        bool newLine = line.size() > 0 && ( p1x_c != lastClipX || p1y_c != lastClipY );
+        bool newLine = line.size() > 0 && ( p0x != lastClipX || p0y != lastClipY );
         if ( newLine )
         {
           //add edge points to connect old and new line
