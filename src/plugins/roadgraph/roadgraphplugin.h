@@ -32,6 +32,7 @@ class QDockWidget;
 //forward declarations RoadGraph plugins classes
 class RgGraphDirector;
 class RgShortestPathWidget;
+class RgLineVectorLayerSettings;
 
 /**
 * \class RoadGraphPlugin
@@ -56,7 +57,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     QgisInterface *iface();
 
     /**
-     * return pointer to my Graph director
+     * return pointer to graph director
      */
     const RgGraphDirector* director() const;
 
@@ -140,9 +141,10 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     RgShortestPathWidget *mQShortestPathDock;
 
     /**
-     * My Graph Director
+     * My graph settings.
+     * @note. Should be used RgSettings
      */
-    RgGraphDirector *mDirector;
+    RgLineVectorLayerSettings *mSettings;
 
     /**
      *  time unit for results presentation

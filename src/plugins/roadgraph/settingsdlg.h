@@ -23,7 +23,7 @@ class QComboBox;
 // forward declaration Qgis-classes
 
 //forward declaration RoadGraph plugins classes
-class RgGraphDirector;
+class RgSettings;
 
 /**
 @author Sergey Yakushev
@@ -36,7 +36,7 @@ class RgSettingsDlg : public QDialog
 {
     Q_OBJECT
   public:
-    RgSettingsDlg( RgGraphDirector *director, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    RgSettingsDlg( RgSettings *settings, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~RgSettingsDlg();
 
     QString timeUnitName();
@@ -60,9 +60,9 @@ class RgSettingsDlg : public QDialog
     QComboBox *mcbGraphDirector;
 
     /**
-     * current graph director
+     * current graph settings object
      */
-    RgGraphDirector *mDirector;
+    RgSettings *mSettings;
 
     QWidget *mSettingsWidget;
 

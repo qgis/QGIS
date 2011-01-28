@@ -24,6 +24,7 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <QToolButton>
+#include <QMessageBox>
 
 // Qgis includes
 #include <qgsmapcanvas.h>
@@ -224,15 +225,28 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     return false;
   RgSimpleGraphBuilder builder;
   builder.setDestinationCrs( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
-  mPlugin->director()->makeGraph( &builder );
+  {
+    const RgGraphDirector *director = mPlugin->director();
+    director->makeGraph( &builder );
+  
+    // not need
+    delete director;
+  }
+
   bool ok;
 
   p1 = builder.tiePoint( mFrontPoint, ok );
   if ( !ok )
+  {
+    QMessageBox::critical (this, tr("Tie point failed"), tr("Start point don't tie to the road!") );
     return false;
+  }
   p2 = builder.tiePoint( mBackPoint, ok );
   if ( !ok )
+  {
+    QMessageBox::critical (this, tr("Tie point failed"), tr("Stop point don't tie to the road!") );
     return false;
+  }
   AdjacencyMatrix m = builder.adjacencyMatrix();
 
   DijkstraFinder::OptimizationCriterion criterion = DijkstraFinder::byCost;

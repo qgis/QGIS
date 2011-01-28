@@ -23,14 +23,18 @@
 #include <qgsmaptoolemitpoint.h>
 #include <qgsmaprenderer.h>
 
+#include <qgsmaplayerregistry.h>
+#include <qgsvectorlayer.h>
+#include <qgsvectordataprovider.h>
+
 // Road grap plugin includes
 #include "roadgraphplugin.h"
 #include "shortestpathwidget.h"
 #include "settingsdlg.h"
-#include "graphdirector.h"
-#include "linevectorlayerdirector.h"
-#include "simplegraphbuilder.h"
 
+#include "linevectorlayerdirector.h"
+#include "linevectorlayersettings.h"
+#include "simplegraphbuilder.h"
 //
 // Qt4 Related Includes
 //
@@ -70,7 +74,7 @@ RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface ):
 {
 
   mQShortestPathDock = NULL;
-  mDirector = new RgLineVectorLayerDirector();
+  mSettings = new RgLineVectorLayerSettings();
   mTimeUnitName = "h";
   mDistanceUnitName = "km";
 }
@@ -166,17 +170,18 @@ void RoadGraphPlugin::newProject()
 
 void RoadGraphPlugin::property()
 {
-  RgSettingsDlg dlg( mDirector, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  RgSettingsDlg dlg( mSettings, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
 
   dlg.setTimeUnitName( mTimeUnitName );
   dlg.setDistanceUnitName( mDistanceUnitName );
 
   if ( !dlg.exec() )
     return;
+
   mTimeUnitName = dlg.timeUnitName();
   mDistanceUnitName = dlg.distanceUnitName();
 
-  mDirector->settings()->write( QgsProject::instance() );
+  mSettings->write( QgsProject::instance() );
   QgsProject::instance()->writeEntry( "roadgraphplugin", "/pluginTimeUnit", mTimeUnitName );
   QgsProject::instance()->writeEntry( "roadgraphplugin", "/pluginDistanceUnit", mDistanceUnitName );
 
@@ -236,7 +241,7 @@ void RoadGraphPlugin::about()
 
 void RoadGraphPlugin::projectRead()
 {
-  mDirector->settings()->read( QgsProject::instance() );
+  mSettings->read( QgsProject::instance() );
   mTimeUnitName = QgsProject::instance()->readEntry( "roadgraphplugin", "/pluginTimeUnit", "h" );
   mDistanceUnitName = QgsProject::instance()->readEntry( "roadgraphplugin", "/pluginDistanceUnit", "km" );
   setGuiElementsToDefault();
@@ -249,17 +254,51 @@ QgisInterface* RoadGraphPlugin::iface()
 
 const RgGraphDirector* RoadGraphPlugin::director() const
 {
-  return mDirector;
+  QString layerId;
+  QgsVectorLayer *layer = NULL;
+  QMap< QString, QgsMapLayer* > mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap< QString, QgsMapLayer* >::const_iterator it;
+  for ( it = mapLayers.begin(); it != mapLayers.end(); ++it )
+  {
+    if ( it.value()->name() != mSettings->mLayer )
+      continue;
+    layerId = it.key();
+    layer = dynamic_cast< QgsVectorLayer* >( it.value() );
+    break;
+  }
+  if ( layer == NULL )
+    return NULL;
+
+  QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* > ( layer->dataProvider() );
+  if ( provider == NULL )
+    return NULL;
+
+  RgLineVectorLayerDirector * director = 
+    new RgLineVectorLayerDirector(  layerId,
+                                    provider->fieldNameIndex( mSettings->mDirection ),
+                                    mSettings->mFirstPointToLastPointDirectionVal,
+                                    mSettings->mLastPointToFirstPointDirectionVal,
+                                    mSettings->mBothDirectionVal,
+                                    mSettings->mDefaultDirection,
+                                    mSettings->mSpeedUnitName,
+                                    provider->fieldNameIndex( mSettings->mSpeed ),
+                                    mSettings->mDefaultSpeed );
+  
+  return director;
 }
 void RoadGraphPlugin::render( QPainter *painter )
 {
-  if ( mDirector == NULL )
-    return;
   if ( !mQShowDirectionAction->isChecked() )
     return;
+
+  const RgGraphDirector *graphDirector = director();
+  
+  if ( graphDirector == NULL )
+    return;
+
   RgSimpleGraphBuilder builder;
   builder.setDestinationCrs( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs() );
-  mDirector->makeGraph( &builder );
+  graphDirector->makeGraph( &builder );
   AdjacencyMatrix m = builder.adjacencyMatrix();
 
   AdjacencyMatrix::iterator it1;
@@ -293,7 +332,7 @@ void RoadGraphPlugin::render( QPainter *painter )
       painter->drawPolygon( tmp );
     }
   }
-
+  delete graphDirector;
 }// RoadGraphPlugin::render()
 QString RoadGraphPlugin::timeUnitName()
 {
