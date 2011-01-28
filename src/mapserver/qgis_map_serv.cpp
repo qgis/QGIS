@@ -49,7 +49,7 @@ void printRequestInfos()
 #ifdef QGSMSDEBUG
   //print out some infos about the request
   QgsMSDebugMsg( "************************new request**********************" )
-  QgsMSDebugMsg( QDateTime::currentDateTime().toString( "yyyy-mm-dd hh:mm:ss" ) );
+  QgsMSDebugMsg( QDateTime::currentDateTime().toString( "yyyy-MM-dd hh:mm:ss" ) );
 
   if ( getenv( "REMOTE_ADDR" ) != NULL )
   {
