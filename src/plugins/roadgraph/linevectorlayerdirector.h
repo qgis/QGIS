@@ -21,10 +21,10 @@
 
 // Road-graph plugin includes
 #include "graphdirector.h"
-#include "linevectorlayersettings.h"
 
 //forward declarations
 class RgGraphBuilder;
+class QgsVectorLayer;
 
 /**
 * \class RgLineVectorLayerDirector
@@ -33,7 +33,16 @@ class RgGraphBuilder;
 class RgLineVectorLayerDirector : public RgGraphDirector
 {
   public:
-    RgLineVectorLayerDirector();
+    RgLineVectorLayerDirector( const QString& layerId, 
+                               int directionFiledId,
+                               const QString& directDirectionValue,
+                               const QString& reverseDirectionValue,
+                               const QString& bothDirectionValue,
+                               int defaultDirection, 
+                               const QString& speedValueUnit = QString("m/s"),
+                               int speedFieldId = -1,
+                               double defaultSpeed = 1.0 );
+
     //! Destructor
     virtual ~RgLineVectorLayerDirector();
     /**
@@ -41,13 +50,31 @@ class RgLineVectorLayerDirector : public RgGraphDirector
      */
     void makeGraph( RgGraphBuilder * ) const;
 
-    RgSettings* settings();
-
     QString name() const;
+  
   private:
-    /**
-     * settings of this director
-     */
-    RgLineVectorLayerSettings mSettings;
+
+    QgsVectorLayer* myLayer() const;
+
+  private:
+  
+    QString mLayerId;
+
+    int mSpeedFieldId;
+
+    double mDefaultSpeed;
+    
+    QString mSpeedUnitName;
+
+    int mDirectionFieldId;
+
+    QString mDirectDirectionValue;
+
+    QString mReverseDirectionValue;
+
+    QString mBothDirectionValue;
+    
+    //FIXME: need enum
+    int mDefaultDirection;
 };
 #endif //GRAPHDIRECTOR

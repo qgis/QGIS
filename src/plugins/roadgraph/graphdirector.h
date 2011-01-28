@@ -41,11 +41,6 @@ class RgGraphDirector
     virtual void makeGraph( RgGraphBuilder * ) const = 0;
 
     /**
-     * return pointer to my Settings
-     */
-    virtual RgSettings* settings() = 0;
-
-    /**
      * return Director name
      */
     virtual QString name() const = 0;

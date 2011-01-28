@@ -14,7 +14,6 @@
  * \brief implementation of RgLineVectorLayerDirector
  */
 
-#include "linevectorlayersettings.h"
 #include "linevectorlayerdirector.h"
 #include "graphbuilder.h"
 #include "units.h"
@@ -32,15 +31,29 @@
 //standard includes
 #include <iostream>
 
-RgLineVectorLayerDirector::RgLineVectorLayerDirector()
+RgLineVectorLayerDirector::RgLineVectorLayerDirector( const QString& layerId,
+                           int directionFieldId,
+                           const QString& directDirectionValue,
+                           const QString& reverseDirectionValue,
+                           const QString& bothDirectionValue,
+                           int defaultDirection,
+                           const QString& speedUnitName,
+                           int speedFieldId,
+                           double defaultSpeed)
 {
+  mLayerId                = layerId;
+  mDirectionFieldId       = directionFieldId;
+  mDirectDirectionValue   = directDirectionValue;
+  mReverseDirectionValue  = reverseDirectionValue;
+  mDefaultDirection       = defaultDirection;
+  mBothDirectionValue     = bothDirectionValue;
+  mSpeedUnitName          = speedUnitName;
+  mSpeedFieldId           = speedFieldId;
+  mDefaultSpeed           = defaultSpeed;
 }
+
 RgLineVectorLayerDirector::~RgLineVectorLayerDirector()
 {
-}
-RgSettings* RgLineVectorLayerDirector::settings()
-{
-  return &mSettings;
 }
 
 QString RgLineVectorLayerDirector::name() const
@@ -50,69 +63,51 @@ QString RgLineVectorLayerDirector::name() const
 
 void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
 {
-  QgsVectorLayer *vl = NULL;
-  QMap< QString, QgsMapLayer*> m = QgsMapLayerRegistry::instance()->mapLayers();
-  QMap< QString, QgsMapLayer*>::const_iterator it;
-  for ( it = m.constBegin(); it != m.constEnd(); ++it )
-  {
-    if ( it.value()->name() == mSettings.mLayer )
-    {
-      vl = dynamic_cast<QgsVectorLayer*>( it.value() );
-      break;
-    }
-  }
+  QgsVectorLayer *vl = myLayer();
+
   if ( vl == NULL )
     return;
 
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>( vl->dataProvider() );
-  if ( provider == NULL )
-    return;
-
-  int directionFieldId = provider->fieldNameIndex( mSettings.mDirection );
-  int speedFieldId     = provider->fieldNameIndex( mSettings.mSpeed );
-
   builder->setSourceCrs( vl->crs() );
   QgsAttributeList la;
-  if ( directionFieldId > -1 )
-    la.push_back( directionFieldId );
-  if ( speedFieldId > -1 )
-    la.push_back( speedFieldId );
+  la.push_back( mDirectionFieldId );
+  la.push_back( mSpeedFieldId );
 
-  SpeedUnit su = SpeedUnit::byName( mSettings.mSpeedUnitName );
+  SpeedUnit su = SpeedUnit::byName( mSpeedUnitName );
 
   vl->select( la );
   QgsFeature feature;
   while ( vl->nextFeature( feature ) )
   {
     QgsAttributeMap attr = feature.attributeMap();
-    RgLineVectorLayerSettings::DirectionType directionType = mSettings.mDefaultDirection;
+    int directionType = mDefaultDirection;
     QgsAttributeMap::const_iterator it;
     // What direction have feature?
     for ( it = attr.constBegin(); it != attr.constEnd(); ++it )
     {
-      if ( it.key() != directionFieldId )
+      if ( it.key() != mDirectionFieldId )
       {
         continue;
       }
       QString str = it.value().toString();
-      if ( str == mSettings.mBothDirectionVal )
+      if ( str == mBothDirectionValue )
       {
-        directionType = RgLineVectorLayerSettings::Both;
+        directionType = 3;
       }
-      else if ( str == mSettings.mFirstPointToLastPointDirectionVal )
+      else if ( str == mDirectDirectionValue )
       {
-        directionType = RgLineVectorLayerSettings::FirstPointToLastPoint;
+        directionType = 1;
       }
-      else if ( str == mSettings.mLastPointToFirstPointDirectionVal )
+      else if ( str == mReverseDirectionValue )
       {
-        directionType = RgLineVectorLayerSettings::LastPointToFirstPoint;
+        directionType = 2;
       }
     }
     // What speed have feature?
     double speed = 0.0;
     for ( it = attr.constBegin(); it != attr.constEnd(); ++it )
     {
-      if ( it.key() != speedFieldId )
+      if ( it.key() != mSpeedFieldId )
       {
         continue;
       }
@@ -120,7 +115,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
     }
     if ( speed <= 0.0 )
     {
-      speed = mSettings.mDefaultSpeed;
+      speed = mDefaultSpeed;
     }
 
     // begin features segments and add arc to the Graph;
@@ -134,13 +129,13 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
       pt2 = *pointIt;
       if ( !isFirstPoint )
       {
-        if ( directionType == RgLineVectorLayerSettings::FirstPointToLastPoint ||
-             directionType  == RgLineVectorLayerSettings::Both )
+        if ( directionType == 1 ||
+             directionType  == 3 )
         {
           builder->addArc( pt1, pt2, speed*su.multipler() );
         }
-        if ( directionType == RgLineVectorLayerSettings::LastPointToFirstPoint ||
-             directionType == RgLineVectorLayerSettings::Both )
+        if ( directionType == 2 ||
+             directionType == 3 )
         {
           builder->addArc( pt2, pt1, speed*su.multipler() );
         }
@@ -151,3 +146,15 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
 
   } // while( vl->nextFeature(feature) )
 } // makeGraph( RgGraphBuilder *builder, const QgsRectangle& rt )
+
+QgsVectorLayer* RgLineVectorLayerDirector::myLayer() const
+{
+  QMap <QString, QgsMapLayer*> m = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap <QString, QgsMapLayer*>::const_iterator it = m.find( mLayerId );
+  if ( it == m.end() )
+  {
+    return NULL;
+  }
+  // return NULL if it.value() isn't QgsVectorLayer()
+  return dynamic_cast<QgsVectorLayer*>( it.value() );
+}
