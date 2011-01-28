@@ -32,14 +32,14 @@
 #include <iostream>
 
 RgLineVectorLayerDirector::RgLineVectorLayerDirector( const QString& layerId,
-                           int directionFieldId,
-                           const QString& directDirectionValue,
-                           const QString& reverseDirectionValue,
-                           const QString& bothDirectionValue,
-                           int defaultDirection,
-                           const QString& speedUnitName,
-                           int speedFieldId,
-                           double defaultSpeed)
+    int directionFieldId,
+    const QString& directDirectionValue,
+    const QString& reverseDirectionValue,
+    const QString& bothDirectionValue,
+    int defaultDirection,
+    const QString& speedUnitName,
+    int speedFieldId,
+    double defaultSpeed )
 {
   mLayerId                = layerId;
   mDirectionFieldId       = directionFieldId;

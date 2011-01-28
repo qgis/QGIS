@@ -29,18 +29,18 @@ RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WFlags 
     : mSettings( settings ), QDialog( parent, fl )
 {
   // create base widgets;
-  setWindowTitle( tr( "Road graph plugins settings" ) );
+  setWindowTitle( tr( "Road graph plugin settings" ) );
   QVBoxLayout *v = new QVBoxLayout( this );
 
   QHBoxLayout *h = new QHBoxLayout();
-  QLabel *l = new QLabel( tr( "Plugins time unit:" ), this );
+  QLabel *l = new QLabel( tr( "Time unit" ), this );
   h->addWidget( l );
   mcbPluginsTimeUnit = new QComboBox( this );
   h->addWidget( mcbPluginsTimeUnit );
   v->addLayout( h );
 
   h = new QHBoxLayout();
-  l = new QLabel( tr( "Plugins distance unit:" ), this );
+  l = new QLabel( tr( "Distance unit" ), this );
   h->addWidget( l );
   mcbPluginsDistanceUnit = new QComboBox( this );
   h->addWidget( mcbPluginsDistanceUnit );

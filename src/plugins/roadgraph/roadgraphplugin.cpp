@@ -53,7 +53,7 @@
 
 static const char * const sIdent = "$Id: roadgraphplugin.cpp 9327 2009-04-20 10:09:44Z YEKST $";
 static const QString sName = QObject::tr( "Road graph plugin" );
-static const QString sDescription = QObject::tr( "It solve shortest path poblem." );
+static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
@@ -96,7 +96,7 @@ void RoadGraphPlugin::initGui()
 
   // Create the action for tool
   mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Road graph settings" ), this );
-  mQShowDirectionAction  = new QAction( QIcon( ":/roadgraph/showdirect.png" ), tr( "Show roads direction" ), this );
+  mQShowDirectionAction  = new QAction( QIcon( ":/roadgraph/showdirect.png" ), tr( "Show road's direction" ), this );
   mInfoAction = new QAction( QIcon( ":/roadgraph/about.png" ), tr( "About" ), this );
 
   // Set the what's this text
@@ -201,7 +201,7 @@ void RoadGraphPlugin::about()
   version->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
   lines->addWidget( title );
   lines->addWidget( version );
-  lines->addWidget( new QLabel( tr( "Find shortest path on roads graph" ) ) );
+  lines->addWidget( new QLabel( tr( "Find shortest path on road's graph" ) ) );
   lines->addWidget( new QLabel( tr( "<b>Developers:</b>" ) ) );
   lines->addWidget( new QLabel( "    Sergey Yakushev" ) );
   lines->addWidget( new QLabel( tr( "<b>Homepage:</b>" ) ) );
@@ -269,21 +269,21 @@ const RgGraphDirector* RoadGraphPlugin::director() const
   if ( layer == NULL )
     return NULL;
 
-  QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* > ( layer->dataProvider() );
+  QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* >( layer->dataProvider() );
   if ( provider == NULL )
     return NULL;
 
-  RgLineVectorLayerDirector * director = 
-    new RgLineVectorLayerDirector(  layerId,
-                                    provider->fieldNameIndex( mSettings->mDirection ),
-                                    mSettings->mFirstPointToLastPointDirectionVal,
-                                    mSettings->mLastPointToFirstPointDirectionVal,
-                                    mSettings->mBothDirectionVal,
-                                    mSettings->mDefaultDirection,
-                                    mSettings->mSpeedUnitName,
-                                    provider->fieldNameIndex( mSettings->mSpeed ),
-                                    mSettings->mDefaultSpeed );
-  
+  RgLineVectorLayerDirector * director =
+    new RgLineVectorLayerDirector( layerId,
+                                   provider->fieldNameIndex( mSettings->mDirection ),
+                                   mSettings->mFirstPointToLastPointDirectionVal,
+                                   mSettings->mLastPointToFirstPointDirectionVal,
+                                   mSettings->mBothDirectionVal,
+                                   mSettings->mDefaultDirection,
+                                   mSettings->mSpeedUnitName,
+                                   provider->fieldNameIndex( mSettings->mSpeed ),
+                                   mSettings->mDefaultSpeed );
+
   return director;
 }
 void RoadGraphPlugin::render( QPainter *painter )
@@ -292,7 +292,7 @@ void RoadGraphPlugin::render( QPainter *painter )
     return;
 
   const RgGraphDirector *graphDirector = director();
-  
+
   if ( graphDirector == NULL )
     return;
 
