@@ -715,10 +715,13 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
     {
       width = 0; //width parameter is mandatory
     }
-    width = wit->second.toInt( &conversionSuccess );
-    if ( !conversionSuccess )
+    else
     {
-      width = 0;
+      width = wit->second.toInt( &conversionSuccess );
+      if ( !conversionSuccess )
+      {
+        width = 0;
+      }
     }
   }
 
@@ -729,10 +732,13 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
     {
       height = 0; //height parameter is mandatory
     }
-    height = hit->second.toInt( &conversionSuccess );
-    if ( !conversionSuccess )
+    else
     {
-      height = 0;
+      height = hit->second.toInt( &conversionSuccess );
+      if ( !conversionSuccess )
+      {
+        height = 0;
+      }
     }
   }
 
