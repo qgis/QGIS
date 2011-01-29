@@ -1253,9 +1253,10 @@ QString QgsPostgresProvider::getPrimaryKey()
           }
 
           // mPrimaryKeyDefault stays null and is retrieved later on demand
+          // if mUseEstimatedMetadata is on assume that the already keyfield is still unique
 
           if (( type != "int4" && type != "oid" ) ||
-              !uniqueData( mQuery, primaryKey ) )
+              ( !mUseEstimatedMetadata && !uniqueData( mQuery, primaryKey ) ) )
           {
             primaryKey = "";
           }
