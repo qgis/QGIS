@@ -85,7 +85,7 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   }
 
   //transform the QPolygonF to screen coordinates
-  for ( unsigned int i = 0; i < pts.size(); ++i )
+  for ( int i = 0; i < pts.size(); ++i )
   {
     if ( ct )
     {
