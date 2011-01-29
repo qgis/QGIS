@@ -149,15 +149,6 @@ touch exclude
 
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
-	--exclude "*.pyc" ^
-	--exclude "apps/%PACKAGENAME%/themes/classic/grass" ^
-	--exclude "apps/%PACKAGENAME%/themes/default/grass" ^
-	--exclude "apps/%PACKAGENAME%/themes/qgis/grass" ^
-	--exclude "apps/%PACKAGENAME%/grass" ^
-	--exclude "apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
-	--exclude "apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
-	--exclude "apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-	--exclude "apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
@@ -165,19 +156,18 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
-tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
-	--exclude-from exclude ^
-	--exclude "*.pyc" ^
-	"apps/%PACKAGENAME%/themes/classic/grass" ^
-	"apps/%PACKAGENAME%/themes/default/grass" ^
-	"apps/%PACKAGENAME%/themes/gis/grass" ^
-	"apps/%PACKAGENAME%/grass" ^
-	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
-	>>%LOG% 2>&1
-if errorlevel 1 goto error
+REM tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-%VERSION%-%PACKAGE%.tar.bz2 ^
+REM 	--exclude-from exclude ^
+REM 	"apps/%PACKAGENAME%/themes/classic/grass" ^
+REM 	"apps/%PACKAGENAME%/themes/default/grass" ^
+REM 	"apps/%PACKAGENAME%/themes/gis/grass" ^
+REM 	"apps/%PACKAGENAME%/grass" ^
+REM 	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
+REM 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
+REM 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
+REM 	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
+REM 	>>%LOG% 2>&1
+REM if errorlevel 1 goto error
 
 goto end
 
@@ -185,7 +175,7 @@ goto end
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%>>%LOG% 2>&1
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
-if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
+REM if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
