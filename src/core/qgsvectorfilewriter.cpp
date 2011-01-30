@@ -368,6 +368,15 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   // create the feature
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
+  OGRErr err = OGR_F_SetFID( poFeature, feature.id() );
+  if ( err != OGRERR_NONE )
+  {
+    QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
+                 .arg( feature.id() )
+                 .arg( err ).arg( CPLGetLastErrorMsg() )
+               );
+  }
+
   // attribute handling
   QgsFieldMap::const_iterator fldIt;
   for ( fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt )
