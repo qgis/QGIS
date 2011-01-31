@@ -302,69 +302,83 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       continue;
     }
 
-    //search composer map title in parameter map-> string
-    QMap< QString, QString >::const_iterator titleIt = parameterMap.find( "MAP" + QString::number( currentMap->id() ) );
-    if ( titleIt == parameterMap.constEnd() )
+    QString mapId = "MAP" + QString::number( currentMap->id() );
+    QMap< QString, QString >::const_iterator extentIt = parameterMap.find( mapId + ":EXTENT" );
+    if ( extentIt == parameterMap.constEnd() ) //map extent is mandatory
     {
       //remove map from composition if not referenced by the request
-      c->removeItem( *mapIt );
-      delete( *mapIt );
-      continue;
+      c->removeItem( *mapIt ); delete( *mapIt ); continue;
     }
-    QString replaceString = titleIt.value();
-    QStringList replacementList = replaceString.split( "/" );
 
-    //get map extent from string
-    if ( replacementList.size() > 0 )
+    QStringList coordList = extentIt.value().split( "," );
+    if ( coordList.size() < 4 )
     {
-      QStringList coordList = replacementList.at( 0 ).split( "," );
-      if ( coordList.size() > 3 )
+      c->removeItem( *mapIt ); delete( *mapIt ); continue; //need at least four coordinates
+    }
+
+    bool xMinOk, yMinOk, xMaxOk, yMaxOk;
+    double xmin = coordList.at( 0 ).toDouble( &xMinOk );
+    double ymin = coordList.at( 1 ).toDouble( &yMinOk );
+    double xmax = coordList.at( 2 ).toDouble( &xMaxOk );
+    double ymax = coordList.at( 3 ).toDouble( &yMaxOk );
+    if ( !xMinOk || !yMinOk || !xMaxOk || !yMaxOk )
+    {
+      c->removeItem( *mapIt ); delete( *mapIt ); continue;
+    }
+
+    //Change x- and y- of extent for WMS 1.3.0 and geographic coordinate systems
+    QMap<QString, QString>::const_iterator versionIt = parameterMap.find( "VERSION" );
+    if ( versionIt != parameterMap.end() )
+    {
+      if ( mapRenderer && versionIt.value() == "1.3.0" && mapRenderer->destinationSrs().geographicFlag() )
       {
-        bool xMinOk, yMinOk, xMaxOk, yMaxOk;
-        double xmin = coordList.at( 0 ).toDouble( &xMinOk );
-        double ymin = coordList.at( 1 ).toDouble( &yMinOk );
-        double xmax = coordList.at( 2 ).toDouble( &xMaxOk );
-        double ymax = coordList.at( 3 ).toDouble( &yMaxOk );
-        if ( xMinOk && yMinOk && xMaxOk && yMaxOk )
-        {
-          currentMap->setNewExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
-        }
+        //switch coordinates of extent
+        double tmp;
+        tmp = xmin;
+        xmin = ymin; ymin = tmp;
+        tmp = xmax;
+        xmax = ymax; ymax = tmp;
+      }
+    }
+    currentMap->setNewExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
+
+    //scale
+    QMap< QString, QString >::const_iterator scaleIt = parameterMap.find( mapId + ":SCALE" );
+    if ( scaleIt != parameterMap.constEnd() )
+    {
+      bool scaleOk;
+      double scale = scaleIt->toDouble( &scaleOk );
+      if ( scaleOk )
+      {
+        currentMap->setNewScale( scale );
       }
     }
 
-    //get rotation from string
-    if ( replacementList.size() > 1 )
+    //rotation
+    QMap< QString, QString >::const_iterator rotationIt = parameterMap.find( mapId + ":ROTATION" );
+    if ( rotationIt != parameterMap.constEnd() )
     {
       bool rotationOk;
-      double rotation = replacementList.at( 1 ).toDouble( &rotationOk );
+      double rotation = rotationIt->toDouble( &rotationOk );
       if ( rotationOk )
       {
         currentMap->setMapRotation( rotation );
       }
     }
 
-    //get forced scale from string
-    if ( replacementList.size() > 2 )
-    {
-      bool conversionOk;
-      double scale = replacementList.at( 2 ).toDouble( &conversionOk );
-      if ( conversionOk )
-      {
-        currentMap->setNewScale( scale );
-      }
-    }
-
-    //get layer list from string
-    if ( replacementList.size() > 3 )
+    //layers / styles
+    QMap< QString, QString >::const_iterator layersIt = parameterMap.find( mapId + ":LAYERS" );
+    QMap< QString, QString >::const_iterator stylesIt = parameterMap.find( mapId + ":STYLES" );
+    if ( layersIt != parameterMap.constEnd() )
     {
       QStringList layerSet;
-      QStringList wmsLayerList = replacementList.at( 3 ).split( "," );
+      QStringList wmsLayerList = layersIt->split( "," );
       QStringList wmsStyleList;
-      if ( replacementList.size() > 4 )
-      {
-        wmsStyleList = replacementList.at( 4 ).split( "," );
-      }
 
+      if ( stylesIt != parameterMap.constEnd() )
+      {
+        wmsStyleList = stylesIt->split( "," );
+      }
       for ( int i = 0; i < wmsLayerList.size(); ++i )
       {
         QString styleName;
