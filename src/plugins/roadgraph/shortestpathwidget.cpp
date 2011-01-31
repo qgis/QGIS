@@ -227,6 +227,11 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
   builder.setDestinationCrs( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
   {
     const RgGraphDirector *director = mPlugin->director();
+    if ( director == NULL )
+    {
+      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
+      return false;
+    }
     director->makeGraph( &builder );
 
     // not need
