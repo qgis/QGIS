@@ -70,8 +70,14 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder ) const
 
   builder->setSourceCrs( vl->crs() );
   QgsAttributeList la;
-  la.push_back( mDirectionFieldId );
-  la.push_back( mSpeedFieldId );
+  if ( mDirectionFieldId != -1 )
+  {
+    la.push_back( mDirectionFieldId );
+  }
+  if ( mSpeedFieldId != -1 )
+  {
+    la.push_back( mSpeedFieldId );
+  }
 
   SpeedUnit su = SpeedUnit::byName( mSpeedUnitName );
 
