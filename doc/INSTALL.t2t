@@ -15,7 +15,7 @@ Building QGIS from source - step by step
 % These are comments and will not be generated in any output
 % -------------------
 
-%This document is in text2tags format. You can generate html, plain text and
+%This document is in txt2tags format. You can generate html, plain text and
 %moinmoin formatted documentation by running txt2tags on this document. See the
 %txt2tags home page for more details.  Please insert manual line breaks in this
 %document as it makes diffing for changes much easier. To do this in vim 

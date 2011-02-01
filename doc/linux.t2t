@@ -139,7 +139,7 @@ svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
 
 ``` 
 cd ${HOME}/dev/cpp 
-svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis 
+svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
 ```
 
 The first time you check out the source you will be prompted to accept the
@@ -198,6 +198,16 @@ make install
 
 It may take a little while to build depending on your platform.
 
+After that you can try to run QGIS:
+
+``` 
+$HOME/apps/bin/qgis
+```
+
+If all has worked properly the QGIS application should start up and appear
+on your screen.
+
+
 == Building Debian packages ==
 
 Instead of creating a personal installation as in the previous step you can
@@ -235,17 +245,6 @@ Install them using dpkg.  E.g.:
 ```
 sudo debi
 ```
-
-== Running QGIS ==
-
-Now you can try to run QGIS:
-
-``` 
-$HOME/apps/bin/qgis 
-```
-
-If all has worked properly the QGIS application should start up and appear
-on your screen.
 
 
 == A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support ==

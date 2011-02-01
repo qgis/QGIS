@@ -1,8 +1,8 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
 
-Last update: 20101120
-Last change: 20101114
+Last update: 20110201
+Last change: 20110201
 
   1. Introduction
   2. Overview
@@ -15,8 +15,7 @@ Last change: 20101114
     3.6. Check out the QGIS Source Code
     3.7. Starting the compile
     3.8. Building Debian packages
-    3.9. Running QGIS
-    3.10. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support
+    3.9. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support
   4. Building on Windows
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
@@ -259,7 +258,7 @@ if you do not have edit privaleges for the QGIS source repository, or use
 
 
   cd ${HOME}/dev/cpp 
-  svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis 
+  svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
 
 
 The first time you check out the source you will be prompted to accept the
@@ -320,6 +319,15 @@ Now on with the build:
 
 It may take a little while to build depending on your platform.
 
+After that you can try to run QGIS:
+
+
+  $HOME/apps/bin/qgis
+
+
+If all has worked properly the QGIS application should start up and appear
+on your screen.
+
 
   3.8. Building Debian packages
   =============================
@@ -361,21 +369,8 @@ Install them using dpkg.  E.g.:
 
 
 
-  3.9. Running QGIS
-  =================
-
-Now you can try to run QGIS:
-
-
-  $HOME/apps/bin/qgis 
-
-
-If all has worked properly the QGIS application should start up and appear
-on your screen.
-
-
-  3.10. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support
-  ========================================================================================================
+  3.9. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support
+  =======================================================================================================
 
 The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If you want 
 to use different versions of the software (gdal, grass, qgis), just make the 
@@ -383,8 +378,8 @@ necessary adjustments to the following code. This guide assumes that you don't h
 installed any previous version of gdal, grass and qgis.
 
 
-    3.10.1. Step 1: install base packages
-    =====================================
+    3.9.1. Step 1: install base packages
+    ====================================
 
 First you need to install the necessary packages required to download the source 
 code and compile it. Open the terminal and issue the following command:
@@ -394,8 +389,8 @@ code and compile it. Open the terminal and issue the following command:
 
 
 
-    3.10.2. Step 2: compile and install the ecw libraries
-    =====================================================
+    3.9.2. Step 2: compile and install the ecw libraries
+    ====================================================
 
 Go to the ERDAS web site http://www.erdas.com/ and follow the links
 "'''products --> ECW JPEG2000 Codec SDK --> downloads'''" 
@@ -435,8 +430,8 @@ leave the folder
 
 
 
-    3.10.3. Step 3: download the MrSID binaries
-    ===========================================
+    3.9.3. Step 3: download the MrSID binaries
+    ==========================================
 
 Go to the LIZARDTECH web site http://www.lizardtech.com/ and follow the links
 "'''download --> Developer SDKs'''", 
@@ -446,8 +441,8 @@ then download the "'''GeoExpress SDK for Linux (x86) - gcc 4.1 32-bit'''"
 Uncompress the downloaded file. The resulting directory name should be similar to "Geo_DSDK-7.0.0.2167"
 
 
-    3.10.4. Step 4: compile and install the gdal libraries
-    ======================================================
+    3.9.4. Step 4: compile and install the gdal libraries
+    =====================================================
 
 Download the latest gdal source code
 
@@ -523,8 +518,8 @@ leave the folder
 
 
 
-    3.10.5. Step 5: compile and install GRASS
-    =========================================
+    3.9.5. Step 5: compile and install GRASS
+    ========================================
 
 Before downloading and compile GRASS source code you need to install a few
 other libraries and programs. We can do this trough apt
@@ -577,8 +572,8 @@ may want to give it a try
 
 
 
-    3.10.6. Step 6: compile and install QGIS
-    ========================================
+    3.9.6. Step 6: compile and install QGIS
+    =======================================
 
 As for GRASS you can obtain the QGIS source code from different sources,
 for instance from svn or just by downloading one of the source code arquives available
