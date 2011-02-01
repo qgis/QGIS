@@ -400,6 +400,37 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       currentMap->setLayerSet( layerSet );
       currentMap->setKeepLayerSet( true );
     }
+
+    //grid space x / y
+    QMap< QString, QString >::const_iterator gridSpaceXIt = parameterMap.find( mapId + ":GRID_INTERVAL_X" );
+    if ( gridSpaceXIt != parameterMap.constEnd() )
+    {
+      bool intervalXOk;
+      double intervalX = gridSpaceXIt->toDouble( &intervalXOk );
+      if ( intervalXOk )
+      {
+        currentMap->setGridIntervalX( intervalX );
+      }
+    }
+    else
+    {
+      currentMap->setGridIntervalX( 0 );
+    }
+
+    QMap< QString, QString >::const_iterator gridSpaceYIt = parameterMap.find( mapId + ":GRID_INTERVAL_Y" );
+    if ( gridSpaceYIt != parameterMap.constEnd() )
+    {
+      bool intervalYOk;
+      double intervalY = gridSpaceYIt->toDouble( &intervalYOk );
+      if ( intervalYOk )
+      {
+        currentMap->setGridIntervalY( intervalY );
+      }
+    }
+    else
+    {
+      currentMap->setGridIntervalY( 0 );
+    }
   }
 
   //replace label text
