@@ -164,7 +164,9 @@ bool QgsRasterTerrainAnalysisDialog::addLayerToProject() const
 
 void QgsRasterTerrainAnalysisDialog::on_mOutputLayerPushButton_clicked()
 {
-  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ) );
+  QSettings s;
+  QString lastDir = s.value( "/RasterTerrainAnalysis/lastOutputDir" ).toString();
+  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ), lastDir );
   if ( !saveFileName.isNull() )
   {
     mOutputLayerLineEdit->setText( saveFileName );
@@ -181,6 +183,13 @@ void QgsRasterTerrainAnalysisDialog::on_mButtonBox_accepted()
   //save last output format
   QSettings s;
   s.setValue( "/RasterTerrainAnalysis/lastOutputFormat", QVariant( mOutputFormatComboBox->currentText() ) );
+
+  //save last output directory
+  QFileInfo outputFileInfo( mOutputLayerLineEdit->text() );
+  if ( outputFileInfo.exists() )
+  {
+    s.setValue( "/RasterTerrainAnalysis/lastOutputDir", QVariant( outputFileInfo.absolutePath() ) );
+  }
 }
 
 void QgsRasterTerrainAnalysisDialog::on_mOutputLayerLineEdit_textChanged( const QString& text )
