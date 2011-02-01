@@ -529,7 +529,7 @@ void QgsLegendLayer::layerNameChanged()
 
 void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 {
-  if ( onlyGeomChanged || !mShowFeatureCount )
+  if ( onlyGeomChanged )
   {
     return;
   }
