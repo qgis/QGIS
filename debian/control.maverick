@@ -121,7 +121,7 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
