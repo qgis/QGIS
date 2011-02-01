@@ -1108,7 +1108,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
 
-  if ( mRotation <= 0.0 )
+  if ( doubleNear( mRotation, 0.0 ) )
   {
     //no rotation. Do it 'the easy way'
 
@@ -1176,7 +1176,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
 
-  if ( mRotation <= 0.0 )
+  if ( doubleNear( mRotation, 0.0 ) )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;
