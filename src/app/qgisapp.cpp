@@ -4933,6 +4933,7 @@ void QgisApp::layerSubsetString()
 
   // launch the query builder
   QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
+  QString subsetBefore = vlayer->subsetString();
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
@@ -4940,9 +4941,14 @@ void QgisApp::layerSubsetString()
   // Open the query builder
   if ( qb->exec() )
   {
-    // if the sql is changed, update it in the prop subset text box
-    vlayer->setSubsetString( qb->sql() );
-    mMapCanvas->refresh();
+    if ( subsetBefore != qb->sql() )
+    {
+      mMapCanvas->refresh();
+      if ( mMapLegend )
+      {
+        mMapLegend->refreshLayerSymbology( vlayer->getLayerID(), false );
+      }
+    }
   }
 
   // delete the query builder object
