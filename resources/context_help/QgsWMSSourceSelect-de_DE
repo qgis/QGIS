@@ -11,7 +11,7 @@ QGIS als WMS-Client versteht derzeit Server mit WMS 1.1, 1.1.1 und 1.3.
 <h4>Server</h4>
 </a>
 Um einen neuen WMS-Server unter <label>Server</label> hinzufügen, wählen Sie <label>Neu</label>.  Dann geben sie die Verbindungsparameter Ihres gewünschten WMS-Server ein.<p>
-Zum Ausprobieren können Sie mit dem Knopf <label>Vorgegebene Server ergänzen</label> einige Server hinzufügen.  Dies fügt Ihnen mindestens drei WMS-Server einschließlich eines WMS-Server der NASA (JPL) hinzu.<p>
+Zum Ausprobieren können Sie mit dem Knopf <label>Vorgegebene Server ergänzen</label> einige Server hinzufügen.  Dies fügt Ihnen mindestens drei WMS-Server hinzu.<p>
 Sobald eine neue WMS-Serververbindung erstellt wurde, wird sie für zukünftige QGIS-Sitzungen gespeichert.
 
 <a name="load">
