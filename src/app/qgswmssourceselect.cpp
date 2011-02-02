@@ -1066,7 +1066,6 @@ QString QgsWMSSourceSelect::descriptionForAuthId( QString authId )
 void QgsWMSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
-  exampleServers["NASA (JPL)"] = "http://wms.jpl.nasa.gov/wms.cgi";
   exampleServers["DM Solutions GMap"] = "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
   exampleServers["Lizardtech server"] =  "http://wms.lizardtech.com/lizardtech/iserv/ows";
   exampleServers["GEOIMAGE-AUSTRIA"] =  "http://wms.geoimage.at/dop-1mfree?";
