@@ -21,14 +21,12 @@
 #include <qgsrectangle.h>
 
 //forward declarations
-class RgSettings;
 class RgGraphBuilder;
 
-/**
-* \class RgGraphDirector
-* \brief Determine making the graph
-* contained the settings
-*/
+/** 
+ * \class RgGraphDirector
+ * \brief Determine making the graph
+ */
 class RgGraphDirector
 {
   public:
@@ -36,9 +34,19 @@ class RgGraphDirector
     virtual ~RgGraphDirector() { };
 
     /**
-     * get adjacency matrix
+     * Make a graph using RgGraphBuilder
+     *
+     * @param builder   The graph builder
+     *
+     * @param additionalPoints  Vector of points that must be tied to the graph
+     *
+     * @param tiedPoints  Vector of tied points
+     *
+     * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
      */
-    virtual void makeGraph( RgGraphBuilder * ) const = 0;
+    virtual void makeGraph( RgGraphBuilder *builder, 
+                            const QVector< QgsPoint >& additionalPoints, 
+                            QVector< QgsPoint>& tiedPoints ) const = 0;
 
     /**
      * return Director name

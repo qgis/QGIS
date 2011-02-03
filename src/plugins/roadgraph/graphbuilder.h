@@ -32,19 +32,17 @@
 class RgGraphBuilder
 {
   public:
+    //! Constructor
+    RgGraphBuilder( const QgsCoordinateReferenceSystem& crs );
+
     //! Destructor
-    virtual ~RgGraphBuilder()
-    {};
+    virtual ~RgGraphBuilder();
+     
     /**
-     * set source CRS
+     * get destinaltion Crs
      */
-    virtual void setSourceCrs( const QgsCoordinateReferenceSystem& crs ) = 0;
-
-    /**
-     * set destionation CRS
-     */
-    virtual void setDestinationCrs( const QgsCoordinateReferenceSystem& crs ) = 0;
-
+    QgsCoordinateReferenceSystem& destinationCrs();
+    
     /**
      * add vertex
      */
@@ -53,16 +51,9 @@ class RgGraphBuilder
     /**
      * add arc
      */
-    virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double speed ) = 0;
+    virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed ) = 0;
 
-    /**
-     * tie point
-     * @param pt maps point
-     * @param ok ok = false if tiePoint failed.
-     * @return Graph vertex corresponding pt.
-     * @note: graph can be modified
-     */
-    virtual QgsPoint tiePoint( const QgsPoint &pt, bool &ok ) = 0;
-
+  private:
+    QgsCoordinateReferenceSystem mCrs;
 };
 #endif //GRAPHBUILDER

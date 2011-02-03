@@ -13,6 +13,7 @@ SET (VRP_SRCS
   linevectorlayerdirector.cpp
   simplegraphbuilder.cpp
   exportdlg.cpp
+  graphbuilder.cpp
 )
 
 #SET ([pluginlcasename]_UIS [pluginlcasename]guibase.ui)

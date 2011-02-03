@@ -37,26 +37,19 @@ class RgSimpleGraphBuilder : public RgGraphBuilder
     /**
      * default constructor
      */
-    RgSimpleGraphBuilder();
+    RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs );
+  
     /**
-     * MANDATORY DIRECTOR PROPERTY DECLARATION
+     * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    ~RgSimpleGraphBuilder();
-    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
     void addVertex( const QgsPoint& pt );
-    void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double speed );
-    QgsPoint tiePoint( const QgsPoint& pt, bool& ok );
-
+    void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed );
+    
     /**
      * return Adjacecncy matrix;
      */
     AdjacencyMatrix adjacencyMatrix();
   private:
     AdjacencyMatrix mMatrix;
-
-    QgsDistanceArea* mDistanceArea;
-
-    QgsCoordinateTransform* mCoordinateTransform;
 };
 #endif //SIMPLEGRAPHBUILDER
