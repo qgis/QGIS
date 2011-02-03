@@ -107,7 +107,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}
 
     bool printAsRaster() const {return mPrintAsRaster;}
-    void setPrintAsRaster( bool enabled );
+    void setPrintAsRaster( bool enabled ) { mPrintAsRaster = enabled; }
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}

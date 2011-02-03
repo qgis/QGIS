@@ -26,6 +26,7 @@
 class QgsCoordinateReferenceSystem;
 class QgsComposerLayerItem;
 class QgsComposerLegendItem;
+class QgsComposition;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
@@ -134,6 +135,8 @@ class QgsWMSServer
     void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const;
     void drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double dpi, double yDownShift ) const;
     void drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const;
+
+    QImage* printCompositionToImage( QgsComposition* c ) const;
 
     /**Map containing the WMS parameters*/
     std::map<QString, QString> mParameterMap;
