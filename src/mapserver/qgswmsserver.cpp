@@ -383,26 +383,32 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     QPainter p( &generator );
     QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
     QRectF targetArea( 0, 0, width, height );
-    c->render( &p, targetArea, sourceArea );
+    if ( c->printAsRaster() ) //embed one raster into the svg
+    {
+      QImage* img = printCompositionToImage( c );
+      if ( img )
+      {
+        p.drawImage( targetArea, *img, QRectF( 0, 0, img->width(), img->height() ) );
+      }
+      delete img;
+    }
+    else
+    {
+      c->render( &p, targetArea, sourceArea );
+    }
     p.end();
   }
   else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
   {
-    int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
-    int height = ( int )( c->paperHeight() * c->printResolution() / 25.4 ); //height in pixel
-    QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-    image.setDotsPerMeterX( c->printResolution() / 25.4 * 1000 );
-    image.setDotsPerMeterY( c->printResolution() / 25.4 * 1000 );
-    image.fill( 0 );
-    QPainter p( &image );
-    QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
-    QRectF targetArea( 0, 0, width, height );
-    c->render( &p, targetArea, sourceArea );
-    p.end();
-    ba = new QByteArray();
-    QBuffer buffer( ba );
-    buffer.open( QIODevice::WriteOnly );
-    image.save( &buffer, formatString.toLocal8Bit().data(), -1 );
+    QImage* image = printCompositionToImage( c );
+    if ( image )
+    {
+      ba = new QByteArray();
+      QBuffer buffer( ba );
+      buffer.open( QIODevice::WriteOnly );
+      image->save( &buffer, formatString.toLocal8Bit().data(), -1 );
+    }
+    delete image;
   }
   else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
   {
@@ -419,11 +425,22 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     printer.setOutputFormat( QPrinter::PdfFormat );
     printer.setOutputFileName( tempFile.fileName() );
     printer.setPaperSize( QSizeF( c->paperWidth(), c->paperHeight() ), QPrinter::Millimeter );
-
     QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
     QPainter p( &printer );
-    c->render( &p, paperRectPixel, paperRectMM );
+    if ( c->printAsRaster() ) //embed one raster into the pdf
+    {
+      QImage* img = printCompositionToImage( c );
+      if ( img )
+      {
+        p.drawImage( paperRectPixel, *img, QRectF( 0, 0, img->width(), img->height() ) );
+      }
+      delete img;
+    }
+    else //vector pdf
+    {
+      c->render( &p, paperRectPixel, paperRectMM );
+    }
     p.end();
 
     ba = new QByteArray();
@@ -436,6 +453,22 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 
   delete c;
   return ba;
+}
+
+QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
+{
+  int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
+  int height = ( int )( c->paperHeight() * c->printResolution() / 25.4 ); //height in pixel
+  QImage* image = new QImage( QSize( width, height ), QImage::Format_ARGB32 );
+  image->setDotsPerMeterX( c->printResolution() / 25.4 * 1000 );
+  image->setDotsPerMeterY( c->printResolution() / 25.4 * 1000 );
+  image->fill( 0 );
+  QPainter p( image );
+  QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
+  QRectF targetArea( 0, 0, width, height );
+  c->render( &p, targetArea, sourceArea );
+  p.end();
+  return image;
 }
 
 QImage* QgsWMSServer::getMap()

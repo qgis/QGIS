@@ -25,7 +25,7 @@
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mSnapToGrid( false ),
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSnapToGrid( false ),
     mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
@@ -37,10 +37,6 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
   mPaperItem->setZValue( 0 );
   mPrintResolution = 300; //hardcoded default
   loadGridAppearanceSettings();
-
-  //mPrintAsRaster
-  QSettings s;
-  mPrintAsRaster = s.value( "/qgis/composerPrintAsRaster", false ).toBool();
 }
 
 QgsComposition::QgsComposition():
@@ -48,9 +44,6 @@ QgsComposition::QgsComposition():
     mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   loadGridAppearanceSettings();
-  //mPrintAsRaster
-  QSettings s;
-  mPrintAsRaster = s.value( "/qgis/composerPrintAsRaster", false ).toBool();
 }
 
 QgsComposition::~QgsComposition()
@@ -197,6 +190,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "snapGridOffsetY", mSnapGridOffsetY );
 
   compositionElem.setAttribute( "printResolution", mPrintResolution );
+  compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
   composerElem.appendChild( compositionElem );
 
@@ -236,6 +230,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
+  mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
@@ -714,13 +709,6 @@ void QgsComposition::setGridStyle( GridStyle s )
     mPaperItem->update();
   }
   saveGridAppearanceSettings();
-}
-
-void QgsComposition::setPrintAsRaster( bool enabled )
-{
-  mPrintAsRaster = enabled;
-  QSettings s;
-  s.setValue( "/qgis/composerPrintAsRaster", QVariant( mPrintAsRaster ) );
 }
 
 void QgsComposition::loadGridAppearanceSettings()
