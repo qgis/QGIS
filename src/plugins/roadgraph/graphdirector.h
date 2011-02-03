@@ -23,7 +23,7 @@
 //forward declarations
 class RgGraphBuilder;
 
-/** 
+/**
  * \class RgGraphDirector
  * \brief Determine making the graph
  */
@@ -44,8 +44,8 @@ class RgGraphDirector
      *
      * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
      */
-    virtual void makeGraph( RgGraphBuilder *builder, 
-                            const QVector< QgsPoint >& additionalPoints, 
+    virtual void makeGraph( RgGraphBuilder *builder,
+                            const QVector< QgsPoint >& additionalPoints,
                             QVector< QgsPoint>& tiedPoints ) const = 0;
 
     /**

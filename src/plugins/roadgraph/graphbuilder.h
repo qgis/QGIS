@@ -37,12 +37,12 @@ class RgGraphBuilder
 
     //! Destructor
     virtual ~RgGraphBuilder();
-     
+
     /**
      * get destinaltion Crs
      */
     QgsCoordinateReferenceSystem& destinationCrs();
-    
+
     /**
      * add vertex
      */
