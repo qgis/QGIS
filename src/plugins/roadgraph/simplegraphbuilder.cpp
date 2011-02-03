@@ -20,7 +20,7 @@
 // Qgis includes
 
 RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs ) :
-  RgGraphBuilder( crs )
+    RgGraphBuilder( crs )
 {
 }
 

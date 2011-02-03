@@ -233,9 +233,9 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     }
     QVector< QgsPoint > points;
     QVector< QgsPoint > tiedPoint;
-    
+
     points.push_back( mFrontPoint );
-    points.push_back( mBackPoint  );
+    points.push_back( mBackPoint );
 
     director->makeGraph( &builder, points, tiedPoint );
     p1 = tiedPoint[ 0 ];
@@ -244,12 +244,12 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     delete director;
   }
 
-  if ( p1 == QgsPoint(0.0, 0.0) )
+  if ( p1 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
     return false;
   }
-  if ( p1 == QgsPoint(0.0, 0.0) )
+  if ( p1 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
     return false;

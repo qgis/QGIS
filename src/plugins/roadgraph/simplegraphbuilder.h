@@ -38,13 +38,13 @@ class RgSimpleGraphBuilder : public RgGraphBuilder
      * default constructor
      */
     RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs );
-  
+
     /**
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
     void addVertex( const QgsPoint& pt );
     void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed );
-    
+
     /**
      * return Adjacecncy matrix;
      */

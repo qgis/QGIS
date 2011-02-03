@@ -19,7 +19,7 @@
 // Qgis includes
 
 RgGraphBuilder::RgGraphBuilder( const QgsCoordinateReferenceSystem& crs ) :
-  mCrs( crs )
+    mCrs( crs )
 {
 
 }

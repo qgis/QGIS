@@ -61,21 +61,21 @@ QString RgLineVectorLayerDirector::name() const
   return QString( "Vector line" );
 }
 
-void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVector< QgsPoint >& additionalPoints, 
+void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVector< QgsPoint >& additionalPoints,
     QVector< QgsPoint >& tiedPoint ) const
 {
   QgsVectorLayer *vl = myLayer();
 
   if ( vl == NULL )
     return;
-  
+
   QgsCoordinateTransform ct( vl->crs(), builder->destinationCrs() );
-  
+
   QgsDistanceArea da;
   da.setSourceCrs( builder->destinationCrs().srsid() );
   da.setProjectionsEnabled( true );
 
-  tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint(0.0, 0.0) );
+  tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
   TiePointInfo tmpInfo;
   tmpInfo.mLength = infinity();
 
@@ -97,12 +97,12 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
       pt2 = ct.transform( *pointIt );
       if ( !isFirstPoint )
       {
-        int i=0;
+        int i = 0;
         for ( i = 0; i != additionalPoints.size(); ++i )
         {
           TiePointInfo info;
           info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), info.mTiedPoint );
-          
+
           if ( pointLengthMap[ i ].mLength > info.mLength )
           {
             info.mFirstPoint = pt1;
@@ -182,17 +182,17 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
       pt2 = ct.transform( *pointIt );
-      
+
       std::map< double, QgsPoint > pointsOnArc;
       pointsOnArc[ 0.0 ] = pt1;
-      pointsOnArc[ pt1.sqrDist( pt2 ) ] = pt2;
+      pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
 
-      for( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
+      for ( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
       {
         if ( pointLengthIt->mFirstPoint == pt1 && pointLengthIt->mLastPoint == pt2 )
         {
           QgsPoint tiedPoint = pointLengthIt->mTiedPoint;
-          pointsOnArc[ pt1.sqrDist( tiedPoint ) ] = tiedPoint;
+          pointsOnArc[ pt1.sqrDist( tiedPoint )] = tiedPoint;
         }
       }
 
@@ -207,13 +207,13 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
           pt2 = pointsIt->second;
           if ( !isFirstPoint )
           {
-            double cost = da.measureLine( pt1, pt2 ); 
+            double cost = da.measureLine( pt1, pt2 );
             if ( directionType == 1 ||
                  directionType == 3 )
             {
               builder->addArc( pt1, pt2, cost, speed*su.multipler() );
             }
-            if ( directionType == 2 || 
+            if ( directionType == 2 ||
                  directionType == 3 )
             {
               builder->addArc( pt2, pt1, cost, speed*su.multipler() );
@@ -221,7 +221,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
           }
           pt1 = pt2;
           isFirstPoint = false;
-        }  
+        }
       } // if ( !isFirstPoint )
       pt1 = pt2;
       isFirstPoint = false;
