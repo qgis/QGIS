@@ -53,8 +53,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFiles(self):
       self.inputFiles = QStringList()
 
-      # for each active layer
-      for i in range(self.canvas.layerCount()): 
+      # Reversed list to have the topmost layer as the last one in the list 
+      # because "In areas of overlap, the last image will be copied over 
+      # earlier ones" (see http://www.gdal.org/gdal_merge.html).
+      for i in range(self.canvas.layerCount()-1, -1, -1): 
         layer = self.canvas.layer(i) 
         # only raster layers, but not WMS ones
         if layer.type() == layer.RasterLayer and ( not layer.usesProvider() ):
@@ -70,6 +72,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if self.isVisible() and self.warningDialog.isHidden():
           msg = QString( self.tr("No active raster layers. You must add almost one raster layer to continue.") )
           self.warningDialog.showMessage(msg)
+
+        # refresh command when there are no active layers
+        self.someValueChanged()
       else:
         self.warningDialog.hide()
         self.extentSelector.start()
@@ -114,6 +119,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if not self.outputFileEdit.text().isEmpty():
         arguments << "-o"
         arguments << self.outputFileEdit.text()
+
+      if self.pctCheck.isChecked() and len(self.inputFiles) > 1:
+        # The topmost layer in the TOC is the last one in the list (see above),
+        # but I want to grab the pseudocolor table from the first image (the 
+        # topmost layer in the TOC).
+        # Workaround: duplicate the last layer inserting it also as the first 
+        # one to grab the pseudocolor table from it.
+        arguments << self.inputFiles[ len(self.inputFiles)-1 ]
+
       arguments << self.inputFiles
       return arguments
 
