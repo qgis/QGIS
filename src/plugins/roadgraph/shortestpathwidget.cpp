@@ -223,8 +223,7 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
 {
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
     return false;
-  RgSimpleGraphBuilder builder;
-  builder.setDestinationCrs( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
+  RgSimpleGraphBuilder builder( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
   {
     const RgGraphDirector *director = mPlugin->director();
     if ( director == NULL )
@@ -232,22 +231,25 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
       QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
       return false;
     }
-    director->makeGraph( &builder );
+    QVector< QgsPoint > points;
+    QVector< QgsPoint > tiedPoint;
+    
+    points.push_back( mFrontPoint );
+    points.push_back( mBackPoint  );
 
+    director->makeGraph( &builder, points, tiedPoint );
+    p1 = tiedPoint[ 0 ];
+    p2 = tiedPoint[ 1 ];
     // not need
     delete director;
   }
 
-  bool ok;
-
-  p1 = builder.tiePoint( mFrontPoint, ok );
-  if ( !ok )
+  if ( p1 == QgsPoint(0.0, 0.0) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
     return false;
   }
-  p2 = builder.tiePoint( mBackPoint, ok );
-  if ( !ok )
+  if ( p1 == QgsPoint(0.0, 0.0) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
     return false;

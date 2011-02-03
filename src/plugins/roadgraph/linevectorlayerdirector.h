@@ -32,6 +32,14 @@ class QgsVectorLayer;
 */
 class RgLineVectorLayerDirector : public RgGraphDirector
 {
+  private:
+    struct TiePointInfo
+    {
+      QgsPoint mTiedPoint;
+      double mLength;
+      QgsPoint mFirstPoint;
+      QgsPoint mLastPoint;
+    };
   public:
     RgLineVectorLayerDirector( const QString& layerId,
                                int directionFiledId,
@@ -48,8 +56,10 @@ class RgLineVectorLayerDirector : public RgGraphDirector
     /**
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
-    void makeGraph( RgGraphBuilder * ) const;
-
+    void makeGraph( RgGraphBuilder *builder, 
+                    const QVector< QgsPoint >& additionalPoints,
+                    QVector< QgsPoint>& tiedPoints ) const;
+ 
     QString name() const;
 
   private:
