@@ -507,7 +507,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
     {
       currentItem = new QgsComposerGroupItem();
     }
-    currentItem->readXML( currentElem );
+    currentItem->readXML( currentElem, mHasTopLevelWindow );
     appendRow( currentItem );
   }
 

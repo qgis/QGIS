@@ -904,9 +904,14 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     {
       //legend needs to be loaded indirectly to have generic content
       //and to avoid usage of x-server with pixmap icons
+
+      //read full legend from xml
       QgsComposerLegend* legend = new QgsComposerLegend( composition );
-      legend->_readXML( currentElem.firstChildElement( "ComposerItem" ), *mXMLDoc );
-      legend->updateLegend();
+      legend->readXML( currentElem, *mXMLDoc );
+
+      //dynamic legend (would be interesting in case of layers dynamically defined in SLD)
+      //legend->_readXML( currentElem.firstChildElement( "ComposerItem" ), *mXMLDoc );
+      //legend->updateLegend();
       composition->addItem( legend );
     }
     else if ( elemName == "ComposerShape" )
