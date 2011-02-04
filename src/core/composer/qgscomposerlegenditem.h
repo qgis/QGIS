@@ -42,7 +42,9 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     };
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
-    virtual void readXML( const QDomElement& itemElem ) = 0;
+    /**Read item content from xml
+      @param xServerAvailable Read item icons if true (QIcon needs x-server)*/
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) = 0;
 
     virtual ItemType itemType() const = 0;
     virtual QStandardItem* clone() const = 0;
@@ -64,7 +66,7 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     virtual QStandardItem* clone() const;
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem );
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     /**Set symbol (takes ownership)*/
     void setSymbol( QgsSymbol* s );
@@ -93,7 +95,7 @@ class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
     virtual QStandardItem* clone() const;
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem );
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     /**Set symbol (takes ownership)*/
     void setSymbolV2( QgsSymbolV2* s );
@@ -116,7 +118,7 @@ class CORE_EXPORT QgsComposerRasterSymbolItem: public QgsComposerLegendItem
     virtual QStandardItem* clone() const;
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem );
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     void setLayerID( const QString& id ) { mLayerID = id; }
     QString layerID() const { return mLayerID; }
@@ -135,7 +137,7 @@ class CORE_EXPORT QgsComposerLayerItem: public QgsComposerLegendItem
     virtual QStandardItem* clone() const;
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem );
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     ItemType itemType() const { return LayerItem; }
 
@@ -155,7 +157,7 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
     virtual QStandardItem* clone() const;
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem );
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     ItemType itemType() const { return GroupItem; }
 };

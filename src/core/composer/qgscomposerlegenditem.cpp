@@ -105,7 +105,7 @@ void QgsComposerSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc ) con
   elem.appendChild( vectorClassElem );
 }
 
-void QgsComposerSymbolItem::readXML( const QDomElement& itemElem )
+void QgsComposerSymbolItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -123,6 +123,10 @@ void QgsComposerSymbolItem::readXML( const QDomElement& itemElem )
       QgsSymbol* symbol = new QgsSymbol( vLayer->geometryType() );
       symbol->readXML( symbolElem, vLayer );
       setSymbol( symbol );
+      if ( !xServerAvailable ) //don't read icon without GUI
+      {
+        return;
+      }
 
       //add icon
       switch ( symbol->type() )
@@ -193,7 +197,7 @@ void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) c
   elem.appendChild( vectorClassElem );
 }
 
-void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem )
+void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -213,7 +217,10 @@ void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem )
       if ( symbolNg )
       {
         setSymbolV2( symbolNg );
-        setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+        if ( xServerAvailable )
+        {
+          setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+        }
       }
     }
   }
@@ -259,7 +266,7 @@ void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc
   elem.appendChild( rasterClassElem );
 }
 
-void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem )
+void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -269,7 +276,7 @@ void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem )
   setLayerID( itemElem.attribute( "layerId", "" ) );
 
   QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mLayerID ) );
-  if ( rLayer )
+  if ( rLayer && xServerAvailable )
   {
     setIcon( QIcon( rLayer->legendAsPixmap( true ) ) );
   }
@@ -306,7 +313,7 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
   elem.appendChild( layerItemElem );
 }
 
-void QgsComposerLayerItem::readXML( const QDomElement& itemElem )
+void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -348,7 +355,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem )
     {
       continue; //unsupported child type
     }
-    currentChildItem->readXML( currentElem );
+    currentChildItem->readXML( currentElem, xServerAvailable );
     appendRow( currentChildItem );
   }
 }
@@ -382,7 +389,7 @@ void QgsComposerGroupItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
   elem.appendChild( layerGroupElem );
 }
 
-void QgsComposerGroupItem::readXML( const QDomElement& itemElem )
+void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -420,7 +427,7 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem )
     {
       continue; //unsupported child item type
     }
-    currentChildItem->readXML( currentElem );
+    currentChildItem->readXML( currentElem, xServerAvailable );
     appendRow( currentChildItem );
   }
 }
