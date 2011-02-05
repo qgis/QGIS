@@ -3688,7 +3688,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
         <source>Download to:</source>
-        <translation>Download da:</translation>
+        <translation>Download in:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
@@ -4126,7 +4126,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
         <source>Upload OSM data</source>
-        <translation>Carica dati su OSM</translation>
+        <translation>Invia dati a OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
