@@ -415,6 +415,8 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   if ( wmsProvider->baseUrl() != wmsProvider->getMapUrl() )
   {
+    QApplication::setOverrideCursor( Qt::ArrowCursor );
+
     if ( QMessageBox::information( this,
                                    tr( "WMS Provider" ),
                                    tr( "Advertised GetMap URL\n\n  %2\n\nis different from GetCapabilities URL\n\n  %1\n\n"
@@ -430,6 +432,8 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
       cbxIgnoreGetMap->setChecked( true );
     }
     cbxIgnoreGetMap->setEnabled( true );
+
+    QApplication::restoreOverrideCursor();
   }
   else
   {
@@ -439,6 +443,8 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   if ( wmsProvider->baseUrl() != wmsProvider->getFeatureInfoUrl() )
   {
+    QApplication::setOverrideCursor( Qt::ArrowCursor );
+
     if ( QMessageBox::information( this,
                                    tr( "WMS Provider" ),
                                    tr( "Advertised GetFeatureInfo URL\n\n  %2\n\nis different from GetCapabilities URL\n\n  %1\n\n"
@@ -454,6 +460,8 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
       cbxIgnoreGetFeatureInfo->setChecked( true );
     }
     cbxIgnoreGetFeatureInfo->setEnabled( true );
+
+    QApplication::restoreOverrideCursor();
   }
 
   return true;
