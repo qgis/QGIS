@@ -21,6 +21,7 @@
 #include <limits>
 #include <QString>
 #include <QTextStream>
+#include <qnumeric.h>
 
 #include "qgspoint.h"
 #include "qgsrectangle.h"
@@ -306,18 +307,13 @@ void QgsRectangle::unionRect( const QgsRectangle& r )
 
 bool QgsRectangle::isFinite() const
 {
-  if ( std::numeric_limits<double>::has_infinity )
+  if ( qIsInf( xmin ) || qIsInf( ymin ) || qIsInf( xmax ) || qIsInf( ymax ) )
   {
-    if ( xmin == std::numeric_limits<double>::infinity() ||
-         xmax == std::numeric_limits<double>::infinity() ||
-         ymin == std::numeric_limits<double>::infinity() ||
-         ymax == std::numeric_limits<double>::infinity() )
-      return false;
-  }
-  // By design, if a variable is nan, it won't equal itself, so that's
-  // how we test for nan
-  if ( xmin != xmin || xmax != xmax || ymin != ymin || ymax != ymax )
     return false;
-
+  }
+  if ( qIsNaN( xmin ) || qIsNaN( ymin ) || qIsNaN( xmax ) || qIsNaN( ymax ) )
+  {
+    return false;
+  }
   return true;
 }
