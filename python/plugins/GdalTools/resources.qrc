@@ -17,6 +17,7 @@
     <file>icons/raster-clip.png</file>
     <file>icons/raster-paletted.png</file>
     <file>icons/raster-rgb.png</file>
+    <file>icons/tileindex.png</file>
     <file>icons/about.png</file>
   </qresource>
 </RCC>

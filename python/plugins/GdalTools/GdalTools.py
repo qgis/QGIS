@@ -196,6 +196,11 @@ class GdalTools:
     QObject.connect( self.rgb, SIGNAL( "triggered()" ), self.doRGB )
     self.menu.addAction(self.rgb)
 
+    self.tileindex = QAction( QIcon( ":icons/tileindex.png" ), QCoreApplication.translate( "GdalTools", "Tile index" ), self.iface.mainWindow() )
+    self.rgb.setStatusTip( QCoreApplication.translate( "GdalTools", "Build a shapefile as a raster tileindex" ) )
+    QObject.connect( self.tileindex, SIGNAL( "triggered()" ), self.doTileIndex )
+    self.menu.addAction(self.tileindex)
+
     self.settings = QAction( QCoreApplication.translate( "GdalTools", "GdalTools settings" ), self.iface.mainWindow() )
     self.settings.setStatusTip( QCoreApplication.translate( "GdalTools", "Various settings for Gdal Tools" ) )
     QObject.connect( self.settings, SIGNAL( "triggered()" ), self.doSettings )
@@ -298,6 +303,11 @@ class GdalTools:
   def doRGB( self ):
     from tools.doPctRgb import GdalToolsDialog as PctRgb
     d = PctRgb( self.iface )
+    d.show_()
+
+  def doTileIndex( self ):
+    from tools.doTileIndex import GdalToolsDialog as TileIndex
+    d = TileIndex( self.iface )
     d.show_()
 
   def doSettings( self ):
