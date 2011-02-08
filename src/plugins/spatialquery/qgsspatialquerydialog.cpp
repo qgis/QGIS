@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquerydialog.cpp 13441 2010-05-08 19:07:12Z jef $ */
+/*  $Id$ */
 
 #include <QMessageBox>
 #include <QDateTime>
@@ -253,7 +253,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
 
   mRubberSelectId->reset();
 
-  QString formatLabel("%1(%2)");
+  QString formatLabel( "%1(%2)" );
   resultTargetLabel->setText( formatLabel.arg( mLayerTarget->name() ).arg( mFeatureResult.size() ) );
   invalidTargetLabel->setText( formatLabel.arg( mLayerTarget->name() ).arg( mFeatureInvalidTarget.size() ) );
   invalidReferenceLabel->setText( formatLabel.arg( mLayerReference->name() ).arg( mFeatureInvalidReference.size() ) );
@@ -261,37 +261,37 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   // Result target
   if ( mFeatureResult.size() > 0 )
   {
-    pushButtonSelectResultTarget->setEnabled(true);
+    pushButtonSelectResultTarget->setEnabled( true );
     populateFeatureListWidget( resultFeatureTargetListWidget, mFeatureResult );
     evaluateCheckBox( true );
     on_resultFeatureTargetListWidget_currentItemChanged( resultFeatureTargetListWidget->currentItem() );
   }
   else
   {
-    pushButtonSelectResultTarget->setEnabled(false);
-    clearFeatureListWidget(resultFeatureTargetListWidget);
+    pushButtonSelectResultTarget->setEnabled( false );
+    clearFeatureListWidget( resultFeatureTargetListWidget );
   }
   // Invalid target
   if ( mFeatureInvalidTarget.size() > 0 )
   {
-    pushButtonSelectInvalidTarget->setEnabled(true);
+    pushButtonSelectInvalidTarget->setEnabled( true );
     populateFeatureListWidget( invalidFeatureTargetListWidget, mFeatureInvalidTarget, false );
   }
   else
   {
-    pushButtonSelectInvalidTarget->setEnabled(false);
-    clearFeatureListWidget(invalidFeatureTargetListWidget);
+    pushButtonSelectInvalidTarget->setEnabled( false );
+    clearFeatureListWidget( invalidFeatureTargetListWidget );
   }
   // Invalid reference
   if ( mFeatureInvalidReference.size() > 0 )
   {
-    pushButtonSelectInvalidReference->setEnabled(true);
+    pushButtonSelectInvalidReference->setEnabled( true );
     populateFeatureListWidget( invalidFeatureReferenceListWidget, mFeatureInvalidReference, false );
   }
   else
   {
-    pushButtonSelectInvalidReference->setEnabled(false);
-    clearFeatureListWidget(invalidFeatureReferenceListWidget);
+    pushButtonSelectInvalidReference->setEnabled( false );
+    clearFeatureListWidget( invalidFeatureReferenceListWidget );
   }
   setLayoutResultInvalid( true );
   adjustSize();
@@ -584,7 +584,7 @@ void QgsSpatialQueryDialog::populateOperationComboBox()
 
 } // QgsSpatialQueryDialog::populateOperantionComboBox()
 
-void QgsSpatialQueryDialog::populateFeatureListWidget( QListWidget *listWidget, QSet<int> & setFeatures, bool hasSetRow)
+void QgsSpatialQueryDialog::populateFeatureListWidget( QListWidget *listWidget, QSet<int> & setFeatures, bool hasSetRow )
 {
   listWidget->blockSignals( true );
   listWidget->clear();
@@ -596,7 +596,7 @@ void QgsSpatialQueryDialog::populateFeatureListWidget( QListWidget *listWidget, 
     listWidget->addItem( QString::number( item.next() ) );
   }
   listWidget->setEnabled( true );
-  if (hasSetRow)
+  if ( hasSetRow )
   {
     listWidget->setCurrentRow( 0 );
   }
@@ -606,19 +606,19 @@ void QgsSpatialQueryDialog::populateFeatureListWidget( QListWidget *listWidget, 
 
 void QgsSpatialQueryDialog::clearFeatureListWidget( QListWidget *listWidget )
 {
-   listWidget->blockSignals( true );
-   listWidget->clear();
-   listWidget->blockSignals( false );
+  listWidget->blockSignals( true );
+  listWidget->clear();
+  listWidget->blockSignals( false );
 } // void QgsSpatialQueryDialog::clearFeatureListWidget( QListWidget *listWidget )
 
 void QgsSpatialQueryDialog::changeFeatureListWidget( QListWidget *listWidget, QgsVectorLayer* vectorLayer, const QString& currentText )
 {
-    listWidget->setEnabled( false );
-    bool ok;
-    int id = currentText.toInt( &ok );
-    showRubberFeature( vectorLayer, id );
-    listWidget->setEnabled( true );
-    listWidget->setFocus();
+  listWidget->setEnabled( false );
+  bool ok;
+  int id = currentText.toInt( &ok );
+  showRubberFeature( vectorLayer, id );
+  listWidget->setEnabled( true );
+  listWidget->setFocus();
 } // void QgsSpatialQueryDialog::changeFeatureListWidget( QListWidget *listWidget, QgsVectorLayer* layer, const QString& currentText )
 
 void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* vectorLayer, int id )
@@ -708,7 +708,7 @@ void QgsSpatialQueryDialog::on_resultFeatureTargetListWidget_itemClicked( QListW
   if ( mCurrentFeatureWidget != FW_Result )
   {
     mCurrentFeatureWidget = FW_Result;
-    on_resultFeatureTargetListWidget_currentItemChanged(item);
+    on_resultFeatureTargetListWidget_currentItemChanged( item );
   }
 } // void QgsSpatialQueryDialog::on_resultFeatureTargetListWidget_itemClicked( QListWidgetItem * item )
 
@@ -727,7 +727,7 @@ void QgsSpatialQueryDialog::on_invalidFeatureTargetListWidget_itemClicked( QList
   if ( mCurrentFeatureWidget != FW_InvalidTarget )
   {
     mCurrentFeatureWidget = FW_InvalidTarget;
-    on_invalidFeatureTargetListWidget_currentItemChanged(item);
+    on_invalidFeatureTargetListWidget_currentItemChanged( item );
   }
 } // void QgsSpatialQueryDialog::on_invalidFeatureTargetListWidget_itemClicked( QListWidgetItem * item )
 
@@ -746,7 +746,7 @@ void QgsSpatialQueryDialog::on_invalidFeatureReferenceListWidget_itemClicked( QL
   if ( mCurrentFeatureWidget != FW_InvalidRefence )
   {
     mCurrentFeatureWidget = FW_InvalidRefence;
-    on_invalidFeatureReferenceListWidget_currentItemChanged(item);
+    on_invalidFeatureReferenceListWidget_currentItemChanged( item );
   }
 } // void QgsSpatialQueryDialog::on_invalidFeatureReferenceListWidget_itemClicked( QListWidgetItem * item )
 

@@ -54,14 +54,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
 
-  connect( cmbSize, SIGNAL( activated(const QString& ) ),this,SLOT(iconSizeChanged( const QString& ) ) );
-  connect( cmbSize, SIGNAL( highlighted(const QString& ) ),this,SLOT(iconSizeChanged( const QString& ) ) );
-  connect( cmbSize, SIGNAL( textChanged(const QString& ) ),this,SLOT(iconSizeChanged( const QString& ) ) );
+  connect( cmbSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
-  cmbSize->addItem("16");
-  cmbSize->addItem("24");
-  cmbSize->addItem("32");
+  cmbSize->addItem( "16" );
+  cmbSize->addItem( "24" );
+  cmbSize->addItem( "32" );
 
   cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
   cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
@@ -244,7 +244,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
-  cmbSize->setCurrentIndex( cmbSize->findText(settings.value( "/IconSize").toString() ) );
+  cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", 24 ).toString() ) );
   //set the state of the checkboxes
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
@@ -461,10 +461,10 @@ void QgsOptions::themeChanged( const QString &newThemeName )
   QgisApp::instance()->setTheme( newt );
 }
 
-void QgsOptions::iconSizeChanged(const QString &iconSize )
+void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
-    int icon = iconSize.toInt();
-    QgisApp::instance()->setIconSizes(icon);
+  int icon = iconSize.toInt();
+  QgisApp::instance()->setIconSizes( icon );
 
 }
 
@@ -576,7 +576,7 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Themes", cmbTheme->currentText() );
   }
 
-  settings.setValue( "/IconSize",cmbSize->currentText() );
+  settings.setValue( "/IconSize", cmbSize->currentText() );
 
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no

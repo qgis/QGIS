@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquery.h 13380 2010-04-25 12:51:49Z jef $ */
+/*  $Id$ */
 #ifndef SPATIALQUERY_H
 #define SPATIALQUERY_H
 
