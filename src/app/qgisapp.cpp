@@ -1662,7 +1662,7 @@ void QgisApp::createToolBars()
 {
   QSettings settings;
   int size = settings.value( "/IconSize", 24 ).toInt();
-  setIconSize(QSize(size,size));
+  setIconSize( QSize( size, size ) );
   // QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
@@ -2010,15 +2010,15 @@ void QgisApp::createStatusBar()
 
 void QgisApp::setIconSizes( int size )
 {
-    //Set the icon size of for all the toolbars created in the future.
-    setIconSize(QSize(size,size));
+  //Set the icon size of for all the toolbars created in the future.
+  setIconSize( QSize( size, size ) );
 
-    //Change all current icon sizes.
-    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-    foreach(QToolBar * toolbar, toolbars)
-    {
-        toolbar->setIconSize(QSize(size,size));
-    }
+  //Change all current icon sizes.
+  QList<QToolBar *> toolbars = findChildren<QToolBar *>();
+  foreach( QToolBar * toolbar, toolbars )
+  {
+    toolbar->setIconSize( QSize( size, size ) );
+  }
 }
 
 void QgisApp::setTheme( QString theThemeName )
