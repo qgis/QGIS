@@ -678,6 +678,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     double width = mLayer->patternWidth();
     mTextureWidthSpinBox->setValue( width );
     mSVGLineEdit->setText( mLayer->svgFilePath() );
+    mRotationSpinBox->setValue( mLayer->angle() );
   }
   updateOutlineIcon();
 }
@@ -742,6 +743,15 @@ void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
   }
 
   updateOutlineIcon();
+  emit changed();
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setAngle( d );
+  }
   emit changed();
 }
 

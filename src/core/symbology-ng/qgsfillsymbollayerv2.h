@@ -72,8 +72,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
 {
   public:
-    QgsSVGFillSymbolLayer( const QString& svgFilePath = "", double width = 20 );
-    QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20 );
+    QgsSVGFillSymbolLayer( const QString& svgFilePath = "", double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20, double rotation = 0.0 );
     ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const;
 
-    //gettersn and setters
+    //getters and setters
     void setSvgFilePath( const QString& svgPath );
     QString svgFilePath() const { return mSvgFilePath; }
     void setPatternWidth( double width ) { mPatternWidth = width;}
