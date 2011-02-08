@@ -162,6 +162,9 @@ class QgisApp : public QMainWindow
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
+
+    void setIconSizes( int size );
+
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
     //! Returns a pointer to the internal clipboard

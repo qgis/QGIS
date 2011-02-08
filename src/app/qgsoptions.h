@@ -57,6 +57,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     // activates or highlights a theme name in the drop-down list
     void themeChanged( const QString & );
 
+    void iconSizeChanged(const QString &iconSize );
     /**
      * Return the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns

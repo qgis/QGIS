@@ -418,6 +418,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
 
+  //Set the icon size for all the toolbars.
   createActions();
   createActionGroups();
   createMenus();
@@ -1659,7 +1660,9 @@ void QgisApp::createMenus()
 
 void QgisApp::createToolBars()
 {
-  QSize myIconSize( 24, 24 );
+  QSettings settings;
+  int size = settings.value( "/IconSize", 24 ).toInt();
+  setIconSize(QSize(size,size));
   // QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
@@ -1668,7 +1671,6 @@ void QgisApp::createToolBars()
   //
   // File Toolbar
   mFileToolBar = addToolBar( tr( "File" ) );
-  mFileToolBar->setIconSize( myIconSize );
   mFileToolBar->setObjectName( "FileToolBar" );
   mFileToolBar->addAction( mActionNewProject );
   mFileToolBar->addAction( mActionOpenProject );
@@ -1680,7 +1682,6 @@ void QgisApp::createToolBars()
   //
   // Layer Toolbar
   mLayerToolBar = addToolBar( tr( "Manage Layers" ) );
-  mLayerToolBar->setIconSize( myIconSize );
   mLayerToolBar->setObjectName( "LayerToolBar" );
   mLayerToolBar->addAction( mActionAddOgrLayer );
   mLayerToolBar->addAction( mActionAddRasterLayer );
@@ -1701,7 +1702,6 @@ void QgisApp::createToolBars()
   //
   // Digitizing Toolbar
   mDigitizeToolBar = addToolBar( tr( "Digitizing" ) );
-  mDigitizeToolBar->setIconSize( myIconSize );
   mDigitizeToolBar->setObjectName( "Digitizing" );
   mDigitizeToolBar->addAction( mActionToggleEditing );
   mDigitizeToolBar->addAction( mActionSaveEdits );
@@ -1722,7 +1722,6 @@ void QgisApp::createToolBars()
   mToolbarMenu->addAction( mDigitizeToolBar->toggleViewAction() );
 
   mAdvancedDigitizeToolBar = addToolBar( tr( "Advanced Digitizing" ) );
-  mAdvancedDigitizeToolBar->setIconSize( myIconSize );
   mAdvancedDigitizeToolBar->setObjectName( "Advanced Digitizing" );
   mAdvancedDigitizeToolBar->addAction( mActionUndo );
   mAdvancedDigitizeToolBar->addAction( mActionRedo );
@@ -1742,7 +1741,6 @@ void QgisApp::createToolBars()
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar( tr( "Map Navigation" ) );
-  mMapNavToolBar->setIconSize( myIconSize );
   mMapNavToolBar->setObjectName( "Map Navigation" );
   mMapNavToolBar->addAction( mActionPan );
   mMapNavToolBar->addAction( mActionZoomIn );
@@ -1758,7 +1756,6 @@ void QgisApp::createToolBars()
   //
   // Attributes Toolbar
   mAttributesToolBar = addToolBar( tr( "Attributes" ) );
-  mAttributesToolBar->setIconSize( myIconSize );
   mAttributesToolBar->setObjectName( "Attributes" );
   mAttributesToolBar->addAction( mActionIdentify );
 
@@ -1771,7 +1768,6 @@ void QgisApp::createToolBars()
   bt->addAction( mActionSelectFreehand );
   bt->addAction( mActionSelectRadius );
 
-  QSettings settings;
   switch ( settings.value( "/UI/selectTool", 0 ).toInt() )
   {
     default:
@@ -1859,13 +1855,11 @@ void QgisApp::createToolBars()
   //
   // Plugins Toolbar
   mPluginToolBar = addToolBar( tr( "Plugins" ) );
-  mPluginToolBar->setIconSize( myIconSize );
   mPluginToolBar->setObjectName( "Plugins" );
   mToolbarMenu->addAction( mPluginToolBar->toggleViewAction() );
   //
   // Help Toolbar
   mHelpToolBar = addToolBar( tr( "Help" ) );
-  mHelpToolBar->setIconSize( myIconSize );
   mHelpToolBar->setObjectName( "Help" );
   mHelpToolBar->addAction( mActionHelpContents );
   mHelpToolBar->addAction( QWhatsThis::createAction() );
@@ -1873,7 +1867,6 @@ void QgisApp::createToolBars()
 
   //Label Toolbar
   mLabelToolBar = addToolBar( tr( "Label" ) );
-  mLabelToolBar->setIconSize( myIconSize );
   mLabelToolBar->setObjectName( "Label" );
   mLabelToolBar->addAction( mActionLabeling );
   mLabelToolBar->addAction( mActionMoveLabel );
@@ -2015,6 +2008,18 @@ void QgisApp::createStatusBar()
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
+void QgisApp::setIconSizes( int size )
+{
+    //Set the icon size of for all the toolbars created in the future.
+    setIconSize(QSize(size,size));
+
+    //Change all current icon sizes.
+    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
+    foreach(QToolBar * toolbar, toolbars)
+    {
+        toolbar->setIconSize(QSize(size,size));
+    }
+}
 
 void QgisApp::setTheme( QString theThemeName )
 {

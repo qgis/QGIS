@@ -29,6 +29,8 @@
 #include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
+#include <QToolBar>
+#include <QSize>
 
 #if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
@@ -51,7 +53,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
+
+  connect( cmbSize, SIGNAL( activated(const QString& ) ),this,SLOT(iconSizeChanged( const QString& ) ) );
+  connect( cmbSize, SIGNAL( highlighted(const QString& ) ),this,SLOT(iconSizeChanged( const QString& ) ) );
+  connect( cmbSize, SIGNAL( textChanged(const QString& ) ),this,SLOT(iconSizeChanged( const QString& ) ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
+
+  cmbSize->addItem("16");
+  cmbSize->addItem("24");
+  cmbSize->addItem("32");
 
   cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
   cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
@@ -234,7 +244,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
-
+  cmbSize->setCurrentIndex( cmbSize->findText(settings.value( "/IconSize").toString() ) );
   //set the state of the checkboxes
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
@@ -358,7 +368,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkReuseLastValues->setChecked( settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool() );
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
 
-#ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing 
+#ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
   groupBox_5->setEnabled( false );
 #endif //Q_WS_MAC
 
@@ -449,6 +459,13 @@ void QgsOptions::themeChanged( const QString &newThemeName )
   // Slot to change the theme as user scrolls through the choices
   QString newt = newThemeName;
   QgisApp::instance()->setTheme( newt );
+}
+
+void QgsOptions::iconSizeChanged(const QString &iconSize )
+{
+    int icon = iconSize.toInt();
+    QgisApp::instance()->setIconSizes(icon);
+
 }
 
 QString QgsOptions::theme()
@@ -558,6 +575,9 @@ void QgsOptions::saveOptions()
   {
     settings.setValue( "/Themes", cmbTheme->currentText() );
   }
+
+  settings.setValue( "/IconSize",cmbSize->currentText() );
+
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no
   //projection defined...
