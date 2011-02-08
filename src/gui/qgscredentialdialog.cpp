@@ -38,7 +38,13 @@ bool QgsCredentialDialog::request( QString realm, QString &username, QString &pa
   labelMessage->setText( message );
   labelMessage->setHidden( message.isEmpty() );
 
-  if ( exec() == QDialog::Accepted )
+  QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+  int res = exec();
+
+  QApplication::restoreOverrideCursor();
+
+  if ( res == QDialog::Accepted )
   {
     username = leUsername->text();
     password = lePassword->text();
