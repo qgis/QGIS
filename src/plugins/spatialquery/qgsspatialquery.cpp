@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquery.cpp 13447 2010-05-09 00:45:17Z jef $ */
 
 #include <QMessageBox>
 
@@ -50,7 +50,8 @@ void QgsSpatialQuery::setSelectedFeaturesReference( bool useSelected )
 
 } // void QgsSpatialQuery::setSelectedFeaturesReference(bool useSelected)
 
-void QgsSpatialQuery::runQuery( QSet<int> & qsetIndexResult, int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference )
+void QgsSpatialQuery::runQuery( QSet<int> & qsetIndexResult, QSet<int> & qsetIndexInvalidTarget, QSet<int> & qsetIndexInvalidReference,
+                                int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference )
 {
   setQuery( lyrTarget, lyrReference );
 
@@ -60,7 +61,7 @@ void QgsSpatialQuery::runQuery( QSet<int> & qsetIndexResult, int relation, QgsVe
                   ? mLayerReference->selectedFeatureCount()
                   : ( int )( mLayerReference->featureCount() );
   mPb->init( 1, totalStep );
-  setSpatialIndexReference(); // Need set mLayerReference before
+  setSpatialIndexReference( qsetIndexInvalidReference ); // Need set mLayerReference before
 
   // Make Query
   mPb->setFormat( QObject::tr( "Processing 2/2 - %p%" ) );
@@ -69,7 +70,7 @@ void QgsSpatialQuery::runQuery( QSet<int> & qsetIndexResult, int relation, QgsVe
               : ( int )( mLayerTarget->featureCount() );
   mPb->init( 1, totalStep );
 
-  execQuery( qsetIndexResult, relation );
+  execQuery( qsetIndexResult, qsetIndexInvalidTarget, relation );
 
 } // QSet<int> QgsSpatialQuery::runQuery( int relation)
 
@@ -190,7 +191,7 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
 
 } // bool QgsSpatialQuery::hasValidGeometry(QgsFeature &feature)
 
-void QgsSpatialQuery::setSpatialIndexReference()
+void QgsSpatialQuery::setSpatialIndexReference( QSet<int> & qsetIndexInvalidReference )
 {
   QgsReaderFeatures * readerFeaturesReference = new QgsReaderFeatures( mLayerReference, mUseReferenceSelection );
   QgsFeature feature;
@@ -201,6 +202,7 @@ void QgsSpatialQuery::setSpatialIndexReference()
 
     if ( ! hasValidGeometry( feature ) )
     {
+      qsetIndexInvalidReference.insert( feature.id() );
       continue;
     }
 
@@ -210,7 +212,7 @@ void QgsSpatialQuery::setSpatialIndexReference()
 
 } // void QgsSpatialQuery::setSpatialIndexReference()
 
-void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
+void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, QSet<int> & qsetIndexInvalidTarget, int relation )
 {
   bool ( QgsGeometry::* operation )( QgsGeometry * );
   switch ( relation )
@@ -263,6 +265,7 @@ void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
 
     if ( ! hasValidGeometry( featureTarget ) )
     {
+      qsetIndexInvalidTarget.insert( featureTarget.id() );
       continue;
     }
 
