@@ -120,10 +120,15 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
+    void setAngle( double angle ) { mAngle = angle; }
+    double angle() const { return mAngle; }
+
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
     /**Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings );
+
+    double mAngle;
 };
 
 class QgsSymbolLayerV2Widget;

@@ -53,6 +53,12 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
     if ( mSizeScaleFieldIdx != -1 )
       lineSymbol->setWidth( sizeScale * mOrigSize );
   }
+  else if ( mTempSymbol->type() == QgsSymbolV2::Fill )
+  {
+    QgsFillSymbolV2* fillSymbol = static_cast<QgsFillSymbolV2*>( mTempSymbol );
+    if ( mRotationFieldIdx != -1 )
+      fillSymbol->setAngle( rotation );
+  }
 
   return mTempSymbol;
 }

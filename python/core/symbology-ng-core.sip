@@ -589,6 +589,9 @@ public:
 
   void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
 
+  void setAngle( double angle );
+  double angle() const;
+
 protected:
   QgsFillSymbolLayerV2(bool locked = false);
 };
@@ -785,6 +788,7 @@ class QgsFillSymbolV2 : QgsSymbolV2
 public:
   QgsFillSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
+  void setAngle( double angle );
   void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;

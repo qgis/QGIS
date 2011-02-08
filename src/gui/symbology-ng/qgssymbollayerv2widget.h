@@ -247,6 +247,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mSVGLineEdit_textChanged( const QString & text );
     void setFile( const QModelIndex& item );
     void on_mChangeOutlinePushButton_clicked();
+    void on_mRotationSpinBox_valueChanged( double d );
 };
 
 //////////

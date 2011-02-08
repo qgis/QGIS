@@ -116,17 +116,20 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 
 //QgsSVGFillSymbolLayer
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width ): mPatternWidth( width ), mOutline( 0 )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): mPatternWidth( width ), mOutline( 0 )
 {
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
+  mAngle = angle;
   setSubSymbol( new QgsLineSymbolV2() );
 }
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width ): mPatternWidth( width ), mSvgData( svgData ), mOutline( 0 )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): mPatternWidth( width ),
+    mSvgData( svgData ), mOutline( 0 )
 {
   storeViewBox();
   mOutlineWidth = 0.3;
+  mAngle = angle;
   setSubSymbol( new QgsLineSymbolV2() );
 }
 
@@ -151,6 +154,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   QByteArray data;
   double width = 20;
   QString svgFilePath;
+  double angle = 0.0;
 
 
   if ( properties.contains( "width" ) )
@@ -163,10 +167,14 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
     QString savePath = QgsSvgMarkerSymbolLayerV2::symbolNameToPath( svgName );
     svgFilePath = ( savePath.isEmpty() ? svgName : savePath );
   }
+  if ( properties.contains( "angle" ) )
+  {
+    angle = properties["angle"].toDouble();
+  }
 
   if ( !svgFilePath.isEmpty() )
   {
-    return new QgsSVGFillSymbolLayer( svgFilePath, width );
+    return new QgsSVGFillSymbolLayer( svgFilePath, width, angle );
   }
   else
   {
@@ -175,7 +183,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
       data = QByteArray::fromHex( properties["data"].toLocal8Bit() );
     }
 
-    return new QgsSVGFillSymbolLayer( data, width );
+    return new QgsSVGFillSymbolLayer( data, width, angle );
   }
 }
 
@@ -205,6 +213,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   {
     return;
   }
+
   r.render( &p );
 
   if ( context.alpha() < 1.0 )
@@ -246,7 +255,19 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolyg
     p->setBrush( QBrush( selColor ) );
     _renderPolygon( p, points, rings );
   }
-  p->setBrush( mBrush );
+
+  if ( doubleNear( mAngle, 0.0 ) )
+  {
+    p->setBrush( mBrush );
+  }
+  else
+  {
+    QTransform t;
+    t.rotate( mAngle );
+    QBrush rotatedBrush = mBrush;
+    rotatedBrush.setTransform( t );
+    p->setBrush( rotatedBrush );
+  }
   _renderPolygon( p, points, rings );
   if ( mOutline )
   {
@@ -275,6 +296,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   }
 
   map.insert( "width", QString::number( mPatternWidth ) );
+  map.insert( "angle", QString::number( mAngle ) );
   return map;
 }
 
@@ -283,11 +305,11 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
   QgsSymbolLayerV2* clonedLayer = 0;
   if ( !mSvgFilePath.isEmpty() )
   {
-    clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth );
+    clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
   }
   else
   {
-    clonedLayer = new QgsSVGFillSymbolLayer( mSvgData, mPatternWidth );
+    clonedLayer = new QgsSVGFillSymbolLayer( mSvgData, mPatternWidth, mAngle );
   }
 
   if ( mOutline )

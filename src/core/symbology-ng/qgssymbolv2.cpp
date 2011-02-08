@@ -512,3 +512,12 @@ QgsSymbolV2* QgsFillSymbolV2::clone() const
   cloneSymbol->setAlpha( mAlpha );
   return cloneSymbol;
 }
+
+void QgsFillSymbolV2::setAngle( double angle )
+{
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsFillSymbolLayerV2* layer = ( QgsFillSymbolLayerV2* ) * it;
+    layer->setAngle( angle );
+  }
+}
