@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquery.h 13380 2010-04-25 12:51:49Z jef $ */
 #ifndef SPATIALQUERY_H
 #define SPATIALQUERY_H
 
@@ -82,7 +82,8 @@ class QgsSpatialQuery
     * \param lyrTarget          Pointer to Target Layer
     * \param lyrReference       Pointer to Reference Layer
     */
-    void runQuery( QSet<int> & qsetIndexResult, int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
+    void runQuery( QSet<int> & qsetIndexResult, QSet<int> & qsetIndexInvalidTarget, QSet<int> & qsetIndexInvalidReference,
+                   int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
     * \brief Gets the possible topologic relations
@@ -117,14 +118,14 @@ class QgsSpatialQuery
     /**
     * \brief Build the Spatial Index
     */
-    void setSpatialIndexReference();
+    void setSpatialIndexReference( QSet<int> & qsetIndexInvalidReference );
 
     /**
     * \brief Execute query
     * \param qsetIndexResult    Reference to QSet contains the result query
     * \param relation           Enum Topologic Relation
     */
-    void execQuery( QSet<int> & qsetIndexResult, int relation );
+    void execQuery( QSet<int> & qsetIndexResult, QSet<int> & qsetIndexInvalidTarget, int relation );
 
     /**
     * \brief Populate index Result

@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquerydialog.cpp 13441 2010-05-08 19:07:12Z jef $ */
 
 #include <QMessageBox>
 #include <QDateTime>
@@ -36,12 +36,9 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
 {
   setupUi( this );
 
-  grpResults->hide();
   mLayerReference = mLayerTarget = NULL;
-
   mIface = iface;
   mRubberSelectId = new QgsRubberSelectId( iface->mapCanvas() );
-  setColorRubberSelectId();
 
   initGui();
   connectAll();
@@ -56,8 +53,16 @@ QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
   delete mRubberSelectId;
   mMapIdVectorLayers.clear();
   mFeatureResult.clear();
+  mFeatureInvalidTarget.clear();
+  mFeatureInvalidReference.clear();
 
 } // QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
+
+void QgsSpatialQueryDialog::show()
+{
+  QDialog::show();
+  adjustSize();
+} // void QgsSpatialQueryDialog::show()
 
 void QgsSpatialQueryDialog::messageLayersLessTwo()
 {
@@ -74,8 +79,9 @@ void QgsSpatialQueryDialog::disconnectQGis()
 void QgsSpatialQueryDialog::initGui()
 {
   showLogProcessing( false );
-  grpResults->hide();
-  buttonBox->button( QDialogButtonBox::Close )->hide();
+  setLayoutResultInvalid( false );
+
+  buttonBoxMain->button( QDialogButtonBox::Close )->hide();
 
   populateTargetLayerComboBox();
   if ( targetLayerComboBox->count() > 1 )
@@ -89,21 +95,17 @@ void QgsSpatialQueryDialog::initGui()
   }
   else
   {
-    buttonBox->setEnabled( false );
+    buttonBoxMain->setEnabled( false );
     textEditStatus->append( mMsgLayersLessTwo );
   }
 
 } // QgsSpatialQueryDialog::initGui()
 
-void QgsSpatialQueryDialog::setColorRubberSelectId()
+void QgsSpatialQueryDialog::setColorRubberSelect()
 {
-  int myRedInt, myGreenInt, myBlueInt;
-  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
-  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
-  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-
-  mRubberSelectId->setColor( 255 - myRedInt, 255 - myGreenInt, 255 - myBlueInt, 0.5, 2 );
-
+  mRGBRubberSelect[0] = 255 - QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
+  mRGBRubberSelect[1] = 255 - QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
+  mRGBRubberSelect[2] = 255 - QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
 } // void QgsSpatialQueryDialog::setColorRubberSelectId()
 
 void QgsSpatialQueryDialog::setLayer( bool isTarget, int index )
@@ -160,7 +162,7 @@ void QgsSpatialQueryDialog::evaluateCheckBox( bool isTarget )
 
 void QgsSpatialQueryDialog::runQuery()
 {
-  buttonBox->setEnabled( false );
+  buttonBoxMain->setEnabled( false );
   MngProgressBar* pb = new MngProgressBar( progressBarStatus );
   QgsSpatialQuery* spatialQuery = new QgsSpatialQuery( pb );
   if ( usingSelectedTargetCheckBox->isChecked() )
@@ -173,32 +175,39 @@ void QgsSpatialQueryDialog::runQuery()
   }
   progressBarStatus->setTextVisible( true );
   mFeatureResult.clear();
+  mFeatureInvalidTarget.clear();
+  mFeatureInvalidReference.clear();
 
   int currentItem = operantionComboBox->currentIndex();
   bool isOk;
   int operation = operantionComboBox->itemData( currentItem ).toInt( &isOk );
-  spatialQuery->runQuery( mFeatureResult, operation, mLayerTarget, mLayerReference );
+  spatialQuery->runQuery( mFeatureResult, mFeatureInvalidTarget, mFeatureInvalidReference, operation, mLayerTarget, mLayerReference );
   delete spatialQuery;
   delete pb;
 
   progressBarStatus->setTextVisible( false );
-  buttonBox->setEnabled( true );
-
-  grpResults->show();
-  setInputsVisible( false );
+  buttonBoxMain->setEnabled( true );
+  setLayoutOperationVisible( false );
   progressBarStatus->hide();
-  buttonBox->button( QDialogButtonBox::Close )->show();
-  buttonBox->button( QDialogButtonBox::Cancel )->hide();
-  buttonBox->button( QDialogButtonBox::Ok )->hide();
-  adjustSize();
+  buttonBoxMain->button( QDialogButtonBox::Close )->show();
+  buttonBoxMain->button( QDialogButtonBox::Cancel )->hide();
+  buttonBoxMain->button( QDialogButtonBox::Ok )->hide();
 } // void QgsSpatialQueryDialog::runQuery()
 
-void QgsSpatialQueryDialog::setInputsVisible( bool show )
+void QgsSpatialQueryDialog::setLayoutOperationVisible( bool show )
 {
   grpTargetGroupBox->setVisible( show );
   grpReferenceGroupBox->setVisible( show );
   grpOperationGroupBox->setVisible( show );
-}
+} // void QgsSpatialQueryDialog::setLayoutOperationVisible( bool show )
+
+void QgsSpatialQueryDialog::setLayoutResultInvalid( bool show )
+{
+  grpResult->setVisible( show );
+  grpInvalid->setVisible( show );
+  ckboxLogProcessing->setVisible( show );
+  labelInfo->setVisible( show );
+} // void QgsSpatialQueryDialog::setLayoutResultInvalid( bool show )
 
 void QgsSpatialQueryDialog::showLogProcessing( bool hasShow )
 {
@@ -224,9 +233,7 @@ void QgsSpatialQueryDialog::showLogProcessing( bool hasShow )
 
 void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd )
 {
-  selectedFeatureListWidget->clear();
-  countSelectedFeats->setText( tr( "Total: %1" ).arg( mFeatureResult.size() ) );
-
+  // Report processing
   QString msg = tr( "<<-- Begin at [%L1] --" ).arg( datetimeStart->toString() );
   textEditStatus->append( msg );
   msg = tr( "Query:" );
@@ -243,20 +250,51 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   msg = tr( "-- Finish at [%L1] (processing time %L2 minutes) -->>" ).arg( datetimeEnd->toString() ).arg( timeProcess, 0, 'f', 2 );
   textEditStatus->append( msg );
 
+
+  mRubberSelectId->reset();
+
+  QString formatLabel("%1(%2)");
+  resultTargetLabel->setText( formatLabel.arg( mLayerTarget->name() ).arg( mFeatureResult.size() ) );
+  invalidTargetLabel->setText( formatLabel.arg( mLayerTarget->name() ).arg( mFeatureInvalidTarget.size() ) );
+  invalidReferenceLabel->setText( formatLabel.arg( mLayerReference->name() ).arg( mFeatureInvalidReference.size() ) );
+
+  // Result target
   if ( mFeatureResult.size() > 0 )
   {
-    populateQueryResult();
-    mLayerTarget->setSelectedFeatures( mFeatureResult );
+    pushButtonSelectResultTarget->setEnabled(true);
+    populateFeatureListWidget( resultFeatureTargetListWidget, mFeatureResult );
     evaluateCheckBox( true );
-
-    QString sIdFeat = selectedFeatureListWidget->currentItem()->text();
-    on_selectedFeatureListWidget_currentTextChanged( sIdFeat );
+    on_resultFeatureTargetListWidget_currentItemChanged( resultFeatureTargetListWidget->currentItem() );
   }
   else
   {
-    mRubberSelectId->reset();
+    pushButtonSelectResultTarget->setEnabled(false);
+    clearFeatureListWidget(resultFeatureTargetListWidget);
   }
-
+  // Invalid target
+  if ( mFeatureInvalidTarget.size() > 0 )
+  {
+    pushButtonSelectInvalidTarget->setEnabled(true);
+    populateFeatureListWidget( invalidFeatureTargetListWidget, mFeatureInvalidTarget, false );
+  }
+  else
+  {
+    pushButtonSelectInvalidTarget->setEnabled(false);
+    clearFeatureListWidget(invalidFeatureTargetListWidget);
+  }
+  // Invalid reference
+  if ( mFeatureInvalidReference.size() > 0 )
+  {
+    pushButtonSelectInvalidReference->setEnabled(true);
+    populateFeatureListWidget( invalidFeatureReferenceListWidget, mFeatureInvalidReference, false );
+  }
+  else
+  {
+    pushButtonSelectInvalidReference->setEnabled(false);
+    clearFeatureListWidget(invalidFeatureReferenceListWidget);
+  }
+  setLayoutResultInvalid( true );
+  adjustSize();
 } // void QgsSpatialQueryDialog::showResultQuery(QDateTime *datetimeStart, QDateTime *datetimeEnd)
 
 QString QgsSpatialQueryDialog::getDescriptionLayerShow( bool isTarget )
@@ -288,8 +326,8 @@ void QgsSpatialQueryDialog::connectAll()
            this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) ) ;
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
            this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
-  connect( showLogProcessingCheckBox, SIGNAL( clicked( bool ) ),
-           this, SLOT( on_showLogProcessingCheckBox_clicked( bool ) ) );
+  connect( ckboxLogProcessing, SIGNAL( clicked( bool ) ),
+           this, SLOT( on_ckboxLogProcessing_clicked( bool ) ) );
 
 } // QgsSpatialQueryDialog::connectAll()
 
@@ -321,6 +359,8 @@ void QgsSpatialQueryDialog::reject()
   mRubberSelectId->reset();
   mLayerTarget = mLayerReference = NULL;
   mFeatureResult.clear();
+  mFeatureInvalidTarget.clear();
+  mFeatureInvalidReference.clear();
   mMapIdVectorLayers.clear();
 
   QDialog::reject();
@@ -421,10 +461,8 @@ void QgsSpatialQueryDialog::removeLayer( bool isTarget, QgsVectorLayer* lyrRemov
       evaluateCheckBox( isTarget );
       if ( isTarget )
       {
-        selectedFeatureListWidget->blockSignals( true );
-        selectedFeatureListWidget->clear();
-        selectedFeatureListWidget->blockSignals( false );
-        countSelectedFeats->setText( tr( "Total" ) + ": 0" );
+        clearFeatureListWidget( resultFeatureTargetListWidget );
+        resultTargetLabel->setText( tr( "Total" ) + ": 0" );
         mRubberSelectId->reset();
       }
     }
@@ -546,25 +584,63 @@ void QgsSpatialQueryDialog::populateOperationComboBox()
 
 } // QgsSpatialQueryDialog::populateOperantionComboBox()
 
-void QgsSpatialQueryDialog::populateQueryResult()
+void QgsSpatialQueryDialog::populateFeatureListWidget( QListWidget *listWidget, QSet<int> & setFeatures, bool hasSetRow)
 {
-  selectedFeatureListWidget->blockSignals( true );
-  selectedFeatureListWidget->clear();
-  selectedFeatureListWidget->setEnabled( false );
+  listWidget->blockSignals( true );
+  listWidget->clear();
+  listWidget->setEnabled( false );
 
-  QSetIterator <int>item( mFeatureResult );
+  QSetIterator <int>item( setFeatures );
   while ( item.hasNext() )
   {
-    selectedFeatureListWidget->addItem( QString::number( item.next() ) );
+    listWidget->addItem( QString::number( item.next() ) );
   }
-  selectedFeatureListWidget->setEnabled( true );
-  selectedFeatureListWidget->setCurrentRow( 0 );
-  selectedFeatureListWidget->blockSignals( false );
+  listWidget->setEnabled( true );
+  if (hasSetRow)
+  {
+    listWidget->setCurrentRow( 0 );
+  }
+  listWidget->blockSignals( false );
 
-} // QgsSpatialQueryDialog::populateQueryResult()
+} // void populateFeatureListWidget( QListWidget *listWidget, QSet<int> & setFeatures )
+
+void QgsSpatialQueryDialog::clearFeatureListWidget( QListWidget *listWidget )
+{
+   listWidget->blockSignals( true );
+   listWidget->clear();
+   listWidget->blockSignals( false );
+} // void QgsSpatialQueryDialog::clearFeatureListWidget( QListWidget *listWidget )
+
+void QgsSpatialQueryDialog::changeFeatureListWidget( QListWidget *listWidget, QgsVectorLayer* vectorLayer, const QString& currentText )
+{
+    listWidget->setEnabled( false );
+    bool ok;
+    int id = currentText.toInt( &ok );
+    showRubberFeature( vectorLayer, id );
+    listWidget->setEnabled( true );
+    listWidget->setFocus();
+} // void QgsSpatialQueryDialog::changeFeatureListWidget( QListWidget *listWidget, QgsVectorLayer* layer, const QString& currentText )
+
+void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* vectorLayer, int id )
+{
+  mRubberSelectId->reset();
+
+  Qt::CursorShape shapeCurrent = cursor().shape();
+
+  QCursor c;
+  c.setShape( Qt::WaitCursor );
+  setCursor( c );
+
+  mRubberSelectId->addFeature( vectorLayer, id );
+  mRubberSelectId->show();
+
+  c.setShape( shapeCurrent );
+  setCursor( c );
+} // void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* vectorLayer, int id )
+
 
 //! Slots for signs of Dialog
-void QgsSpatialQueryDialog::on_buttonBox_accepted()
+void QgsSpatialQueryDialog::on_buttonBoxMain_accepted()
 {
   if ( ! mLayerReference )
   {
@@ -580,27 +656,27 @@ void QgsSpatialQueryDialog::on_buttonBox_accepted()
   QDateTime datetimeStart = QDateTime::currentDateTime();
   runQuery();
   QDateTime datetimeEnd = QDateTime::currentDateTime();
-
   showResultQuery( &datetimeStart, &datetimeEnd );
+  adjustSize();
+} // QgsSpatialQueryDialog::on_buttonBoxMain_accepted()
 
-} // QgsSpatialQueryDialog::on_buttonBox_accepted()
-
-void QgsSpatialQueryDialog::on_buttonBox_rejected()
+void QgsSpatialQueryDialog::on_buttonBoxMain_rejected()
 {
-  if ( grpResults->isHidden() )
+  if ( grpResult->isHidden() )
   {
     reject();
   }
   else
   {
-    grpResults->hide();
-    setInputsVisible( true );
+    setLayoutResultInvalid( false );
+    setLayoutOperationVisible( true );
     progressBarStatus->show();
-    buttonBox->button( QDialogButtonBox::Close )->hide();
-    buttonBox->button( QDialogButtonBox::Cancel )->show();
-    buttonBox->button( QDialogButtonBox::Ok )->show();
+    buttonBoxMain->button( QDialogButtonBox::Close )->hide();
+    buttonBoxMain->button( QDialogButtonBox::Cancel )->show();
+    buttonBoxMain->button( QDialogButtonBox::Ok )->show();
   }
-} // void QgsSpatialQueryDialog::on_buttonBox_rejected()
+  adjustSize();
+} // void QgsSpatialQueryDialog::on_buttonBoxMain_rejected()
 
 void QgsSpatialQueryDialog::on_targetLayerComboBox_currentIndexChanged( int index )
 {
@@ -627,33 +703,85 @@ void QgsSpatialQueryDialog::on_referenceLayerComboBox_currentIndexChanged( int i
 
 } // QgsSpatialQueryDialog::on_referenceLayerComboBox_currentIndexChanged(int index);
 
-void QgsSpatialQueryDialog::on_selectedFeatureListWidget_currentTextChanged( const QString& currentText )
+void QgsSpatialQueryDialog::on_resultFeatureTargetListWidget_itemClicked( QListWidgetItem * item )
 {
-  mRubberSelectId->reset();
-  selectedFeatureListWidget->setEnabled( false );
+  if ( mCurrentFeatureWidget != FW_Result )
+  {
+    mCurrentFeatureWidget = FW_Result;
+    on_resultFeatureTargetListWidget_currentItemChanged(item);
+  }
+} // void QgsSpatialQueryDialog::on_resultFeatureTargetListWidget_itemClicked( QListWidgetItem * item )
 
-  QCursor c;
-  c.setShape( Qt::WaitCursor );
-  Qt::CursorShape shapeCurrent = cursor().shape();
-  setCursor( c );
-  c.setShape( shapeCurrent );
+void  QgsSpatialQueryDialog::on_resultFeatureTargetListWidget_currentItemChanged( QListWidgetItem * item )
+{
+  if ( mCurrentFeatureWidget != FW_Result )
+  {
+    mCurrentFeatureWidget = FW_Result;
+  }
+  mRubberSelectId->setColor( mRGBRubberSelect[0], mRGBRubberSelect[1], mRGBRubberSelect[2], 0.5, 2 );
+  changeFeatureListWidget( resultFeatureTargetListWidget, mLayerTarget, item->text() );
+} // void  QgsSpatialQueryDialog::on_resultFeatureTargetListWidget_currentItemChanged( QListWidgetItem * item )
 
-  bool ok;
-  int Id = currentText.toInt( &ok );
-  mRubberSelectId->addFeature( mLayerTarget, Id );
+void QgsSpatialQueryDialog::on_invalidFeatureTargetListWidget_itemClicked( QListWidgetItem * item )
+{
+  if ( mCurrentFeatureWidget != FW_InvalidTarget )
+  {
+    mCurrentFeatureWidget = FW_InvalidTarget;
+    on_invalidFeatureTargetListWidget_currentItemChanged(item);
+  }
+} // void QgsSpatialQueryDialog::on_invalidFeatureTargetListWidget_itemClicked( QListWidgetItem * item )
 
-  selectedFeatureListWidget->setEnabled( true );
-  setCursor( c );
-  selectedFeatureListWidget->setFocus();
-  mRubberSelectId->show();
+void  QgsSpatialQueryDialog::on_invalidFeatureTargetListWidget_currentItemChanged( QListWidgetItem * item )
+{
+  if ( mCurrentFeatureWidget != FW_InvalidTarget )
+  {
+    mCurrentFeatureWidget = FW_InvalidTarget;
+  }
+  mRubberSelectId->setColor( 255, 0, 0, 0.5, 2 ); // RED
+  changeFeatureListWidget( invalidFeatureTargetListWidget, mLayerTarget, item->text() );
+} // void  QgsSpatialQueryDialog::on_invalidFeatureTargetListWidget_currentItemChanged( QListWidgetItem * item )
 
-} // QgsSpatialQueryDialog::on_selectedFeatureListWidget_currentTextChanged(const QString& currentText)
+void QgsSpatialQueryDialog::on_invalidFeatureReferenceListWidget_itemClicked( QListWidgetItem * item )
+{
+  if ( mCurrentFeatureWidget != FW_InvalidRefence )
+  {
+    mCurrentFeatureWidget = FW_InvalidRefence;
+    on_invalidFeatureReferenceListWidget_currentItemChanged(item);
+  }
+} // void QgsSpatialQueryDialog::on_invalidFeatureReferenceListWidget_itemClicked( QListWidgetItem * item )
 
-void QgsSpatialQueryDialog::on_showLogProcessingCheckBox_clicked( bool checked )
+void  QgsSpatialQueryDialog::on_invalidFeatureReferenceListWidget_currentItemChanged( QListWidgetItem * item )
+{
+  if ( mCurrentFeatureWidget != FW_InvalidRefence )
+  {
+    mCurrentFeatureWidget = FW_InvalidRefence;
+  }
+  mRubberSelectId->setColor( 255, 0, 0, 0.5, 2 ); // RED
+  changeFeatureListWidget( invalidFeatureReferenceListWidget, mLayerReference, item->text() );
+} // void  QgsSpatialQueryDialog::on_invalidFeatureReferenceListWidget_currentItemChanged( QListWidgetItem * item )
+
+void QgsSpatialQueryDialog::on_ckboxLogProcessing_clicked( bool checked )
 {
   showLogProcessing( checked );
+  adjustSize();
 
-} // void QgsSpatialQueryDialog::on_showLogProcessingCheckBox_clicked(bool checked)
+} // void QgsSpatialQueryDialog::on_ckboxLogProcessing_clicked(bool checked)
+
+void QgsSpatialQueryDialog::on_pushButtonSelectResultTarget_clicked()
+{
+  mLayerTarget->setSelectedFeatures( mFeatureResult );
+} // void QgsSpatialQueryDialog::on_pushButtonSelectResultTarget_clicked()
+
+void QgsSpatialQueryDialog::on_pushButtonSelectInvalidTarget_clicked()
+{
+  mLayerTarget->setSelectedFeatures( mFeatureInvalidTarget );
+} // void QgsSpatialQueryDialog::on_pushButtonSelectInvalidTarget_clicked()
+
+void QgsSpatialQueryDialog::on_pushButtonSelectInvalidReference_clicked()
+{
+  mLayerReference->setSelectedFeatures( mFeatureInvalidReference );
+} // void QgsSpatialQueryDialog::on_pushButtonSelectInvalidReference_clicked()
+
 
 //! Slots for signs of QGIS
 void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
@@ -672,9 +800,9 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
   mMapIdVectorLayers.insert( vectorLayer->getLayerID(), vectorLayer );
 
   // Verify is can enable buttonBox
-  if ( !buttonBox->button( QDialogButtonBox::Ok )->isEnabled() && targetLayerComboBox->count() > 1 )
+  if ( !buttonBoxMain->button( QDialogButtonBox::Ok )->isEnabled() && targetLayerComboBox->count() > 1 )
   {
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+    buttonBoxMain->button( QDialogButtonBox::Ok )->setEnabled( true );
   }
 
 } // QgsSpatialQueryDialog::signal_qgis_layerWasAdded(QgsMapLayer* mapLayer)
@@ -706,7 +834,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
 
   if ( targetLayerComboBox->count() < 2 )
   {
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+    buttonBoxMain->button( QDialogButtonBox::Ok )->setEnabled( false );
     textEditStatus->append( mMsgLayersLessTwo );
   }
 
@@ -724,7 +852,6 @@ void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
   evaluateCheckBox( false );
 
 } // void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
-
 
 void QgsSpatialQueryDialog::MsgDEBUG( QString sMSg )
 {
