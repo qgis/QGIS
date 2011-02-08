@@ -20,7 +20,6 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QTextStream>
-#include <QDebug>
 
 #include "qgsmanageconnectionsdialog.h"
 
@@ -39,10 +38,14 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
     populateConnections();
   }
 
+  connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( selectFile() ) );
+  // use Ok button for starting import and export operations
+  disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doSaveLoad() ) );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
-void QgsManageConnectionsDialog::on_btnBrowse_clicked()
+void QgsManageConnectionsDialog::selectFile()
 {
   QString fileName;
   if ( mDialogMode == Save )
@@ -67,7 +70,6 @@ void QgsManageConnectionsDialog::on_btnBrowse_clicked()
 
   mFileName = fileName;
   leFileName->setText( mFileName );
-  //buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
 
   if ( mDialogMode == Load )
   {
@@ -77,7 +79,7 @@ void QgsManageConnectionsDialog::on_btnBrowse_clicked()
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
 }
 
-void QgsManageConnectionsDialog::on_buttonBox_accepted()
+void QgsManageConnectionsDialog::doSaveLoad()
 {
   QList<QListWidgetItem *> selection = listConnections->selectedItems();
   if ( selection.isEmpty() )
@@ -150,11 +152,12 @@ void QgsManageConnectionsDialog::on_buttonBox_accepted()
     {
       loadPgConnections( doc, items );
     }
+    // clear connections list
+    listConnections->clear();
   }
 
   mFileName = "";
   leFileName->clear();
-  listConnections->clear();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 

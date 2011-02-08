@@ -46,8 +46,8 @@ class QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnecti
     QgsManageConnectionsDialog( QWidget *parent = NULL, Mode mode = Save, Type type = WMS );
 
   public slots:
-    void on_btnBrowse_clicked();
-    void on_buttonBox_accepted();
+    void selectFile();
+    void doSaveLoad();
 
     void populateConnections();
 
