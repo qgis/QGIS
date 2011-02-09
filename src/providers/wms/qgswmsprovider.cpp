@@ -699,12 +699,20 @@ void QgsWmsProvider::tileReplyFinished()
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();
 
+#if QT_VERSION >= 0x40500
   QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) fromcache:%8 error:%9" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
                .arg( fromCache )
                .arg( reply->errorString() )
              );
+#else
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) error:%8" )
+               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
+               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
+               .arg( reply->errorString() )
+             );
+#endif
 
   if ( reply->error() == QNetworkReply::NoError )
   {
