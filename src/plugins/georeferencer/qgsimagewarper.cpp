@@ -31,6 +31,12 @@
 #include "qgsimagewarper.h"
 #include "qgsgeoreftransform.h"
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#endif
+
 bool QgsImageWarper::mWarpCanceled = false;
 
 QgsImageWarper::QgsImageWarper( QWidget *theParent )
@@ -44,7 +50,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const Resampl
 {
   // Open input file
   GDALAllRegister();
-  hSrcDS = GDALOpen( QFile::encodeName( input ).constData(), GA_ReadOnly );
+  hSrcDS = GDALOpen( TO8F( input ), GA_ReadOnly );
   if ( hSrcDS == NULL ) return false;
 
   // Setup warp options.
