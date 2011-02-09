@@ -748,9 +748,9 @@ bool QgsProject::read( QFileInfo const &file )
 
 
 
-/*
+/**
    @note it's presumed that the caller has already reset the map canvas, map registry, and legend
-*/
+ */
 bool QgsProject::read()
 {
   clearError();

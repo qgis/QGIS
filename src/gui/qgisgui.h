@@ -78,8 +78,8 @@ namespace QgisGui
 
   /** A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
-   * @param QWidget - widget that should act as the parent for the file dialog
-   * @param QString the message to display to the user
+   * @param theParent widget that should act as the parent for the file dialog
+   * @param theMessage the message to display to the user
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    * @note added in 1.6
