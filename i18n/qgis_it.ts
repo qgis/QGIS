@@ -2407,7 +2407,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot;per ottenere
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
         <source>Nearest neighbor</source>
-        <translation>Punti più vicini</translation>
+        <translation>Vicini più prossimi (nearest neighbor)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
@@ -5832,7 +5832,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1975"/>
         <source>Render</source>
-        <translation type="unfinished">Aggiorna</translation>
+        <translation>Aggiorna</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2363"/>
@@ -12534,7 +12534,7 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="92"/>
         <source>Browse to find the delimited text file to be processed</source>
-        <translation>Sfoglia il file system per trovare il file di testo delimitato da processare</translation>
+        <translation>Sfoglia il file system per trovare il file di testo delimitato da analizzare</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="95"/>
@@ -12901,7 +12901,7 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="203"/>
         <source>An error occured while evaluating the calculation string.</source>
-        <translation>Errore durante il processamento della stringa di calcolo.</translation>
+        <translation>Errore durante l&apos;analisi della stringa di calcolo.</translation>
     </message>
 </context>
 <context>
@@ -20050,7 +20050,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="84"/>
         <source>If checked, only the layer information will be processed</source>
-        <translation>Se selezionato, solo le informazioni del layer saranno processate</translation>
+        <translation>Se selezionato, solo le informazioni del layer saranno analizzate</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="214"/>
@@ -27652,7 +27652,7 @@ L´errore era:
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="243"/>
         <source>-- Finish at [%L1] (processing time %L2 minutes) --&gt;&gt;</source>
-        <translation>-- Terminato a [%L1] (tempo di processamento %L2 minuti) --&gt;&gt;</translation>
+        <translation>-- Terminato a [%L1] (tempo di analisi %L2 minuti) --&gt;&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="278"/>
@@ -28864,7 +28864,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="53"/>
         <source>Nearest neighbour</source>
-        <translation>Punti più vicini</translation>
+        <translation>Vicino più prossimo</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="63"/>
@@ -33861,7 +33861,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>Fast fourier transform for image processing</source>
-        <translation>Trasformazione Fast Fourier per il processamento di immagini</translation>
+        <translation>Trasformazione Fast Fourier per l&apos;analisi di immagini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
@@ -34212,7 +34212,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation>Trasformazione inversa fast Fourier per il processamento dell&apos;immagine</translation>
+        <translation>Trasformazione inversa fast Fourier per l&apos;analisi dell&apos;immagine</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
