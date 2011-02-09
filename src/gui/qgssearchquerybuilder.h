@@ -73,7 +73,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
     /*! Test the constructed search string to see if it's correct.
      * The number of rows that would be returned is displayed in a message box.
-     * @param showResults If true, the results are displayed in a QMessageBox
      */
     void on_btnTest_clicked();
 

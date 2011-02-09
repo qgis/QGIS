@@ -118,7 +118,7 @@ class CORE_EXPORT QgsClipper
       @param y1 y-coordinate of the second line start
       @param clipRect clip rectangle
       @param pts: in/out array of clipped points
-      @param writePtr in/out: writing poisiton in the wkb array*/
+      */
     static void connectSeparatedLines( double x0, double y0, double x1, double y1,
                                        const QgsRectangle& clipRect, QPolygonF& pts );
 
