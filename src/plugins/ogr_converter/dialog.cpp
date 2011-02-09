@@ -32,6 +32,12 @@
 
 #include <ogr_api.h>
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x) (x).toUtf8().constData()
+#else
+#define TO8(x) (x).toLocal8Bit().constData()
+#endif
+
 Dialog::Dialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
@@ -158,7 +164,7 @@ void Dialog::populateLayers( QString const& url )
 {
   comboSrcLayer->clear();
 
-  OGRDataSourceH ds = OGROpen( url.toAscii().constData(), 0, 0 );
+  OGRDataSourceH ds = OGROpen( TO8( url ), 0, 0 );
   if ( 0 != ds )
   {
     QString lyrName;
@@ -199,7 +205,7 @@ bool Dialog::testConnection( QString const& url )
 {
   bool success = false;
 
-  OGRDataSourceH ds = OGROpen( url.toAscii().constData(), 0, 0 );
+  OGRDataSourceH ds = OGROpen( TO8( url ), 0, 0 );
   if ( 0 != ds )
   {
     success = true;

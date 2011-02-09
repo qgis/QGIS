@@ -24,6 +24,12 @@
 
 #include "gdalwarper.h"
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x) (x).toUtf8().constData()
+#else
+#define TO8(x) (x).toLocal8Bit().constData()
+#endif
+
 QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
     const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries ): mFormulaString( formulaString ), mOutputFile( outputFile ), mOutputFormat( outputFormat ),
     mOutputRectangle( outputExtent ), mNumOutputColumns( nOutputColumns ), mNumOutputRows( nOutputRows ), mRasterEntries( rasterEntries )
@@ -59,7 +65,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     {
       return 2;
     }
-    GDALDatasetH inputDataset = GDALOpen( it->raster->source().toLocal8Bit().data(), GA_ReadOnly );
+    GDALDatasetH inputDataset = GDALOpen( TO8( it->raster->source() ), GA_ReadOnly );
     if ( inputDataset == NULL )
     {
       return 2;
