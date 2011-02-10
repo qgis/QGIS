@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
+    <width>438</width>
     <height>459</height>
    </rect>
   </property>
@@ -195,7 +195,7 @@
       <item row="0" column="2">
        <widget class="QDoubleSpinBox" name="spnX">
         <property name="decimals">
-         <number>4</number>
+         <number>10</number>
         </property>
         <property name="minimum">
          <double>0.000100000000000</double>
@@ -260,7 +260,7 @@
          <bool>false</bool>
         </property>
         <property name="decimals">
-         <number>4</number>
+         <number>10</number>
         </property>
         <property name="minimum">
          <double>0.000100000000000</double>
