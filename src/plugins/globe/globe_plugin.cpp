@@ -379,13 +379,13 @@ void GlobePlugin::setupControls()
   //Horizontal container
   HBox* moveHControls = new HBox();
   moveHControls->setFrame( new RoundedFrame() );
-  //moveHControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  moveHControls->setMargin( 10 );
-  moveHControls->setSpacing( 15 );
+  moveHControls->getFrame()->setBackColor(1,1,1,0.5);
+  moveHControls->setMargin( 0 );
+  moveHControls->setSpacing( 47 );
   moveHControls->setVertAlign( Control::ALIGN_CENTER );
   moveHControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveHControls->setPosition( 20, 26 );
-  moveHControls->setPadding( 3 );
+  moveHControls->setPosition( 5, 30 );
+  moveHControls->setPadding( 6 );
 
   osgEarthUtil::EarthManipulator* manip = dynamic_cast<osgEarthUtil::EarthManipulator*>( viewer.getCameraManipulator() );
   //Move Left
@@ -401,13 +401,13 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* moveVControls = new VBox();
   moveVControls->setFrame( new RoundedFrame() );
-  //moveVControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  moveVControls->setMargin( 10 );
-  moveVControls->setSpacing( 20 );
+  moveVControls->getFrame()->setBackColor(1,1,1,0.5);
+  moveVControls->setMargin( 0 );
+  moveVControls->setSpacing( 36 );
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveVControls->setPosition( 40, 5 );
-  moveVControls->setPadding( 3 );
+  moveVControls->setPosition( 35, 5 );
+  moveVControls->setPadding( 6 );
 
   //Move Up
   osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png" );
@@ -431,13 +431,13 @@ void GlobePlugin::setupControls()
   //Horizontal container
   HBox* rotateControls = new HBox();
   rotateControls->setFrame( new RoundedFrame() );
-  //rotateControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  rotateControls->setMargin( 10 );
+  rotateControls->getFrame()->setBackColor(1,1,1,0.5);
+  rotateControls->setMargin( 0 );
   rotateControls->setSpacing( 10 );
   rotateControls->setVertAlign( Control::ALIGN_CENTER );
   rotateControls->setHorizAlign( Control::ALIGN_CENTER );
-  rotateControls->setPosition( 5, 120 );
-  rotateControls->setPadding( 3 );
+  rotateControls->setPosition( 5, 113 );
+  rotateControls->setPadding( 6 );
 
   //Rotate CCW
   osg::Image* rotateCCWImg = osgDB::readImageFile( imgDir + "/rotate-ccw.png" );
@@ -465,13 +465,13 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* tiltControls = new VBox();
   tiltControls->setFrame( new RoundedFrame() );
-  //tiltControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  tiltControls->setMargin( 10 );
+  tiltControls->getFrame()->setBackColor(1,1,1,0.5);
+  tiltControls->setMargin( 0 );
   tiltControls->setSpacing( 30 );
   tiltControls->setVertAlign( Control::ALIGN_CENTER );
   tiltControls->setHorizAlign( Control::ALIGN_CENTER );
-  tiltControls->setPosition( 40, 90 );
-  tiltControls->setPadding( 3 );
+  tiltControls->setPosition( 35, 90 );
+  tiltControls->setPadding( 6 );
 
   //tilt Up
   osg::Image* tiltUpImg = osgDB::readImageFile( imgDir + "/tilt-up.png" );
@@ -493,13 +493,13 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* zoomControls = new VBox();
   zoomControls->setFrame( new RoundedFrame() );
-  //zoomControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  zoomControls->setMargin( 10 );
-  zoomControls->setSpacing( 0 );
+  zoomControls->getFrame()->setBackColor(1,1,1,0.5);
+  zoomControls->setMargin( 0 );
+  zoomControls->setSpacing( 5 );
   zoomControls->setVertAlign( Control::ALIGN_CENTER );
   zoomControls->setHorizAlign( Control::ALIGN_CENTER );
-  zoomControls->setPosition( 40, 180 );
-  zoomControls->setPadding( 3 );
+  zoomControls->setPosition( 35, 170 );
+  zoomControls->setPadding( 6 );
 
   //Zoom In
   osg::Image* zoomInImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
@@ -521,13 +521,13 @@ void GlobePlugin::setupControls()
   //Horizontal container
   HBox* extraControls = new HBox();
   extraControls->setFrame( new RoundedFrame() );
-  //extraControls->getFrame()->setBackColor(0.5,0.5,0.5,0.1);
-  extraControls->setMargin( 10 );
+  extraControls->getFrame()->setBackColor(1,1,1,0.5);
+  extraControls->setMargin( 0 );
   extraControls->setSpacing( 10 );
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
-  extraControls->setPosition( 5, 240 );
-  extraControls->setPadding( 3 );
+  extraControls->setPosition( 5, 220 );
+  extraControls->setPadding( 6 );
 
   //Sync Extent
   osg::Image* extraSyncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
@@ -552,10 +552,10 @@ void GlobePlugin::setupControls()
 //END EXTRA CONTROLS
 
 //add controls groups to canavas
-  mControlCanvas->addControl( moveVControls );
   mControlCanvas->addControl( moveHControls );
-  mControlCanvas->addControl( rotateControls );
+  mControlCanvas->addControl( moveVControls );
   mControlCanvas->addControl( tiltControls );
+  mControlCanvas->addControl( rotateControls );
   mControlCanvas->addControl( zoomControls );
   mControlCanvas->addControl( extraControls );
 
