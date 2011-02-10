@@ -11,7 +11,7 @@
 # Copyright (C) 2008  Carson Farmer
 #
 # EMAIL: carson.farmer (at) gmail.com
-# WEB  : www.geog.uvic.ca/spar/carson
+# WEB  : www.carsonfarmer.com/
 #
 #-----------------------------------------------------------
 # 
@@ -47,7 +47,7 @@ class UnicodeWriter:
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
     Taken from http://docs.python.org/library/csv.html
-    to allow handling of nonascii output
+    to allow handling of non-ascii output
     """
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
@@ -134,7 +134,7 @@ class Dialog(QDialog, Ui_Dialog):
             elif self.rdoStandard.isChecked(): matType = "Standard"
             else: matType = "Summary"
             if self.chkNearest.isChecked(): nearest = self.spnNearest.value()
-            else: nearest = nearest = 0
+            else: nearest = 0
             if outPath.contains("\\"):
                 outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
             else:
@@ -173,7 +173,7 @@ class Dialog(QDialog, Ui_Dialog):
             sindex.insertFeature(inFeat)
         provider2.rewind()
         if nearest < 1: nearest = layer2.featureCount()
-        else: nearest = nearest + 1
+        else: nearest = nearest
         index1 = provider1.fieldNameIndex(field1)
         index2 = provider2.fieldNameIndex(field2)
         sRs = provider1.crs()
