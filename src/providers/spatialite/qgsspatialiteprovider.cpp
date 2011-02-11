@@ -560,7 +560,7 @@ QString QgsSpatiaLiteProvider::subsetString()
   return mSubsetString;
 }
 
-bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL )
+bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
 {
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
@@ -571,8 +571,10 @@ bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL )
   setDataSourceUri( uri.uri() );
 
   // update feature count and extents
-  if ( getTableSummary() )
+  if ( updateFeatureCount && getTableSummary() )
+  {
     return true;
+  }
 
   mSubsetString = prevSubsetString;
 

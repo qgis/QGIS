@@ -98,7 +98,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() { return true; }
 
     /** mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL );
+    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
 
     /**
      * Get feature type.
@@ -154,6 +154,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/
     virtual bool createSpatialIndex();
+
+    /**Create an attribute index on the datasource*/
+    virtual bool createAttributeIndex( int field );
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether

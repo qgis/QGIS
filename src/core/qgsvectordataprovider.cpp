@@ -126,6 +126,11 @@ bool QgsVectorDataProvider::createSpatialIndex()
   return false;
 }
 
+bool QgsVectorDataProvider::createAttributeIndex( int field )
+{
+  return true;
+}
+
 int QgsVectorDataProvider::capabilities() const
 {
   return QgsVectorDataProvider::NoCapabilities;

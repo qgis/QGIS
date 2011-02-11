@@ -65,6 +65,10 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 
 void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
 {
+  if ( !mSymbol )
+  {
+    return;
+  }
   mRotationFieldIdx  = mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField );
   mSizeScaleFieldIdx = mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField );
 
@@ -99,6 +103,10 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
 
 void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
 {
+  if ( !mSymbol )
+  {
+    return;
+  }
   mSymbol->stopRender( context );
 
   if ( mRotationFieldIdx != -1 || mSizeScaleFieldIdx != -1 )
@@ -134,7 +142,14 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
 
 QString QgsSingleSymbolRendererV2::dump()
 {
-  return QString( "SINGLE: %1" ).arg( mSymbol->dump() );
+  if ( mSymbol )
+  {
+    return QString( "SINGLE: %1" ).arg( mSymbol->dump() );
+  }
+  else
+  {
+    return "";
+  }
 }
 
 QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
@@ -205,10 +220,12 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
 
 QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize iconSize )
 {
-  QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol, iconSize );
-
   QgsLegendSymbologyList lst;
-  lst << qMakePair( QString(), pix );
+  if ( mSymbol )
+  {
+    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol, iconSize );
+    lst << qMakePair( QString(), pix );
+  }
   return lst;
 }
 

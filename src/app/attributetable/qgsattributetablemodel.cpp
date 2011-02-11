@@ -234,7 +234,7 @@ void QgsAttributeTableModel::loadLayer()
       rect = QgisApp::instance()->mapCanvas()->extent();
     }
 
-    mLayer->select( mAttributes, rect, false );
+    mLayer->select( QgsAttributeList(), rect, false );
 
     QgsFeature f;
     for ( int i = 0; mLayer->nextFeature( f ); ++i )

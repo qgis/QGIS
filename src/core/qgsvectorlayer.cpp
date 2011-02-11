@@ -68,6 +68,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectoroverlay.h"
 #include "qgsmaplayerregistry.h"
@@ -110,7 +111,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mLabel( 0 ),
     mLabelOn( false ),
     mVertexMarkerOnlyForSelection( false ),
-    mFetching( false )
+    mFetching( false ),
+    mJoinBuffer( 0 )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -154,6 +156,11 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
       }
     }
 
+    mJoinBuffer = new QgsVectorLayerJoinBuffer();
+
+    connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
+    updateFieldMap();
+
     // Get the update threshold from user settings. We
     // do this only on construction to avoid the penality of
     // fetching this each time the layer is drawn. If the user
@@ -175,13 +182,9 @@ QgsVectorLayer::~QgsVectorLayer()
 
   mValid = false;
 
-  if ( mRenderer )
-  {
-    delete mRenderer;
-  }
-  // delete the provider object
+  delete mRenderer;
   delete mDataProvider;
-
+  delete mJoinBuffer;
   delete mLabel;
 
   // Destroy any cached geometries and clear the references to them
@@ -1500,6 +1503,14 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 
 void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f, bool all )
 {
+  if ( mDataProvider && ( all || ( mFetchAttributes.size() > 0 && mJoinBuffer->containsFetchJoins() ) ) )
+  {
+    int index = 0;
+    maxIndex( mDataProvider->fields(), index );
+    mJoinBuffer->updateFeatureAttributes( f, index, all );
+  }
+
+
   // do not update when we aren't in editing mode
   if ( !mEditable )
     return;
@@ -1523,6 +1534,73 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f, bool all )
       f.changeAttribute( it.key(), QVariant( QString::null ) );
 }
 
+void QgsVectorLayer::addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName,
+    const QVariant& joinValue, const QgsAttributeList& attributes, int attributeIndexOffset )
+{
+  const QHash< QString, QgsAttributeMap>& memoryCache = joinInfo.cachedAttributes;
+  if ( !memoryCache.isEmpty() ) //use join memory cache
+  {
+    QgsAttributeMap featureAttributes = memoryCache.value( joinValue.toString() );
+    bool found = !featureAttributes.isEmpty();
+    QgsAttributeList::const_iterator attIt = attributes.constBegin();
+    for ( ; attIt != attributes.constEnd(); ++attIt )
+    {
+      if ( found )
+      {
+        f.addAttribute( *attIt + attributeIndexOffset, featureAttributes.value( *attIt ) );
+      }
+      else
+      {
+        f.addAttribute( *attIt + attributeIndexOffset, QVariant() );
+      }
+    }
+  }
+  else //work with subset string
+  {
+    QgsVectorLayer* joinLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
+    if ( !joinLayer )
+    {
+      return;
+    }
+
+    //no memory cache, query the joined values by setting substring
+    QString subsetString = joinLayer->dataProvider()->subsetString(); //provider might already have a subset string
+    QString bkSubsetString = subsetString;
+    if ( !subsetString.isEmpty() )
+    {
+      subsetString.append( " AND " );
+    }
+
+    subsetString.append( "\"" + joinFieldName + "\"" + " = " + "\"" + joinValue.toString() + "\"" );
+    joinLayer->dataProvider()->setSubsetString( subsetString, false );
+
+    //select (no geometry)
+    joinLayer->select( attributes, QgsRectangle(), false, false );
+
+    //get first feature
+    QgsFeature fet;
+    if ( joinLayer->nextFeature( fet ) )
+    {
+      QgsAttributeMap attMap = fet.attributeMap();
+      QgsAttributeMap::const_iterator attIt = attMap.constBegin();
+      for ( ; attIt != attMap.constEnd(); ++attIt )
+      {
+        f.addAttribute( attIt.key() + attributeIndexOffset, attIt.value() );
+      }
+    }
+    else //no suitable join feature found, insert invalid variants
+    {
+      QgsAttributeList::const_iterator attIt = attributes.constBegin();
+      for ( ; attIt != attributes.constEnd(); ++attIt )
+      {
+        f.addAttribute( *attIt + attributeIndexOffset, QVariant() );
+      }
+    }
+
+    joinLayer->dataProvider()->setSubsetString( bkSubsetString, false );
+  }
+}
+
 void QgsVectorLayer::updateFeatureGeometry( QgsFeature &f )
 {
   if ( mChangedGeometries.contains( f.id() ) )
@@ -1539,8 +1617,8 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   mFetchRect       = rect;
   mFetchAttributes = attributes;
   mFetchGeometry   = fetchGeometries;
-
   mFetchConsidered = mDeletedFeatureIds;
+  QgsAttributeList targetJoinFieldList;
 
   if ( mEditable )
   {
@@ -1551,24 +1629,44 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   //look in the normal features of the provider
   if ( mFetchAttributes.size() > 0 )
   {
-    if ( mEditable )
+    if ( mEditable || mJoinBuffer->containsJoins() )
     {
-      // fetch only available field from provider
+      QgsAttributeList joinFields;
+
+      int maxProviderIndex = 0;
+      if ( mDataProvider )
+      {
+        maxIndex( mDataProvider->fields(), maxProviderIndex );
+      }
+
+      mJoinBuffer->select( mFetchAttributes, joinFields, maxProviderIndex );
+      QgsAttributeList::const_iterator joinFieldIt = joinFields.constBegin();
+      for ( ; joinFieldIt != joinFields.constEnd(); ++joinFieldIt )
+      {
+        if ( !mFetchAttributes.contains( *joinFieldIt ) )
+        {
+          mFetchAttributes.append( *joinFieldIt );
+        }
+      }
+
+      //detect which fields are from the provider
       mFetchProvAttributes.clear();
       for ( QgsAttributeList::iterator it = mFetchAttributes.begin(); it != mFetchAttributes.end(); it++ )
       {
-        if ( !mUpdatedFields.contains( *it ) || mAddedAttributeIds.contains( *it ) )
-          continue;
-
-        mFetchProvAttributes << *it;
+        if ( mDataProvider->fields().contains( *it ) )
+        {
+          mFetchProvAttributes << *it;
+        }
       }
 
       mDataProvider->select( mFetchProvAttributes, rect, fetchGeometries, useIntersect );
     }
     else
+    {
       mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
+    }
   }
-  else
+  else //we don't need any attributes at all
   {
     mDataProvider->select( QgsAttributeList(), rect, fetchGeometries, useIntersect );
   }
@@ -1617,6 +1715,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
               {
                 found = true;
                 f.setAttributeMap( it->attributeMap() );
+                updateFeatureAttributes( f );
                 break;
               }
             }
@@ -1678,12 +1777,13 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
   while ( dataProvider()->nextFeature( f ) )
   {
     if ( mFetchConsidered.contains( f.id() ) )
+    {
       continue;
-
-    if ( mEditable )
-      updateFeatureAttributes( f );
-
-    // found it
+    }
+    if ( mFetchAttributes.size() > 0 )
+    {
+      updateFeatureAttributes( f ); //check joined attributes / changed attributes
+    }
     return true;
   }
 
@@ -2501,9 +2601,9 @@ bool QgsVectorLayer::startEditing()
 
   mEditable = true;
 
-  mUpdatedFields = mDataProvider->fields();
-
-  mMaxUpdatedIndex = -1;
+  mAddedAttributeIds.clear();
+  mDeletedAttributeIds.clear();
+  updateFieldMap();
 
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
     if ( it.key() > mMaxUpdatedIndex )
@@ -2561,11 +2661,20 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     }
   }
 
+  //load vector joins
+  if ( !mJoinBuffer )
+  {
+    mJoinBuffer = new QgsVectorLayerJoinBuffer();
+  }
+  mJoinBuffer->readXml( layer_node );
+
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
   {
     return false;
   }
+
+  updateFieldMap();
 
   return mValid;               // should be true if read successfully
 
@@ -2705,6 +2814,9 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
   }
+
+  //save joins
+  mJoinBuffer->writeXml( layer_node, document );
 
   // renderer specific settings
   QString errorMsg;
@@ -3236,12 +3348,12 @@ bool QgsVectorLayer::deleteFeature( int fid )
 
 const QgsFieldMap &QgsVectorLayer::pendingFields() const
 {
-  return isEditable() ? mUpdatedFields : mDataProvider->fields();
+  return mUpdatedFields;
 }
 
 QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
 {
-  return isEditable() ? mUpdatedFields.keys() : mDataProvider->attributeIndexes();
+  return mUpdatedFields.keys();
 }
 
 int QgsVectorLayer::pendingFeatureCount()
@@ -3302,8 +3414,11 @@ bool QgsVectorLayer::commitChanges()
   if ( mAddedAttributeIds.size() > 0 )
   {
     QList<QgsField> addedAttributes;
-    for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.begin(); it != mAddedAttributeIds.end(); it++ )
-      addedAttributes << mUpdatedFields[ *it ];
+    for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.constBegin(); it != mAddedAttributeIds.constEnd(); it++ )
+    {
+      addedAttributes << mUpdatedFields[*it];
+    }
+
 
     if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
     {
@@ -3350,7 +3465,7 @@ bool QgsVectorLayer::commitChanges()
     // (otherwise we'll loose updates when doing the remapping)
     if ( mAddedAttributeIds.size() > 0 )
     {
-      for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.begin(); it != mAddedAttributeIds.end(); it++ )
+      for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.constBegin(); it != mAddedAttributeIds.constEnd(); it++ )
       {
         QString name =  mUpdatedFields[ *it ].name();
         if ( dst.contains( name ) )
@@ -3532,13 +3647,11 @@ bool QgsVectorLayer::commitChanges()
   {
     mEditable = false;
     setModified( false );
-
-    mUpdatedFields.clear();
-    mMaxUpdatedIndex = -1;
     undoStack()->clear();
     emit editingStopped();
   }
 
+  updateFieldMap();
   mDataProvider->updateExtents();
 
   triggerRepaint();
@@ -3590,9 +3703,7 @@ bool QgsVectorLayer::rollBack()
     // Roll back deleted features
     mDeletedFeatureIds.clear();
 
-    // clear private field map
-    mUpdatedFields.clear();
-    mMaxUpdatedIndex = -1;
+    updateFieldMap();
   }
 
   deleteCachedGeometries();
@@ -3643,6 +3754,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   QgsFeatureList features;
 
   QgsAttributeList allAttrs = mDataProvider->attributeIndexes();
+  mFetchAttributes = pendingAllAttributesList();
 
   for ( QgsFeatureIds::iterator it = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it )
   {
@@ -4728,6 +4840,99 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
   return -1;
 }
 
+void QgsVectorLayer::addJoin( QgsVectorJoinInfo joinInfo )
+{
+  mJoinBuffer->addJoin( joinInfo );
+  updateFieldMap();
+}
+
+void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
+{
+  removeJoin( theLayerId );
+}
+
+void QgsVectorLayer::removeJoin( const QString& joinLayerId )
+{
+  mJoinBuffer->removeJoin( joinLayerId );
+  updateFieldMap();
+}
+
+const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
+{
+  return mJoinBuffer->vectorJoins();
+}
+
+void QgsVectorLayer::updateFieldMap()
+{
+  //first backup mAddedAttributes
+  QgsFieldMap bkAddedAttributes;
+  QgsAttributeIds::const_iterator attIdIt = mAddedAttributeIds.constBegin();
+  for ( ; attIdIt != mAddedAttributeIds.constEnd(); ++attIdIt )
+  {
+    bkAddedAttributes.insert( *attIdIt, mUpdatedFields.value( *attIdIt ) );
+  }
+
+  mUpdatedFields = QgsFieldMap();
+  if ( mDataProvider )
+  {
+    mUpdatedFields = mDataProvider->fields();
+  }
+
+  int currentMaxIndex = 0; //maximum index of current layer
+  if ( !maxIndex( mUpdatedFields, currentMaxIndex ) )
+  {
+    return;
+  }
+
+  mMaxUpdatedIndex = currentMaxIndex;
+
+  //joined fields
+  if ( mJoinBuffer->containsJoins() )
+  {
+    mJoinBuffer->updateFieldMap( mUpdatedFields, mMaxUpdatedIndex );
+  }
+
+  //insert added attributes after provider fields and joined fields
+  mAddedAttributeIds.clear();
+  QgsFieldMap::const_iterator fieldIt = bkAddedAttributes.constBegin();
+  for ( ; fieldIt != bkAddedAttributes.constEnd(); ++fieldIt )
+  {
+    ++mMaxUpdatedIndex;
+    mUpdatedFields.insert( mMaxUpdatedIndex, fieldIt.value() );
+    mAddedAttributeIds.insert( mMaxUpdatedIndex );
+
+    //go through the changed attributes map and adapt indices of added attributes
+    for ( int i = 0; i < mChangedAttributeValues.size(); ++i )
+    {
+      updateAttributeMapIndex( mChangedAttributeValues[i], fieldIt.key(), mMaxUpdatedIndex );
+    }
+
+    //go through added features and adapt attribute maps
+    QgsFeatureList::iterator featureIt = mAddedFeatures.begin();
+    for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
+    {
+      QgsAttributeMap attMap = featureIt->attributeMap();
+      updateAttributeMapIndex( attMap, fieldIt.key(), mMaxUpdatedIndex );
+      featureIt->setAttributeMap( attMap );
+    }
+  }
+
+  //remove deleted attributes
+  QgsAttributeIds::const_iterator deletedIt = mDeletedAttributeIds.constBegin();
+  for ( ; deletedIt != mDeletedAttributeIds.constEnd(); ++deletedIt )
+  {
+    mUpdatedFields.remove( *deletedIt );
+  }
+}
+
+void QgsVectorLayer::createJoinCaches()
+{
+  if ( mJoinBuffer->containsJoins() )
+  {
+    mJoinBuffer->createJoinCaches();
+  }
+}
+
 void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )
 {
   mRendererV2->stopRender( rendererContext );
@@ -4736,4 +4941,28 @@ void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingl
     selRenderer->stopRender( rendererContext );
     delete selRenderer;
   }
+}
+
+bool QgsVectorLayer::maxIndex( const QgsFieldMap& fMap, int& index ) const
+{
+  if ( fMap.size() < 1 )
+  {
+    return false;
+  }
+  QgsFieldMap::const_iterator endIt = fMap.constEnd();
+  --endIt;
+  index = endIt.key();
+  return true;
+}
+
+void QgsVectorLayer::updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const
+{
+  QgsAttributeMap::const_iterator it = map.find( oldIndex );
+  if ( it == map.constEnd() )
+  {
+    return;
+  }
+
+  map.insert( newIndex, it.value() );
+  map.remove( oldIndex );
 }
