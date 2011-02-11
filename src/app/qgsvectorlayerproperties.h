@@ -117,6 +117,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void useNewSymbology();
     void setUsingNewSymbology( bool useNewSymbology );
 
+    void on_mButtonAddJoin_clicked();
+    void on_mButtonRemoveJoin_clicked();
+
   signals:
 
     /** emitted when changes to layer were saved to update legend */
@@ -170,6 +173,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
     //QPixmap bufferPixmap;
+
+    /**Adds a new join to mJoinTreeWidget*/
+    void addJoinToTreeWidget( const QgsVectorJoinInfo& join );
 
     static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
     static void setupEditTypes();

@@ -30,6 +30,7 @@
 #include "qgssnapper.h"
 #include "qgsfield.h"
 
+
 class QPainter;
 class QImage;
 
@@ -45,8 +46,8 @@ class QgsUndoCommand;
 class QgsVectorDataProvider;
 class QgsVectorOverlay;
 class QgsSingleSymbolRendererV2;
-
 class QgsRectangle;
+class QgsVectorLayerJoinBuffer;
 
 class QgsFeatureRendererV2;
 
@@ -54,6 +55,28 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
+struct CORE_EXPORT QgsVectorJoinInfo
+{
+  /**Join field in the target layer*/
+  int targetField;
+  /**Source layer*/
+  QString joinLayerId;
+  /**Join field in the source layer*/
+  int joinField;
+  /**True if the join is cached in virtual memory*/
+  bool memoryCache;
+  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)*/
+  QHash< QString, QgsAttributeMap> cachedAttributes;
+};
+
+/**Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
+  Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes*/
+struct CORE_EXPORT QgsFetchJoinInfo
+{
+  const QgsVectorJoinInfo* joinInfo;
+  QgsAttributeList attributes; //attributes to fetch
+  int indexOffset; //index offset between this layer and join layer
+};
 
 /** \ingroup core
  * Vector layer backed by a data source provider.
@@ -126,6 +149,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Setup the coordinate system tranformation for the layer */
     void setCoordinateSystem();
+
+    /**Joins another vector layer to this layer
+      @param joinInfo join object containing join layer id, target and source field
+      @param cacheInMemory if true: caches the content of the join layer in virtual memory*/
+    void addJoin( QgsVectorJoinInfo joinInfo );
+
+    /**Removes  a vector layer join*/
+    void removeJoin( const QString& joinLayerId );
+
+    const QList< QgsVectorJoinInfo >& vectorJoins() const;
 
     /** Get the label object associated with this layer */
     QgsLabel *label();
@@ -594,6 +627,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
+    /**Assembles mUpdatedFields considering provider fields, joined fields and added fields
+     @note added in version 1.6*/
+    void updateFieldMap();
+
+    /**Caches joined attributes if required (and not already done)*/
+    void createJoinCaches();
+
+
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = true );
@@ -610,6 +651,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  added/deleted or the layer has been subsetted.
      */
     virtual void updateExtents();
+
+    /**Check if there is a join with a layer that will be removed*/
+    void checkJoinLayerRemove( QString theLayerId );
 
   signals:
 
@@ -701,8 +745,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Reads vertex marker size from settings*/
     static int currentVertexMarkerSize();
 
-    /**Update feature with uncommited attribute updates*/
+    /**Update feature with uncommited attribute updates and joined attributes*/
     void updateFeatureAttributes( QgsFeature &f, bool all = false );
+
+    /**Adds joined attributes to a feature
+      @param f the feature to add the attributes
+      @param joinInfo vector join
+      @param joinFieldName name of the (source) join Field
+      @param joinValue lookup value for join
+      @param attributes (join layer) attribute indices to add
+      @param attributeOffset index offset to get from join layer attribute index to layer index*/
+    void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
+                                     const QgsAttributeList& attributes, int attributeIndexOffset );
 
     /**Update feature with uncommited geometry updates*/
     void updateFeatureGeometry( QgsFeature &f );
@@ -721,6 +775,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Stop version 2 renderer and selected renderer (if required) */
     void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
+
+    /** Helper function to find out the maximum index of a field map
+        @return true in case of success, otherwise false (e.g. empty map)*/
+    bool maxIndex( const QgsFieldMap& fMap, int& index ) const;
+
+    /**Updates an index in an attribute map to a new value (usually necessary because of a join operation)*/
+    void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
 
   private:                       // Private attributes
 
@@ -846,6 +907,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QSet<int> mFetchConsidered;
     QgsGeometryMap::iterator mFetchChangedGeomIt;
     QgsFeatureList::iterator mFetchAddedFeaturesIt;
+
+    //stores information about joined layers
+    QgsVectorLayerJoinBuffer* mJoinBuffer;
 };
 
 #endif

@@ -2793,7 +2793,7 @@ int QgsPostgresProvider::capabilities() const
   return enabledCapabilities;
 }
 
-bool QgsPostgresProvider::setSubsetString( QString theSQL )
+bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
 {
   QString prevWhere = sqlWhereClause;
 
@@ -2828,7 +2828,10 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
   // uri? Perhaps this needs some rationalisation.....
   setDataSourceUri( mUri.uri() );
 
-  featuresCounted = -1;
+  if ( updateFeatureCount )
+  {
+    featuresCounted = -1;
+  }
   layerExtent.setMinimal();
 
   return true;
