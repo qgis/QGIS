@@ -19,9 +19,6 @@
 #include <QApplication>
 #include <ogr_api.h>
 #include <cpl_conv.h>
-#include <string>
-#include <fstream>
-#include <cstdio>
 
 #include <QFile>
 #include <QProgressDialog>
@@ -31,7 +28,6 @@
 #include <QFileInfo>
 
 #include "qgsapplication.h"
-#include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
 #include "qgis.h"
@@ -39,13 +35,6 @@
 
 #include "qgspgutil.h"
 #include "qgslogger.h"
-
-// for htonl
-#ifdef WIN32
-#include <winsock.h>
-#else
-#include <netinet/in.h>
-#endif
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
@@ -187,58 +176,35 @@ QString QgsShapeFile::getFeatureClass()
       QgsDebugMsg( "After escaping, geom_type is : " + geom_type );
       delete[] esc_str;
 
-      QString file( fileName );
-      file.replace( file.length() - 3, 3, "dbf" );
-      // open the dbf file
-      std::ifstream dbf( file.toUtf8(), std::ios::in | std::ios::binary );
-      // read header
-      DbaseHeader dbh;
-      dbf.read(( char * )&dbh, sizeof( dbh ) );
-      // Check byte order
-      if ( htonl( 1 ) == 1 )
+      int numFields = OGR_F_GetFieldCount( feat );
+      for ( int n = 0; n < numFields; n++ )
       {
-        /* DbaseHeader is stored in little-endian format.
-         * The num_recs, size_hdr and size_rec fields must be byte-swapped when read
-         * on a big-endian processor. Currently only size_hdr is used.
-         */
-        unsigned char *byte = reinterpret_cast<unsigned char *>( &dbh.size_hdr );
-        unsigned char t = *byte; *byte = *( byte + 1 ); *( byte + 1 ) = t;
-      }
-
-      Fda fda;
-      QString str_type = "varchar(";
-      for ( int field_count = 0, bytes_read = sizeof( dbh ); bytes_read < dbh.size_hdr - 1; field_count++, bytes_read += sizeof( fda ) )
-      {
-        dbf.read(( char * )&fda, sizeof( fda ) );
-        switch ( fda.field_type )
+        OGRFieldDefnH fld = OGR_F_GetFieldDefnRef( feat, n );
+        column_names.push_back( codec->toUnicode( OGR_Fld_GetNameRef( fld ) ) );
+        switch ( OGR_Fld_GetType( fld ) )
         {
-          case 'N':
-            if (( int )fda.field_decimal > 0 )
-              column_types.push_back( "float" );
-            else
-              column_types.push_back( "int" );
+          case OFTInteger:
+            column_types.push_back( "int" );
             break;
-          case 'F': column_types.push_back( "float" );
+          case OFTReal:
+            column_types.push_back( "float" );
             break;
-          case 'D': column_types.push_back( "date" );
+          case OFTString:
+            column_types.push_back( QString( "varchar(%1)" ).arg( OGR_Fld_GetWidth( fld ) ) );
             break;
-          case 'C':
-            str_type = QString( "varchar(%1)" ).arg( fda.field_length );
-            column_types.push_back( str_type );
+          case OFTDate:
+            column_types.push_back( "date" );
             break;
-          case 'L': column_types.push_back( "boolean" );
+          case OFTTime:
+            column_types.push_back( "time" );
+            break;
+          case OFTDateTime:
+            column_types.push_back( "timestamp" );
             break;
           default:
             column_types.push_back( "varchar(256)" );
             break;
         }
-      }
-      dbf.close();
-      int numFields = OGR_F_GetFieldCount( feat );
-      for ( int n = 0; n < numFields; n++ )
-      {
-        QString s = codec->toUnicode( OGR_Fld_GetNameRef( OGR_F_GetFieldDefnRef( feat, n ) ) );
-        column_names.push_back( s );
       }
 
     }
