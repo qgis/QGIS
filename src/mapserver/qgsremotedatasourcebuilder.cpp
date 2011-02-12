@@ -155,7 +155,7 @@ int QgsRemoteDataSourceBuilder::loadData( const QString& url, QByteArray& data )
     QgsHttpTransaction http( url );
     if ( !http.getSynchronously( data ) )
     {
-      QgsMSDebugMsg( "Error, loading from http failed" )
+      QgsMSDebugMsg( "Error, loading from http failed" );
       return 1; //no success
     }
   }

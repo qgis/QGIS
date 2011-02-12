@@ -44,7 +44,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem, const
 
   if ( providerType == "not found" || uri == "not found" )
   {
-    QgsMSDebugMsg( "error, provider type not found" )
+    QgsMSDebugMsg( "error, provider type not found" );
     return 0;
   }
 
@@ -58,12 +58,12 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem, const
 
   if ( !ml )
   {
-    QgsMSDebugMsg( "hostedvds layer not in cash, so create and insert it" )
+    QgsMSDebugMsg( "hostedvds layer not in cash, so create and insert it" );
     ml = new QgsVectorLayer( uri, layerNameFromUri( uri ), providerType );
 
     if ( !ml || !ml->isValid() )
     {
-      QgsMSDebugMsg( "error, VectorLayer is 0 or invalid" )
+      QgsMSDebugMsg( "error, VectorLayer is 0 or invalid" );
       delete ml;
       return 0;
     }

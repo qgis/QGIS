@@ -68,9 +68,9 @@ void QgsMapServerLogger::printChar( QChar c )
 void QgsMapServerLogger::printMessage( const char *file, const char *function, int line, const QString& message )
 {
 #if defined(_MSC_VER)
-  printMessage( QString( "%1(%2): (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( line ).arg( message ) );
+  printMessage( QString( "%1(%2): (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( message ) );
 #else
-  printMessage( QString( "%1: %2: (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( line ).arg( message ) );
+  printMessage( QString( "%1: %2: (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( message ) );
 #endif
 }
 #endif

@@ -68,7 +68,7 @@ QgsWMSServer::QgsWMSServer()
 
 QDomDocument QgsWMSServer::getCapabilities()
 {
-  QgsMSDebugMsg( "Entering." )
+  QgsMSDebugMsg( "Entering." );
   QDomDocument doc;
   //wms:WMS_Capabilities element
   QDomElement wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
@@ -203,12 +203,12 @@ QDomDocument QgsWMSServer::getCapabilities()
   }
 
   //add the xml content for the individual layers/styles
-  QgsMSDebugMsg( "calling layersAndStylesCapabilities" )
+  QgsMSDebugMsg( "calling layersAndStylesCapabilities" );
   if ( mConfigParser )
   {
     mConfigParser->layersAndStylesCapabilities( capabilityElement, doc );
   }
-  QgsMSDebugMsg( "layersAndStylesCapabilities returned" )
+  QgsMSDebugMsg( "layersAndStylesCapabilities returned" );
 
   //for debugging: save the document to disk
   /*QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
@@ -231,7 +231,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsMSDebugMsg( "error reading layers and styles" )
+    QgsMSDebugMsg( "error reading layers and styles" );
     return 0;
   }
 
@@ -620,7 +620,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
     {
       continue;
     }
-    QgsMSDebugMsg( "Info point in layer crs: " + QString::number( infoPoint.x() ) + "//" + QString::number( infoPoint.y() ) )
+    QgsMSDebugMsg( "Info point in layer crs: " + QString::number( infoPoint.x() ) + "//" + QString::number( infoPoint.y() ) );
 
     QDomElement layerElement = result.createElement( "Layer" );
     layerElement.setAttribute( "name", currentLayer->name() );
@@ -674,19 +674,19 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 {
   if ( !mConfigParser )
   {
-    QgsMSDebugMsg( "Error: mSLDParser is 0" )
+    QgsMSDebugMsg( "Error: mSLDParser is 0" );
     return 0;
   }
 
   if ( !mMapRenderer )
   {
-    QgsMSDebugMsg( "Error: mMapRenderer is 0" )
+    QgsMSDebugMsg( "Error: mMapRenderer is 0" );
     return 0;
   }
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsMSDebugMsg( "error reading layers and styles" )
+    QgsMSDebugMsg( "error reading layers and styles" );
     return 0;
   }
 
@@ -703,12 +703,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
     if ( gmlDoc->setContent( gmlIt->second, true ) )
     {
       QString layerName = gmlDoc->documentElement().attribute( "layerName" );
-      QgsMSDebugMsg( "Adding entry with key: " + layerName + " to external GML data" )
+      QgsMSDebugMsg( "Adding entry with key: " + layerName + " to external GML data" );
       mConfigParser->addExternalGMLData( layerName, gmlDoc );
     }
     else
     {
-      QgsMSDebugMsg( "Error, could not add external GML to QgsSLDParser" )
+      QgsMSDebugMsg( "Error, could not add external GML to QgsSLDParser" );
       delete gmlDoc;
     }
   }
@@ -894,7 +894,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   else
   {
     //enable on the fly projection
-    QgsMSDebugMsg( "enable on the fly projection" )
+    QgsMSDebugMsg( "enable on the fly projection" );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
     QString crsString = crsIt->second;
@@ -912,7 +912,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     outputCRS = QgsEPSGCache::instance()->searchCRS( epsgId );
     if ( !outputCRS.isValid() )
     {
-      QgsMSDebugMsg( "Error, could not create output CRS from EPSG" )
+      QgsMSDebugMsg( "Error, could not create output CRS from EPSG" );
       throw QgsMapServiceException( "InvalidCRS", "Could not create output CRS" );
       return 5;
     }
@@ -1002,7 +1002,7 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
     QStringList stylesSTDList;
     if ( mConfigParser->layersAndStyles( layersSTDList, stylesSTDList ) != 0 )
     {
-      QgsMSDebugMsg( "Error, no layers and styles found in SLD" )
+      QgsMSDebugMsg( "Error, no layers and styles found in SLD" );
       return 0;
     }
     QStringList::const_iterator layersIt;
@@ -1156,7 +1156,7 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
     {
       styleName = *slstIt;
     }
-    QgsMSDebugMsg( "Trying to get layer " + *llstIt + "//" + styleName )
+    QgsMSDebugMsg( "Trying to get layer " + *llstIt + "//" + styleName );
 
     //does the layer name appear several times in the layer list?
     //if yes, layer caching must be disabled because several named layers could have
