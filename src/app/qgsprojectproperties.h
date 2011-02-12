@@ -85,6 +85,14 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnCanvasColor_clicked();
 
     /*!
+     * Slots for WMS project settings
+     */
+    void on_pbnWMSExtCanvas_clicked();
+    void on_pbnWMSAddSRS_clicked();
+    void on_pbnWMSRemoveSRS_clicked();
+    void on_pbnWMSSetUsedSRS_clicked();
+
+    /*!
      * Slot to show the context help for this dialog
      */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

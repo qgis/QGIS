@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
-    <height>538</height>
+    <width>678</width>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,16 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -353,16 +363,245 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>WMS</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="2">
+        <widget class="QGroupBox" name="grpWMSServiceCapabilities">
+         <property name="title">
+          <string>Service Capabilitities</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Title</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSTitle</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="mWMSTitle"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Person</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSContactPerson</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="mWMSContactPerson"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Phone</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSContactPhone</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QLineEdit" name="mWMSContactPhone"/>
+          </item>
+          <item row="7" column="2">
+           <widget class="QTextEdit" name="mWMSAbstract"/>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Abstract</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSAbstract</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>E-Mail</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLineEdit" name="mWMSContactMail"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Organization</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSContactOrganization</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="mWMSContactOrganization"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="grpWMSExt">
+         <property name="title">
+          <string>Advertised Extent</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Min. X</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSExtMinX</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mWMSExtMinX">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Min. Y</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSExtMinY</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mWMSExtMinY">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Max. X</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSExtMaxX</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mWMSExtMaxX">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Max. Y</string>
+            </property>
+            <property name="buddy">
+             <cstring>mWMSExtMaxY</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mWMSExtMaxY">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QPushButton" name="pbnWMSExtCanvas">
+            <property name="text">
+             <string>Use Current Canvas Extent</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QGroupBox" name="grpWMSList">
+         <property name="title">
+          <string>Coordinate Systems Restrictions</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0" colspan="3">
+           <widget class="QListWidget" name="mWMSList"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="pbnWMSAddSRS">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pbnWMSRemoveSRS">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+            <property name="text">
+             <string>Used</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -397,6 +636,24 @@
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>grpWMSServiceCapabilities</tabstop>
+  <tabstop>mWMSTitle</tabstop>
+  <tabstop>mWMSContactOrganization</tabstop>
+  <tabstop>mWMSContactPerson</tabstop>
+  <tabstop>mWMSContactMail</tabstop>
+  <tabstop>mWMSContactPhone</tabstop>
+  <tabstop>mWMSAbstract</tabstop>
+  <tabstop>grpWMSExt</tabstop>
+  <tabstop>mWMSExtMinX</tabstop>
+  <tabstop>mWMSExtMinY</tabstop>
+  <tabstop>mWMSExtMaxX</tabstop>
+  <tabstop>mWMSExtMaxY</tabstop>
+  <tabstop>pbnWMSExtCanvas</tabstop>
+  <tabstop>grpWMSList</tabstop>
+  <tabstop>mWMSList</tabstop>
+  <tabstop>pbnWMSAddSRS</tabstop>
+  <tabstop>pbnWMSSetUsedSRS</tabstop>
+  <tabstop>pbnWMSRemoveSRS</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
