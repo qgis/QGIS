@@ -281,18 +281,15 @@ QgsPropertyKey::~QgsPropertyKey()
 
 QVariant QgsPropertyKey::value() const
 {
-  QgsProperty * foundQgsProperty;
+  QgsProperty *foundQgsProperty = mProperties.value( name() );
 
-  if ( 0 == ( foundQgsProperty = mProperties.value( name() ) ) )
-  {                        // recurse down to next key
-    return foundQgsProperty->value();
-  }
-  else
+  if ( !foundQgsProperty )
   {
     QgsDebugMsg( "key has null child" );
-
     return QVariant();     // just return an QVariant::Invalid
   }
+
+  return foundQgsProperty->value();
 } // QVariant QgsPropertyKey::value()
 
 
