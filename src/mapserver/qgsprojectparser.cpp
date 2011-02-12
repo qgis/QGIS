@@ -194,6 +194,13 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     else if ( currentChildElem.tagName() == "legendlayer" )
     {
       QString id = layerIdFromLegendLayer( currentChildElem );
+
+      if ( !layerMap.contains( id ) )
+      {
+        QgsMSDebugMsg( QString( "layer %1 not found in map - layer cache to small?" ).arg( id ) );
+        continue;
+      }
+
       QgsMapLayer *currentLayer = layerMap[ id ];
       if ( !currentLayer )
       {
@@ -257,8 +264,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       continue;
     }
 
-
-#if QGSMSDEBUG
+#if 0
     QString buf;
     QTextStream s( &buf );
     layerElem.save( s, 0 );
