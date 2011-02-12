@@ -547,7 +547,7 @@ int QgsSLDRule::brushFromSvgParameters( const QDomElement& fillElement, QBrush& 
 
 int QgsSLDRule::brushFromSvgPattern( const QDomElement& svgPatternElement, QBrush& brush ) const
 {
-  QgsMSDebugMsg( "Entering QgsSLDRule::brushFromSvgPattern" )
+  QgsMSDebugMsg( "Entering QgsSLDRule::brushFromSvgPattern" );
 
   if ( svgPatternElement.isNull() )
   {
@@ -579,7 +579,7 @@ int QgsSLDRule::brushFromSvgPattern( const QDomElement& svgPatternElement, QBrus
   svgElem.appendChild( svgDocument.importNode( svgGroupElem, true ) );
 
   //debug
-  QgsMSDebugMsg( svgDocument.toString() )
+  QgsMSDebugMsg( svgDocument.toString() );
 
   if ( !renderer.load( svgDocument.toByteArray() ) )
   {

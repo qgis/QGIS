@@ -22,7 +22,7 @@
 #include <QTextStream>
 
 #ifdef QGSMSDEBUG
-#define QgsMSDebugMsg(str) QgsMapServerLogger::instance()->printMessage(__FILE__, __FUNCTION__, __LINE__, str);
+#define QgsMSDebugMsg(str) QgsMapServerLogger::instance()->printMessage(__FILE__, __FUNCTION__, __LINE__, str)
 #else
 #define QgsMSDebugMsg(str)
 #endif

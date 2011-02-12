@@ -38,12 +38,12 @@ QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
   QMap<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
   if ( configIt == mCachedConfigurations.constEnd() )
   {
-    QgsMSDebugMsg( "Create new configuration" )
+    QgsMSDebugMsg( "Create new configuration" );
     return insertConfiguration( filePath );
   }
   else
   {
-    QgsMSDebugMsg( "Return configuration from cash" )
+    QgsMSDebugMsg( "Return configuration from cache" );
     return configIt.value();
   }
 }
