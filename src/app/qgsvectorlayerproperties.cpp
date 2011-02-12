@@ -1200,7 +1200,11 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
       }
 
       layer->addJoin( info );
+
+      //prevent complete redraw for each row
+      QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
       loadRows(); //update attribute tab
+      QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
       addJoinToTreeWidget( info );
     }
   }
@@ -1237,7 +1241,11 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
   }
 
   layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
+
+  //prevent complete redraw for each row
+  QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
   loadRows();
+  QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
 }
 
