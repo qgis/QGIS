@@ -41,7 +41,31 @@ map service syntax for SOAP/HTTP POST
 
 void dummyMessageHandler( QtMsgType type, const char *msg )
 {
-  //be quiet
+#ifdef QGSMSDEBUG
+  QString output;
+
+  switch ( type )
+  {
+    case QtDebugMsg:
+      output += "Debug: ";
+      break;
+    case QtCriticalMsg:
+      output += "Critical: ";
+      break;
+    case QtWarningMsg:
+      output += "Warning: ";
+      break;
+    case QtFatalMsg:
+      output += "Fatal: ";
+  }
+
+  output += msg;
+
+  QgsMapServerLogger::instance()->printMessage( output );
+
+  if ( type == QtFatalMsg )
+    abort();
+#endif
 }
 
 void printRequestInfos()
