@@ -31,11 +31,13 @@
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsgenericprojectionselector.h"
+#include "qgslogger.h"
 
 //qt includes
 #include <QColorDialog>
 #include <QHeaderView>  // Qt 4.4
-#include "qgslogger.h"
+#include <QMessageBox>
 
 //stdc++ includes
 
@@ -54,16 +56,16 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
 
-  QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
-  QGis::UnitType myUnit = myRender->mapUnits();
+  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+  QGis::UnitType myUnit = myRenderer->mapUnits();
   setMapUnits( myUnit );
 
   //see if the user wants on the fly projection enabled
-  bool myProjectionEnabled = myRender->hasCrsTransformEnabled();
+  bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
   btnGrpMapUnits->setEnabled( !myProjectionEnabled );
 
-  long myCRSID = myRender->destinationSrs().srsid();
+  long myCRSID = myRenderer->destinationSrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( myCRSID ) );
   projectionSelector->setSelectedCrsId( myCRSID );
 
@@ -161,6 +163,39 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     twIdentifyLayers->setCellWidget( i, 2, cb );
   }
 
+  grpWMSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( "WMSServiceCapabilities", "/", false ) );
+  mWMSTitle->setText( QgsProject::instance()->readEntry( "WMSServiceTitle", "/" ) );
+  mWMSContactOrganization->setText( QgsProject::instance()->readEntry( "WMSContactOrganization", "/", "" ) );
+  mWMSContactPerson->setText( QgsProject::instance()->readEntry( "WMSContactPerson", "/", "" ) );
+  mWMSContactMail->setText( QgsProject::instance()->readEntry( "WMSContactMail", "/", "" ) );
+  mWMSContactPhone->setText( QgsProject::instance()->readEntry( "WMSContactPhone", "/", "" ) );
+  mWMSAbstract->setPlainText( QgsProject::instance()->readEntry( "WMSServiceAbstract", "/", "" ) );
+
+  bool ok;
+  QStringList values;
+
+  mWMSExtMinX->setValidator( new QDoubleValidator( mWMSExtMinX ) );
+  mWMSExtMinY->setValidator( new QDoubleValidator( mWMSExtMinY ) );
+  mWMSExtMaxX->setValidator( new QDoubleValidator( mWMSExtMaxX ) );
+  mWMSExtMaxY->setValidator( new QDoubleValidator( mWMSExtMaxY ) );
+
+  values = QgsProject::instance()->readListEntry( "WMSExtent", "/", &ok );
+  grpWMSExt->setChecked( ok && values.size() == 4 );
+  if ( grpWMSExt->isChecked() )
+  {
+    mWMSExtMinX->setText( values[0] );
+    mWMSExtMinY->setText( values[1] );
+    mWMSExtMaxX->setText( values[2] );
+    mWMSExtMaxY->setText( values[3] );
+  }
+
+  values = QgsProject::instance()->readListEntry( "WMSEpsgList", "/", &ok );
+  grpWMSList->setChecked( ok && values.size() > 0 );
+  if ( grpWMSList->isChecked() )
+  {
+    mWMSList->addItems( values );
+  }
+
   restoreState();
 }
 
@@ -243,11 +278,9 @@ void QgsProjectProperties::apply()
     mapUnit = QGis::Degrees;
   }
 
-  QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
-
-  myRender->setMapUnits( mapUnit );
-
-  myRender->setProjectionsEnabled( cbxProjectionEnabled->isChecked() );
+  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+  myRenderer->setMapUnits( mapUnit );
+  myRenderer->setProjectionsEnabled( cbxProjectionEnabled->isChecked() );
 
   // Only change the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
@@ -257,7 +290,7 @@ void QgsProjectProperties::apply()
   if ( myCRSID )
   {
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-    myRender->setDestinationSrs( srs );
+    myRenderer->setDestinationSrs( srs );
     QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
@@ -269,7 +302,7 @@ void QgsProjectProperties::apply()
       // If we couldn't get the map units, default to the value in the
       // projectproperties dialog box (set above)
       if ( srs.mapUnits() != QGis::UnknownUnit )
-        myRender->setMapUnits( srs.mapUnits() );
+        myRenderer->setMapUnits( srs.mapUnits() );
     }
   }
 
@@ -313,6 +346,49 @@ void QgsProjectProperties::apply()
   }
 
   QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", noIdentifyLayerList );
+
+  QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpWMSServiceCapabilities->isChecked() );
+  QgsProject::instance()->writeEntry( "WMSServiceTitle", "/", mWMSTitle->text() );
+  QgsProject::instance()->writeEntry( "WMSContactOrganization", "/", mWMSContactOrganization->text() );
+  QgsProject::instance()->writeEntry( "WMSContactPerson", "/", mWMSContactPerson->text() );
+  QgsProject::instance()->writeEntry( "WMSContactMail", "/", mWMSContactMail->text() );
+  QgsProject::instance()->writeEntry( "WMSContactPhone", "/", mWMSContactPhone->text() );
+  QgsProject::instance()->writeEntry( "WMSServiceAbstract", "/", mWMSAbstract->toPlainText() );
+
+  if ( grpWMSExt->isChecked() )
+  {
+    QgsProject::instance()->writeEntry( "WMSExtent", "/",
+                                        QStringList()
+                                        << mWMSExtMinX->text()
+                                        << mWMSExtMinY->text()
+                                        << mWMSExtMaxX->text()
+                                        << mWMSExtMaxY->text() );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSExtent", "/" );
+  }
+
+  if ( grpWMSList->isChecked() && mWMSList->count() == 0 )
+  {
+    QMessageBox::information( this, tr( "Coordinate System Restriction" ), tr( "No coordinate systems selected. Disabling restriction." ) );
+    grpWMSList->setChecked( false );
+  }
+
+  if ( grpWMSList->isChecked() )
+  {
+    QStringList crslist;
+    for ( int i = 0; i < mWMSList->count(); i++ )
+    {
+      crslist << mWMSList->item( i )->text();
+    }
+
+    QgsProject::instance()->writeEntry( "WMSEpsgList", "/", crslist );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSEpsgList", "/" );
+  }
 
   //todo XXX set canvas color
   emit refresh();
@@ -402,4 +478,82 @@ void QgsProjectProperties::restoreState()
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ProjectProperties/geometry" ).toByteArray() );
   tabWidget->setCurrentIndex( settings.value( "/Windows/ProjectProperties/tab" ).toInt() );
+}
+
+/*!
+ * Set WMS default extent to current canvas extent
+ */
+void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
+{
+  QgsRectangle ext = mMapCanvas->extent();
+  mWMSExtMinX->setText( QString::number( ext.xMinimum() ) );
+  mWMSExtMinY->setText( QString::number( ext.yMinimum() ) );
+  mWMSExtMaxX->setText( QString::number( ext.xMaximum() ) );
+  mWMSExtMaxY->setText( QString::number( ext.yMaximum() ) );
+}
+
+void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
+{
+  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setMessage();
+  if ( mySelector->exec() )
+  {
+    long crs = mySelector->selectedEpsg();
+
+    if ( crs > 0 )
+    {
+      QList<QListWidgetItem *> items = mWMSList->findItems( QString::number( crs ), Qt::MatchFixedString );
+      if ( items.size() == 0 )
+      {
+        mWMSList->addItem( QString::number( crs ) );
+      }
+      else
+      {
+        QMessageBox::information( this, tr( "Coordinate System Restriction" ), tr( "CRS %1 was already selected" ).arg( crs ) );
+      }
+    }
+    else
+    {
+      QMessageBox::information( this, tr( "Coordinate System Restriction" ), tr( "Selected CRS is not a EPSG coordinate system." ) );
+    }
+  }
+
+  delete mySelector;
+}
+
+void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
+{
+  foreach( QListWidgetItem *item, mWMSList->selectedItems() )
+  delete item;
+}
+
+void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
+{
+  if ( mWMSList->count() > 1 )
+  {
+    if ( QMessageBox::question( this,
+                                tr( "Coordinate System Restrictions" ),
+                                tr( "The current selection of coordinate systems will be lost.\nProceed?" ) ) == QMessageBox::No )
+      return;
+  }
+
+  QSet<QString> crsList;
+
+  if ( cbxProjectionEnabled->isChecked() )
+  {
+    QgsCoordinateReferenceSystem srs( projectionSelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+    if ( srs.epsg() > 0 )
+      crsList << QString::number( srs.epsg() );
+  }
+
+  const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); it++ )
+  {
+    long crs = it.value()->crs().epsg();
+    if ( crs > 0 )
+      crsList << QString::number( crs );
+  }
+
+  mWMSList->clear();
+  mWMSList->addItems( crsList.values() );
 }
