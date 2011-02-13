@@ -776,10 +776,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Stop version 2 renderer and selected renderer (if required) */
     void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
 
-    /** Helper function to find out the maximum index of a field map
-        @return true in case of success, otherwise false (e.g. empty map)*/
-    bool maxIndex( const QgsFieldMap& fMap, int& index ) const;
-
     /**Updates an index in an attribute map to a new value (usually necessary because of a join operation)*/
     void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
 
