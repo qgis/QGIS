@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mJoinLayerLabel">
      <property name="text">
-      <string>Join layer: </string>
+      <string>Join layer</string>
      </property>
     </widget>
    </item>
@@ -27,7 +27,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mJoinFieldLabel">
      <property name="text">
-      <string>Join field:</string>
+      <string>Join field</string>
      </property>
     </widget>
    </item>
@@ -37,7 +37,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mTargetFieldLabel">
      <property name="text">
-      <string>Target field:</string>
+      <string>Target field</string>
      </property>
     </widget>
    </item>
