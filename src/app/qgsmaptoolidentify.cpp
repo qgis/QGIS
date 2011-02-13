@@ -120,7 +120,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
       emit identifyProgress( i, mCanvas->layerCount() );
       emit identifyMessage( tr( "Identifying on %1..." ).arg( layer->name() ) );
 
-      if ( noIdentifyLayerIdList.contains( layer->getLayerID() ) )
+      if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
 
       if ( identifyLayer( layer, e->x(), e->y() ) )

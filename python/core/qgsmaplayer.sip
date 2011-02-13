@@ -57,7 +57,14 @@ public:
      */
     QgsMapLayer::LayerType type() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
+     * @note added in 1.7
+     */
+    QString id() const;
+
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
+     * @deprecated in 1.7
+     */
     QString getLayerID() const;
 
     /** Set the display name of the layer
@@ -215,7 +222,7 @@ public:
 
     /** Returns layer's spatial reference system
     @note This method is here for API compatibility
-    and will be deprecited in 2.0
+    and will be deprecated in 2.0
     @see crs()
     */
     const QgsCoordinateReferenceSystem& srs();

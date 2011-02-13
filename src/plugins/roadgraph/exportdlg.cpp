@@ -59,7 +59,7 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WFlags fl )
       continue;
     if ( vl->geometryType() != QGis::Line )
       continue;
-    mcbLayers->insertItem( 0, vl->name(), QVariant( vl->getLayerID() ) );
+    mcbLayers->insertItem( 0, vl->name(), QVariant( vl->id() ) );
   }
 
 } // RgSettingsDlg::RgSettingsDlg()

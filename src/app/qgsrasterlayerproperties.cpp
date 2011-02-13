@@ -1393,7 +1393,7 @@ void QgsRasterLayerProperties::apply()
   pixmapThumbnail->setPixmap( myQPixmap );
 
   // update symbology
-  emit refreshLegend( mRasterLayer->getLayerID(), false );
+  emit refreshLegend( mRasterLayer->id(), false );
 
   //no need to delete the old one, maplayer will do it if needed
   mRasterLayer->setCacheImage( 0 );

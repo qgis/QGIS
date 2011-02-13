@@ -95,7 +95,7 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
 }
 
 /** Get this layer's unique ID */
-QString QgsMapLayer::getLayerID() const
+QString QgsMapLayer::id() const
 {
   return mID;
 }
@@ -282,11 +282,11 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   maplayer.setAttribute( "maximumScale", maximumScale() );
 
   // ID
-  QDomElement id = document.createElement( "id" );
-  QDomText idText = document.createTextNode( getLayerID() );
-  id.appendChild( idText );
+  QDomElement layerId = document.createElement( "id" );
+  QDomText layerIdText = document.createTextNode( id() );
+  layerId.appendChild( layerIdText );
 
-  maplayer.appendChild( id );
+  maplayer.appendChild( layerId );
 
   // data source
   QDomElement dataSource = document.createElement( "datasource" );

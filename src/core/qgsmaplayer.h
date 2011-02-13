@@ -67,8 +67,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayer::LayerType type() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
-    QString getLayerID() const;
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
+     * @note added in 1.7
+     **/
+    QString id() const;
+
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
+     * @deprecated use id()
+     **/
+    QString getLayerID() const { return id(); }
 
     /** Set the display name of the layer
      * @param name New name for the layer

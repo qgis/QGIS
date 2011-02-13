@@ -64,7 +64,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
     QgsMapLayer *layer = createLayerFromElement( *layerIt );
     if ( layer )
     {
-      QgsMSDebugMsg( QString( "add layer %1 to map" ).arg( layer->getLayerID() ) );
+      QgsMSDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
       layerMap.insert( layer->getLayerID(), layer );
     }
 #if QGSMSDEBUG

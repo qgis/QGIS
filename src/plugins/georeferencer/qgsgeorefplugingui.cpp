@@ -147,7 +147,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), false );
+    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->id(), false );
   }
 
   delete mToolZoomIn;

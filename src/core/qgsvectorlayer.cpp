@@ -3396,7 +3396,7 @@ bool QgsVectorLayer::commitChanges()
     {
       mCommitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
 
-      emit committedAttributesDeleted( getLayerID(), mDeletedAttributeIds );
+      emit committedAttributesDeleted( id(), mDeletedAttributeIds );
 
       mDeletedAttributeIds.clear();
       attributesChanged = true;
@@ -3424,7 +3424,7 @@ bool QgsVectorLayer::commitChanges()
     {
       mCommitErrors << tr( "SUCCESS: %n attribute(s) added.", "added attributes count", mAddedAttributeIds.size() );
 
-      emit committedAttributesAdded( getLayerID(), addedAttributes );
+      emit committedAttributesAdded( id(), addedAttributes );
 
       mAddedAttributeIds.clear();
       attributesChanged = true;
@@ -3543,7 +3543,7 @@ bool QgsVectorLayer::commitChanges()
       {
         mCommitErrors << tr( "SUCCESS: %n attribute value(s) changed.", "changed attribute values count", mChangedAttributeValues.size() );
 
-        emit committedAttributeValuesChanges( getLayerID(), mChangedAttributeValues );
+        emit committedAttributeValuesChanges( id(), mChangedAttributeValues );
 
         mChangedAttributeValues.clear();
       }
@@ -3584,7 +3584,7 @@ bool QgsVectorLayer::commitChanges()
       {
         mCommitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
 
-        emit committedFeaturesAdded( getLayerID(), mAddedFeatures );
+        emit committedFeaturesAdded( id(), mAddedFeatures );
 
         mAddedFeatures.clear();
       }
@@ -3605,7 +3605,7 @@ bool QgsVectorLayer::commitChanges()
     {
       mCommitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
 
-      emit committedGeometriesChanges( getLayerID(), mChangedGeometries );
+      emit committedGeometriesChanges( id(), mChangedGeometries );
 
       mChangedGeometries.clear();
     }
@@ -3630,7 +3630,7 @@ bool QgsVectorLayer::commitChanges()
         mChangedGeometries.remove( *it );
       }
 
-      emit committedFeaturesRemoved( getLayerID(), mDeletedFeatureIds );
+      emit committedFeaturesRemoved( id(), mDeletedFeatureIds );
 
       mDeletedFeatureIds.clear();
     }

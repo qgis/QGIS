@@ -132,41 +132,41 @@ QStringList QgsDelimitedTextProvider::splitLine( QString line )
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri )
-    , mHasWktField( false )
-    , mFieldCount( 0 )
-    , mXFieldIndex( -1 ) 
-    , mYFieldIndex( -1 )
-    , mWktFieldIndex( -1 )
-    , mDelimiterType( "plain" )
     , mDelimiter( "," )
     , mDelimiterRegexp()
+    , mDelimiterType( "plain" )
+    , mHasWktField( false )
+    , mFieldCount( 0 )
+    , mXFieldIndex( -1 )
+    , mYFieldIndex( -1 )
+    , mWktFieldIndex( -1 )
     , mWktHasZM( false )
     , mWktZMRegexp( "\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive )
     , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
-    , mSkipLines(0)
+    , mSkipLines( 0 )
     , mFirstDataLine( 0 )
     , mShowInvalidLines( true )
-    , mWkbType( QGis::WKBNoGeometry )
     , mCrs()
+    , mWkbType( QGis::WKBNoGeometry )
 {
 
-  QUrl url = QUrl::fromEncoded(uri.toUtf8());
+  QUrl url = QUrl::fromEncoded( uri.toUtf8() );
 
   // Extract the provider definition from the url
 
   mFileName = url.path();
 
-  QString wktField("");
-  QString xField("");
-  QString yField("");
+  QString wktField( "" );
+  QString xField( "" );
+  QString yField( "" );
 
-  if( url.hasQueryItem("delimiter")) mDelimiter = url.queryItemValue("delimiter");
-  if( url.hasQueryItem("delimiterType")) mDelimiterType = url.queryItemValue("delimiterType");
-  if( url.hasQueryItem("wktField")) wktField = url.queryItemValue("wktField");
-  if( url.hasQueryItem("xField")) xField = url.queryItemValue("xField");
-  if( url.hasQueryItem("yField")) yField = url.queryItemValue("yField");
-  if( url.hasQueryItem("skipLines")) mSkipLines = url.queryItemValue("skipLines").toInt();
-  if( url.hasQueryItem("crs")) mCrs.createFromString( url.queryItemValue("crs"));
+  if ( url.hasQueryItem( "delimiter" ) ) mDelimiter = url.queryItemValue( "delimiter" );
+  if ( url.hasQueryItem( "delimiterType" ) ) mDelimiterType = url.queryItemValue( "delimiterType" );
+  if ( url.hasQueryItem( "wktField" ) ) wktField = url.queryItemValue( "wktField" );
+  if ( url.hasQueryItem( "xField" ) ) xField = url.queryItemValue( "xField" );
+  if ( url.hasQueryItem( "yField" ) ) yField = url.queryItemValue( "yField" );
+  if ( url.hasQueryItem( "skipLines" ) ) mSkipLines = url.queryItemValue( "skipLines" ).toInt();
+  if ( url.hasQueryItem( "crs" ) ) mCrs.createFromString( url.queryItemValue( "crs" ) );
 
   mHasWktField = wktField != "";
 

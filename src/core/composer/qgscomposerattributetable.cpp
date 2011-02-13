@@ -193,7 +193,7 @@ void QgsComposerAttributeTable::removeLayer( QString layerId )
 {
   if ( mVectorLayer )
   {
-    if ( layerId == mVectorLayer->getLayerID() )
+    if ( layerId == mVectorLayer->id() )
     {
       mVectorLayer = 0;
     }

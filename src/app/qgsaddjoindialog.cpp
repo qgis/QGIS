@@ -44,7 +44,7 @@ QgsAddJoinDialog::QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt:
       if ( currentVectorLayer && currentVectorLayer != mLayer )
       {
         if ( currentVectorLayer->dataProvider() && currentVectorLayer->dataProvider()->supportsSubsetString() )
-          mJoinLayerComboBox->addItem( currentLayer->name(), QVariant( currentLayer->getLayerID() ) );
+          mJoinLayerComboBox->addItem( currentLayer->name(), QVariant( currentLayer->id() ) );
       }
     }
   }

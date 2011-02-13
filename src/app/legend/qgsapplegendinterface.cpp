@@ -134,5 +134,5 @@ QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
 
 void QgsAppLegendInterface::refreshLayerSymbology( QgsMapLayer *ml )
 {
-  mLegend->refreshLayerSymbology( ml->getLayerID() );
+  mLegend->refreshLayerSymbology( ml->id() );
 }

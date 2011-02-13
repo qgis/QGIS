@@ -466,7 +466,7 @@ void QgsGrassPlugin::setEditAction()
 
 void QgsGrassPlugin::closeEdit( QString layerId )
 {
-  if ( mEdit->layer()->getLayerID() == layerId )
+  if ( mEdit->layer()->id() == layerId )
   {
     mEdit->closeEdit();
   }

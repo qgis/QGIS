@@ -49,7 +49,7 @@ public:
 
 
     /** \brief render label
-        \note deprecated
+        \deprecated
       */
     void renderLabel ( QPainter* painter, QgsRectangle& viewExtent, 
                        QgsCoordinateTransform* coordinateTransform,
@@ -83,8 +83,7 @@ public:
     QMap<int, QgsField> & fields ( );
 
     /** Pointer to default attributes.
-     * @note this will be deprecated in version 2 as it is 
-     * badly named. Rather use attributes.
+     * @deprecated in version 2 badly named. Rather use attributes.
      * @see labelAttributes method rather */
     QgsLabelAttributes *layerAttributes( );
 

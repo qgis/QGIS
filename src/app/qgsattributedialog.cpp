@@ -288,7 +288,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     mFormNr = smFormCounter++;
     QgisApp::instance()->runPythonString( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mFormNr ).arg(( unsigned long ) mDialog ) );
 
-    QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->getLayerID() ).arg( mFeature->id() );
+    QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->id() ).arg( mFeature->id() );
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgisApp::instance()->runPythonString( expr );
   }

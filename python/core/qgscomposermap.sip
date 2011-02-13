@@ -47,7 +47,7 @@ class QgsComposerMap : QgsComposerItem
       BoundaryDirection
     };
 
-    /**This function is deprecated*/
+    /**@deprecated*/
     void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
     /** \brief Draw to paint device

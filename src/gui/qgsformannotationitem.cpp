@@ -177,7 +177,7 @@ void QgsFormAnnotationItem::writeXML( QDomDocument& doc ) const
   QDomElement formAnnotationElem = doc.createElement( "FormAnnotationItem" );
   if ( mVectorLayer )
   {
-    formAnnotationElem.setAttribute( "vectorLayer", mVectorLayer->getLayerID() );
+    formAnnotationElem.setAttribute( "vectorLayer", mVectorLayer->id() );
   }
   formAnnotationElem.setAttribute( "hasFeature", mHasAssociatedFeature );
   formAnnotationElem.setAttribute( "feature", mFeature );

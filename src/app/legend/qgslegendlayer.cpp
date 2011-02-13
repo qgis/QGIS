@@ -540,7 +540,7 @@ void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
   {
     widthScale = canvas->map()->paintDevice().logicalDpiX() / 25.4;
   }
-  refreshSymbology( mLyr.layer()->getLayerID(), widthScale );
+  refreshSymbology( mLyr.layer()->id(), widthScale );
 }
 
 void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer )

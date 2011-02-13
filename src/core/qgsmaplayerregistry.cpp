@@ -72,16 +72,16 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal 
   }
 
   //check the layer is not already registered!
-  QMap<QString, QgsMapLayer*>::iterator myIterator = mMapLayers.find( theMapLayer->getLayerID() );
+  QMap<QString, QgsMapLayer*>::iterator myIterator = mMapLayers.find( theMapLayer->id() );
   //if myIterator returns mMapLayers.end() then it does not exist in registry and its safe to add it
   if ( myIterator == mMapLayers.end() )
   {
-    mMapLayers[theMapLayer->getLayerID()] = theMapLayer;
+    mMapLayers[theMapLayer->id()] = theMapLayer;
 
     if ( theEmitSignal )
       emit layerWasAdded( theMapLayer );
 
-    return mMapLayers[theMapLayer->getLayerID()];
+    return mMapLayers[theMapLayer->id()];
   }
   else
   {

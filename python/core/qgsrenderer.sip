@@ -40,7 +40,7 @@ class QgsRenderer
      @param widthScale scale factor
      @param rasterScaleFactor scale factor for rasters
      
-     deprecated */
+     @deprecated */
     void renderFeature(QPainter* p, QgsFeature& f,QImage* pic, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0);
      
     /**A vector layer passes features to a renderer object to change the brush ans pen of the qpainter

@@ -243,11 +243,11 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 
     if ( lyr.isVisible() )
     {
-      layerSet.push_back( lyr.layer()->getLayerID() );
+      layerSet.push_back( lyr.layer()->id() );
     }
     if ( lyr.isInOverview() )
     {
-      layerSetOverview.push_back( lyr.layer()->getLayerID() );
+      layerSetOverview.push_back( lyr.layer()->id() );
     }
   }
 
@@ -937,7 +937,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
-  if( mNewSize.isValid() )
+  if ( mNewSize.isValid() )
   {
     static bool isAlreadyIn = false;
     static QSize lastSize = QSize();
@@ -980,7 +980,7 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 
       emit extentsChanged();
     }
-  isAlreadyIn = false;
+    isAlreadyIn = false;
   }
 
   QGraphicsView::paintEvent( e );

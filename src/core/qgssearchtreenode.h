@@ -154,7 +154,7 @@ class CORE_EXPORT QgsSearchTreeNode
     //! @note attribute and optional geom parameter replaced with feature in 1.6
     bool checkAgainst( const QgsFieldMap& fields, QgsFeature &f );
 
-    //! @note deprecated
+    //! @deprecated
     bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsSearchTreeNode
                    const QgsFieldMap& fields,
                    QgsFeature &f );
 
-    //! @note deprecated
+    //! @deprecated
     bool getValue( QgsSearchTreeValue& value,
                    QgsSearchTreeNode* node,
                    const QgsFieldMap &fields,
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsSearchTreeNode
     //! returns scalar value of node
     QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, QgsFeature &f );
 
-    //! @note deprecated
+    //! @deprecated
     QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type
