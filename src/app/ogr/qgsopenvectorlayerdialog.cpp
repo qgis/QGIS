@@ -98,13 +98,11 @@ QgsOpenVectorLayerDialog::~QgsOpenVectorLayerDialog()
 
 QStringList QgsOpenVectorLayerDialog::openFile()
 {
-
   QStringList selectedFiles;
   QgsDebugMsg( "Vector file filters: " + mVectorFileFilter );
   QString enc = encoding();
   QString title = tr( "Open an OGR Supported Vector Layer" );
-  QgisGui::openFilesRememberingFilter( "lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
-                                       title );
+  QgisGui::openFilesRememberingFilter( "lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc, title );
 
   return selectedFiles;
 }

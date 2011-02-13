@@ -1250,8 +1250,7 @@ QString  QgsOgrProvider::description() const
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  return "[OGR] " +
-         longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
 } // createFileFilter_
 
 
@@ -1272,16 +1271,11 @@ QString createFilters( QString type )
 
   if ( myFileFilters.isEmpty() || myFileFilters.isNull() )
   {
-
-
-
     // register ogr plugins
     QgsApplication::registerOgrDrivers();
 
     // first get the GDAL driver manager
-
     OGRSFDriverH driver;          // current driver
-
     QString driverName;           // current driver name
 
     // Grind through all the drivers and their respective metadata.
@@ -1308,156 +1302,156 @@ QString createFilters( QString type )
 
       if ( driverName.startsWith( "AVCBin" ) )
       {
-        myDirectoryDrivers += "Arc/Info Binary Coverage,AVCBin;";
+        myDirectoryDrivers += QObject::tr( "Arc/Info Binary Coverage" ) + ",AVCBin;";
       }
       else if ( driverName.startsWith( "AVCE00" ) )
       {
-        myFileFilters += createFileFilter_( "Arc/Info ASCII Coverage", "*.e00" );
+        myFileFilters += createFileFilter_( QObject::tr( "Arc/Info ASCII Coverage" ), "*.e00" );
       }
       else if ( driverName.startsWith( "BNA" ) )
       {
-        myFileFilters += createFileFilter_( "Atlas BNA", "*.bna" );
+        myFileFilters += createFileFilter_( QObject::tr( "Atlas BNA" ), "*.bna" );
       }
       else if ( driverName.startsWith( "CSV" ) )
       {
-        myFileFilters += createFileFilter_( "Comma Separated Value", "*.csv" );
+        myFileFilters += createFileFilter_( QObject::tr( "Comma Separated Value" ), "*.csv" );
       }
-      else if ( driverName.startsWith( "DODS" ) )
+      else if ( driverName.startsWith( QObject::tr( "DODS" ) ) )
       {
         myProtocolDrivers += "DODS/OPeNDAP,DODS;";
       }
       else if ( driverName.startsWith( "PGeo" ) )
       {
-        myDatabaseDrivers += "ESRI Personal GeoDatabase,PGeo;";
+        myDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
 #ifdef WIN32
-        myFileFilters += createFileFilter_( "ESRI Personal GeoDatabase", "*.mdb" );
+        myFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
 #endif
       }
       else if ( driverName.startsWith( "SDE" ) )
       {
-        myDatabaseDrivers += "ESRI ArcSDE,SDE;";
+        myDatabaseDrivers += QObject::tr( "ESRI ArcSDE" ) + ",SDE;";
       }
       else if ( driverName.startsWith( "ESRI" ) )
       {
-        myFileFilters += createFileFilter_( "ESRI Shapefiles", "*.shp" );
+        myFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), "*.shp" );
       }
-      else if ( driverName.startsWith( "FMEObjects Gateway" ) )
+      else if ( driverName.startsWith( QObject::tr( "FMEObjects Gateway" ) ) )
       {
-        myFileFilters += createFileFilter_( "FMEObjects Gateway", "*.fdd" );
+        myFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), "*.fdd" );
       }
       else if ( driverName.startsWith( "GeoJSON" ) )
       {
         myProtocolDrivers += "GeoJSON,GeoJSON;";
-        myFileFilters += createFileFilter_( "GeoJSON", "*.geojson" );
+        myFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), "*.geojson" );
       }
       else if ( driverName.startsWith( "GeoRSS" ) )
       {
-        myFileFilters += createFileFilter_( "GeoRSS", "*.xml" );
+        myFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), "*.xml" );
       }
       else if ( driverName.startsWith( "GML" ) )
       {
-        myFileFilters += createFileFilter_( "Geography Markup Language", "*.gml" );
+        myFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language (GML)" ), "*.gml" );
       }
       else if ( driverName.startsWith( "GMT" ) )
       {
-        myFileFilters += createFileFilter_( "GMT", "*.gmt" );
+        myFileFilters += createFileFilter_( QObject::tr( "GMT" ), "*.gmt" );
       }
       else if ( driverName.startsWith( "GPX" ) )
       {
-        myFileFilters += createFileFilter_( "GPX", "*.gpx" );
+        myFileFilters += createFileFilter_( QObject::tr( "GPX" ), "*.gpx" );
       }
       else if ( driverName.startsWith( "GRASS" ) )
       {
-        myDirectoryDrivers += "Grass Vector,GRASS;";
+        myDirectoryDrivers += QObject::tr( "Grass Vector" ) + ",GRASS;";
       }
       else if ( driverName.startsWith( "IDB" ) )
       {
-        myDatabaseDrivers += "Informix DataBlade,IDB;";
+        myDatabaseDrivers += QObject::tr( "Informix DataBlade" ) + ",IDB;";
       }
       else if ( driverName.startsWith( "Interlis 1" ) )
       {
-        myFileFilters += createFileFilter_( "INTERLIS 1", "*.itf *.xml *.ili" );
+        myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 1" ), "*.itf *.xml *.ili" );
       }
       else if ( driverName.startsWith( "Interlis 2" ) )
       {
-        myFileFilters += createFileFilter_( "INTERLIS 2", "*.itf *.xml *.ili" );
+        myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), "*.itf *.xml *.ili" );
       }
       else if ( driverName.startsWith( "INGRES" ) )
       {
-        myDatabaseDrivers += "INGRES,INGRES;";
+        myDatabaseDrivers += QObject::tr( "INGRES" ) + ",INGRES;";
       }
       else if ( driverName.startsWith( "KML" ) )
       {
-        myFileFilters += createFileFilter_( "KML", "*.kml" );
+        myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language (KML)" ), "*.kml" );
       }
       else if ( driverName.startsWith( "MapInfo File" ) )
       {
-        myFileFilters += createFileFilter_( "Mapinfo File", "*.mif *.tab" );
+        myFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), "*.mif *.tab" );
       }
       else if ( driverName.startsWith( "DGN" ) )
       {
-        myFileFilters += createFileFilter_( "Microstation DGN", "*.dgn" );
+        myFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), "*.dgn" );
       }
       else if ( driverName.startsWith( "MySQL" ) )
       {
-        myDatabaseDrivers += "MySQL,MySQL;";
+        myDatabaseDrivers += QObject::tr( "MySQL" ) + ",MySQL;";
       }
       else if ( driverName.startsWith( "OCI" ) )
       {
-        myDatabaseDrivers += "Oracle Spatial,OCI;";
+        myDatabaseDrivers += QObject::tr( "Oracle Spatial" ) + ",OCI;";
       }
       else if ( driverName.startsWith( "ODBC" ) )
       {
-        myDatabaseDrivers += "ODBC,ODBC;";
+        myDatabaseDrivers += QObject::tr( "ODBC" ) + ",ODBC;";
       }
       else if ( driverName.startsWith( "OGDI" ) )
       {
-        myDatabaseDrivers += "OGDI Vectors,OGDI;";
+        myDatabaseDrivers += QObject::tr( "OGDI Vectors" ) + ",OGDI;";
       }
       else if ( driverName.startsWith( "PostgreSQL" ) )
       {
-        myDatabaseDrivers += "PostgreSQL,PostgreSQL;";
+        myDatabaseDrivers += QObject::tr( "PostgreSQL" ) + ",PostgreSQL;";
       }
       else if ( driverName.startsWith( "S57" ) )
       {
-        myFileFilters += createFileFilter_( "S-57 Base file",
+        myFileFilters += createFileFilter_( QObject::tr( "S-57 Base file" ),
                                             "*.000" );
       }
       else if ( driverName.startsWith( "SDTS" ) )
       {
-        myFileFilters += createFileFilter_( "Spatial Data Transfer Standard",
+        myFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard" ),
                                             "*catd.ddf" );
       }
       else if ( driverName.startsWith( "SQLite" ) )
       {
-        myFileFilters += createFileFilter_( "SQLite",
+        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ),
                                             "*.sqlite" );
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
       {
-        myDirectoryDrivers += "UK. NTF,UK. NTF;";
+        myDirectoryDrivers += QObject::tr( "UK. NTF2" ) + ",UK. NTF;";
       }
       else if ( driverName.startsWith( "TIGER" ) )
       {
-        myDirectoryDrivers += "U.S. Census TIGER/Line,TIGER;";
+        myDirectoryDrivers += QObject::tr( "U.S. Census TIGER/Line" ) + ",TIGER;";
       }
       else if ( driverName.startsWith( "VRT" ) )
       {
-        myFileFilters += createFileFilter_( "VRT - Virtual Datasource ",
+        myFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
                                             "*.vrt" );
       }
       else if ( driverName.startsWith( "XPlane" ) )
       {
-        myFileFilters += createFileFilter_( "X-Plane/Flightgear",
+        myFileFilters += createFileFilter_( QObject::tr( "X-Plane/Flightgear" ),
                                             "apt.dat nav.dat fix.dat awy.dat" );
       }
       else if ( driverName.startsWith( "Geoconcept" ) )
       {
-        myFileFilters += createFileFilter_( "Geoconcept", "*.gxt *.txt" );
+        myFileFilters += createFileFilter_( QObject::tr( "Geoconcept" ), "*.gxt *.txt" );
       }
       else if ( driverName.startsWith( "DXF" ) )
       {
-        myFileFilters += createFileFilter_( "AutoCAD DXF", "*.dxf" );
+        myFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), "*.dxf" );
       }
       else
       {
@@ -1470,7 +1464,7 @@ QString createFilters( QString type )
 
     // can't forget the default case
 
-    myFileFilters += "All files (*)";
+    myFileFilters += QObject::tr( "All files" ) + " (*)";
   }
 
   if ( type == "file" )
