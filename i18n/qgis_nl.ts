@@ -1428,6 +1428,14 @@ De plugin wordt niet geactiveerd.</translation>
         <source>&amp;Output directory</source>
         <translation>&amp;Uitvoermap</translation>
     </message>
+    <message>
+        <source>Tile index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build a shapefile as a raster tileindex</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsAboutDialog</name>
@@ -1759,6 +1767,14 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
         <source>Select the input directory with files for VRT</source>
         <translation>Selecteer de map met bestanden voor &apos;VRT&apos;</translation>
     </message>
+    <message>
+        <source>Select the input directory with raster files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the TileIndex output</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsExtentSelector</name>
@@ -1903,7 +1919,7 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Omzetten (translate)</translation>
     </message>
     <message>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
@@ -2125,7 +2141,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Clipper</translation>
     </message>
     <message>
         <source>&amp;No data value</source>
@@ -2412,7 +2428,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">0</translation>
     </message>
     <message>
         <source>Extent</source>
@@ -2428,6 +2444,34 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Se&amp;parate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster tile index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input directory</source>
+        <translation type="unfinished">Invoermap</translation>
+    </message>
+    <message>
+        <source>Output shapefile</source>
+        <translation type="unfinished">Uitvoerbestand (shape)</translation>
+    </message>
+    <message>
+        <source>Tile index field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write absolute path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip files with different projection ref</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4500,7 +4544,171 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
+        <translation type="unfinished">Vectorlagen opslaan in een SQL Anywhere database</translation>
+    </message>
+    <message>
+        <source>Arc/Info ASCII Coverage</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Atlas BNA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comma Separated Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI Shapefile</source>
+        <translation type="unfinished">ESRI-shape gegevens</translation>
+    </message>
+    <message>
+        <source>FMEObjects Gateway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GeoJSON</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GeoRSS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geography Markup Language (GML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generic Mapping Tools (GMT)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS eXchange Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INTERLIS 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INTERLIS 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyhole Markup Language (KML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapinfo File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Microstation DGN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S-57 Base file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial Data Transfer Standard (SDTS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AutoCAD DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geoconcept</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc/Info Binary Coverage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DODS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI Personal GeoDatabase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI ArcSDE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI Shapefiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GMT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grass Vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Informix DataBlade</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INGRES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MySQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle Spatial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ODBC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGDI Vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial Data Transfer Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UK. NTF2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>U.S. Census TIGER/Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VRT - Virtual Datasource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X-Plane/Flightgear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All files</source>
+        <translation type="unfinished">Alle bestanden</translation>
     </message>
 </context>
 <context>
@@ -6615,6 +6823,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Precision</source>
         <translation>Precisie</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAddJoinDialogBase</name>
+    <message>
+        <source>Add vector join</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join field</source>
+        <translation type="unfinished">Join veld</translation>
+    </message>
+    <message>
+        <source>Target field</source>
+        <translation type="unfinished">Doelveld</translation>
+    </message>
+    <message>
+        <source>Create attribute index on join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cache join layer in virtual memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15130,11 +15365,11 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontale uitlijning</translation>
     </message>
     <message>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertikale uitlijning</translation>
     </message>
     <message>
         <source>Strikeout</source>
@@ -15150,7 +15385,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Buffer kleur</translation>
     </message>
 </context>
 <context>
@@ -17004,7 +17239,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Offline bewerken Plugin</translation>
     </message>
     <message>
         <source>Converting to offline project.</source>
@@ -17792,6 +18027,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Representation for NULL values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon size</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19274,23 +19513,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No PostGIS Support!</source>
-        <translation type="obsolete">Geen ondersteuning voor PostGIS!</translation>
+        <translation type="unfinished">Geen ondersteuning voor PostGIS!</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation type="obsolete">Uw database ondersteunt/bevat geen PostGIS ondersteuning.
+        <translation type="unfinished">Uw database ondersteunt/bevat geen PostGIS ondersteuning.
 </translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="obsolete">Geen GEOS Ondersteuning!</translation>
+        <translation type="unfinished">Geen GEOS Ondersteuning!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="obsolete">Uw PostGIS installatie biedt geen GEOS ondersteuning. 
+        <translation type="unfinished">Uw PostGIS installatie biedt geen GEOS ondersteuning. 
 Selecteren en identificeren van objecten zal niet werken.
 Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</translation>
     </message>
@@ -19390,13 +19629,13 @@ De geselecteerde view heeft de volgende kolommen, die niet voldoet aan bovenstaa
     </message>
     <message>
         <source>Query failed</source>
-        <translation type="obsolete">Query Mislukt</translation>
+        <translation type="unfinished">Query Mislukt</translation>
     </message>
     <message>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
-        <translation type="obsolete">%1 cursorprobleem.
+        <translation type="unfinished">%1 cursorprobleem.
 SQL: %2
 Resultaat: %3 (%4)</translation>
     </message>
@@ -19482,35 +19721,35 @@ SQL: %3</translation>
     <name>QgsPostgresProvider::Conn</name>
     <message>
         <source>No PostGIS Support!</source>
-        <translation>Geen ondersteuning voor PostGIS!</translation>
+        <translation type="obsolete">Geen ondersteuning voor PostGIS!</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation>Uw database ondersteunt/bevat geen PostGIS ondersteuning.
+        <translation type="obsolete">Uw database ondersteunt/bevat geen PostGIS ondersteuning.
 </translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation>Geen GEOS Ondersteuning!</translation>
+        <translation type="obsolete">Geen GEOS Ondersteuning!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation>Uw PostGIS installatie biedt geen GEOS ondersteuning. 
+        <translation type="obsolete">Uw PostGIS installatie biedt geen GEOS ondersteuning. 
 Selecteren en identificeren van objecten zal niet werken.
 Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>Query failed</source>
-        <translation>Query Mislukt</translation>
+        <translation type="obsolete">Query Mislukt</translation>
     </message>
     <message>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
-        <translation>%1 cursorprobleem.
+        <translation type="obsolete">%1 cursorprobleem.
 SQL: %2
 Resultaat: %3 (%4)</translation>
     </message>
@@ -19592,6 +19831,31 @@ Missende lagen proberen te vinden?</translation>
     <message>
         <source>Selection color</source>
         <translation>Selectie-kleur</translation>
+    </message>
+    <message>
+        <source>Coordinate System Restriction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No coordinate systems selected. Disabling restriction.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS %1 was already selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected CRS is not a EPSG coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate System Restrictions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The current selection of coordinate systems will be lost.
+Proceed?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19731,6 +19995,78 @@ Missende lagen proberen te vinden?</translation>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
         <translation>Gelijktijdige CRS-transformatie gebruiken</translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Service Capabilitities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation type="unfinished">Titel</translation>
+    </message>
+    <message>
+        <source>Person</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abstract</source>
+        <translation type="unfinished">Beschrijving</translation>
+    </message>
+    <message>
+        <source>E-Mail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Organization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advertised Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Current Canvas Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Systems Restrictions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">Toevoegen</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Verwijder</translation>
+    </message>
+    <message>
+        <source>Used</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22285,7 +22621,7 @@ De foutmelding was:
     </message>
     <message>
         <source>Total: %1</source>
-        <translation>Totaal: %1</translation>
+        <translation type="obsolete">Totaal: %1</translation>
     </message>
     <message>
         <source>&lt;&lt;-- Begin at [%L1] --</source>
@@ -22416,7 +22752,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Results (click to highlight on map)</source>
-        <translation>Resultaten (klik om op te laten lichten in de kaart)</translation>
+        <translation type="obsolete">Resultaten (klik om op te laten lichten in de kaart)</translation>
     </message>
     <message>
         <source>Select item to identify geometry of feature</source>
@@ -22436,7 +22772,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> Total</source>
-        <translation> Totaal</translation>
+        <translation type="obsolete"> Totaal</translation>
+    </message>
+    <message>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all features of result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>select all features invalid target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>select all features invalid reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>* Select item to highlight on map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24251,6 +24611,22 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>Init function</source>
         <translation>Init-functie</translation>
     </message>
+    <message>
+        <source>Joins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join field</source>
+        <translation type="unfinished">Join veld</translation>
+    </message>
+    <message>
+        <source>Target field</source>
+        <translation type="unfinished">Doelveld</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
@@ -25487,7 +25863,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Road graph plugin settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Instellingen voor &apos;Road graph&apos;</translation>
     </message>
     <message>
         <source>Roads direction viewer</source>
@@ -26278,6 +26654,10 @@ Description: %3</source>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotatie</translation>
     </message>
 </context>
 <context>
@@ -28416,18 +28796,6 @@ Plugin wordt niet geladen.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Link GDAL supported raster to binary raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Locate the closest points between objects in two raster maps</source>
         <translation type="unfinished"></translation>
     </message>
@@ -29089,6 +29457,18 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Minimum size for each basin (number of cells)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link GDAL supported raster as GRASS raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

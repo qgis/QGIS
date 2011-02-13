@@ -67,7 +67,7 @@
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="121"/>
         <source>Connect</source>
         <translation>Подключиться</translation>
     </message>
@@ -90,80 +90,80 @@
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="77"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="61"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="119"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="125"/>
         <source>Browse</source>
         <translation>Обзор</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="192"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="426"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="198"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="432"/>
         <source>OGR Converter</source>
         <translation>Преобразователь OGR</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="222"/>
         <source>Open OGR file</source>
         <translation>Открыть файл в формате OGR</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="218"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="436"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="224"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="442"/>
         <source>OGR File Data Source (*.*)</source>
         <translation>Файловый источник данных OGR (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="226"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="232"/>
         <source>Open Directory</source>
         <translation>Открыть каталог</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="242"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="248"/>
         <source>Input OGR dataset is missing!</source>
         <translation>Не указан исходный набор данных OGR!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="250"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="256"/>
         <source>Input OGR layer name is missing!</source>
         <translation>Не указано имя слоя OGR!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="265"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="271"/>
         <source>Target OGR format not selected!</source>
         <translation>Не выбран целевой формат OGR!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="273"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="279"/>
         <source>Output OGR dataset is missing!</source>
         <translation>Не указан целевой набор данных OGR!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="281"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="287"/>
         <source>Output OGR layer name is missing!</source>
         <translation>Не указано имя целевого слоя OGR!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="435"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="441"/>
         <source>Choose a file name to save to</source>
         <translation>Выберите имя сохраняемого файла</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="193"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="423"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="199"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="429"/>
         <source>Could not establish connection to: &apos;%1&apos;</source>
         <translation>Не удалось установить соединение с: «%1»</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="304"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="310"/>
         <source>Successfully translated layer &apos;%1&apos;</source>
         <translation>Слой «%1» успешно преобразован</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="310"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="316"/>
         <source>Failed to translate layer &apos;%1&apos;</source>
         <translation>Не удалось преобразовать слой «%1»</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="419"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="425"/>
         <source>Successfully connected to: &apos;%1&apos;</source>
         <translation>Успешное соединение с: «%1»</translation>
     </message>
@@ -960,13 +960,13 @@ were reduced to %2 vertices after simplification</source>
         <translation>Сумма расстояний в полигонах</translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="249"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="264"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="272"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="280"/>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="303"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="247"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="255"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="270"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="278"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="286"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="309"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="315"/>
         <source>OGR Layer Converter</source>
         <translation>Преобразователь слоёв OGR</translation>
     </message>
@@ -1738,6 +1738,14 @@ Plugin will not be enabled.</source>
         <translation>Преобразовать 8-битное индексированное изображение в 24-битное RGB</translation>
     </message>
     <message>
+        <source>Tile index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build a shapefile as a raster tileindex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>GdalTools settings</source>
         <translation>Параметры GDAL Tools</translation>
     </message>
@@ -2024,6 +2032,14 @@ Do you want terminate it anyway?</source>
         <translation>Выберите исходный каталог для преобразования</translation>
     </message>
     <message>
+        <source>Select the input directory with raster files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the TileIndex output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Select the files to Merge</source>
         <translation>Выберите файлы для объединения</translation>
     </message>
@@ -2242,6 +2258,8 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="107"/>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="56"/>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="34"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="62"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="94"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="139"/>
@@ -2810,6 +2828,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="69"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="43"/>
         <source>Recurse subdirectories</source>
         <translation>Включая подкаталоги</translation>
     </message>
@@ -3180,6 +3199,41 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="280"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
         <translation>Ис&amp;пользовать мультипотоковую реализацию</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="14"/>
+        <source>Raster tile index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="22"/>
+        <source>Input directory</source>
+        <translation type="unfinished">Исходный каталог</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="50"/>
+        <source>Output shapefile</source>
+        <translation type="unfinished">Сохранить результат в shape-файл</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="71"/>
+        <source>Tile index field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="81"/>
+        <source>location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="90"/>
+        <source>Write absolute path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="97"/>
+        <source>Skip files with different projection ref</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5644,68 +5698,185 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>сокращение имени атрибута «%1» до десяти значащих символов порождает дублирующиеся имена полей.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="148"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="160"/>
         <source>creation of data source failed (OGR error:%1)</source>
         <translation>не удалось создать источник данных (ошибка OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="226"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="238"/>
         <source>creation of layer failed (OGR error:%1)</source>
         <translation>не удалось создать слой (ошибка OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="276"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="288"/>
         <source>unsupported type for field %1</source>
         <translation>тип поля %1 не поддерживается</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="302"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="314"/>
         <source>creation of field %1 failed (OGR error: %2)</source>
         <translation>не удалось создать поле %1 (ошибка OGR: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="330"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="342"/>
         <source>created field %1 not found (OGR error: %2)</source>
         <translation>созданное поле %1 не найдено (ошибка OGR: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="403"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="424"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Неверный вариантный тип для поля %1[%2]: получено значение %3 с типом %4</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="795"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1309"/>
+        <source>Arc/Info ASCII Coverage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="802"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1313"/>
+        <source>Atlas BNA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="809"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1317"/>
+        <source>Comma Separated Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="816"/>
+        <source>ESRI Shapefile</source>
+        <translation type="unfinished">Shape-файл ESRI</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="823"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1338"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1340"/>
+        <source>FMEObjects Gateway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="830"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1345"/>
+        <source>GeoJSON</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="837"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1349"/>
+        <source>GeoRSS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="844"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1353"/>
+        <source>Geography Markup Language (GML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="851"/>
+        <source>Generic Mapping Tools (GMT)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="858"/>
+        <source>GPS eXchange Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="865"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1373"/>
+        <source>INTERLIS 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="872"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1377"/>
+        <source>INTERLIS 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="879"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1385"/>
+        <source>Keyhole Markup Language (KML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="886"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1389"/>
+        <source>Mapinfo File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="893"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1393"/>
+        <source>Microstation DGN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="900"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1417"/>
+        <source>S-57 Base file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="907"/>
+        <source>Spatial Data Transfer Standard (SDTS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="914"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1427"/>
+        <source>SQLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="921"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1454"/>
+        <source>AutoCAD DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="928"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1450"/>
+        <source>Geoconcept</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invalid feature geometry</source>
         <translation type="obsolete">Недействительная геометрия объекта</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="432"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="443"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="459"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="453"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="464"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="480"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
         <translation>Геометрия объекта не импортирована (ошибка OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="473"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="494"/>
         <source>Feature creation error (OGR error: %1)</source>
         <translation>Ошибка создания объекта (ошибка OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="601"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="622"/>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Не удалось трансформировать точку при выводе объекта типа «%1». Запись остановлена (исключение: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="621"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="642"/>
         <source>Feature write errors:</source>
         <translation>Ошибки записи объектов:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="631"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="652"/>
         <source>Stopping after %1 errors</source>
         <translation>Остановлено после %1 ошибок</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="650"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="671"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
@@ -5762,57 +5933,57 @@ Only %1 of %2 features written.</source>
         <translation>Точки со смещением</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="59"/>
         <source>Processing 1/2 - %p%</source>
         <translation>Обработка 1/2 - %p%</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="66"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="67"/>
         <source>Processing 2/2 - %p%</source>
         <translation>Обработка 2/2 - %p%</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="101"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
         <source>Intersects</source>
         <translation>Пересекает</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="103"/>
         <source>Disjoint</source>
         <translation>Не пересекает</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="110"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="127"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="131"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="111"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="128"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="132"/>
         <source>Touches</source>
         <translation>Касается</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="111"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="128"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="112"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="129"/>
         <source>Crosses</source>
         <translation>Пересекает кривой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="112"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="132"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="113"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="133"/>
         <source>Within</source>
         <translation>Находится внутри</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="116"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="133"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="117"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="134"/>
         <source>Contains</source>
         <translation>Содержит</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="120"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
         <source>Equals</source>
         <translation>Совпадает</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="122"/>
         <source>Overlaps</source>
         <translation>Накладывается</translation>
     </message>
@@ -5953,6 +6124,112 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <source>It solve shortest path poblem and etc.</source>
         <translation type="obsolete">Поиск кратчайшего маршрута на графе дорог.</translation>
     </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1305"/>
+        <source>Arc/Info Binary Coverage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1319"/>
+        <source>DODS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1325"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1327"/>
+        <source>ESRI Personal GeoDatabase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1332"/>
+        <source>ESRI ArcSDE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1336"/>
+        <source>ESRI Shapefiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1357"/>
+        <source>GMT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1361"/>
+        <source>GPX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1365"/>
+        <source>Grass Vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1369"/>
+        <source>Informix DataBlade</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1381"/>
+        <source>INGRES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1397"/>
+        <source>MySQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1401"/>
+        <source>Oracle Spatial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1405"/>
+        <source>ODBC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1409"/>
+        <source>OGDI Vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1413"/>
+        <source>PostgreSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1422"/>
+        <source>Spatial Data Transfer Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1432"/>
+        <source>UK. NTF2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1436"/>
+        <source>U.S. Census TIGER/Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1440"/>
+        <source>VRT - Virtual Datasource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1445"/>
+        <source>X-Plane/Flightgear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1467"/>
+        <source>All files</source>
+        <translation type="unfinished">Все файлы</translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -6040,109 +6317,109 @@ You are seeing this message most likely because you have no DISPLAY environment 
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2664"/>
+        <location filename="../src/app/qgisapp.cpp" line="2638"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2843"/>
-        <location filename="../src/app/qgisapp.cpp" line="2850"/>
-        <location filename="../src/app/qgisapp.cpp" line="6671"/>
+        <location filename="../src/app/qgisapp.cpp" line="2817"/>
+        <location filename="../src/app/qgisapp.cpp" line="2824"/>
+        <location filename="../src/app/qgisapp.cpp" line="6651"/>
         <source>Invalid Data Source</source>
         <translation>Недопустимый источник данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4120"/>
+        <location filename="../src/app/qgisapp.cpp" line="4094"/>
         <source>No Layer Selected</source>
         <translation>Слой не выбран</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5370"/>
+        <location filename="../src/app/qgisapp.cpp" line="5350"/>
         <source>There is a new version of QGIS available</source>
         <translation>Доступна новая версия QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5376"/>
+        <location filename="../src/app/qgisapp.cpp" line="5356"/>
         <source>You are running a development version of QGIS</source>
         <translation>Вы используете разрабатываемую версию QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5380"/>
+        <location filename="../src/app/qgisapp.cpp" line="5360"/>
         <source>You are running the current version of QGIS</source>
         <translation>Вы используете последнюю версию QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5385"/>
+        <location filename="../src/app/qgisapp.cpp" line="5365"/>
         <source>Would you like more information?</source>
         <translation>Вы хотите получить дополнительную информацию?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5388"/>
-        <location filename="../src/app/qgisapp.cpp" line="5401"/>
-        <location filename="../src/app/qgisapp.cpp" line="5406"/>
-        <location filename="../src/app/qgisapp.cpp" line="5434"/>
+        <location filename="../src/app/qgisapp.cpp" line="5368"/>
+        <location filename="../src/app/qgisapp.cpp" line="5381"/>
+        <location filename="../src/app/qgisapp.cpp" line="5386"/>
+        <location filename="../src/app/qgisapp.cpp" line="5414"/>
         <source>QGIS Version Information</source>
         <translation>Информация о версии QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5406"/>
+        <location filename="../src/app/qgisapp.cpp" line="5386"/>
         <source>Unable to get current version information from server</source>
         <translation>Не удалось получить информацию о версии с сервера</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5420"/>
+        <location filename="../src/app/qgisapp.cpp" line="5400"/>
         <source>Connection refused - server may be down</source>
         <translation>В соединении отказано — вероятно, сервер недоступен</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5423"/>
+        <location filename="../src/app/qgisapp.cpp" line="5403"/>
         <source>QGIS server was not found</source>
         <translation>Сервер QGIS не найден</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3022"/>
-        <location filename="../src/app/qgisapp.cpp" line="3101"/>
+        <location filename="../src/app/qgisapp.cpp" line="2996"/>
+        <location filename="../src/app/qgisapp.cpp" line="3075"/>
         <source>Invalid Layer</source>
         <translation>Недействительный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3022"/>
-        <location filename="../src/app/qgisapp.cpp" line="3101"/>
+        <location filename="../src/app/qgisapp.cpp" line="2996"/>
+        <location filename="../src/app/qgisapp.cpp" line="3075"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>Слой %1 не является действительным и не может быть загружен.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4158"/>
+        <location filename="../src/app/qgisapp.cpp" line="4132"/>
         <source>Problem deleting features</source>
         <translation>Ошибка удаления объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4159"/>
+        <location filename="../src/app/qgisapp.cpp" line="4133"/>
         <source>A problem occured during deletion of features</source>
         <translation>При удалении объектов возникла ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4129"/>
+        <location filename="../src/app/qgisapp.cpp" line="4103"/>
         <source>No Vector Layer Selected</source>
         <translation>Не выбран векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4130"/>
+        <location filename="../src/app/qgisapp.cpp" line="4104"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Удаление объектов работает только для векторных слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4121"/>
+        <location filename="../src/app/qgisapp.cpp" line="4095"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Для удаления объектов необходимо выбрать в легенде векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2399"/>
+        <location filename="../src/app/qgisapp.cpp" line="2373"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Легенда карты, в которой перечислены все слои отображаемой карты. Щёлкните на флажке, чтобы переключить видимость соответствующего слоя. Дважды щёлкните на имени слоя, чтобы изменить параметры его отображение и другие свойства.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2330"/>
+        <location filename="../src/app/qgisapp.cpp" line="2304"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Область обзора карты. Данная область используется для вывода обзорной карты, на которой виден текущий охват видимой карты QGIS в виде красного прямоугольника. Любой слой карты может быть добавлен в область обзора.</translation>
     </message>
@@ -6152,57 +6429,57 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>Область карты. В данную область выполняется вывод растровых и векторных слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1614"/>
+        <location filename="../src/app/qgisapp.cpp" line="1615"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Модули</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1925"/>
+        <location filename="../src/app/qgisapp.cpp" line="1887"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Индикатор хода процесса отрисовки слоёв и других долговременных операций</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1998"/>
+        <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Displays the current map scale</source>
         <translation>Показывает текущий масштаб карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2011"/>
+        <location filename="../src/app/qgisapp.cpp" line="1973"/>
         <source>Render</source>
         <translation>Отрисовка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2014"/>
+        <location filename="../src/app/qgisapp.cpp" line="1976"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Если включено, отрисовка слоёв карты выполняется сразу в ответ на команды навигации и другие события. Если выключено, отрисовка не выполняется. К примеру, это позволяет добавить большое количество слоёв и назначить им условные обозначения до их отображения.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3526"/>
+        <location filename="../src/app/qgisapp.cpp" line="3500"/>
         <source>Choose a QGIS project file</source>
         <translation>Выберите файл проекта QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2018"/>
+        <location filename="../src/app/qgisapp.cpp" line="1980"/>
         <source>Toggle map rendering</source>
         <translation>Переключить отрисовку карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3271"/>
+        <location filename="../src/app/qgisapp.cpp" line="3245"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3386"/>
+        <location filename="../src/app/qgisapp.cpp" line="3360"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Выберите открываемый файл проекта QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3411"/>
+        <location filename="../src/app/qgisapp.cpp" line="3385"/>
         <source>QGIS Project Read Error</source>
         <translation>Ошибка чтения проекта QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6583"/>
+        <location filename="../src/app/qgisapp.cpp" line="6563"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Открыть GDAL-совместимый источник растровых данных</translation>
     </message>
@@ -6227,180 +6504,180 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="480"/>
+        <location filename="../src/app/qgisapp.cpp" line="481"/>
         <source>Restoring loaded plugins</source>
         <translation>Восстановление загруженных модулей</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="490"/>
+        <location filename="../src/app/qgisapp.cpp" line="491"/>
         <source>Initializing file filters</source>
         <translation>Инициализация файловых фильтров</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="518"/>
+        <location filename="../src/app/qgisapp.cpp" line="519"/>
         <source>Restoring window state</source>
         <translation>Восстановление состояния окна</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="522"/>
+        <location filename="../src/app/qgisapp.cpp" line="523"/>
         <source>QGIS Ready!</source>
         <translation>QGIS готова к запуску</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="670"/>
+        <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>&amp;New Project</source>
         <translation>&amp;Новый проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="671"/>
+        <location filename="../src/app/qgisapp.cpp" line="672"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="672"/>
+        <location filename="../src/app/qgisapp.cpp" line="673"/>
         <source>New Project</source>
         <translation>Новый проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="675"/>
+        <location filename="../src/app/qgisapp.cpp" line="676"/>
         <source>&amp;Open Project...</source>
         <translation>&amp;Открыть проект...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="677"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="677"/>
+        <location filename="../src/app/qgisapp.cpp" line="678"/>
         <source>Open a Project</source>
         <translation>Открыть проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="680"/>
+        <location filename="../src/app/qgisapp.cpp" line="681"/>
         <source>&amp;Save Project</source>
         <translation>&amp;Сохранить проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="681"/>
+        <location filename="../src/app/qgisapp.cpp" line="682"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="682"/>
+        <location filename="../src/app/qgisapp.cpp" line="683"/>
         <source>Save Project</source>
         <translation>Сохранить проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="685"/>
+        <location filename="../src/app/qgisapp.cpp" line="686"/>
         <source>Save Project &amp;As...</source>
         <translation>Сохранить проект &amp;как...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="687"/>
+        <location filename="../src/app/qgisapp.cpp" line="688"/>
         <source>Save Project under a new name</source>
         <translation>Сохранить проект под другим именем</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="690"/>
+        <location filename="../src/app/qgisapp.cpp" line="691"/>
         <source>Save as Image...</source>
         <translation>Сохранить как изображение...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="692"/>
+        <location filename="../src/app/qgisapp.cpp" line="693"/>
         <source>Save map as image</source>
         <translation>Сохранить карту как изображение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="704"/>
+        <location filename="../src/app/qgisapp.cpp" line="705"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="705"/>
+        <location filename="../src/app/qgisapp.cpp" line="706"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="706"/>
+        <location filename="../src/app/qgisapp.cpp" line="707"/>
         <source>Exit QGIS</source>
         <translation>Выйти из QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="777"/>
-        <location filename="../src/app/qgisapp.cpp" line="779"/>
+        <location filename="../src/app/qgisapp.cpp" line="778"/>
+        <location filename="../src/app/qgisapp.cpp" line="780"/>
         <source>Move Feature(s)</source>
         <translation>Переместить объект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="953"/>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
+        <location filename="../src/app/qgisapp.cpp" line="955"/>
         <source>Measure Angle</source>
         <translation>Измерить угол</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1009"/>
+        <location filename="../src/app/qgisapp.cpp" line="1010"/>
         <source>Text Annotation</source>
         <translation>Текстовая аннотация</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1013"/>
+        <location filename="../src/app/qgisapp.cpp" line="1014"/>
         <source>Form annotation</source>
         <translation>Диалоговая аннотация</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1017"/>
+        <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>Move Annotation</source>
         <translation>Переместить аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1026"/>
+        <location filename="../src/app/qgisapp.cpp" line="1027"/>
         <source>New Shapefile Layer...</source>
         <translation>Создать новый shape-файл...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1027"/>
+        <location filename="../src/app/qgisapp.cpp" line="1028"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Shapefile layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1028"/>
+        <location filename="../src/app/qgisapp.cpp" line="1029"/>
         <source>Create a New Shapefile layer</source>
         <translation>Создать новый shape-файл</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1032"/>
+        <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>New SpatiaLite Layer ...</source>
         <translation>Создать слой SpatiaLite...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1033"/>
+        <location filename="../src/app/qgisapp.cpp" line="1034"/>
         <source>Ctrl+Shift+A</source>
         <comment>Create a New SpatiaLite Layer </comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1034"/>
+        <location filename="../src/app/qgisapp.cpp" line="1035"/>
         <source>Create a New SpatiaLite Layer </source>
         <translation>Создать слой SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1043"/>
+        <location filename="../src/app/qgisapp.cpp" line="1044"/>
         <source>Add a Vector Layer</source>
         <translation>Добавить векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1048"/>
+        <location filename="../src/app/qgisapp.cpp" line="1049"/>
         <source>Add a Raster Layer</source>
         <translation>Добавить растровый слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1053"/>
+        <location filename="../src/app/qgisapp.cpp" line="1054"/>
         <source>Add a PostGIS Layer</source>
         <translation>Добавить слой PostGIS</translation>
     </message>
@@ -6413,191 +6690,191 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">Удалить слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1135"/>
+        <location filename="../src/app/qgisapp.cpp" line="1136"/>
         <source>Show all layers in the overview map</source>
         <translation>Показать все слои на обзорной карте</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1138"/>
+        <location filename="../src/app/qgisapp.cpp" line="1139"/>
         <source>Remove All From Overview</source>
         <translation>Удалить все из обзора</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1140"/>
+        <location filename="../src/app/qgisapp.cpp" line="1141"/>
         <source>Remove all layers from overview map</source>
         <translation>Удалить все слои с обзорной карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1143"/>
+        <location filename="../src/app/qgisapp.cpp" line="1144"/>
         <source>Show All Layers</source>
         <translation>Показать все слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1145"/>
+        <location filename="../src/app/qgisapp.cpp" line="1146"/>
         <source>Show all layers</source>
         <translation>Показать все слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1148"/>
+        <location filename="../src/app/qgisapp.cpp" line="1149"/>
         <source>Hide All Layers</source>
         <translation>Скрыть все слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1150"/>
+        <location filename="../src/app/qgisapp.cpp" line="1151"/>
         <source>Hide all layers</source>
         <translation>Скрыть все слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1167"/>
+        <location filename="../src/app/qgisapp.cpp" line="1168"/>
         <source>Project Properties...</source>
         <translation>Свойства проекта...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1169"/>
+        <location filename="../src/app/qgisapp.cpp" line="1170"/>
         <source>Set project properties</source>
         <translation>Задать параметры проекта</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1172"/>
+        <location filename="../src/app/qgisapp.cpp" line="1173"/>
         <source>Options...</source>
         <translation>Параметры...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1174"/>
+        <location filename="../src/app/qgisapp.cpp" line="1175"/>
         <source>Change various QGIS options</source>
         <translation>Изменить параметры приложения QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1213"/>
+        <location filename="../src/app/qgisapp.cpp" line="1214"/>
         <source>Help Contents</source>
         <translation>Содержание</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1217"/>
+        <location filename="../src/app/qgisapp.cpp" line="1218"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1219"/>
+        <location filename="../src/app/qgisapp.cpp" line="1220"/>
         <source>Help Documentation</source>
         <translation>Открыть руководство по программе</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1224"/>
+        <location filename="../src/app/qgisapp.cpp" line="1225"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1222"/>
-        <location filename="../src/app/qgisapp.cpp" line="1228"/>
+        <location filename="../src/app/qgisapp.cpp" line="1223"/>
+        <location filename="../src/app/qgisapp.cpp" line="1229"/>
         <source>QGIS Home Page</source>
         <translation>Веб-сайт QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1236"/>
+        <location filename="../src/app/qgisapp.cpp" line="1237"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1238"/>
+        <location filename="../src/app/qgisapp.cpp" line="1239"/>
         <source>About QGIS</source>
         <translation>О программе QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1231"/>
+        <location filename="../src/app/qgisapp.cpp" line="1232"/>
         <source>Check Qgis Version</source>
         <translation>Проверить версию Qgis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1233"/>
+        <location filename="../src/app/qgisapp.cpp" line="1234"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Проверить, является ли ваша версия QGIS последней (требуется доступ в Интернет)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1004"/>
+        <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1005"/>
+        <location filename="../src/app/qgisapp.cpp" line="1006"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1006"/>
+        <location filename="../src/app/qgisapp.cpp" line="1007"/>
         <source>Refresh Map</source>
         <translation>Обновить карту</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="887"/>
-        <location filename="../src/app/qgisapp.cpp" line="889"/>
+        <location filename="../src/app/qgisapp.cpp" line="888"/>
+        <location filename="../src/app/qgisapp.cpp" line="890"/>
         <source>Zoom In</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="888"/>
+        <location filename="../src/app/qgisapp.cpp" line="889"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="892"/>
-        <location filename="../src/app/qgisapp.cpp" line="894"/>
+        <location filename="../src/app/qgisapp.cpp" line="893"/>
+        <location filename="../src/app/qgisapp.cpp" line="895"/>
         <source>Zoom Out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="893"/>
+        <location filename="../src/app/qgisapp.cpp" line="894"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="957"/>
+        <location filename="../src/app/qgisapp.cpp" line="958"/>
         <source>Zoom Full</source>
         <translation>Полный охват</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="959"/>
+        <location filename="../src/app/qgisapp.cpp" line="960"/>
         <source>Zoom to Full Extents</source>
         <translation>Увеличить до полного охвата</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="882"/>
+        <location filename="../src/app/qgisapp.cpp" line="883"/>
         <source>Pan Map</source>
         <translation>Прокрутка карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
+        <location filename="../src/app/qgisapp.cpp" line="885"/>
         <source>Pan the map</source>
         <translation>Прокрутка карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="972"/>
+        <location filename="../src/app/qgisapp.cpp" line="973"/>
         <source>Zoom Last</source>
         <translation>Предыдущий охват</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="974"/>
+        <location filename="../src/app/qgisapp.cpp" line="975"/>
         <source>Zoom to Last Extent</source>
         <translation>Увеличить до предыдущего охвата</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="962"/>
-        <location filename="../src/app/qgisapp.cpp" line="964"/>
+        <location filename="../src/app/qgisapp.cpp" line="963"/>
+        <location filename="../src/app/qgisapp.cpp" line="965"/>
         <source>Zoom to Layer</source>
         <translation>Увеличить до слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="937"/>
+        <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Identify Features</source>
         <translation>Определить объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="939"/>
+        <location filename="../src/app/qgisapp.cpp" line="940"/>
         <source>Click on features to identify them</source>
         <translation>Определить объекты по щелчку мыши</translation>
     </message>
@@ -6606,407 +6883,407 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">Выбрать объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="943"/>
+        <location filename="../src/app/qgisapp.cpp" line="944"/>
         <source>Measure Line </source>
         <translation>Измерить линию </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="945"/>
+        <location filename="../src/app/qgisapp.cpp" line="946"/>
         <source>Measure a Line</source>
         <translation>Измерить линию</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="948"/>
+        <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Measure Area</source>
         <translation>Измерить площадь</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="950"/>
+        <location filename="../src/app/qgisapp.cpp" line="951"/>
         <source>Measure an Area</source>
         <translation>Измерить площадь</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="999"/>
-        <location filename="../src/app/qgisapp.cpp" line="1001"/>
+        <location filename="../src/app/qgisapp.cpp" line="1000"/>
+        <location filename="../src/app/qgisapp.cpp" line="1002"/>
         <source>Show Bookmarks</source>
         <translation>Показать закладки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="994"/>
+        <location filename="../src/app/qgisapp.cpp" line="995"/>
         <source>New Bookmark...</source>
         <translation>Новая закладка...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="995"/>
+        <location filename="../src/app/qgisapp.cpp" line="996"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="996"/>
-        <location filename="../src/app/qgisapp.cpp" line="6967"/>
+        <location filename="../src/app/qgisapp.cpp" line="997"/>
+        <location filename="../src/app/qgisapp.cpp" line="6947"/>
         <source>New Bookmark</source>
         <translation>Новая закладка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1061"/>
+        <location filename="../src/app/qgisapp.cpp" line="1062"/>
         <source>Add WMS Layer...</source>
         <translation>Добавить WMS-слой...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1129"/>
+        <location filename="../src/app/qgisapp.cpp" line="1130"/>
         <source>Add current layer to overview map</source>
         <translation>Добавить текущий слой в обзорную карту</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1157"/>
+        <location filename="../src/app/qgisapp.cpp" line="1158"/>
         <source>Open the plugin manager</source>
         <translation>Открыть менеджер модулей</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="759"/>
+        <location filename="../src/app/qgisapp.cpp" line="760"/>
         <source>Capture Point</source>
         <translation>Создать точку</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="761"/>
+        <location filename="../src/app/qgisapp.cpp" line="762"/>
         <source>Capture Points</source>
         <translation>Создать точку</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="765"/>
+        <location filename="../src/app/qgisapp.cpp" line="766"/>
         <source>Capture Line</source>
         <translation>Создать линию</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="767"/>
+        <location filename="../src/app/qgisapp.cpp" line="768"/>
         <source>Capture Lines</source>
         <translation>Создать линию</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="771"/>
+        <location filename="../src/app/qgisapp.cpp" line="772"/>
         <source>Capture Polygon</source>
         <translation>Создать полигон</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="773"/>
+        <location filename="../src/app/qgisapp.cpp" line="774"/>
         <source>Capture Polygons</source>
         <translation>Создать полигон</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="795"/>
-        <location filename="../src/app/qgisapp.cpp" line="797"/>
+        <location filename="../src/app/qgisapp.cpp" line="796"/>
+        <location filename="../src/app/qgisapp.cpp" line="798"/>
         <source>Delete Selected</source>
         <translation>Удалить выделенное</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="802"/>
-        <location filename="../src/app/qgisapp.cpp" line="804"/>
+        <location filename="../src/app/qgisapp.cpp" line="803"/>
+        <location filename="../src/app/qgisapp.cpp" line="805"/>
         <source>Add Vertex</source>
         <translation>Добавить вершину</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="814"/>
-        <location filename="../src/app/qgisapp.cpp" line="816"/>
+        <location filename="../src/app/qgisapp.cpp" line="815"/>
+        <location filename="../src/app/qgisapp.cpp" line="817"/>
         <source>Delete Vertex</source>
         <translation>Удалить вершину</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="808"/>
-        <location filename="../src/app/qgisapp.cpp" line="810"/>
+        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="811"/>
         <source>Move Vertex</source>
         <translation>Переместить вершину</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1410"/>
+        <location filename="../src/app/qgisapp.cpp" line="1411"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1414"/>
+        <location filename="../src/app/qgisapp.cpp" line="1415"/>
         <source>&amp;Open Recent Projects</source>
         <translation>&amp;Открыть недавние проекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1498"/>
+        <location filename="../src/app/qgisapp.cpp" line="1499"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1549"/>
+        <location filename="../src/app/qgisapp.cpp" line="1550"/>
         <source>&amp;Layer</source>
         <translation>С&amp;лой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1594"/>
+        <location filename="../src/app/qgisapp.cpp" line="1595"/>
         <source>&amp;Settings</source>
         <translation>&amp;Установки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1648"/>
+        <location filename="../src/app/qgisapp.cpp" line="1649"/>
         <source>&amp;Help</source>
         <translation>&amp;Справка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1670"/>
+        <location filename="../src/app/qgisapp.cpp" line="1673"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1682"/>
+        <location filename="../src/app/qgisapp.cpp" line="1684"/>
         <source>Manage Layers</source>
         <translation>Управление слоями</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1898"/>
+        <location filename="../src/app/qgisapp.cpp" line="1862"/>
         <source>Help</source>
         <translation>Справка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1735"/>
+        <location filename="../src/app/qgisapp.cpp" line="1704"/>
         <source>Digitizing</source>
         <translation>Оцифровка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1776"/>
+        <location filename="../src/app/qgisapp.cpp" line="1743"/>
         <source>Map Navigation</source>
         <translation>Навигация</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1792"/>
+        <location filename="../src/app/qgisapp.cpp" line="1758"/>
         <source>Attributes</source>
         <translation>Атрибуты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1892"/>
+        <location filename="../src/app/qgisapp.cpp" line="1857"/>
         <source>Plugins</source>
         <translation>Модули</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2046"/>
+        <location filename="../src/app/qgisapp.cpp" line="2008"/>
         <source>Ready</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3452"/>
+        <location filename="../src/app/qgisapp.cpp" line="3426"/>
         <source>Unable to open project</source>
         <translation>Не удалось открыть проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5575"/>
-        <location filename="../src/app/qgisapp.cpp" line="5617"/>
-        <location filename="../src/app/qgisapp.cpp" line="6752"/>
+        <location filename="../src/app/qgisapp.cpp" line="5555"/>
+        <location filename="../src/app/qgisapp.cpp" line="5597"/>
+        <location filename="../src/app/qgisapp.cpp" line="6732"/>
         <source>Layer is not valid</source>
         <translation>Неверный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5618"/>
-        <location filename="../src/app/qgisapp.cpp" line="6753"/>
+        <location filename="../src/app/qgisapp.cpp" line="5598"/>
+        <location filename="../src/app/qgisapp.cpp" line="6733"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Слой не является действительным и не может быть добавлен на карту</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5663"/>
+        <location filename="../src/app/qgisapp.cpp" line="5643"/>
         <source>Save?</source>
         <translation>Сохранить?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6851"/>
+        <location filename="../src/app/qgisapp.cpp" line="6831"/>
         <source>Unsupported Data Source</source>
         <translation>Неподдерживаемый источник данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6968"/>
+        <location filename="../src/app/qgisapp.cpp" line="6948"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Введите имя для этой закладки:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1296"/>
-        <location filename="../src/app/qgisapp.cpp" line="4915"/>
-        <location filename="../src/app/qgisapp.cpp" line="4991"/>
-        <location filename="../src/app/qgisapp.cpp" line="5005"/>
-        <location filename="../src/app/qgisapp.cpp" line="6985"/>
+        <location filename="../src/app/qgisapp.cpp" line="1297"/>
+        <location filename="../src/app/qgisapp.cpp" line="4889"/>
+        <location filename="../src/app/qgisapp.cpp" line="4971"/>
+        <location filename="../src/app/qgisapp.cpp" line="4985"/>
+        <location filename="../src/app/qgisapp.cpp" line="6965"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6985"/>
+        <location filename="../src/app/qgisapp.cpp" line="6965"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Не удалось создать закладку. Ваша пользовательская база данных отсутствует или повреждена</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1215"/>
+        <location filename="../src/app/qgisapp.cpp" line="1216"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="741"/>
+        <location filename="../src/app/qgisapp.cpp" line="742"/>
         <source>Cut Features</source>
         <translation>Вырезать объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="743"/>
+        <location filename="../src/app/qgisapp.cpp" line="744"/>
         <source>Cut selected features</source>
         <translation>Вырезать выделенные объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="747"/>
+        <location filename="../src/app/qgisapp.cpp" line="748"/>
         <source>Copy Features</source>
         <translation>Копировать объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="749"/>
+        <location filename="../src/app/qgisapp.cpp" line="750"/>
         <source>Copy selected features</source>
         <translation>Копировать выделенные объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="753"/>
+        <location filename="../src/app/qgisapp.cpp" line="754"/>
         <source>Paste Features</source>
         <translation>Вставить объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="755"/>
+        <location filename="../src/app/qgisapp.cpp" line="756"/>
         <source>Paste selected features</source>
         <translation>Вставить выделенные объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5426"/>
+        <location filename="../src/app/qgisapp.cpp" line="5406"/>
         <source>Network error while communicating with server</source>
         <translation>Ошибка сети во время обмена данными с сервером</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5429"/>
+        <location filename="../src/app/qgisapp.cpp" line="5409"/>
         <source>Unknown network socket error</source>
         <translation>Неизвестная ошибка сетевого соединения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="469"/>
+        <location filename="../src/app/qgisapp.cpp" line="470"/>
         <source>Checking provider plugins</source>
         <translation>Проверка источников данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="473"/>
+        <location filename="../src/app/qgisapp.cpp" line="474"/>
         <source>Starting Python</source>
         <translation>Запуск Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4136"/>
+        <location filename="../src/app/qgisapp.cpp" line="4110"/>
         <source>Provider does not support deletion</source>
         <translation>Источник не поддерживает удаление</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4137"/>
+        <location filename="../src/app/qgisapp.cpp" line="4111"/>
         <source>Data provider does not support deleting features</source>
         <translation>Источник данных не поддерживает удаление объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4143"/>
-        <location filename="../src/app/qgisapp.cpp" line="4429"/>
-        <location filename="../src/app/qgisapp.cpp" line="4488"/>
+        <location filename="../src/app/qgisapp.cpp" line="4117"/>
+        <location filename="../src/app/qgisapp.cpp" line="4403"/>
+        <location filename="../src/app/qgisapp.cpp" line="4462"/>
         <source>Layer not editable</source>
         <translation>Нередактируемый слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4144"/>
+        <location filename="../src/app/qgisapp.cpp" line="4118"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Для слоя не выбран режим редактирования. Выберите «Режим редактирования» на панели инструментов оцифровки.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1072"/>
+        <location filename="../src/app/qgisapp.cpp" line="1073"/>
         <source>Toggle editing</source>
         <translation>Режим редактирования</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1074"/>
+        <location filename="../src/app/qgisapp.cpp" line="1075"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Переключить текущий слой в режим редактирования</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="821"/>
-        <location filename="../src/app/qgisapp.cpp" line="823"/>
+        <location filename="../src/app/qgisapp.cpp" line="822"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
         <source>Add Ring</source>
         <translation>Добавить кольцо</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1983"/>
+        <location filename="../src/app/qgisapp.cpp" line="1945"/>
         <source>Scale </source>
         <translation>Масштаб </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1999"/>
+        <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Текущий масштаб карты (в формате x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5963"/>
+        <location filename="../src/app/qgisapp.cpp" line="5943"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Координаты карты в позиции курсора мыши</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5078"/>
+        <location filename="../src/app/qgisapp.cpp" line="5058"/>
         <source>Invalid scale</source>
         <translation>Неверный масштаб</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5664"/>
+        <location filename="../src/app/qgisapp.cpp" line="5644"/>
         <source>Do you want to save the current project?</source>
         <translation>Вы хотите сохранить текущий проект?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="789"/>
-        <location filename="../src/app/qgisapp.cpp" line="791"/>
+        <location filename="../src/app/qgisapp.cpp" line="790"/>
+        <location filename="../src/app/qgisapp.cpp" line="792"/>
         <source>Split Features</source>
         <translation>Разбить объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="988"/>
+        <location filename="../src/app/qgisapp.cpp" line="989"/>
         <source>Map Tips</source>
         <translation>Всплывающие описания</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="990"/>
+        <location filename="../src/app/qgisapp.cpp" line="991"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>Показать информацию об объектах при перемещении над ними курсора мыши</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1984"/>
+        <location filename="../src/app/qgisapp.cpp" line="1946"/>
         <source>Current map scale</source>
         <translation>Текущий масштаб карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6003"/>
+        <location filename="../src/app/qgisapp.cpp" line="5983"/>
         <source>Extents:</source>
         <translation>Границы:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7000"/>
+        <location filename="../src/app/qgisapp.cpp" line="6980"/>
         <source>Project file is older</source>
         <translation>Устаревший файл проекта</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7017"/>
+        <location filename="../src/app/qgisapp.cpp" line="6997"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Правка:Параметры:Общие&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7018"/>
+        <location filename="../src/app/qgisapp.cpp" line="6998"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Предупреждать при попытке открытия файлов проекта старых версий QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1164"/>
+        <location filename="../src/app/qgisapp.cpp" line="1165"/>
         <source>Toggle fullscreen mode</source>
         <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2031"/>
+        <location filename="../src/app/qgisapp.cpp" line="1993"/>
         <source>Resource Location Error</source>
         <translation>Ошибка поиска ресурса</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2032"/>
+        <location filename="../src/app/qgisapp.cpp" line="1994"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
@@ -7015,24 +7292,24 @@ You are seeing this message most likely because you have no DISPLAY environment 
  Выход...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2339"/>
+        <location filename="../src/app/qgisapp.cpp" line="2313"/>
         <source>Overview</source>
         <translation>Обзор</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2633"/>
+        <location filename="../src/app/qgisapp.cpp" line="2607"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>Версия QGIS: %1, ревизия: %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2657"/>
+        <location filename="../src/app/qgisapp.cpp" line="2631"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>
 Версия Qt, используемая при сборке: %1. Текущая версия Qt: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2008"/>
+        <location filename="../src/app/qgisapp.cpp" line="1970"/>
         <source>Stop map rendering</source>
         <translation>Остановить отрисовку</translation>
     </message>
@@ -7051,791 +7328,791 @@ Please contact the developers.
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1178"/>
+        <location filename="../src/app/qgisapp.cpp" line="1179"/>
         <source>Custom CRS...</source>
         <translation>Ввод системы координат...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1180"/>
+        <location filename="../src/app/qgisapp.cpp" line="1181"/>
         <source>Manage custom coordinate reference systems</source>
         <translation>Управление пользовательскими системами координат</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1939"/>
+        <location filename="../src/app/qgisapp.cpp" line="1901"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Переключить вывод границ или позиции курсора</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2037"/>
+        <location filename="../src/app/qgisapp.cpp" line="1999"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Этот значок показывает, было ли включено преобразование координат «на лету». Щёлкните здесь, чтобы открыть диалог свойств проекта и изменить данный режим.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2041"/>
+        <location filename="../src/app/qgisapp.cpp" line="2003"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>Преобразование координат — щёлкните для открытия диалога свойств системы координат</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4968"/>
+        <location filename="../src/app/qgisapp.cpp" line="4948"/>
         <source>Start editing failed</source>
         <translation>Не удалось начать редактирование</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4968"/>
+        <location filename="../src/app/qgisapp.cpp" line="4948"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Источник не может быть открыт для редактирования</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4979"/>
+        <location filename="../src/app/qgisapp.cpp" line="4959"/>
         <source>Stop editing</source>
         <translation>Прекратить редактирование</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4980"/>
+        <location filename="../src/app/qgisapp.cpp" line="4960"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Вы хотите сохранить изменения в слое %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5005"/>
+        <location filename="../src/app/qgisapp.cpp" line="4985"/>
         <source>Problems during roll back</source>
         <translation>Ошибка в процессе отката</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5955"/>
+        <location filename="../src/app/qgisapp.cpp" line="5935"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Границы текущего окна в координатах карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6076"/>
+        <location filename="../src/app/qgisapp.cpp" line="6056"/>
         <source>Maptips require an active layer</source>
         <translation>Для вывода всплывающих описаний необходим активный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="686"/>
+        <location filename="../src/app/qgisapp.cpp" line="687"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="729"/>
+        <location filename="../src/app/qgisapp.cpp" line="730"/>
         <source>&amp;Undo</source>
         <translation>&amp;Отменить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="730"/>
+        <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="731"/>
+        <location filename="../src/app/qgisapp.cpp" line="732"/>
         <source>Undo the last operation</source>
         <translation>Отменить последнюю операцию</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="713"/>
+        <location filename="../src/app/qgisapp.cpp" line="714"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Вырезать</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="714"/>
-        <location filename="../src/app/qgisapp.cpp" line="742"/>
+        <location filename="../src/app/qgisapp.cpp" line="715"/>
+        <location filename="../src/app/qgisapp.cpp" line="743"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="715"/>
+        <location filename="../src/app/qgisapp.cpp" line="716"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Вырезать выделение в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="718"/>
+        <location filename="../src/app/qgisapp.cpp" line="719"/>
         <source>&amp;Copy</source>
         <translation>&amp;Копировать</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="719"/>
-        <location filename="../src/app/qgisapp.cpp" line="748"/>
+        <location filename="../src/app/qgisapp.cpp" line="720"/>
+        <location filename="../src/app/qgisapp.cpp" line="749"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="720"/>
+        <location filename="../src/app/qgisapp.cpp" line="721"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Копировать выделение в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="723"/>
+        <location filename="../src/app/qgisapp.cpp" line="724"/>
         <source>&amp;Paste</source>
         <translation>Вст&amp;авить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="724"/>
-        <location filename="../src/app/qgisapp.cpp" line="754"/>
+        <location filename="../src/app/qgisapp.cpp" line="725"/>
+        <location filename="../src/app/qgisapp.cpp" line="755"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="725"/>
+        <location filename="../src/app/qgisapp.cpp" line="726"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Вставить содержимое буфера обмена в текущее выделение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="735"/>
+        <location filename="../src/app/qgisapp.cpp" line="736"/>
         <source>&amp;Redo</source>
         <translation>В&amp;ернуть</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="736"/>
+        <location filename="../src/app/qgisapp.cpp" line="737"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="737"/>
+        <location filename="../src/app/qgisapp.cpp" line="738"/>
         <source>Redo the last operation</source>
         <translation>Повторить последнее отменённое действие</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="851"/>
-        <location filename="../src/app/qgisapp.cpp" line="853"/>
+        <location filename="../src/app/qgisapp.cpp" line="852"/>
+        <location filename="../src/app/qgisapp.cpp" line="854"/>
         <source>Merge selected features</source>
         <translation>Объединить выбранные объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="857"/>
-        <location filename="../src/app/qgisapp.cpp" line="859"/>
+        <location filename="../src/app/qgisapp.cpp" line="858"/>
+        <location filename="../src/app/qgisapp.cpp" line="860"/>
         <source>Merge attributes of selected features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="863"/>
-        <location filename="../src/app/qgisapp.cpp" line="865"/>
+        <location filename="../src/app/qgisapp.cpp" line="864"/>
+        <location filename="../src/app/qgisapp.cpp" line="866"/>
         <source>Node Tool</source>
         <translation>Редактирование узлов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="875"/>
+        <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Snapping Options...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="877"/>
+        <location filename="../src/app/qgisapp.cpp" line="878"/>
         <source>Manage the background snapping options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="897"/>
+        <location filename="../src/app/qgisapp.cpp" line="898"/>
         <source>, hold ctrl to add/subtract current selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="900"/>
         <source>Select single feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="901"/>
+        <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Select single features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="905"/>
+        <location filename="../src/app/qgisapp.cpp" line="906"/>
         <source>, hold shift to select by containment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="967"/>
-        <location filename="../src/app/qgisapp.cpp" line="969"/>
+        <location filename="../src/app/qgisapp.cpp" line="968"/>
+        <location filename="../src/app/qgisapp.cpp" line="970"/>
         <source>Zoom to Selection</source>
         <translation>Увеличить до выделенного</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="968"/>
+        <location filename="../src/app/qgisapp.cpp" line="969"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="982"/>
+        <location filename="../src/app/qgisapp.cpp" line="983"/>
         <source>Zoom Actual Size</source>
         <translation>Фактический размер</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="984"/>
+        <location filename="../src/app/qgisapp.cpp" line="985"/>
         <source>Zoom to Actual Size</source>
         <translation>Увеличить до фактического размера</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1021"/>
-        <location filename="../src/app/qgisapp.cpp" line="3982"/>
+        <location filename="../src/app/qgisapp.cpp" line="1022"/>
+        <location filename="../src/app/qgisapp.cpp" line="3956"/>
         <source>Labeling</source>
         <translation>Подписи</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1038"/>
+        <location filename="../src/app/qgisapp.cpp" line="1039"/>
         <source>Raster calculator ...</source>
         <translation>Калькулятор растров...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1041"/>
+        <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Add Vector Layer...</source>
         <translation>Добавить векторный слой...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1046"/>
+        <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>Add Raster Layer...</source>
         <translation>Добавить растровый слой...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1051"/>
+        <location filename="../src/app/qgisapp.cpp" line="1052"/>
         <source>Add PostGIS Layer...</source>
         <translation>Добавить слой PostGIS...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1063"/>
+        <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation>Добавить слой с картографического веб-сервера</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1066"/>
-        <location filename="../src/app/qgisapp.cpp" line="1068"/>
+        <location filename="../src/app/qgisapp.cpp" line="1067"/>
+        <location filename="../src/app/qgisapp.cpp" line="1069"/>
         <source>Open Attribute Table</source>
         <translation>Открыть таблицу атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1081"/>
+        <location filename="../src/app/qgisapp.cpp" line="1082"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>Сохранить изменения в текущем слое и продолжить редактирование</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1097"/>
-        <location filename="../src/app/qgisapp.cpp" line="1099"/>
+        <location filename="../src/app/qgisapp.cpp" line="1098"/>
+        <location filename="../src/app/qgisapp.cpp" line="1100"/>
         <source>Remove Layer(s)</source>
         <translation>Удалить выбранные слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1098"/>
+        <location filename="../src/app/qgisapp.cpp" line="1099"/>
         <source>Ctrl+D</source>
         <comment>Remove Layer(s)</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1109"/>
+        <location filename="../src/app/qgisapp.cpp" line="1110"/>
         <source>Live GPS tracking</source>
         <translation>GPS-слежение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1111"/>
+        <location filename="../src/app/qgisapp.cpp" line="1112"/>
         <source>Show GPS tool</source>
         <translation>Включить панель GPS-слежения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1115"/>
+        <location filename="../src/app/qgisapp.cpp" line="1116"/>
         <source>Properties...</source>
         <translation>Свойства...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1117"/>
+        <location filename="../src/app/qgisapp.cpp" line="1118"/>
         <source>Set properties of the current layer</source>
         <translation>Изменить свойства текущего слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1121"/>
+        <location filename="../src/app/qgisapp.cpp" line="1122"/>
         <source>Query...</source>
         <translation>Запрос...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1123"/>
+        <location filename="../src/app/qgisapp.cpp" line="1124"/>
         <source>Set subset query of the current layer</source>
         <translation>Задать запрос подмножества объектов для текущего слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1127"/>
+        <location filename="../src/app/qgisapp.cpp" line="1128"/>
         <source>Add to Overview</source>
         <translation>Добавить в обзор</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1128"/>
+        <location filename="../src/app/qgisapp.cpp" line="1129"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1133"/>
+        <location filename="../src/app/qgisapp.cpp" line="1134"/>
         <source>Add All to Overview</source>
         <translation>Добавить все в обзор</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1144"/>
+        <location filename="../src/app/qgisapp.cpp" line="1145"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1149"/>
+        <location filename="../src/app/qgisapp.cpp" line="1150"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1155"/>
+        <location filename="../src/app/qgisapp.cpp" line="1156"/>
         <source>Manage Plugins...</source>
         <translation>Управление модулями...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1162"/>
+        <location filename="../src/app/qgisapp.cpp" line="1163"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1163"/>
+        <location filename="../src/app/qgisapp.cpp" line="1164"/>
         <source>Ctrl+F</source>
         <comment>Toggle fullscreen mode</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1168"/>
+        <location filename="../src/app/qgisapp.cpp" line="1169"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1192"/>
+        <location filename="../src/app/qgisapp.cpp" line="1193"/>
         <source>Minimize</source>
         <translation>Свернуть</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1193"/>
+        <location filename="../src/app/qgisapp.cpp" line="1194"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1194"/>
+        <location filename="../src/app/qgisapp.cpp" line="1195"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Свернуть активное окно в док</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1197"/>
+        <location filename="../src/app/qgisapp.cpp" line="1198"/>
         <source>Zoom</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1199"/>
+        <location filename="../src/app/qgisapp.cpp" line="1200"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Переключение между предопределённым и заданным пользователем размером окна</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1202"/>
+        <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Bring All to Front</source>
         <translation>Все на передний план</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1204"/>
+        <location filename="../src/app/qgisapp.cpp" line="1205"/>
         <source>Bring forward all open windows</source>
         <translation>Выдвинуть на передний план все открытые окна</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1242"/>
+        <location filename="../src/app/qgisapp.cpp" line="1243"/>
         <source>Move Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1243"/>
+        <location filename="../src/app/qgisapp.cpp" line="1244"/>
         <source>Move labels interactively</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1246"/>
+        <location filename="../src/app/qgisapp.cpp" line="1247"/>
         <source>Rotate Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1247"/>
+        <location filename="../src/app/qgisapp.cpp" line="1248"/>
         <source>Rotate labels interactively</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1250"/>
+        <location filename="../src/app/qgisapp.cpp" line="1251"/>
         <source>Change label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1251"/>
+        <location filename="../src/app/qgisapp.cpp" line="1252"/>
         <source>Change label properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1296"/>
+        <location filename="../src/app/qgisapp.cpp" line="1297"/>
         <source>Failed to open Python console:</source>
         <translation>Не удалось открыть консоль Python:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1440"/>
+        <location filename="../src/app/qgisapp.cpp" line="1441"/>
         <source>&amp;Edit</source>
         <translation>&amp;Правка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1493"/>
+        <location filename="../src/app/qgisapp.cpp" line="1494"/>
         <source>Panels</source>
         <translation>Панели</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1494"/>
+        <location filename="../src/app/qgisapp.cpp" line="1495"/>
         <source>Toolbars</source>
         <translation>Панели инструментов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1505"/>
+        <location filename="../src/app/qgisapp.cpp" line="1506"/>
         <source>Select</source>
         <translation>Выбрать</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1515"/>
+        <location filename="../src/app/qgisapp.cpp" line="1516"/>
         <source>Measure</source>
         <translation>Измерить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1552"/>
+        <location filename="../src/app/qgisapp.cpp" line="1553"/>
         <source>New</source>
         <translation>Создать</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1623"/>
+        <location filename="../src/app/qgisapp.cpp" line="1624"/>
         <source>&amp;Window</source>
         <translation>&amp;Окно</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1635"/>
+        <location filename="../src/app/qgisapp.cpp" line="1636"/>
         <source>&amp;Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1906"/>
+        <location filename="../src/app/qgisapp.cpp" line="1869"/>
         <source>Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1952"/>
-        <location filename="../src/app/qgisapp.cpp" line="5965"/>
+        <location filename="../src/app/qgisapp.cpp" line="1914"/>
+        <location filename="../src/app/qgisapp.cpp" line="5945"/>
         <source>Coordinate:</source>
         <translation>Координаты:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1953"/>
+        <location filename="../src/app/qgisapp.cpp" line="1915"/>
         <source>Current map coordinate</source>
         <translation>Текущие координаты карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1967"/>
+        <location filename="../src/app/qgisapp.cpp" line="1929"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation>Поле вывода координат карты в позиции курсора. Координаты постоянно обновляются при перемещении мыши. Для перемещения центра карты в заданное положение введите координаты вручную.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1971"/>
+        <location filename="../src/app/qgisapp.cpp" line="1933"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>Текущие координаты карты (в формате x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2440"/>
-        <location filename="../src/app/qgisapp.cpp" line="2482"/>
+        <location filename="../src/app/qgisapp.cpp" line="2414"/>
+        <location filename="../src/app/qgisapp.cpp" line="2456"/>
         <source>Private qgis.db</source>
         <translation>Ошибка обработки qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2440"/>
+        <location filename="../src/app/qgisapp.cpp" line="2414"/>
         <source>Could not open qgis.db</source>
         <translation>Не удалось открыть qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2482"/>
+        <location filename="../src/app/qgisapp.cpp" line="2456"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>Не удалось обновить внутреннюю базу данных qgis.db.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2637"/>
+        <location filename="../src/app/qgisapp.cpp" line="2611"/>
         <source>
 This copy of QGIS has been built with GDAL/OGR %1.</source>
         <translation>
 Поддержка GDAL/OGR: %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2640"/>
+        <location filename="../src/app/qgisapp.cpp" line="2614"/>
         <source>
 This copy of QGIS has been built with PostgreSQL support (%1).</source>
         <translation>
 Поддержка PostgreSQL: %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2646"/>
+        <location filename="../src/app/qgisapp.cpp" line="2620"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support (%1).</source>
         <translation>
 Поддержка SpatiaLite: %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2651"/>
+        <location filename="../src/app/qgisapp.cpp" line="2625"/>
         <source>
 This copy of QGIS has been built with QWT %1.</source>
         <translation>
 Поддержка QWT: %1.</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/app/qgisapp.cpp" line="2665"/>
+        <location filename="../src/app/qgisapp.cpp" line="2639"/>
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
         <translation>Что нового в версии 1.6.0 «Capiapó»?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2667"/>
+        <location filename="../src/app/qgisapp.cpp" line="2641"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
         <translation>Обратите внимание, что данный выпуск относится к числу «нестабильных». Это означает, что он включает новые возможности и расширяет библиотечные интерфейсы в сравнении с версиями 1.0.x и 1.5.0. Мы рекомендуем использовать эту версию вместо предыдущих.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2644"/>
         <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
         <translation>Эта версия включает более 177 исправлений ошибок и множество обновлений, которые частично перечислены ниже.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2673"/>
+        <location filename="../src/app/qgisapp.cpp" line="2647"/>
         <source>General Improvements</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2675"/>
+        <location filename="../src/app/qgisapp.cpp" line="2649"/>
         <source>Added gpsd support to live gps tracking.</source>
         <translation>Поддержка gpsd для отслеживания данных GPS в реальном времени.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2676"/>
+        <location filename="../src/app/qgisapp.cpp" line="2650"/>
         <source>A new plugin has been included that allows for offline editing.</source>
         <translation>Модуль оффлайнового редактирования данных.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2677"/>
+        <location filename="../src/app/qgisapp.cpp" line="2651"/>
         <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
         <translation>Возможность вставки значения NULL в калькуляторе полей в случае ошибки.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2678"/>
+        <location filename="../src/app/qgisapp.cpp" line="2652"/>
         <source>Update srs.db to include grid reference.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2679"/>
+        <location filename="../src/app/qgisapp.cpp" line="2653"/>
         <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
         <translation>Встроенный растровый калькулятор (C++), позволяющий обрабатывать большие растры.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2680"/>
+        <location filename="../src/app/qgisapp.cpp" line="2654"/>
         <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
         <translation>Возможность копирования и вставки границ охвата в строке состояния.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2681"/>
+        <location filename="../src/app/qgisapp.cpp" line="2655"/>
         <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
         <translation>Новые операторы в калькуляторе полей, такие как конкатенация, счётчик строк и т.д.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2682"/>
+        <location filename="../src/app/qgisapp.cpp" line="2656"/>
         <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
         <translation>Параметр командной строки «--configpath», который позволяет сохранить параметры QGIS и QSettings в каталоге, отличном от ~/.qgis. Этот параметр позволяет создать переносимую версию QGIS для USB-диска.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2683"/>
+        <location filename="../src/app/qgisapp.cpp" line="2657"/>
         <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
         <translation>Экспериментальная поддержка WFS-T. Функциональность WFS реализована средствами Network Manager.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2684"/>
+        <location filename="../src/app/qgisapp.cpp" line="2658"/>
         <source>Georeferencer has had many tidy ups and improvements.</source>
         <translation>Множество улучшений в модуле привязки растров.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2685"/>
+        <location filename="../src/app/qgisapp.cpp" line="2659"/>
         <source>Support for long int in attribute dialog and editor.</source>
         <translation>Поддержка длинного целого в редакторе значений атрибутов.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2686"/>
+        <location filename="../src/app/qgisapp.cpp" line="2660"/>
         <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
         <translation>QGIS Mapserver включен в основную ветвь разработки и доступен в виде пакетов. QGiS Mapserver позволяет публиковать проекты QGIS в сети по протоколу OGS WMS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2686"/>
-        <location filename="../src/app/qgisapp.cpp" line="2707"/>
+        <location filename="../src/app/qgisapp.cpp" line="2660"/>
+        <location filename="../src/app/qgisapp.cpp" line="2681"/>
         <source>Read More.</source>
         <translation>Узнать больше.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2687"/>
+        <location filename="../src/app/qgisapp.cpp" line="2661"/>
         <source>Select and measure toolbar flyouts and submenus.</source>
         <translation>Расширены функции выбора и измерения.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2688"/>
+        <location filename="../src/app/qgisapp.cpp" line="2662"/>
         <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
         <translation>Поддержка непространственных таблиц (в источниках OGR, текст с разделителями, PostgreSQL). Такие таблицы можно использовать для поиска полей, а также просматривать и редактировать.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2689"/>
+        <location filename="../src/app/qgisapp.cpp" line="2663"/>
         <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
         <translation>Поддержка поиска объектов по подстроке ID ($id) и другие улучшения поиска.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2690"/>
+        <location filename="../src/app/qgisapp.cpp" line="2664"/>
         <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
         <translation>Возможность обновления слоёв в интерфейсе источников данных, благодаря которой кэширующие источники (WMS и WFS) могут синхронизироваться с исходными данными.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2693"/>
+        <location filename="../src/app/qgisapp.cpp" line="2667"/>
         <source>Table of contents (TOC) improvements</source>
         <translation>Легенда</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2695"/>
+        <location filename="../src/app/qgisapp.cpp" line="2669"/>
         <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
         <translation>Возможность растяжения мин./макс.-значений растра в пределах текущего охвата.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2696"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
         <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
         <translation>При сохранении векторных файлов используя пункт контекстного меню «Сохранить как» теперь можно указывать параметры OGR.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2697"/>
+        <location filename="../src/app/qgisapp.cpp" line="2671"/>
         <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
         <translation>Выбор и удаление нескольких слоёв одновременно.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2700"/>
+        <location filename="../src/app/qgisapp.cpp" line="2674"/>
         <source>Labelling (New generation only)</source>
         <translation>Подписи (новая символика)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2702"/>
+        <location filename="../src/app/qgisapp.cpp" line="2676"/>
         <source>Data defined label position.</source>
         <translation>Определяемое данными положение подписи.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2703"/>
+        <location filename="../src/app/qgisapp.cpp" line="2677"/>
         <source>Line wrapping, data defined font and buffer settings.</source>
         <translation>Перенос строк, определяемый данными шрифт и параметры буферизации.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2705"/>
+        <location filename="../src/app/qgisapp.cpp" line="2679"/>
         <source>Layer properties and symbology</source>
         <translation>Свойства слоя и символика</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2707"/>
+        <location filename="../src/app/qgisapp.cpp" line="2681"/>
         <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
         <translation>Три новых режима классификации для градуированных условных знаков (новая символика): Естественные интервалы (Дженкс), Стандартные отклонения и Наглядные интервалы (на основе алгоритма pretty из пакета R).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2708"/>
+        <location filename="../src/app/qgisapp.cpp" line="2682"/>
         <source>Improved loading speed of the symbol properties dialog.</source>
         <translation>Улучшена скорость загрузки диалога свойств условных знаков.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2709"/>
+        <location filename="../src/app/qgisapp.cpp" line="2683"/>
         <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
         <translation>Определяемые данными вращение и размер в отрисовке градуированных и категорийных знаков (новая символика).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2710"/>
+        <location filename="../src/app/qgisapp.cpp" line="2684"/>
         <source>Use size scale also for line symbols to modify line width.</source>
         <translation>Масштабирование размера условного знака теперь изменяет ширину линии.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2711"/>
+        <location filename="../src/app/qgisapp.cpp" line="2685"/>
         <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
         <translation>Новая реализация растровой гистограммы на основе QWT. Добавлена возможность сохранения гистограммы в файл. По оси X выводятся фактические значения пикселей.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2712"/>
+        <location filename="../src/app/qgisapp.cpp" line="2686"/>
         <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
         <translation>Возможность интерактивно выбирать пиксели с карты для заполнения таблицы прозрачности в свойствах растра.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2713"/>
+        <location filename="../src/app/qgisapp.cpp" line="2687"/>
         <source>Allow creation of color ramps in vector color ramp combo box.</source>
         <translation>Возможность создавать градиенты при выборе градиента из выпадающего списка.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2714"/>
+        <location filename="../src/app/qgisapp.cpp" line="2688"/>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
         <translation>Кнопка «Управление стилями» добавлена в диалог выбора условных знаков для быстрого доступа к стилям.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2717"/>
+        <location filename="../src/app/qgisapp.cpp" line="2691"/>
         <source>Map Composer</source>
         <translation>Компоновка карт</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2719"/>
+        <location filename="../src/app/qgisapp.cpp" line="2693"/>
         <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
         <translation>Отображение и изменение ширины/высоты элементов в панели свойств.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2720"/>
+        <location filename="../src/app/qgisapp.cpp" line="2694"/>
         <source>Composer items can now be deleted with the backspace key.</source>
         <translation>Возможность удаления элементов компоновки клавишей Backspace.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2721"/>
+        <location filename="../src/app/qgisapp.cpp" line="2695"/>
         <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
         <translation>Сортировка значений полей в таблице атрибутов.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3335"/>
         <source>Calculating...</source>
         <translation>Обработка...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3361"/>
+        <location filename="../src/app/qgisapp.cpp" line="3335"/>
         <source>Abort...</source>
         <translation>Отменить...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4087"/>
+        <location filename="../src/app/qgisapp.cpp" line="4061"/>
         <source>Saving done</source>
         <translation>Сохранение выполнено</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4087"/>
+        <location filename="../src/app/qgisapp.cpp" line="4061"/>
         <source>Export to vector file has been completed</source>
         <translation>Экспорт в векторный файл завершён</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4092"/>
+        <location filename="../src/app/qgisapp.cpp" line="4066"/>
         <source>Save error</source>
         <translation>Ошибка сохранения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4093"/>
+        <location filename="../src/app/qgisapp.cpp" line="4067"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Не удалось выполнить экспорт в векторный файл.
 Ошибка: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4451"/>
+        <location filename="../src/app/qgisapp.cpp" line="4425"/>
         <source>Merged feature attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5211"/>
+        <location filename="../src/app/qgisapp.cpp" line="5191"/>
         <source>Tile scale</source>
         <translation>Уровень детализации</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5576"/>
+        <location filename="../src/app/qgisapp.cpp" line="5556"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Слой %1 не является действительным и не может быть добавлен на карту</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6160"/>
+        <location filename="../src/app/qgisapp.cpp" line="6140"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -7845,32 +8122,32 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7181"/>
+        <location filename="../src/app/qgisapp.cpp" line="7161"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7181"/>
+        <location filename="../src/app/qgisapp.cpp" line="7161"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Данный слой не имеет диалога свойств.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7212"/>
+        <location filename="../src/app/qgisapp.cpp" line="7192"/>
         <source>Authentication required</source>
         <translation>Требуется проверка подлинности</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7228"/>
+        <location filename="../src/app/qgisapp.cpp" line="7208"/>
         <source>Proxy authentication required</source>
         <translation>Для доступа к прокси-серверу требуется проверка подлинности</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7239"/>
+        <location filename="../src/app/qgisapp.cpp" line="7219"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>Ошибка SSL при доступе к URL %1:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7250"/>
+        <location filename="../src/app/qgisapp.cpp" line="7230"/>
         <source>
 
 Ignore errors?</source>
@@ -7878,265 +8155,265 @@ Ignore errors?</source>
 Игнорировать ошибку?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7254"/>
+        <location filename="../src/app/qgisapp.cpp" line="7234"/>
         <source>SSL errors occured</source>
         <translation>Ошибка SSL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3589"/>
+        <location filename="../src/app/qgisapp.cpp" line="3563"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Выберите имя файла для сохранения проекта QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1079"/>
+        <location filename="../src/app/qgisapp.cpp" line="1080"/>
         <source>Save edits</source>
         <translation>Сохранить изменения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1085"/>
+        <location filename="../src/app/qgisapp.cpp" line="1086"/>
         <source>Save as...</source>
         <translation>Сохранить как...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1087"/>
+        <location filename="../src/app/qgisapp.cpp" line="1088"/>
         <source>Save the current layer as a vector file</source>
         <translation>Сохранить текущий слой в векторном формате</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1091"/>
+        <location filename="../src/app/qgisapp.cpp" line="1092"/>
         <source>Save Selection as vector file...</source>
         <translation>Сохранить выделение как...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1093"/>
+        <location filename="../src/app/qgisapp.cpp" line="1094"/>
         <source>Save the selection as a vector file</source>
         <translation>Сохранить выделение в векторном формате</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1103"/>
+        <location filename="../src/app/qgisapp.cpp" line="1104"/>
         <source>Tile scale slider</source>
         <translation>Уровень детализации</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1105"/>
+        <location filename="../src/app/qgisapp.cpp" line="1106"/>
         <source>Show tile scale slider</source>
         <translation>Включить панель уровня детализации блоков мозаики</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3724"/>
+        <location filename="../src/app/qgisapp.cpp" line="3698"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Выберите имя файла для сохранения снимка карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4155"/>
+        <location filename="../src/app/qgisapp.cpp" line="4129"/>
         <source>Features deleted</source>
         <translation>Удаление объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4200"/>
+        <location filename="../src/app/qgisapp.cpp" line="4174"/>
         <source>Merging features...</source>
         <translation>Объединение объектов...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4200"/>
+        <location filename="../src/app/qgisapp.cpp" line="4174"/>
         <source>Abort</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4416"/>
-        <location filename="../src/app/qgisapp.cpp" line="4477"/>
+        <location filename="../src/app/qgisapp.cpp" line="4390"/>
+        <location filename="../src/app/qgisapp.cpp" line="4451"/>
         <source>No active layer</source>
         <translation>Не выбран активный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4416"/>
-        <location filename="../src/app/qgisapp.cpp" line="4477"/>
+        <location filename="../src/app/qgisapp.cpp" line="4390"/>
+        <location filename="../src/app/qgisapp.cpp" line="4451"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Активный слой не выбран. Пожалуйста, выберите слой из списка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4423"/>
-        <location filename="../src/app/qgisapp.cpp" line="4483"/>
+        <location filename="../src/app/qgisapp.cpp" line="4397"/>
+        <location filename="../src/app/qgisapp.cpp" line="4457"/>
         <source>Active layer is not vector</source>
         <translation>Активный слой не является векторным</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4423"/>
-        <location filename="../src/app/qgisapp.cpp" line="4483"/>
+        <location filename="../src/app/qgisapp.cpp" line="4397"/>
+        <location filename="../src/app/qgisapp.cpp" line="4457"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Инструмент объединения объектов работает только с векторными данными. Пожалуйста, выберите векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4429"/>
-        <location filename="../src/app/qgisapp.cpp" line="4488"/>
+        <location filename="../src/app/qgisapp.cpp" line="4403"/>
+        <location filename="../src/app/qgisapp.cpp" line="4462"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Инструмент объединения объектов работает только в режиме редактирования слоёв. Для выполнения объединения, выберите «Слой -&gt; Режим редактирования» в главном меню</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4437"/>
-        <location filename="../src/app/qgisapp.cpp" line="4503"/>
-        <location filename="../src/app/qgisapp.cpp" line="4542"/>
+        <location filename="../src/app/qgisapp.cpp" line="4411"/>
+        <location filename="../src/app/qgisapp.cpp" line="4477"/>
+        <location filename="../src/app/qgisapp.cpp" line="4516"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Для объединения объектов необходимо выбрать по крайней мере два объекта</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4515"/>
-        <location filename="../src/app/qgisapp.cpp" line="4557"/>
+        <location filename="../src/app/qgisapp.cpp" line="4489"/>
+        <location filename="../src/app/qgisapp.cpp" line="4531"/>
         <source>Merge failed</source>
         <translation>Ошибка объединения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4515"/>
-        <location filename="../src/app/qgisapp.cpp" line="4557"/>
+        <location filename="../src/app/qgisapp.cpp" line="4489"/>
+        <location filename="../src/app/qgisapp.cpp" line="4531"/>
         <source>An error occured during the merge operation</source>
         <translation>В процессе объединения объектов возникла ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4525"/>
-        <location filename="../src/app/qgisapp.cpp" line="4566"/>
+        <location filename="../src/app/qgisapp.cpp" line="4499"/>
+        <location filename="../src/app/qgisapp.cpp" line="4540"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>В результате операции объединения будет создан объект, тип которого не совместим с текущим слоем. Операция будет отменена</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4572"/>
+        <location filename="../src/app/qgisapp.cpp" line="4546"/>
         <source>Merged features</source>
         <translation>Объединение объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4769"/>
+        <location filename="../src/app/qgisapp.cpp" line="4743"/>
         <source>Features cut</source>
         <translation>Вырезка объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4817"/>
+        <location filename="../src/app/qgisapp.cpp" line="4791"/>
         <source>Features pasted</source>
         <translation>Вставка объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5189"/>
+        <location filename="../src/app/qgisapp.cpp" line="5169"/>
         <source>GPS Information</source>
         <translation>GPS-слежение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5313"/>
+        <location filename="../src/app/qgisapp.cpp" line="5293"/>
         <source>Python Console</source>
         <translation>Консоль Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="453"/>
+        <location filename="../src/app/qgisapp.cpp" line="454"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
         <translation>Quantum GIS — %1 («%2»)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="760"/>
+        <location filename="../src/app/qgisapp.cpp" line="761"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="766"/>
+        <location filename="../src/app/qgisapp.cpp" line="767"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="772"/>
+        <location filename="../src/app/qgisapp.cpp" line="773"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="783"/>
-        <location filename="../src/app/qgisapp.cpp" line="785"/>
+        <location filename="../src/app/qgisapp.cpp" line="784"/>
+        <location filename="../src/app/qgisapp.cpp" line="786"/>
         <source>Reshape Features</source>
         <translation>Корректировать объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="869"/>
-        <location filename="../src/app/qgisapp.cpp" line="871"/>
+        <location filename="../src/app/qgisapp.cpp" line="870"/>
+        <location filename="../src/app/qgisapp.cpp" line="872"/>
         <source>Rotate Point Symbols</source>
         <translation>Повернуть значки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="907"/>
-        <location filename="../src/app/qgisapp.cpp" line="909"/>
+        <location filename="../src/app/qgisapp.cpp" line="908"/>
+        <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>Select features by rectangle</source>
         <translation>Выбрать объекты прямоугольником</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="913"/>
-        <location filename="../src/app/qgisapp.cpp" line="915"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
+        <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>Select features by polygon</source>
         <translation>Выбрать объекты полигоном</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="919"/>
-        <location filename="../src/app/qgisapp.cpp" line="921"/>
+        <location filename="../src/app/qgisapp.cpp" line="920"/>
+        <location filename="../src/app/qgisapp.cpp" line="922"/>
         <source>Select features by freehand</source>
         <translation>Выбрать объекты произвольной линией</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="925"/>
-        <location filename="../src/app/qgisapp.cpp" line="927"/>
+        <location filename="../src/app/qgisapp.cpp" line="926"/>
+        <location filename="../src/app/qgisapp.cpp" line="928"/>
         <source>Select features by radius</source>
         <translation>Выбрать объекты в радиусе</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="938"/>
+        <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="944"/>
+        <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="949"/>
+        <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="958"/>
+        <location filename="../src/app/qgisapp.cpp" line="959"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1000"/>
+        <location filename="../src/app/qgisapp.cpp" line="1001"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1042"/>
+        <location filename="../src/app/qgisapp.cpp" line="1043"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1047"/>
+        <location filename="../src/app/qgisapp.cpp" line="1048"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1052"/>
+        <location filename="../src/app/qgisapp.cpp" line="1053"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1057"/>
+        <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1062"/>
+        <location filename="../src/app/qgisapp.cpp" line="1063"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translation></translation>
@@ -8382,74 +8659,74 @@ Ignore errors?</source>
         <translation type="obsolete">Расширена поддержка операторов GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2842"/>
+        <location filename="../src/app/qgisapp.cpp" line="2816"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>Источник данных %1 не имеет слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2849"/>
+        <location filename="../src/app/qgisapp.cpp" line="2823"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 не является действительным источником данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2887"/>
+        <location filename="../src/app/qgisapp.cpp" line="2861"/>
         <source>Select raster layers to add...</source>
         <translation>Выберите растровые слои для добавления...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2892"/>
+        <location filename="../src/app/qgisapp.cpp" line="2866"/>
         <source>Raster</source>
         <translation>Растр</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2926"/>
+        <location filename="../src/app/qgisapp.cpp" line="2900"/>
         <source>Select vector layers to add...</source>
         <translation>Выберите векторные слои для добавления...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3386"/>
-        <location filename="../src/app/qgisapp.cpp" line="3527"/>
-        <location filename="../src/app/qgisapp.cpp" line="3589"/>
+        <location filename="../src/app/qgisapp.cpp" line="3360"/>
+        <location filename="../src/app/qgisapp.cpp" line="3501"/>
+        <location filename="../src/app/qgisapp.cpp" line="3563"/>
         <source>QGis files (*.qgs)</source>
         <translation>Файлы QGIS (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3558"/>
-        <location filename="../src/app/qgisapp.cpp" line="3609"/>
+        <location filename="../src/app/qgisapp.cpp" line="3532"/>
+        <location filename="../src/app/qgisapp.cpp" line="3583"/>
         <source>Saved project to: %1</source>
         <translation>Проект сохранён в: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3570"/>
-        <location filename="../src/app/qgisapp.cpp" line="3616"/>
+        <location filename="../src/app/qgisapp.cpp" line="3544"/>
+        <location filename="../src/app/qgisapp.cpp" line="3590"/>
         <source>Unable to save project %1</source>
         <translation>Не удалось сохранить проект %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3729"/>
+        <location filename="../src/app/qgisapp.cpp" line="3703"/>
         <source>Saved map image to %1</source>
         <translation>Изображение карты сохранено в %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3982"/>
+        <location filename="../src/app/qgisapp.cpp" line="3956"/>
         <source>Please select a vector layer first.</source>
         <translation>Пожалуйста, выберите векторный слой.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4437"/>
-        <location filename="../src/app/qgisapp.cpp" line="4503"/>
-        <location filename="../src/app/qgisapp.cpp" line="4542"/>
+        <location filename="../src/app/qgisapp.cpp" line="4411"/>
+        <location filename="../src/app/qgisapp.cpp" line="4477"/>
+        <location filename="../src/app/qgisapp.cpp" line="4516"/>
         <source>Not enough features selected</source>
         <translation>Недостаточно выбранных объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4525"/>
+        <location filename="../src/app/qgisapp.cpp" line="4499"/>
         <source>Union operation canceled</source>
         <translation>Операция объединения прервана</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4916"/>
-        <location filename="../src/app/qgisapp.cpp" line="4992"/>
+        <location filename="../src/app/qgisapp.cpp" line="4890"/>
+        <location filename="../src/app/qgisapp.cpp" line="4972"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -8460,44 +8737,44 @@ Errors: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5394"/>
+        <location filename="../src/app/qgisapp.cpp" line="5374"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS — Изменения в SVN с момента последнего выпуска</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5434"/>
+        <location filename="../src/app/qgisapp.cpp" line="5414"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Не удалось связаться с сервером версии QGIS
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6670"/>
+        <location filename="../src/app/qgisapp.cpp" line="6650"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 не является допустимым (определяемым) источником растровых данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6846"/>
+        <location filename="../src/app/qgisapp.cpp" line="6826"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 не является поддерживаемым источником растровых данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7001"/>
+        <location filename="../src/app/qgisapp.cpp" line="6981"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Этот проект был создан с использованием устаревшей версии QGIS. При сохранении проекта, файл будет обновлён, что может повлечь за собой несовместимость с предыдущими версиями QGIS.&lt;p&gt;Несмотря на то, что разработчики QGIS стремятся к максимальной обратной совместимости, часть информации из старого проекта может быть потеряна. В этом случае рекомендуется отправить сообщение об ошибке по адресу: %3. Пожалуйста, приложите старый файл проекта и укажите версию QGIS, в которой была обнаружена ошибка.&lt;p&gt;Если вы не хотите получать это предупреждение в будущем, снимите флажок «%5» в меню «%4».&lt;p&gt;Версия файла проекта: %1&lt;br&gt;Текущая версия QGIS: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2400"/>
+        <location filename="../src/app/qgisapp.cpp" line="2374"/>
         <source>Layers</source>
         <translation>Слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4150"/>
+        <location filename="../src/app/qgisapp.cpp" line="4124"/>
         <source>Delete features</source>
         <translation>Удаление объектов</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="4150"/>
+        <location filename="../src/app/qgisapp.cpp" line="4124"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -8507,126 +8784,126 @@ Errors: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1056"/>
+        <location filename="../src/app/qgisapp.cpp" line="1057"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>Добавить слой SpatiaLite...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
+        <location filename="../src/app/qgisapp.cpp" line="1059"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>Добавить слой SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2648"/>
+        <location filename="../src/app/qgisapp.cpp" line="2622"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>
 Поддержка SpatiaLite: нет.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <location filename="../src/app/qgisapp.cpp" line="978"/>
         <source>Zoom Next</source>
         <translation>Следующий охват</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="979"/>
+        <location filename="../src/app/qgisapp.cpp" line="980"/>
         <source>Zoom to Forward Extent</source>
         <translation>Увеличить до следующего охвата</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="833"/>
-        <location filename="../src/app/qgisapp.cpp" line="835"/>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
+        <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Simplify Feature</source>
         <translation>Упростить объект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="839"/>
+        <location filename="../src/app/qgisapp.cpp" line="840"/>
         <source>Delete Ring</source>
         <translation>Удалить кольцо</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="845"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
         <source>Delete Part</source>
         <translation>Удалить часть</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1184"/>
+        <location filename="../src/app/qgisapp.cpp" line="1185"/>
         <source>Configure shortcuts...</source>
         <translation>Комбинации клавиш...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1186"/>
+        <location filename="../src/app/qgisapp.cpp" line="1187"/>
         <source>Configure shortcuts</source>
         <translation>Настроить комбинации клавиш клавиатуры</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1756"/>
+        <location filename="../src/app/qgisapp.cpp" line="1724"/>
         <source>Advanced Digitizing</source>
         <translation>Дополнительные функции оцифровки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="695"/>
+        <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>&amp;New Print Composer</source>
         <translation>Создать ко&amp;мпоновку карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="696"/>
+        <location filename="../src/app/qgisapp.cpp" line="697"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="697"/>
+        <location filename="../src/app/qgisapp.cpp" line="698"/>
         <source>New Print Composer</source>
         <translation>Создать компоновку карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="700"/>
+        <location filename="../src/app/qgisapp.cpp" line="701"/>
         <source>Composer manager...</source>
         <translation>Управление компоновками...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="701"/>
+        <location filename="../src/app/qgisapp.cpp" line="702"/>
         <source>Composer manager</source>
         <translation>Управление компоновками</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="827"/>
+        <location filename="../src/app/qgisapp.cpp" line="828"/>
         <source>Add Part</source>
         <translation>Добавить часть</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="829"/>
+        <location filename="../src/app/qgisapp.cpp" line="830"/>
         <source>Add part to multipolygon</source>
         <translation>Добавить часть к мультиполигону</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="841"/>
+        <location filename="../src/app/qgisapp.cpp" line="842"/>
         <source>Click a vertex of the ring to delete</source>
         <translation>Выберите вершину кольца для его удаления</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="847"/>
+        <location filename="../src/app/qgisapp.cpp" line="848"/>
         <source>Click a vertex of the part to delete</source>
         <translation>Выберите вершину части объекта для её удаления</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1254"/>
+        <location filename="../src/app/qgisapp.cpp" line="1255"/>
         <source>Style manager...</source>
         <translation>Управление стилями...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1256"/>
+        <location filename="../src/app/qgisapp.cpp" line="1257"/>
         <source>Show style manager V2</source>
         <translation>Открыть менеджер стилей</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1433"/>
+        <location filename="../src/app/qgisapp.cpp" line="1434"/>
         <source>Print Composers</source>
         <translation>Компоновки карт</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2642"/>
+        <location filename="../src/app/qgisapp.cpp" line="2616"/>
         <source>
 This copy of QGIS has been built without PostgreSQL support.</source>
         <translation>
@@ -8645,7 +8922,7 @@ This copy of QGIS has been built without QWT support.</source>
 Данная версия QGIS собрана без поддержки QWT.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2654"/>
+        <location filename="../src/app/qgisapp.cpp" line="2628"/>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation>
@@ -8692,14 +8969,14 @@ This copy of QGIS writes debugging output.</source>
         <translation type="obsolete">Для опытных пользователей была добавлена возможность создания форм редактирования свойств средствами Qt Designer.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4253"/>
-        <location filename="../src/app/qgisapp.cpp" line="4286"/>
+        <location filename="../src/app/qgisapp.cpp" line="4227"/>
+        <location filename="../src/app/qgisapp.cpp" line="4260"/>
         <source>Composer %1</source>
         <translation>Компоновка %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="931"/>
-        <location filename="../src/app/qgisapp.cpp" line="933"/>
+        <location filename="../src/app/qgisapp.cpp" line="932"/>
+        <location filename="../src/app/qgisapp.cpp" line="934"/>
         <source>Deselect features from all layers</source>
         <translation>Снять выделение во всех слоях</translation>
     </message>
@@ -8712,7 +8989,7 @@ This copy of QGIS writes debugging output.</source>
         <translation type="obsolete">Новые shape-файлы должны иметь расширение .shp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1640"/>
+        <location filename="../src/app/qgisapp.cpp" line="1641"/>
         <source>&amp;Raster</source>
         <translation type="unfinished">&amp;Растр</translation>
     </message>
@@ -8917,6 +9194,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="62"/>
         <source>Type</source>
         <translation>Тип</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAddJoinDialogBase</name>
+    <message>
+        <location filename="../src/ui/qgsaddjoindialogbase.ui" line="14"/>
+        <source>Add vector join</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddjoindialogbase.ui" line="20"/>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddjoindialogbase.ui" line="30"/>
+        <source>Join field</source>
+        <translation type="unfinished">Поле для объединения</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddjoindialogbase.ui" line="40"/>
+        <source>Target field</source>
+        <translation type="unfinished">Целевое поле</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddjoindialogbase.ui" line="60"/>
+        <source>Create attribute index on join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsaddjoindialogbase.ui" line="67"/>
+        <source>Cache join layer in virtual memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12330,37 +12640,37 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposition</name>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="397"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="392"/>
         <source>Aligned items left</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="428"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="423"/>
         <source>Aligned items hcenter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="459"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="454"/>
         <source>Aligned items right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="489"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="484"/>
         <source>Aligned items top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="518"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="513"/>
         <source>Aligned items vcenter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="547"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="542"/>
         <source>Aligned items bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="567"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="562"/>
         <source>Item z-order changed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18801,7 +19111,7 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsImageWarper</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsimagewarper.cpp" line="220"/>
+        <location filename="../src/plugins/georeferencer/qgsimagewarper.cpp" line="226"/>
         <source>Progress indication</source>
         <translation>Обработка</translation>
     </message>
@@ -19994,97 +20304,97 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsManageConnectionsDialog</name>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="33"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="32"/>
         <source>Load from file</source>
         <translation>Загрузить из файла</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="34"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="33"/>
         <source>Load</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="38"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="37"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="50"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="53"/>
         <source>Save connections</source>
         <translation>Сохранить соединения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="50"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="53"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XML-файлы (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="54"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="57"/>
         <source>Load connections</source>
         <translation>Загрузить соединения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="54"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="57"/>
         <source>XML files (*.xml *XML)</source>
         <translation>XML-файлы (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="108"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="110"/>
         <source>Saving connections</source>
         <translation>Сохранение соединений</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="109"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="111"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Не удалось записать файл %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="123"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="137"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="192"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="206"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="219"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="231"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="321"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="344"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="377"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="401"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="125"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="139"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="195"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="209"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="222"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="234"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="324"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="347"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="380"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="404"/>
         <source>Loading connections</source>
         <translation>Загрузка соединений</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="124"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="193"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="126"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="196"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Не удалось прочесть файл %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="138"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="207"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="140"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="210"/>
         <source>Parse error at line %1, column %2:
 %3</source>
         <translation>Ошибка: ошибка разбора в строке %1, столбце %2:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="220"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="322"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="223"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="325"/>
         <source>The file is not an WMS connections exchange file.</source>
         <translation>Файл не является файлом обмена WMS-соединений.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="232"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="378"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="235"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="381"/>
         <source>The file is not an PostGIS connections exchange file.</source>
         <translation>Файл не является файлом обмена PostGIS-соединений.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="345"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="402"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="348"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="405"/>
         <source>Connection with name %1 already exists. Overwrite?</source>
         <translation>Соединение %1 уже существует. Вы хотите перезаписать его?</translation>
     </message>
@@ -21357,13 +21667,13 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsNewOgrConnection</name>
     <message>
-        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="89"/>
-        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="93"/>
+        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="94"/>
+        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="98"/>
         <source>Test connection</source>
         <translation>Проверка соединения</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="89"/>
+        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="94"/>
         <source>Connection failed - Check settings and try again.
 
 Extended error information:
@@ -21374,17 +21684,17 @@ Extended error information:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="93"/>
+        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="98"/>
         <source>Connection to %1 was successful</source>
         <translation>Успешное соединение с %1</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="109"/>
+        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="114"/>
         <source>Save connection</source>
         <translation>Сохранение соединения</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="110"/>
+        <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="115"/>
         <source>Should the existing connection %1 be overwritten?</source>
         <translation>Перезаписать существующее соединение %1?</translation>
     </message>
@@ -22219,17 +22529,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOgrProvider</name>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="193"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="203"/>
         <source>Whole number (integer)</source>
         <translation>Целое число (integer)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="194"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="204"/>
         <source>Decimal number (real)</source>
         <translation>Десятичное число (real)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="195"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="205"/>
         <source>Text (string)</source>
         <translation>Текст (string)</translation>
     </message>
@@ -22289,60 +22599,60 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOpenVectorLayerDialog</name>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="105"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="104"/>
         <source>Open an OGR Supported Vector Layer</source>
         <translation>Открыть OGR-совместимый векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="122"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="120"/>
         <source>Open Directory</source>
         <translation>Открыть каталог</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="175"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="173"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="177"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="175"/>
         <source>Confirm Delete</source>
         <translation>Подтвердите удаление</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="321"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="319"/>
         <source>Password for </source>
         <translation>Пароль для </translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="322"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="320"/>
         <source>Please enter your password:</source>
         <translation>Пожалуйста, введите ваш пароль:</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="304"/>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="344"/>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="356"/>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="368"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="302"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="342"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="354"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="366"/>
         <source>Add vector layer</source>
         <translation>Добавление векторного слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="305"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="303"/>
         <source>No database selected.</source>
         <translation>Не выбрана база данных.</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="345"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="343"/>
         <source>No protocol URI entered.</source>
         <translation>Не указан URI протокола.</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="357"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="355"/>
         <source>No layers selected.</source>
         <translation>Не выбран ни один слой.</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="369"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="367"/>
         <source>No directory selected.</source>
         <translation>Не выбран каталог.</translation>
     </message>
@@ -22441,121 +22751,121 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="339"/>
-        <location filename="../src/app/qgsoptions.cpp" line="346"/>
-        <location filename="../src/app/qgsoptions.cpp" line="660"/>
+        <location filename="../src/app/qgsoptions.cpp" line="349"/>
+        <location filename="../src/app/qgsoptions.cpp" line="356"/>
+        <location filename="../src/app/qgsoptions.cpp" line="680"/>
         <source>Semi transparent circle</source>
         <translation>Полупрозрачный круг</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="340"/>
         <location filename="../src/app/qgsoptions.cpp" line="350"/>
-        <location filename="../src/app/qgsoptions.cpp" line="664"/>
+        <location filename="../src/app/qgsoptions.cpp" line="360"/>
+        <location filename="../src/app/qgsoptions.cpp" line="684"/>
         <source>Cross</source>
         <translation>Перекрестие</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="289"/>
+        <location filename="../src/app/qgsoptions.cpp" line="299"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Обнаруженный системный язык: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="341"/>
-        <location filename="../src/app/qgsoptions.cpp" line="354"/>
-        <location filename="../src/app/qgsoptions.cpp" line="668"/>
+        <location filename="../src/app/qgsoptions.cpp" line="351"/>
+        <location filename="../src/app/qgsoptions.cpp" line="364"/>
+        <location filename="../src/app/qgsoptions.cpp" line="688"/>
         <source>None</source>
         <translation>Без маркера</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="319"/>
-        <location filename="../src/app/qgsoptions.cpp" line="328"/>
+        <location filename="../src/app/qgsoptions.cpp" line="329"/>
+        <location filename="../src/app/qgsoptions.cpp" line="338"/>
         <source>map units</source>
         <translation>единиц карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="56"/>
+        <location filename="../src/app/qgsoptions.cpp" line="66"/>
         <source>Current layer</source>
         <translation>Текущий слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="57"/>
+        <location filename="../src/app/qgsoptions.cpp" line="67"/>
         <source>Top down, stop at first</source>
         <translation>Сверху вниз, до первого найденного</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="58"/>
+        <location filename="../src/app/qgsoptions.cpp" line="68"/>
         <source>Top down</source>
         <translation>Сверху вниз</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="147"/>
+        <location filename="../src/app/qgsoptions.cpp" line="157"/>
         <source>Show all features</source>
         <translation>Показывать все объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="148"/>
+        <location filename="../src/app/qgsoptions.cpp" line="158"/>
         <source>Show selected features</source>
         <translation>Показывать выделенные объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="149"/>
+        <location filename="../src/app/qgsoptions.cpp" line="159"/>
         <source>Show features in current canvas</source>
         <translation>Показывать объекты, видимые в области карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="309"/>
+        <location filename="../src/app/qgsoptions.cpp" line="319"/>
         <source>To vertex</source>
         <translation>К вершинам</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="310"/>
+        <location filename="../src/app/qgsoptions.cpp" line="320"/>
         <source>To segment</source>
         <translation>К сегментам</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="311"/>
+        <location filename="../src/app/qgsoptions.cpp" line="321"/>
         <source>To vertex and segment</source>
         <translation>К вершинам и сегментам</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="323"/>
-        <location filename="../src/app/qgsoptions.cpp" line="332"/>
+        <location filename="../src/app/qgsoptions.cpp" line="333"/>
+        <location filename="../src/app/qgsoptions.cpp" line="342"/>
         <source>pixels</source>
         <translation>пикселей</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="366"/>
+        <location filename="../src/app/qgsoptions.cpp" line="376"/>
         <source>Central point (fastest)</source>
         <translation>Central point (быстрый)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="367"/>
+        <location filename="../src/app/qgsoptions.cpp" line="377"/>
         <source>Chain (fast)</source>
         <translation>Chain (менее быстрый)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="368"/>
+        <location filename="../src/app/qgsoptions.cpp" line="378"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation>Popmusic tabu chain (медленный)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="369"/>
+        <location filename="../src/app/qgsoptions.cpp" line="379"/>
         <source>Popmusic tabu (slow)</source>
         <translation>Popmusic tabu (медленный)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="370"/>
+        <location filename="../src/app/qgsoptions.cpp" line="380"/>
         <source>Popmusic chain (very slow)</source>
         <translation>Popmusic chain (очень медленный)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="409"/>
+        <location filename="../src/app/qgsoptions.cpp" line="419"/>
         <source>Selection color</source>
         <translation type="unfinished">Цвет выделения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="866"/>
-        <location filename="../src/app/qgsoptions.cpp" line="908"/>
+        <location filename="../src/app/qgsoptions.cpp" line="886"/>
+        <location filename="../src/app/qgsoptions.cpp" line="928"/>
         <source>Choose a directory</source>
         <translation>Выберите каталог</translation>
     </message>
@@ -22563,117 +22873,117 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptionsBase</name>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="238"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="275"/>
         <source>Hide splash screen at startup</source>
         <translation>Не показывать заставку при запуске</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="402"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="439"/>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
         <translation>Изображение карты будет обновлено (перерисовано) после того, как это количество объектов загружено из источника данных</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1284"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1321"/>
         <source>Select Global Default ...</source>
         <translation>Выбрать глобальную систему координат...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="441"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="478"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
         <translation>Рисовать сглаженные линии (снижает скорость отрисовки)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="388"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="425"/>
         <source>By default new la&amp;yers added to the map should be displayed</source>
         <translation>Добавляемые на карту слои &amp;видимы по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="615"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="652"/>
         <source>Measure tool</source>
         <translation>Инструмент измерений</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="451"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="488"/>
         <source>Fix problems with incorrectly filled polygons</source>
         <translation>Исправлять ошибки заливки полигонов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="579"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="616"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="740"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="777"/>
         <source>Panning and zooming</source>
         <translation>Прокрутка и масштабирование</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="750"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="787"/>
         <source>Zoom</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="755"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="792"/>
         <source>Zoom and recenter</source>
         <translation>Увеличить и центрировать</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="765"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="802"/>
         <source>Nothing</source>
         <translation>Ничего</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="977"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1014"/>
         <source>Default snapping tolerance</source>
         <translation>Порог прилипания по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="994"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1031"/>
         <source>Search radius for vertex edits</source>
         <translation>Радиус поиска для редактирования вершин</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1313"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1350"/>
         <source>Locale</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1343"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1380"/>
         <source>Locale to use instead</source>
         <translation>Язык, используемый вместо системного</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1366"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1403"/>
         <source>Additional Info</source>
         <translation>Дополнительная информация</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1372"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1409"/>
         <source>Detected active locale on your system:</source>
         <translation>Обнаруженный системный язык:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="448"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="485"/>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
         <translation>Активация этого параметра выключит флажок «Рисовать сглаженные линии»</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="908"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="945"/>
         <source>Rubberband</source>
         <translation>Резиновая нить</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="921"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="958"/>
         <source>Line width in pixels</source>
         <translation>Толщина линии в пикселях</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="954"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="991"/>
         <source>Snapping</source>
         <translation>Прилипание</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="760"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="797"/>
         <source>Zoom to mouse cursor</source>
         <translation>Увеличить в положении курсора</translation>
     </message>
@@ -22683,7 +22993,7 @@ p, li { white-space: pre-wrap; }
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="887"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="924"/>
         <source>Digitizing</source>
         <translation>Оцифровка</translation>
     </message>
@@ -22727,207 +23037,212 @@ p, li { white-space: pre-wrap; }
         <translation>Тема значков</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="217"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="225"/>
+        <source>Icon size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="254"/>
         <source>Capitalise layer names in legend</source>
         <translation>Выводить имя слоя с заглавной буквы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="224"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="261"/>
         <source>Display classification attribute names in legend</source>
         <translation>Показывать в легенде атрибуты классификации</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="231"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="268"/>
         <source>Create raster icons in legend</source>
         <translation>Создавать в легенде миниатюры растров</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="245"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="282"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
         <translation>Открывать результаты определения во встраиваемом окне (требуется перезапуск QGIS)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="252"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="289"/>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="259"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="296"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="266"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="303"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
         <translation>Добавлять слои PostGIS двойным щелчком и включить расширенную выборку</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="273"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="310"/>
         <source>Add new layers to selected group</source>
         <translation>Добавлять новые слои в активную группу</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="288"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="325"/>
         <source>Attribute table behaviour</source>
         <translation>Вид таблицы атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="324"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="361"/>
         <source>Representation for NULL values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="361"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="398"/>
         <source>Rendering</source>
         <translation type="unfinished">Отрисовка</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="382"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="419"/>
         <source>Rendering behavior</source>
         <translation>Параметры отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="395"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="432"/>
         <source>Number of features to draw before updating the display</source>
         <translation>Количество объектов для отрисовки между обновлениями экрана</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="415"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="452"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
         <translation>&lt;b&gt;Внимание:&lt;/b&gt; введите 0, чтобы запретить обновление экрана до отрисовки всех объектов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="432"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="469"/>
         <source>Rendering quality</source>
         <translation>Качество отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="685"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="722"/>
         <source>Preferred angle units</source>
         <translation>Единицы измерения углов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="692"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="729"/>
         <source>Degrees</source>
         <translation>Градусы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="699"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="736"/>
         <source>Radians</source>
         <translation>Радианы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="706"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="743"/>
         <source>Gon</source>
         <translation>Грады</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="713"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="750"/>
         <source>Decimal places</source>
         <translation>Десятичных знаков</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="723"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="760"/>
         <source>Keep base unit</source>
         <translation>Сохранять базовые единицы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="773"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="810"/>
         <source>Zoom factor</source>
         <translation>Фактор увеличения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="780"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="817"/>
         <source>Mouse wheel action</source>
         <translation>Действие при прокрутке колеса мыши</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="812"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="849"/>
         <source>Overlays</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="839"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="876"/>
         <source>Placement algorithm</source>
         <translation>Алгоритм размещения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1172"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1209"/>
         <source>Reuse last entered attribute values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1404"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1441"/>
         <source>Network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1511"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1548"/>
         <source>Exclude URLs (starting with)</source>
         <translation>Не использовать прокси-сервер для следующих адресов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1556"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1593"/>
         <source>Cache settings</source>
         <translation>Параметры кэширования</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1562"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1599"/>
         <source>Directory</source>
         <translation>Каталог</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1572"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1609"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1579"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1616"/>
         <source>Size</source>
         <translation>Размер кэша</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1589"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1626"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1601"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1638"/>
         <source>WMS search address</source>
         <translation>Адрес поиска WMS-серверов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1615"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1652"/>
         <source>Timeout for network requests (ms)</source>
         <translation>Таймаут для сетевых запросов (мс)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="631"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="668"/>
         <source>Rubberband color</source>
         <translation>Цвет линии</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="621"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="658"/>
         <source>Ellipsoid for distance calculations</source>
         <translation>Эллипсоид для вычисления расстояний</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="664"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="701"/>
         <source>Preferred measurements units</source>
         <translation>Единицы измерения по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="671"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="708"/>
         <source>Meters</source>
         <translation>Метры</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="678"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="715"/>
         <source>Feet</source>
         <translation>Футы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="553"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="590"/>
         <source>Identify</source>
         <translation>Инструмент определения</translation>
     </message>
@@ -22937,93 +23252,93 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Приложение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="562"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="599"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
         <translation>&lt;b&gt;Внимание:&lt;/b&gt; радиус поиска задаётся в процентах от ширины видимой карты</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="572"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="609"/>
         <source>Search radius for identifying features and displaying map tips</source>
         <translation>Радиус поиска для определения объектов и всплывающих описаний</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="598"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="635"/>
         <source>Mode</source>
         <translation>Режим определения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="914"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="951"/>
         <source>Line width</source>
         <translation>Толщина линии</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="960"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="997"/>
         <source>Default snap mode</source>
         <translation>Режим прилипания по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1087"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1124"/>
         <source>Vertex markers</source>
         <translation>Маркеры вершин</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1093"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1130"/>
         <source>Show markers only for selected features</source>
         <translation>Показывать маркеры только для выбранных объектов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1100"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1137"/>
         <source>Marker style</source>
         <translation>Стиль маркера</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1143"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1180"/>
         <source>Marker size</source>
         <translation>Размер маркера</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1247"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1284"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
         <translation>При создании или загрузке слоя, не содержащего сведений о системе координат</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1334"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1371"/>
         <source>Override system locale</source>
         <translation>Переопределить системный язык</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1353"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1390"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>&lt;b&gt;Внимание:&lt;/b&gt; для переопределения параметров языка необходимо перезапустить приложение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1425"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1462"/>
         <source>Use proxy for web access</source>
         <translation>Использовать прокси-сервер для внешних соединений</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1437"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1474"/>
         <source>Host</source>
         <translation>Узел</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1447"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1484"/>
         <source>Port</source>
         <translation>Порт</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1494"/>
         <source>User</source>
         <translation>Пользователь</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1464"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1478"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1501"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1515"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation>Оставьте это поле пустым, если для прокси-сервера не требуется имя пользователя и пароль</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1471"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1508"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
@@ -23032,49 +23347,49 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Открывать таблицу атрибутов во встраиваемом окне</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1217"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1254"/>
         <source>CRS</source>
         <translation>Система координат</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1257"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1294"/>
         <source>Prompt for CRS</source>
         <translation>Запрашивать систему координат</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1264"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1301"/>
         <source>Project wide default CRS will be used</source>
         <translation>Использовать значение по умолчанию для данного проекта</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1271"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1308"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>Использовать ниж&amp;еприведённую глобальную систему координат</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1166"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1203"/>
         <source>Enter attribute values</source>
         <translation>Ввод значений атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1182"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1219"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
         <translation>Не показывать всплывающее окно ввода атрибутов для каждого создаваемого объекта</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1488"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1525"/>
         <source>Proxy type</source>
         <translation>Тип прокси</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="503"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1527"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="540"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1564"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="510"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1520"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="547"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1557"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
@@ -23083,7 +23398,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Совмещение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="833"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="870"/>
         <source>Position</source>
         <translation>Позиционирование</translation>
     </message>
@@ -23092,49 +23407,49 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Алгоритм размещения:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1018"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1032"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1055"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1069"/>
         <source>map units</source>
         <translation>единиц карты</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1023"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1037"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1060"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1074"/>
         <source>pixels</source>
         <translation>пикселей</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="422"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="459"/>
         <source>Use render caching where possible to speed up redraws</source>
         <translation>Использовать кэш для ускорения перерисовки, там где это возможно</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="477"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="514"/>
         <source>SVG paths</source>
         <translation>Значки в формате SVG</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="483"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="520"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
         <translation>Пути поиска значков в формате SVG</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="461"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="498"/>
         <source>Compatibility</source>
         <translation>Совместимость</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="467"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="504"/>
         <source>Use new generation symbology for rendering</source>
         <translation>Использовать новую реализацию отрисовки условных знаков</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="605"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="642"/>
         <source>Open feature form, if a single feature is identified</source>
         <translation>Открывать форму, если найден один объект</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="931"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="968"/>
         <source>Line color</source>
         <translation>Цвет линии</translation>
     </message>
@@ -23147,7 +23462,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Не использовать прокси-сервер для следующих адресов:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1238"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1275"/>
         <source>Default Coordinate Reference System</source>
         <translation>Система координат по умолчанию</translation>
     </message>
@@ -23161,7 +23476,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Отрисовка</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="532"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="569"/>
         <source>Map tools</source>
         <translation>Инструменты</translation>
     </message>
@@ -23199,32 +23514,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOracleSelectGeoraster</name>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="117"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="123"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="120"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="126"/>
         <source>Confirm Delete</source>
         <translation>Подтвердите удаление</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="155"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="161"/>
         <source>Password for %1/&lt;password&gt;@%2</source>
         <translation>Пароль для %1/&lt;password&gt;@%2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="156"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="162"/>
         <source>Please enter your password:</source>
         <translation>Пожалуйста, введите ваш пароль:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="196"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="202"/>
         <source>Open failed</source>
         <translation>Ошибка открытия</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="197"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="203"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
         <translation>Не удалось соединиться с %1. Пожалуйста, проверьте параметры соединения и убедитесь, что в системе установлен модуль GDAL «GeoRaster».</translation>
     </message>
@@ -24886,59 +25201,59 @@ p, li { white-space: pre-wrap; }
         <translation>В таблице нет подходящего ключевого поля</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1318"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1319"/>
         <source>and </source>
         <translation>и </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1367"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1368"/>
         <source>Unable to find a key column</source>
         <translation>Не удалось найти ключевое поле</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1509"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1510"/>
         <source>and is suitable.</source>
         <translation>и пригодно для работы.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1515"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1516"/>
         <source> and has a suitable constraint)</source>
         <translation> и имеет подходящее ограничение)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1517"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1518"/>
         <source> and does not have a suitable constraint)</source>
         <translation> и не имеет подходящего ограничения)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1620"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1621"/>
         <source>No suitable key column in view</source>
         <translation>Подходящий ключ не найден в виде</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3232"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3236"/>
         <source>Unknown geometry type</source>
         <translation>Неизвестный тип геометрии</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3233"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3237"/>
         <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
         <translation>Поле %1 в таблице %2 имеет тип геометрии %3, который не поддерживается Quantum GIS.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3240"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3244"/>
         <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation>Не удалось определить тип и SRID для поля %1 в таблице %2. Сообщение базы данных:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3244"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3248"/>
         <source>Unable to get feature type and srid</source>
         <translation>Не удалось получить тип объекта и SRID</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2437"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2438"/>
         <source>Error while adding features</source>
         <translation>Ошибка при добавлении объектов</translation>
     </message>
@@ -25012,21 +25327,21 @@ column with a 16bit block number.
 с 16-битным номером блока.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1293"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1294"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation>Уникальный индекс поля «%1» непригоден, поскольку QGIS в настоящее время не поддерживает ключевые поля с типом, отличным от int4.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1324"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1325"/>
         <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
 </source>
         <translation>Уникальный индекс на основе полей %1 непригоден, поскольку QGIS в настоящее время не поддерживает ключи из нескольких полей.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1612"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1613"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
@@ -25036,37 +25351,37 @@ QGIS требует, чтобы вид включал поле, которое �
 Выбранный вид имеет следующие поля, ни одно из которых не удовлетворяет этим условиям:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2480"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2481"/>
         <source>Error while deleting features</source>
         <translation>Ошибка при удалении объектов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2543"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2544"/>
         <source>Error while adding attributes</source>
         <translation>Ошибка при добавлении атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2591"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2592"/>
         <source>Error while deleting attributes</source>
         <translation>Ошибка при удалении атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2676"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2677"/>
         <source>Error while changing attributes</source>
         <translation>Ошибка при изменении атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2766"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2767"/>
         <source>Error while changing geometry values</source>
         <translation>Ошибка при изменении значений геометрии</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3363"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3367"/>
         <source>Query failed</source>
         <translation>Ошибка запроса</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3364"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3368"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -25080,17 +25395,17 @@ SQL: %2
         <translation>неожиданная ошибка PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1505"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1506"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation>«%1» происходит от «%2.%3.%4» </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1513"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1514"/>
         <source>and is not suitable (type is %1)</source>
         <translation>и непригодно для работы (тип: %1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1601"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1602"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation>Внимание: индекс %1 изначально определился как пригодный, но оказался непригодным, поскольку не содержит уникальных данных.
@@ -25172,42 +25487,42 @@ SQL: %3</translation>
 <context>
     <name>QgsProject</name>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="765"/>
+        <location filename="../src/core/qgsproject.cpp" line="779"/>
         <source>Unable to open %1</source>
         <translation>Не удалось открыть %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="778"/>
+        <location filename="../src/core/qgsproject.cpp" line="792"/>
         <source>Project File Read Error</source>
         <translation>Ошибка чтения файла проекта</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="779"/>
+        <location filename="../src/core/qgsproject.cpp" line="793"/>
         <source>%1 at line %2 column %3</source>
         <translation>%1 в строке %2, столбце %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="782"/>
+        <location filename="../src/core/qgsproject.cpp" line="796"/>
         <source>Project file read error: %1 at line %2 column %3</source>
         <translation>Ошибка чтения файла проекта: %1 в строке %2, столбце %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="789"/>
+        <location filename="../src/core/qgsproject.cpp" line="803"/>
         <source>%1 for file %2</source>
         <translation>%1 в файле %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="948"/>
+        <location filename="../src/core/qgsproject.cpp" line="962"/>
         <source>Unable to save to file %1</source>
         <translation>Не удалось сохранить файл %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="957"/>
+        <location filename="../src/core/qgsproject.cpp" line="971"/>
         <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 не является записываемым файлом. Пожалуйста, исправьте права доступа (если возможно) и попробуйте ещё раз.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="1043"/>
+        <location filename="../src/core/qgsproject.cpp" line="1057"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation>Не удалось сохранить файл %1. Файл проекта на диске может быть испорчен. Попробуйте освободить дисковое пространство и проверить права доступа, прежде чем вы попытаетесь сохранить проект повторно.</translation>
     </message>
@@ -25230,39 +25545,72 @@ Try to find missing layers?</source>
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="117"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="119"/>
         <source>Layer</source>
         <translation>Слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="118"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="120"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="119"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="121"/>
         <source>Identifiable</source>
         <translation>Определяемый</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="139"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="141"/>
         <source>Vector</source>
         <translation>Векторный</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="147"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="149"/>
         <source>WMS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="151"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="153"/>
         <source>Raster</source>
         <translation>Растровый</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="334"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="374"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="512"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="517"/>
+        <source>Coordinate System Restriction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="374"/>
+        <source>No coordinate systems selected. Disabling restriction.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="410"/>
         <source>Selection color</source>
         <translation type="unfinished">Цвет выделения</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="512"/>
+        <source>CRS %1 was already selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="517"/>
+        <source>Selected CRS is not a EPSG coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="535"/>
+        <source>Coordinate System Restrictions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="536"/>
+        <source>The current selection of coordinate systems will be lost.
+Proceed?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25273,114 +25621,204 @@ Try to find missing layers?</source>
         <translation>Свойства проекта</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="46"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="56"/>
         <source>General settings</source>
         <translation>Общие свойства</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="187"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="197"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
         <translation>Единицы слоя (используются при выключенном преобразовании координат)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="193"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="203"/>
         <source>Meters</source>
         <translation>Метры</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="203"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="213"/>
         <source>Feet</source>
         <translation>Футы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="210"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="220"/>
         <source>Decimal degrees</source>
         <translation>Десятичные градусы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="329"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="339"/>
         <source>Identifiable layers</source>
         <translation>Определяемые слои</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="339"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="349"/>
         <source>Layer</source>
         <translation>Слой</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="344"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="354"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="349"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="359"/>
         <source>Identifiable</source>
         <translation>Определяемый</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="65"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="368"/>
+        <source>WMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="374"/>
+        <source>Service Capabilitities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="386"/>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="399"/>
+        <source>Person</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="412"/>
+        <source>Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="428"/>
+        <source>Abstract</source>
+        <translation type="unfinished">Описание</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="438"/>
+        <source>E-Mail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="448"/>
+        <source>Organization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="464"/>
+        <source>Advertised Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="476"/>
+        <source>Min. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="493"/>
+        <source>Min. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="510"/>
+        <source>Max. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="527"/>
+        <source>Max. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="544"/>
+        <source>Use Current Canvas Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="567"/>
+        <source>Coordinate Systems Restrictions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="582"/>
+        <source>Add</source>
+        <translation type="unfinished">Добавить</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="589"/>
+        <source>Remove</source>
+        <translation type="unfinished">Удалить</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="596"/>
+        <source>Used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="75"/>
         <source>Default project title</source>
         <translation>Заглавие проекта по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="40"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="50"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="148"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="158"/>
         <source>absolute</source>
         <translation>абсолютные</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="153"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="163"/>
         <source>relative</source>
         <translation>относительные</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="161"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="171"/>
         <source>Save paths</source>
         <translation>Пути сохранения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="239"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="249"/>
         <source>Automatic</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="233"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="243"/>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
         <translation>Автоматически устанавливать число десятичных знаков в поле вывода позиции курсора мыши</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="236"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="246"/>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
         <translation>Количество используемых десятичных знаков в значении позиции курсора выбирается автоматически таким образом, что перемещение мыши на один пиксель вызовет изменение в поле отображения позиции</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="255"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="265"/>
         <source>Manual</source>
         <translation>Вручную</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="249"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="252"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="259"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="262"/>
         <source>Sets the number of decimal places to use for the mouse position display</source>
         <translation>Число десятичных знаков в поле вывода позиции курсора мыши</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="262"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="265"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="272"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="275"/>
         <source>The number of decimal places for the manual option</source>
         <translation>Количество десятичных знаков для параметра «Вручную»</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="278"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="288"/>
         <source>decimal places</source>
         <translation>десятичных знаков</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="227"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="237"/>
         <source>Precision</source>
         <translation>Точность</translation>
     </message>
@@ -25389,7 +25827,7 @@ Try to find missing layers?</source>
         <translation type="obsolete">Оцифровка</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="62"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="72"/>
         <source>Descriptive project name</source>
         <translation>Описательное заглавие проекта</translation>
     </message>
@@ -25402,32 +25840,32 @@ Try to find missing layers?</source>
         <translation type="obsolete">Параметры прилипания...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="52"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="62"/>
         <source>Project title</source>
         <translation>Заглавие проекта</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="72"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="82"/>
         <source>Selection color</source>
         <translation>Цвет выделения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="111"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="121"/>
         <source>Background color</source>
         <translation>Цвет фона</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="296"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="306"/>
         <source>Coordinate Reference System (CRS)</source>
         <translation>Система координат</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="314"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="324"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
         <translation>Включить преобразование координат «на лету»</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="217"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="227"/>
         <source>Degrees, Minutes, Seconds</source>
         <translation>Градусы, минуты, секунды</translation>
     </message>
@@ -26060,246 +26498,246 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="85"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2567"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3503"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3548"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="90"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2572"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3508"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3553"/>
         <source>Not Set</source>
         <translation>Не задано</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2579"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2584"/>
         <source>Driver:</source>
         <translation>Драйвер:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2656"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2661"/>
         <source>Dimensions:</source>
         <translation>Размеры:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2777"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2782"/>
         <source>Origin:</source>
         <translation>Базис:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2786"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2791"/>
         <source>Pixel Size:</source>
         <translation>Размер пикселя:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2728"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2733"/>
         <source>Pyramid overviews:</source>
         <translation>Обзор пирамид:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="310"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="315"/>
         <source>[GDAL] All files (*)</source>
         <translation>[GDAL] все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="469"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="474"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
         <translation>Выбранный растровый файл не имеет каналов и не является действительным растровым слоем.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2804"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5046"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2809"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5051"/>
         <source>Band</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2811"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2816"/>
         <source>Band No</source>
         <translation>Канал №</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2823"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2828"/>
         <source>No Stats</source>
         <translation>Нет статистики</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2826"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2831"/>
         <source>No stats collected yet</source>
         <translation>Сбор статистики не производился</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2836"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2841"/>
         <source>Min Val</source>
         <translation>Мин. значение</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2844"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2849"/>
         <source>Max Val</source>
         <translation>Макс. значение</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2852"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2857"/>
         <source>Range</source>
         <translation>Диапазон</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2860"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2865"/>
         <source>Mean</source>
         <translation>Среднее</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2868"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2873"/>
         <source>Sum of squares</source>
         <translation>Сумма квадратов</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2876"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2881"/>
         <source>Standard Deviation</source>
         <translation>Стандартное отклонение</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2884"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2889"/>
         <source>Sum of all cells</source>
         <translation>Сумма всех ячеек</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2892"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2897"/>
         <source>Cell Count</source>
         <translation>Количество ячеек</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5379"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5384"/>
         <source>Specify CRS for layer %1</source>
         <translation>Укажите систему координат для слоя %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2684"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2689"/>
         <source>Data Type:</source>
         <translation>Тип данных:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2690"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2695"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte — 8-битное беззнаковое целое</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2693"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2698"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 — 16-битное беззнаковое целое </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2696"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2701"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 — 16-битное целое со знаком</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2699"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2704"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 — 32-битное беззнаковое целое </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2702"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2707"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 — 32-битное целое со знаком </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2705"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2710"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 — 32-битное с плавающей точкой</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2708"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2713"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 — 64-битное с плавающей точкой </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2711"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2716"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 — Комплексное Int16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2714"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2719"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 — Комплексное Int32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2717"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2722"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 — Комплексное Float32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2720"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2725"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 — Комплексное Float64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2723"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2728"/>
         <source>Could not determine raster data type.</source>
         <translation>Не удалось установить тип растровых данных.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1058"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1063"/>
         <source>Average Magphase</source>
         <translation>Среднее отношение магн/фаза</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1063"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1068"/>
         <source>Average</source>
         <translation>Среднее</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2749"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2754"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Система координат слоя: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1926"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1931"/>
         <source>out of extent</source>
         <translation>за границами</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1967"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1972"/>
         <source>null (no data)</source>
         <translation>null (нет данных)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2604"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2609"/>
         <source>Dataset Description</source>
         <translation>Описание набора данных</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2669"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2674"/>
         <source>No Data Value</source>
         <translation>Значение «нет данных»</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2678"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2683"/>
         <source>NoDataValue not set</source>
         <translation>Значение «нет данных» не задано</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2625"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2630"/>
         <source>Band %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2659"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2664"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 Каналы: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2759"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2764"/>
         <source>Project Spatial Reference System: </source>
         <translation>Система координат проекта: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="235"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="240"/>
         <source>QgsRasterLayer created</source>
         <translation>Создан QgsRasterLayer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="716"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="721"/>
         <source>Retrieving stats for %1</source>
         <translation>Получение статистики для %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="730"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="735"/>
         <source>Calculating stats for %1</source>
         <translation>Расчёт статистики для %1</translation>
     </message>
@@ -27408,7 +27846,7 @@ p, li { white-space: pre-wrap; }
         <translation>Общая кривизна</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="167"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="169"/>
         <source>Enter result file</source>
         <translation>Выберите файл результатов</translation>
     </message>
@@ -27854,7 +28292,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsSVGFillSymbolLayerWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="692"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="693"/>
         <source>Select svg texture file</source>
         <translation>Выберите SVG-файл текстуры</translation>
     </message>
@@ -28213,25 +28651,25 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsShapeFile</name>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="451"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="422"/>
         <source>The database gave an error while executing this SQL:</source>
         <translation>База данных вернула ошибку при выполнении SQL:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="455"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="426"/>
         <source>... (rest of SQL trimmed)</source>
         <comment>is appended to a truncated SQL statement</comment>
         <translation>...(остаток SQL проигнорирован)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="89"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="83"/>
         <source>Scanning </source>
         <translation>Сканирование </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="314"/>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="335"/>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="374"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="285"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="306"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="345"/>
         <source>The database gave an error while executing this SQL:
 %1
 The error was:
@@ -28244,7 +28682,7 @@ The error was:
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="459"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="430"/>
         <source>The error was:
 %1
 </source>
@@ -28689,18 +29127,18 @@ The error was:
 <context>
     <name>QgsSpatialQueryDialog</name>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="49"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="64"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="46"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="69"/>
         <source>The spatial query requires at least two layers</source>
         <translation>Для операции пространственного запроса требуется по крайней мере два слоя</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="65"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="70"/>
         <source>Insufficient number of layers</source>
         <translation>Недостаточно слоёв</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="155"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="157"/>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation>
@@ -28710,77 +29148,76 @@ The error was:
         </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="156"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="158"/>
         <source>Selected geometries</source>
         <translation>Выбранные геометрии</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="228"/>
         <source>Total: %1</source>
-        <translation>Всего: %1</translation>
+        <translation type="obsolete">Всего: %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="230"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="237"/>
         <source>&lt;&lt;-- Begin at [%L1] --</source>
         <translation>&lt;&lt;-- Начало в [%L1] --</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="232"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="239"/>
         <source>Query:</source>
         <translation>Запрос:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="236"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="243"/>
         <source>&lt; %1 &gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="240"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="247"/>
         <source>Result: %1 features</source>
         <translation>Результат: %1 объектов</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="243"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="250"/>
         <source>-- Finish at [%L1] (processing time %L2 minutes) --&gt;&gt;</source>
         <translation>-- Окончание в [%L1] (время работы: %L2 минут) --&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="278"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="316"/>
         <source>%1 of %2</source>
         <translation>%1 из %2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="279"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="317"/>
         <source>all = %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="427"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="465"/>
         <source>Total</source>
         <translation>Всего</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="571"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="647"/>
         <source>Missing reference layer</source>
         <translation>Не выбран базовый слой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="571"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="647"/>
         <source>Select reference layer!</source>
         <translation>Выберите базовый слой!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="576"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="652"/>
         <source>Missing target layer</source>
         <translation>Не выбран целевой слой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="576"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="652"/>
         <source>Select target layer!</source>
         <translation>Выберите целевой слой!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="731"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="858"/>
         <source>DEBUG</source>
         <translation>ОТЛАДКА</translation>
     </message>
@@ -28793,22 +29230,24 @@ The error was:
         <translation>Пространственный запрос</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="41"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="45"/>
         <source>Layer on which the topological operation will select geometries</source>
         <translation>Слой, в котором будет выбираться геометрия</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="44"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="48"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="211"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="273"/>
         <source>Target layer</source>
         <translation>Целевой слой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="68"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="63"/>
         <source>Select the target layer</source>
         <translation>Выбрать целевой слой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="75"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="70"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -28817,28 +29256,29 @@ p, li { white-space: pre-wrap; }
         <translation>Рассматривать только выбранные объекты целевого слоя</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="82"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="141"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="77"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="127"/>
         <source>Selected feature(s) only</source>
         <translation>Только выбранные объекты</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="94"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="89"/>
         <source>Layer whose geometries will be used as reference by the topological operation</source>
         <translation>Слой, геометрия которого будет использоваться в качестве условия топологической операции</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="97"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="92"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="322"/>
         <source>Reference layer</source>
         <translation>Базовый слой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="121"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="107"/>
         <source>Select the reference layer</source>
         <translation>Выбрать базовый слой</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="134"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="120"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -28847,54 +29287,84 @@ p, li { white-space: pre-wrap; }
         <translation>Рассматривать только выбранные объекты базового слоя</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="160"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="174"/>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="182"/>
+        <source>Select all features of result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="249"/>
+        <source>Invalid features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="259"/>
+        <source>select all features invalid target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="308"/>
+        <source>select all features invalid reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="383"/>
+        <source>* Select item to highlight on map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="430"/>
         <source>Run query or close the window</source>
         <translation>Выполнить запрос или закрыть окно</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="170"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="137"/>
         <source>Topological operations between layers of target and reference</source>
         <translation>Топологические операции над целевым и базовым слоями</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="173"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="140"/>
         <source>Topological operation</source>
         <translation>Топологическая операция</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="197"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="155"/>
         <source>Select the topological operation</source>
         <translation>Выбрать топологическую операцию</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="229"/>
         <source>Results (click to highlight on map)</source>
-        <translation>Результаты (щёлкните для выделения на карте)</translation>
+        <translation type="obsolete">Результаты (щёлкните для выделения на карте)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="253"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="239"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="295"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="344"/>
         <source>Select item to identify geometry of feature</source>
         <translation>Выберите элемент для выявления геометрии объекта</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="260"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="360"/>
         <source>Check to show log processing of query</source>
         <translation>Показать журнал сообщений запроса</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="263"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="363"/>
         <source>Show log messages</source>
         <translation>Показать журнал сообщений</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="292"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="208"/>
         <source>Total of features from query</source>
         <translation>Количество объектов, полученных в результате запроса</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="295"/>
         <source> Total</source>
-        <translation> Всего</translation>
+        <translation type="obsolete"> Всего</translation>
     </message>
 </context>
 <context>
@@ -30324,42 +30794,42 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorDataProvider</name>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="166"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="171"/>
         <source>Add Features</source>
         <translation>Добавление объектов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="172"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="177"/>
         <source>Delete Features</source>
         <translation>Удаление объектов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="178"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="183"/>
         <source>Change Attribute Values</source>
         <translation>Изменение значений атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="184"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="189"/>
         <source>Add Attributes</source>
         <translation>Добавление атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="190"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="195"/>
         <source>Delete Attributes</source>
         <translation>Удаление атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="197"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="202"/>
         <source>Create Spatial Index</source>
         <translation>Создание пространственного индекса</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="203"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="208"/>
         <source>Fast Access to Features at ID</source>
         <translation>Быстрый доступ к объектам по ID</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectordataprovider.cpp" line="209"/>
+        <location filename="../src/core/qgsvectordataprovider.cpp" line="214"/>
         <source>Change Geometries</source>
         <translation>Изменение геометрии</translation>
     </message>
@@ -30448,47 +30918,47 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3265"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3377"/>
         <source>ERROR: no provider</source>
         <translation>ОШИБКА: источник отсутствует</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3271"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3383"/>
         <source>ERROR: layer not editable</source>
         <translation>ОШИБКА: нередактируемый слой</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3360"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3475"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>УСПЕХ: добавлен атрибут %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3367"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3482"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>ОШИБКА: атрибут %1 не был добавлен</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2775"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2887"/>
         <source>No renderer object</source>
         <translation>Отсутствует объект отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2779"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2891"/>
         <source>Classification field not found</source>
         <translation>Поле классификации не найдено</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2942"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3054"/>
         <source>renderer failed to save</source>
         <translation>не удалось сохранить объект отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2949"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3061"/>
         <source>no renderer</source>
         <translation>отсутствует объект отрисовки</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3285"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3397"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
@@ -30498,7 +30968,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3294"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3406"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
@@ -30508,7 +30978,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3310"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3425"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
@@ -30518,7 +30988,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3319"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3434"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation>
@@ -30528,7 +30998,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3429"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3544"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation>
@@ -30538,7 +31008,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3437"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3552"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation>
@@ -30548,7 +31018,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3470"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3585"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation>
@@ -30558,7 +31028,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3478"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3593"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation>
@@ -30568,7 +31038,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3491"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3606"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation>
@@ -30578,7 +31048,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3499"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3614"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation>
@@ -30588,7 +31058,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3511"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3626"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation>
@@ -30598,7 +31068,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3524"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3639"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation>
@@ -30608,12 +31078,12 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4160"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4272"/>
         <source>Specify CRS for layer %1</source>
         <translation>Укажите систему координат для слоя %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2769"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2881"/>
         <source>Unknown renderer</source>
         <translation>Неизвестный объект отрисовки</translation>
     </message>
@@ -30621,109 +31091,109 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayerProperties</name>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="419"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="496"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="428"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="505"/>
         <source>Single Symbol</source>
         <translation>Обычный знак</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="423"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="499"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="432"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="508"/>
         <source>Graduated Symbol</source>
         <translation>Градуированный знак</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="427"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="500"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="436"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="509"/>
         <source>Continuous Color</source>
         <translation>Непрерывный цвет</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="431"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="501"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="440"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="510"/>
         <source>Unique Value</source>
         <translation>Уникальное значение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="721"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="726"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="730"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="735"/>
         <source>Spatial Index</source>
         <translation>Пространственный индекс</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="726"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="735"/>
         <source>Creation of spatial index failed</source>
         <translation>Не удалось создать пространственный индекс</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="739"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="748"/>
         <source>General:</source>
         <translation>Общее:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="791"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="800"/>
         <source>Extents:</source>
         <translation>Границы: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="844"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="850"/>
         <source>In layer spatial reference system units : </source>
         <translation>В единицах координатной системы слоя: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="857"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="895"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="863"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="901"/>
         <source>In project spatial reference system units : </source>
         <translation>В единицах координатной системы проекта: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="870"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="876"/>
         <source>Layer Spatial Reference System:</source>
         <translation>Система координат слоя:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="906"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="912"/>
         <source>Attribute field info:</source>
         <translation>Поля атрибутов:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="913"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="919"/>
         <source>Field</source>
         <translation>Поле</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="168"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="916"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="177"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="922"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="169"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="919"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="178"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="925"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="170"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="922"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="179"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="928"/>
         <source>Precision</source>
         <translation>Точность</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="171"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="925"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="180"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="931"/>
         <source>Comment</source>
         <translation>Комментарий</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1001"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1017"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1007"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1023"/>
         <source>Default Style</source>
         <translation>Стиль по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1026"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1055"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1032"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1061"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>Файл стиля слоя QGIS (*.qml)</translation>
     </message>
@@ -30756,235 +31226,235 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">псевдоним</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="331"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="340"/>
         <source>Name conflict</source>
         <translation>Конфликт имён</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="331"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="340"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>Не удалось вставить атрибут. Данное имя уже существует в таблице.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="343"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="352"/>
         <source>Added attribute</source>
         <translation>Добавление атрибута</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="368"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="377"/>
         <source>Deleted attribute</source>
         <translation>Удаление атрибута</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1042"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1079"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1048"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1085"/>
         <source>Saved Style</source>
         <translation>Сохранённый стиль</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="721"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="730"/>
         <source>Creation of spatial index successful</source>
         <translation>Пространственный индекс успешно создан</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="546"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="555"/>
         <source>Enumeration</source>
         <translation>Перечень</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="547"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="556"/>
         <source>Immutable</source>
         <translation>Неизменяемый</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="405"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="414"/>
         <source>Transparency: %1%</source>
         <translation>Прозрачность: %1%</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="144"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="153"/>
         <source>Overlay</source>
         <translation type="unfinished">Совмещение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="155"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="164"/>
         <source>Layer Properties - %1</source>
         <translation>Свойства слоя — %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="166"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="175"/>
         <source>Id</source>
         <translation type="unfinished">ID</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="167"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="176"/>
         <source>Name</source>
         <translation type="unfinished">Имя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="172"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="181"/>
         <source>Edit widget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="173"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="182"/>
         <source>Alias</source>
         <translation type="unfinished">Псевдоним</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="296"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="474"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="305"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="483"/>
         <source>Stop editing mode to enable this.</source>
         <translation>Отключите режим редактирования для использования этой функции.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="456"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="465"/>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
         <translation>Эта кнопка открывает конструктор запросов, при помощи которого можно выбрать подмножество объектов для отображения на карте. Объекты, не входящие в выбранное подмножество, будут скрыты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="459"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="468"/>
         <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
         <translation>В этом поле указан запрос, используемый для выборки объектов слоя. Для создания или изменения запроса нажмите на кнопку «Конструктор запросов»</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="537"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="546"/>
         <source>Line edit</source>
         <translation>Строчное редактирование</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="538"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="547"/>
         <source>Unique values</source>
         <translation>Уникальные значения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="539"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="548"/>
         <source>Unique values editable</source>
         <translation>Уникальные значения (редактируемые)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="540"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="549"/>
         <source>Classification</source>
         <translation>Классификация</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="541"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="550"/>
         <source>Value map</source>
         <translation>Карта значений</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="542"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="551"/>
         <source>Edit range</source>
         <translation>Поле ввода диапазона</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="543"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="552"/>
         <source>Slider range</source>
         <translation>Диапазон</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="544"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="553"/>
         <source>Dial range</source>
         <translation>Циферблат</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="545"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="554"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="548"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="557"/>
         <source>Hidden</source>
         <translation>Скрытый</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="551"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="560"/>
         <source>Calendar</source>
         <translation>Календарь</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="746"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="755"/>
         <source>Layer comment: %1</source>
         <translation>Комментарий слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="752"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="761"/>
         <source>Storage type of this layer: %1</source>
         <translation>Тип хранилища слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="757"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="766"/>
         <source>Source for this layer: %1</source>
         <translation>Источник слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="773"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="782"/>
         <source>Geometry type of the features in this layer: %1</source>
         <translation>Тип геометрии объектов в слое: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="780"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="789"/>
         <source>The number of features in this layer: %1</source>
         <translation>Количество объектов в слое: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="784"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="793"/>
         <source>Editing capabilities of this layer: %1</source>
         <translation>Возможности редактирования слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="845"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="858"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="851"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="864"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>Xмин,Yмин %1,%2 : Xмакс,Yмакс %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="882"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="888"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation>Система координат проекта (целевая):</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="896"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="902"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Ошибка преобразования границ слоя)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1026"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1032"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation>Загрузить свойства слоя из файла стиля (.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1055"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1061"/>
         <source>Save layer properties as style file (.qml)</source>
         <translation>Сохранить свойства слоя в файле стиля (.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="549"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="558"/>
         <source>Checkbox</source>
         <translation>Флажок</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1124"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1130"/>
         <source>Select edit form</source>
         <translation>Выберите форму редактирования</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1124"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1130"/>
         <source>UI file (*.ui)</source>
         <translation>Файлы интерфейса (*.ui)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="550"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="559"/>
         <source>Text edit</source>
         <translation>Текстовое поле</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1176"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1254"/>
         <source>Symbology</source>
         <translation>Символика</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1177"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1255"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
         <translation>Вы хотите использовать для этого слоя новую реализацию отрисовки условных знаков?</translation>
     </message>
@@ -31112,6 +31582,26 @@ Should the existing classes be deleted before classification?</source>
         <translation>Система координат</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="620"/>
+        <source>Joins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="665"/>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="670"/>
+        <source>Join field</source>
+        <translation type="unfinished">Поле для объединения</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="675"/>
+        <source>Target field</source>
+        <translation type="unfinished">Целевое поле</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
         <source>Legend type</source>
         <translation>Тип легенды</translation>
@@ -31205,12 +31695,12 @@ Should the existing classes be deleted before classification?</source>
         <translation>Оригинальная</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="96"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="103"/>
         <source>Save layer as...</source>
         <translation>Сохранить слой как...</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="108"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="115"/>
         <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
         <translation>Выберите систему координат для создаваемого файла. Вершины в новом слое будут преобразованы в неё из текущей системы координат.</translation>
     </message>
@@ -31519,19 +32009,19 @@ Should the existing classes be deleted before classification?</source>
         <translation>Подтвердите удаление</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="487"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="495"/>
         <source>WMS Password for %1</source>
         <translation>Пароль WMS для %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="419"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="443"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="526"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="421"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="449"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="534"/>
         <source>WMS Provider</source>
         <translation>WMS-источник</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="527"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="535"/>
         <source>Could not open the WMS Provider</source>
         <translation>Не удалось открыть WMS-источник</translation>
     </message>
@@ -31571,7 +32061,7 @@ Should the existing classes be deleted before classification?</source>
         <translation>система координат %1 не поддерживается.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="420"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="422"/>
         <source>Advertised GetMap URL
 
   %2
@@ -31592,7 +32082,7 @@ This might be an server configuration error. Should the URL be used?</source>
 Это может быть результатом ошибки конфигурации сервер. Использовать данный URL?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="444"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="450"/>
         <source>Advertised GetFeatureInfo URL
 
   %2
@@ -31613,8 +32103,8 @@ This might be an server configuration error. Should the URL be used?</source>
 Это может быть результатом ошибки конфигурации сервер. Использовать данный URL?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="818"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="918"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="826"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="926"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
@@ -31624,37 +32114,37 @@ This might be an server configuration error. Should the URL be used?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="906"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="914"/>
         <source>Select layer(s)</source>
         <translation>Выберите слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="908"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="916"/>
         <source>Select layer(s) or a tileset</source>
         <translation>Выберите слои или мозаику</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="913"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="921"/>
         <source>Select either layer(s) or a tileset</source>
         <translation>Выберите слои или мозаику</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="925"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="933"/>
         <source>No common CRS for selected layers.</source>
         <translation>Выбранные слои не имеют общих систем координат.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="930"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="938"/>
         <source>No CRS selected</source>
         <translation>Не выбрана система координат</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="935"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="943"/>
         <source>No image encoding selected</source>
         <translation>Не выбран формат изображения</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="940"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="948"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
@@ -31664,7 +32154,7 @@ This might be an server configuration error. Should the URL be used?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="946"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="954"/>
         <source>Tileset selected</source>
         <translation>Выбрана мозаика</translation>
     </message>
@@ -31676,39 +32166,39 @@ This might be an server configuration error. Should the URL be used?</source>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1038"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1046"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation>Не удалось обработать ответ. Сообщение источника %1:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1092"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1099"/>
         <source>WMS proxies</source>
         <translation>WMS-прокси</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1092"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1099"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Несколько WMS-серверов было добавлено в список. Обратите внимание, что если вы выходите в интернет через прокси-сервер, его необходимо указать в диалоге настроек QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1168"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1175"/>
         <source>parse error at row %1, column %2: %3</source>
         <translation>ошибка разбора в строке %1, столбце %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1173"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1180"/>
         <source>network error: %1</source>
         <translation>ошибка сети: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1196"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1203"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation>Соединение %1 уже существует. Вы хотите перезаписать его?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1197"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1204"/>
         <source>Confirm Overwrite</source>
         <translation>Подтвердите перезапись</translation>
     </message>
@@ -31909,178 +32399,178 @@ This might be an server configuration error. Should the URL be used?</source>
         <translation type="obsolete">Запрос требует формата, который не поддерживается сервером.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1916"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1924"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Запрос включает систему координат, которая не поддерживается сервером для одного или более слоёв.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1924"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1932"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>В запросе GetMap указан слой, не предлагаемый сервером, или в запросе GetFeatureInfo указан слой, не показанный на карте.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1929"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1937"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Запрос требует слой в стиле, который недоступен на сервере.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1933"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1941"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>Попытка запроса GetFeatureInfo для слоя, который не поддерживает запросов.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1937"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1945"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>Запрос GetFeatureInfo содержит недопустимые значения X или Y.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1941"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1949"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Значение необязательного параметра UpdateSequence в запросе GetCapabilities равно текущему номеру последовательности обновления в метаданных службы.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1946"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1954"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Значение необязательного параметра UpdateSequence в запросе GetCapabilities выше, чем текущий номер последовательности обновления в метаданных службы.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1951"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1959"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Запрос не включает образец величины, и значение этой величины по умолчанию не указано сервером.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1956"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1964"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Запрос включает недопустимый образец величины.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1960"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1968"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Запрос необязательной операции, которая не поддерживается сервером.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1971"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1979"/>
         <source>The WMS vendor also reported: </source>
         <translation>Дополнительное сообщение WMS-провайдера: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2183"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2379"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2559"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2622"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2191"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2387"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2567"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2630"/>
         <source>Property</source>
         <translation>Свойство</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2186"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2382"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2562"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2625"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2194"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2390"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2570"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2633"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2387"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2395"/>
         <source>WMS Version</source>
         <translation>Версия WMS</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2199"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2311"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2395"/>
-        <source>Title</source>
-        <translation>Заглавие</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2207"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2319"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2403"/>
+        <source>Title</source>
+        <translation>Заглавие</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2215"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2327"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2411"/>
         <source>Abstract</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2411"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2419"/>
         <source>Keywords</source>
         <translation>Ключевые слова</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2419"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2427"/>
         <source>Online Resource</source>
         <translation>Онлайн-ресурс</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2427"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2435"/>
         <source>Contact Person</source>
         <translation>Контактное лицо</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2439"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2447"/>
         <source>Fees</source>
         <translation>Плата</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2447"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2455"/>
         <source>Access Constraints</source>
         <translation>Ограничения доступа</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2455"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2463"/>
         <source>Image Formats</source>
         <translation>Форматы изображения</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2463"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2471"/>
         <source>Identify Formats</source>
         <translation>Форматы запроса</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2471"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2479"/>
         <source>Layer Count</source>
         <translation>Количество слоёв</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2516"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2524"/>
         <source>Selected Layers:</source>
         <translation>Выбранные слои:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2529"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2537"/>
         <source>Other layers:</source>
         <translation>Прочие слои:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2566"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2574"/>
         <source>Selected</source>
         <translation>Выбран</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2218"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2226"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2234"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2569"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2242"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2577"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2218"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2226"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2234"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2569"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2242"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2577"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2191"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2199"/>
         <source>Visibility</source>
         <translation>Видимость</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="884"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="892"/>
         <source>empty capabilities document</source>
         <translation>пустой ответ на запрос возможностей</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="998"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1006"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 This is probably due to an incorrect WMS Server URL.
 Response was:
@@ -32093,7 +32583,7 @@ Response was:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1021"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1029"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
 This might be due to an incorrect WMS Server URL.
 Tag:%3
@@ -32107,7 +32597,7 @@ Response was:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1856"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1864"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4
 
 Response was:
@@ -32120,135 +32610,135 @@ Response was:
 %5</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1920"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Запрос требует формат, который не поддерживается сервером.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2194"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2202"/>
         <source>Visible</source>
         <translation>Видимый</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2194"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2202"/>
         <source>Hidden</source>
         <translation>Скрытый</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2215"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2223"/>
         <source>Can Identify</source>
         <translation>Можно определять</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2223"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2231"/>
         <source>Can be Transparent</source>
         <translation>Может быть прозрачным</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2231"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2239"/>
         <source>Can Zoom In</source>
         <translation>Можно увеличивать</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2239"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2247"/>
         <source>Cascade Count</source>
         <translation>Количество каскадов</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2247"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2255"/>
         <source>Fixed Width</source>
         <translation>Фикс. ширина</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2255"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2263"/>
         <source>Fixed Height</source>
         <translation>Фикс. высота</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2263"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2271"/>
         <source>WGS 84 Bounding Box</source>
         <translation>Рамка WGS 84</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2273"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2283"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2281"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2291"/>
         <source>Available in CRS</source>
         <translation>Доступен в CRS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2294"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2302"/>
         <source>Available in style</source>
         <translation>Доступен в стиле</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2303"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2311"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2575"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2583"/>
         <source>Styles</source>
         <translation>Стили</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2583"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2591"/>
         <source>CRS</source>
         <translation>Система координат</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2590"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2598"/>
         <source>Bounding Box</source>
         <translation>Рамка</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2597"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2605"/>
         <source>Available in Resolutions</source>
         <translation>Доступен в разрешениях</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2629"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2637"/>
         <source>Hits</source>
         <translation>Совпадения</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2635"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2643"/>
         <source>Misses</source>
         <translation>Несовпадения</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2641"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2649"/>
         <source>Errors</source>
         <translation>Ошибки</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2713"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2721"/>
         <source>Layer cannot be queried in plain text.</source>
         <translation>Не удалось опросить слой в формате простого текста.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2719"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2727"/>
         <source>Layer cannot be queried.</source>
         <translation>Не удалось опросить слой.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2763"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2771"/>
         <source>identify request redirected.</source>
         <translation>перенаправление запроса определения.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="996"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1019"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1854"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1004"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1027"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1862"/>
         <source>Dom Exception</source>
         <translation>DOM-исключение</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1920"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1928"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Запрос включает систему координат, которая не поддерживается сервером для одного или более слоёв.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="907"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="915"/>
         <source>
 Tried URL: %1</source>
         <translation>
@@ -32266,7 +32756,7 @@ Tried URL: %1</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="676"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="793"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="801"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
@@ -32277,7 +32767,7 @@ Tried URL: %1</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="677"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="794"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="802"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation>
@@ -32288,7 +32778,7 @@ Tried URL: %1</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="678"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="795"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="803"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation>
@@ -32299,7 +32789,7 @@ Tried URL: %1</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="679"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="796"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="804"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation>
@@ -32309,38 +32799,38 @@ Tried URL: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="739"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="747"/>
         <source>tile request err %1: %2</source>
         <translation>ошибка запроса блока мозаики %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="821"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2779"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="829"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2787"/>
         <source>map request error %1: %2</source>
         <translation>ошибка запроса карты %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="928"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="936"/>
         <source>Capabilities request redirected.</source>
         <translation>Перенаправление запроса возможностей сервера.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="949"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="957"/>
         <source>empty of capabilities: %1</source>
         <translation>пустой ответ на запрос возможностей: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="955"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="963"/>
         <source>Download of capabilities failed: %1</source>
         <translation>Не удалось загрузить возможности сервера: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="967"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="975"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
         <translation>Загрузка возможностей сервера: %1 из %2 байт.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="972"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="980"/>
         <source>%1 of %2 bytes of map downloaded.</source>
         <translation>Загрузка карты с сервера: %1 из %2 байт.</translation>
     </message>
@@ -32357,17 +32847,17 @@ Tried URL: %1</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1964"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1972"/>
         <source>(No error code was reported)</source>
         <translation>(Код ошибки не был получен)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1968"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1976"/>
         <source>(Unknown error code)</source>
         <translation>(Неизвестный код ошибки)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2286"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2294"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation>
@@ -32377,60 +32867,60 @@ Tried URL: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2344"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2370"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2352"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2378"/>
         <source>Server Properties</source>
         <translation>Свойства сервера</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2348"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2356"/>
         <source>Selected Layers</source>
         <translation>Выбранные слои</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2350"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2358"/>
         <source>Other Layers</source>
         <translation>Прочие слои</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2356"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2544"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2364"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2552"/>
         <source>Tileset Properties</source>
         <translation>Свойства мозаики</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2361"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2369"/>
         <source>Cache Stats</source>
         <translation>Статистика кэширования</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2481"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2489"/>
         <source>Tileset Count</source>
         <translation>Количество мозаик</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2490"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2498"/>
         <source>GetCapabilitiesUrl</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2497"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2505"/>
         <source>GetMapUrl</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2500"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2507"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2508"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2515"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(предложенный, но проигнорированный)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2504"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2512"/>
         <source>GetFeatureInfoUrl</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2614"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2622"/>
         <source>Cache stats</source>
         <translation>Статистика кэширования</translation>
     </message>
@@ -32747,12 +33237,22 @@ Tried URL: %1</source>
         <translation type="unfinished">Очистить</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="241"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="231"/>
+        <source>Plugin isn&apos;t configured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="231"/>
+        <source>Plugin isn&apos;t configured!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="249"/>
         <source>Start point doesn&apos;t tie to the road!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="247"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="254"/>
         <source>Stop point doesn&apos;t tie to the road!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32777,8 +33277,8 @@ Tried URL: %1</source>
         <translation type="obsolete">Время:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="241"/>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="247"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="249"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="254"/>
         <source>Tie point failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -33783,16 +34283,21 @@ Description: %3</source>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="40"/>
+        <source>Rotation</source>
+        <translation type="unfinished">Вращение</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="58"/>
         <source>Outline</source>
         <translation>Обводка</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="47"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="65"/>
         <source>Change</source>
         <translation>Изменить</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="77"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="95"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -36093,6 +36598,21 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
+        <source>Link GDAL supported raster as GRASS raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
+        <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
+        <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Export vector table</source>
         <translation type="obsolete">Экспорт векторных таблиц</translation>
     </message>
@@ -36548,19 +37068,16 @@ Plugin will not be enabled.</source>
         <translation>Растровый анализ линии видимости</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation>Привязать GDAL-совместимый растр к двоичному растровому слою</translation>
+        <translation type="obsolete">Привязать GDAL-совместимый растр к двоичному растровому слою</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
         <source>Link GDAL supported raster to binary raster</source>
-        <translation>Привязать GDAL-совместимый растр к двоичному растру</translation>
+        <translation type="obsolete">Привязать GDAL-совместимый растр к двоичному растру</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
         <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation>Привязать все GDAL-совместимые растры в каталоге к двоичным растрам</translation>
+        <translation type="obsolete">Привязать все GDAL-совместимые растры в каталоге к двоичным растрам</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
