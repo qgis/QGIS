@@ -148,7 +148,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QMap<int, int> mAttrIdxToOgrIdx;
 
   private:
-    static QPair<QString, QString> nameAndGlob( QString driverName );
+    static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
 };
 
 #endif

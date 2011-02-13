@@ -26,15 +26,15 @@
 #include <QTextCodec>
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFlags fl )
-  : QDialog( parent, fl )
-  , mCRS( -1 )
+    : QDialog( parent, fl )
+    , mCRS( -1 )
 {
   setupUi( this );
 
   QSettings settings;
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
-  for( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+  for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     mFormatComboBox->addItem( it.key(), it.value() );
   }
@@ -47,7 +47,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
 
   QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
   int idx = mEncodingComboBox->findText( enc );
-  if( idx < 0 )
+  if ( idx < 0 )
   {
     mEncodingComboBox->insertItem( 0, enc );
     idx = 0;
@@ -77,14 +77,21 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   browseFilename->setEnabled( true );
   leFilename->setEnabled( true );
 
-  if( format() == "KML" )
+  if ( format() == "KML" )
   {
     mEncodingComboBox->setCurrentIndex( mEncodingComboBox->findText( "UTF-8" ) );
     mEncodingComboBox->setDisabled( true );
+    mSkipAttributeCreation->setEnabled( true );
+  }
+  else if ( format() == "DXF" )
+  {
+    mSkipAttributeCreation->setChecked( true );
+    mSkipAttributeCreation->setDisabled( true );
   }
   else
   {
     mEncodingComboBox->setEnabled( true );
+    mSkipAttributeCreation->setEnabled( true );
   }
 }
 
@@ -94,7 +101,7 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
   QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", "." ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
   QString outputFile = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), dirName, filterString );
-  if( !outputFile.isNull() )
+  if ( !outputFile.isNull() )
   {
     leFilename->setText( outputFile );
   }
@@ -103,12 +110,12 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 void QgsVectorLayerSaveAsDialog::on_browseCRS_clicked()
 {
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-  if( mCRS >= 0 )
+  if ( mCRS >= 0 )
     mySelector->setSelectedCrsId( mCRS );
   mySelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
                               "The data points will be transformed from the layer coordinate reference system." ) );
 
-  if( mySelector->exec() )
+  if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
     mCRS = srs.srsid();
