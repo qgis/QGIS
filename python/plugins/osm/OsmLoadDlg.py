@@ -131,7 +131,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if replacing: 
             # remove layers of current data first 
-            QgsMapLayerRegistry.instance().removeMapLayer(self.canvas.currentLayer().getLayerID(),True)
+            QgsMapLayerRegistry.instance().removeMapLayer(self.canvas.currentLayer().id(),True)
 
         if self.chkCustomRenderer.isChecked():
             styleFile=self.styleFiles[self.styleCombo.currentIndex()]

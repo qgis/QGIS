@@ -189,7 +189,7 @@ void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
       QgsMapLayerRegistry::instance()->addMapLayer( remoteLayer, true );
 
       // apply layer edit log
-      QString qgisLayerId = layer->getLayerID();
+      QString qgisLayerId = layer->id();
       QString sql = QString( "SELECT \"id\" FROM 'log_layer_ids' WHERE \"qgis_id\" = '%1'" ).arg( qgisLayerId );
       int layerId = sqlQueryInt( db, sql, -1 );
       if ( layerId != -1 )

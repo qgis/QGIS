@@ -146,8 +146,7 @@ class CORE_EXPORT QgsLabel
     QgsFieldMap & fields( void );
 
     /** Pointer to default attributes.
-     * @note this will be deprecated in version 2 as it is
-     * badly named. Rather use attributes.
+     * @deprecated in version 2 as it is badly named. Rather use attributes.
      * @see labelAttributes method rather */
     QgsLabelAttributes *layerAttributes( void );
 

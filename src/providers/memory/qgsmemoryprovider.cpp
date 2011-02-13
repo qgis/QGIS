@@ -34,17 +34,17 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
     mSelectRectGeom( NULL ),
     mSpatialIndex( NULL )
 {
-  // Initiallize the geometry with the uri to support old style uri's 
+  // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
-  QUrl url = QUrl::fromEncoded(uri.toUtf8());
+  QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   QString geometry;
-  if( url.hasQueryItem("geometry")) 
+  if ( url.hasQueryItem( "geometry" ) )
   {
-      geometry = url.queryItemValue("geometry");
+    geometry = url.queryItemValue( "geometry" );
   }
   else
   {
-      geometry = url.path();
+    geometry = url.path();
   }
 
   geometry = geometry.toLower();
@@ -63,10 +63,10 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
   else
     mWkbType = QGis::WKBUnknown;
 
-  if( url.hasQueryItem("crs"))
+  if ( url.hasQueryItem( "crs" ) )
   {
-      QString crsDef = url.queryItemValue("crs");
-      mCrs.createFromString(crsDef);
+    QString crsDef = url.queryItemValue( "crs" );
+    mCrs.createFromString( crsDef );
   }
 
   mNextFeatureId = 1;
@@ -77,60 +77,60 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
   ;
 
-  if( url.hasQueryItem("field"))
+  if ( url.hasQueryItem( "field" ) )
   {
     QList<QgsField> attributes;
-    QRegExp reFieldDef("\\:" 
-                       "(int|integer|real|double|string)" // type
-                       "(?:\\((\\d+)"                // length
-                       "(?:\\,(\\d+))?"                // precision
-                       "\\))?"
-                       "$", Qt::CaseInsensitive);
-    QStringList fields = url.allQueryItemValues("field");
-    for( int i = 0; i < fields.size(); i++ )
+    QRegExp reFieldDef( "\\:"
+                        "(int|integer|real|double|string)" // type
+                        "(?:\\((\\d+)"                // length
+                        "(?:\\,(\\d+))?"                // precision
+                        "\\))?"
+                        "$", Qt::CaseInsensitive );
+    QStringList fields = url.allQueryItemValues( "field" );
+    for ( int i = 0; i < fields.size(); i++ )
     {
-        QString name = fields.at(i);
-        QVariant::Type type = QVariant::String;
-        QString typeName("string");
-        int length = 255;
-        int precision = 0;
-        
-        int pos = reFieldDef.indexIn(name);
-        if( pos >= 0 )
-        {
-            name = name.mid(0,pos);
-            typeName = reFieldDef.cap(1).toLower();
-            if( typeName == "int" || typeName == "integer" )
-            {
-                type = QVariant::Int;
-                typeName = "integer";
-                length = 10;
-            }
-            else if( typeName == "real" || typeName == "double" )
-            {
-                type = QVariant::Double;
-                typeName = "double";
-                length=20;
-                precision = 5;
-            }
+      QString name = fields.at( i );
+      QVariant::Type type = QVariant::String;
+      QString typeName( "string" );
+      int length = 255;
+      int precision = 0;
 
-            if( reFieldDef.cap(2) != "" )
-            {
-                length = reFieldDef.cap(2).toInt();
-            }
-            if( reFieldDef.cap(3) != "" )
-            {
-                precision = reFieldDef.cap(3).toInt();
-            }
+      int pos = reFieldDef.indexIn( name );
+      if ( pos >= 0 )
+      {
+        name = name.mid( 0, pos );
+        typeName = reFieldDef.cap( 1 ).toLower();
+        if ( typeName == "int" || typeName == "integer" )
+        {
+          type = QVariant::Int;
+          typeName = "integer";
+          length = 10;
         }
-       if( name != "" ) attributes.append(QgsField(name,type,typeName,length,precision));
+        else if ( typeName == "real" || typeName == "double" )
+        {
+          type = QVariant::Double;
+          typeName = "double";
+          length = 20;
+          precision = 5;
+        }
+
+        if ( reFieldDef.cap( 2 ) != "" )
+        {
+          length = reFieldDef.cap( 2 ).toInt();
+        }
+        if ( reFieldDef.cap( 3 ) != "" )
+        {
+          precision = reFieldDef.cap( 3 ).toInt();
+        }
+      }
+      if ( name != "" ) attributes.append( QgsField( name, type, typeName, length, precision ) );
     }
-    addAttributes(attributes);
+    addAttributes( attributes );
   }
 
-  if( url.hasQueryItem("index") && url.queryItemValue("index") == "yes" )
+  if ( url.hasQueryItem( "index" ) && url.queryItemValue( "index" ) == "yes" )
   {
-      createSpatialIndex();
+    createSpatialIndex();
   }
 
 }
@@ -143,64 +143,67 @@ QgsMemoryProvider::~QgsMemoryProvider()
 
 QString QgsMemoryProvider::dataSourceUri() const
 {
-    QUrl uri("memory");
-    QString geometry("");
-    switch(mWkbType)
-    {
+  QUrl uri( "memory" );
+  QString geometry;
+  switch ( mWkbType )
+  {
     case QGis::WKBPoint :
-        geometry="Point";
-        break;
+      geometry = "Point";
+      break;
     case QGis::WKBLineString :
-        geometry="LineString";
-        break;
+      geometry = "LineString";
+      break;
     case QGis::WKBPolygon :
-        geometry="Polygon";
-        break;
+      geometry = "Polygon";
+      break;
     case QGis::WKBMultiPoint :
-        geometry="MultiPoint";
-        break;
+      geometry = "MultiPoint";
+      break;
     case QGis::WKBMultiLineString :
-        geometry="MultiLineString";
-        break;
+      geometry = "MultiLineString";
+      break;
     case QGis::WKBMultiPolygon :
-        geometry="MultiPolygon";
-        break;
-    }
-    uri.addQueryItem("geometry",geometry);
+      geometry = "MultiPolygon";
+      break;
+    default:
+      geometry = "";
+      break;
+  }
+  uri.addQueryItem( "geometry", geometry );
 
-    if( mCrs.isValid())
+  if ( mCrs.isValid() )
+  {
+    QString crsDef( "" );
+    long srid = mCrs.epsg();
+    if ( srid )
     {
-        QString crsDef("");
-        long srid = mCrs.epsg();
-        if( srid )
-        {
-            crsDef = QString("epsg:%1").arg(srid);
-        }
-        else if(  srid=mCrs.postgisSrid() )
-        {
-            crsDef = QString("postgis:%1").arg(srid);
-        }
-        else
-        {
-            crsDef = QString("wkt:%1").arg(mCrs.toWkt());
-        }
-        uri.addQueryItem("crs",crsDef);
+      crsDef = QString( "epsg:%1" ).arg( srid );
     }
-    if( mSpatialIndex )
+    else if (( srid = mCrs.postgisSrid() ) )
     {
-        uri.addQueryItem("index","yes");
+      crsDef = QString( "postgis:%1" ).arg( srid );
     }
+    else
+    {
+      crsDef = QString( "wkt:%1" ).arg( mCrs.toWkt() );
+    }
+    uri.addQueryItem( "crs", crsDef );
+  }
+  if ( mSpatialIndex )
+  {
+    uri.addQueryItem( "index", "yes" );
+  }
 
-    QgsAttributeList attrs = const_cast<QgsMemoryProvider *>(this)->attributeIndexes();
-    for( int i = 0; i < attrs.size(); i++ )
-    {
-        QgsField field = mFields[attrs[i]];
-        QString fieldDef = field.name();
-        fieldDef.append(QString(":%2(%3,%4)").arg(field.typeName()).arg(field.length()).arg(field.precision()));
-        uri.addQueryItem("field",fieldDef);
-    }
+  QgsAttributeList attrs = const_cast<QgsMemoryProvider *>( this )->attributeIndexes();
+  for ( int i = 0; i < attrs.size(); i++ )
+  {
+    QgsField field = mFields[attrs[i]];
+    QString fieldDef = field.name();
+    fieldDef.append( QString( ":%2(%3,%4)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() ) );
+    uri.addQueryItem( "field", fieldDef );
+  }
 
-    return QString(uri.toEncoded());
+  return QString( uri.toEncoded() );
 
 }
 

@@ -100,7 +100,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( QString typeName )
       QgsPluginLayer* pl = qobject_cast<QgsPluginLayer*>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
-        QgsMapLayerRegistry::instance()->removeMapLayer( layer->getLayerID() );
+        QgsMapLayerRegistry::instance()->removeMapLayer( layer->id() );
       }
     }
   }

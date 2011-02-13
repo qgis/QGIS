@@ -220,7 +220,7 @@ void QgisAppInterface::refreshLegend( QgsMapLayer *l )
 {
   if ( l && qgis && qgis->legend() )
   {
-    qgis->legend()->refreshLayerSymbology( l->getLayerID() );
+    qgis->legend()->refreshLayerSymbology( l->id() );
   }
 }
 

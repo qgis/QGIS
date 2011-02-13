@@ -230,7 +230,7 @@ void QgsLegend::removeLayer( QString layerId )
       // save legend layer (parent of a legend layer file we're going to delete)
       QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
 
-      if ( ll && ll->layer() && ll->layer()->getLayerID() == layerId )
+      if ( ll && ll->layer() && ll->layer()->id() == layerId )
       {
         removeItem( ll );
         delete ll;

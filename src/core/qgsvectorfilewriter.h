@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Write contents of vector layer to a shapefile
-        @note: deprecated. Use writeAsVectorFormat instead*/
+        @deprecated Use writeAsVectorFormat instead*/
     static WriterError writeAsShapefile( QgsVectorLayer* layer,
                                          const QString& shapefileName,
                                          const QString& fileEncoding,

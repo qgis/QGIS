@@ -145,7 +145,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
 
     /** refresh the legend of a layer
-     \note deprecated - use QgsLegendInterface::refreshLayerSymbology
+     \deprecated use QgsLegendInterface::refreshLayerSymbology
      */
     virtual void refreshLegend( QgsMapLayer *l ) = 0;
 

@@ -696,7 +696,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     max_scale = lyr.scaleMax;
   }
 
-  Layer* l = mPal->addLayer( layer->getLayerID().toLocal8Bit().data(),
+  Layer* l = mPal->addLayer( layer->id().toLocal8Bit().data(),
                              min_scale, max_scale, arrangement,
                              METER, priority, lyr.obstacle, true, true );
 
@@ -781,7 +781,7 @@ QgsPalLayerSettings& QgsPalLabeling::layer( const QString& layerName )
   QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )
   {
-    if ( lit.key() && lit.key()->getLayerID() == layerName )
+    if ( lit.key() && lit.key()->id() == layerName )
     {
       return lit.value();
     }

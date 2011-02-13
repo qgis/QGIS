@@ -157,7 +157,7 @@ void QgsSnappingDialog::update()
 
     QCheckBox *cbxEnable = new QCheckBox( mLayerTreeWidget );
     mLayerTreeWidget->setItemWidget( item, 0, cbxEnable );
-    item->setData( 0, Qt::UserRole, currentVectorLayer->getLayerID() );
+    item->setData( 0, Qt::UserRole, currentVectorLayer->id() );
 
     item->setText( 1, currentVectorLayer->name() );
 

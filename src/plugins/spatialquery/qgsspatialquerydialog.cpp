@@ -495,7 +495,7 @@ void QgsSpatialQueryDialog::populateTargetLayerComboBox()
     }
 
     addLayerCombobox( true, vectorLayer );
-    mMapIdVectorLayers.insert( vectorLayer->getLayerID(), vectorLayer );
+    mMapIdVectorLayers.insert( vectorLayer->id(), vectorLayer );
   }
   targetLayerComboBox->setCurrentIndex( 0 );
   targetLayerComboBox->blockSignals( false );

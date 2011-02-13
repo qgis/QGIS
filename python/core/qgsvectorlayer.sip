@@ -390,7 +390,7 @@ public:
 
   /** add an attribute field (but does not commit it) 
       returns true in case of success
-      @note deprecated
+      @deprecated
       */
   bool addAttribute( QString name, QString type );
 

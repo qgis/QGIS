@@ -159,7 +159,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     twIdentifyLayers->setItem( i, 1, twi );
 
     QCheckBox *cb = new QCheckBox();
-    cb->setChecked( !noIdentifyLayerIdList.contains( currentLayer->getLayerID() ) );
+    cb->setChecked( !noIdentifyLayerIdList.contains( currentLayer->id() ) );
     twIdentifyLayers->setCellWidget( i, 2, cb );
   }
 

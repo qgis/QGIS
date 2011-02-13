@@ -392,7 +392,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
         {
           if ( *mapIdIt )
           {
-            layerSet.push_back(( *mapIdIt )->getLayerID() );
+            layerSet.push_back(( *mapIdIt )->id() );
           }
         }
       }

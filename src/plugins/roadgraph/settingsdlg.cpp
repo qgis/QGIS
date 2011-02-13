@@ -26,7 +26,8 @@
 //standard includes
 
 RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WFlags fl )
-    : mSettings( settings ), QDialog( parent, fl )
+    : QDialog( parent, fl )
+    , mSettings( settings )
 {
   // create base widgets;
   setWindowTitle( tr( "Road graph plugin settings" ) );

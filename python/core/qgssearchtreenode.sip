@@ -104,7 +104,7 @@ class QgsSearchTreeNode
     //! @note attributes and optional geom parameter replace with feature in 1.6
     bool checkAgainst( const QMap<int,QgsField>& fields, QgsFeature &f );
 
-    //! @note deprecated
+    //! @deprecated
     bool checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
@@ -119,7 +119,7 @@ class QgsSearchTreeNode
     bool getValue( QgsSearchTreeValue& value /Out/, QgsSearchTreeNode* node,
                    const QMap<int,QgsField>& fields, QgsFeature &f );
 
-    //! @note deprecated
+    //! @deprecated
     bool getValue( QgsSearchTreeValue& value /Out/, QgsSearchTreeNode* node,
                    const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
@@ -149,7 +149,7 @@ class QgsSearchTreeNode
     //! @note attribute/geom replaced by feature in 1.6
     QgsSearchTreeValue valueAgainst( const QMap<int,QgsField>& fields, QgsFeature &f );
 
-    //! @note deprecated
+    //! @deprecated
     QgsSearchTreeValue valueAgainst( const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type

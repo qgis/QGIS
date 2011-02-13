@@ -235,7 +235,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Add new attributes
      * @param attributes map of attributes name as key and type as value
      * @return true in case of success and false in case of failure
-     * @note deprecated
+     * @deprecated
      */
     virtual bool addAttributes( const QMap<QString, QString> &attributes );
 
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Returns the names of the supported types
-     * @note deprecated
+     * @deprecated
      */
     const QMap<QString, QVariant::Type> &supportedNativeTypes() const;
 

@@ -159,7 +159,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QStringList svgPaths();
 
     //! Returns the path to the applications svg paths
-    //! @note deprecated
+    //! @deprecated
     static const QString svgPath();
 
     //! Returns the path to the application prefix directory.

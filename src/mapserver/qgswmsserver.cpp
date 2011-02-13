@@ -612,7 +612,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
     //create maplayer from sld parser
     layerList = mConfigParser->mapLayerFromStyle( *layerIt, "" );
     currentLayer = layerList.at( 0 );
-    if ( !currentLayer || nonIdentifiableLayers.contains( currentLayer->getLayerID() ) )
+    if ( !currentLayer || nonIdentifiableLayers.contains( currentLayer->id() ) )
     {
       continue;
     }

@@ -210,7 +210,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLaye
       continue;
     }
 
-    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt, opacity, vlayer->getLayerID() );
+    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt, opacity, vlayer->id() );
     if ( !currentSymbolItem )
     {
       continue;

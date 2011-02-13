@@ -4920,7 +4920,7 @@ void QgisApp::layerSubsetString()
       mMapCanvas->refresh();
       if ( mMapLegend )
       {
-        mMapLegend->refreshLayerSymbology( vlayer->getLayerID(), false );
+        mMapLegend->refreshLayerSymbology( vlayer->id(), false );
       }
     }
   }
