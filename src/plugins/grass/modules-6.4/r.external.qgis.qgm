@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassdatamodule.dtd">
-<qgisgrassmodule label="Link GDAL supported raster layer to a binary raster map layer" module="r.external">
+<qgisgrassmodule label="Link GDAL supported raster loaded in QGIS as GRASS raster" module="r.external">
 	<flag key="o"/>
 	<flag key="e"/>
 	<gdal key="source" label="GDAL raster layer"/>
