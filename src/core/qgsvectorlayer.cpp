@@ -1506,7 +1506,7 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f, bool all )
   if ( mDataProvider && ( all || ( mFetchAttributes.size() > 0 && mJoinBuffer->containsFetchJoins() ) ) )
   {
     int index = 0;
-    maxIndex( mDataProvider->fields(), index );
+    QgsVectorLayerJoinBuffer::maximumIndex( mDataProvider->fields(), index );
     mJoinBuffer->updateFeatureAttributes( f, index, all );
   }
 
@@ -1636,7 +1636,7 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
       int maxProviderIndex = 0;
       if ( mDataProvider )
       {
-        maxIndex( mDataProvider->fields(), maxProviderIndex );
+        QgsVectorLayerJoinBuffer::maximumIndex( mDataProvider->fields(), maxProviderIndex );
       }
 
       mJoinBuffer->select( mFetchAttributes, joinFields, maxProviderIndex );
@@ -4879,7 +4879,7 @@ void QgsVectorLayer::updateFieldMap()
   }
 
   int currentMaxIndex = 0; //maximum index of current layer
-  if ( !maxIndex( mUpdatedFields, currentMaxIndex ) )
+  if ( !QgsVectorLayerJoinBuffer::maximumIndex( mUpdatedFields, currentMaxIndex ) )
   {
     return;
   }
@@ -4941,18 +4941,6 @@ void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingl
     selRenderer->stopRender( rendererContext );
     delete selRenderer;
   }
-}
-
-bool QgsVectorLayer::maxIndex( const QgsFieldMap& fMap, int& index ) const
-{
-  if ( fMap.size() < 1 )
-  {
-    return false;
-  }
-  QgsFieldMap::const_iterator endIt = fMap.constEnd();
-  --endIt;
-  index = endIt.key();
-  return true;
 }
 
 void QgsVectorLayer::updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const
