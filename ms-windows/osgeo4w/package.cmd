@@ -27,6 +27,10 @@ if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" goto error
 
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
+set PATH=%PROGRAMFILES%\CMake 2.8\bin;%PROGRAMFILES%\GnuWin32\bin;%PATH%
+set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include;
+set LIB=%LIB%;%OSGEO4W_ROOT%\lib
+
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
 
@@ -37,8 +41,8 @@ if "%DEVENV%"=="" goto error
 
 PROMPT qgis%VERSION%$g 
 
-set BUILDCONF=RelWithDebInfo
-REM set BUILDCONF=Release
+REM set BUILDCONF=RelWithDebInfo
+set BUILDCONF=Release
 
 
 cd ..\..
@@ -89,11 +93,10 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_INTERNAL_SPATIALITE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-17/include ^
-	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-17/lib/gdal_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python25/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python25/libs/python25.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python25/sip.exe ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION% ^
 	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
@@ -145,7 +148,9 @@ REM del %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py
 touch exclude
 
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
+	--exclude "apps/%PACKAGENAME%/bin/qgis.reg" ^
 	--exclude-from exclude ^
+	--exclude "*.pyc" ^
 	--exclude "apps/%PACKAGENAME%/themes/classic/grass" ^
 	--exclude "apps/%PACKAGENAME%/themes/default/grass" ^
 	--exclude "apps/%PACKAGENAME%/themes/qgis/grass" ^
@@ -161,8 +166,9 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
-tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-%VERSION%-%PACKAGE%.tar.bz2 ^
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
+	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/themes/classic/grass" ^
 	"apps/%PACKAGENAME%/themes/default/grass" ^
 	"apps/%PACKAGENAME%/themes/gis/grass" ^
