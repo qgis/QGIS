@@ -47,13 +47,18 @@
 #include <netinet/in.h>
 #endif
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#endif
 
 QgsShapeFile::QgsShapeFile( QString name, QString encoding )
 {
   fileName = name;
   features = 0;
   QgsApplication::registerOgrDrivers();
-  ogrDataSource = OGROpen( QFile::encodeName( fileName ).constData(), false, NULL );
+  ogrDataSource = OGROpen( TO8F( fileName ), false, NULL );
   if ( ogrDataSource != NULL )
   {
     valid = true;

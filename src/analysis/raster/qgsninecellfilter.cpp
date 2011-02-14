@@ -19,6 +19,11 @@
 #include "cpl_string.h"
 #include <QProgressDialog>
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x) (x).toUtf8().constData()
+#else
+#define TO8(x) (x).toLocal8Bit().constData()
+#endif
 
 QgsNineCellFilter::QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat ): \
     mInputFile( inputFile ), mOutputFile( outputFile ), mOutputFormat( outputFormat ), mCellSizeX( -1 ), mCellSizeY( -1 ), mInputNodataValue( -1 ), mOutputNodataValue( -1 )
@@ -191,7 +196,7 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
 
 GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
 {
-  GDALDatasetH inputDataset = GDALOpen( mInputFile.toLocal8Bit().data(), GA_ReadOnly );
+  GDALDatasetH inputDataset = GDALOpen( TO8( mInputFile ), GA_ReadOnly );
   if ( inputDataset != NULL )
   {
     nCellsX = GDALGetRasterXSize( inputDataset );

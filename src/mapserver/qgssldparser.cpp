@@ -76,6 +76,12 @@
 #include "qgsidwinterpolator.h"
 #include "qgstininterpolator.h"
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x) (x).toUtf8().constData()
+#else
+#define TO8(x) (x).toLocal8Bit().constData()
+#endif
+
 QgsSLDParser::QgsSLDParser( QDomDocument* doc ): QgsConfigParser(), mXMLDoc( doc )
 {
   mSLDNamespace = "http://www.opengis.net/sld";
@@ -1279,15 +1285,6 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   GDALRasterBandH hBand;
   GDALDatasetH hSrcDS;
 
-  QByteArray pszSrcData = rasterLayer->source().toLocal8Bit();
-  QByteArray pszDstData = tmpFileName.toLocal8Bit();
-  QByteArray pszElevData = propertyName.toLocal8Bit();
-
-  const char *pszSrcFilename = pszSrcData.data();
-  const char *pszDstFilename = pszDstData.data();
-  const char *pszElevAttrib = pszElevData.data();
-  const char *pszFormat = "ESRI Shapefile";
-
   int numberOfLevels = 0;
   double currentLevel = 0.0;
 
@@ -1315,7 +1312,7 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
 
   int b3D = FALSE, bNoDataSet = FALSE, bIgnoreNoData = FALSE;
 
-  hSrcDS = GDALOpen( pszSrcFilename, GA_ReadOnly );
+  hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
   if ( hSrcDS == NULL )
     exit( 2 );
 
@@ -1344,19 +1341,18 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   /*      Create the outputfile.                                          */
   /* -------------------------------------------------------------------- */
   OGRDataSourceH hDS;
-  OGRSFDriverH hDriver = OGRGetDriverByName( pszFormat );
+  OGRSFDriverH hDriver = OGRGetDriverByName( "ESRI Shapefile" );
   OGRFieldDefnH hFld;
   OGRLayerH hLayer;
   int nElevField = -1;
 
   if ( hDriver == NULL )
   {
-    fprintf( FCGI_stderr, "Unable to find format driver named %s.\n",
-             pszFormat );
+    fprintf( FCGI_stderr, "Unable to find format driver named 'ESRI Shapefile'.\n" );
     exit( 10 );
   }
 
-  hDS = OGR_Dr_CreateDataSource( hDriver, pszDstFilename, NULL );
+  hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), NULL );
   if ( hDS == NULL )
     exit( 1 );
 
@@ -1371,9 +1367,9 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   OGR_L_CreateField( hLayer, hFld, FALSE );
   OGR_Fld_Destroy( hFld );
 
-  if ( pszElevAttrib )
+  if ( !propertyName.isEmpty() )
   {
-    hFld = OGR_Fld_Create( pszElevAttrib, OFTReal );
+    hFld = OGR_Fld_Create( TO8( propertyName ), OFTReal );
     OGR_Fld_SetWidth( hFld, 12 );
     OGR_Fld_SetPrecision( hFld, 3 );
     OGR_L_CreateField( hLayer, hFld, FALSE );

@@ -74,6 +74,11 @@ email                : tim at linfiniti.com
 // doubles can take for the current system.  (Yes, 20 was arbitrary.)
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#endif
 
 QgsRasterLayer::QgsRasterLayer(
   QString const & path,
@@ -452,7 +457,7 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, 
   CPLErrorReset();
 
   //open the file using gdal making sure we have handled locale properly
-  myDataset = GDALOpen( QFile::encodeName( theFileNameQString ).constData(), GA_ReadOnly );
+  myDataset = GDALOpen( TO8F( theFileNameQString ), GA_ReadOnly );
   if ( myDataset == NULL )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
@@ -1002,12 +1007,12 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
 
     //close the gdal dataset and reopen it in read / write mode
     GDALClose( mGdalDataset );
-    mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_Update );
+    mGdalBaseDataset = GDALOpen( TO8F( mDataSource ), GA_Update );
 
     // if the dataset couldn't be opened in read / write mode, tell the user
     if ( !mGdalBaseDataset )
     {
-      mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+      mGdalBaseDataset = GDALOpen( TO8F( mDataSource ), GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
       return "ERROR_WRITE_FORMAT";
@@ -1077,7 +1082,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
           //something bad happenend
           //QString myString = QString (CPLGetLastError());
           GDALClose( mGdalBaseDataset );
-          mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+          mGdalBaseDataset = GDALOpen( TO8F( mDataSource ), GA_ReadOnly );
           //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
           mGdalDataset = mGdalBaseDataset;
 
@@ -1104,7 +1109,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
   {
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+    mGdalBaseDataset = GDALOpen( TO8F( mDataSource ), GA_ReadOnly );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -5290,7 +5295,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
   mGdalDataset = NULL;
 
   //open the dataset making sure we handle char encoding of locale properly
-  mGdalBaseDataset = GDALOpen( QFile::encodeName( theFilename ).constData(), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( theFilename ), GA_ReadOnly );
 
   if ( mGdalBaseDataset == NULL )
   {

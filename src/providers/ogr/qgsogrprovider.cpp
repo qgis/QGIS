@@ -54,6 +54,16 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDALVersionInfo( "RELEASE_NAME" )
   + ")";
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x)   (x).toUtf8().constData()
+#define TO8F(x)  (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8(x)   (x).toLocal8Bit().constData()
+#define TO8F(x)  QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
+
 class QgsCPLErrorHandler
 {
     static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
@@ -146,12 +156,12 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mLayerName: " + mLayerName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
-  ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), true, &ogrDriver );
 
+  ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
   if ( ogrDataSource == NULL )
   {
     // try to open read-only
-    ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), false, &ogrDriver );
+    ogrDataSource = OGROpen( TO8F( mFilePath ), false, &ogrDriver );
 
     //TODO Need to set a flag or something to indicate that the layer
     //TODO is in read-only mode, otherwise edit ops will fail
@@ -175,7 +185,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     }
     else
     {
-      ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toLocal8Bit().data() );
+      ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
     }
 
     ogrLayer = ogrOrigLayer;
@@ -306,7 +316,7 @@ QStringList QgsOgrProvider::subLayers() const
   }
   for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
-    QString theLayerName = QString::fromLocal8Bit( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
+    QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) );
 
     int theLayerFeatureCount = OGR_L_GetFeatureCount( OGR_DS_GetLayer( ogrDataSource, i ), 1 ) ;

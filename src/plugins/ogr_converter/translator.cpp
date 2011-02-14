@@ -20,6 +20,14 @@
 
 #include <ogr_api.h>
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x)  (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8(x)  (x).toLocal8Bit().constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
+
 Translator::Translator()
     : mDstUpdate( false ), mDstLayerOverwrite( true )
 {
@@ -122,7 +130,7 @@ bool Translator::translate()
   // TODO: Support translation of all layers from input data source
   //for (int i = 0; i < OGR_DS_GetLayerCount(); ++i)
 
-  OGRLayerH srcLayer = OGR_DS_GetLayerByName( srcDs, mSrcLayer.toAscii().constData() );
+  OGRLayerH srcLayer = OGR_DS_GetLayerByName( srcDs, TO8( mSrcLayer ) );
   if ( 0 == srcLayer )
   {
     QgsDebugMsg( "Can not find layer: " + mSrcLayer );
@@ -198,8 +206,7 @@ bool Translator::translateLayer( OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDa
     // TODO: Implement SRS transformation
     OGRSpatialReferenceH dstLayerSrs = OGR_L_GetSpatialRef( srcLayer );
 
-    dstLayer = OGR_DS_CreateLayer( dstDs, mDstLayer.toAscii().constData(),
-                                   dstLayerSrs, geomType, 0 );
+    dstLayer = OGR_DS_CreateLayer( dstDs, TO8( mDstLayer ), dstLayerSrs, geomType, 0 );
   }
   // TODO: Append and createion options not implemented
   // else if (!mDstLayerAppend)
@@ -369,7 +376,8 @@ OGRLayerH Translator::findLayer( OGRDataSourceH ds, QString const& name, int& in
 
 OGRDataSourceH Translator::openDataSource( QString const& url, bool readOnly )
 {
-  OGRDataSourceH ds = OGROpen( url.toAscii().constData(), !readOnly, 0 );
+  OGRDataSourceH ds = OGROpen( TO8( url ), !readOnly, 0 );
+
   if ( 0 == ds )
   {
     QgsDebugMsg( "Failed to open: " + url );
@@ -400,7 +408,7 @@ OGRDataSourceH Translator::openDataTarget( QString const& url, bool update )
     // Create the output data source
     //
     // TODO: Add support for creation options
-    ds = OGR_Dr_CreateDataSource( drv, url.toAscii().constData(), 0 );
+    ds = OGR_Dr_CreateDataSource( drv, TO8( url ), 0 );
     if ( 0 == ds )
     {
       QgsDebugMsg( "Failed to open: " + url );
