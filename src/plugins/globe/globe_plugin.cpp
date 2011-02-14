@@ -113,7 +113,7 @@ void GlobePlugin::initGui()
            this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
-  connect( mQGisIface->mainWindow(), SIGNAL( newProjectCreated() ), this,
+  connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this,
            SLOT( blankProjectReady() ) );
   connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
@@ -251,10 +251,10 @@ void GlobePlugin::projectReady()
 }
 
 void GlobePlugin::blankProjectReady()
-{//TODO
-  QMessageBox m;
-  m.setText("new project loaded");
-  m.exec();
+{//TODO maybe we need newProjectCreated() SIGNAL from http://trac.osgeo.org/qgis/changeset/14452
+  //QMessageBox m;
+  //m.setText("new project loaded");
+  //m.exec();
   mSettingsDialog.elevationDatasources()->clearContents();
   mSettingsDialog.elevationDatasources()->setRowCount(0);
 }
