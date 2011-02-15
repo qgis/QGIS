@@ -203,7 +203,7 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
     return -1;
 
   QgsSearchTreeNode* searchTree = search.tree();
-  if ( searchTree == NULL )
+  if ( !searchTree )
   {
     // entered empty search string
     return mLayer->featureCount();
@@ -234,6 +234,12 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
   }
 
   QApplication::restoreOverrideCursor();
+
+  if ( searchTree->hasError() )
+  {
+    QMessageBox::critical( this, tr( "Error during search" ), searchTree->errorMsg() );
+    return -1;
+  }
 
   return count;
 }
