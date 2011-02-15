@@ -113,11 +113,10 @@ void GlobePlugin::initGui()
            this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
-  connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this,
+  connect( mQGisIface, SIGNAL( newProjectCreated() ), this,
            SLOT( blankProjectReady() ) );
   connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
-
 }
 
 void GlobePlugin::run()
@@ -247,11 +246,14 @@ void GlobePlugin::setupMap()
 
 void GlobePlugin::projectReady()
 {
+  //QMessageBox m;
+  //m.setText("projectReady()");
+  //m.exec();
   mSettingsDialog.readElevationDatasources();
 }
 
 void GlobePlugin::blankProjectReady()
-{//TODO maybe we need newProjectCreated() SIGNAL from http://trac.osgeo.org/qgis/changeset/14452
+{//TODO now i patched the source against from http://trac.osgeo.org/qgis/changeset/14452
   //QMessageBox m;
   //m.setText("new project loaded");
   //m.exec();
