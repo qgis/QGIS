@@ -340,7 +340,16 @@ void QgsLegendLayer::updateIcon()
   // TODO: projection error icon?
 
   QIcon theIcon( newIcon );
+  QgsLegend* l = legend();
+  if ( l )
+  {
+    l->blockSignals( true ); //prevent unnecessary canvas redraw
+  }
   setIcon( 0, theIcon );
+  if ( l )
+  {
+    l->blockSignals( false );
+  }
 }
 
 QPixmap QgsLegendLayer::getOriginalPixmap()
