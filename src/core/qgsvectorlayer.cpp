@@ -3653,9 +3653,6 @@ bool QgsVectorLayer::commitChanges()
 
   updateFieldMap();
   mDataProvider->updateExtents();
-
-  triggerRepaint();
-
   QgsDebugMsg( "result:\n  " + mCommitErrors.join( "\n  " ) );
 
   return success;
@@ -3717,8 +3714,6 @@ bool QgsVectorLayer::rollBack()
   // invalidate the cache so the layer updates properly to show its original
   // after the rollback
   setCacheImage( 0 );
-  triggerRepaint();
-
   return true;
 }
 
