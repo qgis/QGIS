@@ -135,6 +135,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   rasterCompressFactor = 1.0;
   addDirectionSymbol = false;
   fontSizeInMapUnits = false;
+  distInMapUnits = false;
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -161,6 +162,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   rasterCompressFactor = s.rasterCompressFactor;
   addDirectionSymbol = s.addDirectionSymbol;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
+  distInMapUnits = s.distInMapUnits;
 
   dataDefinedProperties = s.dataDefinedProperties;
   fontMetrics = NULL;
@@ -286,6 +288,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
+  distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   _readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
@@ -320,6 +323,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
+  layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
@@ -574,7 +578,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   if ( distance != 0 )
   {
-    feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance * vectorScaleFactor );
+    if( distInMapUnits ) //convert distance from mm/map units to pixels
+    {
+      distance /= context.mapToPixel().mapUnitsPerPixel();
+    }
+    else //mm
+    {
+      distance *= vectorScaleFactor;
+    }
+    feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance );
   }
 
   //add parameters for data defined labeling to QgsPalGeometry

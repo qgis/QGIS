@@ -115,6 +115,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // Works only if Placement == Line
     bool addDirectionSymbol;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    bool distInMapUnits; //true if distance is in map units (otherwise in mm)
 
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
