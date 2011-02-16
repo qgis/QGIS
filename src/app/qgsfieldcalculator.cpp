@@ -20,7 +20,10 @@
 #include "qgsvectorlayer.h"
 #include <QMessageBox>
 
-QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVectorLayer( vl )
+QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
+    : QDialog()
+    , mVectorLayer( vl )
+    , mAttributeId( -1 )
 {
   setupUi( this );
 
@@ -92,15 +95,13 @@ void QgsFieldCalculator::accept()
 
     mVectorLayer->beginEditCommand( "Field calculator" );
 
-    int attributeId = -1; //id of the field (can be existing field or newly created one
-
     //update existing field
     if ( mUpdateExistingFieldCheckBox->checkState() == Qt::Checked )
     {
       QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
       if ( fieldIt != mFieldMap.end() )
       {
-        attributeId = fieldIt.value();
+        mAttributeId = fieldIt.value();
       }
     }
     //create new field
@@ -128,14 +129,13 @@ void QgsFieldCalculator::accept()
       {
         if ( it.value().name() == mOutputFieldNameLineEdit->text() )
         {
-          attributeId = it.key();
+          mAttributeId = it.key();
           break;
         }
       }
     }
 
-
-    if ( attributeId == -1 )
+    if ( mAttributeId == -1 )
     {
       mVectorLayer->destroyEditCommand();
       return;
@@ -172,9 +172,9 @@ void QgsFieldCalculator::accept()
       if ( value.isError() )
       {
         //insert NULL value for this feature and continue the calculation
-        if( searchTree->errorMsg() == QObject::tr( "Division by zero." ) )
+        if ( searchTree->errorMsg() == QObject::tr( "Division by zero." ) )
         {
-          mVectorLayer->changeAttributeValue( feature.id(), attributeId, QVariant(), false );
+          mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, QVariant(), false );
         }
         else
         {
@@ -184,11 +184,15 @@ void QgsFieldCalculator::accept()
       }
       else if ( value.isNumeric() )
       {
-        mVectorLayer->changeAttributeValue( feature.id(), attributeId, value.number(), false );
+        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value.number(), false );
+      }
+      else if ( value.isNull() )
+      {
+        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, QVariant(), false );
       }
       else
       {
-        mVectorLayer->changeAttributeValue( feature.id(), attributeId, value.string(), false );
+        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value.string(), false );
       }
 
       rownum++;
@@ -499,7 +503,7 @@ void QgsFieldCalculator::setOkButtonState()
 }
 
 
-void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged(QListWidgetItem * current, QListWidgetItem * previous )
+void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged( QListWidgetItem * current, QListWidgetItem * previous )
 {
   getFieldValues( 25 );
 }

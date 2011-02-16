@@ -107,6 +107,10 @@ class QgsAttributeTableModel: public QAbstractTableModel
      */
     int fieldIdx( int col ) const;
     /**
+     * get column from field index
+     */
+    int fieldCol( int idx ) const;
+    /**
      * Maps row to feature id
      * @param row row number
      */

@@ -29,6 +29,8 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     QgsFieldCalculator( QgsVectorLayer* vl );
     ~QgsFieldCalculator();
 
+    int changedAttributeId() const { return mAttributeId; }
+
   public slots:
     void accept();
 
@@ -60,7 +62,7 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
     void on_mExpressionTextEdit_textChanged();
     void on_mOutputFieldTypeComboBox_activated( int index );
-    void on_mFieldsListWidget_currentItemChanged(QListWidgetItem * current, QListWidgetItem * previous );
+    void on_mFieldsListWidget_currentItemChanged( QListWidgetItem * current, QListWidgetItem * previous );
 
     void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
@@ -80,6 +82,9 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     QgsVectorLayer* mVectorLayer;
     /**Key: field name, Value: field index*/
     QMap<QString, int> mFieldMap;
+
+    /**idx of changed attribute*/
+    int mAttributeId;
 };
 
 #endif // QGSFIELDCALCULATOR_H
