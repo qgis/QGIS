@@ -58,11 +58,11 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   }
 
   QString delimiterChars = settings.value( key + "/delimiterChars", " " ).toString();
-  cbxDelimSpace->setChecked( delimiterChars.contains(" "));
-  cbxDelimTab->setChecked( delimiterChars.contains("\\t"));
-  cbxDelimColon->setChecked( delimiterChars.contains(":"));
-  cbxDelimSemicolon->setChecked( delimiterChars.contains(":"));
-  cbxDelimComma->setChecked( delimiterChars.contains(","));
+  cbxDelimSpace->setChecked( delimiterChars.contains( " " ) );
+  cbxDelimTab->setChecked( delimiterChars.contains( "\\t" ) );
+  cbxDelimColon->setChecked( delimiterChars.contains( ":" ) );
+  cbxDelimSemicolon->setChecked( delimiterChars.contains( ":" ) );
+  cbxDelimComma->setChecked( delimiterChars.contains( "," ) );
 
   cmbXField->setDisabled( true );
   cmbYField->setDisabled( true );
@@ -107,33 +107,33 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     else if ( delimiterRegexp->isChecked() )
       delimiterType = "regexp";
 
-    QUrl url(txtFilePath->text());
-    url.addQueryItem("delimiter",txtDelimiter->text());
-    url.addQueryItem("delimiterType",delimiterType);
+    QUrl url = QUrl::fromLocalFile( txtFilePath->text() );
+    url.addQueryItem( "delimiter", txtDelimiter->text() );
+    url.addQueryItem( "delimiterType", delimiterType );
 
     if ( geomTypeXY->isChecked() )
     {
       if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
       {
-          url.addQueryItem("xField",cmbXField->currentText());
-          url.addQueryItem("yField",cmbYField->currentText());
+        url.addQueryItem( "xField", cmbXField->currentText() );
+        url.addQueryItem( "yField", cmbYField->currentText() );
       }
     }
     else
     {
       if ( ! cmbWktField->currentText().isEmpty() )
       {
-        url.addQueryItem("wktField",cmbWktField->currentText());
+        url.addQueryItem( "wktField", cmbWktField->currentText() );
       }
     }
 
     int skipLines = rowCounter->value();
     if ( skipLines > 0 )
-        url.addQueryItem("skipLines",QString( "%1" ).arg( skipLines ));
+      url.addQueryItem( "skipLines", QString( "%1" ).arg( skipLines ) );
 
     // add the layer to the map
 
-    QString uri(url.toEncoded());
+    QString uri( url.toEncoded() );
     emit drawVectorLayer( uri, txtLayerName->text(), "delimitedtext" );
     // store the settings
 
@@ -149,7 +149,7 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
       settings.setValue( key + "/delimiterType", "plain" );
     else
       settings.setValue( key + "/delimiterType", "regexp" );
-    settings.setValue( key + "/delimiterChars", selectedChars());
+    settings.setValue( key + "/delimiterChars", selectedChars() );
 
     accept();
   }
@@ -166,13 +166,13 @@ void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
 
 QString QgsDelimitedTextPluginGui::selectedChars()
 {
-    QString chars = "";
-    if ( cbxDelimSpace->isChecked() ) chars += " ";
-    if ( cbxDelimTab->isChecked() ) chars += "\\t";
-    if ( cbxDelimSemicolon->isChecked() ) chars += ";";
-    if ( cbxDelimComma->isChecked() ) chars += ",";
-    if ( cbxDelimColon->isChecked() ) chars += ":";
-    return chars;
+  QString chars = "";
+  if ( cbxDelimSpace->isChecked() ) chars += " ";
+  if ( cbxDelimTab->isChecked() ) chars += "\\t";
+  if ( cbxDelimSemicolon->isChecked() ) chars += ";";
+  if ( cbxDelimComma->isChecked() ) chars += ",";
+  if ( cbxDelimColon->isChecked() ) chars += ":";
+  return chars;
 }
 
 QStringList QgsDelimitedTextPluginGui::splitLine( QString line )

@@ -154,7 +154,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
   // Extract the provider definition from the url
 
-  mFileName = url.path();
+  mFileName = url.toLocalFile();
 
   QString wktField( "" );
   QString xField( "" );
