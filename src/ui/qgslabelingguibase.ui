@@ -393,8 +393,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>640</width>
-            <height>483</height>
+            <width>643</width>
+            <height>435</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -658,7 +658,7 @@
               <item>
                <widget class="QStackedWidget" name="stackedOptions">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="pageOptionsPoint">
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -675,14 +675,10 @@
                   <item row="0" column="1">
                    <widget class="QDoubleSpinBox" name="spinDistPoint">
                     <property name="decimals">
-                     <number>2</number>
+                     <number>4</number>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label_22">
-                    <property name="text">
-                     <string>mm</string>
+                    <property name="maximum">
+                     <double>999999999.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -708,6 +704,20 @@
                     <property name="text">
                      <string>degrees</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QComboBox" name="mPointDistanceUnitComboBox">
+                    <item>
+                     <property name="text">
+                      <string>In mm</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>In map units</string>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                  </layout>
@@ -781,15 +791,25 @@
                     <item>
                      <widget class="QDoubleSpinBox" name="spinDistLine">
                       <property name="decimals">
-                       <number>2</number>
+                       <number>4</number>
+                      </property>
+                      <property name="maximum">
+                       <double>999999999.000000000000000</double>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="label_27">
-                      <property name="text">
-                       <string>mm</string>
-                      </property>
+                     <widget class="QComboBox" name="mLineDistanceUnitComboBox">
+                      <item>
+                       <property name="text">
+                        <string>In mm</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>In map units</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                    </layout>
@@ -827,8 +847,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>640</width>
-            <height>615</height>
+            <width>643</width>
+            <height>532</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
