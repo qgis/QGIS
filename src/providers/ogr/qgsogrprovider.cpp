@@ -1622,7 +1622,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   OGRDataSourceH dataSource;
-  dataSource = OGR_Dr_CreateDataSource( driver, QFile::encodeName( uri ).constData(), NULL );
+  dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), NULL );
   if ( dataSource == NULL )
   {
     return false;
@@ -1679,7 +1679,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   OGRLayerH layer;
-  layer = OGR_DS_CreateLayer( dataSource, QFile::encodeName( QFileInfo( uri ).completeBaseName() ).constData(), reference, OGRvectortype, NULL );
+  layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, NULL );
   if ( layer == NULL )
   {
     return false;
