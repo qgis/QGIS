@@ -42,6 +42,14 @@
 #include <cpl_error.h>
 #include <cpl_conv.h>
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x)   (x).toUtf8().constData()
+#define TO8F(x)  (x).toUtf8().constData()
+#else
+#define TO8(x)   (x).toLocal8Bit().constData()
+#define TO8F(x)  QFile::encodeName( x ).constData()
+#endif
+
 
 QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &theVectorFileName,
@@ -144,7 +152,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   }
 
   // create the data source
-  mDS = OGR_Dr_CreateDataSource( poDriver, vectorFileName.toLocal8Bit().data(), options );
+  mDS = OGR_Dr_CreateDataSource( poDriver, TO8( vectorFileName ), options );
 
   if ( options )
   {
@@ -202,7 +210,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     options[ layerOptions.size()] = NULL;
   }
 
-  mLayer = OGR_DS_CreateLayer( mDS, QFile::encodeName( layerName ).data(), ogrRef, wkbType, options );
+  mLayer = OGR_DS_CreateLayer( mDS, TO8F( layerName ), ogrRef, wkbType, options );
 
   if ( options )
   {
