@@ -674,7 +674,7 @@ void QgsAttributeTableDialog::on_mAdvancedSearchButton_clicked()
   QgsSearchQueryBuilder dlg( mLayer, this );
   dlg.setSearchString( mQuery->displayText() );
 
-  if ( dlg.exec() )
+  if ( dlg.exec() == QDialog::Accepted )
     doSearch( dlg.searchString() );
 }
 
@@ -796,8 +796,18 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
 void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 {
   QgsFieldCalculator calc( mLayer );
-  calc.exec();
+  if ( calc.exec() == QDialog::Accepted )
+  {
+    int col = mModel->fieldCol( calc.changedAttributeId() );
+
+    if ( col >= 0 )
+    {
+      mModel->reload( mModel->index( 0, col ),
+                      mModel->index( mModel->rowCount(), col ) );
+    }
+  }
 }
+
 
 void QgsAttributeTableDialog::addFeature()
 {

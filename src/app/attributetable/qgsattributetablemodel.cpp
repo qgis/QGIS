@@ -149,7 +149,7 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( int fid, int idx, const QVariant &value )
 {
-  setData( index( idToRow( fid ), mAttributes.indexOf( idx ) ), value, Qt::EditRole );
+  setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 
 void QgsAttributeTableModel::loadAttributes()
@@ -295,6 +295,11 @@ int QgsAttributeTableModel::rowToId( const int id ) const
 int QgsAttributeTableModel::fieldIdx( int col ) const
 {
   return mAttributes[ col ];
+}
+
+int QgsAttributeTableModel::fieldCol( int idx ) const
+{
+  return mAttributes.indexOf( idx );
 }
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
