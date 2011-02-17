@@ -377,6 +377,11 @@ void QgsSearchQueryBuilder::saveQuery()
     return;
   }
 
+  if ( !saveFileName.endsWith( ".qqf", Qt::CaseInsensitive ) )
+  {
+    saveFileName += ".qqf";
+  }
+
   QFile saveFile( saveFileName );
   if ( !saveFile.open( QIODevice::WriteOnly ) )
   {
