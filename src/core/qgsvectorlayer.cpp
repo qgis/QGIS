@@ -127,7 +127,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     setCoordinateSystem();
 
     QSettings settings;
-    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() && geometryType() != QGis::NoGeometry )
+    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() && hasGeometryType() )
     {
       // using symbology-ng!
       setUsingRendererV2( true );
@@ -142,7 +142,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag && geometryType() != QGis::NoGeometry )
+    if ( !defaultLoadedFlag && hasGeometryType() )
     {
       // add single symbol renderer
       if ( mUsingRendererV2 )
@@ -240,7 +240,7 @@ QString QgsVectorLayer::providerType() const
  */
 void QgsVectorLayer::setDisplayField( QString fldName )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   // If fldName is provided, use it as the display field, otherwise
@@ -320,7 +320,7 @@ void QgsVectorLayer::setDisplayField( QString fldName )
 // This method will probably be removed again in the near future!
 void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   QgsDebugMsg( "Starting draw of labels" );
@@ -711,7 +711,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
 void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   QSettings settings;
@@ -776,7 +776,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
@@ -916,7 +916,7 @@ void QgsVectorLayer::reload()
 
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return true;
 
   //set update threshold before each draw to make sure the current setting is picked up
@@ -1293,7 +1293,7 @@ const QgsRenderer* QgsVectorLayer::renderer() const
 
 void QgsVectorLayer::setRenderer( QgsRenderer * r )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   if ( r != mRenderer )
@@ -1352,6 +1352,12 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
   QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur..." );
 
   return QGis::UnknownGeometry;
+}
+
+bool QgsVectorLayer::hasGeometryType() const
+{
+  QGis::GeometryType t = geometryType();
+  return ( t != QGis::NoGeometry && t != QGis::UnknownGeometry );
 }
 
 QGis::WkbType QgsVectorLayer::wkbType() const
@@ -1422,7 +1428,7 @@ long QgsVectorLayer::updateFeatureCount() const
 
 void QgsVectorLayer::updateExtents()
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   mLayerExtent.setMinimal();
@@ -1921,7 +1927,7 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 
 bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int beforeVertex )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return false;
 
   if ( !mEditable )
@@ -1960,7 +1966,7 @@ bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int befo
 
 bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVertex )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return false;
 
   if ( !mEditable )
@@ -2000,7 +2006,7 @@ bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVert
 
 bool QgsVectorLayer::deleteVertex( int atFeatureId, int atVertex )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return false;
 
   if ( !mEditable )
@@ -2074,7 +2080,7 @@ bool QgsVectorLayer::deleteSelectedFeatures()
 
 int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 5;
 
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
@@ -2111,7 +2117,7 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
 
 int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 6;
 
   //number of selected features must be 1
@@ -2188,7 +2194,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
 
 int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 1;
 
   //look if geometry of selected feature already contains geometry changes
@@ -2246,7 +2252,7 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
 
 int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 4;
 
   QgsFeatureList newFeatures; //store all the newly created features
@@ -2358,7 +2364,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
 int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 1;
 
   int returnValue = 0;
@@ -2393,7 +2399,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
 
 int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 1;
 
   if ( !geom )
@@ -2500,7 +2506,7 @@ int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
 
 int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 1;
 
   QMultiMap<double, QgsSnappingResult> snapResults; //results from the snapper object
@@ -2825,7 +2831,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
-  if ( geometryType() != QGis::NoGeometry )
+  if ( hasGeometryType() )
   {
     // try renderer v2 first
     QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
@@ -3020,7 +3026,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 {
   QDomElement mapLayerNode = node.toElement();
 
-  if ( geometryType() != QGis::NoGeometry )
+  if ( hasGeometryType() )
   {
     if ( mUsingRendererV2 )
     {
@@ -3198,7 +3204,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
 bool QgsVectorLayer::changeGeometry( int fid, QgsGeometry* geom )
 {
-  if ( !mEditable || !mDataProvider || geometryType() == QGis::NoGeometry )
+  if ( !mEditable || !mDataProvider || !hasGeometryType() )
   {
     return false;
   }
@@ -3831,7 +3837,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
 bool QgsVectorLayer::copySymbologySettings( const QgsMapLayer& other )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return false;
 
   const QgsVectorLayer* vl = qobject_cast<const QgsVectorLayer *>( &other );
@@ -3899,7 +3905,7 @@ bool QgsVectorLayer::hasCompatibleSymbology( const QgsMapLayer& other ) const
 
 bool QgsVectorLayer::snapPoint( QgsPoint& point, double tolerance )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return false;
 
   QMultiMap<double, QgsSnappingResult> snapResults;
@@ -3926,7 +3932,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 1;
 
   if ( snappingTolerance <= 0 || !mDataProvider )
@@ -4033,7 +4039,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, 
 
 int QgsVectorLayer::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return 1;
 
   int returnval = 0;
@@ -4262,7 +4268,7 @@ void QgsVectorLayer::setCoordinateSystem()
   //we only nee to do that if the srs is not alreay valid
   if ( !mCRS->isValid() )
   {
-    if ( geometryType() != QGis::NoGeometry )
+    if ( hasGeometryType() )
     {
       mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
       mCRS->validate();
@@ -4456,7 +4462,7 @@ QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
 }
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2* r )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   delete mRendererV2;
@@ -4468,7 +4474,7 @@ bool QgsVectorLayer::isUsingRendererV2()
 }
 void QgsVectorLayer::setUsingRendererV2( bool usingRendererV2 )
 {
-  if ( geometryType() == QGis::NoGeometry )
+  if ( !hasGeometryType() )
     return;
 
   mUsingRendererV2 = usingRendererV2;

@@ -63,7 +63,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
   Qt::ItemFlags flags = Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
+  if ( !vlayer || vlayer->hasGeometryType() )
   {
     flags |= Qt::ItemIsUserCheckable;
   }
@@ -195,7 +195,7 @@ void QgsLegendLayer::vectorLayerSymbology( QgsVectorLayer* layer, double widthSc
   }
 
   SymbologyList itemList;
-  if ( layer->geometryType() != QGis::NoGeometry )
+  if ( layer->hasGeometryType() )
   {
     //add the new items
     QString lw, uv, label;
@@ -288,13 +288,17 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 {
   QSize iconSize( 16, 16 );
 
-  SymbologyList itemList = layer->rendererV2()->legendSymbologyItems( iconSize );
-  if ( mShowFeatureCount )
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  if ( renderer )
   {
-    updateItemListCountV2( itemList, layer );
-  }
+    SymbologyList itemList = renderer->legendSymbologyItems( iconSize );
+    if ( mShowFeatureCount )
+    {
+      updateItemListCountV2( itemList, layer );
+    }
 
-  changeSymbologySettings( layer, itemList );
+    changeSymbologySettings( layer, itemList );
+  }
 }
 
 void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
