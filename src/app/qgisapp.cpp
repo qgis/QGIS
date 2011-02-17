@@ -7218,23 +7218,29 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 {
   QString msg = tr( "SSL errors occured accessing URL %1:" ).arg( reply->request().url().toString() );
   bool otherError = false;
+  static QSet<QSslError::SslError> ignoreErrors;
 
   foreach( QSslError error, errors )
   {
-    if ( error.error() != QSslError::SelfSignedCertificate &&
-         error.error() != QSslError::HostNameMismatch )
-      otherError = true;
+    QgsDebugMsg( QString( "SSL error %1: %2" ).arg( error.error() ).arg( error.errorString() ) );
+
+    otherError = otherError || !ignoreErrors.contains( error.error() );
+
     msg += "\n" + error.errorString();
   }
 
-  msg += tr( "\n\nIgnore errors?" );
+  msg += tr( "\n\nAlways ignore these errors?" );
 
   if ( !otherError ||
        QMessageBox::warning( this,
-                             tr( "SSL errors occured" ),
+                             tr( "%n SSL errors occured", "number of errors", errors.size() ),
                              msg,
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
+    foreach( QSslError error, errors )
+    {
+      ignoreErrors << error.error();
+    }
     reply->ignoreSslErrors();
   }
 }
