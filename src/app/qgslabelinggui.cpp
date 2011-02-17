@@ -303,8 +303,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 void QgsLabelingGui::populateFieldNames()
 {
-  QgsFieldMap fields = mLayer->dataProvider()->fields();
-  for ( QgsFieldMap::iterator it = fields.begin(); it != fields.end(); it++ )
+  const QgsFieldMap& fields = mLayer->pendingFields();
+  QgsFieldMap::const_iterator it = fields.constBegin();
+  for ( ; it != fields.constEnd(); it++ )
   {
     cboFieldName->addItem( it->name() );
   }
