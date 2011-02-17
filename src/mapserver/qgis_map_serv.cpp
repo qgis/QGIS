@@ -130,7 +130,9 @@ QFileInfo defaultAdminSLD()
 
 int main( int argc, char * argv[] )
 {
+#ifndef _MSC_VER
   qInstallMsgHandler( dummyMessageHandler );
+#endif
 
   QgsApplication qgsapp( argc, argv, false );
 
@@ -150,7 +152,7 @@ int main( int argc, char * argv[] )
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-#ifdef QGSMSDEBUG
+#ifdef QGSMSDEBUG && !_MSC_VER
   //write to qgis_wms_server.log in application directory
   QgsMapServerLogger::instance()->setLogFilePath( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
 #endif

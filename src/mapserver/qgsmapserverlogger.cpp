@@ -17,6 +17,10 @@
 
 #include "qgsmapserverlogger.h"
 
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
+
 QgsMapServerLogger* QgsMapServerLogger::mInstance = 0;
 
 QgsMapServerLogger::QgsMapServerLogger()
@@ -51,7 +55,12 @@ int QgsMapServerLogger::setLogFilePath( const QString& path )
 void QgsMapServerLogger::printMessage( const QString& message )
 {
   if ( !mLogFile.isOpen() )
+  {
+#ifdef _MSC_VER
+    ::OutputDebugString( message.toLocal8Bit() );
+#endif
     return;
+  }
 
   mTextStream << message << endl;
 }
