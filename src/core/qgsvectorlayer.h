@@ -232,6 +232,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
 
+    /** Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
+      @note added in 1.7*/
+    bool hasGeometryType() const;
+
     /**Returns the WKBType or WKBUnknown in case of error*/
     QGis::WkbType wkbType() const;
 
