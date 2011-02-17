@@ -246,17 +246,13 @@ void GlobePlugin::setupMap()
 
 void GlobePlugin::projectReady()
 {
-  //QMessageBox m;
-  //m.setText("projectReady()");
-  //m.exec();
+  blankProjectReady();
   mSettingsDialog.readElevationDatasources();
 }
 
 void GlobePlugin::blankProjectReady()
-{//TODO now i patched the source against from http://trac.osgeo.org/qgis/changeset/14452
-  //QMessageBox m;
-  //m.setText("new project loaded");
-  //m.exec();
+{ //TODO now i patched the source against from http://trac.osgeo.org/qgis/changeset/14452
+  //when we use a newer code base we should need to patch
   mSettingsDialog.elevationDatasources()->clearContents();
   mSettingsDialog.elevationDatasources()->setRowCount(0);
 }
