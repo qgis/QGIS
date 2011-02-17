@@ -32,8 +32,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
     ~QgsVectorLayerJoinBuffer();
 
     /**Joins another vector layer to this layer
-      @param joinInfo join object containing join layer id, target and source field
-      @param cacheInMemory if true: caches the content of the join layer in virtual memory*/
+      @param joinInfo join object containing join layer id, target and source field */
     void addJoin( QgsVectorJoinInfo joinInfo );
 
     /**Removes  a vector layer join*/
@@ -89,7 +88,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
       @param joinFieldName name of the (source) join Field
       @param joinValue lookup value for join
       @param attributes (join layer) attribute indices to add
-      @param attributeOffset index offset to get from join layer attribute index to layer index*/
+      @param attributeIndexOffset index offset to get from join layer attribute index to layer index*/
     void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
                                      const QgsAttributeList& attributes, int attributeIndexOffset );
 
