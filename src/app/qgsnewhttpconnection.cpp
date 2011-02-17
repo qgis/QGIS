@@ -19,6 +19,7 @@
 #include "qgscontexthelp.h"
 #include <QSettings>
 #include <QMessageBox>
+#include <QUrl>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
   QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl ):
@@ -73,7 +74,21 @@ void QgsNewHttpConnection::accept()
     settings.remove( "/Qgis/WMS/" + mOriginalConnName );
   }
 
-  settings.setValue( key + "/url", txtUrl->text().trimmed() );
+  QUrl url( txtUrl->text().trimmed() );
+
+  QList< QPair<QByteArray, QByteArray> > params = url.encodedQueryItems();
+  for ( int i = 0; i < params.size(); i++ )
+  {
+    if ( params[i].first.toUpper() == "SERVICE" ||
+         params[i].first.toUpper() == "REQUEST" ||
+         params[i].first.toUpper() == "FORMAT" )
+    {
+      params.removeAt( i-- );
+    }
+  }
+  url.setEncodedQueryItems( params );
+
+  settings.setValue( key + "/url", url.toString() );
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
 
