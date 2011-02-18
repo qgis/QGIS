@@ -87,15 +87,19 @@ bool QgsVectorDataProvider::addAttributes( const QList<QgsField> & attributes )
 
 bool QgsVectorDataProvider::addAttributes( const QMap<QString, QString> &attributes )
 {
-  const QMap<QString, QVariant::Type> &map = supportedNativeTypes();
+  const QList< NativeType > &types = nativeTypes();
   QList< QgsField > list;
 
   for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); it++ )
   {
-    if ( !map.contains( it.value() ) )
+    int i;
+    for ( i = 0; i < types.size() && types[i].mTypeName != it.value(); i++ )
+      ;
+
+    if ( i == types.size() )
       return false;
 
-    list << QgsField( it.key(), map[ it.value()], it.value() );
+    list << QgsField( it.key(), types[i].mType, it.value() );
   }
 
   return addAttributes( list );

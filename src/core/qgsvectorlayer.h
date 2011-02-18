@@ -494,7 +494,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** add an attribute field (but does not commit it)
       returns true if the field was added
       @deprecated */
-    bool addAttribute( QString name, QString type );
+    QGISDEPRECATED bool addAttribute( QString name, QString type );
 
     /**Sets an alias (a display name) for attributes to display in dialogs
       @note added in version 1.2*/

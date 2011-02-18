@@ -58,15 +58,15 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** Write contents of vector layer to a shapefile
         @deprecated Use writeAsVectorFormat instead*/
-    static WriterError writeAsShapefile( QgsVectorLayer* layer,
-                                         const QString& shapefileName,
-                                         const QString& fileEncoding,
-                                         const QgsCoordinateReferenceSystem *destCRS,
-                                         bool onlySelected = false,
-                                         QString *errorMessage = 0,
-                                         const QStringList &datasourceOptions = QStringList(), // added in 1.6
-                                         const QStringList &layerOptions = QStringList() // added in 1.6
-                                       );
+    QGISDEPRECATED static WriterError writeAsShapefile( QgsVectorLayer* layer,
+        const QString& shapefileName,
+        const QString& fileEncoding,
+        const QgsCoordinateReferenceSystem *destCRS,
+        bool onlySelected = false,
+        QString *errorMessage = 0,
+        const QStringList &datasourceOptions = QStringList(), // added in 1.6
+        const QStringList &layerOptions = QStringList() // added in 1.6
+                                                      );
 
     /** Write contents of vector layer to an (OGR supported) vector formt
         @note: this method was added in version 1.5*/

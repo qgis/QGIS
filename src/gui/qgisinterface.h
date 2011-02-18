@@ -25,11 +25,6 @@ class QToolBar;
 class QDockWidget;
 class QMainWindow;
 class QWidget;
-#include <QObject>
-#include <QPair>
-
-#include <map>
-
 
 class QgsComposerView;
 class QgsMapLayer;
@@ -38,6 +33,13 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsLegendInterface;
 class QgsFeature;
+
+#include <QObject>
+#include <QPair>
+#include <map>
+
+#include <qgis.h>
+
 
 /** \ingroup gui
  * QgisInterface
@@ -147,6 +149,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /** refresh the legend of a layer
      \deprecated use QgsLegendInterface::refreshLayerSymbology
      */
+#ifndef Q_MOC_RUN
+    QGISDEPRECATED
+#endif
     virtual void refreshLegend( QgsMapLayer *l ) = 0;
 
     /** open layer properties dialog
@@ -185,6 +190,9 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
      */
+#ifndef Q_MOC_RUN
+    QGISDEPRECATED
+#endif
     virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0;
 
 

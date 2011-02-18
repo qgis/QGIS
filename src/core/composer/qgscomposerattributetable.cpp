@@ -231,7 +231,7 @@ bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc 
   }
   if ( mVectorLayer )
   {
-    composerTableElem.setAttribute( "vectorLayer", mVectorLayer->getLayerID() );
+    composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
   }
 
   //display attributes

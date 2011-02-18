@@ -93,7 +93,7 @@ void TestQgsRasterLayer::initTestCase()
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
-  myLayers << mpRasterLayer->getLayerID();
+  myLayers << mpRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
   mReport += "<h1>Raster Layer Tests</h1>\n";
 }
@@ -134,7 +134,7 @@ void TestQgsRasterLayer::pseudoColor()
 void TestQgsRasterLayer::landsatBasic()
 {
   QStringList myLayers;
-  myLayers << mpLandsatRasterLayer->getLayerID();
+  myLayers << mpLandsatRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
   mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( render( "landsat_basic" ) );
@@ -143,7 +143,7 @@ void TestQgsRasterLayer::landsatBasic875Qml()
 {
   //a qml that orders the rgb bands as 8,7,5
   QStringList myLayers;
-  myLayers << mpLandsatRasterLayer->getLayerID();
+  myLayers << mpLandsatRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
   mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( setQml( "875" ) );
@@ -218,7 +218,7 @@ void TestQgsRasterLayer::registry()
       myRasterFileInfo.completeBaseName() );
 
   QgsMapLayerRegistry::instance()->addMapLayer( mypLayer, false );
-  QgsMapLayerRegistry::instance()->removeMapLayer( mypLayer->getLayerID() );
+  QgsMapLayerRegistry::instance()->removeMapLayer( mypLayer->id() );
   //cleanup
   //delete mypLayer;
 }

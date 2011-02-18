@@ -108,7 +108,7 @@ bool QgsComparisonFilter::evaluate( const QgsFeature& f ) const
       break;
     case UNKNOWN:
     default:
-      return false;
+      break;
   }
   return false; //soon...
 }

@@ -573,7 +573,7 @@ bool QgsSLDParser::labelSettingsFromUserStyle( const QDomElement& userStyleEleme
           // if there is a viable text textSymbolizerElement
           if ( !textSymbolizerElement.isNull() )
           {
-            QgsLabelAttributes * myLabelAttributes = vec->label()->layerAttributes();
+            QgsLabelAttributes * myLabelAttributes = vec->label()->labelAttributes();
             //element <Label> contains the attribute name
             QDomNodeList labelNodeList = textSymbolizerElement.elementsByTagName( "Label" );
             // if a viable label element is provided

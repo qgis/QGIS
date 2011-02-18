@@ -17,6 +17,7 @@
 
 #include "qgsdiagramoverlayplugin.h"
 #include "qgisinterface.h"
+#include "qgslegendinterface.h"
 #include "qgsdiagramdialog.h"
 #include "qgsdiagramoverlay.h"
 #include "qgsmaplayerregistry.h"
@@ -111,9 +112,9 @@ void QgsDiagramOverlayPlugin::projectRead()
         currentVectorLayer->addOverlay( newDiagramOverlay );
 
         //notify the legend that the layer legend needs to be changed
-        if ( mInterface )
+        if ( mInterface && mInterface->legendInterface() )
         {
-          mInterface->refreshLegend( currentVectorLayer );
+          mInterface->legendInterface()->refreshLayerSymbology( currentVectorLayer );
         }
       }
     }

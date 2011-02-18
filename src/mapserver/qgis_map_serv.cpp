@@ -152,7 +152,7 @@ int main( int argc, char * argv[] )
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-#ifdef QGSMSDEBUG && !_MSC_VER
+#if defined(QGSMSDEBUG) && !defined(_MSC_VER)
   //write to qgis_wms_server.log in application directory
   QgsMapServerLogger::instance()->setLogFilePath( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
 #endif

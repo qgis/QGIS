@@ -632,7 +632,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
     {
       //is there alias info for this vector layer?
       QMap< int, QString > layerAliasInfo;
-      QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->getLayerID() );
+      QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
       if ( aliasIt != aliasInfo.constEnd() )
       {
         layerAliasInfo = aliasIt.value();
@@ -640,7 +640,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
 
       //hidden attributes for this layer
       QSet<QString> layerHiddenAttributes;
-      QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->getLayerID() );
+      QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->id() );
       if ( hiddenIt != hiddenAttributes.constEnd() )
       {
         layerHiddenAttributes = hiddenIt.value();
@@ -1180,7 +1180,7 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
           //set the sourceSRS to the same as the destSRS
           theMapLayer->setCrs( destCRS );
         }
-        layerKeys.push_front( theMapLayer->getLayerID() );
+        layerKeys.push_front( theMapLayer->id() );
         QgsMapLayerRegistry::instance()->addMapLayer( theMapLayer, false );
       }
       else

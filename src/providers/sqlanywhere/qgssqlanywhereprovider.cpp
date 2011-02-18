@@ -550,7 +550,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
   if ( !mKeyColumn.isEmpty() )
   {
     bool  keyIsValid = true;
-    unsigned int colId;
+    unsigned int colId = 0;
 
     // test whether key column is a member of table and appropriate type
     sql = QString( "SELECT FIRST column_id "
@@ -1392,9 +1392,9 @@ QgsSqlAnywhereProvider::deleteAttributes( const QgsAttributeIds & ids )
 bool
 QgsSqlAnywhereProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
 {
-  bool     ok = true;
-  sacapi_i32     code;
-  char     errbuf[SACAPI_ERROR_SIZE];
+  bool       ok = true;
+  sacapi_i32 code = 0;
+  char       errbuf[SACAPI_ERROR_SIZE];
 
   if ( !( mCapabilities & QgsVectorDataProvider::ChangeAttributeValues ) )
   {
@@ -2089,7 +2089,7 @@ QgsSqlAnywhereProvider::checkSrs()
   {
     // attempt to find a compatible planar srs
     bool foundProjection = false;
-    int projSrid;
+    int projSrid = -1;
     QString projStr;
     QString projMsg;
 

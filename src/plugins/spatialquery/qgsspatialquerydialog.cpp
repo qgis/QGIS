@@ -797,7 +797,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
   }
   addLayerCombobox( true, vectorLayer );
   addLayerCombobox( false, vectorLayer );
-  mMapIdVectorLayers.insert( vectorLayer->getLayerID(), vectorLayer );
+  mMapIdVectorLayers.insert( vectorLayer->id(), vectorLayer );
 
   // Verify is can enable buttonBox
   if ( !buttonBoxMain->button( QDialogButtonBox::Ok )->isEnabled() && targetLayerComboBox->count() > 1 )

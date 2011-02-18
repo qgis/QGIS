@@ -20,6 +20,7 @@
 #include <QGraphicsRectItem>
 #include <QPixmap>
 
+#include <qgis.h>
 
 class QgsMapRenderer;
 class QgsMapCanvas;
@@ -48,9 +49,8 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
 
     void setPanningOffset( const QPoint& point );
 
-    //deprecated. Please use paintDevice() function
-    //which is also save in case QImage is used
-    QPixmap& pixmap() { return mPixmap; }
+    //! @deprecated Please use paintDevice() function which is also save in case QImage is used
+    QGISDEPRECATED QPixmap& pixmap() { return mPixmap; }
 
     QPaintDevice& paintDevice();
 

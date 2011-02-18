@@ -119,9 +119,9 @@ class TestQgsVectorLayer: public QObject
       //
       mpMapRenderer = new QgsMapRenderer();
       QStringList myLayers;
-      myLayers << mpPointsLayer->getLayerID();
-      myLayers << mpPolysLayer->getLayerID();
-      myLayers << mpLinesLayer->getLayerID();
+      myLayers << mpPointsLayer->id();
+      myLayers << mpPolysLayer->id();
+      myLayers << mpLinesLayer->id();
       mpMapRenderer->setLayerSet( myLayers );
       mReport += "<h1>Vector Renderer Tests</h1>\n";
     }
