@@ -93,12 +93,15 @@
 //
 // QGIS Specific Includes
 //
+
 #include "qgisapp.h"
 #include "qgisappinterface.h"
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
 #include "qgsapplication.h"
+#include "qgsattributeaction.h"
+#include "qgsattributetabledialog.h"
 #include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
 #include "qgsclipboard.h"
@@ -106,16 +109,17 @@
 #include "qgscomposermanager.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
+#include "qgscredentialdialog.h"
 #include "qgscursors.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
-#include "qgslabelinggui.h"
-#include "qgsnewvectorlayerdialog.h"
-#include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsgpsinformationwidget.h"
+#include "qgshelpviewer.h"
+#include "qgslabelinggui.h"
 #include "qgslegend.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
@@ -127,6 +131,7 @@
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
 #include "qgspluginitem.h"
@@ -136,34 +141,30 @@
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
-#include "qgsproject.h"
 #include "qgsprojectbadlayerguihandler.h"
+#include "qgsproject.h"
 #include "qgsprojectproperties.h"
 #include "qgsproviderregistry.h"
+#include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
-#include "qgsvectorlayerproperties.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
-#include "qgstextannotationitem.h"
-#include "qgswmssourceselect.h"
 #include "qgsshortcutsmanager.h"
+#include "qgssnappingdialog.h"
+#include "qgssponsors.h"
+#include "qgstextannotationitem.h"
+#include "qgstilescalewidget.h"
 #include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgswmssourceselect.h"
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
-#include "qgsattributetabledialog.h"
-#include "qgsvectorfilewriter.h"
-#include "qgscredentialdialog.h"
-#include "qgstilescalewidget.h"
-#include "qgsquerybuilder.h"
-#include "qgsattributeaction.h"
-#include "qgsgpsinformationwidget.h"
-#include "qgssnappingdialog.h"
-
 //
 // Gdal/Ogr includes
 //
@@ -1246,6 +1247,11 @@ void QgisApp::createActions()
   mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 
+  mActionSponsors = new QAction( getThemeIcon( "mActionHelpSponsors.png" ), tr( "QGIS Sponsors!" ), this );
+  shortcuts->registerAction( mActionSponsors );
+  mActionSponsors->setStatusTip( tr( "QGIS Sponsors" ) );
+  connect( mActionSponsors, SIGNAL( triggered() ), this, SLOT( sponsors() ) );
+
   mActionMoveLabel = new QAction( getThemeIcon( "mActionMoveLabel.png" ), tr( "Move Label" ), this );
   mActionMoveLabel->setStatusTip( tr( "Move labels interactively" ) );
   connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
@@ -1662,6 +1668,7 @@ void QgisApp::createMenus()
   mActionHelpSeparator2 = mHelpMenu->addSeparator();
 
   mHelpMenu->addAction( mActionAbout );
+  mHelpMenu->addAction( mActionSponsors );
 }
 
 void QgisApp::createToolBars()
@@ -2087,6 +2094,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
+  mActionSponsors->setIcon( getThemeIcon( "/mActionHelpSponsors.png" ) );
   mActionDraw->setIcon( getThemeIcon( "/mActionDraw.png" ) );
   mActionToggleEditing->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
   mActionSaveEdits->setIcon( getThemeIcon( "/mActionSaveEdits.png" ) );
@@ -2611,6 +2619,13 @@ void QgisApp::restoreWindowState()
 
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
+void QgisApp::sponsors()
+{
+  QgsSponsors * sponsors = new QgsSponsors();
+  sponsors->show();
+  sponsors->raise();
+  sponsors->activateWindow();
+}
 
 void QgisApp::about()
 {
