@@ -327,6 +327,7 @@ class QgisApp : public QMainWindow
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
     QAction *actionHelpSeparator2() { return mActionHelpSeparator2; }
     QAction *actionAbout() { return mActionAbout; }
+    QAction *actionSponsors() { return mActionSponsors; }
 
     //! Menus
     QMenu *fileMenu() { return mFileMenu; }
@@ -467,6 +468,8 @@ class QgisApp : public QMainWindow
 #endif
 
   private slots:
+    //! QGis Sponsors
+    void sponsors();
     //! About QGis
     void about();
     //! Add a raster layer to the map (will prompt user for file name using dlg )
@@ -1016,6 +1019,7 @@ class QgisApp : public QMainWindow
     QAction *mActionCheckQgisVersion;
     QAction *mActionHelpSeparator2;
     QAction *mActionAbout;
+    QAction *mActionSponsors;
 
     QAction *mActionLocalHistogramStretch;
 

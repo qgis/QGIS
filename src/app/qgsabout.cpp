@@ -116,58 +116,6 @@ void QgsAbout::init()
   }
 
 
-  // read the SPONSORS file and populate the text widget
-  QFile sponsorFile( QgsApplication::sponsorsFilePath() );
-#ifdef QGISDEBUG
-  printf( "Reading sponsors file %s.............................................\n",
-          sponsorFile.fileName().toLocal8Bit().constData() );
-#endif
-  if ( sponsorFile.open( QIODevice::ReadOnly ) )
-  {
-    QString sponsorHTML = ""
-                          + tr( "<p>QGIS sponsorship programme:"
-                                "contribute to QGIS development</p>" )
-                          + "<hr>"
-                          "<table width='100%'>"
-                          "<tr><th>" + tr( "Name" ) + "</th>"
-                          "<th>" + tr( "Website" ) + "</th></tr>";
-    QString website;
-    QTextStream sponsorStream( &sponsorFile );
-    // Always use UTF-8
-    sponsorStream.setCodec( "UTF-8" );
-    QString sline;
-    while ( !sponsorStream.atEnd() )
-    {
-      sline = sponsorStream.readLine(); // line of text excluding '\n'
-      //ignore the line if it starts with a hash....
-      if ( sline.left( 1 ) == "#" ) continue;
-      QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
-      if ( myTokens.size() == 0 )
-      {
-        continue;
-      }
-      else if ( myTokens.size() > 1 )
-      {
-        website = "<a href=\"" + myTokens[1].remove( ' ' ) + "\">" + myTokens[1] + "</a>";
-      }
-      else
-      {
-        website = "&nbsp;";
-      }
-      sponsorHTML += "<tr>";
-      sponsorHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
-      // close the row
-      sponsorHTML += "</tr>";
-    }
-    sponsorHTML += "</table>";
-
-    QString myStyle = QgsApplication::reportStyleSheet();
-    txtSponsors->clear();
-    txtSponsors->document()->setDefaultStyleSheet( myStyle );
-    txtSponsors->setHtml( sponsorHTML );
-    QgsDebugMsg( QString( "sponsorHTML:%1" ).arg( sponsorHTML.toAscii().constData() ) );
-    QgsDebugMsg( QString( "txtSponsors:%1" ).arg( txtSponsors->toHtml().toAscii().constData() ) );
-  }
 
   // read the DONORS file and populate the text widget
   QFile donorsFile( QgsApplication::donorsFilePath() );

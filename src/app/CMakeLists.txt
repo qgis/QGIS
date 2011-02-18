@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisapp.cpp
   qgisappinterface.cpp
   qgsabout.cpp
+  qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddjoindialog.cpp
   qgsannotationwidget.cpp
@@ -143,6 +144,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
   qgsabout.h
+  qgssponsors.h
   qgsaddattrdialog.h
   qgsdisplayangle.h
   qgsaddjoindialog.h
