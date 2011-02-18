@@ -19260,7 +19260,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="703"/>
         <source>Data defined buffer</source>
-        <translation>Buffer definito da attributo</translation>
+        <translation>Contorno definito da attributo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="763"/>
@@ -19282,7 +19282,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
         <source>Buffer size</source>
-        <translation>Dimensione buffer</translation>
+        <translation>Dimensione contorno</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="813"/>
@@ -19302,7 +19302,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="176"/>
         <source>Buffer labels</source>
-        <translation>Buffer etichette</translation>
+        <translation>Contorno etichette</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="202"/>
@@ -19454,7 +19454,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="279"/>
         <source>Buffer color</source>
-        <translation>Colore del buffer</translation>
+        <translation>Colore del contorno</translation>
     </message>
 </context>
 <context>
@@ -22531,12 +22531,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="67"/>
         <source>Top down, stop at first</source>
-        <translation>Su giù, ferma al primo</translation>
+        <translation>Il primo attivo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="68"/>
         <source>Top down</source>
-        <translation>Su giù</translation>
+        <translation>Tutti i livelli</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="157"/>
