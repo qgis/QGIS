@@ -158,6 +158,10 @@ void GlobePlugin::run()
   viewer.addEventHandler( new FlyToExtentHandler( this ) );
   viewer.addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
 
+  viewer.addEventHandler( new QueryCoordinatesHandler( this,
+          mMapNode->getMap()->getProfile()->getSRS() )
+          );
+
   // add some stock OSG handlers:
   viewer.addEventHandler( new osgViewer::StatsHandler() );
   viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
@@ -345,6 +349,58 @@ bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAct
   return false;
 }
 
+bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+{
+    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH )
+    {
+        osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
+        getCoords( ea.getX(), ea.getY(), view );
+    }
+
+    return false;
+}
+
+void QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view )
+{
+    osgUtil::LineSegmentIntersector::Intersections results;
+    if ( view->computeIntersections( x, y, results, 0x01 ) )
+    {
+        // find the first hit under the mouse:
+        osgUtil::LineSegmentIntersector::Intersection first = *(results.begin());
+        osg::Vec3d point = first.getWorldIntersectPoint();
+
+        // transform it to map coordinates:
+        double lat_rad, lon_rad, height;
+        _mapSRS->getEllipsoid()->convertXYZToLatLongHeight( point.x(), point.y(), point.z(), lat_rad, lon_rad, height );
+
+        // query the elevation at the map point:
+        double lat_deg = osg::RadiansToDegrees( lat_rad );
+        double lon_deg = osg::RadiansToDegrees( lon_rad );
+
+        OE_NOTICE << "coords at " << lat_deg << ", " << lon_deg << std::endl ;
+
+       /* osg::Matrixd out_mat;
+        double query_resolution = 0.1; // 1/10th of a degree
+        double out_elevation = 0.0;
+        double out_resolution = 0.0;
+
+        if ( _elevMan->getPlacementMatrix(
+            lon_deg, lat_deg, 0,
+            query_resolution, NULL,
+            out_mat, out_elevation, out_resolution ) )
+        {
+                OE_NOTICE << "Elevation at " << lat_deg << ", " << lon_deg
+                        << " is " << out_elevation << std::endl;
+        }
+        else
+        {
+            OE_NOTICE
+                << "getElevation FAILED! at (" << lat_deg << ", " << lon_deg << ")" << std::endl;
+        }
+*/
+    }
+}
+
 void GlobePlugin::syncExtent()
 {
   osgEarthUtil::EarthManipulator* manip = dynamic_cast<osgEarthUtil::EarthManipulator*>( viewer.getCameraManipulator() );
@@ -362,7 +418,7 @@ void GlobePlugin::syncExtent()
   double height = projectedExtent.height();
   double distance = height / tan( viewAngle * osg::PI / 180 ); //c = b*cotan(B(rad))
 
-  OE_NOTICE << "map extent: " << height << "camera distance: " << distance << std::endl;
+  OE_NOTICE << "map extent: " << height << " camera distance: " << distance << std::endl;
 
   osgEarthUtil::Viewpoint viewpoint( osg::Vec3d( extent.center().x(), extent.center().y(), 0.0 ), 0.0, -90.0, distance );
   manip->setViewpoint( viewpoint, 4.0 );

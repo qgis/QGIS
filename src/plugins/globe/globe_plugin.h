@@ -129,6 +129,24 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
   GlobePlugin* mGlobe;
 };
 
+// An event handler that will print out the coordinates at the clicked point
+class QueryCoordinatesHandler : public osgGA::GUIEventHandler
+{
+public:
+    QueryCoordinatesHandler( GlobePlugin* globe, const osgEarth::SpatialReference* mapSRS )
+        :  mGlobe ( globe ), _mapSRS( mapSRS ), _mouseDown( false ) { }
+
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
+
+    virtual void getCoords( float x, float y, osgViewer::View* view );
+
+private:
+    GlobePlugin* mGlobe;
+    osg::ref_ptr<const SpatialReference> _mapSRS;
+    osg::ref_ptr<osgEarthUtil::ElevationManager> _elevMan;
+    bool _mouseDown;
+};
+
 
 class KeyboardControlHandler : public osgGA::GUIEventHandler
 {
