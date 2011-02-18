@@ -127,6 +127,8 @@ search_cond:
     // more predicates to come
 predicate:
     comp_predicate 
+    | scalar_exp IN '(' scalar_exp_list ')' { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opIN, $1, $4); joinTmpNodes($$,$1,$4); }
+    | scalar_exp NOT IN '(' scalar_exp_list ')' { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opNOTIN, $1, $5); joinTmpNodes($$,$1,$5); }
     ;
 
 comp_predicate:
@@ -176,8 +178,6 @@ scalar_exp:
     | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }
     | NULLVALUE                   { $$ = new QgsSearchTreeNode(QString::null, 0); addToTmpNodes($$); }
     | COLUMN_REF                  { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 1); addToTmpNodes($$); }
-    | scalar_exp IN '(' scalar_exp_list ')' { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opIN, $1, $4); joinTmpNodes($$,$1,$4); }
-    | scalar_exp NOT IN '(' scalar_exp_list ')' { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opNOTIN, $1, $5); joinTmpNodes($$,$1,$5); }
 ;
 
 %%
