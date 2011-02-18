@@ -127,7 +127,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   updateButtons();
 
-  leSpatialRefSys->setText( "EPSG:" + QString::number( layer->crs().epsg() ) + " - " + layer->srs().description() );
+  leSpatialRefSys->setText( "EPSG:" + QString::number( layer->crs().epsg() ) + " - " + layer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 
   leEditForm->setText( layer->editForm() );
@@ -878,7 +878,7 @@ QString QgsVectorLayerProperties::metadata()
     myMetadata += tr( "Layer Spatial Reference System:" );
     myMetadata += "</td></tr>";
     myMetadata += "<tr><td>";
-    myMetadata += layer->srs().toProj4().replace( QRegExp( "\"" ), " \"" );
+    myMetadata += layer->crs().toProj4().replace( QRegExp( "\"" ), " \"" );
     myMetadata += "</td></tr>";
 
     //
@@ -977,7 +977,7 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
-  mySelector->setSelectedCrsId( layer->srs().srsid() );
+  mySelector->setSelectedCrsId( layer->crs().srsid() );
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
@@ -989,7 +989,7 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   }
   delete mySelector;
 
-  leSpatialRefSys->setText( "EPSG:" + QString::number( layer->crs().epsg() ) + " - " + layer->srs().description() );
+  leSpatialRefSys->setText( "EPSG:" + QString::number( layer->crs().epsg() ) + " - " + layer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 }
 
