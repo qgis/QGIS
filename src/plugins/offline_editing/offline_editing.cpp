@@ -547,7 +547,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         featureCount = 1;
 
         // update feature id lookup
-        int layerId = getOrCreateLayerId( db, newLayer->getLayerID() );
+        int layerId = getOrCreateLayerId( db, newLayer->id() );
         QList<int> offlineFeatureIds;
         newLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
         while ( newLayer->nextFeature( f ) )
@@ -571,7 +571,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       }
 
       // remove remote layer
-      QgsMapLayerRegistry::instance()->removeMapLayer( layer->getLayerID() );
+      QgsMapLayerRegistry::instance()->removeMapLayer( layer->id() );
     }
   }
 }

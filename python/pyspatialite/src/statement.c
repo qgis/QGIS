@@ -490,8 +490,6 @@ static int pysqlite_check_remaining_sql(const char* tail)
 
         pos++;
     }
-
-    return 0;
 }
 
 PyTypeObject pysqlite_StatementType = {

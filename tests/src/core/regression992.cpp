@@ -78,7 +78,7 @@ void Regression992::initTestCase()
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
-  myLayers << mpRasterLayer->getLayerID();
+  myLayers << mpRasterLayer->id();
   mpMapRenderer->setLayerSet(myLayers);
   mReport += "<h1>Regression 992 Test</h1>\n";
   mReport += "<p>See <a href=\"https://trac.osgeo.org/qgis/ticket/992\">"

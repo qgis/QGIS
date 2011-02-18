@@ -3263,12 +3263,13 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
 
 bool QgsVectorLayer::addAttribute( QString name, QString type )
 {
-  const QMap<QString, QVariant::Type> &map = mDataProvider->supportedNativeTypes();
+  const QList< QgsVectorDataProvider::NativeType > &types = mDataProvider->nativeTypes();
 
-  if ( !map.contains( type ) )
-    return false;
+  int i;
+  for ( i = 0; i < types.size() && types[i].mTypeName != type; i++ )
+    ;
 
-  return addAttribute( QgsField( name, map[ type ], type ) );
+  return i < types.size() && addAttribute( QgsField( name, types[i].mType, type ) );
 }
 
 void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )

@@ -170,7 +170,7 @@ void TestQgsMapRenderer::initTestCase()
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
-  myLayers << mpPolysLayer->getLayerID();
+  myLayers << mpPolysLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
   mReport += "<h1>Map Render Tests</h1>\n";
 }

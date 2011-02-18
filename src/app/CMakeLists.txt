@@ -321,6 +321,9 @@ QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 IF (WIN32)
   IF (MSVC)
     SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+
+    # disable deprecation warnings
+    SET_SOURCE_FILES_PROPERTIES(qgisappinterface.cpp PROPERTIES COMPILE_FLAGS /wd4996)
   ELSE(MSVC)
 
     # Icon for windows MINGW

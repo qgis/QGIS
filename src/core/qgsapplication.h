@@ -18,6 +18,8 @@
 
 #include <QApplication>
 
+#include <qgis.h>
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
@@ -111,7 +113,7 @@ class CORE_EXPORT QgsApplication: public QApplication
 
     //! Returns the paths to svg applications svg directory.
     //! @deprecated since 1.4
-    static const QString svgPath();
+    QGISDEPRECATED static const QString svgPath();
 
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();

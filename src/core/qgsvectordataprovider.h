@@ -237,7 +237,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @return true in case of success and false in case of failure
      * @deprecated
      */
-    virtual bool addAttributes( const QMap<QString, QString> &attributes );
+    QGISDEPRECATED virtual bool addAttributes( const QMap<QString, QString> &attributes );
 
     /**
      * Deletes existing attributes
@@ -345,9 +345,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Returns the names of the supported types
-     * @deprecated
+     * @deprecated use nativeTypes()
      */
-    const QMap<QString, QVariant::Type> &supportedNativeTypes() const;
+    QGISDEPRECATED const QMap<QString, QVariant::Type> &supportedNativeTypes() const;
 
     /** Returns true if the provider is strict about the type of inserted features
           (e.g. no multipolygon in a polygon layer)

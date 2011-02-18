@@ -65,7 +65,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
     if ( layer )
     {
       QgsMSDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
-      layerMap.insert( layer->getLayerID(), layer );
+      layerMap.insert( layer->id(), layer );
     }
 #if QGSMSDEBUG
     else
@@ -208,7 +208,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         continue;
       }
 
-      if ( nonIdentifiableLayers.contains( currentLayer->getLayerID() ) )
+      if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "0" );
       }

@@ -25,6 +25,7 @@
 #include <QVariant>
 #include <QImage>
 
+#include "qgis.h"
 #include "qgsrectangle.h"
 
 class QgsRenderContext;
@@ -75,7 +76,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @deprecated use id()
      **/
-    QString getLayerID() const { return id(); }
+    QGISDEPRECATED QString getLayerID() const { return id(); }
 
     /** Set the display name of the layer
      * @param name New name for the layer
