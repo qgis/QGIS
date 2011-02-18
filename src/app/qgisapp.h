@@ -361,6 +361,7 @@ class QgisApp : public QMainWindow
     QToolBar *attributesToolBar() { return mAttributesToolBar; }
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
+    QToolBar *rasterToolBar() { return mRasterToolBar; }
 
     //! run python
     void runPythonString( const QString &expr );
@@ -498,6 +499,8 @@ class QgisApp : public QMainWindow
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
     void zoomActualSize();
+    //! perform a local histogram stretch on the active raster layer (stretch based on pixel values in view extent)
+    void localHistogramStretch();
     //! plugin manager
     void showPluginManager();
     //! load python support if possible
@@ -876,6 +879,7 @@ class QgisApp : public QMainWindow
     QToolBar *mAttributesToolBar;
     QToolBar *mPluginToolBar;
     QToolBar *mHelpToolBar;
+    QToolBar *mRasterToolBar;
     QToolBar *mLabelToolBar;
 
     // actions for menus and toolbars -----------------
@@ -1012,6 +1016,8 @@ class QgisApp : public QMainWindow
     QAction *mActionCheckQgisVersion;
     QAction *mActionHelpSeparator2;
     QAction *mActionAbout;
+
+    QAction *mActionLocalHistogramStretch;
 
     QAction *mActionMoveLabel;
     QAction *mActionRotateLabel;

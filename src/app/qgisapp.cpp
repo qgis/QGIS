@@ -1209,6 +1209,12 @@ void QgisApp::createActions()
   mWindowActions = new QActionGroup( this );
 #endif
 
+  // Raster toolbar items
+  mActionLocalHistogramStretch = new QAction( getThemeIcon( "mActionmRasterLocalHistogramStretch.png" ), tr( "Local Histogram Stretch" ), this );
+  mActionLocalHistogramStretch->setStatusTip( tr( "Stretch histogram of active raster to view extents" ) );
+  connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
+
+
   // Help Menu Items
 
   mActionHelpContents = new QAction( getThemeIcon( "mActionHelpContents.png" ), tr( "Help Contents" ), this );
@@ -1864,6 +1870,14 @@ void QgisApp::createToolBars()
   mHelpToolBar->addAction( mActionHelpContents );
   mHelpToolBar->addAction( QWhatsThis::createAction() );
   mToolbarMenu->addAction( mHelpToolBar->toggleViewAction() );
+  
+  //
+  // Raster Toolbar
+  mRasterToolBar = addToolBar( tr( "Raster" ) );
+  mRasterToolBar->setObjectName( "Raster" );
+  mRasterToolBar->addAction( mActionLocalHistogramStretch );
+  mToolbarMenu->addAction( mRasterToolBar->toggleViewAction() );
+
 
   //Label Toolbar
   mLabelToolBar = addToolBar( tr( "Label" ) );
@@ -2070,6 +2084,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOptions->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionConfigureShortcuts->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
+  mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
   mActionDraw->setIcon( getThemeIcon( "/mActionDraw.png" ) );
@@ -5457,6 +5472,48 @@ void QgisApp::options()
   }
 
   delete optionsDialog;
+}
+
+void QgisApp::localHistogramStretch()
+{
+  QgsMapLayer * layer = mMapLegend->currentLayer();
+
+  if ( !layer )
+  {
+    QMessageBox::information( this,
+                              tr( "No Layer Selected" ),
+                              tr( "To perform a local histogram stretch, you need to have a raster layer selected." ) );
+    return;
+  }
+
+  QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !rlayer )
+  {
+    QMessageBox::information( this,
+                              tr( "No Raster Layer Selected" ),
+                              tr( "To perform a local histogram stretch, you need to have a raster layer selected." ) );
+    return;
+  }
+  if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
+       rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray
+    )
+  {
+    rlayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
+    rlayer->setMinimumMaximumUsingLastExtent();
+    rlayer->setCacheImage(NULL);
+    //refreshLayerSymbology( rlayer->getLayerID() );
+    mMapCanvas->refresh();
+    return;
+  }
+  else
+  {
+    QMessageBox::information( this,
+      tr( "No Valid Raster Layer Selected" ),
+      tr( "To perform a local histogram stretch, you need to have a grayscale "
+        "(multiband single layer, or singleband grayscale) raster layer "
+        "selected." ) );
+    return;
+  }
 }
 
 void QgisApp::helpContents()
