@@ -24214,8 +24214,8 @@ Soll versucht werden die fehlenden Layer zu finden?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="149"/>
-        <source>WMS</source>
-        <translation>WMS</translation>
+        <source>WMS Server</source>
+        <translation>WMS-Server</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="153"/>
