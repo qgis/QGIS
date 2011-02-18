@@ -87,6 +87,8 @@ SET(QGIS_APP_SRCS
   qgssnappingdialog.cpp
   qgsundowidget.cpp
   qgstilescalewidget.cpp
+  qgstipgui.cpp
+  qgstipfactory.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
   qgsquerybuilder.cpp
@@ -144,9 +146,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
   qgsabout.h
-  qgssponsors.h
   qgsaddattrdialog.h
-  qgsdisplayangle.h
   qgsaddjoindialog.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h
@@ -154,67 +154,72 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
   qgsbookmarks.h
-  qgscontinuouscolordialog.h
   qgsconfigureshortcutsdialog.h
+  qgscontinuouscolordialog.h
   qgscustomprojectiondialog.h
+  qgsdbtablemodel.h
   qgsdelattrdialog.h
+  qgsdisplayangle.h
+  qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h
-  qgslabelinggui.h
-  qgslabelengineconfigdialog.h
-  qgsmaptoolmeasureangle.h
-  qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h
   qgsidentifyresults.h
-  qgsfeatureaction.h
   qgslabeldialog.h
+  qgslabelengineconfigdialog.h
+  qgslabelinggui.h
   qgslabelpropertydialog.h
   qgsmanageconnectionsdialog.h
-  qgsmaptoolidentify.h
-  qgsmaptoolsplitfeatures.h
-  qgsmaptoolvertexedit.h
   qgsmaptooladdfeature.h
   qgsmaptooladdisland.h
   qgsmaptooladdring.h
+  qgsmaptooladdvertex.h
+  qgsmaptoolchangelabelproperties.h
+  qgsmaptooldeletepart.h
+  qgsmaptooldeletering.h
+  qgsmaptooldeletevertex.h
+  qgsmaptoolidentify.h
+  qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
+  qgsmaptoolmovevertex.h
   qgsmaptoolnodetool.h
   qgsmaptoolreshape.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
-  qgsmaptoolselect.h
-  qgsmaptoolselectrectangle.h
   qgsmaptoolselectfreehand.h
+  qgsmaptoolselect.h
   qgsmaptoolselectpolygon.h
   qgsmaptoolselectradius.h
-  qgsmaptooladdvertex.h
-  qgsmaptoolchangelabelproperties.h
-  qgsmaptooldeletering.h
-  qgsmaptooldeletepart.h
-  qgsmaptooldeletevertex.h
-  qgsmaptoolmovevertex.h
+  qgsmaptoolselectrectangle.h
   qgsmaptoolsimplify.h
-  qgsmeasuretool.h
+  qgsmaptoolsplitfeatures.h
+  qgsmaptoolvertexedit.h
   qgsmeasuredialog.h
+  qgsmeasuretool.h
   qgsmergeattributesdialog.h
   qgsnewhttpconnection.h
+  qgsnewvectorlayerdialog.h
   qgsoptions.h
   qgspastetransformations.h
   qgspluginmanager.h
   qgsprojectproperties.h
+  qgsquerybuilder.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
-  qgstextannotationdialog.h
-  qgswmssourceselect.h
   qgssinglesymboldialog.h
   qgssnappingdialog.h
+  qgssponsors.h
+  qgstextannotationdialog.h
+  qgstilescalewidget.h
+  qgstip.h
+  qgstipgui.h
+  qgstipfactory.h
+  qgsundowidget.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
-  qgsdbtablemodel.h
-  qgsundowidget.h
-  qgstilescalewidget.h
-  qgsquerybuilder.h
+  qgswmssourceselect.h
 
   composer/qgsattributeselectiondialog.h
   composer/qgscomposer.h

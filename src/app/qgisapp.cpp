@@ -156,6 +156,7 @@
 #include "qgssponsors.h"
 #include "qgstextannotationitem.h"
 #include "qgstilescalewidget.h"
+#include "qgstipgui.h"
 #include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
@@ -532,16 +533,31 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mPrevScreenModeMaximized = false;
   show();
   qApp->processEvents();
-  //finally show all the application settings as initialised above
 
-  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n" );
-  QgsDebugMsg( QgsApplication::showSettings() );
-  QgsDebugMsg( "\n--------------------------\n\n\n" );
   mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
   mLBL = new QgsPalLabeling();
   mMapCanvas->mapRenderer()->setLabelingEngine( mLBL );
+
+  // Show a nice tip of the day
+  QSettings settings;
+  if ( settings.value( "/qgis/showTips", 1 ).toBool() )
+  {
+    mSplash->hide();
+    QgsTipGui myTip;
+    myTip.exec();
+  }
+  else
+  {
+    QgsDebugMsg( "Tips are disabled");
+  }
+
+  //finally show all the application settings as initialised above
+  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n" );
+  QgsDebugMsg( QgsApplication::showSettings() );
+  QgsDebugMsg( "\n--------------------------\n\n\n" );
+
 } // QgisApp ctor
 
 

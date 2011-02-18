@@ -59,7 +59,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-155</y>
             <width>746</width>
             <height>640</height>
            </rect>
@@ -277,6 +277,13 @@
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="cbxShowTips">
+                <property name="text">
+                 <string>Show tips at start up</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="cbxIdentifyResultsDocked">
                 <property name="text">
                  <string>Open identify results in a dock window (QGIS restart required)</string>
@@ -409,7 +416,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>479</height>
+            <height>466</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -580,7 +587,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>500</height>
+            <height>480</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -934,8 +941,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>746</width>
-            <height>462</height>
+            <width>762</width>
+            <height>458</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1265,7 +1272,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>531</height>
+            <height>527</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1361,7 +1368,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>552</height>
+            <height>545</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1452,7 +1459,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>548</height>
+            <height>531</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

@@ -19,101 +19,72 @@
  ***************************************************************************/
 
 
-#include "omgtipfactory.h"
+#include "qgstipfactory.h"
 #include <QTime>
 //for rand & srand
 #include <cstdlib> 
 
 
-OmgTipFactory::OmgTipFactory() : QObject()
+QgsTipFactory::QgsTipFactory() : QObject()
 {
   // Im just doing this in a simple way so 
   // its easy for translators...later
   // it its worth the time Ill move this data
   // into a sqlite database...
-  OmgTip myTip;
-  myTip.setTitle(tr("openModeller is open source"));
-  myTip.setContent(tr("openModeller is open source software."
+  QgsTip myTip;
+  myTip.setTitle(tr("Quantum GIS is open source"));
+  myTip.setContent(tr("Quantum GIS is open source software."
         " This means that the software source code can be freely viewed "
         " and modified. The GPL places a restriction that any modifications "
         " you make must be made available to the openModeller project, and "
         " that you can not create a new version of openModeller under a "
-        " 'closed source' license. Visit <a href=\"http://openModeller.sf.net\">"
-        " the openModeller home page (http://openModeller.sf.net)</a> for more"
+        " 'closed source' license. Visit <a href=\"http://qgis.org\">"
+        " the QGIS home page (http://qgis.org)</a> for more"
         " information."));
   addGenericTip(myTip);
   //
-  myTip.setTitle(tr("openModeller Publications"));
+  myTip.setTitle(tr("QGIS Publications"));
   myTip.setContent(tr("If you write a scientific paper or any other article"
-        " that refers to openModeller we would love to include your work"
-        " in the references section of "
-        " the openModeller home page (http://openModeller.sf.net).</a>"
+        " that refers to QGIS we would love to include your work"
+        " in the <a href=\"http://www.qgis.org/en/community/qgis-case-studies.html\">case studies section</a> of"
+        " the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html)."
         ));
   addGenericTip(myTip);
-  myTip.setTitle(tr("Become an openModeller Desktop translator"));
-  myTip.setContent(tr("Would you like to see openModeller Desktop"
+  myTip.setTitle(tr("Become an QGIS translator"));
+  myTip.setContent(tr("Would you like to see QGIS"
         " in your native language? We are looking for more translators"
         " and would appreciate your help! The translation process is "
         " fairly straight forward - instructions are available in the "
-        " resources section of "
-        " the openModeller home page (http://openModeller.sf.net).</a>"
+        " QGIS wiki"
+        " <a href=\"http://www.qgis.org/wiki/GUI_Translation\">translator's page (http://www.qgis.org/wiki/GUI_Translation).</a>"
         ));
   addGuiTip(myTip);
-  myTip.setTitle(tr("openModeller Mailing lists"));
-  myTip.setContent(tr("If you need help using openModeller Desktop"
-        " we have a mailing list where users help each other with issues"
-        " related to niche modelling and using openModeller Desktop."
-        " Details on how to subscribe are in the resources section of"
-        " the openModeller home page (http://openModeller.sf.net).</a>"
+  myTip.setTitle(tr("QGIS Mailing lists"));
+  myTip.setContent(tr("If you need help using QGIS"
+        " we have a 'users'  mailing list where users help each other with issues"
+        " related to using our sofware. We also have a 'developers' mailing list."
+        " for those wanting help and to discuss things relating the the QGIS code base."
+        " Details on how to subscribe are in the <a href=\"http://www.qgis.org/en/community/mailing-lists.html\">community section</a> of"
+        " the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html)."
         ));
   addGuiTip(myTip);
-  myTip.setTitle(tr("Is it 'modelling' or 'modeling'?"));
-  myTip.setContent(tr("Both spellings are correct. For openModeller"
-        " we use the former spelling."
+  myTip.setTitle(tr("Is it 'QGIS' or 'Quantum GIS'?"));
+  myTip.setContent(tr("Both are correct. For articles we suggest you write 'Quantum GIS (QGIS) is ....'"
+        " and then refer to it as QGIS thereafter."
         ));
   addGenericTip(myTip);
-  myTip.setTitle(tr("How do I refer to openModeller?"));
-  myTip.setContent(tr("openModeller is spelled with a lower case"
-        " 'o' at the start of the word - even if its the beginning"
-        " of a sentance. We have various subprojects of the openModeller "
+  myTip.setTitle(tr("How do I refer to Quantum GIS?"));
+  myTip.setContent(tr("QGIS is spelled in all caps."
+        " We have various subprojects of the QGIS project "
         " project and it will help to avoid confusion if you refer to each by"
         " its name:"
         "<ul>"
-        "<li>openModeller Library - this is the C++ library that contains"
-        " the core logic for carrying out niche modelling"
-        "<li>openModeller Console - these are a collection of command"
-        " line tools that allow you to run niche models from a unix or"
-        " DOS shell, or from a scripting environment."
-        "<li>openModeller Web Service - The openModeller Web Service"
-        " allows for remote execution of niche models."
-        "<li>openModeller Desktop - the openModeller Desktop provides"
-        " a graphical user interface for the openModeller Library. It"
-        " also includes the capability to run models using the"
-        " openModeller Web Service (though this is still considered"
-        " experimental)."
+        "<li>QGIS Library - this is the C++ library that contains"
+        " the core logic that is used to build the QGIS user interface and other applications.</li>"
+        "<li>QGIS Application - this is the desktop application that you know and love so much :-).</li>"
+        "<li>QGIS Mapserver - this is a server-side application based on the QGIS Library"
+        " that will serve up your .qgs projects using the WMS protocol.</li>"
         "</ul>"
-        ));
-  addGenericTip(myTip);
-  myTip.setTitle(tr("How can I improve model execution times?"));
-  myTip.setContent(tr("Model processing time is typically determined by"
-        "<ul>"
-        "<li>the algorithm you select,</li>"
-        "<li>the number, extents and spatial resolution of your format and environmental layers,</li>" 
-        "<li>the number of cells excluded by your mask (if any),</li>"
-        "<li>in some cases the number of presence and absence points (e.g. distance algs),</li>"
-        "<li>the speed of the computer the model is running on (CPU, disk access etc).</li>"
-        "</ul>"
-        "So if you want to improve model processing times you need to adjust "
-        "one of these variables. One thing noticed quite commonly is that people "
-        "use extremely high resolution datasets that often carry little "
-        "additional information over lower resolution equivalents. For example "
-        "interpolating widely dispersed weather station data to produce a 50cm "
-        "raster probably carries little additional value over for example using "
-        "10m2 pixels.<br>"
-        "Another area of performance improvement you can look at is "
-        "preselecting environmental variables using techniques such as Chi "
-        "Square test. Future versions of openModeller will integrate the ability "
-        "to do this type of preselection."
         ));
   addGenericTip(myTip);
   /* Template for adding more tips
@@ -124,52 +95,52 @@ OmgTipFactory::OmgTipFactory() : QObject()
   */
 }
 
-OmgTipFactory::~OmgTipFactory()
+QgsTipFactory::~QgsTipFactory()
 {
 
 }
 //private helper method
-void OmgTipFactory::addGuiTip(OmgTip theTip)
+void QgsTipFactory::addGuiTip(QgsTip theTip)
 {
   mGuiTips << theTip;
   mAllTips << theTip;
 }
 //private helper method
-void OmgTipFactory::addGenericTip(OmgTip theTip)
+void QgsTipFactory::addGenericTip(QgsTip theTip)
 {
   mGenericTips << theTip;
   mAllTips << theTip;
 }
-OmgTip OmgTipFactory::getTip()
+QgsTip QgsTipFactory::getTip()
 {
   srand(QTime::currentTime().msec());
   int myRand = rand();
   int myValue = static_cast<int> (myRand % mAllTips.count()); //range [0,(count-1)]
-  OmgTip myTip = mAllTips.at(myValue);
+  QgsTip myTip = mAllTips.at(myValue);
   return myTip;
 }
-OmgTip OmgTipFactory::getTip(int thePosition)
+QgsTip QgsTipFactory::getTip(int thePosition)
 {
-  OmgTip myTip = mAllTips.at(thePosition);
+  QgsTip myTip = mAllTips.at(thePosition);
   return myTip;
 }
-OmgTip OmgTipFactory::getGenericTip()
+QgsTip QgsTipFactory::getGenericTip()
 {
   srand(QTime::currentTime().msec());
   int myRand = rand();
   int myValue = static_cast<int> (myRand % mGenericTips.count()); //range [0,(count-1)]
-  OmgTip myTip = mGenericTips.at(myValue);
+  QgsTip myTip = mGenericTips.at(myValue);
   return myTip;
 }
-OmgTip OmgTipFactory::getGuiTip()
+QgsTip QgsTipFactory::getGuiTip()
 {
   srand(QTime::currentTime().msec());
   int myRand = rand();
   int myValue = static_cast<int> (myRand % mGuiTips.count()); //range [0,(count-1)]
-  OmgTip myTip = mGuiTips.at(myValue);
+  QgsTip myTip = mGuiTips.at(myValue);
   return myTip;
 }
-int OmgTipFactory::randomNumber(int theMax)
+int QgsTipFactory::randomNumber(int theMax)
 {
   return 0;
 }
