@@ -86,15 +86,17 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
     ENDFOREACH(CONCAT_NUM RANGE 0 ${SIP_CONCAT_PARTS} )
 
     # Suppress warnings
-    IF(MSVC AND PEDANTIC)
-      # 4996 deprecation warnings (bindings re-export deprecated methods)
-      # 4701 potentially uninitialized variable used (sip generated code)
-      # 4702 unreachable code (sip generated code)
-      ADD_DEFINITIONS( /wd4996 /wd4701 /wd4702 )
-    ELSE(MSVC)
-      # disable all warnings
-      ADD_DEFINITIONS( -w )
-    ENDIF(MSVC)
+    IF(PEDANTIC)
+      IF(MSVC)
+        # 4996 deprecation warnings (bindings re-export deprecated methods)
+        # 4701 potentially uninitialized variable used (sip generated code)
+        # 4702 unreachable code (sip generated code)
+        ADD_DEFINITIONS( /wd4996 /wd4701 /wd4702 )
+      ELSE(MSVC)
+        # disable all warnings
+        ADD_DEFINITIONS( -w )
+      ENDIF(MSVC)
+    ENDIF(PEDANTIC)
 
     ADD_CUSTOM_COMMAND(
         OUTPUT ${_sip_output_files} 
