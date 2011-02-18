@@ -213,7 +213,6 @@ SET (QGIS_APP_MOC_HDRS
   qgssponsors.h
   qgstextannotationdialog.h
   qgstilescalewidget.h
-  qgstip.h
   qgstipgui.h
   qgstipfactory.h
   qgsundowidget.h
@@ -326,9 +325,6 @@ QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 IF (WIN32)
   IF (MSVC)
     SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
-
-    # disable deprecation warnings
-    SET_SOURCE_FILES_PROPERTIES(qgisappinterface.cpp PROPERTIES COMPILE_FLAGS /wd4996)
   ELSE(MSVC)
 
     # Icon for windows MINGW
@@ -350,6 +346,15 @@ IF (WIN32)
     SET(QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
   ENDIF (MSVC)
 ENDIF (WIN32)
+
+IF(PEDANTIC)
+  # disable deprecation warnings
+  IF(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(qgisappinterface.cpp PROPERTIES COMPILE_FLAGS /wd4996)
+  ELSE(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(qgisappinterface.cpp PROPERTIES COMPILE_FLAGS -Wno-deprecated)
+  ENDIF(MSVC)
+ENDIF(PEDANTIC)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} composer legend attributetable
