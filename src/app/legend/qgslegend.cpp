@@ -1712,6 +1712,8 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
   QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer->layer() );
   if ( layer )
   {
+    // Note: Do we really want to do these next clauses? The user will get a surprise when the
+    // drawing style they are using suddenly changes....! TS
     if ( layer->drawingStyle() == QgsRasterLayer::SingleBandPseudoColor )
     {
       layer->setDrawingStyle( QgsRasterLayer::SingleBandGray );
@@ -1727,6 +1729,8 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
     }
 
     layer->setMinimumMaximumUsingLastExtent();
+    layer->setCacheImage(NULL);
+    refreshLayerSymbology( layer->getLayerID() );
     mMapCanvas->refresh();
   }
 }
