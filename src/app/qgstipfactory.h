@@ -18,57 +18,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OMGTIPFACTORY
-#define OMGTIPFACTORY
+#ifndef QGSTIPFACTORY
+#define QGSTIPFACTORY
 
-#include "omgtip.h"
+#include "qgstip.h"
 #include <QList>
 
-/** \ingroup lib
+/** \ingroup app
 * \brief A factory class to serve up tips to the user.
 * Tips can be generic, in which case they make no mention of
 * gui dialogs etc, or gui-secific in which case they may allude
 * to features of the graphical user interface.
-* @see also OmgTipOfTheDay, OmgTip
+* @see also QgsTipOfTheDay, QgsTip
 */
 
-class OMG_LIB_EXPORT OmgTipFactory : public QObject 
+class QgsTipFactory : public QObject 
 {
   Q_OBJECT; //used for tr() so we dont need to do QObject::tr()
   public:
     /** Constructor */
-    OmgTipFactory();
+    QgsTipFactory();
     /** Destructor */
-    ~OmgTipFactory();
+    ~QgsTipFactory();
     /** Get a random tip (generic or gui-centric)
-     * @return An OmgTip containing the tip
+     * @return An QgsTip containing the tip
      */
-    OmgTip getTip();
+    QgsTip getTip();
     /** Get a specific tip (generic or gui-centric).
      * @param thePosition The tip returned will be based on the 
      *        number passed in as thePosition. If the
      *        position is invalid, an empty string will be 
      *        returned.
-     * @return An OmgTip containing the tip
+     * @return An QgsTip containing the tip
      */
-    OmgTip getTip(int thePosition);
+    QgsTip getTip(int thePosition);
     /** Get a random generic tip
-     * @return An OmgTip containing the tip
+     * @return An QgsTip containing the tip
      */
-    OmgTip getGenericTip();
+    QgsTip getGenericTip();
     /** Get a random gui-centric tip
-     * @return An OmgTip  containing the tip
+     * @return An QgsTip  containing the tip
      */
-    OmgTip getGuiTip();
+    QgsTip getGuiTip();
 
   private:
-    void addGenericTip(OmgTip);
-    void addGuiTip(OmgTip);
+    void addGenericTip(QgsTip);
+    void addGuiTip(QgsTip);
     int randomNumber(int theMax);
     //@TODO move tipts into a sqlite db
-    QList <OmgTip> mGenericTips;
-    QList <OmgTip> mGuiTips;
-    QList <OmgTip> mAllTips;
+    QList <QgsTip> mGenericTips;
+    QList <QgsTip> mGuiTips;
+    QList <QgsTip> mAllTips;
 };
-#endif //OMGTIPFACTORY
+#endif //QGSTIPFACTORY
 

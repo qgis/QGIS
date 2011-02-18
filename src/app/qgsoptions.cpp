@@ -257,6 +257,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkAddedVisibility->setChecked( settings.value( "/qgis/new_layers_visible", true ).toBool() );
   cbxLegendClassifiers->setChecked( settings.value( "/qgis/showLegendClassifiers", false ).toBool() );
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
+  cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
   cbxIdentifyResultsDocked->setChecked( settings.value( "/qgis/dockIdentifyResults", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
@@ -527,6 +528,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
+  settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );

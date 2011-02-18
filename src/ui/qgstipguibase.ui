@@ -21,7 +21,20 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
+   <item row="0" column="1">
+    <widget class="QLabel" name="lblTitle">
+     <property name="styleSheet">
+      <string notr="true">font-weight: bold; </string>
+     </property>
+     <property name="text">
+      <string>Tip Title goes here</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::PlainText</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
     <widget class="QTextBrowser" name="txtTip">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -41,14 +54,14 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QCheckBox" name="checkBox">
+   <item row="2" column="1">
+    <widget class="QCheckBox" name="cbxDisableTips">
      <property name="text">
       <string>I've had enough tips, don't show this on start up any more!</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
+   <item row="3" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
