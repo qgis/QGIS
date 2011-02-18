@@ -250,7 +250,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     tabPageHistogram->setEnabled( false );
   }
 
-  leSpatialRefSys->setText( mRasterLayer->srs().toProj4() );
+  leSpatialRefSys->setText( "EPSG:" + QString::number( mRasterLayer->crs().epsg() ) + " - " + mRasterLayer->crs().description() );
+  leSpatialRefSys->setCursorPosition( 0 );
 
   // Set text for pyramid info box
   QString pyramidFormat( "<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>" );
@@ -1627,7 +1628,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
 
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setSelectedCrsId( mRasterLayer->srs().srsid() );
+  mySelector->setSelectedCrsId( mRasterLayer->crs().srsid() );
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
@@ -1639,7 +1640,8 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   }
   delete mySelector;
 
-  leSpatialRefSys->setText( mRasterLayer->srs().toProj4() );
+  leSpatialRefSys->setText( "EPSG:" + QString::number( mRasterLayer->crs().epsg() ) + " - " + mRasterLayer->crs().description() );
+  leSpatialRefSys->setCursorPosition( 0 );
 }
 
 void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QString& theText )
