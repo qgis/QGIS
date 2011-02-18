@@ -546,7 +546,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>There were %1 vertices in original dataset which
 were reduced to %2 vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>W procesie uproszczenia zredukowano %1 wierzchołków 
+do %2</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -847,7 +848,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="149"/>
         <source>Median</source>
-        <translation type="unfinished">Mediana</translation>
+        <translation>Mediana</translation>
     </message>
     <message>
         <source>Output Shapefile:</source>
@@ -1440,7 +1441,7 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="49"/>
         <source>Simplify tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancja upraszczania</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="76"/>
@@ -1710,11 +1711,11 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>&amp;Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog ź&amp;ródłowy</translation>
     </message>
     <message>
         <source>&amp;Output directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog &amp;docelowy</translation>
     </message>
 </context>
 <context>
@@ -1860,7 +1861,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakończono przetwarzanie.</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
@@ -2029,11 +2030,11 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Select the input directory with files for VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog wejściowy z plikami do VRT</translation>
     </message>
     <message>
         <source>Select the input directory with raster files</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog wejściowy z plikami rastrowymi</translation>
     </message>
     <message>
         <source>Select where to save the TileIndex output</source>
@@ -2074,39 +2075,39 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="20"/>
         <source>Select the extent by drag on canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż zasięg na mapie</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="27"/>
         <source>or change the extent coordinates</source>
-        <translation type="unfinished">lub wpisz współrzędne</translation>
+        <translation>lub wpisz współrzędne zakresu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="37"/>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="47"/>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="70"/>
         <source>y</source>
-        <translation type="unfinished">y</translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="77"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="87"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="97"/>
         <source>Re-Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż ponownie</translation>
     </message>
 </context>
 <context>
@@ -2238,7 +2239,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
         <source>Choose input directory instead of files</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog wejściowy zamiast plików</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="38"/>
@@ -2288,7 +2289,7 @@ Wyłącz opcję &quot;Użyj przecinającego się zakresu, aby otrzymać niepusty
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="156"/>
         <source>Se&amp;parate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Rozdziel</translation>
     </message>
     <message>
         <source>&amp;Resolution:</source>
@@ -2894,7 +2895,7 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="162"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="202"/>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>&amp;Max dist:</source>
@@ -3166,7 +3167,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
         <source>No data values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość oznaczająca brak danych</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="209"/>
@@ -3201,12 +3202,12 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="22"/>
         <source>Input directory</source>
-        <translation type="unfinished">Katalog źródłowy</translation>
+        <translation>Katalog źródłowy</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="50"/>
         <source>Output shapefile</source>
-        <translation type="unfinished">Wyjściowy Shapefile</translation>
+        <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="71"/>
@@ -3221,12 +3222,12 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="90"/>
         <source>Write absolute path</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz bezwzględne ścieżki dostępu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="97"/>
         <source>Skip files with different projection ref</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomiń pliki w innych odwzorowaniach</translation>
     </message>
 </context>
 <context>
@@ -5546,18 +5547,18 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="802"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1313"/>
         <source>Atlas BNA</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atlas BNA</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="809"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1317"/>
         <source>Comma Separated Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Comma Separated Value</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="816"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished">ESRI Shapefile</translation>
+        <translation>ESRI Shapefile</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="823"/>
@@ -5570,24 +5571,24 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="830"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1345"/>
         <source>GeoJSON</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoJSON</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="837"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1349"/>
         <source>GeoRSS</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoRSS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="844"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1353"/>
         <source>Geography Markup Language (GML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geography Markup Language (GML)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="851"/>
         <source>Generic Mapping Tools (GMT)</source>
-        <translation type="unfinished"></translation>
+        <translation>Generic Mapping Tools (GMT)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="858"/>
@@ -5610,48 +5611,48 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="879"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1385"/>
         <source>Keyhole Markup Language (KML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Keyhole Markup Language (KML)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="886"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1389"/>
         <source>Mapinfo File</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik Mapinfo</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="893"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1393"/>
         <source>Microstation DGN</source>
-        <translation type="unfinished"></translation>
+        <translation>Microstation DGN</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="900"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1417"/>
         <source>S-57 Base file</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik S-57 Base</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="907"/>
         <source>Spatial Data Transfer Standard (SDTS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Spatial Data Transfer Standard (SDTS)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="914"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1427"/>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="921"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1454"/>
         <source>AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="928"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1450"/>
         <source>Geoconcept</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geoconcept</translation>
     </message>
     <message>
         <source>Invalid feature geometry</source>
@@ -5919,17 +5920,17 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="56"/>
         <source>It solves the shortest path problem.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rozwiązuje problem komiwojażera.</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="49"/>
         <source>SQL Anywhere plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="50"/>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz warstwy wektorowe w bazie SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1305"/>
@@ -5939,7 +5940,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1319"/>
         <source>DODS</source>
-        <translation type="unfinished"></translation>
+        <translation>DODS</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1325"/>
@@ -5950,67 +5951,67 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1332"/>
         <source>ESRI ArcSDE</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI ArcSDE</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1336"/>
         <source>ESRI Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ESRI Shapefile</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1357"/>
         <source>GMT</source>
-        <translation type="unfinished"></translation>
+        <translation>GMT</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1361"/>
         <source>GPX</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1365"/>
         <source>Grass Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Wektor GRASS</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1369"/>
         <source>Informix DataBlade</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Informix DataBlade</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1381"/>
         <source>INGRES</source>
-        <translation type="unfinished"></translation>
+        <translation>INGRES</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1397"/>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1401"/>
         <source>Oracle Spatial</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle Spatial</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1405"/>
         <source>ODBC</source>
-        <translation type="unfinished"></translation>
+        <translation>ODBC</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1409"/>
         <source>OGDI Vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Wektory OGDI</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1413"/>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1422"/>
         <source>Spatial Data Transfer Standard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Spatial Data Transfer Standard</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1432"/>
@@ -6035,7 +6036,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1467"/>
         <source>All files</source>
-        <translation type="unfinished">Wszystkie pliki</translation>
+        <translation>Wszystkie pliki</translation>
     </message>
 </context>
 <context>
@@ -8155,7 +8156,7 @@ Ignorować błędy?</translation>
         <location filename="../src/app/qgisapp.cpp" line="858"/>
         <location filename="../src/app/qgisapp.cpp" line="860"/>
         <source>Merge attributes of selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Połącz atrybuty wybranych obiektów</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="870"/>
@@ -8176,17 +8177,17 @@ Ignorować błędy?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="898"/>
         <source>, hold ctrl to add/subtract current selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">, przytrzymaj CTRL aby (dodać do)/(odjąć z) wybranych</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="900"/>
         <source>Select single feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz jeden obiekt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Select single features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz pojedyncze obiekty</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="906"/>
@@ -8964,12 +8965,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="14"/>
         <source>Add vector join</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodaj wektor złączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="20"/>
         <source>Join layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa złączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="30"/>
@@ -8984,12 +8985,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="60"/>
         <source>Create attribute index on join field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Indeksuj atrybut pola złączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="67"/>
         <source>Cache join layer in virtual memory</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>tłumaczenie dosłowne nie mieści się w oknie; to zresztą też niebardzo</translatorcomment>
+        <translation type="unfinished">Warstwa złączenia w pamięcie podręcznej</translation>
     </message>
 </context>
 <context>
@@ -9280,12 +9282,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="206"/>
         <source>Error</source>
-        <translation type="unfinished">Błąd</translation>
+        <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="237"/>
         <source>Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="248"/>
@@ -9761,7 +9763,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="114"/>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="115"/>
         <source>Open form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Otwórz formularz</translation>
     </message>
 </context>
 <context>
@@ -10307,7 +10309,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="234"/>
         <source>Command history</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia komend</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="488"/>
@@ -10426,12 +10428,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="61"/>
         <source>Arrow outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość obrysu strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="74"/>
         <source>Arrowhead width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość grotu </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="88"/>
@@ -10441,21 +10443,21 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="94"/>
         <source>Arrow color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono kolor strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="157"/>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="168"/>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="180"/>
         <source>Arrow marker changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono znacznik strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="191"/>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="210"/>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="231"/>
         <source>Arrow start marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik początku strzałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="228"/>
@@ -10470,7 +10472,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="243"/>
         <source>Arrow end marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik końca strzałki</translation>
     </message>
 </context>
 <context>
@@ -10838,7 +10840,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="491"/>
         <source>Undo</source>
-        <translation type="unfinished">Cofnij</translation>
+        <translation>Cofnij</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="494"/>
@@ -10853,7 +10855,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="506"/>
         <source>Redo</source>
-        <translation type="unfinished">Ponów</translation>
+        <translation>Ponów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="509"/>
@@ -10871,7 +10873,8 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/composer/qgscomposeritem.cpp" line="374"/>
         <source>Change item position</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>czy zmienia?</translatorcomment>
+        <translation type="unfinished">Zmień lokalizację elementu</translation>
     </message>
 </context>
 <context>
@@ -10879,22 +10882,22 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="55"/>
         <source>Frame color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono kolor ramki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="78"/>
         <source>Background color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono kolor tła</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="100"/>
         <source>Item opacity changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono przezroczystość elementu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="116"/>
         <source>Item outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość obrysu elementu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="130"/>
@@ -10904,7 +10907,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="178"/>
         <source>Item position changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono lokalizację elementu</translation>
     </message>
 </context>
 <context>
@@ -10937,7 +10940,8 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Position and size...</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>pozycja czy lokalizacja?</translatorcomment>
+        <translation type="unfinished">Pozycja i rozmiar...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="80"/>
@@ -10959,18 +10963,18 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="44"/>
         <source>Label text changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono tekst etykiety</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="64"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="94"/>
         <source>Label font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono czcionkę etykiety</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="76"/>
         <source>Label margin changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono margines etykiety</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="103"/>
@@ -10980,12 +10984,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="147"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="158"/>
         <source>Label alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono wyrównanie etykiety</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="169"/>
         <source>Label id changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zmieniono ID etykiety</translation>
     </message>
 </context>
 <context>
@@ -11058,7 +11062,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="150"/>
         <source>Label id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ID etykiety</translation>
     </message>
 </context>
 <context>
@@ -11087,7 +11091,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendlayersdialogbase.ui" line="14"/>
         <source>Add layer to legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj warstwę do legendy</translation>
     </message>
 </context>
 <context>
@@ -11100,17 +11104,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="99"/>
         <source>Legend title changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono tytuł legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="111"/>
         <source>Legend symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość symbolu legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="123"/>
         <source>Legend symbol height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość symbolu legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="135"/>
@@ -11130,7 +11134,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="180"/>
         <source>Title font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono czcionkę tytułu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="202"/>
@@ -11436,28 +11440,28 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="85"/>
         <source>Change item width</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień szerokość elementu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="105"/>
         <source>Change item height</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień wysokość elementu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="159"/>
         <source>Map scale changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono skalę mapy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="171"/>
         <source>Map rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrócono mapę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="212"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="412"/>
         <source>Map extent changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono zasięg mapy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="495"/>
@@ -11500,17 +11504,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="657"/>
         <source>Annotation font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono czcionkę opisu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="671"/>
         <source>Annotation distance changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono odległość opisu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="685"/>
         <source>Annotation position changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono pozycję opisu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="706"/>
@@ -11520,7 +11524,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="727"/>
         <source>Changed annotation direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono kierunek opisu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="755"/>
@@ -11721,22 +11725,22 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="113"/>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="175"/>
         <source>Picture changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono obraz</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="130"/>
         <source>Picture width changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono szerokość obrazu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="148"/>
         <source>Picture height changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono wysokość obrazu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="160"/>
         <source>Picture rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrócono obraz</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="185"/>
@@ -11751,7 +11755,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="305"/>
         <source>Rotation map changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrócono mapę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="329"/>
@@ -11886,22 +11890,22 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="127"/>
         <source>Scalebar map changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono podziałkę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="175"/>
         <source>Scalebar line width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szerokość podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="190"/>
         <source>Scalebar segment size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar segmentu podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="203"/>
         <source>Scalebar segments left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lewe segmenty podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="216"/>
@@ -11911,32 +11915,32 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="228"/>
         <source>Scalebar height changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono wysokość podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="246"/>
         <source>Scalebar font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono czcionkę podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="268"/>
         <source>Scalebar color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono kolor podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="282"/>
         <source>Scalebar unit text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst jednostek podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="295"/>
         <source>Scalebar map units per segment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jednostki mapy na segment podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="308"/>
         <source>Scalebar style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono styl podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="350"/>
@@ -12066,12 +12070,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="100"/>
         <source>Shape rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrócono kształt</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="114"/>
         <source>Shape type changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono typ kształtu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="139"/>
@@ -12081,12 +12085,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="145"/>
         <source>Shape outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor obrysu kształtu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="158"/>
         <source>Shape outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość obrysu kształtu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="171"/>
@@ -12101,7 +12105,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="201"/>
         <source>Shape fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor wypełnienia kształtu</translation>
     </message>
 </context>
 <context>
@@ -22758,7 +22762,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="183"/>
         <source>Icon theme</source>
-        <translation>&amp;Motyw ikon</translation>
+        <translation>Motyw ikon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="254"/>
