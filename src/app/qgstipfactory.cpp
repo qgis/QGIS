@@ -22,12 +22,12 @@
 #include "qgstipfactory.h"
 #include <QTime>
 //for rand & srand
-#include <cstdlib> 
+#include <cstdlib>
 
 
 QgsTipFactory::QgsTipFactory() : QObject()
 {
-  // Im just doing this in a simple way so 
+  // Im just doing this in a simple way so
   // its easy for translators...later
   // it its worth the time Ill move this data
   // into a sqlite database...
@@ -36,8 +36,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent(tr("Quantum GIS is open source software."
         " This means that the software source code can be freely viewed "
         " and modified. The GPL places a restriction that any modifications "
-        " you make must be made available to the openModeller project, and "
-        " that you can not create a new version of openModeller under a "
+        " you make must be made available to the Quantum GIS project, and "
+        " that you can not create a new version of Quantum GIS under a "
         " 'closed source' license. Visit <a href=\"http://qgis.org\">"
         " the QGIS home page (http://qgis.org)</a> for more"
         " information."));
