@@ -3,6 +3,7 @@
     <file>north_arrows/gpsarrow.svg</file>
     <file>north_arrows/gpsarrow2.svg</file>
     <file>themes/default/mActionAddArrow.png</file>
+    <file>themes/default/mActionLocalHistogramStretch.png</file>
     <file>themes/newgis/mActionAddGPSLayer.png</file>
     <file>themes/newgis/mActionAddImage.png</file>
     <file>themes/newgis/mActionAddIsland.png</file>
