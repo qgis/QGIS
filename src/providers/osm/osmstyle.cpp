@@ -139,7 +139,7 @@ void OsmStyle::parse_rule_point( QString line )
   QColor mSelectionColor( 255, 255, 0 );
 
   QgsSymbol sym( QGis::Point );
-  sym.setNamedPointSymbol( QString( "svg:%1%2" ).arg( QgsApplication::svgPath() ).arg( name ) );
+  sym.setNamedPointSymbol( QString( "svg:%1" ).arg( name ) );
   sym.setPointSize( size.toFloat() );
 
   QImage img = sym.getPointSymbolAsImage( widthScale, selected, mSelectionColor );

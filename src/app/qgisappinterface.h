@@ -24,6 +24,11 @@
 
 class QgisApp;
 
+#ifdef _MSC_VER
+#  pragma warning( push )
+#  pragma warning( disable: 4996 )  // declared deprecated
+#endif
+
 /** \class QgisAppInterface
  * \brief Interface class to provide access to private methods in QgisApp
  * for use by plugins.
@@ -304,5 +309,8 @@ class QgisAppInterface : public QgisInterface
     QgsAppLegendInterface legendIface;
 };
 
+#ifdef _MSC_VER
+#  pragma warning( pop )
+#endif
 
 #endif //#define QGISAPPINTERFACE_H

@@ -217,19 +217,22 @@ int QgsSVGDiagramFactoryWidget::addDirectoryToPreview( const QString& path )
 void QgsSVGDiagramFactoryWidget::addStandardDirectoriesToPreview()
 {
   //list all directories in $prefix/share/qgis/svg
-  QDir svgDirectory( QgsApplication::svgPath() );
-  if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
+  foreach( QString path, QgsApplication::svgPaths() )
   {
-    return; //error
-  }
-
-  QFileInfoList directoryList = svgDirectory.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-  QFileInfoList::const_iterator dirIt = directoryList.constBegin();
-  for ( ; dirIt != directoryList.constEnd(); ++dirIt )
-  {
-    if ( addDirectoryToPreview( dirIt->absoluteFilePath() ) == 0 )
+    QDir svgDirectory( path );
+    if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
     {
-      mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
+      continue; //error
+    }
+
+    QFileInfoList directoryList = svgDirectory.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
+    QFileInfoList::const_iterator dirIt = directoryList.constBegin();
+    for ( ; dirIt != directoryList.constEnd(); ++dirIt )
+    {
+      if ( addDirectoryToPreview( dirIt->absoluteFilePath() ) == 0 )
+      {
+        mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
+      }
     }
   }
 }

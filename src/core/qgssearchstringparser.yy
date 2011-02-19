@@ -23,6 +23,11 @@
 #include <cstdlib>
 #include "qgssearchtreenode.h"
 
+#ifdef _MSC_VER
+#  pragma warning( disable: 4065 )  // switch statement contains 'default' but no 'case' labels
+#  pragma warning( disable: 4702 )  // unreachable code
+#endif
+
 // don't redeclare malloc/free
 #define YYINCLUDED_STDLIB_H 1
 
