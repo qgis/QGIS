@@ -420,7 +420,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
 
-  //Set the icon size for all the toolbars.
   createActions();
   createActionGroups();
   createMenus();
@@ -2050,12 +2049,18 @@ void QgisApp::setIconSizes( int size )
   //Set the icon size of for all the toolbars created in the future.
   setIconSize( QSize( size, size ) );
 
-  //Change all current icon sizes.
-  QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach( QToolBar * toolbar, toolbars )
-  {
-    toolbar->setIconSize( QSize( size, size ) );
-  }
+    //Change all current icon sizes.
+    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
+    foreach( QToolBar * toolbar, toolbars )
+    {
+      toolbar->setIconSize( QSize( size, size ) );
+    }
+    
+    QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
+    for ( ; composerIt != mPrintComposers.end(); ++composerIt )
+    {
+      ( *composerIt )->setIconSizes(size);
+    }
 }
 
 void QgisApp::setTheme( QString theThemeName )

@@ -58,6 +58,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Set the pixmap / icons on the toolbar buttons
     void setupTheme();
 
+    void setIconSizes( int size );
+
     //! Open and show, set defaults if first time
     void open();
 
