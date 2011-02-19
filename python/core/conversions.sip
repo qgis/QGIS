@@ -37,7 +37,7 @@ template <TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION <= 0x040c00)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
