@@ -30,6 +30,7 @@
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
 #include <qgspoint.h>
+#include <qgsdistancearea.h>
 
 #include <QAction>
 #include <QToolBar>
@@ -339,8 +340,7 @@ void GlobePlugin::projectReady()
 }
 
 void GlobePlugin::blankProjectReady()
-{ //TODO now i patched the source against from http://trac.osgeo.org/qgis/changeset/14452
-  //when we use a newer code base we do not need to patch
+{ //needs at least http://trac.osgeo.org/qgis/changeset/14452
   mSettingsDialog.elevationDatasources()->clearContents();
   mSettingsDialog.elevationDatasources()->setRowCount(0);
 }
@@ -400,15 +400,17 @@ void GlobePlugin::syncExtent()
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
-  //get actual mapCanvas->extent().height in meters
+  //get mapCanvas->extent().height() in meters
   QgsRectangle extent = mQGisIface->mapCanvas()->extent();
-  //TODO: implement a stronger solution ev look at http://www.uwgb.edu/dutchs/usefuldata/utmformulas.htm
-  QgsCoordinateReferenceSystem* destSrs = new QgsCoordinateReferenceSystem( 31254, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsCoordinateTransform* trans = new QgsCoordinateTransform( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs(), *destSrs );
-  QgsRectangle projectedExtent = trans->transformBoundingBox( extent );
+  QgsDistanceArea dist;
+  dist.setProjectionsEnabled(true);
+  QgsPoint ll = QgsPoint(extent.xMinimum(), extent.yMinimum());
+  QgsPoint ul = QgsPoint(extent.xMinimum(), extent.yMaximum());
+  double height = dist.measureLine(ll, ul);
 
+  //camera viewing angle
   double viewAngle = 30;
-  double height = projectedExtent.height();
+  //camera distance
   double distance = height / tan( viewAngle * osg::PI / 180 ); //c = b*cotan(B(rad))
 
   OE_NOTICE << "map extent: " << height << " camera distance: " << distance << std::endl;
