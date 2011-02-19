@@ -112,6 +112,7 @@
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
 #include "qgscustomprojectiondialog.h"
+#include "qgsdatasourceuri.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
@@ -235,8 +236,8 @@ extern "C"
 {
 #include <spatialite.h>
 }
-#include "qgsspatialitesourceselect.h"
-#include "qgsnewspatialitelayerdialog.h"
+#include "spatialite/qgsspatialitesourceselect.h"
+#include "spatialite/qgsnewspatialitelayerdialog.h"
 #endif
 
 #include "qgspythonutils.h"
@@ -3025,17 +3026,16 @@ void QgisApp::addDatabaseLayer()
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    QString connectionInfo = dbs->connectionInfo();
     // for each selected table, connect to the database, parse the Wkt geometry,
     // and build a canvasitem for it
     // readWKB(connectionInfo,tables);
     QStringList::Iterator it = tables.begin();
     while ( it != tables.end() )
     {
-
       // create the layer
       //qWarning("creating layer");
-      QgsVectorLayer *layer = new QgsVectorLayer( connectionInfo + " " + *it, *it, "postgres" );
+      QgsDataSourceURI uri( *it );
+      QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), "postgres" );
       if ( layer->isValid() )
       {
         // register this layer with the central layers registry
@@ -3101,20 +3101,13 @@ void QgisApp::addSpatiaLiteLayer()
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    QString connectionInfo = dbs->connectionInfo();
     // for each selected table, connect to the database and build a canvasitem for it
     QStringList::Iterator it = tables.begin();
     while ( it != tables.end() )
     {
-      // normalizing the layer name
-      QString layername = *it;
-      layername = layername.mid( 1 );
-      int idx = layername.indexOf( "\" (" );
-      if ( idx > 0 )
-        layername.truncate( idx );
-
       // create the layer
-      QgsVectorLayer *layer = new QgsVectorLayer( "dbname='" + connectionInfo + "' table=" + *it + ") sql=", layername, "spatialite" );
+      QgsDataSourceURI uri( *it );
+      QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), "spatialite" );
       if ( layer->isValid() )
       {
         // register this layer with the central layers registry
