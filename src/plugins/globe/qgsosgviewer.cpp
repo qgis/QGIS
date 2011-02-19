@@ -66,6 +66,7 @@ void QgsGLWidgetAdapter::keyReleaseEvent( QKeyEvent* event )
 
 void QgsGLWidgetAdapter::mousePressEvent( QMouseEvent* event )
 {
+    adaptModifiers( event );
     int button = 0;
     switch(event->button())
     {
@@ -76,6 +77,18 @@ void QgsGLWidgetAdapter::mousePressEvent( QMouseEvent* event )
         default: button = 0; break;
     }
     _gw->getEventQueue()->mouseButtonPress(event->x(), event->y(), button);
+}
+
+void QgsGLWidgetAdapter::adaptModifiers( QInputEvent* event )
+{
+    int modkey = event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier);
+
+    unsigned int modkeyosg = 0;
+    if (modkey & Qt::ShiftModifier)    modkeyosg |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
+    if (modkey & Qt::ControlModifier)  modkeyosg |= osgGA::GUIEventAdapter::MODKEY_CTRL;
+    if (modkey & Qt::AltModifier)      modkeyosg |= osgGA::GUIEventAdapter::MODKEY_ALT;
+
+    _gw->getEventQueue()->getCurrentEventState()->setModKeyMask( modkeyosg );
 }
 
 void QgsGLWidgetAdapter::mouseReleaseEvent( QMouseEvent* event )

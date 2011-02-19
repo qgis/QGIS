@@ -56,7 +56,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! show the help document
     void help();
 
-
     //!  Called when the main canvas is about to be rendered
     void renderStarting();
     //!  Called when the main canvas has rendered.
@@ -68,9 +67,27 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Sync globe extent to mapCanavas
     void syncExtent();
 
+    //! called when a project has been read succesfully
     void projectReady();
+    //! called when a new project has been created succesfully
     void blankProjectReady();
+    //! called when the globe window is closed
     void setGlobeNotRunning();
+    //! set the globe coordinates of a user right-click on the globe
+    void setSelectedCoordinates( osg::Vec3d coords );
+    //! get a coordinates vector
+    osg::Vec3d getSelectedCoordinates();
+    //! prints the ccordinates in a QMessageBox
+    void showSelectedCoordinates();
+    //! emits signal with current mouse coordinates
+    void showCurrentCoordinates(double lon, double lat);
+    //! get longitude of user right click
+    double getSelectedLon();
+    //! get latitude of user right click
+    double getSelectedLat();
+    //! get elevation of user right click
+    double getSelectedElevation();
+
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );
@@ -116,6 +133,13 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarthUtil::ObjectPlacer* mObjectPlacer;
     //! tracks if the globe is open
     bool mIsGlobeRunning;
+    //! coordinates of the right-clicked point on the globe
+    double mSelectedLat, mSelectedLon, mSelectedElevation;
+
+signals:
+    //! emits current mouse position
+    //TODO connect to this signal at qgisapp.cpp:1952
+    void xyCoordinates( const QgsPoint & p );
 };
 
 class FlyToExtentHandler : public osgGA::GUIEventHandler
@@ -138,7 +162,7 @@ public:
 
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
-    virtual void getCoords( float x, float y, osgViewer::View* view );
+    virtual osg::Vec3d getCoords( float x, float y, osgViewer::View* view );
 
 private:
     GlobePlugin* mGlobe;

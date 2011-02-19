@@ -117,6 +117,11 @@ void GlobePlugin::initGui()
            SLOT( blankProjectReady() ) );
   connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
+  connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
+           mQGisIface->mainWindow(), SLOT( showMouseCoordinate( const QgsPoint & ) ) );
+//  connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
+//           this, SLOT( showSelectedCoordinates() ) );
+
 }
 
 void GlobePlugin::run()
@@ -351,16 +356,80 @@ bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAct
 
 bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 {
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH )
+    if ( ea.getEventType() == osgGA::GUIEventAdapter::MOVE)
+        {
+            osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
+            osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view );
+            mGlobe->showCurrentCoordinates( coords.x(), coords.y() );
+        }
+    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH
+         && ea.getButtonMask() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
         osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
-        getCoords( ea.getX(), ea.getY(), view );
+        osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view );
+
+        OE_NOTICE << "Lon: " << coords.x() << " Lat: " << coords.y()
+                << " Ele: " << coords.z() << std::endl;
+
+        mGlobe->setSelectedCoordinates( coords );
+
+        if (ea.getModKeyMask() == osgGA::GUIEventAdapter::MODKEY_CTRL)
+            {
+                mGlobe->showSelectedCoordinates();
+            }
     }
 
     return false;
 }
 
-void QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view )
+void GlobePlugin::showCurrentCoordinates(double lon, double lat)
+{
+      // show x y on status bar
+    OE_NOTICE << "lon: " << lon << " lat: " << lat <<std::endl;
+      QgsPoint coord = QgsPoint( lon, lat );
+      emit xyCoordinates( coord );
+}
+
+void GlobePlugin::setSelectedCoordinates( osg::Vec3d coords)
+{
+    mSelectedLon = coords.x();
+    mSelectedLat = coords.y();
+    mSelectedElevation = coords.z();
+}
+
+osg::Vec3d GlobePlugin::getSelectedCoordinates()
+{
+    osg::Vec3d coords = osg::Vec3d(mSelectedLon, mSelectedLat, mSelectedElevation);
+    return coords;
+}
+
+void GlobePlugin::showSelectedCoordinates()
+{
+    QString lon, lat, elevation;
+    lon.setNum(mSelectedLon);
+    lat.setNum(mSelectedLat);
+    elevation.setNum(mSelectedElevation);
+    QMessageBox m;
+    m.setText("selected coordinates are:\nlon: " + lon + "\nlat: " + lat + "\nelevation: " + elevation);
+    m.exec();
+}
+
+double GlobePlugin::getSelectedLon()
+{
+    return mSelectedLon;
+}
+
+double GlobePlugin::getSelectedLat()
+{
+    return mSelectedLat;
+}
+
+double GlobePlugin::getSelectedElevation()
+{
+    return mSelectedElevation;
+}
+
+osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view )
 {
     osgUtil::LineSegmentIntersector::Intersections results;
     if ( view->computeIntersections( x, y, results, 0x01 ) )
@@ -374,23 +443,22 @@ void QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view
         _mapSRS->getEllipsoid()->convertXYZToLatLongHeight( point.x(), point.y(), point.z(), lat_rad, lon_rad, height );
 
         // query the elevation at the map point:
-        double lat_deg = osg::RadiansToDegrees( lat_rad );
         double lon_deg = osg::RadiansToDegrees( lon_rad );
+        double lat_deg = osg::RadiansToDegrees( lat_rad );
+        double elevation = 0.0;
 
-        OE_NOTICE << "coords at " << lat_deg << ", " << lon_deg << std::endl ;
-
-       /* osg::Matrixd out_mat;
+        /*TODO IMPLEMENT ELEVATION
+        osg::Matrixd out_mat;
         double query_resolution = 0.1; // 1/10th of a degree
-        double out_elevation = 0.0;
         double out_resolution = 0.0;
 
         if ( _elevMan->getPlacementMatrix(
             lon_deg, lat_deg, 0,
             query_resolution, NULL,
-            out_mat, out_elevation, out_resolution ) )
+            out_mat, elevation, out_resolution ) )
         {
                 OE_NOTICE << "Elevation at " << lat_deg << ", " << lon_deg
-                        << " is " << out_elevation << std::endl;
+                        << " is " << elevation << std::endl;
         }
         else
         {
@@ -398,6 +466,8 @@ void QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view
                 << "getElevation FAILED! at (" << lat_deg << ", " << lon_deg << ")" << std::endl;
         }
 */
+        osg::Vec3d coords = osg::Vec3d(lon_deg, lat_deg, elevation);
+        return coords;
     }
 }
 
