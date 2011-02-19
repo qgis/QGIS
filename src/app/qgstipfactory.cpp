@@ -76,7 +76,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle(tr("How do I refer to Quantum GIS?"));
   myTip.setContent(tr("QGIS is spelled in all caps."
         " We have various subprojects of the QGIS project "
-        " project and it will help to avoid confusion if you refer to each by"
+        " and it will help to avoid confusion if you refer to each by"
         " its name:"
         "<ul>"
         "<li>QGIS Library - this is the C++ library that contains"
