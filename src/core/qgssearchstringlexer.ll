@@ -36,7 +36,9 @@
 // which doesn't in MSVC compiler
 #define YY_NEVER_INTERACTIVE 1
 
+#ifndef YY_NO_UNPUT
 #define YY_NO_UNPUT	// unused
+#endif
 
 #ifdef _MSC_VER
 #define YY_NO_UNISTD_H
