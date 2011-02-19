@@ -40,6 +40,10 @@ class QgsFeature;
 
 #include <qgis.h>
 
+#ifdef _MSC_VER
+#  pragma warning( push )
+#  pragma warning( disable: 4996 )  // was declared deprecated
+#endif
 
 /** \ingroup gui
  * QgisInterface
@@ -367,14 +371,15 @@ class GUI_EXPORT QgisInterface : public QObject
 
 };
 
+#ifdef _MSC_VER
+#  pragma warning( pop )
+#  pragma warning( disable: 4190 )
+#endif
+
 // FIXME: also in core/qgis.h
 #ifndef QGISEXTERN
 #ifdef WIN32
 #  define QGISEXTERN extern "C" __declspec( dllexport )
-#  ifdef _MSC_VER
-// do not warn about C bindings returning QString
-#    pragma warning(disable:4190)
-#  endif
 #else
 #  define QGISEXTERN extern "C"
 #endif

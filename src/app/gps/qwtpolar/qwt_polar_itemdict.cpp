@@ -28,9 +28,7 @@ class QwtPolarItemDict::PrivateData
           // for lists in Qt4. The implementation below
           // is slow, but there shouldn't be many plot items.
 
-#ifdef __GNUC__
-#warning binary search missing
-#endif
+	  // TODO add binary search
 
 #if QT_VERSION < 0x040000
           QValueListIterator<QwtPolarItem *> it;

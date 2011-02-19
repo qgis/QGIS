@@ -104,10 +104,6 @@ qgssearchquerybuilder.h
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
-IF(MSVC AND PEDANTIC)
-  # disable deprecation warnings for qgisinterface (re-exporting deprecated methods)
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx PROPERTIES COMPILE_FLAGS "-wd4996")
-ENDIF(MSVC AND PEDANTIC)
 
 INCLUDE_DIRECTORIES(
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -139,10 +135,13 @@ IF (WIN32)
   ENDIF (MSVC)
 ENDIF (WIN32)
 
+IF(NOT MSVC)
+  # disable deprecation warnings for qgisinterface (re-exporting deprecated methods)
+  SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx PROPERTIES COMPILE_FLAGS "-w")
+ENDIF(NOT MSVC)
 
 #############################################################
 # qgis_gui library
-
 
 ADD_LIBRARY(qgis_gui SHARED ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS})
 
