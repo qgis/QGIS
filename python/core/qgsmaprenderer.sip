@@ -104,7 +104,7 @@ class QgsMapRenderer : QObject
     //! Recalculate the map scale
     void updateScale();
 
-    QgsDistanceArea* distanceArea();
+    QgsDistanceArea* distanceArea() /Deprecated/;
     QGis::UnitType mapUnits() const;
     void setMapUnits(QGis::UnitType u);
     

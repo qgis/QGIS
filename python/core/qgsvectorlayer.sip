@@ -396,11 +396,11 @@ public:
       returns true in case of success
       @deprecated
       */
-  bool addAttribute( QString name, QString type );
+  bool addAttribute( QString name, QString type ) /Deprecated/;
 
   /**Sets an alias (a display name) for attributes to display in dialogs
       @note added in version 1.2*/
-    void addAttributeAlias( int attIndex, QString aliasString );
+  void addAttributeAlias( int attIndex, QString aliasString );
 
   /**Returns the alias of an attribute name or an empty string if there is no alias
       @note added in version 1.2*/

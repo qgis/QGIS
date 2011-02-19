@@ -198,7 +198,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * @return true in case of success and false in case of failure
        * @deprecated
        */
-      virtual bool addAttributes(const QMap<QString, QString> &attributes);
+      virtual bool addAttributes(const QMap<QString, QString> &attributes) /Deprecated/;
 
       /**
        * Deletes existing attributes
@@ -284,7 +284,7 @@ class QgsVectorDataProvider : QgsDataProvider
 
       /**Returns the names of the numerical types
          @deprecated */
-      const QMap<QString,QVariant::Type> &supportedNativeTypes() const; 
+      const QMap<QString,QVariant::Type> &supportedNativeTypes() const /Deprecated/;
 
       /**
        * Set whether provider should return also features that don't have
