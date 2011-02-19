@@ -78,6 +78,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   setupTheme();
   QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
+  QSettings settings;
+  int size = settings.value( "/IconSize", 24 ).toInt();
+  setIconSize(QSize(size,size));
+
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
   orderingToolButton->setAutoRaise( true );
@@ -294,6 +298,19 @@ void QgsComposer::setupTheme()
   mActionAlignTop->setIcon( QgisApp::getThemeIcon( "/mActionAlignTop.png" ) );
   mActionAlignVCenter->setIcon( QgisApp::getThemeIcon( "/mActionAlignVCenter.png" ) );
   mActionAlignBottom->setIcon( QgisApp::getThemeIcon( "/mActionAlignBottom.png" ) );
+}
+
+void QgsComposer::setIconSizes( int size )
+{
+    //Set the icon size of for all the toolbars created in the future.
+    setIconSize(QSize(size,size));
+
+    //Change all current icon sizes.
+    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
+    foreach(QToolBar * toolbar, toolbars)
+    {
+        toolbar->setIconSize(QSize(size,size));
+    }
 }
 
 void QgsComposer::connectSlots()
