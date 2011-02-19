@@ -65,7 +65,7 @@ public:
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @deprecated in 1.7
      */
-    QString getLayerID() const;
+    QString getLayerID() const /Deprecated/;
 
     /** Set the display name of the layer
      * @param name New name for the layer

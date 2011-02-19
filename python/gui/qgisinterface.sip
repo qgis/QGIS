@@ -74,8 +74,9 @@ class QgisInterface : QObject
      * @param url URL to open
      * @param useQgisDocDirectory If true, the URL will be formed by concatenating 
      * url to the QGIS documentation directory path (<prefix>/share/doc)
+     * @deprecated
      */
-    virtual void openURL(QString url, bool useQgisDocDirectory=true)=0;
+    virtual void openURL(QString url, bool useQgisDocDirectory=true)=0 /Deprecated/;
 
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas()=0;
@@ -110,7 +111,7 @@ class QgisInterface : QObject
     /** refresh legend of a layer
      \note deprecated - use QgsLegendInterface::refreshLayerSymbology()
      */
-    virtual void refreshLegend( QgsMapLayer * layer )=0;
+    virtual void refreshLegend( QgsMapLayer * layer )=0 /Deprecated/;
 
     /** open layer properties
       \note added in 1.5

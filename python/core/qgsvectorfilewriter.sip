@@ -24,7 +24,9 @@ public:
       ErrCreateLayer
     };
 
-    /** Write contents of vector layer to a shapefile */
+    /** Write contents of vector layer to a shapefile 
+     @deprecated use writeAsVectorFormat instead
+     */
     static WriterError writeAsShapefile(QgsVectorLayer* layer,
                                         const QString& shapefileName,
                                         const QString& fileEncoding,
@@ -32,7 +34,7 @@ public:
                                         bool onlySelected = FALSE,
 					QString *errorMessage = 0,
 					const QStringList &datasourceOptions = QStringList(),
-					const QStringList &layerOptions = QStringList() );
+					const QStringList &layerOptions = QStringList() ) /Deprecated/;
 
     /** Write contents of vector layer to an (OGR supported) vector formt
         @note: this method was added in version 1.5*/
