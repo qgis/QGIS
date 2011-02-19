@@ -86,6 +86,85 @@ GlobePlugin::~GlobePlugin()
 {
 }
 
+struct PanControlHandler : public NavigationControlHandler
+{
+    PanControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+    virtual void onMouseDown( Control* control, int mouseButtonMask )
+    {
+      _manip->pan( _dx, _dy );
+    }
+  private:
+    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    double _dx;
+    double _dy;
+};
+
+struct RotateControlHandler : public NavigationControlHandler
+{
+    RotateControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+    virtual void onMouseDown( Control* control, int mouseButtonMask )
+    {
+      if( 0 == _dx && 0 == _dy )
+      {
+        _manip->setRotation( osg::Quat() );
+      }
+      else
+      {
+        _manip->rotate( _dx, _dy );
+      }
+    }
+  private:
+    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    double _dx;
+    double _dy;
+};
+
+struct ZoomControlHandler : public NavigationControlHandler
+{
+    ZoomControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+    virtual void onMouseDown( Control* control, int mouseButtonMask )
+    {
+      _manip->zoom( _dx, _dy );
+    }
+  private:
+    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    double _dx;
+    double _dy;
+};
+
+struct HomeControlHandler : public NavigationControlHandler
+{
+    HomeControlHandler( osgEarthUtil::EarthManipulator* manip ) : _manip( manip ) { }
+    virtual void onClick( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+    {
+      _manip->home( ea, aa );
+    }
+  private:
+    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+};
+
+struct RefreshControlHandler : public ControlEventHandler
+{
+    RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+    virtual void onClick( Control* control, int mouseButtonMask )
+    {
+      mGlobe->layersChanged();
+    }
+  private:
+    GlobePlugin* mGlobe;
+};
+
+struct SyncExtentControlHandler : public ControlEventHandler
+{
+    SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+    virtual void onClick( Control* control, int mouseButtonMask )
+    {
+      mGlobe->syncExtent();
+    }
+  private:
+    GlobePlugin* mGlobe;
+};
+
 void GlobePlugin::initGui()
 {
   // Create the action for tool
@@ -163,7 +242,7 @@ void GlobePlugin::run()
   viewer.addEventHandler( new FlyToExtentHandler( this ) );
   viewer.addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
 
-  viewer.addEventHandler( new QueryCoordinatesHandler( this,
+  viewer.addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
           mMapNode->getMap()->getProfile()->getSRS() )
           );
 
@@ -261,131 +340,15 @@ void GlobePlugin::projectReady()
 
 void GlobePlugin::blankProjectReady()
 { //TODO now i patched the source against from http://trac.osgeo.org/qgis/changeset/14452
-  //when we use a newer code base we should need to patch
+  //when we use a newer code base we do not need to patch
   mSettingsDialog.elevationDatasources()->clearContents();
   mSettingsDialog.elevationDatasources()->setRowCount(0);
-}
-
-struct PanControlHandler : public NavigationControlHandler
-{
-    PanControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
-    {
-      _manip->pan( _dx, _dy );
-    }
-  private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-    double _dx;
-    double _dy;
-};
-
-struct RotateControlHandler : public NavigationControlHandler
-{
-    RotateControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
-    {
-      if( 0 == _dx && 0 == _dy )
-      {
-        _manip->setRotation( osg::Quat() );
-      }
-      else
-      {
-        _manip->rotate( _dx, _dy );
-      }
-    }
-  private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-    double _dx;
-    double _dy;
-};
-
-struct ZoomControlHandler : public NavigationControlHandler
-{
-    ZoomControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
-    {
-      _manip->zoom( _dx, _dy );
-    }
-  private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-    double _dx;
-    double _dy;
-};
-
-struct HomeControlHandler : public NavigationControlHandler
-{
-    HomeControlHandler( osgEarthUtil::EarthManipulator* manip ) : _manip( manip ) { }
-    virtual void onClick( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-    {
-      _manip->home( ea, aa );
-    }
-  private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
-};
-
-struct RefreshControlHandler : public ControlEventHandler
-{
-    RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-    virtual void onClick( Control* control, int mouseButtonMask )
-    {
-      mGlobe->layersChanged();
-    }
-  private:
-    GlobePlugin* mGlobe;
-};
-
-struct SyncExtentControlHandler : public ControlEventHandler
-{
-    SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-    virtual void onClick( Control* control, int mouseButtonMask )
-    {
-      mGlobe->syncExtent();
-    }
-  private:
-    GlobePlugin* mGlobe;
-};
-
-bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-{
-  if( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
-  {
-    mGlobe->syncExtent();
-  }
-  return false;
-}
-
-bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-{
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::MOVE)
-        {
-            osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
-            osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view );
-            mGlobe->showCurrentCoordinates( coords.x(), coords.y() );
-        }
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH
-         && ea.getButtonMask() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
-    {
-        osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
-        osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view );
-
-        OE_NOTICE << "Lon: " << coords.x() << " Lat: " << coords.y()
-                << " Ele: " << coords.z() << std::endl;
-
-        mGlobe->setSelectedCoordinates( coords );
-
-        if (ea.getModKeyMask() == osgGA::GUIEventAdapter::MODKEY_CTRL)
-            {
-                mGlobe->showSelectedCoordinates();
-            }
-    }
-
-    return false;
 }
 
 void GlobePlugin::showCurrentCoordinates(double lon, double lat)
 {
       // show x y on status bar
-    OE_NOTICE << "lon: " << lon << " lat: " << lat <<std::endl;
+    //OE_NOTICE << "lon: " << lon << " lat: " << lat <<std::endl;
       QgsPoint coord = QgsPoint( lon, lat );
       emit xyCoordinates( coord );
 }
@@ -395,6 +358,8 @@ void GlobePlugin::setSelectedCoordinates( osg::Vec3d coords)
     mSelectedLon = coords.x();
     mSelectedLat = coords.y();
     mSelectedElevation = coords.z();
+    QgsPoint coord = QgsPoint( mSelectedLon, mSelectedLat );
+    emit newCoordinatesSelected( coord );
 }
 
 osg::Vec3d GlobePlugin::getSelectedCoordinates()
@@ -427,48 +392,6 @@ double GlobePlugin::getSelectedLat()
 double GlobePlugin::getSelectedElevation()
 {
     return mSelectedElevation;
-}
-
-osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view )
-{
-    osgUtil::LineSegmentIntersector::Intersections results;
-    if ( view->computeIntersections( x, y, results, 0x01 ) )
-    {
-        // find the first hit under the mouse:
-        osgUtil::LineSegmentIntersector::Intersection first = *(results.begin());
-        osg::Vec3d point = first.getWorldIntersectPoint();
-
-        // transform it to map coordinates:
-        double lat_rad, lon_rad, height;
-        _mapSRS->getEllipsoid()->convertXYZToLatLongHeight( point.x(), point.y(), point.z(), lat_rad, lon_rad, height );
-
-        // query the elevation at the map point:
-        double lon_deg = osg::RadiansToDegrees( lon_rad );
-        double lat_deg = osg::RadiansToDegrees( lat_rad );
-        double elevation = 0.0;
-
-        /*TODO IMPLEMENT ELEVATION
-        osg::Matrixd out_mat;
-        double query_resolution = 0.1; // 1/10th of a degree
-        double out_resolution = 0.0;
-
-        if ( _elevMan->getPlacementMatrix(
-            lon_deg, lat_deg, 0,
-            query_resolution, NULL,
-            out_mat, elevation, out_resolution ) )
-        {
-                OE_NOTICE << "Elevation at " << lat_deg << ", " << lon_deg
-                        << " is " << elevation << std::endl;
-        }
-        else
-        {
-            OE_NOTICE
-                << "getElevation FAILED! at (" << lat_deg << ", " << lon_deg << ")" << std::endl;
-        }
-*/
-        osg::Vec3d coords = osg::Vec3d(lon_deg, lat_deg, elevation);
-        return coords;
-    }
 }
 
 void GlobePlugin::syncExtent()
@@ -997,6 +920,91 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
       break;
   }
   return false;
+}
+
+bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+{
+  if( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
+  {
+    mGlobe->syncExtent();
+  }
+  return false;
+}
+
+bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+{
+    if ( ea.getEventType() == osgGA::GUIEventAdapter::MOVE)
+        {
+            osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
+            osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view, false );
+            mGlobe->showCurrentCoordinates( coords.x(), coords.y() );
+        }
+    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH
+         && ea.getButtonMask() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
+    {
+        osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
+        osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view, false );
+
+        OE_NOTICE << "SelectedCoordinates set to:\nLon: " << coords.x() << " Lat: " << coords.y()
+                << " Ele: " << coords.z() << std::endl;
+
+        mGlobe->setSelectedCoordinates( coords );
+
+        if (ea.getModKeyMask() == osgGA::GUIEventAdapter::MODKEY_CTRL)
+            //ctrl + rightclick pops up a QMessageBox
+            {
+                mGlobe->showSelectedCoordinates();
+            }
+    }
+
+    return false;
+}
+
+osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view,  bool getElevation)
+{
+    osgUtil::LineSegmentIntersector::Intersections results;
+    if ( view->computeIntersections( x, y, results, 0x01 ) )
+    {
+        // find the first hit under the mouse:
+        osgUtil::LineSegmentIntersector::Intersection first = *(results.begin());
+        osg::Vec3d point = first.getWorldIntersectPoint();
+
+        // transform it to map coordinates:
+        double lat_rad, lon_rad, height;
+        _mapSRS->getEllipsoid()->convertXYZToLatLongHeight( point.x(), point.y(), point.z(), lat_rad, lon_rad, height );
+
+        // query the elevation at the map point:
+        double lon_deg = osg::RadiansToDegrees( lon_rad );
+        double lat_deg = osg::RadiansToDegrees( lat_rad );
+        double elevation = -99999;
+
+        if(getElevation)
+        {
+                osg::Matrixd out_mat;
+                double query_resolution = 0.1; // 1/10th of a degree
+                double out_resolution = 0.0;
+
+                //TODO test elevation calculation
+                //@see https://github.com/gwaldron/osgearth/blob/master/src/applications/osgearth_elevation/osgearth_elevation.cpp
+                if (_elevMan->getPlacementMatrix(
+                        lon_deg, lat_deg, 0,
+                        query_resolution, _mapSRS,
+                        //query_resolution, NULL,
+                        out_mat, elevation, out_resolution ) )
+                    {
+                        OE_NOTICE << "Elevation at " << lon_deg << ", " << lat_deg
+                                << " is " << elevation << std::endl;
+                    }
+                else
+                    {
+                        OE_NOTICE << "getElevation FAILED! at (" << lon_deg << ", "
+                                << lat_deg << ")" << std::endl;
+                    }
+        }
+
+        osg::Vec3d coords = osg::Vec3d(lon_deg, lat_deg, elevation);
+        return coords;
+    }
 }
 
 /**

@@ -138,8 +138,9 @@ class GlobePlugin : public QObject, public QgisPlugin
 
 signals:
     //! emits current mouse position
-    //TODO connect to this signal at qgisapp.cpp:1952
     void xyCoordinates( const QgsPoint & p );
+    //! emits position of right click on globe
+    void newCoordinatesSelected( const QgsPoint & p );
 };
 
 class FlyToExtentHandler : public osgGA::GUIEventHandler
@@ -157,12 +158,13 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
 class QueryCoordinatesHandler : public osgGA::GUIEventHandler
 {
 public:
-    QueryCoordinatesHandler( GlobePlugin* globe, const osgEarth::SpatialReference* mapSRS )
-        :  mGlobe ( globe ), _mapSRS( mapSRS ), _mouseDown( false ) { }
+    QueryCoordinatesHandler( GlobePlugin* globe, osgEarthUtil::ElevationManager* elevMan,
+                             const osgEarth::SpatialReference* mapSRS )
+        :  mGlobe ( globe ), _elevMan(elevMan), _mapSRS( mapSRS ), _mouseDown( false ) { }
 
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
-    virtual osg::Vec3d getCoords( float x, float y, osgViewer::View* view );
+    virtual osg::Vec3d getCoords( float x, float y, osgViewer::View* view, bool getElevation = false);
 
 private:
     GlobePlugin* mGlobe;
