@@ -37,7 +37,7 @@ template <TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION <= 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -119,7 +119,7 @@ template <TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -279,7 +279,7 @@ template <TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -336,7 +336,7 @@ template <TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -413,7 +413,7 @@ template<TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -536,7 +536,7 @@ template<TYPE>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -643,7 +643,7 @@ template<TYPE1, TYPE2>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -857,7 +857,7 @@ template<double, TYPE2>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
@@ -981,7 +981,7 @@ template<double, TYPE2>
 #if (SIP_VERSION >= 0x040900)
 #define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
 #endif
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c00)
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
 #define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
