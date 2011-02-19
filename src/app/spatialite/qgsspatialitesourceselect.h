@@ -16,10 +16,9 @@
  ***************************************************************************/
 #ifndef QGSSPATIALITESOURCESELECT_H
 #define QGSSPATIALITESOURCESELECT_H
-#include "ui_qgsspatialitesourceselectbase.h"
-
+#include "ui_qgsdbsourceselectbase.h"
 #include "qgisgui.h"
-#include "qgsspatialitefilterproxymodel.h"
+#include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
 #include "qgscontexthelp.h"
 
@@ -51,7 +50,7 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSourceSelectBase
+class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -80,14 +79,17 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     void addClicked();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
+    void on_btnBuildQuery_clicked();
     //! Deletes the selected connection
     void on_btnDelete_clicked();
-    void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void setSql( const QModelIndex& index );
     void on_cmbConnections_activated( int );
     void setLayerType( QString table, QString column, QString type );
+    void on_mTablesTreeView_clicked( const QModelIndex &index );
+    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString & regexp );
 
@@ -146,8 +148,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     QgisApp *qgisApp;
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
-    QgsSpatiaLiteFilterProxyModel mProxyModel;
+    QgsDbFilterProxyModel mProxyModel;
 
+    QString layerURI( const QModelIndex &index );
     QPushButton *mAddButton;
 };
 

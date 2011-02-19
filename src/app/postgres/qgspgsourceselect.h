@@ -17,7 +17,7 @@
 /* $Id$ */
 #ifndef QGSPGSOURCESELECT_H
 #define QGSPGSOURCESELECT_H
-#include "ui_qgspgsourceselectbase.h"
+#include "ui_qgsdbsourceselectbase.h"
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdbtablemodel.h"
@@ -99,7 +99,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
  * for PostGIS enabled PostgreSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
+class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 

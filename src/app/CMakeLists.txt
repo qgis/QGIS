@@ -301,17 +301,16 @@ ENDIF (POSTGRES_FOUND)
 
 IF (HAVE_SPATIALITE)
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    qgsspatialitesourceselect.cpp
-    qgsnewspatialitelayerdialog.cpp
-    qgsspatialitesridsdialog.cpp
-    qgsspatialitefilterproxymodel.cpp
-    qgsspatialitetablemodel.cpp
+    spatialite/qgsspatialitesourceselect.cpp
+    spatialite/qgsnewspatialitelayerdialog.cpp
+    spatialite/qgsspatialitesridsdialog.cpp
+    spatialite/qgsspatialitetablemodel.cpp
     )
   SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    qgsspatialitesourceselect.h
-    qgsnewspatialitelayerdialog.h
-    qgsspatialitesridsdialog.h
-    qgsspatialitetablemodel.h
+    spatialite/qgsspatialitesourceselect.h
+    spatialite/qgsnewspatialitelayerdialog.h
+    spatialite/qgsspatialitesridsdialog.h
+    spatialite/qgsspatialitetablemodel.h
     )
 ENDIF (HAVE_SPATIALITE)
 

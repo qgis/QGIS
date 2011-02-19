@@ -25,6 +25,7 @@ QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTable
   headerLabels << tr( "Table" );
   headerLabels << tr( "Type" );
   headerLabels << tr( "Geometry column" );
+  headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
 }
 
@@ -33,7 +34,7 @@ QgsSpatiaLiteTableModel::~QgsSpatiaLiteTableModel()
 
 }
 
-void QgsSpatiaLiteTableModel::addTableEntry( QString type, QString tableName, QString geometryColName )
+void QgsSpatiaLiteTableModel::addTableEntry( QString type, QString tableName, QString geometryColName, QString sql )
 {
   //is there already a root item ?
   QStandardItem *dbItem;
@@ -64,14 +65,40 @@ void QgsSpatiaLiteTableModel::addTableEntry( QString type, QString tableName, QS
   tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   QStandardItem *geomItem = new QStandardItem( geometryColName );
   geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem* sqlItem = new QStandardItem( sql );
+  sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
 
   childItemList.push_back( tableItem );
   childItemList.push_back( typeItem );
   childItemList.push_back( geomItem );
+  childItemList.push_back( sqlItem );
 
   dbItem->appendRow( childItemList );
   ++mTableCount;
+}
+
+void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &sql )
+{
+  if ( !index.isValid() || !index.parent().isValid() )
+  {
+    return;
+  }
+
+  //find out table name
+  QModelIndex tableSibling = index.sibling( index.row(), 0 );
+  QModelIndex geomSibling = index.sibling( index.row(), 2 );
+
+  if ( !tableSibling.isValid() || !geomSibling.isValid() )
+  {
+    return;
+  }
+
+  QModelIndex sqlIndex = index.sibling( index.row(), 3 );
+  if ( sqlIndex.isValid() )
+  {
+    itemFromIndex( sqlIndex )->setText( sql );
+  }
 }
 
 void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type )
@@ -133,7 +160,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, c
       for ( int j = 1; j < typeList.size(); ++j )
       {
         //todo: add correct type
-        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ) );
+        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), "" );
       }
     }
   }

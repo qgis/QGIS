@@ -22,6 +22,9 @@ email                : a.furieri@lqt.it
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
+#include "qgsquerybuilder.h"
+#include "qgsdatasourceuri.h"
+#include "qgsvectorlayer.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -40,6 +43,9 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
     QDialog( app, fl ), qgisApp( app )
 {
   setupUi( this );
+  setWindowTitle( tr( "Add SpatiaLite Table(s)" ) );
+  connectionsGroupBox->setTitle( tr( "Databases" ) );
+  btnEdit->hide();  // hide the edit button
 
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
@@ -55,6 +61,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   mSearchColumnComboBox->addItem( tr( "Table" ) );
   mSearchColumnComboBox->addItem( tr( "Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
+  mSearchColumnComboBox->addItem( tr( "Sql" ) );
 
   mProxyModel.setParent( this );
   mProxyModel.setFilterKeyColumn( -1 );
@@ -64,11 +71,19 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
 
-  mSearchGroupBox->hide();
-
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 1 );
+
+  //hide the search options by default
+  //they will be shown when the user ticks
+  //the search options group box
+  mSearchLabel->setVisible( false );
+  mSearchColumnComboBox->setVisible( false );
+  mSearchColumnsLabel->setVisible( false );
+  mSearchModeComboBox->setVisible( false );
+  mSearchModeLabel->setVisible( false );
+  mSearchTableEdit->setVisible( false );
 }
 
 // Slot for performing action when the Add button is clicked
@@ -85,16 +100,19 @@ void QgsSpatiaLiteSourceSelect::on_cmbConnections_activated( int )
   dbChanged();
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchOptionsButton_clicked()
+void QgsSpatiaLiteSourceSelect::on_btnBuildQuery_clicked()
 {
-  if ( mSearchGroupBox->isVisible() )
-  {
-    mSearchGroupBox->hide();
-  }
-  else
-  {
-    mSearchGroupBox->show();
-  }
+  setSql( mTablesTreeView->currentIndex() );
+}
+
+void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+{
+  btnBuildQuery->setEnabled( index.parent().isValid() );
+}
+
+void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+{
+  setSql( index );
 }
 
 void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
@@ -126,6 +144,10 @@ void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( co
   else if ( text == tr( "Geometry column" ) )
   {
     mProxyModel.setFilterKeyColumn( 2 );
+  }
+  else if ( text == tr( "Sql" ) )
+  {
+    mProxyModel.setFilterKeyColumn( 3 );
   }
 }
 
@@ -327,6 +349,48 @@ void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
   populateConnectionList();
 }
 
+QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
+{
+  QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), 0 ) )->text();
+  QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), 2 ) )->text();
+  QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), 3 ) )->text();
+
+  if ( geomColumnName.contains( " AS " ) )
+  {
+    int a = geomColumnName.indexOf( " AS " );
+    QString typeName = geomColumnName.mid( a + 4 ); //only the type name
+    geomColumnName = geomColumnName.left( a ); //only the geom column name
+    QString geomFilter;
+
+    if ( typeName == "POINT" )
+    {
+      geomFilter = QString( "geometrytype(\"%1\") IN ('POINT','MULTIPOINT')" ).arg( geomColumnName );
+    }
+    else if ( typeName == "LINESTRING" )
+    {
+      geomFilter = QString( "geometrytype(\"%1\") IN ('LINESTRING','MULTILINESTRING')" ).arg( geomColumnName );
+    }
+    else if ( typeName == "POLYGON" )
+    {
+      geomFilter = QString( "geometrytype(\"%1\") IN ('POLYGON','MULTIPOLYGON')" ).arg( geomColumnName );
+    }
+
+    if ( !geomFilter.isEmpty() && !sql.contains( geomFilter ) )
+    {
+      if ( !sql.isEmpty() )
+      {
+        sql += " AND ";
+      }
+
+      sql += geomFilter;
+    }
+  }
+
+  QgsDataSourceURI uri( connectionInfo() );
+  uri.setDataSource( "", tableName, geomColumnName, sql, "" );
+  return uri.uri();
+}
+
 // Slot for deleting an existing connection
 void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
 {
@@ -353,7 +417,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
 {
   m_selectedTables.clear();
 
-  typedef QMap < int, QVector < QString > >schemaInfo;
+  typedef QMap < int, bool >schemaInfo;
   QMap < QString, schemaInfo > dbInfo;
 
   QItemSelection selection = mTablesTreeView->selectionModel()->selection();
@@ -377,32 +441,10 @@ void QgsSpatiaLiteSourceSelect::addTables()
     QString currentSchemaName = currentItem->parent()->text();
 
     int currentRow = currentItem->row();
-    int currentColumn = currentItem->column();
-
-    if ( dbInfo[currentSchemaName][currentRow].size() == 0 )
+    if ( !dbInfo[currentSchemaName].contains( currentRow ) )
     {
-      dbInfo[currentSchemaName][currentRow].resize( 5 );
-    }
-
-    dbInfo[currentSchemaName][currentRow][currentColumn] = currentItem->text();
-  }
-
-  //now traverse all the schemas and table infos
-  QString tableName, geomColumnName;
-  QString query;
-
-  QMap < QString, schemaInfo >::const_iterator schema_it = dbInfo.constBegin();
-  for ( ; schema_it != dbInfo.constEnd(); ++schema_it )
-  {
-    schemaInfo scheme = schema_it.value();
-    schemaInfo::const_iterator entry_it = scheme.constBegin();
-    for ( ; entry_it != scheme.constEnd(); ++entry_it )
-    {
-      tableName = entry_it->at( 0 );
-      geomColumnName = entry_it->at( 2 );
-
-      query = "\"" + tableName + "\" (" + geomColumnName;
-      m_selectedTables.push_back( query );
+      dbInfo[currentSchemaName][currentRow] = true;
+      m_selectedTables << layerURI( mProxyModel.mapToSource( *selected_it ) );
     }
   }
 
@@ -475,7 +517,31 @@ QStringList QgsSpatiaLiteSourceSelect::selectedTables()
 
 QString QgsSpatiaLiteSourceSelect::connectionInfo()
 {
-  return mSqlitePath;
+  return QString( "dbname='%1'" ).arg( QString( mSqlitePath ).replace( "'", "\\'" ) );
+}
+
+void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
+{
+  QModelIndex idx = mProxyModel.mapToSource( index );
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
+
+  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, "spatialite" );
+
+  if ( !vlayer->isValid() )
+  {
+    delete vlayer;
+    return;
+  }
+
+  // create a query builder object
+  QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
+  if ( gb->exec() )
+  {
+    mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
+  }
+
+  delete gb;
+  delete vlayer;
 }
 
 bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
@@ -515,7 +581,7 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
       if ( isDeclaredHidden( handle, tableName, column ) )
         continue;
 
-      mTableModel.addTableEntry( type, tableName, column );
+      mTableModel.addTableEntry( type, tableName, column, "" );
     }
     ok = true;
   }
@@ -542,7 +608,7 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
         if ( isDeclaredHidden( handle, tableName, column ) )
           continue;
 
-        mTableModel.addTableEntry( type, tableName, column );
+        mTableModel.addTableEntry( type, tableName, column, "" );
       }
       ok = true;
     }
@@ -569,7 +635,7 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
         if ( isDeclaredHidden( handle, tableName, column ) )
           continue;
 
-        mTableModel.addTableEntry( type, tableName, column );
+        mTableModel.addTableEntry( type, tableName, column, "" );
       }
       ok = true;
     }
