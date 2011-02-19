@@ -119,7 +119,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas pixmap
-    QPixmap& canvasPixmap();
+    //! @deprecated use canvasPaintDevice()
+    QGISDEPRECATED QPixmap& canvasPixmap();
+
+    //! Accessor for the canvas paint device
+    QPaintDevice &canvasPaintDevice();
 
     //! Get the last reported scale of the canvas
     double scale();

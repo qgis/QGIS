@@ -42,7 +42,8 @@ class QgsMapCanvasMap : QGraphicsRectItem
     
     void setPanningOffset(const QPoint& point);
     
-    QPixmap& pixmap();
+    //! @deprecated Please use paintDevice() function which is also save in case QImage is used
+    QPixmap& pixmap() /Deprecated/;
     
     void paint(QPainter* p, const QStyleOptionGraphicsItem*, QWidget*);
 
