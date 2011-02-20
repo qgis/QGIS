@@ -886,8 +886,12 @@ public:
   //! remove symbol from style (and delete it)
   bool removeSymbol(QString name);
 
+  //! change symbol's name
+  //! @note added in v1.7
+  bool renameSymbol( QString oldName, QString newName );
+
   //! return a NEW copy of symbol
-  QgsSymbolV2* symbol(QString name);
+  QgsSymbolV2* symbol(QString name) /Factory/;
 
   //! return a const pointer to a symbol (doesn't create new instance)
   const QgsSymbolV2* symbolRef(QString name) const;
@@ -905,8 +909,12 @@ public:
   //! remove color ramp from style (and delete it)
   bool removeColorRamp(QString name);
 
+  //! change ramp's name
+  //! @note added in v1.7
+  bool renameColorRamp( QString oldName, QString newName );
+
   //! return a NEW copy of color ramp
-  QgsVectorColorRampV2* colorRamp(QString name);
+  QgsVectorColorRampV2* colorRamp(QString name) /Factory/;
 
   //! return a const pointer to a symbol (doesn't create new instance)
   const QgsVectorColorRampV2* colorRampRef(QString name) const;

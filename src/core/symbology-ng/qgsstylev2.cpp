@@ -261,3 +261,21 @@ bool QgsStyleV2::save( QString filename )
   mFileName = filename;
   return true;
 }
+
+bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
+{
+  if ( !mSymbols.contains( oldName ) )
+    return NULL;
+
+  mSymbols.insert( newName, mSymbols.take( oldName ) );
+  return true;
+}
+
+bool QgsStyleV2::renameColorRamp( QString oldName, QString newName )
+{
+  if ( !mColorRamps.contains( oldName ) )
+    return NULL;
+
+  mColorRamps.insert( newName, mColorRamps.take( oldName ) );
+  return true;
+}
