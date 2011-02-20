@@ -1105,7 +1105,7 @@ void QgsGrassProvider::updateMap( int mapId )
   map->valid = false;
   map->version++;
 
-  QgsGrass::setLocation( map->gisdbase.toUtf8().constData(), map->location.toUtf8().constData() );
+  QgsGrass::setLocation( map->gisdbase, map->location );
 
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for close ?
@@ -1483,7 +1483,7 @@ bool QgsGrassProvider::startEdit( void )
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
   map->valid = false;
 
-  QgsGrass::setLocation( map->gisdbase.toUtf8().constData(), map->location.toUtf8().constData() );
+  QgsGrass::setLocation( map->gisdbase, map->location );
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
@@ -1559,7 +1559,7 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   map->valid = false;
   map->version++;
 
-  QgsGrass::setLocation( map->gisdbase.toUtf8().constData(), map->location.toUtf8().constData() );
+  QgsGrass::setLocation( map->gisdbase, map->location );
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
