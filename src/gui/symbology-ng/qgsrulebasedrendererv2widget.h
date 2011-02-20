@@ -47,8 +47,13 @@ class GUI_EXPORT QgsRendererRulesTreeWidget : public QTreeWidget
 
     QString formatScaleRange( int minDenom, int maxDenom );
 
+    QString formatScale( int denom, int size = 0 );
+
     QgsRuleBasedRendererV2* mR;
     Grouping mGrouping;
+
+    int mLongestMinDenom;
+    int mLongestMaxDenom;
 };
 
 ///////

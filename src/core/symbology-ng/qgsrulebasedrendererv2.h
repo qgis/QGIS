@@ -44,7 +44,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     {
       public:
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString() );
+        Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(), QString label = QString(), QString description = QString() );
         Rule( const Rule& other );
         ~Rule();
         QString dump() const;
@@ -57,10 +57,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         int scaleMinDenom() const { return mScaleMinDenom; }
         int scaleMaxDenom() const { return mScaleMaxDenom; }
         QString filterExpression() const { return mFilterExp; }
+        QString label() const { return mLabel; }
+        QString description() const { return mDescription; }
 
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
         void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setLabel( QString label ) { mLabel = label; }
+        void setDescription( QString description ) { mDescription = description; }
 
         Rule& operator=( const Rule& other );
 
@@ -70,7 +74,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         QgsSymbolV2* mSymbol;
         int mScaleMinDenom, mScaleMaxDenom;
-        QString mFilterExp;
+        QString mFilterExp, mLabel, mDescription;
 
         // temporary
         QgsSearchString mFilterParsed;
@@ -81,7 +85,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     static QgsFeatureRendererV2* create( QDomElement& element );
 
-    //! Constructor. Takes ownership of the defult symbol.
+    //! Constructor. Takes ownership of the default symbol.
     QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol );
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature

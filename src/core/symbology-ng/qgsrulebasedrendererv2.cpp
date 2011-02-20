@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrulebasedrendererv2.h"
-
+#include "qgssymbollayerv2.h"
 #include "qgssearchtreenode.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsrendercontext.h"
@@ -28,10 +28,10 @@
 
 
 
-QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp )
+QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description )
     : mSymbol( symbol ),
     mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom ),
-    mFilterExp( filterExp )
+    mFilterExp( filterExp ), mLabel( label ), mDescription( description )
 {
   initFilter();
 }
@@ -62,8 +62,8 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
 
 QString QgsRuleBasedRendererV2::Rule::dump() const
 {
-  return QString( "RULE - scale [%1,%2] - filter %3 - symbol %4" )
-         .arg( mScaleMinDenom ).arg( mScaleMaxDenom )
+  return QString( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5" )
+         .arg( mLabel ).arg( mScaleMinDenom ).arg( mScaleMaxDenom )
          .arg( mFilterExp ).arg( mSymbol->dump() );
 
 }
@@ -107,6 +107,8 @@ QgsRuleBasedRendererV2::Rule& QgsRuleBasedRendererV2::Rule::operator=( const Qgs
     mScaleMinDenom = other.mScaleMinDenom;
     mScaleMaxDenom = other.mScaleMaxDenom;
     mFilterExp = other.mFilterExp;
+    mLabel = other.mLabel;
+    mDescription = other.mDescription;
     initFilter();
   }
   return *this;
@@ -233,6 +235,8 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
     ruleElem.setAttribute( "filter", rule.filterExpression() );
     ruleElem.setAttribute( "scalemindenom", rule.scaleMinDenom() );
     ruleElem.setAttribute( "scalemaxdenom", rule.scaleMaxDenom() );
+    ruleElem.setAttribute( "label", rule.label() );
+    ruleElem.setAttribute( "description", rule.description() );
     rulesElem.appendChild( ruleElem );
   }
   rendererElem.appendChild( rulesElem );
@@ -250,7 +254,7 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   for ( QList<Rule>::iterator it = mRules.begin(); it != mRules.end(); ++it )
   {
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( it->symbol(), iconSize );
-    lst << qMakePair( it->filterExpression(), pix );
+    lst << qMakePair( it->label(), pix );
   }
   return lst;
 }
@@ -260,7 +264,7 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems()
   QgsLegendSymbolList lst;
   for ( QList<Rule>::iterator it = mRules.begin(); it != mRules.end(); ++it )
   {
-    lst << qMakePair( it->filterExpression(), it->symbol() );
+    lst << qMakePair( it->label(), it->symbol() );
   }
   return lst;
 }
@@ -292,9 +296,11 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
     if ( symbolMap.contains( symbolIdx ) )
     {
       QString filterExp = ruleElem.attribute( "filter" );
+      QString label = ruleElem.attribute( "label" );
+      QString description = ruleElem.attribute( "description" );
       int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
       int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
-      r->mRules.append( Rule( symbolMap.take( symbolIdx ), scaleMinDenom, scaleMaxDenom, filterExp ) );
+      r->mRules.append( Rule( symbolMap.take( symbolIdx ), scaleMinDenom, scaleMaxDenom, filterExp, label, description ) );
     }
     else
     {
@@ -350,11 +356,13 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleCategories
   {
     QString newfilter = QString( "%1 = '%2'" ).arg( r->classAttribute() ).arg( cat.value().toString() );
     QString filter = initialRule.filterExpression();
+    QString label = initialRule.label();
+    QString description = initialRule.description();
     if ( filter.isEmpty() )
       filter = newfilter;
     else
       filter = QString( "(%1) AND (%2)" ).arg( filter ).arg( newfilter );
-    rules.append( Rule( cat.symbol()->clone(), initialRule.scaleMinDenom(), initialRule.scaleMaxDenom(), filter ) );
+    rules.append( Rule( cat.symbol()->clone(), initialRule.scaleMinDenom(), initialRule.scaleMaxDenom(), filter, initialRule.label(), initialRule.description() ) );
   }
   return rules;
 }
@@ -366,11 +374,13 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleRanges( Qg
   {
     QString newfilter = QString( "%1 >= '%2' AND %1 <= '%3'" ).arg( r->classAttribute() ).arg( rng.lowerValue() ).arg( rng.upperValue() );
     QString filter = initialRule.filterExpression();
+    QString label = initialRule.label();
+    QString description = initialRule.description();
     if ( filter.isEmpty() )
       filter = newfilter;
     else
       filter = QString( "(%1) AND (%2)" ).arg( filter ).arg( newfilter );
-    rules.append( Rule( rng.symbol()->clone(), initialRule.scaleMinDenom(), initialRule.scaleMaxDenom(), filter ) );
+    rules.append( Rule( rng.symbol()->clone(), initialRule.scaleMinDenom(), initialRule.scaleMaxDenom(), filter, initialRule.label(), initialRule.description() ) );
   }
   return rules;
 }
@@ -387,10 +397,10 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleScales( Qg
       continue; // jump over the first scales out of the interval
     if ( maxDenom != 0 && maxDenom  <= scale )
       break; // ignore the latter scales out of the interval
-    rules.append( Rule( initialRule.symbol()->clone(), oldScale, scale, initialRule.filterExpression() ) );
+    rules.append( Rule( initialRule.symbol()->clone(), oldScale, scale, initialRule.filterExpression(), initialRule.label(), initialRule.description() ) );
     oldScale = scale;
   }
   // last rule
-  rules.append( Rule( initialRule.symbol()->clone(), oldScale, maxDenom, initialRule.filterExpression() ) );
+  rules.append( Rule( initialRule.symbol()->clone(), oldScale, maxDenom, initialRule.filterExpression(), initialRule.label(), initialRule.description() ) );
   return rules;
 }
