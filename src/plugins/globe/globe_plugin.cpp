@@ -80,6 +80,10 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     mObjectPlacer( NULL )
 {
   mIsGlobeRunning = false;
+  //needed to be "seen" by other plugins by doing
+  //iface.mainWindow().findChild( QObject, "globePlugin" )
+  this->setObjectName("globePlugin");
+  this->setParent(theQgisInterface->mainWindow());
 }
 
 //destructor
@@ -198,10 +202,7 @@ void GlobePlugin::initGui()
   connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
-           mQGisIface->mainWindow(), SLOT( showMouseCoordinate( const QgsPoint & ) ) );
-//  connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
-//           this, SLOT( showSelectedCoordinates() ) );
-
+           mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
 }
 
 void GlobePlugin::run()
