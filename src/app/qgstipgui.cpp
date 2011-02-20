@@ -17,6 +17,8 @@
 /* $Id$ */
 
 #include <QSettings>
+#include <QPushButton>
+
 #include "qgstipgui.h"
 #include "qgsapplication.h"
 #include <qgstip.h>
@@ -46,16 +48,51 @@ void QgsTipGui::init()
   qgisIcon->setPixmap( icon );
   QgsTipFactory myFactory;
   QgsTip myTip = myFactory.getTip();
-  lblTitle->setText(myTip.title());
-  txtTip->setHtml(myTip.content());
+  mTipPosition = myFactory.position( myTip );
+  lblTitle->setText( myTip.title() );
+  txtTip->setHtml( myTip.content() );
 
+  QPushButton *pb;
+  pb = new QPushButton( tr( "&Previous" ) );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( prevClicked() ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+
+  pb = new QPushButton( tr( "&Next" ) );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( nextClicked() ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
 }
 
-void QgsTipGui::on_cbxDisableTips_toggled(bool theFlag)
+void QgsTipGui::on_cbxDisableTips_toggled( bool theFlag )
 {
   QSettings settings;
-  //note the ! below as when the cbx is checked (true) we want to 
+  //note the ! below as when the cbx is checked (true) we want to
   //change the setting to false
   settings.setValue( "/qgis/showTips", !theFlag );
   hide();
+}
+
+void QgsTipGui::nextClicked()
+{
+  mTipPosition += 1;
+  QgsTipFactory myFactory;
+  if ( mTipPosition >= myFactory.count() )
+  {
+    mTipPosition = 0;
+  }
+  QgsTip myTip = myFactory.getTip( mTipPosition );
+  lblTitle->setText( myTip.title() );
+  txtTip->setHtml( myTip.content() );
+}
+
+void QgsTipGui::prevClicked()
+{
+  mTipPosition -= 1;
+  QgsTipFactory myFactory;
+  if ( mTipPosition < 0 )
+  {
+    mTipPosition = myFactory.count() - 1;
+  }
+  QgsTip myTip = myFactory.getTip( mTipPosition );
+  lblTitle->setText( myTip.title() );
+  txtTip->setHtml( myTip.content() );
 }

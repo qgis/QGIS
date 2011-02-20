@@ -30,8 +30,12 @@ class QgsTipGui : public QDialog, private Ui::QgsTipGuiBase
   private:
     void init();
 
+    int mTipPosition;
+
   private slots:
-    void on_cbxDisableTips_toggled(bool theFlag);
+    void on_cbxDisableTips_toggled( bool theFlag );
+    void prevClicked();
+    void nextClicked();
 };
 
 #endif

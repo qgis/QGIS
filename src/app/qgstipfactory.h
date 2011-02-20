@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Tim Sutton   *
- *   tim@linfiniti.com   *
+ *   Copyright (C) 2007 by Tim Sutton                                      *
+ *   tim@linfiniti.com                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,9 +32,9 @@
 * @see also QgsTipOfTheDay, QgsTip
 */
 
-class QgsTipFactory : public QObject 
+class QgsTipFactory : public QObject
 {
-  Q_OBJECT; //used for tr() so we dont need to do QObject::tr()
+    Q_OBJECT //used for tr() so we dont need to do QObject::tr()
   public:
     /** Constructor */
     QgsTipFactory();
@@ -45,13 +45,13 @@ class QgsTipFactory : public QObject
      */
     QgsTip getTip();
     /** Get a specific tip (generic or gui-centric).
-     * @param thePosition The tip returned will be based on the 
+     * @param thePosition The tip returned will be based on the
      *        number passed in as thePosition. If the
-     *        position is invalid, an empty string will be 
+     *        position is invalid, an empty string will be
      *        returned.
      * @return An QgsTip containing the tip
      */
-    QgsTip getTip(int thePosition);
+    QgsTip getTip( int thePosition );
     /** Get a random generic tip
      * @return An QgsTip containing the tip
      */
@@ -61,10 +61,13 @@ class QgsTipFactory : public QObject
      */
     QgsTip getGuiTip();
 
+    int position( QgsTip );
+    int count();
+
   private:
-    void addGenericTip(QgsTip);
-    void addGuiTip(QgsTip);
-    int randomNumber(int theMax);
+    void addGenericTip( QgsTip );
+    void addGuiTip( QgsTip );
+    int randomNumber( int theMax );
     //@TODO move tipts into a sqlite db
     QList <QgsTip> mGenericTips;
     QList <QgsTip> mGuiTips;
