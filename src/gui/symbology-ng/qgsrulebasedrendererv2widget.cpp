@@ -57,7 +57,6 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   setupUi( this );
 
   treeRules->setRenderer( mRenderer );
-
   mRefineMenu = new QMenu( btnRefineRule );
   mRefineMenu->addAction( tr( "Add scales" ), this, SLOT( refineRuleScales() ) );
   mRefineMenu->addAction( tr( "Add categories" ), this, SLOT( refineRuleCategories() ) );
@@ -303,6 +302,8 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( const QgsRuleBasedRender
   setupUi( this );
 
   editFilter->setText( mRule.filterExpression() );
+  editLabel->setText( mRule.label() );
+  editDescription->setText( mRule.description() );
 
   if ( mRule.dependsOnScale() )
   {
@@ -368,6 +369,8 @@ void QgsRendererRulePropsDialog::testFilter()
 void QgsRendererRulePropsDialog::updateRuleFromGui()
 {
   mRule.setFilterExpression( editFilter->text() );
+  mRule.setLabel( editLabel->text() );
+  mRule.setDescription( editDescription->text() );
   mRule.setScaleMinDenom( groupScale->isChecked() ? spinMinScale->value() : 0 );
   mRule.setScaleMaxDenom( groupScale->isChecked() ? spinMaxScale->value() : 0 );
 }
@@ -377,6 +380,9 @@ void QgsRendererRulePropsDialog::updateRuleFromGui()
 QgsRendererRulesTreeWidget::QgsRendererRulesTreeWidget( QWidget* parent )
     : QTreeWidget( parent ), mR( NULL ), mGrouping( NoGrouping )
 {
+  mLongestMinDenom = 0;
+  mLongestMaxDenom = 0;
+
   setSelectionMode( QAbstractItemView::SingleSelection );
   /*
     setDragEnabled(true);
@@ -401,46 +407,89 @@ void QgsRendererRulesTreeWidget::setGrouping( Grouping g )
 QString QgsRendererRulesTreeWidget::formatScaleRange( int minDenom, int maxDenom )
 {
   if ( maxDenom != 0 )
-    return QString( "<1:%1, 1:%2>" ).arg( minDenom ).arg( maxDenom );
+    return QString( "<1:%L1, 1:%L2>" ).arg( minDenom ).arg( maxDenom );
   else
-    return QString( "<1:%1, 1:inf>" ).arg( minDenom );
+    return QString( "<1:%L1, 1:inf>" ).arg( minDenom );
+
 }
 
+QString QgsRendererRulesTreeWidget::formatScale( int denom, int size )
+{
+  if ( denom != 0 )
+  {
+    QString txt = QString( "1:%L1" ).arg( denom );
+    if ( size > 0 )
+      txt.prepend( QString( size - txt.count(), QChar( ' ' ) ) );
+    return txt;
+  }
+  else
+    return QString();
+}
 
+#include "qgslogger.h"
 void QgsRendererRulesTreeWidget::populateRules()
 {
   if ( !mR ) return;
 
   clear();
+
+  mLongestMinDenom = 0;
+  mLongestMaxDenom = 0;
+  // find longest scale string for future padding
+  // TODO: use a custom model and implement custom sorting
+  for ( int i = 0; i < mR->ruleCount(); ++i )
+  {
+    QgsRuleBasedRendererV2::Rule& rule = mR->ruleAt( i );
+
+    mLongestMinDenom = qMax( mLongestMinDenom, formatScale( rule.scaleMinDenom() ).size() );
+    mLongestMaxDenom = qMax( mLongestMaxDenom, formatScale( rule.scaleMaxDenom() ).size() );
+  }
+
+
+
   if ( mGrouping == NoGrouping )
     populateRulesNoGrouping();
   else if ( mGrouping == GroupingByScale )
     populateRulesGroupByScale();
   else
     populateRulesGroupByFilter();
+
+  setColumnWidth( 1, 200 ); // make the column for filter a bit bigger
 }
 
 void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
 {
   QList<QTreeWidgetItem *> lst;
+
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
     QgsRuleBasedRendererV2::Rule& rule = mR->ruleAt( i );
 
     QTreeWidgetItem* item = new QTreeWidgetItem;
-    QString txt = rule.filterExpression();
-    if ( txt.isEmpty() ) txt = tr( "(no filter)" );
-    if ( rule.dependsOnScale() )
-    {
-      txt += tr( ", scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
-    }
 
-    item->setText( 0, txt );
+    QString txtLabel = rule.label();
+    item->setText( 0, txtLabel );
     item->setData( 0, Qt::UserRole + 1, i );
     item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
 
+    QString txtRule = rule.filterExpression();
+    if ( txtRule.isEmpty() ) txtRule = tr( "(no filter)" );
+    item->setText( 1, txtRule );
+
+    if ( rule.dependsOnScale() )
+    {
+      item->setText( 2, formatScale( rule.scaleMinDenom(), mLongestMinDenom ) );
+      item->setText( 3, formatScale( rule.scaleMaxDenom(), mLongestMaxDenom ) );
+      item->setTextAlignment( 2, Qt::AlignRight );
+      item->setTextAlignment( 3, Qt::AlignRight );
+    }
+
+    //item->setBackground( 1, Qt::lightGray );
+    //item->setBackground( 3, Qt::lightGray );
+
     lst << item;
   }
+
 
   addTopLevelItems( lst );
 }
@@ -448,6 +497,9 @@ void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
 void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
 {
   QMap< QPair<int, int>, QTreeWidgetItem*> scale_items;
+
+  QFont italicFont;
+  italicFont.setItalic( true );
 
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
@@ -466,15 +518,38 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
       scale_item->setText( 0, txt );
       scale_item->setData( 0, Qt::UserRole + 1, -2 );
       scale_item->setFlags( scale_item->flags() & ~Qt::ItemIsDragEnabled ); // groups cannot be dragged
+      scale_item->setFont( 0, italicFont );
       scale_items[scale] = scale_item;
+      // need to add the item before setFirstColumnSpanned,
+      // see http://qt.nokia.com/developer/task-tracker/index_html?method=entry&id=214686
+      addTopLevelItem( scale_item );
+      scale_item->setFirstColumnSpanned( true );
     }
 
     QString filter = rule.filterExpression();
 
     QTreeWidgetItem* item = new QTreeWidgetItem( scale_items[scale] );
-    item->setText( 0, filter.isEmpty() ? tr( "(no filter)" ) : filter );
+
+    QString txtLabel = rule.label();
+    item->setText( 0, txtLabel );
     item->setData( 0, Qt::UserRole + 1, i );
     item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
+
+    QString txtRule = rule.filterExpression();
+    if ( txtRule.isEmpty() ) txtRule = tr( "(no filter)" );
+    item->setText( 1, txtRule );
+
+    if ( rule.dependsOnScale() )
+    {
+      // Displaying scales is redundant here, but keeping them allows to keep constant the layout and width of all columns when switching to one of the two other views
+      item->setText( 2, formatScale( rule.scaleMinDenom(), mLongestMinDenom ) );
+      item->setText( 3, formatScale( rule.scaleMaxDenom(), mLongestMaxDenom ) );
+      item->setTextAlignment( 2, Qt::AlignRight );
+      item->setTextAlignment( 3, Qt::AlignRight );
+    }
+
+    //item->setBackground( 1, Qt::lightGray );
+    //item->setBackground( 3, Qt::lightGray );
   }
   addTopLevelItems( scale_items.values() );
 }
@@ -482,6 +557,9 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
 void QgsRendererRulesTreeWidget::populateRulesGroupByFilter()
 {
   QMap<QString, QTreeWidgetItem *> filter_items;
+
+  QFont italicFont;
+  italicFont.setItalic( true );
 
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
@@ -494,20 +572,38 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByFilter()
       filter_item->setText( 0, filter.isEmpty() ? tr( "(no filter)" ) : filter );
       filter_item->setData( 0, Qt::UserRole + 1, -1 );
       filter_item->setFlags( filter_item->flags() & ~Qt::ItemIsDragEnabled ); // groups cannot be dragged
+      filter_item->setFont( 0, italicFont );
       filter_items[filter] = filter_item;
+      // need to add the item before setFirstColumnSpanned,
+      // see http://qt.nokia.com/developer/task-tracker/index_html?method=entry&id=214686
+      addTopLevelItem( filter_item );
+      filter_item->setFirstColumnSpanned( true );
     }
 
-    QString txt;
-    if ( rule.dependsOnScale() )
-      txt = QString( "scale <1:%1, 1:%2>" ).arg( rule.scaleMinDenom() ).arg( rule.scaleMaxDenom() );
-    else
-      txt = "any scale";
-
     QTreeWidgetItem* item = new QTreeWidgetItem( filter_items[filter] );
-    item->setText( 0, txt );
+
+    QString txtLabel = rule.label();
+    item->setText( 0, txtLabel );
     item->setData( 0, Qt::UserRole + 1, i );
     item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
 
+    // Displaying filter is redundant here, but keeping it allows to keep constant the layout and width of all columns when switching to one of the two other views
+    item->setText( 1, filter );
+
+    // Makes table layout slightly more readable when filters are long strings
+    //item->setBackground( 1, Qt::lightGray );
+    //item->setBackground( 3, Qt::lightGray );
+
+    if ( rule.dependsOnScale() )
+    {
+      item->setText( 2, formatScale( rule.scaleMinDenom(), mLongestMinDenom ) );
+      item->setText( 3, formatScale( rule.scaleMaxDenom(), mLongestMaxDenom ) );
+      item->setTextAlignment( 2, Qt::AlignRight );
+      item->setTextAlignment( 3, Qt::AlignRight );
+    }
   }
+
   addTopLevelItems( filter_items.values() );
+
+
 }
