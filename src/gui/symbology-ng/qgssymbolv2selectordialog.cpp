@@ -41,7 +41,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
   connect( viewSymbols, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
-  lblSymbolName->setText("");
+  lblSymbolName->setText( "" );
   populateSymbolView();
   updateSymbolPreview();
   updateSymbolInfo();
@@ -98,7 +98,7 @@ void QgsSymbolV2SelectorDialog::populateSymbolView()
     }
     QStandardItem* item = new QStandardItem( names[i] );
     item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
-    item->setText(""); //set the text to nothing and show in label when clicked rather
+    item->setText( "" ); //set the text to nothing and show in label when clicked rather
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     // create preview icon
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );

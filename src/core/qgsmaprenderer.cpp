@@ -235,13 +235,13 @@ void QgsMapRenderer::render( QPainter* painter )
   }
 
   // wait
-  if( mDrawing )
+  if ( mDrawing )
   {
     QgsDebugMsg( "already rendering" );
     QCoreApplication::processEvents();
   }
 
-  if( mDrawing )
+  if ( mDrawing )
   {
     QgsDebugMsg( "still rendering - skipping" );
     return;
@@ -381,7 +381,7 @@ void QgsMapRenderer::render( QPainter* painter )
         split = splitLayersExtent( ml, r1, r2 );
         ct = new QgsCoordinateTransform( ml->srs(), *mDestCRS );
         mRenderContext.setExtent( r1 );
-        if( !r1.isFinite() || !r2.isFinite() ) //there was a problem transforming the extent. Skip the layer
+        if ( !r1.isFinite() || !r2.isFinite() ) //there was a problem transforming the extent. Skip the layer
         {
           continue;
         }

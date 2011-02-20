@@ -21,11 +21,11 @@ QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog( QList<QgsMapLayer*
   setupUi( this );
 
   QList<QgsMapLayer*>::iterator layerIt = layers.begin();
-  for (; layerIt != layers.end(); ++layerIt )
+  for ( ; layerIt != layers.end(); ++layerIt )
   {
     QListWidgetItem* item = new QListWidgetItem(( *layerIt )->name(), listMapLayers );
     mItemLayerMap.insert( item, *layerIt );
-  } 
+  }
 }
 
 QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog(): QDialog( 0 )

@@ -29,7 +29,7 @@
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-  : QgsMapTool( canvas )
+    : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
 }
@@ -37,7 +37,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
 void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if( vlayer == NULL )
+  if ( vlayer == NULL )
   {
     return;
   }

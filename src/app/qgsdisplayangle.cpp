@@ -27,10 +27,10 @@ QgsDisplayAngle::QgsDisplayAngle( QWidget * parent, Qt::WindowFlags f ): QDialog
   else
     mcbProjectionEnabled->setCheckState( Qt::Unchecked );
 
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged(int) ),
-      this, SLOT( changeState() ) );
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged(int) ), 
-      this, SIGNAL( changeProjectionEnabledState() ) );
+  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
+           this, SLOT( changeState() ) );
+  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
+           this, SIGNAL( changeProjectionEnabledState() ) );
 }
 
 QgsDisplayAngle::~QgsDisplayAngle()
@@ -65,7 +65,7 @@ void QgsDisplayAngle::changeState()
 {
   QSettings settings;
   if ( mcbProjectionEnabled->isChecked() )
-    settings.setValue( "/qgis/measure/projectionEnabled", 2);
+    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
   else
-    settings.setValue( "/qgis/measure/projectionEnabled", 0);
+    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
 }

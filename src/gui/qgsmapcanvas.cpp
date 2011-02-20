@@ -423,7 +423,7 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   else //use the map view
   {
     QPixmap *pixmap = dynamic_cast<QPixmap *>( &mMap->paintDevice() );
-    if( !pixmap )
+    if ( !pixmap )
       return;
 
     pixmap->save( theFileName, theFormat.toLocal8Bit().data() );
@@ -1237,7 +1237,7 @@ bool QgsMapCanvas::isFrozen()
 QPixmap& QgsMapCanvas::canvasPixmap()
 {
   QPixmap *pixmap = dynamic_cast<QPixmap *>( &canvasPaintDevice() );
-  if( pixmap )
+  if ( pixmap )
   {
     return *pixmap;
   }
@@ -1247,7 +1247,7 @@ QPixmap& QgsMapCanvas::canvasPixmap()
   static QPixmap staticPixmap;
 
   QImage *image = dynamic_cast<QImage *>( &mMap->paintDevice() );
-  if( image )
+  if ( image )
   {
     staticPixmap = QPixmap::fromImage( *image );
   }

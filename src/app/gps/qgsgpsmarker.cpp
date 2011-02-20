@@ -24,7 +24,7 @@
 
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
-  : QgsMapCanvasItem( mapCanvas )
+    : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
   mWgs84CRS.createFromEpsg( 4326 );
@@ -38,14 +38,14 @@ void QgsGpsMarker::setSize( int theSize )
 void QgsGpsMarker::setCenter( const QgsPoint& point )
 {
   //transform to map crs
-  if( mMapCanvas && mMapCanvas->mapRenderer() )
+  if ( mMapCanvas && mMapCanvas->mapRenderer() )
   {
     QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapRenderer()->destinationSrs() );
     try
     {
       mCenter = t.transform( point );
     }
-    catch( QgsCsException e ) //silently ignore transformation exceptions
+    catch ( QgsCsException e ) //silently ignore transformation exceptions
     {
       return;
     }
@@ -62,7 +62,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
 void QgsGpsMarker::paint( QPainter* p )
 {
   QSvgRenderer mySVG;
-  if( !mySVG.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) ) )
+  if ( !mySVG.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) ) )
   {
     qDebug( "GPS marker not found!" );
     return;

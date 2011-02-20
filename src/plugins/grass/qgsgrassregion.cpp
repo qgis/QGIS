@@ -94,7 +94,7 @@ void QgsGrassRegionEdit::setRegion( const QgsPoint& ul, const QgsPoint& lr )
   mRubberBand->addPoint( ul, false );
   mRubberBand->addPoint( QgsPoint( ul.x(), lr.y() ), false );
   mRubberBand->addPoint( lr, false );
-  mRubberBand->addPoint( QgsPoint( lr.x(), ul.y() ), true );	// true to update canvas
+  mRubberBand->addPoint( QgsPoint( lr.x(), ul.y() ), true ); // true to update canvas
 
   mRubberBand->show();
 }
@@ -231,7 +231,7 @@ void QgsGrassRegion::refreshGui()
 
   mUpdatingGui = true;
 
-  QgsDebugMsg( "entered." );  
+  QgsDebugMsg( "entered." );
 
   mNorth->setText( QString( "%1" ).arg( mWindow.north, 0, 'g', 15 ) );
   mSouth->setText( QString( "%1" ).arg( mWindow.south, 0, 'g', 15 ) );
@@ -304,7 +304,7 @@ void QgsGrassRegion::NSResChanged()
   if ( mUpdatingGui ) return;
 
   mWindow.ns_res = mNSRes->text().toDouble();
-  if ( mWindow.ns_res <= 0)
+  if ( mWindow.ns_res <= 0 )
     mWindow.ns_res = 1;
 
   adjust();
@@ -316,7 +316,7 @@ void QgsGrassRegion::EWResChanged()
   if ( mUpdatingGui ) return;
 
   mWindow.ew_res = mEWRes->text().toDouble();
-  if ( mWindow.ew_res <= 0)
+  if ( mWindow.ew_res <= 0 )
     mWindow.ew_res = 1;
 
   adjust();
@@ -328,7 +328,7 @@ void QgsGrassRegion::rowsChanged()
   if ( mUpdatingGui ) return;
 
   mWindow.rows = mRows->text().toInt();
-  if ( mWindow.rows < 1)
+  if ( mWindow.rows < 1 )
     mWindow.rows = 1;
 
   adjust();
@@ -340,7 +340,7 @@ void QgsGrassRegion::colsChanged()
   if ( mUpdatingGui ) return;
 
   mWindow.cols = mCols->text().toInt();
-  if ( mWindow.cols < 1)
+  if ( mWindow.cols < 1 )
     mWindow.cols = 1;
 
   adjust();

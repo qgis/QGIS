@@ -77,17 +77,17 @@ void QgsOfflineEditingPluginGui::updateLayerList( bool filterEditableLayers )
       bool showLayer = true;
       if ( filterEditableLayers )
       {
-          int cap = layer->dataProvider()->capabilities();
-          showLayer = ( cap & QgsVectorDataProvider::AddFeatures ) &&
-                      ( cap & QgsVectorDataProvider::DeleteFeatures ) &&
-                      ( cap & QgsVectorDataProvider::ChangeAttributeValues ) &&
-                      ( cap & QgsVectorDataProvider::AddAttributes ) &&
-                      ( cap & QgsVectorDataProvider::ChangeGeometries );
+        int cap = layer->dataProvider()->capabilities();
+        showLayer = ( cap & QgsVectorDataProvider::AddFeatures ) &&
+                    ( cap & QgsVectorDataProvider::DeleteFeatures ) &&
+                    ( cap & QgsVectorDataProvider::ChangeAttributeValues ) &&
+                    ( cap & QgsVectorDataProvider::AddAttributes ) &&
+                    ( cap & QgsVectorDataProvider::ChangeGeometries );
       }
       if ( showLayer )
       {
-          QListWidgetItem* item = new QListWidgetItem( layer->name(), ui_layerList );
-          item->setData( Qt::UserRole, QVariant( layer_it.key() ) );
+        QListWidgetItem* item = new QListWidgetItem( layer->name(), ui_layerList );
+        item->setData( Qt::UserRole, QVariant( layer_it.key() ) );
       }
     }
   }
@@ -111,7 +111,7 @@ void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
 
 void QgsOfflineEditingPluginGui::on_checkboxShowEditableLayers_stateChanged( int state )
 {
-    updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
+  updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
 }
 
 void QgsOfflineEditingPluginGui::on_buttonBox_accepted()

@@ -28,7 +28,7 @@ class QgsMapRenderer;
 /**A dialog to enter data defined label attributes*/
 class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsLabelPropertyDialog( const QString& layerId, int featureId, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
@@ -48,7 +48,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     void on_mBufferColorButton_clicked();
     void on_mHaliComboBox_currentIndexChanged( const QString& text );
     void on_mValiComboBox_currentIndexChanged( const QString& text );
-    void on_mLabelTextLineEdit_textChanged ( const QString& text );
+    void on_mLabelTextLineEdit_textChanged( const QString& text );
 
   private:
     /**Sets activation / values to the gui elements depending on the label settings and feature values*/

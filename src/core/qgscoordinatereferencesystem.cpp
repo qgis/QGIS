@@ -99,30 +99,30 @@ bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
 bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition )
 {
   bool result = false;
-  QRegExp reCrsId("^(epsg|postgis|internal)\\:(\\d+)$",Qt::CaseInsensitive);
-  if( reCrsId.indexIn(theDefinition) == 0)
+  QRegExp reCrsId( "^(epsg|postgis|internal)\\:(\\d+)$", Qt::CaseInsensitive );
+  if ( reCrsId.indexIn( theDefinition ) == 0 )
   {
-      QString authName = reCrsId.cap(1).toLower();
-      CrsType type = InternalCrsId;
-      if( authName == "epsg" ) type = EpsgCrsId;
-      if( authName == "postgis" ) type = PostgisCrsId;
-      long id = reCrsId.cap(2).toLong();
-      result = createFromId(id,type);
+    QString authName = reCrsId.cap( 1 ).toLower();
+    CrsType type = InternalCrsId;
+    if ( authName == "epsg" ) type = EpsgCrsId;
+    if ( authName == "postgis" ) type = PostgisCrsId;
+    long id = reCrsId.cap( 2 ).toLong();
+    result = createFromId( id, type );
   }
   else
   {
-      QRegExp reCrsStr("^(?:(wkt|proj4)\\:)?(.+)$",Qt::CaseInsensitive);
-      if( reCrsStr.indexIn(theDefinition) == 0 )
+    QRegExp reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", Qt::CaseInsensitive );
+    if ( reCrsStr.indexIn( theDefinition ) == 0 )
+    {
+      if ( reCrsStr.cap( 1 ).toLower() == "proj4" )
       {
-          if( reCrsStr.cap(1).toLower() == "proj4" )
-          {
-             result = createFromProj4(reCrsStr.cap(2));
-          }
-          else
-          {
-              result = createFromWkt(reCrsStr.cap(2));
-          }
+        result = createFromProj4( reCrsStr.cap( 2 ) );
       }
+      else
+      {
+        result = createFromWkt( reCrsStr.cap( 2 ) );
+      }
+    }
   }
   return result;
 }

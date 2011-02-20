@@ -170,7 +170,7 @@ void QgsGrassSelect::setLocations()
   {
     elocation->setCurrentIndex( sel );
   }
-  buttonBox->button(QDialogButtonBox::Ok)->setDefault( true );
+  buttonBox->button( QDialogButtonBox::Ok )->setDefault( true );
   GisdbaseBrowse->setDefault( elocation->count() == 0 );
 
   setMapsets();
@@ -213,7 +213,7 @@ void QgsGrassSelect::setMapsets()
   }
   if ( emap->isHidden() )
   {
-    buttonBox->button(QDialogButtonBox::Ok)->setDefault( emapset->count() > 0 );
+    buttonBox->button( QDialogButtonBox::Ok )->setDefault( emapset->count() > 0 );
   }
 
   setMaps();
@@ -308,7 +308,7 @@ void QgsGrassSelect::setMaps()
   */
   if ( !emap->isHidden() )
   {
-    buttonBox->button(QDialogButtonBox::Ok)->setDefault( emap->count() > 0 );
+    buttonBox->button( QDialogButtonBox::Ok )->setDefault( emap->count() > 0 );
   }
 
   setLayers();

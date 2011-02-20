@@ -57,7 +57,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     ~QgsCoordinateReferenceSystem();
 
     /*!
-     * Constructs a CRS object from a string definition as defined in the createFromString 
+     * Constructs a CRS object from a string definition as defined in the createFromString
      * member function (by default a WKT definition).
      * @param theDefinition A String containing a coordinate reference system definition.
      */
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return bool TRUE if sucess else false
      */
     bool createFromProj4( const QString theProjString );
-    
+
     /*! Set up this srs from a string definition, by default a WKT definition.  Otherwise
      * the string defines a authority, followed by a colon, followed by the definition.
      * The authority can be one of "epsg", "postgis", "internal" for integer definitions,
