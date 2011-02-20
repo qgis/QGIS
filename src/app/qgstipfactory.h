@@ -27,14 +27,14 @@
 /** \ingroup app
 * \brief A factory class to serve up tips to the user.
 * Tips can be generic, in which case they make no mention of
-* gui dialogs etc, or gui-secific in which case they may allude
+* gui dialogs etc, or gui-specific in which case they may allude
 * to features of the graphical user interface.
 * @see also QgsTipOfTheDay, QgsTip
 */
 
 class QgsTipFactory : public QObject
 {
-    Q_OBJECT //used for tr() so we dont need to do QObject::tr()
+    Q_OBJECT //used for tr() so we don't need to do QObject::tr()
   public:
     /** Constructor */
     QgsTipFactory();
