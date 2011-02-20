@@ -90,7 +90,7 @@ void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
 
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
 {
-  if( mNewSize.isValid() )
+  if ( mNewSize.isValid() )
   {
     mPixmap = QPixmap( mNewSize );
     mMapRenderer->setOutputSize( mNewSize, mPixmap.logicalDpiX() );

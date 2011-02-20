@@ -34,7 +34,7 @@ class QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
 
   signals:
     void changeProjectionEnabledState();
-  
+
   private slots:
     void changeState();
 

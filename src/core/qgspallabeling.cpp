@@ -578,7 +578,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   if ( distance != 0 )
   {
-    if( distInMapUnits ) //convert distance from mm/map units to pixels
+    if ( distInMapUnits ) //convert distance from mm/map units to pixels
     {
       distance /= context.mapToPixel().mapUnitsPerPixel();
     }

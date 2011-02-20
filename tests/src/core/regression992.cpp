@@ -28,11 +28,11 @@
 
 
 //qgis includes...
-#include <qgsrasterlayer.h> 
-#include <qgsrasterbandstats.h> 
-#include <qgsmaplayerregistry.h> 
+#include <qgsrasterlayer.h>
+#include <qgsrasterbandstats.h>
+#include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
-#include <qgsmaprenderer.h> 
+#include <qgsmaprenderer.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -43,16 +43,16 @@
  */
 class Regression992: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(){};// will be called before each testfunction is executed.
-    void cleanup(){};// will be called after every testfunction.
+    void init() {};// will be called before each testfunction is executed.
+    void cleanup() {};// will be called after every testfunction.
 
     void regression992();
   private:
-    bool render(QString theFileName);
+    bool render( QString theFileName );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
     QgsMapRenderer * mpMapRenderer;
@@ -63,55 +63,55 @@ class Regression992: public QObject
 void Regression992::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
   QgsApplication::showSettings();
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString(TEST_DATA_DIR) + QDir::separator(); //defined in CMakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CMakeLists.txt
   QString myFileName = mTestDataDir + "rgbwcmyk01_YeGeo.jp2";
-  QFileInfo myRasterFileInfo ( myFileName );
-  mpRasterLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
-            myRasterFileInfo.completeBaseName() );
+  QFileInfo myRasterFileInfo( myFileName );
+  mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+                                      myRasterFileInfo.completeBaseName() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpRasterLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpRasterLayer->id();
-  mpMapRenderer->setLayerSet(myLayers);
+  mpMapRenderer->setLayerSet( myLayers );
   mReport += "<h1>Regression 992 Test</h1>\n";
   mReport += "<p>See <a href=\"https://trac.osgeo.org/qgis/ticket/992\">"
-    "trac ticket 992</a> for more details.</p>";
+             "trac ticket 992</a> for more details.</p>";
 }
 //runs after all tests
 void Regression992::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + QDir::separator() + "regression992.html";
-  QFile myFile ( myReportFile);
-  if ( myFile.open ( QIODevice::WriteOnly ) )
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
-    QTextStream myQTextStream ( &myFile );
+    QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl("file://"+myReportFile);
+    QDesktopServices::openUrl( "file://" + myReportFile );
   }
 }
 
 void Regression992::regression992()
 {
-  QVERIFY ( mpRasterLayer->isValid() );
-  mpMapRenderer->setExtent(mpRasterLayer->extent());
-  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QVERIFY( mpRasterLayer->isValid() );
+  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + QDir::separator();
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage ( myTestDataDir + "expected_rgbwcmyk01_YeGeo.jp2.png" );
-  myChecker.setMapRenderer ( mpMapRenderer );
-  bool myResultFlag = myChecker.runTest("regression992");
+  myChecker.setExpectedImage( myTestDataDir + "expected_rgbwcmyk01_YeGeo.jp2.png" );
+  myChecker.setMapRenderer( mpMapRenderer );
+  bool myResultFlag = myChecker.runTest( "regression992" );
   mReport += "\n\n\n" + myChecker.report();
-  QVERIFY(myResultFlag);
+  QVERIFY( myResultFlag );
 }
 
-QTEST_MAIN(Regression992)
+QTEST_MAIN( Regression992 )
 #include "moc_regression992.cxx"
 

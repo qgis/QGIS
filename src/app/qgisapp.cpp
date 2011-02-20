@@ -550,7 +550,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   }
   else
   {
-    QgsDebugMsg( "Tips are disabled");
+    QgsDebugMsg( "Tips are disabled" );
   }
 
   //finally show all the application settings as initialised above
@@ -1893,7 +1893,7 @@ void QgisApp::createToolBars()
   mHelpToolBar->addAction( mActionHelpContents );
   mHelpToolBar->addAction( QWhatsThis::createAction() );
   mToolbarMenu->addAction( mHelpToolBar->toggleViewAction() );
-  
+
   //
   // Raster Toolbar
   mRasterToolBar = addToolBar( tr( "Raster" ) );
@@ -2050,18 +2050,18 @@ void QgisApp::setIconSizes( int size )
   //Set the icon size of for all the toolbars created in the future.
   setIconSize( QSize( size, size ) );
 
-    //Change all current icon sizes.
-    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-    foreach( QToolBar * toolbar, toolbars )
-    {
-      toolbar->setIconSize( QSize( size, size ) );
-    }
-    
-    QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
-    for ( ; composerIt != mPrintComposers.end(); ++composerIt )
-    {
-      ( *composerIt )->setIconSizes(size);
-    }
+  //Change all current icon sizes.
+  QList<QToolBar *> toolbars = findChildren<QToolBar *>();
+  foreach( QToolBar * toolbar, toolbars )
+  {
+    toolbar->setIconSize( QSize( size, size ) );
+  }
+
+  QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
+  for ( ; composerIt != mPrintComposers.end(); ++composerIt )
+  {
+    ( *composerIt )->setIconSizes( size );
+  }
 }
 
 void QgisApp::setTheme( QString theThemeName )
@@ -5525,11 +5525,11 @@ void QgisApp::localHistogramStretch()
   }
   if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
        rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray
-    )
+     )
   {
     rlayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
     rlayer->setMinimumMaximumUsingLastExtent();
-    rlayer->setCacheImage(NULL);
+    rlayer->setCacheImage( NULL );
     //refreshLayerSymbology( rlayer->getLayerID() );
     mMapCanvas->refresh();
     return;
@@ -5537,10 +5537,10 @@ void QgisApp::localHistogramStretch()
   else
   {
     QMessageBox::information( this,
-      tr( "No Valid Raster Layer Selected" ),
-      tr( "To perform a local histogram stretch, you need to have a grayscale "
-        "(multiband single layer, or singleband grayscale) raster layer "
-        "selected." ) );
+                              tr( "No Valid Raster Layer Selected" ),
+                              tr( "To perform a local histogram stretch, you need to have a grayscale "
+                                  "(multiband single layer, or singleband grayscale) raster layer "
+                                  "selected." ) );
     return;
   }
 }

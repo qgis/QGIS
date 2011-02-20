@@ -1183,7 +1183,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       painter.end();
     }
   }
-  int buffer = height/3; // buffer around a sign
+  int buffer = height / 3; // buffer around a sign
   if ( pixmaps.size() > 1 ) width += arrowWidth + 2 * buffer; // ->
   if ( pixmaps.size() > 2 ) width += plusWidth + 2 * buffer; // +
 

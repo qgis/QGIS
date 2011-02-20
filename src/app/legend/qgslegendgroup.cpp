@@ -25,7 +25,7 @@
 #include <QIcon>
 
 QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
-  : QgsLegendItem( theItem, theName )
+    : QgsLegendItem( theItem, theName )
 {
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -34,7 +34,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   setIcon( 0, myIcon );
 }
 QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
-  : QgsLegendItem( theListView, theString )
+    : QgsLegendItem( theListView, theString )
 {
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
