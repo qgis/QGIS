@@ -549,6 +549,9 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
+      theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
+                         tr( "Zoom to group" ), this, SLOT( legendLayerZoom() ) );
+
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ),
                          tr( "&Remove" ), this, SLOT( legendGroupRemove() ) );
     }
@@ -1656,21 +1659,59 @@ void QgsLegend::legendLayerZoom()
     return;
   }
 
-  //find current Layer
-  QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
-  if ( !currentLayer )
-    return;
+  QgsRectangle extent;
 
-  QgsMapLayer* theLayer = currentLayer->layer();
-  QgsRectangle extent = theLayer->extent();
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( currentItem() );
 
-  //transform extent if otf-projection is on
-  if ( mMapCanvas->hasCrsTransformEnabled() )
+  if ( li->type() == QgsLegendItem::LEGEND_LAYER )
   {
-    QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
-    if ( renderer )
+    QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
+    if ( !currentLayer )
+      return;
+
+    QgsMapLayer* theLayer = currentLayer->layer();
+    extent = theLayer->extent();
+
+    //transform extent if otf-projection is on
+    if ( mMapCanvas->hasCrsTransformEnabled() )
     {
-      extent = renderer->layerExtentToOutputExtent( theLayer, extent );
+      QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
+      if ( renderer )
+      {
+        extent = renderer->layerExtentToOutputExtent( theLayer, extent );
+      }
+    }
+  }
+  else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
+  {
+    QgsLegendGroup* currentGroup = dynamic_cast<QgsLegendGroup *>( currentItem() );
+
+    QgsRectangle layerExtent;
+
+    QList<QgsLegendLayer*> layers = currentGroup->legendLayers();
+    for ( int i = 0; i < layers.size(); ++i )
+    {
+      QgsMapLayer* theLayer = layers.at( i )->layer();
+      layerExtent = theLayer->extent();
+
+      //transform extent if otf-projection is on
+      if ( mMapCanvas->hasCrsTransformEnabled() )
+      {
+        QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
+        if ( renderer )
+        {
+          layerExtent = renderer->layerExtentToOutputExtent( theLayer, layerExtent );
+        }
+      }
+
+      if ( i == 0 )
+      {
+        extent = layerExtent;
+      }
+      else
+      {
+        extent.combineExtentWith( &layerExtent );
+      }
     }
   }
 
