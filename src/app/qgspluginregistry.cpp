@@ -29,6 +29,7 @@
 #include "qgspluginmetadata.h"
 #include "qgisplugin.h"
 #include "qgspythonutils.h"
+#include "qgisapp.h"
 #include "qgslogger.h"
 
 
@@ -274,7 +275,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   QLibrary myLib( theFullPathName );
 
   QString myError; //we will only show detailed diagnostics if something went wrong
-  myError += "Library name is " + myLib.fileName() + " " + QString( __LINE__ ) + " in " + QString( __FUNCTION__ ) + "\n";
+  myError += QObject::tr( "Library name is %1\n" ).arg( myLib.fileName() );
 
   bool loaded = myLib.load();
   if ( ! loaded )
@@ -283,7 +284,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
     return;
   }
 
-  myError += "Attempting to resolve the classFactory function " +  QString( __LINE__ ) + " in " + QString( __FUNCTION__ ) + "\n";
+  myError += QObject::tr( "Attempting to resolve the classFactory function\n" );
 
   type_t *pType = ( type_t * ) cast_to_fptr( myLib.resolve( "type" ) );
   name_t *pName = ( name_t * ) cast_to_fptr( myLib.resolve( "name" ) );
@@ -306,6 +307,31 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
+
+          QObject *o = dynamic_cast<QObject *>( pl );
+          if ( o )
+          {
+            QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
+            if ( o->objectName().isEmpty() )
+            {
+#ifndef WIN32
+              baseName = baseName.mid( 3 );
+#endif
+              QgsDebugMsg( QString( "object name to %1" ).arg( baseName ) );
+              o->setObjectName( QString( "qgis_plugin_%1" ).arg( baseName ) );
+              QgsDebugMsg( QString( "plugin object name now: %1" ).arg( o->objectName() ) );
+            }
+
+            if ( !o->parent() )
+            {
+              QgsDebugMsg( QString( "setting plugin parent" ) );
+              o->setParent( QgisApp::instance() );
+            }
+            else
+            {
+              QgsDebugMsg( QString( "plugin parent already set" ) );
+            }
+          }
         }
         else
         {
