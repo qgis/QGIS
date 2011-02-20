@@ -3,6 +3,7 @@
 #define QGSSTYLEV2MANAGERDIALOG_H
 
 #include <QDialog>
+#include <QStandardItem>
 
 #include "ui_qgsstylev2managerdialogbase.h"
 #include "qgscontexthelp.h"
@@ -30,6 +31,8 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void onFinished();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
+    void itemChanged( QStandardItem* item );
 
   protected:
 

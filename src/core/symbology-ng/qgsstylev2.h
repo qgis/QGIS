@@ -35,6 +35,10 @@ class CORE_EXPORT QgsStyleV2
     //! remove symbol from style (and delete it)
     bool removeSymbol( QString name );
 
+    //! change symbol's name
+    //! @note added in v1.7
+    bool renameSymbol( QString oldName, QString newName );
+
     //! return a NEW copy of symbol
     QgsSymbolV2* symbol( QString name );
 
@@ -53,6 +57,10 @@ class CORE_EXPORT QgsStyleV2
 
     //! remove color ramp from style (and delete it)
     bool removeColorRamp( QString name );
+
+    //! change ramp's name
+    //! @note added in v1.7
+    bool renameColorRamp( QString oldName, QString newName );
 
     //! return a NEW copy of color ramp
     QgsVectorColorRampV2* colorRamp( QString name );

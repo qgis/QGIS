@@ -46,6 +46,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   QStandardItemModel* model = new QStandardItemModel( listItems );
   listItems->setModel( model );
 
+  connect( model, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( itemChanged( QStandardItem* ) ) );
+
   populateTypes();
 
   connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
@@ -68,7 +70,7 @@ void QgsStyleV2ManagerDialog::populateTypes()
   // save current selection index in types combo
   int current = ( tabItemType->count() > 0 ? tabItemType->currentIndex() : 0 );
 
- // no counting of style items
+// no counting of style items
   int markerCount = 0, lineCount = 0, fillCount = 0;
 
   QStringList symbolNames = mStyle->symbolNames();
@@ -130,6 +132,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( int type )
       QStandardItem* item = new QStandardItem( name );
       QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
       item->setIcon( icon );
+      item->setData( name ); // used to find out original name when user edited the name
       // add to model
       model->appendRow( item );
     }
@@ -153,6 +156,7 @@ void QgsStyleV2ManagerDialog::populateColorRamps()
     QStandardItem* item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, listItems->iconSize() );
     item->setIcon( icon );
+    item->setData( name ); // used to find out original name when user edited the name
     model->appendRow( item );
     delete ramp;
   }
@@ -452,4 +456,26 @@ bool QgsStyleV2ManagerDialog::removeColorRamp()
   mStyle->removeColorRamp( rampName );
   mModified = true;
   return true;
+}
+
+void QgsStyleV2ManagerDialog::itemChanged( QStandardItem* item )
+{
+  // an item has been edited
+  QString oldName = item->data().toString();
+
+  bool changed = false;
+  if ( currentItemType() < 3 )
+  {
+    changed = mStyle->renameSymbol( oldName, item->text() );
+  }
+  else if ( currentItemType() == 3 )
+  {
+    changed = mStyle->renameColorRamp( oldName, item->text() );
+  }
+
+  if ( changed )
+  {
+    populateList();
+    mModified = true;
+  }
 }

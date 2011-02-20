@@ -83,6 +83,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
     </widget>
    </item>
    <item row="2" column="0">
