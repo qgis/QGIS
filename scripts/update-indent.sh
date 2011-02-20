@@ -19,13 +19,14 @@ set -e
 if [ -f .lastcommit ]; then
 	REV0=$(<.lastcommit)
 	svn revert -R .
+	find . -name "*.prepare" -delete
 	svn update -r$REV0
 else
 	REV0=$(svn info | sed -ne "s/Revision: //p")
 fi
 
 # update
-MODIFIED=$(svn update | sed -ne "s/^[^ ]* *//p")
+MODIFIED=$(svn update | sed -ne "s/^[^ ]. *//p")
 REV1=$(svn info | sed -ne "s/Revision: //p")
 
 if [ "$REV0" -eq "$REV1" ]; then
@@ -41,7 +42,7 @@ ASTYLEDIFF=astyle.r$REV0-r$REV1.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*)
+	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
 		echo $f skipped
 		continue
 		;;
@@ -85,6 +86,7 @@ if [ -s "$ASTYLEDIFF" ]; then
 
 	# just echo for now
 	echo "svn commit -m \"automatic indentation update (r$REV0-r$REV1)\""
+	[ -f .lastcommit ] && mv .lastcommit .prevcommit
 	echo $REV1 >.lastcommit
 else
 	echo "No indentation updates."
