@@ -48,10 +48,16 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   // set values
   spinWidth->setValue( mLayer->width() );
   btnChangeColor->setColor( mLayer->color() );
-  cboPenStyle->setPenStyle( mLayer->penStyle() );
   spinOffset->setValue( mLayer->offset() );
+  cboPenStyle->blockSignals( true );
+  cboJoinStyle->blockSignals( true );
+  cboCapStyle->blockSignals( true );
+  cboPenStyle->setPenStyle( mLayer->penStyle() );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
+  cboPenStyle->blockSignals( false );
+  cboJoinStyle->blockSignals( false );
+  cboCapStyle->blockSignals( false );
 
   //use a custom dash pattern?
   bool useCustomDashPattern = mLayer->useCustomDashPattern();
