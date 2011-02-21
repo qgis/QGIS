@@ -19,6 +19,7 @@
 #define QGSTIPGUI_H
 
 #include "ui_qgstipguibase.h"
+class QgsTip;
 
 class QgsTipGui : public QDialog, private Ui::QgsTipGuiBase
 {
@@ -29,6 +30,7 @@ class QgsTipGui : public QDialog, private Ui::QgsTipGuiBase
 
   private:
     void init();
+    void showTip( QgsTip );
 
     int mTipPosition;
 
