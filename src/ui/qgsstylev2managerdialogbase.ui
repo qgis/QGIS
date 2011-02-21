@@ -169,6 +169,20 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QPushButton" name="btnExportItems">
+       <property name="text">
+        <string>Export...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnImportItems">
+       <property name="text">
+        <string>Import...</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -187,7 +201,6 @@
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnEditItem</tabstop>
-  <tabstop>btnRemoveItem</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

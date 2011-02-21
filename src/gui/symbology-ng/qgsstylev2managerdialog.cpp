@@ -10,8 +10,10 @@
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
+#include "qgsstylev2exportimportdialog.h"
 
 #include <QFile>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QStandardItemModel>
 
@@ -42,6 +44,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnAddItem, SIGNAL( clicked() ), this, SLOT( addItem() ) );
   connect( btnEditItem, SIGNAL( clicked() ), this, SLOT( editItem() ) );
   connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
+  connect( btnExportItems, SIGNAL( clicked() ), this, SLOT( exportItems() ) );
+  connect( btnImportItems, SIGNAL( clicked() ), this, SLOT( importItems() ) );
 
   QStandardItemModel* model = new QStandardItemModel( listItems );
   listItems->setModel( model );
@@ -478,4 +482,24 @@ void QgsStyleV2ManagerDialog::itemChanged( QStandardItem* item )
     populateList();
     mModified = true;
   }
+}
+
+void QgsStyleV2ManagerDialog::exportItems()
+{
+  QgsStyleV2ExportImportDialog dlg( mStyle, this, QgsStyleV2ExportImportDialog::Export );
+  dlg.exec();
+}
+
+void QgsStyleV2ManagerDialog::importItems()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), ".",
+                     tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsStyleV2ExportImportDialog dlg( mStyle, this, QgsStyleV2ExportImportDialog::Import, fileName );
+  dlg.exec();
+  populateList();
 }
