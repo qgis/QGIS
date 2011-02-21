@@ -193,13 +193,6 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     virtual void rewind();
 
     /**
-     * Changes attribute values of existing features.
-     * @param attr_map a map containing changed attributes
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
-
-    /**
      * Returns a bitmask containing the supported capabilities
      * Note, some capabilities may change depending on whether
      * a spatial filter is active on this provider, so it may
@@ -235,6 +228,8 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      */
     virtual QgsCoordinateReferenceSystem crs();
 
+  public slots:
+    virtual void setRenderer( QgsVectorLayer *layer );
 
   private:
     /**
