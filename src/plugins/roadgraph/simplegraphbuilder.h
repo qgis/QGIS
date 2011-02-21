@@ -37,12 +37,12 @@ class RgSimpleGraphBuilder : public RgGraphBuilder
     /**
      * default constructor
      */
-    RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs );
+    RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance = 0.0 );
 
     /**
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    void addVertex( const QgsPoint& pt );
+    QgsPoint addVertex( const QgsPoint& pt );
     void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed );
 
     /**

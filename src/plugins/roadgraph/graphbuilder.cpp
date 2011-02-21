@@ -18,8 +18,8 @@
 
 // Qgis includes
 
-RgGraphBuilder::RgGraphBuilder( const QgsCoordinateReferenceSystem& crs ) :
-    mCrs( crs )
+RgGraphBuilder::RgGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance ) :
+    mCrs( crs ), mTopologyToleraceFactor( topologyTolerance )
 {
 
 }
@@ -32,4 +32,9 @@ RgGraphBuilder::~RgGraphBuilder()
 QgsCoordinateReferenceSystem& RgGraphBuilder::destinationCrs()
 {
   return mCrs;
+}
+
+double RgGraphBuilder::topologyTolerance()
+{
+  return mTopologyToleraceFactor;
 }

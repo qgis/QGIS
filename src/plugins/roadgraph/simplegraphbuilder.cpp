@@ -19,14 +19,30 @@
 
 // Qgis includes
 
-RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs ) :
-    RgGraphBuilder( crs )
+RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance ) :
+    RgGraphBuilder( crs, topologyTolerance )
 {
 }
 
-void RgSimpleGraphBuilder::addVertex( const QgsPoint& pt )
+QgsPoint RgSimpleGraphBuilder::addVertex( const QgsPoint& pt )
 {
+  // I cann't use QgsSpatialIndex in this time.
+  // QgsSpatialIndex::nearestNeighbor() return only features id not geometry
+  //
+  // This code is very slow and need me for a tests.
+
+  double t = topologyTolerance();
+  if ( t > 0.0 )
+  {
+    AdjacencyMatrix::iterator it;
+    for ( it = mMatrix.begin(); it != mMatrix.end(); ++it )
+    {
+      if ( it->first.sqrDist( pt ) < t )
+        return it->first;
+    }
+  }
   mMatrix[ pt ];
+  return pt;
 }
 
 void RgSimpleGraphBuilder::addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed )

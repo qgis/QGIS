@@ -94,7 +94,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
     QgsPolyline::iterator pointIt;
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
-      pt2 = ct.transform( *pointIt );
+      pt2 = builder->addVertex( ct.transform( *pointIt ) );
       if ( !isFirstPoint )
       {
         int i = 0;
@@ -105,6 +105,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
 
           if ( pointLengthMap[ i ].mLength > info.mLength )
           {
+            info.mTiedPoint = builder->addVertex( info.mTiedPoint );
             info.mFirstPoint = pt1;
             info.mLastPoint = pt2;
 
@@ -181,7 +182,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
     QgsPolyline::iterator pointIt;
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
-      pt2 = ct.transform( *pointIt );
+      pt2 = builder->addVertex( ct.transform( *pointIt ) );
 
       std::map< double, QgsPoint > pointsOnArc;
       pointsOnArc[ 0.0 ] = pt1;
