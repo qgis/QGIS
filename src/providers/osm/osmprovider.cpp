@@ -981,23 +981,6 @@ int QgsOSMDataProvider::freeFeatureId()
 }
 
 
-bool QgsOSMDataProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
-{
-  QgsDebugMsg( QString( "In changeAttributeValues(...)." ) );
-
-  // VERY VERY ugly hack to assign custom renderer for OSM layer
-  // but probably there's no simple way how to set our custom renderer from python plugin
-  if ( attr_map.contains( 0x12345678 ) )
-  {
-    const QgsAttributeMap& x = attr_map.value( 0x12345678 );
-    QgsVectorLayer* layer = ( QgsVectorLayer* ) x.value( 0 ).toUInt();
-    QgsDebugMsg( "SETTING CUSTOM RENDERER!" );
-    layer->setRenderer( new OsmRenderer( layer->geometryType(), mStyleFileName ) );
-  }
-  return true;
-}
-
-
 int QgsOSMDataProvider::capabilities() const
 {
   return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
@@ -1682,4 +1665,7 @@ bool QgsOSMDataProvider::closeDatabase()
   return true;
 };
 
-
+void QgsOSMDataProvider::setRenderer( QgsVectorLayer *layer )
+{
+  layer->setRenderer( new OsmRenderer( layer->geometryType(), mStyleFileName ) );
+}

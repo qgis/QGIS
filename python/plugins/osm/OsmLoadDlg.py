@@ -224,16 +224,14 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
     def setCustomRenderer(self, layer):
         """Function provides a way how to set custom renderer.
-
-        For more check changeAttributeValues() implementation of OSM provider.
-
-        @param layer point to QGIS vector layer
+        @param layer pointer to QGIS vector layer
         """
 
-        import sip
-        layerAddr = sip.unwrapinstance(layer)
-        layer.dataProvider().changeAttributeValues( { 0x12345678 : { 0 : QVariant(layerAddr) } } )
-
+        if QObject.connect( self, SIGNAL( "setRenderer(QgsVectorLayer *)" ), layer.dataProvider(), SLOT( "setRenderer( QgsVectorLayer * )" ) ):
+          self.emit( SIGNAL( "setRenderer(QgsVectorLayer *)" ), layer )
+          QObject.disconnect( self, SIGNAL( "setRenderer(QgsVectorLayer *)" ), layer.dataProvider(), SLOT( "setRenderer( QgsVectorLayer * )" ) )
+        else:
+          QMessageBox.information(self, "OSM Load", QString("Could not connect to setRenderer signal."))
 
     def filesLoaded(self):
         """Function returns list of keys of all currently loaded vector layers.
