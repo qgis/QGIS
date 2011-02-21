@@ -20,6 +20,7 @@ symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
 symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
 symbology-ng/characterwidget.cpp
+symbology-ng/qgsstylev2exportimportdialog.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
@@ -79,6 +80,7 @@ symbology-ng/qgscolorrampcombobox.h
 symbology-ng/characterwidget.h
 symbology-ng/qgspenstylecombobox.h
 symbology-ng/qgsbrushstylecombobox.h
+symbology-ng/qgsstylev2exportimportdialog.h
 
 qgsattributeeditor.h
 qgscomposerview.h
