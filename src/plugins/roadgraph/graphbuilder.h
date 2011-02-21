@@ -33,7 +33,7 @@ class RgGraphBuilder
 {
   public:
     //! Constructor
-    RgGraphBuilder( const QgsCoordinateReferenceSystem& crs );
+    RgGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance = 0.0 );
 
     //! Destructor
     virtual ~RgGraphBuilder();
@@ -44,9 +44,14 @@ class RgGraphBuilder
     QgsCoordinateReferenceSystem& destinationCrs();
 
     /**
+     * get topology tolerance factor
+     */
+    double topologyTolerance();
+
+    /**
      * add vertex
      */
-    virtual void addVertex( const QgsPoint& pt ) = 0;
+    virtual QgsPoint addVertex( const QgsPoint& pt ) = 0;
 
     /**
      * add arc
@@ -55,5 +60,7 @@ class RgGraphBuilder
 
   private:
     QgsCoordinateReferenceSystem mCrs;
+
+    double mTopologyToleraceFactor;
 };
 #endif //GRAPHBUILDER
