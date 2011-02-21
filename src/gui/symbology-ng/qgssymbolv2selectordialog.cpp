@@ -14,6 +14,7 @@
 #include <QPainter>
 #include <QStandardItemModel>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QKeyEvent>
 #include <QMenu>
 
@@ -221,6 +222,19 @@ void QgsSymbolV2SelectorDialog::addSymbolToStyle()
                                         tr( "Please enter name for the symbol:" ) , QLineEdit::Normal, tr( "New symbol" ), &ok );
   if ( !ok || name.isEmpty() )
     return;
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( name ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
 
   // add new symbol to style and re-populate the list
   mStyle->addSymbol( name, mSymbol->clone() );

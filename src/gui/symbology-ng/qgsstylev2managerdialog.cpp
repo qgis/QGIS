@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QStandardItemModel>
 
 #include "qgsapplication.h"
@@ -237,6 +238,20 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   {
     delete symbol;
     return false;
+  }
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( name ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      delete symbol;
+      return false;
+    }
   }
 
   // add new symbol to style and re-populate the list
