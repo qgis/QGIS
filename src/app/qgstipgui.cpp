@@ -43,14 +43,11 @@ QgsTipGui::~QgsTipGui()
 void QgsTipGui::init()
 {
 
-  // set the 60x60 icon pixmap
-  QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
-  qgisIcon->setPixmap( icon );
   QgsTipFactory myFactory;
   QgsTip myTip = myFactory.getTip();
   mTipPosition = myFactory.position( myTip );
-  lblTitle->setText( myTip.title() );
-  txtTip->setHtml( myTip.content() );
+
+  showTip( myTip );
 
   QPushButton *pb;
   pb = new QPushButton( tr( "&Previous" ) );
@@ -60,6 +57,23 @@ void QgsTipGui::init()
   pb = new QPushButton( tr( "&Next" ) );
   connect( pb, SIGNAL( clicked() ), this, SLOT( nextClicked() ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+}
+
+void QgsTipGui::showTip( QgsTip myTip )
+{
+  // TODO - This html construction can be simplified using QStringBuilder
+  //        once Qt 4.6 is the minimum required version for building QGIS.
+  //
+  QString content = "<img src='" 
+    + QgsApplication::iconsPath() 
+    + "qgis-icon-60x60.png" 
+    + "' style='float:left;'>" 
+    + "<h2>"
+    + myTip.title() 
+    + "</h2><br clear='all'/>" 
+    + myTip.content();
+
+  txtTip->setHtml( content );
 }
 
 void QgsTipGui::on_cbxDisableTips_toggled( bool theFlag )
@@ -80,8 +94,7 @@ void QgsTipGui::nextClicked()
     mTipPosition = 0;
   }
   QgsTip myTip = myFactory.getTip( mTipPosition );
-  lblTitle->setText( myTip.title() );
-  txtTip->setHtml( myTip.content() );
+  showTip( myTip );
 }
 
 void QgsTipGui::prevClicked()
@@ -93,6 +106,5 @@ void QgsTipGui::prevClicked()
     mTipPosition = myFactory.count() - 1;
   }
   QgsTip myTip = myFactory.getTip( mTipPosition );
-  lblTitle->setText( myTip.title() );
-  txtTip->setHtml( myTip.content() );
+  showTip( myTip );
 }
