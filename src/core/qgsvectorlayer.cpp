@@ -2914,6 +2914,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
     mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
 
+    //also restore custom properties (for labeling-ng)
+    readCustomProperties( node, "labeling" );
+
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
@@ -3068,6 +3071,9 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         return false;
       }
     }
+
+    //save customproperties (for labeling ng)
+    writeCustomProperties( node, doc );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );

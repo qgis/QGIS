@@ -626,9 +626,6 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     return myErrorMessage;
   }
 
-  //also restore custom properties (for labeling-ng)
-  readCustomProperties( myRoot, "labeling" );
-
   return "";
 }
 
@@ -667,9 +664,6 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   {
     return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
   }
-
-  //save customproperties (for labeling ng)
-  writeCustomProperties( myRootNode, myDocument );
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one
@@ -827,7 +821,7 @@ void QgsMapLayer::removeCustomProperty( const QString& key )
   mCustomProperties.remove( key );
 }
 
-void QgsMapLayer::readCustomProperties( QDomNode & layerNode, const QString& keyStartsWith )
+void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith )
 {
   QDomNode propsNode = layerNode.namedItem( "customproperties" );
   if ( propsNode.isNull() ) // no properties stored...
