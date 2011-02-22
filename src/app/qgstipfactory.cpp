@@ -106,6 +106,19 @@ QgsTipFactory::QgsTipFactory() : QObject()
         " found in the tab <strong>Item --> General Options --> Position "
         " and Size</strong>. For easier positioning you can also set "
         " specific anchor points of the element within this dialogue. "
+        " The other move tool (the globe icon combined with the hand icon) "
+        " allows to move the map content within a map frame. "
+        ));
+  addGuiTip(myTip);
+  // This  tip contributed by Andreas Neumann
+  myTip.setTitle(tr("Lock an element in the layout view"));
+  myTip.setContent(tr(" By left clicking an element in the layout view you can "
+        " select it, by right clicking an element you can lock it. A lock symbol "
+        " will appear in the upper left corner of the selected element. This "
+        " prevents the element from accidentally being moved with the mouse. While "
+        " in a locked state, you cannot move an element with the mouse but you can "
+        " still move it with the arrow keys or by absolutely positioning it by "
+        " setting its <strong>Position and Size</strong>"
         ));
   addGuiTip(myTip);
   // This  tip contributed by Andreas Neumann
@@ -128,12 +141,12 @@ QgsTipFactory::QgsTipFactory() : QObject()
          " set the style to 'Numeric'. You also need to select the map frame, if there "
          " is more than one."
         ));
-  addGenericTip(myTip);
+  addGuiTip(myTip);
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""
         ));
-  addGenericTip(myTip);
+  addGuiTip(myTip);
   */
 }
 
