@@ -117,9 +117,9 @@ Now close ``cmake-gui`` and continue on the command prompt by starting
 ``vcexpress``.  Use File / Open / Project/Solutions and open the
 qgis-x.y.z.sln File in your project directory.
 
-You probably want to change the ``Solution Configuration`` from ``Debug``
-to ``RelWithDebInfo`` (Release with Debug Info)  or ``Release`` before you
-build QGIS using the ALL_BUILD target.
+Change ``Solution Configuration`` from ``Debug`` to ``RelWithDebInfo`` (Release
+with Debug Info)  or ``Release`` before you build QGIS using the ALL_BUILD
+target (otherwise you need debug libraries that are not included).
 
 After the build completed you should install QGIS using the INSTALL target.
 
