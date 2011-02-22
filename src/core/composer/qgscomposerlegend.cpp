@@ -200,9 +200,9 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
   }
 
   //Let the user omit the layer title item by having an empty layer title string
+  currentYCoord += mLayerSpace;
   if ( !layerItem->text().isEmpty() )
   {
-    currentYCoord += mLayerSpace;
     currentYCoord += fontAscentMillimeters( mLayerFont );
 
     //draw layer Item
