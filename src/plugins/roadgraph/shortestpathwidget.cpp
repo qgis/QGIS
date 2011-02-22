@@ -223,7 +223,8 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
 {
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
     return false;
-  RgSimpleGraphBuilder builder( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs() );
+  RgSimpleGraphBuilder builder( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs(),
+                                mPlugin->topologyToleranceFactor() );
   {
     const RgGraphDirector *director = mPlugin->director();
     if ( director == NULL )

@@ -19,6 +19,7 @@
 
 // forward declaration QT-classes
 class QComboBox;
+class QDoubleSpinBox;
 
 // forward declaration Qgis-classes
 
@@ -47,6 +48,9 @@ class RgSettingsDlg : public QDialog
 
     void setDistanceUnitName( const QString& );
 
+    void setTopologyTolerance( double f );
+
+    double topologyTolerance();
   private:
     static const int context_id = 0;
 
@@ -75,5 +79,10 @@ class RgSettingsDlg : public QDialog
      * plugin time unit
      */
     QComboBox *mcbPluginsTimeUnit;
+
+    /**
+     * topology tolerance factor
+     */
+    QDoubleSpinBox *msbTopologyTolerance;
 };
 #endif

@@ -21,6 +21,7 @@
 //QT4 includes
 
 //QGIS includes
+#include <qgsspatialindex.h>
 
 //forward declarations
 class QgsDistanceArea;
@@ -51,5 +52,9 @@ class RgSimpleGraphBuilder : public RgGraphBuilder
     AdjacencyMatrix adjacencyMatrix();
   private:
     AdjacencyMatrix mMatrix;
+
+    QgsSpatialIndex mPointIndex;
+
+    QMap< int, QgsPoint> mPointMap;
 };
 #endif //SIMPLEGRAPHBUILDER

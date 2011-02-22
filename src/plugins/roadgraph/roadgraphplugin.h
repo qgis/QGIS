@@ -71,6 +71,11 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
      */
     QString distanceUnitName();
 
+    /**
+     * get topology tolerance factor
+     */
+    double topologyToleranceFactor();
+
   public slots:
     void render( QPainter *painter );
     //! init the gui
@@ -155,6 +160,12 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
      * distance unit for results presentation
      */
     QString mDistanceUnitName;
+
+    /**
+     * topology tolerance factor
+     */
+    double mTopologyToleranceFactor;
+
   private:
     static const int mArrowSize = 5;
 };
