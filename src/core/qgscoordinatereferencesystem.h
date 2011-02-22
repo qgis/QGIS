@@ -109,7 +109,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note Any members will be overwritten during this process.
      * @note SRID and EpsgCrsId may be blank if no match can be found on srs db.
      * @param theWkt The Wkt for the desired spatial reference system.
-     * @return bool TRUE if sucess else false
+     * @return bool TRUE if success else false
      */
     bool createFromWkt( const QString theWkt );
 
@@ -118,9 +118,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and then the users ~/.qgis/qgis.db database will be checked for a match.
      * @note Any members will be overwritten during this process.
      * @param theEpsg The EpsgCrsId for the desired spatial reference system.
-     * @return bool TRUE if sucess else false
+     * @return bool TRUE if success else false
+     * @deprecated use createFromOgcWmsCrs()
      */
-    bool createFromEpsg( const long theEpsg );
+    QGISDEPRECATED bool createFromEpsg( const long theEpsg );
 
     /*! Set up this srs by fetching the appropriate information from the
      * sqlite backend. If the srsid is < 100000, only the system srs.db
@@ -128,7 +129,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * the ~/.qgis/qgis.db
      * @note Any members will be overwritten during this process.
      * @param theSrsId The QGIS SrsId for the desired spatial reference system.
-     * @return bool TRUE if sucess else false
+     * @return bool TRUE if success else false
      */
     bool createFromSrsId( const long theSrsId );
 
@@ -159,7 +160,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *    for this srs.
      *
      * @param theProjString A proj4 format string
-     * @return bool TRUE if sucess else false
+     * @return bool TRUE if success else false
      */
     bool createFromProj4( const QString theProjString );
 
@@ -262,8 +263,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /*! Get the EpsgCrsId identifier for this srs
      * @return  long theEpsg the EPSG identifier for this srs (defaults to 0)
+     * @deprecated there are other authorities - use authid()
      */
-    long epsg() const;
+    QGISDEPRECATED long epsg() const;
 
     /*! Get the authority identifier for this srs
      * @return  QString the Authority identifier for this srs

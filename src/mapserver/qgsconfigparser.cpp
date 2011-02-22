@@ -79,7 +79,7 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   }
 
   QgsCoordinateReferenceSystem wgs84;
-  wgs84.createFromEpsg( 4326 );
+  wgs84.createFromOgcWmsCrs( "EPSG:4326" );
 
   //Ex_GeographicBoundingBox
   //transform the layers native CRS into WGS84
@@ -109,7 +109,7 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
   if ( layerCRS.isValid() )
   {
-    bBoxElement.setAttribute( "CRS", "EPSG:" + QString::number( layerCRS.epsg() ) );
+    bBoxElement.setAttribute( "CRS", layerCRS.authid() );
   }
 
   bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
@@ -119,9 +119,9 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   layerElem.appendChild( bBoxElement );
 }
 
-QList<int> QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) const
+QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) const
 {
-  QList<int> epsgNumbers;
+  QStringList crsNumbers;
   QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
 
   if ( theVectorLayer ) //append the source SRS. In future, all systems supported by proj4 should be appended
@@ -137,16 +137,16 @@ QList<int> QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) co
     if ( myResult )
     {
       //if the database cannot be opened, add at least the epsg number of the source coordinate system
-      epsgNumbers.push_back( theMapLayer->srs().epsg() );
-      return epsgNumbers;
+      crsNumbers.push_back( theMapLayer->srs().authid() );
+      return crsNumbers;
     };
-    QString mySql = "select auth_id from tbl_srs where auth_name='EPSG' ";
+    QString mySql = "select upper(auth_name||':'||auth_id) from tbl_srs";
     myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
     if ( myResult == SQLITE_OK )
     {
       while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
       {
-        epsgNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ).toLong() );
+        crsNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) );
       }
     }
     sqlite3_finalize( myPreparedStatement );
@@ -154,10 +154,9 @@ QList<int> QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) co
   }
   else //rasters cannot be reprojected. Use the epsg number of the layers native CRS
   {
-    int rasterEpsg = theMapLayer->srs().epsg();
-    epsgNumbers.push_back( rasterEpsg );
+    crsNumbers.push_back( theMapLayer->srs().authid() );
   }
-  return epsgNumbers;
+  return crsNumbers;
 }
 
 bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const
@@ -227,7 +226,7 @@ bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, 
   return true;
 }
 
-bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<int>& crsSet ) const
+bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const
 {
   if ( layerElement.isNull() )
   {
@@ -235,22 +234,17 @@ bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<int>
   }
 
   crsSet.clear();
-  bool intConversionOk;
 
   QDomNodeList crsNodeList = layerElement.elementsByTagName( "CRS" );
   for ( int i = 0; i < crsNodeList.size(); ++i )
   {
-    int epsg = crsNodeList.at( i ).toElement().text().remove( 0, 5 ).toInt( &intConversionOk );
-    if ( intConversionOk )
-    {
-      crsSet.insert( epsg );
-    }
+    crsSet.insert( crsNodeList.at( i ).toElement().text() );
   }
 
   return true;
 }
 
-void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QList<int>& crsList ) const
+void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList ) const
 {
   if ( layerElement.isNull() )
   {
@@ -258,18 +252,18 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
   }
 
   //In case the number of advertised CRS is constrained
-  QSet<int> epsgSet = supportedOutputCrsSet();
+  QSet<QString> crsSet = supportedOutputCrsSet();
 
-  QList<int>::const_iterator crsIt = crsList.constBegin();
+  QStringList::const_iterator crsIt = crsList.constBegin();
   for ( ; crsIt != crsList.constEnd(); ++crsIt )
   {
-    if ( !epsgSet.isEmpty() && !epsgSet.contains( *crsIt ) ) //consider epsg output constraint
+    if ( !crsSet.isEmpty() && !crsSet.contains( *crsIt ) ) //consider epsg output constraint
     {
       continue;
     }
     QDomElement crsElement = doc.createElement( "CRS" );
-    QDomText epsgText = doc.createTextNode( "EPSG:" + QString::number( *crsIt ) );
-    crsElement.appendChild( epsgText );
+    QDomText crsText = doc.createTextNode( *crsIt );
+    crsElement.appendChild( crsText );
     layerElement.appendChild( crsElement );
   }
 }

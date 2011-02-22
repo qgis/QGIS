@@ -1,5 +1,5 @@
 /***************************************************************************
- *   qgsprojectionselector.h
+ *   qgsprojectionselector.h                                               *
  *   Copyright (C) 2005 by Tim Sutton                                      *
  *   tim@linfiniti.com                                                     *
  *                                                                         *
@@ -15,6 +15,8 @@
 
 #include <QSet>
 #include <QStringList>
+
+#include "qgis.h"
 
 class QResizeEvent;
 
@@ -68,7 +70,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     const QString sqlSafeString( const QString theSQL );
 
     //! Gets the current EpsgCrsId-style projection identifier
-    long selectedEpsg();
+    // @deprecated there are other authorities - use selectedAuthId()
+    QGISDEPRECATED long selectedEpsg();
 
     //! Gets the current InternalCrsId-style projection identifier
     long selectedSrsid();
@@ -85,6 +88,11 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
     void setSelectedAuthId( QString authId );
 
+    //! Get the selected coordinate system
+    // @deprecated there are other authorities - so not always defined
+#ifndef Q_MOC_RUN
+    QGISDEPRECATED
+#endif
     void setSelectedEpsg( long epsg );
 
     QString selectedProj4String();

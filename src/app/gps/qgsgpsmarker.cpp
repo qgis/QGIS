@@ -27,7 +27,7 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
-  mWgs84CRS.createFromEpsg( 4326 );
+  mWgs84CRS.createFromOgcWmsCrs( "EPSG:4326" );
 }
 
 void QgsGpsMarker::setSize( int theSize )

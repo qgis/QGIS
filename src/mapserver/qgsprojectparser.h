@@ -67,7 +67,7 @@ class QgsProjectParser: public QgsConfigParser
           </WMSEpsgList>
       </properties>
     */
-    virtual QSet<int> supportedOutputCrsSet() const;
+    virtual QSet<QString> supportedOutputCrsSet() const;
 
     /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
        Default implementation returns an empty map*/
@@ -79,8 +79,8 @@ class QgsProjectParser: public QgsConfigParser
     /**Returns map rectangle for the project file*/
     QgsRectangle mapRectangle() const;
 
-    /**Returns epsg number of the project crs (or -1 in case of error)*/
-    int mapEpsg() const;
+    /**Returns epsg number of the project crs (or Null in case of error)*/
+    QString mapAuthid() const;
 
     /**Return project title*/
     QString projectTitle() const;

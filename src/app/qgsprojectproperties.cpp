@@ -189,12 +189,29 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mWMSExtMaxY->setText( values[3] );
   }
 
-  values = QgsProject::instance()->readListEntry( "WMSEpsgList", "/", &ok );
+  values = QgsProject::instance()->readListEntry( "WMSCrsList", "/", &ok );
   grpWMSList->setChecked( ok && values.size() > 0 );
   if ( grpWMSList->isChecked() )
   {
     mWMSList->addItems( values );
   }
+  else
+  {
+    values = QgsProject::instance()->readListEntry( "WMSEpsgList", "/", &ok );
+    grpWMSList->setChecked( ok && values.size() > 0 );
+    if ( grpWMSList->isChecked() )
+    {
+      QStringList list;
+      foreach( QString value, values )
+      {
+        list << QString( "EPSG:%1" ).arg( value );
+      }
+
+      mWMSList->addItems( list );
+    }
+  }
+
+  grpWMSList->setChecked( mWMSList->count() > 0 );
 
   restoreState();
 }
@@ -375,6 +392,8 @@ void QgsProjectProperties::apply()
     grpWMSList->setChecked( false );
   }
 
+  QgsProject::instance()->removeEntry( "WMSEpsgList", "/" );
+
   if ( grpWMSList->isChecked() )
   {
     QStringList crslist;
@@ -383,11 +402,11 @@ void QgsProjectProperties::apply()
       crslist << mWMSList->item( i )->text();
     }
 
-    QgsProject::instance()->writeEntry( "WMSEpsgList", "/", crslist );
+    QgsProject::instance()->writeEntry( "WMSCrsList", "/", crslist );
   }
   else
   {
-    QgsProject::instance()->removeEntry( "WMSEpsgList", "/" );
+    QgsProject::instance()->removeEntry( "WMSCrsList", "/" );
   }
 
   //todo XXX set canvas color
@@ -498,23 +517,16 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
   mySelector->setMessage();
   if ( mySelector->exec() )
   {
-    long crs = mySelector->selectedEpsg();
+    QString authid = mySelector->selectedAuthId();
 
-    if ( crs > 0 )
+    QList<QListWidgetItem *> items = mWMSList->findItems( authid.mid( 5 ), Qt::MatchFixedString );
+    if ( items.size() == 0 )
     {
-      QList<QListWidgetItem *> items = mWMSList->findItems( QString::number( crs ), Qt::MatchFixedString );
-      if ( items.size() == 0 )
-      {
-        mWMSList->addItem( QString::number( crs ) );
-      }
-      else
-      {
-        QMessageBox::information( this, tr( "Coordinate System Restriction" ), tr( "CRS %1 was already selected" ).arg( crs ) );
-      }
+      mWMSList->addItem( authid );
     }
     else
     {
-      QMessageBox::information( this, tr( "Coordinate System Restriction" ), tr( "Selected CRS is not a EPSG coordinate system." ) );
+      QMessageBox::information( this, tr( "Coordinate System Restriction" ), tr( "CRS %1 was already selected" ).arg( authid ) );
     }
   }
 
@@ -542,16 +554,13 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   if ( cbxProjectionEnabled->isChecked() )
   {
     QgsCoordinateReferenceSystem srs( projectionSelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    if ( srs.epsg() > 0 )
-      crsList << QString::number( srs.epsg() );
+    crsList << srs.authid();
   }
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); it++ )
   {
-    long crs = it.value()->crs().epsg();
-    if ( crs > 0 )
-      crsList << QString::number( crs );
+    crsList << it.value()->crs().authid();
   }
 
   mWMSList->clear();

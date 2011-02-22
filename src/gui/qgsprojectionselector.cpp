@@ -66,18 +66,19 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name
   /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
   /*** This is kept now for backwards compatibility */
 
-  QStringList projectionsEpsg  = settings.value( "/UI/recentProjectionsEpsg" ).toStringList();
-  QStringList projectionsProj4 = settings.value( "/UI/recentProjectionsProj4" ).toStringList();
-  if ( projectionsEpsg.size() >= mRecentProjections.size() )
+  QStringList projectionsProj4  = settings.value( "/UI/recentProjectionsProj4" ).toStringList();
+  QStringList projectionsAuthId = settings.value( "/UI/recentProjectionsAuthId" ).toStringList();
+  if ( projectionsAuthId.size() >= mRecentProjections.size() )
   {
-    // We had saved state with EPSG and Proj4. Use that instead
-    // to find out the csr id
-    QgsDebugMsg( "Use popular projection list from EPSG/Proj4 saved state" );
+    // We had saved state with AuthId and Proj4. Use that instead
+    // to find out the crs id
+    QgsDebugMsg( "Use popular projection list from AuthId/Proj4 saved state" );
     mRecentProjections.clear();
-    for ( int i = 0; i <  projectionsEpsg.size(); i++ )
+    for ( int i = 0; i <  projectionsAuthId.size(); i++ )
     {
       // Create a crs from the EPSG
-      QgsCoordinateReferenceSystem crs( projectionsEpsg.at( i ).toLong(), QgsCoordinateReferenceSystem::EpsgCrsId );
+      QgsCoordinateReferenceSystem crs;
+      crs.createFromOgcWmsCrs( projectionsAuthId.at( i ) );
       if ( ! crs.isValid() )
       {
         // Couldn't create from EPSG, try the Proj4 string instead
@@ -113,10 +114,10 @@ QgsProjectionSelector::~QgsProjectionSelector()
     // Save to file *** Should be removed sometims in the future ***
     settings.setValue( "/UI/recentProjections", mRecentProjections );
 
-    // Convert to EPGS and proj4, and save those values also
+    // Convert to EPSG and proj4, and save those values also
 
-    QStringList projectionsEpsg;
     QStringList projectionsProj4;
+    QStringList projectionsAuthId;
     for ( int i = 0; i <  mRecentProjections.size(); i++ )
     {
       // Create a crs from the crsId
@@ -126,11 +127,11 @@ QgsProjectionSelector::~QgsProjectionSelector()
         // No? Skip this entry
         continue;
       }
-      projectionsEpsg  << QString::number( crs.epsg() );
       projectionsProj4 << crs.toProj4();
+      projectionsAuthId << crs.authid();
     }
-    settings.setValue( "/UI/recentProjectionsEpsg", projectionsEpsg );
     settings.setValue( "/UI/recentProjectionsProj4", projectionsProj4 );
+    settings.setValue( "/UI/recentProjectionsAuthId", projectionsAuthId );
   }
 }
 

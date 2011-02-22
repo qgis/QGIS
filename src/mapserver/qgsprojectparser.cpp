@@ -96,12 +96,8 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   QgsCoordinateReferenceSystem mapCRS;
   if ( !mapExtent.isEmpty() )
   {
-    int epsg = mapEpsg();
-    if ( epsg != -1 )
-    {
-      mapCRS.createFromEpsg( epsg );
-      appendExGeographicBoundingBox( layerParentElem, doc, mapExtent, mapCRS );
-    }
+    mapCRS.createFromOgcWmsCrs( mapAuthid() );
+    appendExGeographicBoundingBox( layerParentElem, doc, mapExtent, mapCRS );
   }
 
   QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
@@ -144,7 +140,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       // combine bounding boxes of childs (groups/layers)
 
       QgsRectangle combinedGeographicBBox;
-      QSet<int> combinedCRSSet;
+      QSet<QString> combinedCRSSet;
       bool firstBBox = true;
       bool firstCRSSet = true;
 
@@ -171,7 +167,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         }
 
         //combine crs set
-        QSet<int> crsSet;
+        QSet<QString> crsSet;
         if ( crsSetForLayer( childElem, crsSet ) )
         {
           if ( firstCRSSet )
@@ -233,7 +229,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       layerElem.appendChild( abstractElem );
 
       //CRS
-      QList<int> crsList = createCRSListForLayer( currentLayer );
+      QStringList crsList = createCRSListForLayer( currentLayer );
       appendCRSElementsToLayer( layerElem, doc, crsList );
 
       //Ex_GeographicBoundingBox
@@ -406,40 +402,53 @@ QStringList QgsProjectParser::identifyDisabledLayers() const
   return disabledList;
 }
 
-QSet<int> QgsProjectParser::supportedOutputCrsSet() const
+QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
 {
-  QSet<int> epsgSet;
+  QSet<QString> crsSet;
   if ( !mXMLDoc )
   {
-    return epsgSet;
+    return crsSet;
   }
 
   QDomElement qgisElem = mXMLDoc->documentElement();
   if ( qgisElem.isNull() )
   {
-    return epsgSet;
+    return crsSet;
   }
   QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
   if ( propertiesElem.isNull() )
   {
-    return epsgSet;
+    return crsSet;
   }
-  QDomElement wmsEpsgElem = propertiesElem.firstChildElement( "WMSEpsgList" );
-  if ( wmsEpsgElem.isNull() )
+  QDomElement wmsCrsElem = propertiesElem.firstChildElement( "WMSCrsList" );
+  if ( !wmsCrsElem.isNull() )
   {
-    return epsgSet;
-  }
-  QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
-  bool conversionOk;
-  for ( int i = 0; i < valueList.size(); ++i )
-  {
-    int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
-    if ( conversionOk )
+    QDomNodeList valueList = wmsCrsElem.elementsByTagName( "value" );
+    for ( int i = 0; i < valueList.size(); ++i )
     {
-      epsgSet.insert( epsgNr );
+      crsSet.insert( valueList.at( i ).toElement().text() );
     }
   }
-  return epsgSet;
+  else
+  {
+    QDomElement wmsEpsgElem = propertiesElem.firstChildElement( "WMSEpsgList" );
+    if ( wmsEpsgElem.isNull() )
+    {
+      return crsSet;
+    }
+    QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
+    bool conversionOk;
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
+      if ( conversionOk )
+      {
+        crsSet.insert( QString( "EPSG:%1" ).arg( epsgNr ) );
+      }
+    }
+  }
+
+  return crsSet;
 }
 
 QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
@@ -538,43 +547,38 @@ QgsRectangle QgsProjectParser::mapRectangle() const
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-int QgsProjectParser::mapEpsg() const
+QString QgsProjectParser::mapAuthid() const
 {
   if ( !mXMLDoc )
   {
-    return -1;
+    return QString::null;
   }
 
   QDomElement qgisElem = mXMLDoc->documentElement();
   if ( qgisElem.isNull() )
   {
-    return -1;
+    return QString::null;
   }
 
   QDomElement mapCanvasElem = qgisElem.firstChildElement( "mapcanvas" );
   if ( mapCanvasElem.isNull() )
   {
-    return -1;
+    return QString::null;
   }
 
   QDomElement srsElem = mapCanvasElem.firstChildElement( "destinationsrs" );
   if ( srsElem.isNull() )
   {
-    return -1;
+    return QString::null;
   }
 
   QDomNodeList authIdNodes = srsElem.elementsByTagName( "authid" );
   if ( authIdNodes.size() < 1 )
   {
-    return -1;
+    return QString::null;
   }
 
-  QStringList authIdSplit = authIdNodes.at( 0 ).toElement().text().split( ":" );
-  if ( authIdSplit.size() < 2 )
-  {
-    return -1;
-  }
-  return authIdSplit.at( 1 ).toInt();
+  return authIdNodes.at( 0 ).toElement().text();
 }
 
 QString QgsProjectParser::projectTitle() const

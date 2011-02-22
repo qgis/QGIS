@@ -250,7 +250,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     tabPageHistogram->setEnabled( false );
   }
 
-  leSpatialRefSys->setText( "EPSG:" + QString::number( mRasterLayer->crs().epsg() ) + " - " + mRasterLayer->crs().description() );
+  leSpatialRefSys->setText( mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 
   // Set text for pyramid info box
@@ -1640,7 +1640,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   }
   delete mySelector;
 
-  leSpatialRefSys->setText( "EPSG:" + QString::number( mRasterLayer->crs().epsg() ) + " - " + mRasterLayer->crs().description() );
+  leSpatialRefSys->setText( mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 }
 
