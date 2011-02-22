@@ -23,7 +23,11 @@ class QgsDistanceArea
     void setSourceCrs(long srsid);
     
     //! sets source spatial reference system (by EpsgCrsId)
-    void setSourceEpsgCrsId(long epsgId);
+    // @deprecated use setSourceAuthid()
+    void setSourceEpsgCrsId(long epsgId) /Deprecated/;
+
+    //! sets source spatial reference system by authid
+    void setSourceAuthId( QString authid );
 
     //! returns source spatial reference system
     long sourceCrs();

@@ -51,7 +51,10 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceCrs( long srsid );
 
     //! sets source spatial reference system (by EpsgCrsId)
-    void setSourceEpsgCrsId( long epsgId );
+    QGISDEPRECATED void setSourceEpsgCrsId( long epsgId );
+
+    //! sets source spatial reference system by authid
+    void setSourceAuthId( QString authid );
 
     //! returns source spatial reference system
     long sourceCrs() { return mSourceRefSys; }

@@ -661,11 +661,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QString srsname = parameterFromUrl( "SRSNAME" );
   if ( !srsname.isEmpty() )
   {
-    QStringList epsgSplit = srsname.split( ":" );
-    if ( epsgSplit.size() > 1 )
-    {
-      mSourceCRS.createFromEpsg( epsgSplit.at( 1 ).toInt() );
-    }
+    mSourceCRS.createFromOgcWmsCrs( srsname );
   }
 
   QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
@@ -1820,7 +1816,7 @@ QDomElement QgsWFSProvider::createGeometryElem( QgsGeometry* geom, QDomDocument&
     QgsCoordinateReferenceSystem layerCrs = crs();
     if ( layerCrs.isValid() )
     {
-      geomElement.setAttribute( "srsName", QString( "EPSG:" ) + QString::number( layerCrs.epsg() ) );
+      geomElement.setAttribute( "srsName", layerCrs.authid() );
     }
   }
   return geomElement;

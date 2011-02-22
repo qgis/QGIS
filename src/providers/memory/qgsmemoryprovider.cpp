@@ -174,18 +174,22 @@ QString QgsMemoryProvider::dataSourceUri() const
   if ( mCrs.isValid() )
   {
     QString crsDef( "" );
-    long srid = mCrs.epsg();
-    if ( srid )
+    QString authid = mCrs.authid();
+    if ( authid.startsWith( "EPSG:" ) )
     {
-      crsDef = QString( "epsg:%1" ).arg( srid );
-    }
-    else if (( srid = mCrs.postgisSrid() ) )
-    {
-      crsDef = QString( "postgis:%1" ).arg( srid );
+      crsDef = authid;
     }
     else
     {
-      crsDef = QString( "wkt:%1" ).arg( mCrs.toWkt() );
+      int srid = mCrs.postgisSrid();
+      if ( srid )
+      {
+        crsDef = QString( "postgis:%1" ).arg( srid );
+      }
+      else
+      {
+        crsDef = QString( "wkt:%1" ).arg( mCrs.toWkt() );
+      }
     }
     uri.addQueryItem( "crs", crsDef );
   }

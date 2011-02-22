@@ -64,11 +64,19 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     QString selectedProj4String();
     long selectedCrsId();
     QString selectedAuthId();
+
+#ifndef Q_MOC_RUN
+    QGISDEPRECATED
+#endif
     long selectedEpsg();
 
     void setSelectedCrsName( QString theName );
     void setSelectedCrsId( long theID );
     void setSelectedAuthId( QString authId );
+
+#ifndef Q_MOC_RUN
+    QGISDEPRECATED
+#endif
     void setSelectedEpsg( long theID );
 
     /**

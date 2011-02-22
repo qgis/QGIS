@@ -137,11 +137,19 @@ IF (WIN32)
   ENDIF (MSVC)
 ENDIF (WIN32)
 
-# disable deprecation warnings for qgisinterface (re-exporting deprecated methods)
+# disable deprecation warnings for classes re-exporting deprecated methods
 IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx PROPERTIES COMPILE_FLAGS "-wd4996")
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx
+    ${CMAKE_BINARY_DIR}/src/gui/moc_qgsgenericprojectionselector.cxx
+    ${CMAKE_BINARY_DIR}/src/gui/moc_qgsprojectionselector.cxx
+    PROPERTIES COMPILE_FLAGS "-wd4996")
 ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx PROPERTIES COMPILE_FLAGS "-w")
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx
+    ${CMAKE_BINARY_DIR}/src/gui/moc_qgsgenericprojectionselector.cxx
+    ${CMAKE_BINARY_DIR}/src/gui/moc_qgsprojectionselector.cxx
+    PROPERTIES COMPILE_FLAGS "-w")
 ENDIF(MSVC)
 
 #############################################################

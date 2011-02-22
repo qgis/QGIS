@@ -43,7 +43,7 @@ const QgsCoordinateReferenceSystem& QgsEPSGCache::searchCRS( long epsg )
   if ( crsIt == mCRS.constEnd() )
   {
     QgsCoordinateReferenceSystem s;
-    if ( ! s.createFromEpsg( epsg ) )
+    if ( ! s.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsg ) ) )
     {
       return mInvalidCRS;
     }

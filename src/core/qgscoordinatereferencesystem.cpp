@@ -87,7 +87,7 @@ bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
       result = createFromSrid( theId );
       break;
     case EpsgCrsId:
-      result = createFromEpsg( theId );
+      result = createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( theId ) );
       break;
     default:
       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
@@ -993,7 +993,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
     {
       myNode = srsNode.namedItem( "epsg" );
       if ( !myNode.isNull() )
-        initialized = createFromEpsg( myNode.toElement().text().toLong() );
+        initialized = createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( myNode.toElement().text().toLong() ) );
     }
 
     if ( initialized )

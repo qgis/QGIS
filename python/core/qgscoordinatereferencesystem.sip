@@ -68,7 +68,7 @@ class QgsCoordinateReferenceSystem
          * @note Any members will be overwritten during this process.
          * @note SRID and EpsgCrsId may be blank if no match can be found on srs db.
          * @param theWkt The Wkt for the desired spatial reference system.
-         * @return bool TRUE if sucess else false
+         * @return bool TRUE if success else false
          */
         bool createFromWkt(const QString theWkt);
         
@@ -86,9 +86,10 @@ class QgsCoordinateReferenceSystem
          * and then the users ~/.qgis/qgis.db database will be checked for a match.
          * @note Any members will be overwritten during this process.
          * @param theEpsg The EpsgCrsId for the desired spatial reference system.
-         * @return bool TRUE if sucess else false
+         * @return bool TRUE if success else false
+         * @deprecated use createFromOgcWmsCrs()
          */
-        bool createFromEpsg(const long theEpsg);
+        bool createFromEpsg(const long theEpsg) /Deprecated/;
 
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. If the srsid is < 100000, only the system srs.db 
@@ -96,7 +97,7 @@ class QgsCoordinateReferenceSystem
          * the ~/.qgis/qgis.db
          * @note Any members will be overwritten during this process.
          * @param theSrsId The QGIS SrsId for the desired spatial reference system.
-         * @return bool TRUE if sucess else false
+         * @return bool TRUE if success else false
          */
         bool createFromSrsId (const long theSrsId);
 
@@ -127,7 +128,7 @@ class QgsCoordinateReferenceSystem
          *    for this srs.
          *
          * @param theProjString A proj4 format string
-         * @return bool TRUE if sucess else false
+         * @return bool TRUE if success else false
          */
         bool createFromProj4 (const QString theProjString);
 
@@ -211,9 +212,10 @@ class QgsCoordinateReferenceSystem
          */
         long postgisSrid () const;
         /*! Get the EpsgCrsId identifier for this srs
-         * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
+         * @return  long theEpsg the EPGG identifier for this srs (defaults to 0)
+         * @deprecated use authid()
          */
-        long epsg () const;
+        long epsg () const /Deprecated/;
         /*! Get the Description
          * @return  QString the Description A textual description of the srs.
          * @note A zero length string will be returned if the description is uninitialised

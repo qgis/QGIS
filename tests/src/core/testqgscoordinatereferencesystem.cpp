@@ -25,7 +25,7 @@ Email                : sherman at mrcc dot com
 
 class TestQgsCoordinateReferenceSystem: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();
     void wktCtor();
@@ -36,7 +36,6 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void createFromOgcWmsCrs();
     void createFromSrid();
     void createFromWkt();
-    void createFromEpsg();
     void createFromSrsId();
     void createFromProj4();
     void isValid();
@@ -76,7 +75,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
 
 void TestQgsCoordinateReferenceSystem::wktCtor()
 {
-  QString myWkt ( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AUTHORITY[\"EPSG\",\"4326\"]]" ) ;
+  QString myWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AUTHORITY[\"EPSG\",\"4326\"]]" ) ;
   QgsCoordinateReferenceSystem myCrs( myWkt );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
@@ -111,9 +110,9 @@ void TestQgsCoordinateReferenceSystem::createFromId()
 void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
 {
   QgsCoordinateReferenceSystem myCrs;
-  //@todo implement this - for now we just check that if fails 
+  //@todo implement this - for now we just check that if fails
   //if passed an empty string
-  QVERIFY ( !myCrs.createFromOgcWmsCrs( QString ("") ) );
+  QVERIFY( !myCrs.createFromOgcWmsCrs( QString( "" ) ) );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrid()
 {
@@ -126,13 +125,7 @@ void TestQgsCoordinateReferenceSystem::createFromWkt()
 {
   QgsCoordinateReferenceSystem myCrs;
   QString myWkt = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AUTHORITY[\"EPSG\",\"4326\"]]" ;
-  QVERIFY ( !myCrs.createFromWkt( myWkt ) );
-}
-void TestQgsCoordinateReferenceSystem::createFromEpsg()
-{
-  QgsCoordinateReferenceSystem myCrs;
-  QVERIFY ( myCrs.createFromEpsg( 4326 ) );
-  debugPrint( myCrs );
+  QVERIFY( !myCrs.createFromWkt( myWkt ) );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrsId()
 {
@@ -149,14 +142,14 @@ void TestQgsCoordinateReferenceSystem::createFromProj4()
 void TestQgsCoordinateReferenceSystem::isValid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.isValid() );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::validate()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   myCrs.validate();
   QVERIFY( myCrs.isValid() );
   debugPrint( myCrs );
@@ -164,7 +157,7 @@ void TestQgsCoordinateReferenceSystem::validate()
 void TestQgsCoordinateReferenceSystem::findMatchingProj()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   int myLong  = myCrs.findMatchingProj();
   QVERIFY( myLong == 4326 );
   debugPrint( myCrs );
@@ -172,32 +165,32 @@ void TestQgsCoordinateReferenceSystem::findMatchingProj()
 void TestQgsCoordinateReferenceSystem::equality()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( 4326 ); 
+  myCrs2.createFromSrsId( 4326 );
   QVERIFY( myCrs == myCrs2 );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::noEquality()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( 4327 ); 
+  myCrs2.createFromSrsId( 4327 );
   QVERIFY( myCrs != myCrs2 );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::equals()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.equals( "proj4 string" ) );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::readXML()
 {
   //QgsCoordinateReferenceSystem myCrs;
-  //myCrs.createFromSrsId( 4326 ); 
+  //myCrs.createFromSrsId( 4326 );
   //QgsCoordinateReferenceSystem myCrs2;
   //QVERIFY( myCrs2.readXML( QDomNode & theNode ) );
 }
@@ -225,21 +218,21 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 void TestQgsCoordinateReferenceSystem::srsid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.srsid() == 4326 );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::postgisSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.postgisSrid() == 4326 );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QString myAcronym = myCrs.ellipsoidAcronym();
   QVERIFY( myAcronym == "foo" );
   debugPrint( myCrs );
@@ -247,7 +240,7 @@ void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
 void TestQgsCoordinateReferenceSystem::toWkt()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QString myWkt = myCrs.toWkt();
   QVERIFY( myWkt == "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
   debugPrint( myCrs );
@@ -255,21 +248,21 @@ void TestQgsCoordinateReferenceSystem::toWkt()
 void TestQgsCoordinateReferenceSystem::toProj4()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.toProj4() == "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs" );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::geographicFlag()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.geographicFlag() );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::mapUnits()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrsId( 4326 ); 
+  myCrs.createFromSrsId( 4326 );
   QVERIFY( myCrs.mapUnits() == QGis::Degrees );
   debugPrint( myCrs );
 }

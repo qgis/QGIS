@@ -83,7 +83,7 @@ class QgsConfigParser
 
     /**Returns a set of supported epsg codes for the capabilities document. An empty set means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
-    virtual QSet<int> supportedOutputCrsSet() const { return QSet<int>(); }
+    virtual QSet<QString> supportedOutputCrsSet() const { return QSet<QString>(); }
 
     /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
        Default implementation returns an empty map*/
@@ -139,13 +139,13 @@ class QgsConfigParser
     bool exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const;
 
     /**Returns a list of supported EPSG coordinate system numbers from a layer*/
-    QList<int> createCRSListForLayer( QgsMapLayer* theMapLayer ) const;
+    QStringList createCRSListForLayer( QgsMapLayer* theMapLayer ) const;
     /**Reads all the epsg numbers from a capabilities layer
     @param layerElement <Layer> element in capabilities
     @param crsSet out: set containing the epsg numbers on successfull completion
     @return true in case of success*/
-    bool crsSetForLayer( const QDomElement& layerElement, QSet<int>& crsSet ) const;
-    void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QList<int>& crsList ) const;
+    bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
+    void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList ) const;
 
     void setDefaultLegendSettings();
 };

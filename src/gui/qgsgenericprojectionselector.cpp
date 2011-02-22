@@ -60,7 +60,7 @@ QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
 
 void QgsGenericProjectionSelector::setSelectedEpsg( long theId )
 {
-  projectionSelector->setSelectedEpsg( theId );
+  projectionSelector->setSelectedAuthId( QString( "EPSG:%1" ).arg( theId ) );
 }
 
 void QgsGenericProjectionSelector::setSelectedCrsName( QString theName )
@@ -92,7 +92,11 @@ long QgsGenericProjectionSelector::selectedCrsId()
 
 long QgsGenericProjectionSelector::selectedEpsg()
 {
-  return projectionSelector->selectedEpsg();
+  QString authid = projectionSelector->selectedAuthId();
+  if ( authid.startsWith( "EPSG:", Qt::CaseInsensitive ) )
+    return authid.mid( 5 ).toLong();
+  else
+    return 0;
 }
 
 QString QgsGenericProjectionSelector::selectedAuthId()

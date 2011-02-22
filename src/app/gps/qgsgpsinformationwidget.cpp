@@ -189,7 +189,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   }
   // Set up the rubber band to show digitising
   createRubberBand();
-  mWgs84CRS.createFromEpsg( 4326 );
+  mWgs84CRS.createFromOgcWmsCrs( "EPSG:4326" );
   //for now I am hiding accuracy and date widgets
   mDateTime->hide();
   mVerticalAccuracy->hide();
