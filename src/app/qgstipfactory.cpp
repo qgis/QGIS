@@ -108,6 +108,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
         " specific anchor points of the element within this dialogue. "
         ));
   addGuiTip(myTip);
+  // This  tip contributed by Andreas Neumann
   myTip.setTitle(tr("Rotating a map and linking a north arrow"));
   myTip.setContent(tr("You can rotate a map by setting its rotation value "
         " in the <strong>Item tab --> Map</strong> section. To place a north "
@@ -120,6 +121,14 @@ QgsTipFactory::QgsTipFactory() : QObject()
         " will now automatically adjust its rotation. "
         ));
   addGuiTip(myTip);
+  // This  tip contributed by Andreas Neumann
+  myTip.setTitle(tr("Numeric scale value in map layout linked to map frame"));
+  myTip.setContent(tr("If you want to place a text label as a placeholder for the "
+         " current scale, linked to a map frame, you need to place a scalebar and "
+         " set the style to 'Numeric'. You also need to select the map frame, if there "
+         " is more than one."
+        ));
+  addGenericTip(myTip);
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""
