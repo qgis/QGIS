@@ -29,9 +29,11 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 
-QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style,
-    QWidget *parent, Mode mode, QString fileName )
-    : QDialog( parent ), mDialogMode( mode ), mQgisStyle( style ), mFileName( fileName )
+QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent, Mode mode, QString fileName )
+    : QDialog( parent )
+    , mFileName( fileName )
+    , mDialogMode( mode )
+    , mQgisStyle( style )
 {
   setupUi( this );
 
@@ -134,7 +136,7 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
     if ( !mTempStyle->load( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Import error" ),
-                            tr( "An error was occured during import:\n%1" ).arg( mTempStyle->errorString() ) );
+                            tr( "An error occured during import:\n%1" ).arg( mTempStyle->errorString() ) );
       return false;
     }
   }

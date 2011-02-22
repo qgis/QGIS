@@ -34,10 +34,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
   QgsTip myTip;
   myTip.setTitle( tr( "Quantum GIS is open source" ) );
   myTip.setContent( tr( "Quantum GIS is open source software."
-                        " This means that the software source code can be freely viewed "
-                        " and modified. The GPL places a restriction that any modifications "
-                        " you make must be made available to the Quantum GIS project, and "
-                        " that you can not create a new version of Quantum GIS under a "
+                        " This means that the software source code can be freely viewed"
+                        " and modified. The GPL places a restriction that any modifications"
+                        " you make must be made available to the Quantum GIS project, and"
+                        " that you can not create a new version of Quantum GIS under a"
                         " 'closed source' license. Visit <a href=\"http://qgis.org\">"
                         " the QGIS home page (http://qgis.org)</a> for more"
                         " information." ) );
@@ -53,8 +53,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Become an QGIS translator" ) );
   myTip.setContent( tr( "Would you like to see QGIS"
                         " in your native language? We are looking for more translators"
-                        " and would appreciate your help! The translation process is "
-                        " fairly straight forward - instructions are available in the "
+                        " and would appreciate your help! The translation process is"
+                        " fairly straight forward - instructions are available in the"
                         " QGIS wiki"
                         " <a href=\"http://www.qgis.org/wiki/GUI_Translation\">translator's page (http://www.qgis.org/wiki/GUI_Translation).</a>"
                       ) );
@@ -75,7 +75,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGenericTip( myTip );
   myTip.setTitle( tr( "How do I refer to Quantum GIS?" ) );
   myTip.setContent( tr( "QGIS is spelled in all caps."
-                        " We have various subprojects of the QGIS project "
+                        " We have various subprojects of the QGIS project"
                         " and it will help to avoid confusion if you refer to each by"
                         " its name:"
                         "<ul>"
@@ -88,60 +88,60 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGenericTip( myTip );
   // This tip contributed by Andreas Neumann
-  myTip.setTitle(tr("Add the current date to a map layout"));
-  myTip.setContent(tr("Content: You can add a current date variable to your map "
-        " layout. Create a regular text label and add the string "
-        " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the "
-        " <a href=\"http://doc.qt.nokia.com/latest/qdate.html#toString\">"
-        " QDate::toString format documentation</a> for the possible date formats."
-        ));
-  addGuiTip(myTip);
-  myTip.setTitle(tr("Moving Elements and Maps in the Print Composer"));
-  myTip.setContent(tr("In the print composer tool bar you can find two "
-        " buttons for moving elements. The left one (a selection cursor "
-        " with the hand symbol) selects and moves elements in the layout. "
-        " After selecting the element with this tool you can also move "
-        " them around with the arrow keys. For accurate positioning use "
-        " the <strong>Position and Size</strong> dialogue, which can be "
-        " found in the tab <strong>Item --> General Options --> Position "
-        " and Size</strong>. For easier positioning you can also set "
-        " specific anchor points of the element within this dialogue. "
-        " The other move tool (the globe icon combined with the hand icon) "
-        " allows to move the map content within a map frame. "
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Add the current date to a map layout" ) );
+  myTip.setContent( tr( "You can add a current date variable to your map"
+                        " layout. Create a regular text label and add the string"
+                        " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
+                        " <a href=\"http://doc.qt.nokia.com/latest/qdate.html#toString\">"
+                        "QDate::toString format documentation</a> for the possible date formats."
+                      ) );
+  addGuiTip( myTip );
+  myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
+  myTip.setContent( tr( "In the print composer tool bar you can find two"
+                        " buttons for moving elements. The left one (a selection cursor"
+                        " with the hand symbol) selects and moves elements in the layout."
+                        " After selecting the element with this tool you can also move"
+                        " them around with the arrow keys. For accurate positioning use"
+                        " the <strong>Position and Size</strong> dialogue, which can be"
+                        " found in the tab <strong>Item &rarr; General Options &rarr; Position"
+                        " and Size</strong>. For easier positioning you can also set"
+                        " specific anchor points of the element within this dialogue."
+                        " The other move tool (the globe icon combined with the hand icon)"
+                        " allows to move the map content within a map frame."
+                      ) );
+  addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle(tr("Lock an element in the layout view"));
-  myTip.setContent(tr(" By left clicking an element in the layout view you can "
-        " select it, by right clicking an element you can lock it. A lock symbol "
-        " will appear in the upper left corner of the selected element. This "
-        " prevents the element from accidentally being moved with the mouse. While "
-        " in a locked state, you cannot move an element with the mouse but you can "
-        " still move it with the arrow keys or by absolutely positioning it by "
-        " setting its <strong>Position and Size</strong>"
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Lock an element in the layout view" ) );
+  myTip.setContent( tr( "By left clicking an element in the layout view you can"
+                        " select it, by right clicking an element you can lock it. A lock symbol"
+                        " will appear in the upper left corner of the selected element. This"
+                        " prevents the element from accidentally being moved with the mouse. While"
+                        " in a locked state, you cannot move an element with the mouse but you can"
+                        " still move it with the arrow keys or by absolutely positioning it by"
+                        " setting its <strong>Position and Size</strong>."
+                      ) );
+  addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle(tr("Rotating a map and linking a north arrow"));
-  myTip.setContent(tr("You can rotate a map by setting its rotation value "
-        " in the <strong>Item tab --> Map</strong> section. To place a north "
-        " arrow in your layout you can use the <strong>Add Image</strong> "
-        " tool, the button with the little camera icon. QGIS comes with a "
-        " selection of north arrows. After the placement of the north arrow "
-        " in the layout you can link it with a specific map frame by activating "
-        " the <strong>Sync with map</strong> checkbox and selecting a map frame. "
-        " Whenever you change the rotation value of a linked map, the north arrow "
-        " will now automatically adjust its rotation. "
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Rotating a map and linking a north arrow" ) );
+  myTip.setContent( tr( "You can rotate a map by setting its rotation value"
+                        " in the <strong>Item tab &rarr; Map</strong> section. To place a north"
+                        " arrow in your layout you can use the <strong>Add Image</strong>"
+                        " tool, the button with the little camera icon. QGIS comes with a"
+                        " selection of north arrows. After the placement of the north arrow"
+                        " in the layout you can link it with a specific map frame by activating"
+                        " the <strong>Sync with map</strong> checkbox and selecting a map frame."
+                        " Whenever you change the rotation value of a linked map, the north arrow"
+                        " will now automatically adjust its rotation."
+                      ) );
+  addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle(tr("Numeric scale value in map layout linked to map frame"));
-  myTip.setContent(tr("If you want to place a text label as a placeholder for the "
-         " current scale, linked to a map frame, you need to place a scalebar and "
-         " set the style to 'Numeric'. You also need to select the map frame, if there "
-         " is more than one."
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Numeric scale value in map layout linked to map frame" ) );
+  myTip.setContent( tr( "If you want to place a text label as a placeholder for the"
+                        " current scale, linked to a map frame, you need to place a scalebar and"
+                        " set the style to 'Numeric'. You also need to select the map frame, if there"
+                        " is more than one."
+                      ) );
+  addGuiTip( myTip );
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""

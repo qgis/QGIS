@@ -264,7 +264,7 @@
           <item row="8" column="0">
            <widget class="QCheckBox" name="mRotationFromComposerMapCheckBox">
             <property name="text">
-             <string>Sync from map</string>
+             <string>Sync with map</string>
             </property>
            </widget>
           </item>
