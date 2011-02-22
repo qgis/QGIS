@@ -18,6 +18,8 @@
 #include "utils.h"
 
 // Qgis includes
+#include <qgsfeature.h>
+#include <qgsgeometry.h>
 
 RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance ) :
     RgGraphBuilder( crs, topologyTolerance )
@@ -26,21 +28,27 @@ RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& 
 
 QgsPoint RgSimpleGraphBuilder::addVertex( const QgsPoint& pt )
 {
-  // I cann't use QgsSpatialIndex in this time.
-  // QgsSpatialIndex::nearestNeighbor() return only features id not geometry
-  //
-  // This code is very slow and need me for a tests.
-
-  double t = topologyTolerance();
-  if ( t > 0.0 )
+  double f = topologyTolerance();
+  if ( f > 0 )
   {
-    AdjacencyMatrix::iterator it;
-    for ( it = mMatrix.begin(); it != mMatrix.end(); ++it )
+    QgsRectangle r( pt.x() - f, pt.y() - f, pt.x() + f, pt.y() + f );
+    QList< int > searchResult = mPointIndex.intersects( r );
+    if ( !searchResult.empty() )
     {
-      if ( it->first.sqrDist( pt ) < t )
-        return it->first;
+      int i = searchResult.front();
+      if ( mPointMap[ i ].sqrDist( pt ) < topologyTolerance() )
+      {
+        return mPointMap[ i ];
+      }
     }
+    int newId = mPointMap.size() + 1;
+
+    QgsFeature f( newId );
+    f.setGeometry( QgsGeometry::fromPoint( pt ) );
+    mPointIndex.insertFeature( f );
+    mPointMap.insert( newId, pt );
   }
+
   mMatrix[ pt ];
   return pt;
 }

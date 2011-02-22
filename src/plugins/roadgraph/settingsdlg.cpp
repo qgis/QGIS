@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 #include <qdialogbuttonbox.h>
 #include <qmessagebox.h>
-
+#include <QDoubleSpinBox>
 
 // Qgis includes
 #include "settings.h"
@@ -45,6 +45,15 @@ RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WFlags 
   h->addWidget( l );
   mcbPluginsDistanceUnit = new QComboBox( this );
   h->addWidget( mcbPluginsDistanceUnit );
+  v->addLayout( h );
+
+  h = new QHBoxLayout();
+  l = new QLabel( tr( "Topology tolerance" ), this );
+  h->addWidget( l );
+  msbTopologyTolerance = new QDoubleSpinBox( this );
+  msbTopologyTolerance->setMinimum( 0.0 );
+  msbTopologyTolerance->setDecimals( 5 );
+  h->addWidget( msbTopologyTolerance );
   v->addLayout( h );
 
   /*
@@ -117,4 +126,14 @@ void RgSettingsDlg::setDistanceUnitName( const QString& name )
   {
     mcbPluginsDistanceUnit->setCurrentIndex( i );
   }
+}
+
+void RgSettingsDlg::setTopologyTolerance( double f )
+{
+  msbTopologyTolerance->setValue( f );
+}
+
+double RgSettingsDlg::topologyTolerance()
+{
+  return msbTopologyTolerance->value();
 }
