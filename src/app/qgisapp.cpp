@@ -497,7 +497,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   {
     QStringList myPathList = myPaths.split( "|" );
     QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
-    QMessageBox::critical( this, tr( "Plugin paths" ), myPaths );
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
