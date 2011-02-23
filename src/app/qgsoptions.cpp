@@ -506,7 +506,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "plugins/searchPathsForPlugins", myPaths );
 
   //search directories for svgs
-  myPaths;
   for ( int i = 0; i < mListSVGPaths->count(); ++i )
   {
     if ( i != 0 )

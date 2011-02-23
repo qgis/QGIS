@@ -89,7 +89,7 @@ IF (WITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 # Compile flag. Make it possible to turn it off.
-SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile in pedantic mode.")
+SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
 # whether unit tests should be build
 SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
