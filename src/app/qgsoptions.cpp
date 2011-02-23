@@ -79,9 +79,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spinBoxIdentifyValue->setMinimum( 0.01 );
   spinBoxIdentifyValue->setValue( identifyValue );
 
+  //local directories to search when loading c++ plugins 
+  QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myPathList = myPaths.split( "|" );
+    QStringList::const_iterator pathIt = myPathList.constBegin();
+    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( mListPluginPaths );
+      newItem->setText( *pathIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListPluginPaths->addItem( newItem );
+    }
+  }
 
   //local directories to search when looking for an SVG with a given basename
-  QString myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
+  myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
     QStringList myPathList = myPaths.split( "|" );
@@ -479,8 +493,20 @@ void QgsOptions::saveOptions()
 {
   QSettings settings;
 
-  //search directories for svgs
+  //search directories for user plugins
   QString myPaths;
+  for ( int i = 0; i < mListPluginPaths->count(); ++i )
+  {
+    if ( i != 0 )
+    {
+      myPaths += "|";
+    }
+    myPaths += mListPluginPaths->item( i )->text();
+  }
+  settings.setValue( "plugins/searchPathsForPlugins", myPaths );
+
+  //search directories for svgs
+  myPaths;
   for ( int i = 0; i < mListSVGPaths->count(); ++i )
   {
     if ( i != 0 )
@@ -880,6 +906,33 @@ QStringList QgsOptions::i18nList()
   }
   return myList;
 }
+
+void QgsOptions::on_mBtnAddPluginPath_clicked()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a directory" ),
+                    QDir::toNativeSeparators( QDir::homePath() ),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListPluginPaths );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListPluginPaths->addItem( newItem );
+    mListPluginPaths->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::on_mBtnRemovePluginPath_clicked()
+{
+  int currentRow = mListPluginPaths->currentRow();
+  QListWidgetItem* itemToRemove = mListPluginPaths->takeItem( currentRow );
+  delete itemToRemove;
+}
+
 
 void QgsOptions::on_mBtnAddSVGPath_clicked()
 {

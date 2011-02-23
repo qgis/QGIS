@@ -30,7 +30,7 @@ class QString;
 
 /**
 * \class QgsPluginRegistry
-* \brief This class tracks plugins that are currently loaded an provides
+* \brief This class tracks plugins that are currently loaded and provides
 * a means to fetch a pointer to a plugin and unload it
 *
 * plugin key is:
@@ -78,6 +78,8 @@ class QgsPluginRegistry
     //! Python plugin loader
     void loadPythonPlugin( QString packageName );
 
+    //! Overloaded version of the next method that will load from multiple directories not just one
+    void restoreSessionPlugins( QStringList thePluginDirList );
     //! Load any plugins used in the last qgis session
     void restoreSessionPlugins( QString thePluginDirString );
 

@@ -91,6 +91,18 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void on_mRemoveUrlPushButton_clicked();
 
     /* Let the user add a path to the list of search paths
+     * used for finding user Plugin libs.
+     * @note added in QGIS 1.7
+     */
+    void on_mBtnAddPluginPath_clicked();
+
+    /* Let the user remove a path to the list of search paths
+     * used for finding Plugin libs.
+     * @note added in QGIS 1.7
+     */
+    void on_mBtnRemovePluginPath_clicked();
+
+    /* Let the user add a path to the list of search paths
      * used for finding SVG files.
      * @note added in QGIS 1.4
      */

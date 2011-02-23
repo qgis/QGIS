@@ -356,9 +356,17 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
       QgsDebugMsg( "Plugin " + theFullPathName + " did not return a valid type and cannot be loaded" );
       break;
   }
-
 }
 
+//overloaded version of the next method that will load from multiple directories not just one
+void QgsPluginRegistry::restoreSessionPlugins( QStringList thePluginDirList )
+{
+  QStringListIterator myIterator( thePluginDirList );
+  while ( myIterator.hasNext() )
+  {
+    restoreSessionPlugins( myIterator.next() );
+  }
+}
 
 void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 {

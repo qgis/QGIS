@@ -59,9 +59,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-155</y>
+            <y>-369</y>
             <width>746</width>
-            <height>640</height>
+            <height>827</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -168,8 +168,8 @@
              <property name="title">
               <string>Application</string>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
                  <widget class="QLabel" name="textLabel1_4">
@@ -211,7 +211,7 @@
                 </item>
                </layout>
               </item>
-              <item>
+              <item row="1" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
                  <widget class="QLabel" name="textLabel1_5">
@@ -248,77 +248,77 @@
                 </item>
                </layout>
               </item>
-              <item>
+              <item row="2" column="0">
                <widget class="QCheckBox" name="capitaliseCheckBox">
                 <property name="text">
                  <string>Capitalise layer names in legend</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="3" column="0">
                <widget class="QCheckBox" name="cbxLegendClassifiers">
                 <property name="text">
                  <string>Display classification attribute names in legend</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="4" column="0">
                <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
                 <property name="text">
                  <string>Create raster icons in legend</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="5" column="0">
                <widget class="QCheckBox" name="cbxHideSplash">
                 <property name="text">
                  <string>Hide splash screen at startup</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="6" column="0">
                <widget class="QCheckBox" name="cbxShowTips">
                 <property name="text">
                  <string>Show tips at start up</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="7" column="0">
                <widget class="QCheckBox" name="cbxIdentifyResultsDocked">
                 <property name="text">
                  <string>Open identify results in a dock window (QGIS restart required)</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="8" column="0">
                <widget class="QCheckBox" name="cbxSnappingOptionsDocked">
                 <property name="text">
                  <string>Open snapping options  in a dock window (QGIS restart required)</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="9" column="0">
                <widget class="QCheckBox" name="cbxAttributeTableDocked">
                 <property name="text">
                  <string>Open attribute table in a dock window (QGIS restart required)</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="10" column="0">
                <widget class="QCheckBox" name="cbxAddPostgisDC">
                 <property name="text">
                  <string>Add PostGIS layers with double click and select in extended mode</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="11" column="0">
                <widget class="QCheckBox" name="cbxAddNewLayersToCurrentGroup">
                 <property name="text">
                  <string>Add new layers to selected group</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="12" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
                  <widget class="QLabel" name="textLabel1_7">
@@ -360,7 +360,7 @@
                 </item>
                </layout>
               </item>
-              <item>
+              <item row="13" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_6">
                 <item>
                  <widget class="QLabel" name="label_14">
@@ -386,6 +386,52 @@
                  <widget class="QLineEdit" name="leNullValue"/>
                 </item>
                </layout>
+              </item>
+              <item row="14" column="0">
+               <widget class="QGroupBox" name="groupBox_4">
+                <property name="title">
+                 <string>Plugin paths</string>
+                </property>
+                <layout class="QGridLayout" name="_2">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="mSVGLabel_2">
+                   <property name="text">
+                    <string>Path(s) to search for additional C++ plugins libraries</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <spacer>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>31</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="mBtnAddPluginPath">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QPushButton" name="mBtnRemovePluginPath">
+                   <property name="text">
+                    <string>Remove</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="4">
+                  <widget class="QListWidget" name="mListPluginPaths"/>
+                 </item>
+                </layout>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -416,7 +462,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>466</height>
+            <height>479</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -587,7 +633,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>480</height>
+            <height>500</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -941,8 +987,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>458</height>
+            <width>746</width>
+            <height>462</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1272,7 +1318,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>527</height>
+            <height>531</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1368,7 +1414,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>545</height>
+            <height>552</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1459,7 +1505,7 @@
             <x>0</x>
             <y>0</y>
             <width>746</width>
-            <height>531</height>
+            <height>548</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

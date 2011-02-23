@@ -490,6 +490,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
   }
 
+  // Also restore plugins from user specified plugin directories - added for 1.7
+  QSettings settings;
+  QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myPathList = myPaths.split( "|" );
+    QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
+    QMessageBox::critical( this, tr( "Plugin paths" ), myPaths );
+  }
+
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   // now build vector file filter
@@ -541,7 +551,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->mapRenderer()->setLabelingEngine( mLBL );
 
   // Show a nice tip of the day
-  QSettings settings;
   if ( settings.value( "/qgis/showTips", 1 ).toBool() )
   {
     mSplash->hide();
