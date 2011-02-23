@@ -81,7 +81,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
     , mPainting( false )
-    , mLastSize( QSize() )
+    , mNewSize( QSize() )
 {
   mScene = new QGraphicsScene();
   setScene( mScene );
@@ -945,9 +945,6 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
   if ( mNewSize.isValid() )
   {
-    mLastSize = mNewSize;
-    mNewSize = QSize();
-
     if ( mPainting || mDrawing )
     {
       //cancel current render progress
@@ -964,16 +961,15 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 
     mPainting = true;
 
-    while ( mLastSize.isValid() )
+    while ( mNewSize.isValid() )
     {
-      int width = mLastSize.width();
-      int height = mLastSize.height();
-      mLastSize = QSize();
+      QSize lastSize = mNewSize;
+      mNewSize = QSize();
 
       //set map size before scene size helps keep scene indexes updated properly
       // this was the cause of rubberband artifacts
-      mMap->resize( QSize( width, height ) );
-      mScene->setSceneRect( QRectF( 0, 0, width, height ) );
+      mMap->resize( lastSize );
+      mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
       // notify canvas items of change
       updateCanvasItemPositions();
