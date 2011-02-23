@@ -78,8 +78,10 @@ class QgsMapCanvas::CanvasProperties
 
 
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
-    : QGraphicsView( parent ),
-    mCanvasProperties( new CanvasProperties )
+    : QGraphicsView( parent )
+    , mCanvasProperties( new CanvasProperties )
+    , mPainting( false )
+    , mLastSize( QSize() )
 {
   mScene = new QGraphicsScene();
   setScene( mScene );
@@ -943,13 +945,10 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
   if ( mNewSize.isValid() )
   {
-    static bool isAlreadyIn = false;
-    static QSize lastSize = QSize();
-
-    lastSize = mNewSize;
+    mLastSize = mNewSize;
     mNewSize = QSize();
 
-    if ( isAlreadyIn || mDrawing )
+    if ( mPainting || mDrawing )
     {
       //cancel current render progress
       if ( mMapRenderer )
@@ -962,13 +961,14 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
       }
       return;
     }
-    isAlreadyIn = true;
 
-    while ( lastSize.isValid() )
+    mPainting = true;
+
+    while ( mLastSize.isValid() )
     {
-      int width = lastSize.width();
-      int height = lastSize.height();
-      lastSize = QSize();
+      int width = mLastSize.width();
+      int height = mLastSize.height();
+      mLastSize = QSize();
 
       //set map size before scene size helps keep scene indexes updated properly
       // this was the cause of rubberband artifacts
@@ -984,7 +984,8 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 
       emit extentsChanged();
     }
-    isAlreadyIn = false;
+
+    mPainting = false;
   }
 
   QGraphicsView::paintEvent( e );

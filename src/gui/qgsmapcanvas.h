@@ -77,7 +77,6 @@ class GUI_EXPORT QgsMapCanvasLayer
     const QgsMapLayer* layer() const { return mLayer; }
 
   private:
-
     QgsMapLayer* mLayer;
 
     /** Flag whether layer is visible */
@@ -461,6 +460,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! resize canvas size
     QSize mNewSize;
 
+    //! currently in paint event
+    bool mPainting;
+
+    //! size of last resize event
+    QSize mLastSize;
 }; // class QgsMapCanvas
 
 
