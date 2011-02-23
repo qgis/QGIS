@@ -463,8 +463,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! currently in paint event
     bool mPainting;
 
-    //! size of last resize event
-    QSize mLastSize;
 }; // class QgsMapCanvas
 
 
