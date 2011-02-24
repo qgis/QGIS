@@ -19,7 +19,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmapserverlogger.h"
 
-#define MAX_N_LAYERS 50
+//maximum number of layers in the cache (and upper limit for layers in one published project)
+#define MAX_N_LAYERS 100
 
 QgsMSLayerCache* QgsMSLayerCache::mInstance = 0;
 
@@ -40,7 +41,7 @@ QgsMSLayerCache::QgsMSLayerCache()
 QgsMSLayerCache::~QgsMSLayerCache()
 {
   QgsMSDebugMsg( "removing all entries" );
-  QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it;
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it;
   for ( it = mEntries.begin(); it != mEntries.end(); ++it )
   {
     delete it->layerPointer;
@@ -57,7 +58,7 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   }
 
   QPair<QString, QString> urlLayerPair = qMakePair( url, layerName );
-  QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlLayerPair );
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlLayerPair );
   if ( it != mEntries.end() )
   {
     delete it->layerPointer;
@@ -76,7 +77,7 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
 QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName )
 {
   QPair<QString, QString> urlNamePair = qMakePair( url, layerName );
-  QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlNamePair );
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlNamePair );
   if ( it == mEntries.end() )
   {
     QgsMSDebugMsg( "Layer not found in cache" );
@@ -121,8 +122,8 @@ void QgsMSLayerCache::removeLeastUsedEntry()
     return;
   }
   QgsMSDebugMsg( "removeLeastUsedEntry" );
-  QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.begin();
-  QMap<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator lowest_it = it;
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.begin();
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator lowest_it = it;
   time_t lowest_time = it->lastUsedTime;
 
   for ( ; it != mEntries.end(); ++it )
