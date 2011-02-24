@@ -695,12 +695,18 @@ void QgsRasterLayerProperties::sync()
       cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "No Stretch" ) ) );
     }
 
-    //Display the current default contrast enhancement algorithm
+    // Display the current default band combination
     mDefaultRedBand = myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt();
     mDefaultGreenBand = myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt();
     mDefaultBlueBand = myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt();
     labelDefaultBandCombination->setText( tr( "Default R:%1 G:%2 B:%3" ).arg( mDefaultRedBand ) .arg( mDefaultGreenBand ) .arg( mDefaultBlueBand ) );
 
+    // and used band combination
+    cboRed->setCurrentIndex( cboRed->findText( mRasterLayer->redBandName() ) );
+    cboGreen->setCurrentIndex( cboGreen->findText( mRasterLayer->greenBandName() ) );
+    cboBlue->setCurrentIndex( cboBlue->findText( mRasterLayer->blueBandName() ) );
+
+    //Display the current default contrast enhancement algorithm
     mDefaultContrastEnhancementAlgorithm = myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
     if ( mDefaultContrastEnhancementAlgorithm == "NoEnhancement" )
     {
@@ -722,6 +728,8 @@ void QgsRasterLayerProperties::sync()
     {
       labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
     }
+    mDefaultStandardDeviation = myQSettings.value("/Raster/defaultStandardDeviation", 1.0).toDouble();
+    sboxThreeBandStdDev->setValue(mDefaultStandardDeviation);
   }
 
   QgsDebugMsg( "populate transparency tab" );
@@ -2193,6 +2201,7 @@ void QgsRasterLayerProperties::on_rbtnThreeBandMinMax_toggled( bool theState )
 void QgsRasterLayerProperties::on_rbtnThreeBandStdDev_toggled( bool theState )
 {
   sboxThreeBandStdDev->setEnabled( theState );
+  sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
 }
 
 void QgsRasterLayerProperties::pixelSelected( int x, int y )
