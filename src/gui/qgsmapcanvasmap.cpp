@@ -44,6 +44,7 @@ QRectF QgsMapCanvasMap::boundingRect() const
 
 void QgsMapCanvasMap::resize( QSize size )
 {
+  QgsDebugMsg( QString( "resizing to %1x%2" ).arg( size.width() ).arg( size.height() ) );
   prepareGeometryChange(); // to keep QGraphicsScene indexes up to date on size change
 
   mPixmap = QPixmap( size );

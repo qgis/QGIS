@@ -80,8 +80,8 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
-    , mPainting( false )
     , mNewSize( QSize() )
+    , mPainting( false )
 {
   mScene = new QGraphicsScene();
   setScene( mScene );
