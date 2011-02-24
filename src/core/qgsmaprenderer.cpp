@@ -228,6 +228,12 @@ void QgsMapRenderer::render( QPainter* painter )
     return;
   }
 
+  if ( mSize.width() == 1 && mSize.height() == 1 )
+  {
+    QgsDebugMsg( "size 1x1... not rendering" );
+    return;
+  }
+
   QPaintDevice* thePaintDevice = painter->device();
   if ( !thePaintDevice )
   {
