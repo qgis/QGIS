@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>352</width>
-    <height>413</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -71,22 +71,22 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Service</string>
+            </property>
+            <property name="buddy">
+             <cstring>txtService</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="TextLabel1">
             <property name="text">
              <string>Host</string>
             </property>
             <property name="buddy">
              <cstring>txtHost</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="TextLabel2">
-            <property name="text">
-             <string>Database</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtDatabase</cstring>
             </property>
            </widget>
           </item>
@@ -101,9 +101,22 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="TextLabel2">
+            <property name="text">
+             <string>Database</string>
+            </property>
+            <property name="buddy">
+             <cstring>txtDatabase</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="TextLabel3_3">
             <property name="text">
              <string>SSL mode</string>
+            </property>
+            <property name="buddy">
+             <cstring>cbxSSLmode</cstring>
             </property>
            </widget>
           </item>
@@ -145,10 +158,10 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtHost"/>
+           <widget class="QLineEdit" name="txtService"/>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtDatabase"/>
+           <widget class="QLineEdit" name="txtHost"/>
           </item>
           <item>
            <widget class="QLineEdit" name="txtPort">
@@ -156,6 +169,9 @@
              <string>5432</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtDatabase"/>
           </item>
           <item>
            <widget class="QComboBox" name="cbxSSLmode"/>
@@ -255,7 +271,7 @@
          <string>Allow geometryless tables</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -274,18 +290,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>txtName</tabstop>
+  <tabstop>txtService</tabstop>
   <tabstop>txtHost</tabstop>
-  <tabstop>txtDatabase</tabstop>
   <tabstop>txtPort</tabstop>
+  <tabstop>txtDatabase</tabstop>
   <tabstop>cbxSSLmode</tabstop>
   <tabstop>txtUsername</tabstop>
   <tabstop>txtPassword</tabstop>
   <tabstop>chkStoreUsername</tabstop>
   <tabstop>chkStorePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_publicSchemaOnly</tabstop>
+  <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
-  <tabstop>btnConnect</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

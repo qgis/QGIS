@@ -118,7 +118,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyC
       }
       else if ( pname == "service" )
       {
-        QgsDebugMsg( "service keyword ignored" );
+        mService = pval;
       }
       else if ( pname == "user" )
       {
@@ -232,6 +232,11 @@ QString QgsDataSourceURI::username() const
 void QgsDataSourceURI::setUsername( QString username )
 {
   mUsername = username;
+}
+
+QString QgsDataSourceURI::service() const
+{
+  return mService;
 }
 
 QString QgsDataSourceURI::host() const
@@ -401,37 +406,46 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
 
 QString QgsDataSourceURI::connectionInfo() const
 {
-  QString connectionInfo = "dbname='" + escape( mDatabase ) + "'";
+  QStringList connectionItems;
 
-  if ( mHost != "" )
+  if ( mDatabase != "" )
   {
-    connectionInfo += " host=" + mHost;
+    connectionItems << "dbname='" + escape( mDatabase ) + "'";
+  }
+
+  if ( mService != "" )
+  {
+    connectionItems << "service='" + escape( mService ) + "'";
+  }
+  else if ( mHost != "" )
+  {
+    connectionItems << "host=" + mHost;
     if ( mPort != "" )
-      connectionInfo += " port=" + mPort;
+      connectionItems << "port=" + mPort;
   }
 
   if ( mUsername != "" )
   {
-    connectionInfo += " user='" + escape( mUsername ) + "'";
+    connectionItems << "user='" + escape( mUsername ) + "'";
 
     if ( mPassword != "" )
     {
-      connectionInfo += " password='" + escape( mPassword ) + "'";
+      connectionItems << "password='" + escape( mPassword ) + "'";
     }
   }
 
   if ( mSSLmode == SSLdisable )
-    connectionInfo += " sslmode=disable";
+    connectionItems << "sslmode=disable";
   else if ( mSSLmode == SSLallow )
-    connectionInfo += " sslmode=allow";
+    connectionItems << "sslmode=allow";
   else if ( mSSLmode == SSLrequire )
-    connectionInfo += " sslmode=require";
+    connectionItems << "sslmode=require";
 #if 0
   else if ( mSSLmode == SSLprefer )
-    connectionInfo += " sslmode=prefer";
+    connectionItems << "sslmode=prefer";
 #endif
 
-  return connectionInfo;
+  return connectionItems.join( " " );
 }
 
 QString QgsDataSourceURI::uri() const
@@ -477,6 +491,19 @@ void QgsDataSourceURI::setConnection( const QString &host,
   mHost = host;
   mDatabase = database;
   mPort = port;
+  mUsername = username;
+  mPassword = password;
+  mSSLmode = sslmode;
+}
+
+void QgsDataSourceURI::setConnection( const QString &service,
+                                      const QString &database,
+                                      const QString &username,
+                                      const QString &password,
+                                      SSLmode sslmode )
+{
+  mService = service;
+  mDatabase = database;
   mUsername = username;
   mPassword = password;
   mSSLmode = sslmode;
