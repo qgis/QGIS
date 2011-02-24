@@ -2375,7 +2375,8 @@ void QgisApp::createOverview()
 
   // moved here to set anti aliasing to both map canvas and overview
   QSettings mySettings;
-  mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
+  // Anti Aliasing enabled by default as of QGIS 1.7
+  mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", false ).toBool() );
 
   int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();

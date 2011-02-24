@@ -127,7 +127,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     setCoordinateSystem();
 
     QSettings settings;
-    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() && hasGeometryType() )
+    //Changed to default to true as of QGIS 1.7
+    if ( settings.value( "/qgis/use_symbology_ng", true ).toBool() && hasGeometryType() )
     {
       // using symbology-ng!
       setUsingRendererV2( true );

@@ -260,10 +260,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", 24 ).toString() ) );
   //set the state of the checkboxes
-  chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
+  //Changed to default to true as of QGIS 1.7
+  chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
-  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", false ).toBool() );
+  //Changed to default to true as of QGIS 1.7
+  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", true ).toBool() );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap

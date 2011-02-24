@@ -459,7 +459,8 @@ void QgsMapRenderer::render( QPainter* painter )
             mypImage->fill( 0 );
             ml->setCacheImage( mypImage ); //no need to delete the old one, maplayer does it for you
             QPainter * mypPainter = new QPainter( ml->cacheImage() );
-            if ( mySettings.value( "/qgis/enable_anti_aliasing", false ).toBool() )
+            // Changed to enable anti aliasing by default in QGIS 1.7
+            if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
             {
               mypPainter->setRenderHint( QPainter::Antialiasing );
             }
