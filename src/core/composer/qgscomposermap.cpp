@@ -150,7 +150,8 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   //set antialiasing if enabled in options
   QSettings settings;
-  if ( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() )
+  // Changed to enable anti aliased rendering by default as of QGIS 1.7
+  if ( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
   {
     painter->setRenderHint( QPainter::Antialiasing );
   }
