@@ -19,7 +19,7 @@
 #define QGSMSLAYERCACHE_H
 
 #include <time.h>
-#include <QMap>
+#include <QHash>
 #include <QPair>
 #include <QString>
 
@@ -69,7 +69,7 @@ class QgsMSLayerCache
     /**Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
       url is used several time in a request. It ensures that different layer instances are created for different
       layer names*/
-    QMap<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
+    QHash<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
 };
 
 #endif
