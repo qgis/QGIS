@@ -137,11 +137,12 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
+  settings.remove( key + "/service" );
   settings.remove( key + "/host" );
+  settings.remove( key + "/port" );
   settings.remove( key + "/database" );
   settings.remove( key + "/username" );
   settings.remove( key + "/password" );
-  settings.remove( key + "/port" );
   settings.remove( key + "/sslmode" );
   settings.remove( key + "/publicOnly" );
   settings.remove( key + "/geometryColumnsOnly" );
@@ -415,17 +416,23 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
 
-  QString database = settings.value( key + "/database" ).toString();
-  QString username = settings.value( key + "/username" ).toString();
-  QString password = settings.value( key + "/password" ).toString();
+  QString service                   = settings.value( key + "/service" ).toString();
+  QString host                      = settings.value( key + "/host" ).toString();
+  QString port                      = settings.value( key + "/port" ).toString();
+  QString database                  = settings.value( key + "/database" ).toString();
+  QString username                  = settings.value( key + "/username" ).toString();
+  QString password                  = settings.value( key + "/password" ).toString();
+  QgsDataSourceURI::SSLmode sslmode = ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt();
 
   QgsDataSourceURI uri;
-  uri.setConnection( settings.value( key + "/host" ).toString(),
-                     settings.value( key + "/port" ).toString(),
-                     database,
-                     username,
-                     password,
-                     ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+  if ( !service.isEmpty() )
+  {
+    uri.setConnection( service, database, username, password, sslmode );
+  }
+  else
+  {
+    uri.setConnection( host, port, database,  username, password, sslmode );
+  }
 
   bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
   bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
@@ -511,7 +518,9 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
                               "Check your username and password and try again.\n\n"
                               "The database said:\n%3" )
                           .arg( settings.value( key + "/database" ).toString() )
-                          .arg( settings.value( key + "/host" ).toString() )
+                          .arg( !settings.value( key + "/service" ).toString().isEmpty()
+                                ? settings.value( key + "/service" ).toString()
+                                : settings.value( key + "/host" ).toString() )
                           .arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
   }
 

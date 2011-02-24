@@ -57,6 +57,14 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aPassword,
                         SSLmode sslmode = SSLprefer );
 
+    //! Set all connection related members at once (for the service case)
+    //! \note This optional sslmode parameter has been added in version 1.7
+    void setConnection( const QString& aService,
+                        const QString& aDatabase,
+                        const QString& aUsername,
+                        const QString& aPassword,
+                        SSLmode sslmode = SSLprefer );
+
     //! Set database
     // \note added in 1.4
     void setDatabase( const QString &database );
@@ -100,6 +108,9 @@ class CORE_EXPORT QgsDataSourceURI
     QString password() const;
     enum SSLmode sslMode() const;
 
+    // added in 1.7
+    QString service() const;
+
     // added in version 1.2
     QString keyColumn() const;
     void setKeyColumn( QString column );
@@ -113,10 +124,12 @@ class CORE_EXPORT QgsDataSourceURI
 
     //! host name
     QString mHost;
-    //! database name
-    QString mDatabase;
     //! port the database server listens on
     QString mPort;
+    //! service name
+    QString mService;
+    //! database name
+    QString mDatabase;
     //! schema
     QString mSchema;
     //! spatial table

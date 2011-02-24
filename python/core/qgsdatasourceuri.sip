@@ -39,6 +39,14 @@ public:
                      const QString& aPassword,
                      SSLmode sslmode = SSLprefer );
 
+  //! Set all connection related members at once
+  //! \note added in 1.7
+  void setConnection(const QString& service,
+                     const QString& aDatabase,
+                     const QString& aUsername,
+                     const QString& aPassword,
+                     SSLmode sslmode = SSLprefer );
+
   //! Set database
   //! \note added in 1.4
   void setDatabase( const QString &database );
@@ -72,6 +80,9 @@ public:
   QString password() const;
   QString port() const;
   SSLmode sslMode() const;
+
+  // added in 1.7
+  QString service() const;
 
   void setSql(QString sql);
 

@@ -48,14 +48,15 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
     QSettings settings;
 
     QString key = "/PostgreSQL/connections/" + connName;
+    txtService->setText( settings.value( key + "/service" ).toString() );
     txtHost->setText( settings.value( key + "/host" ).toString() );
-    txtDatabase->setText( settings.value( key + "/database" ).toString() );
     QString port = settings.value( key + "/port" ).toString();
     if ( port.length() == 0 )
     {
       port = "5432";
     }
     txtPort->setText( port );
+    txtDatabase->setText( settings.value( key + "/database" ).toString() );
     cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometrycolumnsOnly", false ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
@@ -102,7 +103,8 @@ void QgsPgNewConnection::accept()
 
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
-      settings.contains( baseKey + txtName->text() + "/host" ) &&
+      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
       QMessageBox::question( this,
                              tr( "Save connection" ),
                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
@@ -119,9 +121,10 @@ void QgsPgNewConnection::accept()
   }
 
   baseKey += txtName->text();
+  settings.setValue( baseKey + "/service", txtService->text() );
   settings.setValue( baseKey + "/host", txtHost->text() );
-  settings.setValue( baseKey + "/database", txtDatabase->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
+  settings.setValue( baseKey + "/database", txtDatabase->text() );
   settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : "" );
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
@@ -160,9 +163,18 @@ QgsPgNewConnection::~QgsPgNewConnection()
 void QgsPgNewConnection::testConnection()
 {
   QgsDataSourceURI uri;
-  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
-                     txtUsername->text(), txtPassword->text(),
-                     ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  if ( !txtService->text().isEmpty() )
+  {
+    uri.setConnection( txtService->text(), txtDatabase->text(),
+                       txtUsername->text(), txtPassword->text(),
+                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  }
+  else
+  {
+    uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
+                       txtUsername->text(), txtPassword->text(),
+                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  }
   QString conninfo = uri.connectionInfo();
   QgsDebugMsg( "PQconnectdb(\"" + conninfo + "\");" );
 
