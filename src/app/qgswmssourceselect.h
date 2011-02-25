@@ -59,7 +59,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void on_btnEdit_clicked();
     //! Deletes the selected connection
     void on_btnDelete_clicked();
-    //! Saves conncetions to the file
+    //! Saves connections to the file
     void saveClicked();
     //! Loads connections from the file
     void loadClicked();

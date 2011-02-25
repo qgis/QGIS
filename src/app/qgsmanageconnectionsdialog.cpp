@@ -16,84 +16,87 @@
 
 /* $Id$ */
 
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QSettings>
 #include <QTextStream>
 
 #include "qgsmanageconnectionsdialog.h"
 
-QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type ) : QDialog( parent ), mDialogMode( mode ), mConnectionType( type )
+QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, QString fileName )
+    : QDialog( parent )
+    , mFileName( fileName )
+    , mDialogMode( mode )
+    , mConnectionType( type )
 {
   setupUi( this );
 
-  if ( mDialogMode == Load )
+  // additional buttons
+  QPushButton *pb;
+  pb = new QPushButton( tr( "Select all" ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
+
+  pb = new QPushButton( tr( "Clear selection" ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
+
+  if ( mDialogMode == Import )
   {
-    label->setText( tr( "Load from file" ) );
-    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Load" ) );
+    label->setText( tr( "Select connections to import" ) );
+    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
   }
   else
   {
-    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Save" ) );
-    populateConnections();
+    //label->setText( tr( "Select connections to export" ) );
+    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
   }
 
-  connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( selectFile() ) );
+  if ( !populateConnections() )
+  {
+    QApplication::postEvent( this, new QCloseEvent() );
+  }
+
   // use Ok button for starting import and export operations
   disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doSaveLoad() ) );
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
 }
 
-void QgsManageConnectionsDialog::selectFile()
-{
-  QString fileName;
-  if ( mDialogMode == Save )
-  {
-    fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), ".", tr( "XML files (*.xml *.XML)" ) );
-  }
-  else
-  {
-    fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".", tr( "XML files (*.xml *XML)" ) );
-  }
-
-  if ( fileName.isEmpty() )
-  {
-    return;
-  }
-
-  // ensure the user never ommited the extension from the file name
-  if ( !fileName.toLower().endsWith( ".xml" ) )
-  {
-    fileName += ".xml";
-  }
-
-  mFileName = fileName;
-  leFileName->setText( mFileName );
-
-  if ( mDialogMode == Load )
-  {
-    populateConnections();
-  }
-
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
-}
-
-void QgsManageConnectionsDialog::doSaveLoad()
+void QgsManageConnectionsDialog::doExportImport()
 {
   QList<QListWidgetItem *> selection = listConnections->selectedItems();
   if ( selection.isEmpty() )
   {
+    QMessageBox::warning( this, tr( "Export/import error" ),
+                          tr( "You should select at least one connection from list." ) );
     return;
   }
+
   QStringList items;
   for ( int i = 0; i < selection.size(); ++i )
   {
     items.append( selection.at( i )->text() );
   }
 
-  if ( mDialogMode == Save )
+  if ( mDialogMode == Export )
   {
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), ".",
+                                                     tr( "XML files (*.xml *.XML)" ) );
+    if ( fileName.isEmpty() )
+    {
+      return;
+    }
+
+    // ensure the user never ommited the extension from the file name
+    if ( !fileName.toLower().endsWith( ".xml" ) )
+    {
+      fileName += ".xml";
+    }
+
+    mFileName = fileName;
+
     QDomDocument doc;
     if ( mConnectionType == WMS )
     {
@@ -117,7 +120,7 @@ void QgsManageConnectionsDialog::doSaveLoad()
     QTextStream out( &file );
     doc.save( out, 4 );
   }
-  else // load connections
+  else // import connections
   {
     QFile file( mFileName );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -152,22 +155,21 @@ void QgsManageConnectionsDialog::doSaveLoad()
     {
       loadPgConnections( doc, items );
     }
-    // clear connections list
+    // clear connections list and close window
     listConnections->clear();
+    accept();
   }
 
   mFileName = "";
-  leFileName->clear();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
-void QgsManageConnectionsDialog::populateConnections()
+bool QgsManageConnectionsDialog::populateConnections()
 {
-  // Save mode. Populate connections list from settings
-  if ( mDialogMode == 0 )
+  // Export mode. Populate connections list from settings
+  if ( mDialogMode == Export )
   {
     QSettings settings;
-    if ( mConnectionType == 0 )
+    if ( mConnectionType == WMS )
     {
       settings.beginGroup( "/Qgis/connections-wms" );
     }
@@ -186,7 +188,7 @@ void QgsManageConnectionsDialog::populateConnections()
     }
     settings.endGroup();
   }
-  // Load mode. Populate connections list from file
+  // Import mode. Populate connections list from file
   else
   {
     QFile file( mFileName );
@@ -196,7 +198,7 @@ void QgsManageConnectionsDialog::populateConnections()
                             tr( "Cannot read file %1:\n%2." )
                             .arg( mFileName )
                             .arg( file.errorString() ) );
-      return;
+      return false;
     }
 
     QDomDocument doc;
@@ -211,20 +213,17 @@ void QgsManageConnectionsDialog::populateConnections()
                             .arg( errorLine )
                             .arg( errorColumn )
                             .arg( errorStr ) );
-      return;
+      return false;
     }
 
     QDomElement root = doc.documentElement();
-    if ( mConnectionType == 0 )
+    if ( mConnectionType == WMS )
     {
       if ( root.tagName() != "qgsWMSConnections" )
       {
         QMessageBox::information( this, tr( "Loading connections" ),
                                   tr( "The file is not an WMS connections exchange file." ) );
-        mFileName = "";
-        leFileName->clear();
-        listConnections->clear();
-        return;
+        return false;
       }
     }
     else
@@ -233,10 +232,7 @@ void QgsManageConnectionsDialog::populateConnections()
       {
         QMessageBox::information( this, tr( "Loading connections" ),
                                   tr( "The file is not an PostGIS connections exchange file." ) );
-        mFileName = "";
-        leFileName->clear();
-        listConnections->clear();
-        return;
+        return false;
       }
     }
 
@@ -249,6 +245,7 @@ void QgsManageConnectionsDialog::populateConnections()
       child = child.nextSiblingElement();
     }
   }
+  return true;
 }
 
 QDomDocument QgsManageConnectionsDialog::saveWMSConnections( const QStringList &connections )
@@ -293,6 +290,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
     el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
     el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( "service", settings.value( path + "/service", "" ).toString() );
     el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
     el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
 
@@ -332,6 +330,9 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
   while ( !child.isNull() )
   {
     connectionName = child.attribute( "name" );
@@ -342,17 +343,33 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) )
+    if ( keys.contains( connectionName ) && prompt )
     {
       int res = QMessageBox::warning( this, tr( "Loading connections" ),
-                                      tr( "Connection with name %1 already exists. Overwrite?" )
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
                                       .arg( connectionName ),
-                                      QMessageBox::Yes | QMessageBox::No );
-      if ( res != QMessageBox::Yes )
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case QMessageBox::Cancel:   return;
+        case QMessageBox::No:       child = child.nextSiblingElement();
+                                    continue;
+        case QMessageBox::Yes:      overwrite = true;
+                                    break;
+        case QMessageBox::YesToAll: prompt = false;
+                                    overwrite = true;
+                                    break;
+        case QMessageBox::NoToAll:  prompt = false;
+                                    overwrite = false;
+                                    break;
       }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
     }
 
     // no dups detected or overwrite is allowed
@@ -388,6 +405,9 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
   while ( !child.isNull() )
   {
     connectionName = child.attribute( "name" );
@@ -398,18 +418,33 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) )
+    if ( keys.contains( connectionName ) && prompt )
     {
       int res = QMessageBox::warning( this,
                                       tr( "Loading connections" ),
-                                      tr( "Connection with name %1 already exists. Overwrite?" )
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
                                       .arg( connectionName ),
-                                      QMessageBox::Yes | QMessageBox::No );
-      if ( res != QMessageBox::Yes )
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      switch ( res )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case QMessageBox::Cancel:   return;
+        case QMessageBox::No:       child = child.nextSiblingElement();
+                                    continue;
+        case QMessageBox::Yes:      overwrite = true;
+                                    break;
+        case QMessageBox::YesToAll: prompt = false;
+                                    overwrite = true;
+                                    break;
+        case QMessageBox::NoToAll:  prompt = false;
+                                    overwrite = false;
+                                    break;
       }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
     }
 
     //no dups detected or overwrite is allowed
@@ -418,6 +453,14 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     settings.setValue( "/host", child.attribute( "host" ) );
     settings.setValue( "/port", child.attribute( "port" ) );
     settings.setValue( "/database", child.attribute( "database" ) );
+    if ( child.hasAttribute( "service" ) )
+    {
+      settings.setValue( "/service", child.attribute( "service" ) );
+    }
+    else
+    {
+      settings.setValue( "/service", "" );
+    }
     settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
     settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
     settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
@@ -428,4 +471,14 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
     child = child.nextSiblingElement();
   }
+}
+
+void QgsManageConnectionsDialog::selectAll()
+{
+  listConnections->selectAll();
+}
+
+void QgsManageConnectionsDialog::clearSelection()
+{
+  listConnections->clearSelection();
 }
