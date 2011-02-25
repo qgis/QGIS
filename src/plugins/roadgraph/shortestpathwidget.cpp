@@ -250,7 +250,7 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
     return false;
   }
-  if ( p1 == QgsPoint( 0.0, 0.0 ) )
+  if ( p2 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
     return false;
@@ -264,7 +264,11 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
   DijkstraFinder f( m, criterion );
 
   matrix = f.find( p1, p2 );
-
+  if ( matrix.find( p1 ) == matrix.end() )
+  {
+    QMessageBox::critical( this, tr( "Path not found" ), tr( "Path not found" ) );
+    return false;
+  }
   return true;
 }
 
@@ -310,6 +314,8 @@ void RgShortestPathWidget::clear()
   mBackPointLineEdit->setText( QString() );
   mrbBackPoint->reset( true );
   mrbPath->reset();
+  mPathCostLineEdit->setText( QString() );
+  mPathTimeLineEdit->setText( QString() );
 }
 
 void RgShortestPathWidget::exportPath()

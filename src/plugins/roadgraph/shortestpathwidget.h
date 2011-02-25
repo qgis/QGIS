@@ -96,11 +96,12 @@ class RgShortestPathWidget : public QDockWidget
      */
     void clear();
 
+  private:
     /**
      * retrun path as a graph
      */
     bool getPath( AdjacencyMatrix &m, QgsPoint& p1, QgsPoint& p2 );
-  private:
+
     /**
      * This line edit show front points coordinates
      */

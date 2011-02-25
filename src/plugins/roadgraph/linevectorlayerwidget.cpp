@@ -83,6 +83,12 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   mcbSpeed = new QComboBox( frame );
   h->addWidget( l );
   h->addWidget( mcbSpeed );
+  mcbUnitOfSpeed = new QComboBox( this );
+  h->addWidget( mcbUnitOfSpeed );
+
+  mcbUnitOfSpeed->insertItem( 0, tr( "km/h" ) );
+  mcbUnitOfSpeed->insertItem( 0, tr( "m/s" ) );
+
   v->addLayout( h );
 
   frame = new QFrame( tab );
@@ -116,22 +122,6 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   h->addWidget( msbSpeedDefault );
   v->addLayout( h );
 
-  frame = new QFrame( tab );
-  tab->addTab( frame, tr( "Units" ) );
-  v = new QVBoxLayout( frame );
-  h = new QHBoxLayout();
-  l = new QLabel( tr( "Unit of speed" ) );
-  mcbUnitOfSpeed = new QComboBox( this );
-  h->addWidget( l );
-  h->addWidget( mcbUnitOfSpeed );
-  v->addLayout( h );
-
-  mcbUnitOfSpeed->insertItem( 0, tr( "km/h" ) );
-  mcbUnitOfSpeed->insertItem( 0, tr( "m/s" ) );
-  if ( s->mSpeedUnitName == "km/h" )
-    mcbUnitOfSpeed->setCurrentIndex( 1 );
-  else if ( s->mSpeedUnitName == "m/s" )
-    mcbUnitOfSpeed->setCurrentIndex( 0 );
 
   // fill list of layers
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
@@ -177,6 +167,11 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
       mcbDirectionDefault->setCurrentIndex( 2 );
       break;
   }
+  if ( s->mSpeedUnitName == "km/h" )
+    mcbUnitOfSpeed->setCurrentIndex( 1 );
+  else if ( s->mSpeedUnitName == "m/s" )
+    mcbUnitOfSpeed->setCurrentIndex( 0 );
+
 } // RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget()
 
 QgsVectorLayer* RgLineVectorLayerSettingsWidget::selectedLayer()
