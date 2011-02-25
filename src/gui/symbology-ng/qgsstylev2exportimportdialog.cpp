@@ -124,8 +124,6 @@ void QgsStyleV2ExportImportDialog::doExportImport()
 
   mFileName = "";
   mTempStyle->clear();
-
-  return;
 }
 
 bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
