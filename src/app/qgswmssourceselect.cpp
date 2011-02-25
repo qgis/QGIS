@@ -20,7 +20,7 @@
 /* $Id$ */
 
 #include "../providers/wms/qgswmsprovider.h"
-#include "qgis.h" // GEO_EPSG_CRS_ID 
+#include "qgis.h" // GEO_EPSG_CRS_ID
 #include "qgisapp.h" //for getThemeIcon
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
@@ -36,6 +36,7 @@
 #include "qgsnetworkaccessmanager.h"
 
 #include <QButtonGroup>
+#include <QFileDialog>
 #include <QRadioButton>
 #include <QDomDocument>
 #include <QHeaderView>
@@ -245,13 +246,20 @@ void QgsWMSSourceSelect::on_btnDelete_clicked()
 
 void QgsWMSSourceSelect::saveClicked()
 {
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Save, QgsManageConnectionsDialog::WMS );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WMS );
   dlg.exec();
 }
 
 void QgsWMSSourceSelect::loadClicked()
 {
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Load, QgsManageConnectionsDialog::WMS );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+                                                   tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WMS, fileName );
   dlg.exec();
   populateConnectionList();
 }

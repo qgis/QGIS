@@ -131,9 +131,9 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void on_btnBuildQuery_clicked();
     //! Deletes the selected connection
     void on_btnDelete_clicked();
-    //! Saves the selected connections to the file
+    //! Saves the selected connections to file
     void saveClicked();
-    //! Loads the selected connections from the file
+    //! Loads the selected connections from file
     void loadClicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );

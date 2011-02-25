@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgscredentials.h"
 
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
@@ -157,13 +158,20 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
 
 void QgsPgSourceSelect::saveClicked()
 {
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Save, QgsManageConnectionsDialog::PostGIS );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::PostGIS );
   dlg.exec();
 }
 
 void QgsPgSourceSelect::loadClicked()
 {
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Load, QgsManageConnectionsDialog::PostGIS );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections )" ), ".",
+                                                   tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::PostGIS, fileName );
   dlg.exec();
   populateConnectionList();
 }

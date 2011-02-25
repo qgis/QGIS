@@ -30,8 +30,8 @@ class QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnecti
   public:
     enum Mode
     {
-      Save,
-      Load
+      Export,
+      Import
     };
 
     enum Type
@@ -41,17 +41,17 @@ class QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnecti
     };
 
     // constructor
-    // mode argument must be 0 for saving and 1 for loading
+    // mode argument must be 0 for export and 1 for import
     // type argument must be 0 for WMS and 1 for PostGIS
-    QgsManageConnectionsDialog( QWidget *parent = NULL, Mode mode = Save, Type type = WMS );
+    QgsManageConnectionsDialog( QWidget *parent = NULL, Mode mode = Export, Type type = WMS, QString fileName = "" );
 
   public slots:
-    void selectFile();
-    void doSaveLoad();
-
-    void populateConnections();
+    void doExportImport();
+    void selectAll();
+    void clearSelection();
 
   private:
+    bool populateConnections();
     QDomDocument saveWMSConnections( const QStringList &connections );
     QDomDocument savePgConnections( const QStringList & connections );
     void loadWMSConnections( const QDomDocument &doc, const QStringList &items );
