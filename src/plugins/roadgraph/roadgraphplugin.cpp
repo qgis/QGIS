@@ -123,7 +123,10 @@ void RoadGraphPlugin::initGui()
 
   connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter* ) ), this, SLOT( render( QPainter* ) ) );
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
-  connect( mQGisIface , SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
+  connect( mQGisIface, SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
+  connect( mQGisIface, SIGNAL( projectRead() ), mQShortestPathDock, SLOT( clear() ) );
+  connect( mQGisIface, SIGNAL( newProjectCreated() ), mQShortestPathDock, SLOT( clear() ) );
+
   // load settings
   projectRead();
 } // RoadGraphPlugin::initGui()
