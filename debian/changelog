@@ -7,8 +7,11 @@ qgis (1.6.0) UNRELEASED; urgency=low
   * add subversion as build dependency for trunk
   * add qgis-mapserver package
   * trim dependencies
- 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 17 Oct 2010 12:09:23 +0200
+  * Missing ${python:Depends} added to python-qgis dependencies
+    (closes: #611492)
+  * add natty support
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 26 Feb 2011 21:37:16 +0100
 
 qgis (1.5.0) UNRELEASED; urgency=low
 
