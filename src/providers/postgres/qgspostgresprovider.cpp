@@ -213,7 +213,7 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
 
   QgsDebugMsg( QString( "New postgres connection for " ) + conninfo );
 
-  PGconn *pd = PQconnectdb( conninfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  PGconn *pd = PQconnectdb(( conninfo + " application_name='Quantum GIS'" ).toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK )
   {
@@ -236,7 +236,7 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
         uri.setPassword( password );
 
       QgsDebugMsg( "Connecting to " + uri.connectionInfo() );
-      pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+      pd = PQconnectdb(( uri.connectionInfo() + " application_name='Quantum GIS'" ).toLocal8Bit() );
     }
 
     if ( PQstatus( pd ) == CONNECTION_OK )

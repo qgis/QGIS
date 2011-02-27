@@ -178,7 +178,7 @@ void QgsPgNewConnection::testConnection()
   QString conninfo = uri.connectionInfo();
   QgsDebugMsg( "PQconnectdb(\"" + conninfo + "\");" );
 
-  PGconn *pd = PQconnectdb( conninfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  PGconn *pd = PQconnectdb(( conninfo + " application_name='Quantum GIS'" ).toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK )
   {
@@ -205,7 +205,7 @@ void QgsPgNewConnection::testConnection()
         uri.setPassword( password );
 
       QgsDebugMsg( "PQconnectdb(\"" + uri.connectionInfo() + "\");" );
-      pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+      pd = PQconnectdb(( uri.connectionInfo() + " application_name='Quantum GIS'" ).toLocal8Bit() );
     }
 
     if ( PQstatus( pd ) == CONNECTION_OK )

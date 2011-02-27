@@ -164,8 +164,8 @@ void QgsPgSourceSelect::saveClicked()
 
 void QgsPgSourceSelect::loadClicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections )" ), ".",
-                                                   tr( "XML files (*.xml *XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+                     tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -458,7 +458,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   m_privConnInfo = m_connInfo;
 
-  pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  pd = PQconnectdb(( m_privConnInfo + " application_name='Quantum GIS'" ).toLocal8Bit() );   // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK )
   {
@@ -479,7 +479,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
       m_privConnInfo = uri.connectionInfo();
       QgsDebugMsg( "connecting " + m_privConnInfo );
-      pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );
+      pd = PQconnectdb(( m_privConnInfo + " application_name='Quantum GIS'" ).toLocal8Bit() );
     }
 
     if ( PQstatus( pd ) == CONNECTION_OK )
@@ -949,7 +949,7 @@ void QgsGeomColumnTypeThread::getLayerTypes()
 {
   mStopped = false;
 
-  PGconn *pd = PQconnectdb( mConnInfo.toLocal8Bit() );
+  PGconn *pd = PQconnectdb(( mConnInfo + " application_name='Quantum GIS'" ).toLocal8Bit() );
   if ( PQstatus( pd ) == CONNECTION_OK )
   {
     PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
