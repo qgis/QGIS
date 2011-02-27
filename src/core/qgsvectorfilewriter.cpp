@@ -823,7 +823,7 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     longName = "Comma Separated Value";
     trLongName = QObject::tr( "Comma Separated Value" );
     glob = "*.csv";
-    ext = "*.bna";
+    ext = "csv";
   }
   else if ( driverName.startsWith( "ESRI" ) )
   {
