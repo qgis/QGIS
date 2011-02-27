@@ -410,7 +410,7 @@ void QgsSpit::dbConnect()
                        password,
                        ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
-    conn = PQconnectdb( uri.connectionInfo().toUtf8() );
+    conn = PQconnectdb(( uri.connectionInfo() + " application_name='Quantum GIS'" ).toUtf8() );
   }
 
   if ( conn == NULL || PQstatus( conn ) != CONNECTION_OK )
