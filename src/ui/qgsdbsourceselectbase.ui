@@ -77,6 +77,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="cbxAllowGeometrylessTables">
+     <property name="text">
+      <string>Allow geometryless tables</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="btnBuildQuery">
      <property name="enabled">
       <bool>false</bool>

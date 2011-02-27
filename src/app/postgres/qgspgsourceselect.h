@@ -124,6 +124,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     * Once connected, available layers are displayed.
     */
     void on_btnConnect_clicked();
+    void on_cbxAllowGeometrylessTables_stateChanged( int );
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
     //! Opens a dialog to edit an existing connection
