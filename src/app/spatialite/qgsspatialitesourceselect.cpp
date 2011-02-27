@@ -84,6 +84,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   mSearchModeComboBox->setVisible( false );
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
+  cbxAllowGeometrylessTables->setVisible( false );
 }
 
 // Slot for performing action when the Add button is clicked

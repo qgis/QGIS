@@ -117,6 +117,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   mSearchModeComboBox->setVisible( false );
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
+
+  cbxAllowGeometrylessTables->setDisabled( true );
 }
 /** Autoconnected SLOTS **/
 // Slot for adding a new connection
@@ -147,6 +149,7 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/sslmode" );
   settings.remove( key + "/publicOnly" );
   settings.remove( key + "/geometryColumnsOnly" );
+  settings.remove( key + "/allowGeometrylessTables" );
   settings.remove( key + "/estimatedMetadata" );
   settings.remove( key + "/saveUsername" );
   settings.remove( key + "/savePassword" );
@@ -194,6 +197,15 @@ void QgsPgSourceSelect::on_cmbConnections_activated( int )
   // Remember which database was selected.
   QSettings settings;
   settings.setValue( "/PostgreSQL/connections/selected", cmbConnections->currentText() );
+
+  cbxAllowGeometrylessTables->blockSignals( true );
+  cbxAllowGeometrylessTables->setChecked( settings.value( "/PostgreSQL/connections/" + cmbConnections->currentText() + "/allowGeometrylessTables", false ).toBool() );
+  cbxAllowGeometrylessTables->blockSignals( false );
+}
+
+void QgsPgSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
+{
+  on_btnConnect_clicked();
 }
 
 void QgsPgSourceSelect::on_btnBuildQuery_clicked()
@@ -410,6 +422,8 @@ void QgsPgSourceSelect::addTables()
 
 void QgsPgSourceSelect::on_btnConnect_clicked()
 {
+  cbxAllowGeometrylessTables->setEnabled( true );
+
   if ( mColumnTypeThread )
   {
     mColumnTypeThread->stop();
@@ -444,7 +458,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
   bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
-  bool allowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
+  bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata" ).toBool();
   // Need to escape the password to allow for single quotes and backslashes
 
