@@ -1,8 +1,8 @@
-<h3>PostGIS-Tabelle hinzufügen</h3>
-In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespalten) zur Karte hinzufügen.
+<h3>PostGIS-Tabelle hinzuf&uuml;gen</h3>
+In diesem Dialog k&ouml;nnen Sie PostGIS-Layern (Tabellen mit Geometriespalten) zur Karte hinzuf&uuml;gen.
 <p>
 <a href="#connect">Verbindungen</a><br/>
-<a href="#add">Layer hinzufügen</a><br/>
+<a href="#add">Layer hinzuf&uuml;gen</a><br/>
 <a href="#filter">Layer filtern</a><br/>
 <a href="#search">Suchoptionen</a><br/>
 
@@ -10,28 +10,28 @@ In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespalten) zur 
 <h4>Verbindungen</h4>
 </a>
 <ul>
-<li>Wählen Sie eine Verbindung aus der Liste und klicken Sie auf <label>Verbinden</label>.
+<li>W&auml;hlen Sie eine Verbindung aus der Liste und klicken Sie auf <label>Verbinden</label>.
 <li>Wenn es keine Verbindung gibt, klicken Sie auf <label>Neu</label>, um eine Verbindung anzulegen.
-<li>Um eine Verbindung zu verändern, klicken Sie auf <label>Bearbeiten</label>.
+<li>Um eine Verbindung zu ver&auml;ndern, klicken Sie auf <label>Bearbeiten</label>.
 </ul>
 <a name="add">
-<h4>Layer hinzufügen</h4>
+<h4>Layer hinzuf&uuml;gen</h4>
 </a>
-Um einen Layer hinzuzufügen:
+Um einen Layer hinzuzuf&uuml;gen:
 <ol>
-<li>Wählen Sie die gewünschte Verbindung aus der Liste, 
+<li>W&auml;hlen Sie die gew&uuml;nschte Verbindung aus der Liste, 
 <li>klicken Sie auf <label>Verbinden</label>,
-<li>suchen Sie den Layer, den Sie der Liste hinzufügen wollen und klicken Sie ihn an um ihn auszuwählen, 
-<li>Sie können zusätzliche Layer wählen indem Sie die Ctrl-Taste gedrückt halten,
-<li>klicken Sie auf <label>Hinzufügen</label> um den/die Layer der Karte hinzuzufügen.
+<li>suchen Sie den Layer, den Sie der Liste hinzuf&uuml;gen wollen und klicken Sie ihn an um ihn auszuw&auml;hlen, 
+<li>Sie k&ouml;nnen zus&auml;tzliche Layer w&auml;hlen indem Sie die Ctrl-Taste gedr&uuml;ckt halten,
+<li>klicken Sie auf <label>Hinzuf&uuml;gen</label> um den/die Layer der Karte hinzuzuf&uuml;gen.
 </ol>
 <a name="filter">
 <h4>Layer filtern</h4>
 </a>
-Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen oder benutzen den Knopf <label>Abfrage erstellen</label>.  Daraufhin öffnet sich der Abfrageeditor, in dem Sie SQL-Anweisungen zum Filtern der Datensätze festlegen können.
+Um Layer vor dem Hinzuf&uuml;gen zu Filtern klicken Sie doppelt auf deren Namen oder benutzen den Knopf <label>Abfrage erstellen</label>.  Daraufhin &ouml;ffnet sich der Abfrageeditor, in dem Sie SQL-Anweisungen zum Filtern der Datens&auml;tze festlegen k&ouml;nnen.
 
 <a name="#search">
 <h4>Suchoptionen</h4>
 </a>
-Durch Abhaken von <label>Suchoptionen</label> werden weitere Möglichkeiten zur Suche nach verschiedenen Spaltentyp mit folgenden Modi zugeschaltet: <label>Platzhalter</label> oder <label>RegAusdr</label>.
+Durch Abhaken von <label>Suchoptionen</label> werden weitere M&ouml;glichkeiten zur Suche nach verschiedenen Spaltentyp mit folgenden Modi zugeschaltet: <label>Platzhalter</label> oder <label>RegAusdr</label>.
 

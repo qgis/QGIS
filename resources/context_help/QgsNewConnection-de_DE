@@ -1,8 +1,8 @@
 <h3>Neue PostGIS-Verbindung erzeugen</h3>
-Um eine PostGIS-Verbindung anzulegen, müssen Sie den Host, Port und Ihren Benutzername/Passwort für den Datenbankserver kennen. 
-<h4>Benötigte Parameter</h4>
+Um eine PostGIS-Verbindung anzulegen, m&uuml;ssen Sie den Host, Port und Ihren Benutzername/Passwort f&uuml;r den Datenbankserver kennen. 
+<h4>Ben&ouml;tigte Parameter</h4>
 <ul>
-<li><label>Name</label> - ein beschreibender Name für die Verbindung
+<li><label>Name</label> - ein beschreibender Name f&uuml;r die Verbindung
 <li><label>Host</label> - der Name des Hosts des Datenbankservers (z.B. madison.qgis.org)
 <li><label>Datenbank</label> - Name der zu verbindenden Datenbank
 <li><label>Port</label> - Port auf dem PostgreSQL horcht. Voreingestellt ist 5432. Im Zweifel fragen Sie Ihren Datenbankadministrator
@@ -11,9 +11,9 @@ Um eine PostGIS-Verbindung anzulegen, müssen Sie den Host, Port und Ihren Benut
 </ul>
 <h4>Optionen</h4>
 <ol>
-<li><label>Passwort speichern</label>  - speichern Sie Ihr Passwort, damit sie es nicht jedes mal wieder eingeben müssen. Das Passwort wird im Klartext in Ihren QGIS-Einstellungen gespeichert.
-<li><label>Nur in die geometry_columns-Tabelle gucken</label> - normalerweise durchsucht QGIS alle Tabellen nach Geometriespalten und fügt sie dann der Layerliste hinzu. Ein Haken hier sorgt dafür, dass QGIS nur "registrierte" Tabellen mit einem Eintrag in der geometry_columns-Tabelle anzeigt.
+<li><label>Passwort speichern</label>  - speichern Sie Ihr Passwort, damit sie es nicht jedes mal wieder eingeben m&uuml;ssen. Das Passwort wird im Klartext in Ihren QGIS-Einstellungen gespeichert.
+<li><label>Nur in die geometry_columns-Tabelle gucken</label> - normalerweise durchsucht QGIS alle Tabellen nach Geometriespalten und f&uuml;gt sie dann der Layerliste hinzu. Ein Haken hier sorgt daf&uuml;r, dass QGIS nur "registrierte" Tabellen mit einem Eintrag in der geometry_columns-Tabelle anzeigt.
 <li><label>Nur im 'public'-Schema</label> - diese begrenzt die Suche auf Layer im public-Schema
 </ol>
 <h4>Verbindung testen</h4>
-Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter vor dem Speichern gut prüfen.
+Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch mit diesen Parameters auszul&ouml;sen. Hiermit k&ouml;nnen Sie die Verbindungsparameter vor dem Speichern gut pr&uuml;fen.

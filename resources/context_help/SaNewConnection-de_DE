@@ -1,19 +1,19 @@
 <h3>SQL-Anywhere-Verbindung anlegen</h3>
-Dieser Dialog gestattet Ihnen die Einstellungen für eine neue Verbindung zu einer
+Dieser Dialog gestattet Ihnen die Einstellungen f&uuml;r eine neue Verbindung zu einer
 SQL-Anywhere-Datenbank vorzunehmen.
 <p>
 <ul>
 <li> <label>Name</label> Ein Name um die Verbindungseinstellungen zu identifizieren
 
-<li> <label>Host</label> Name oder IP-Adresse des Computers der den Datenbankserver beheimatet (für lokale Verbindungen leer lassen).  
+<li> <label>Host</label> Name oder IP-Adresse des Computers der den Datenbankserver beheimatet (f&uuml;r lokale Verbindungen leer lassen).  
 
-<li> <label>Port</label> IP-Port des Datenbankserver (für lokale Verbindung oder den voreingestellten Port 2638 leer lassen).
+<li> <label>Port</label> IP-Port des Datenbankserver (f&uuml;r lokale Verbindung oder den voreingestellten Port 2638 leer lassen).
 
-<li> <label>Server</label> Name des Datenbankservers (für den voreingestellen Server leer lassen).
+<li> <label>Server</label> Name des Datenbankservers (f&uuml;r den voreingestellen Server leer lassen).
 
-<li> <label>Datenbank</label> Datenbankname (für die voreingestellte Datenbank leer lassen).
+<li> <label>Datenbank</label> Datenbankname (f&uuml;r die voreingestellte Datenbank leer lassen).
 
-<li> <label>Verbindungsparameter</label> Zusätzliche Parameter, die dem Verbindungsstring hinzugefügt werden sollen (durch Semikolons getrennte Liste).  In der SQL-Anywhere-Documentation finden Sie eine Auflistung der verfügbaren Parameter.
+<li> <label>Verbindungsparameter</label> Zus&auml;tzliche Parameter, die dem Verbindungsstring hinzugef&uuml;gt werden sollen (durch Semikolons getrennte Liste).  In der SQL-Anywhere-Documentation finden Sie eine Auflistung der verf&uuml;gbaren Parameter.
 
 <li> <label>Benutzername</label> Datenbankbenutzername
 <li> <label>Passwort</label> Datenbankpasswort
@@ -22,10 +22,10 @@ SQL-Anywhere-Datenbank vorzunehmen.
 
 <li> <label>Passwort speichern</label> Legt fest, ob das Datenbankpassowort in den Verbindungseinstellungen gespeichert werden soll. <em>Passworte werden im <strong>Klartext</strong> in der Systemkonfiguration gespeichert!</em>
 
-<li> <label>Einfache Verschlüsselung</label> Datenbankverbindung mit einfacher Verschlüsselung absichern.
+<li> <label>Einfache Verschl&uuml;sselung</label> Datenbankverbindung mit einfacher Verschl&uuml;sselung absichern.
 
-<li> <label>Tabellenmetadaten schätzen</label> Wenn die Layer initialisiert werden, können mehrere Abfragen nötig sein, um die Eigenschaften der Geometrien der Datenbanktabelle zu bestimmen.  Wenn diese Option gewählt ist werden die Abfragen nur einige Zeilen, statt der gesamten Tabelle, betrachten.  Dies beschleunigt die Initialisierung erheblich, kann aber bei gemischten Datentypen auch zu falschen Ergebnissen führen.
+<li> <label>Tabellenmetadaten sch&auml;tzen</label> Wenn die Layer initialisiert werden, k&ouml;nnen mehrere Abfragen n&ouml;tig sein, um die Eigenschaften der Geometrien der Datenbanktabelle zu bestimmen.  Wenn diese Option gew&auml;hlt ist werden die Abfragen nur einige Zeilen, statt der gesamten Tabelle, betrachten.  Dies beschleunigt die Initialisierung erheblich, kann aber bei gemischten Datentypen auch zu falschen Ergebnissen f&uuml;hren.
 
-<li> <label>Tabellen anderer Benutzer durchsuchen</label> Legt fest, dass die Liste mit allen Layern der Datenbank gefüllt werden soll. Wenn nicht gewählt (wie voreingestellt), werden nur die Tabellen im Besitz des verbundenen Benutzers angezeigt.
+<li> <label>Tabellen anderer Benutzer durchsuchen</label> Legt fest, dass die Liste mit allen Layern der Datenbank gef&uuml;llt werden soll. Wenn nicht gew&auml;hlt (wie voreingestellt), werden nur die Tabellen im Besitz des verbundenen Benutzers angezeigt.
 
 </ul>

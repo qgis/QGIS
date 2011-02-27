@@ -1,22 +1,22 @@
 <h3>Textdatei als Layer importiere</h3>
-Lädt und stellt eine Textdatei im CSV-Format, die x- und y-Koordinaten hat, dar. 
+L&auml;dt und stellt eine Textdatei im CSV-Format, die x- und y-Koordinaten hat, dar. 
 <p>
 <p>
 <a href="#re">Anforderungen</a><br/>
-<a href="#example">Beispiel einer gültigen Textdatei</a><br/>
+<a href="#example">Beispiel einer g&uuml;ltigen Textdatei</a><br/>
 <a href="#notes">Bemerkungen</a><br/>
 
 <a name="re">
 <h4>Anforderungen</h4>
 </a>
-Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten: 
+Um eine Textdatei als Layer anzuzeigen, mu&szlig; sie folgende Daten enthalten: 
 <ol>
-<li>Eine Titelzeile mit den Namen der Felder. Dies muß die erste Zeile der Textdatei sein.</li>
-<li>Die Titelzeile muss ein X-Feld und ein Y-Feld enthalten. Diese Felder können beliebige Namen haben.</li>
-<li>Die <B>x-</B> und <B>y-</B>Koordinaten müssen als (Dezimal)Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
+<li>Eine Titelzeile mit den Namen der Felder. Dies mu&szlig; die erste Zeile der Textdatei sein.</li>
+<li>Die Titelzeile muss ein X-Feld und ein Y-Feld enthalten. Diese Felder k&ouml;nnen beliebige Namen haben.</li>
+<li>Die <B>x-</B> und <B>y-</B>Koordinaten m&uuml;ssen als (Dezimal)Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
 </ol>
 <a name="example">
-<h4>Beispiel einer gültigen Textdatei</h4> 
+<h4>Beispiel einer g&uuml;ltigen Textdatei</h4> 
 </a>
 X;Y;HOEHE<br/>
 -300120;7689960;13<br/>
@@ -28,8 +28,8 @@ X;Y;HOEHE<br/>
 </a>
 <ol>
 <li>Der Beispieltext nutzt <b>;</b> als Trennzeichen. Jedes andere Zeichen kann als Trennzeichen benutzt werden.</li>
-<li>Die erste Zeile ist die Titelzeile. Sie enthält die Felder X, Y und HOEHE.</li>
-<li>Es werden keine Anführungszeichen (") benutzt, um die Textfelder zu trennen.</li>
+<li>Die erste Zeile ist die Titelzeile. Sie enth&auml;lt die Felder X, Y und HOEHE.</li>
+<li>Es werden keine Anf&uuml;hrungszeichen (") benutzt, um die Textfelder zu trennen.</li>
 <li>Die X-Koordinaten sind im Feld X.</li>
 <li>Die Y-Koordinaten sind im Feld Y.</li>
 </ol>

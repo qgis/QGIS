@@ -3,34 +3,34 @@
 Diese Erweiterung exportiert ein gespeichertes QGIS-Projekt in ein MapServer-Mapfile. 
 Nur die Eingaben <b>Kartendatei</b> und <b>QGIS-Projekt</b> sind erforderlich. 
 </p>
-Haken Sie das Kontrollkästchen <label>Aktuelles Projekt verwenden</label> an oder geben Sie den vollständigen 
-Pfad der QGIS-Projektdatei (.qgs), die Sie exportieren wollen, an. Sie können die Knopf auf der rechten 
+Haken Sie das Kontrollk&auml;stchen <label>Aktuelles Projekt verwenden</label> an oder geben Sie den vollst&auml;ndigen 
+Pfad der QGIS-Projektdatei (.qgs), die Sie exportieren wollen, an. Sie k&ouml;nnen die Knopf auf der rechten 
 Seite verwenden, um den Namen mit Hilfe der Dateiauswahl anzugeben. 
 
 <h4>Kartendatei</h4>
 
-<label>Kartendatei</label>: Geben Sie den Namen des Mapfiles an, das Sie erzeugen wollen. Sie können 
+<label>Kartendatei</label>: Geben Sie den Namen des Mapfiles an, das Sie erzeugen wollen. Sie k&ouml;nnen 
 den Knopf auf der rechten Seite verwenden, um dies mit Hilfe der Dateiauswahl zu tun. 
 
 <h4>Karte</h4>
-Diese Werte werden in das Mapfile an den passenden Stellen eingetragen, um Dinge wie Ausgabegröße, Einheiten und Bildtyp festzulegen. 
+Diese Werte werden in das Mapfile an den passenden Stellen eingetragen, um Dinge wie Ausgabegr&ouml;&szlig;e, Einheiten und Bildtyp festzulegen. 
 <dl>
   <dt><label>Name</label></dt>
   <dd>Der Name der Karte. Dieser Name wird allen Bildern, die MapServer erzeugt, vorangestellt.</dd>
   <dt><label>Breite</label></dt>
   <dd>Breite des Ausgabebilds in Pixeln.</dd>
-  <dt><label>Höhe</label></dt>
-  <dd>Höhe des Ausgabebilds in Pixeln.</dd>
+  <dt><label>H&ouml;he</label></dt>
+  <dd>H&ouml;he des Ausgabebilds in Pixeln.</dd>
   <dt><label>Einheiten</label></dt>
-  <dd>Maßeinheiten für die Ausgabe.</dd>
+  <dd>Ma&szlig;einheiten f&uuml;r die Ausgabe.</dd>
   <dt><label>Bildtyp</label></dt>
   <dd>Format des Mapserver-Ausgabebild</dd>
 </dl>
 <h4>Pfade</h4>
 <dl>
   <dt><label>Vorlage</label></dt>
-  <dd>Vollständiger Pfad zur MapServer-Vorlagedatei (TEMPLATE).</dd>
+  <dd>Vollst&auml;ndiger Pfad zur MapServer-Vorlagedatei (TEMPLATE).</dd>
   <dt><label>Kopfzeile</label></dt>
-  <dd>Vollständiger Pfad zur MapServer-Kopfdatei (HEADER).</dd>
-  <dt><label>Fußzeile</label></dt>
-  <dd>Vollständiger Pfad zur Mapserver-Fußdatei (FOOTER).</dd>
+  <dd>Vollst&auml;ndiger Pfad zur MapServer-Kopfdatei (HEADER).</dd>
+  <dt><label>Fu&szlig;zeile</label></dt>
+  <dd>Vollst&auml;ndiger Pfad zur Mapserver-Fu&szlig;datei (FOOTER).</dd>
