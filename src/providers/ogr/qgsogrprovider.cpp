@@ -416,12 +416,39 @@ QString QgsOgrProvider::storageType() const
   return ogrDriverName;
 }
 
+void QgsOgrProvider::setIgnoredFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes )
+{
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+  if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
+  {
+    QVector<const char*> ignoredFields;
+    OGRFeatureDefnH featDefn = OGR_L_GetLayerDefn( ogrLayer );
+    for ( int i = 0; i < mAttributeFields.size(); i++ )
+    {
+      if ( !fetchAttributes.contains( i ) )
+      {
+        // add to ignored fields
+        ignoredFields.append( OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, i ) ) );
+      }
+    }
+
+    if ( !fetchGeometry )
+      ignoredFields.append( "OGR_GEOMETRY" );
+    ignoredFields.append( "OGR_STYLE" ); // not used by QGIS
+    ignoredFields.append( NULL );
+
+    OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
+  }
+#endif
+}
 
 bool QgsOgrProvider::featureAtId( int featureId,
                                   QgsFeature& feature,
                                   bool fetchGeometry,
                                   QgsAttributeList fetchAttributes )
 {
+  setIgnoredFields( fetchGeometry, fetchAttributes );
+
   OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, featureId );
   if ( fet == NULL )
     return false;
@@ -605,6 +632,8 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
     OGR_L_SetSpatialFilter( ogrLayer, filter );
     OGR_G_DestroyGeometry( filter );
   }
+
+  setIgnoredFields( fetchGeometry, fetchAttributes );
 
   //start with first feature
   OGR_L_ResetReading( ogrLayer );
