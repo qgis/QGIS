@@ -36,7 +36,6 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   }
 
   connect( btnSymbolProperties, SIGNAL( clicked() ), this, SLOT( changeSymbolProperties() ) );
-  connect( lblPreview, SIGNAL( clicked() ), this, SLOT( changeSymbolProperties() ) );
   connect( btnStyleManager, SIGNAL( clicked() ), SLOT( openStyleManager() ) );
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
