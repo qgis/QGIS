@@ -1,5 +1,5 @@
 <h3>Python-Erweiterungsinstallation</h3>
-Läd und installiert Erweiterungen aus entfernten Repositorys.
+L&auml;d und installiert Erweiterungen aus entfernten Repositorys.
 <br/><br/>
 <a href="#pltab">Reiter Erweiterungen</a><br/>
 <a href="#retab">Reiter Repositorys</a><br/>
@@ -10,22 +10,22 @@ Läd und installiert Erweiterungen aus entfernten Repositorys.
 </a>
 
 <p align='justify'>
-Unter Reiter <label>Erweiterungen</label> steht eine Liste aller lokal installieren als auch in entfernten Repositorys verfügbaren Python-Erweiterungen.  Jede Erweiterung kann folgendes sein: 
+Unter Reiter <label>Erweiterungen</label> steht eine Liste aller lokal installieren als auch in entfernten Repositorys verf&uuml;gbaren Python-Erweiterungen.  Jede Erweiterung kann folgendes sein: 
 <ul>
-<li> <em>nicht installiert</em> - die Erweiterung ist im Repository verfügbar, aber noch nicht installiert.  Um sie zu installieren, wählen Sie die Erweiterung aus der Liste und klicken Sie auf <label>Erweiterung installieren/aktualisieren</label>.</li>
+<li> <em>nicht installiert</em> - die Erweiterung ist im Repository verf&uuml;gbar, aber noch nicht installiert.  Um sie zu installieren, w&auml;hlen Sie die Erweiterung aus der Liste und klicken Sie auf <label>Erweiterung installieren/aktualisieren</label>.</li>
 
-<li> <em>neu</em> - eine neuere Erweiterung ist im Repository verfügbar</li>
+<li> <em>neu</em> - eine neuere Erweiterung ist im Repository verf&uuml;gbar</li>
 
-<li> <em>installiert</em> - die Erweiterung ist bereits installiert. Wenn sie auch in einem Repository verfügbar ist, wird <label>Erweiterung  erneut installieren</label> angezeigt. Wenn die verfügbare Version älter als die installierte Version ist, wird stattdessen <label>Frühere Version der Erweiterung installieren</label> angezeigt.</li>
+<li> <em>installiert</em> - die Erweiterung ist bereits installiert. Wenn sie auch in einem Repository verf&uuml;gbar ist, wird <label>Erweiterung  erneut installieren</label> angezeigt. Wenn die verf&uuml;gbare Version &auml;lter als die installierte Version ist, wird stattdessen <label>Fr&uuml;here Version der Erweiterung installieren</label> angezeigt.</li>
 
-<li> <em>aktualisierbar</em> - die Erweiterung ist installiert, aber eine neuere Version ist verfügbar. In diesem Fall wird <label>Erweiterung aktualisieren</label> angezeigt.</li>
+<li> <em>aktualisierbar</em> - die Erweiterung ist installiert, aber eine neuere Version ist verf&uuml;gbar. In diesem Fall wird <label>Erweiterung aktualisieren</label> angezeigt.</li>
 
-<li> <em>ungültig</em> - die Erweiterung zwar installiert, aber nicht verfügbar oder defekt.  Der Grund dafür wird in der Erweitungsbeschreibung ausgeführt.</li>
+<li> <em>ung&uuml;ltig</em> - die Erweiterung zwar installiert, aber nicht verf&uuml;gbar oder defekt.  Der Grund daf&uuml;r wird in der Erweitungsbeschreibung ausgef&uuml;hrt.</li>
 
 </ul>
 </p>
 
-Um eine Erweiterung zu installieren, wählen Sie es in der Liste und klicken auf den Knopf <label>Erweiterung installieren</label>. Die Erweiterung wird in seinem eigenen Verzeichnis installiert: 
+Um eine Erweiterung zu installieren, w&auml;hlen Sie es in der Liste und klicken auf den Knopf <label>Erweiterung installieren</label>. Die Erweiterung wird in seinem eigenen Verzeichnis installiert: 
 
 <table border=1>
 <tr><th>System</th><th>Systemerweiterungen</th><th>Durch Benutzer installiert</th></tr>
@@ -36,42 +36,42 @@ Um eine Erweiterung zu installieren, wählen Sie es in der Liste und klicken auf
 <br/>
 
 <p align='justify'>
-Wenn die Installation erfolgreich ist, wird eine Bestätigungsnachricht angezeigt.  Die Erweiterung ist nun benutzbar.</p>
+Wenn die Installation erfolgreich ist, wird eine Best&auml;tigungsnachricht angezeigt.  Die Erweiterung ist nun benutzbar.</p>
 
 <p align='justify'>
-Wenn die Installation scheitert, wird der Grund dafür in einem Warnungsdialog angezeigt.  Meistens liegt es an Verbindungsproblemen oder fehlenden Python-Modulen. Im ersten Fall müssen Sie etwas warten, bevor Sie es erneut versuchen.  Im letzteren Fall müssen Sie die fehlenden Module Ihrem Betriebssystem entsprechend nachinstallieren, bevor Sie die Erweiterung benutzen können. Unter Linux sollten die meisten erforderlichen Module über den Paketmanager verfügbar sein. 
-<p>Für Windows-Installationsanweisungen besuchen Sie bitte die Homepage des Moduls.  Wenn Sie einen Proxy benutzen, müssen Sie ihn unter <label>Bearbeiten</label> > <label>Optionen</label> (GNOME, OSX) oder <label>Einstellungen</label> > <label>Optionen</label> (KDE, Windows) auf dem Reiter <label>Netzwerk &amp; Proxy</label> angeben.</p>
+Wenn die Installation scheitert, wird der Grund daf&uuml;r in einem Warnungsdialog angezeigt.  Meistens liegt es an Verbindungsproblemen oder fehlenden Python-Modulen. Im ersten Fall m&uuml;ssen Sie etwas warten, bevor Sie es erneut versuchen.  Im letzteren Fall m&uuml;ssen Sie die fehlenden Module Ihrem Betriebssystem entsprechend nachinstallieren, bevor Sie die Erweiterung benutzen k&ouml;nnen. Unter Linux sollten die meisten erforderlichen Module &uuml;ber den Paketmanager verf&uuml;gbar sein. 
+<p>F&uuml;r Windows-Installationsanweisungen besuchen Sie bitte die Homepage des Moduls.  Wenn Sie einen Proxy benutzen, m&uuml;ssen Sie ihn unter <label>Bearbeiten</label> > <label>Optionen</label> (GNOME, OSX) oder <label>Einstellungen</label> > <label>Optionen</label> (KDE, Windows) auf dem Reiter <label>Netzwerk &amp; Proxy</label> angeben.</p>
 
 <p align='justify'>
-<label>Erweiterung deinstallieren</label> ist nur verfügbar, wenn die gewählte Erweiterung keine Kernerweiterung ist.  Bei Kernerweiterungen, die Sie aktualisiert haben, können Sie die Aktualisierung mit <label>Erweiterung deinstallieren</label> zurücknehmen  und zur mit Quantum GIS installieren Version zurückkehren.  Diese Version kann allerdings nicht deinstalliert werden.</p>
+<label>Erweiterung deinstallieren</label> ist nur verf&uuml;gbar, wenn die gew&auml;hlte Erweiterung keine Kernerweiterung ist.  Bei Kernerweiterungen, die Sie aktualisiert haben, k&ouml;nnen Sie die Aktualisierung mit <label>Erweiterung deinstallieren</label> zur&uuml;cknehmen  und zur mit Quantum GIS installieren Version zur&uuml;ckkehren.  Diese Version kann allerdings nicht deinstalliert werden.</p>
 
 <a name="retab">
 <h4>Reiter Repositorys</h4>
 </a>
 <p align='justify'>
-Der zweite Reiter <label>Repositorys</label> enthält eine Liste von für die Erweiterungsinstallation verfügbaren Repositorys. Zu Beginn ist nun das offizielle Repository aktiviert. Sie können mehrere von Benutzern beigesteuerten Repositorys einschließlich des zentralen Repositorys für von Benutzer beigesteuerte Erweiterungen und andere externe Repositorys über <label>Erweiterungsrepositorys hinzufügen</label> hinzufügen.  Die hinzugefügten Repositorys enthalten eine große Zahl von nützlichen Erweiterungen, die nicht vom QGIS-Entwicklerteam betreut werden.  Als solche übernehmen wird keine Verantwortung für sie. Sie können die Repositoryliste auch manuell bearbeiten: hinzufügen, löschen und bearbeiten von Einträgen.  Unter <label>Bearbeiten</label> können Sie Repositorys auch zeitweise 
+Der zweite Reiter <label>Repositorys</label> enth&auml;lt eine Liste von f&uuml;r die Erweiterungsinstallation verf&uuml;gbaren Repositorys. Zu Beginn ist nun das offizielle Repository aktiviert. Sie k&ouml;nnen mehrere von Benutzern beigesteuerten Repositorys einschlie&szlig;lich des zentralen Repositorys f&uuml;r von Benutzer beigesteuerte Erweiterungen und andere externe Repositorys &uuml;ber <label>Erweiterungsrepositorys hinzuf&uuml;gen</label> hinzuf&uuml;gen.  Die hinzugef&uuml;gten Repositorys enthalten eine gro&szlig;e Zahl von n&uuml;tzlichen Erweiterungen, die nicht vom QGIS-Entwicklerteam betreut werden.  Als solche &uuml;bernehmen wird keine Verantwortung f&uuml;r sie. Sie k&ouml;nnen die Repositoryliste auch manuell bearbeiten: hinzuf&uuml;gen, l&ouml;schen und bearbeiten von Eintr&auml;gen.  Unter <label>Bearbeiten</label> k&ouml;nnen Sie Repositorys auch zeitweise 
 abschalten.</p>
 
 <a name="optab">
 <h4>Reiter Optionen</h4>
 </a>
 <p align='justify'>
-Unter dem Reiter <label>Optionen</label> können Sie die Erweiterungsinstallation einstellen.  Das Kontrollkästchen <label>x Beim Start nach Aktualisierungen suchen</label> veranlasst QGIS automatisch nach Erweiterungsaktualsierungen und Neuigkeiten zu suchen.  Normalerweise werden alle unter <label>Repositorys</label> aufgeführten und aktivieren Repositorys bei jedem Programmstart nach Aktualisierungen befragt.   Die Frequenz dieser Prüfung kann über die Liste von einmal täglich bis einmal monatlich eingestellt werden.  Wenn eine neue Erweiterung oder eine Aktualisierung einer installierten Erweiterung verfügbar ist, erscheint eine Benachrichtigung in der Statuszeile.  Wenn das Kontrollkästchen nicht angehakt ist, wird die Prüfung nur ausgeführt, wenn die Erweiterungsinstallation manuell aus dem Menü gestartet wird.</p>
+Unter dem Reiter <label>Optionen</label> k&ouml;nnen Sie die Erweiterungsinstallation einstellen.  Das Kontrollk&auml;stchen <label>x Beim Start nach Aktualisierungen suchen</label> veranlasst QGIS automatisch nach Erweiterungsaktualsierungen und Neuigkeiten zu suchen.  Normalerweise werden alle unter <label>Repositorys</label> aufgef&uuml;hrten und aktivieren Repositorys bei jedem Programmstart nach Aktualisierungen befragt.   Die Frequenz dieser Pr&uuml;fung kann &uuml;ber die Liste von einmal t&auml;glich bis einmal monatlich eingestellt werden.  Wenn eine neue Erweiterung oder eine Aktualisierung einer installierten Erweiterung verf&uuml;gbar ist, erscheint eine Benachrichtigung in der Statuszeile.  Wenn das Kontrollk&auml;stchen nicht angehakt ist, wird die Pr&uuml;fung nur ausgef&uuml;hrt, wenn die Erweiterungsinstallation manuell aus dem Men&uuml; gestartet wird.</p>
 
 <p align='justify'>
-Einige Internetverbindung verursachen Problemen, wenn versucht wird automatisch nach Aktualisierungen zu suchen.  In diesen Fällen bleibt die Benachrichtigung <i>Suche nach neuen Erweiterungen...</i> während der ganzen QGIS-Sitzung in der Statuszeile sichtbar und kann einen Programmabsturz beim Programmende verursachen.  Dann stellen entfernen Sie den Haken bitte aus dem Kontrollkästchen. 
+Einige Internetverbindung verursachen Problemen, wenn versucht wird automatisch nach Aktualisierungen zu suchen.  In diesen F&auml;llen bleibt die Benachrichtigung <i>Suche nach neuen Erweiterungen...</i> w&auml;hrend der ganzen QGIS-Sitzung in der Statuszeile sichtbar und kann einen Programmabsturz beim Programmende verursachen.  Dann stellen entfernen Sie den Haken bitte aus dem Kontrollk&auml;stchen. 
 </p>
 
-Zusätzlich können Sie auch noch den Typ der Erweiterungen festlegen, die durch der Erweiterungsinstallation angezeigt werden sollen. Unter <i>Erlaubte Erweiterungen</i> können Sie angeben, ob 
+Zus&auml;tzlich k&ouml;nnen Sie auch noch den Typ der Erweiterungen festlegen, die durch der Erweiterungsinstallation angezeigt werden sollen. Unter <i>Erlaubte Erweiterungen</i> k&ouml;nnen Sie angeben, ob 
 
 <ul>
 <li> nur Erweiterungen des offiziellen Repositorys,</li>
-<li> alle Erweiterungen außer den als experimentell markierten oder </li>
+<li> alle Erweiterungen au&szlig;er den als experimentell markierten oder </li>
 <li> alle Erweiterungen inkl. der als experimentell markierten zu sehen sein 
 sollen.</li>
 </ul>
 
 <br/>
 <table border=1 width='95%' align='center'>
-<tr><td>Hinweis: Experimentelle Erweiterungen sind grundsätzlich ungeeignet für den Produktionsbetrieb. Diese Erweiterung befinden sich in einer frühen Entwicklungsphase und sollten als "unvollständig" oder "Machbarkeitstudie" angesehen werden.  Das QGIS-Entwicklerteam empfiehlt deren Installation außer zu Testzwecken nicht. 
+<tr><td>Hinweis: Experimentelle Erweiterungen sind grunds&auml;tzlich ungeeignet f&uuml;r den Produktionsbetrieb. Diese Erweiterung befinden sich in einer fr&uuml;hen Entwicklungsphase und sollten als "unvollst&auml;ndig" oder "Machbarkeitstudie" angesehen werden.  Das QGIS-Entwicklerteam empfiehlt deren Installation au&szlig;er zu Testzwecken nicht. 
 </td></tr></table>

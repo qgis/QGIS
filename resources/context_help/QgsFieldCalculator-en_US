@@ -23,8 +23,8 @@ The field calculator allows you to update fields with expressions.
 <tr><td>NOT <tt>a</tt></td><td>inverted boolean value of <tt>a</tt></td></tr>
 <tr><td><tt>a</tt> IS NULL</td><td><tt>a</tt> has no value</td></tr>
 <tr><td><tt>a</tt> IS NOT NULL</td><td><tt>a</tt> has <tt>a</tt> value</td></tr>
-<tr><td><tt>a</tt> IN ( value, [, value] )</td><td><tt>a</tt> is one of the listed values</td></tr>
-<tr><td><tt>a</tt> NOT IN ( value, [, value] )</td><td><tt>a</tt> is not one of the listed values</td></tr>
+<tr><td><tt>a</tt> IN ( value[, value...] )</td><td><tt>a</tt> is one of the listed values</td></tr>
+<tr><td><tt>a</tt> NOT IN ( value[, value...] )</td><td><tt>a</tt> is not one of the listed values</td></tr>
 <tr><td><tt>a</tt> = <tt>b</tt></td><td><tt>a</tt> and <tt>b</tt> are equal</td><tr>
 <tr>
   <td>
@@ -54,7 +54,7 @@ The field calculator allows you to update fields with expressions.
 <tr><td>upper(<tt>a</tt>)</td><td>convert string <tt>a</tt> to upper case</td></tr>
 <tr><td>length(<tt>a</tt>)</td><td>length of string <tt>a</tt></td></tr>
 <tr><td>atan2(y,x)</td><td>arcustangens of y/x using the signs of the two arguments to determine the quadrant of the result.</td></tr>
-<tr><td>replace(<tt>a</tt>,replacethis,withthat)</td><td>replace replacethis with withthat in string <tt>a</tt></td></td>
+<tr><td>replace(<tt>a</tt>,<i>replacethis</i>,<i>withthat</i>)</td><td>replace <i>replacethis</i> with <i>withthat</i> in string <tt>a</tt></td></td>
 <tr><td>substr(<tt>a</tt>,from,len)</td><td>len characters of string <tt>a</tt> starting from from (first character index is 1)</td></td>
 <tr><td><tt>a</tt> || <tt>b</tt></td><td>concatenate strings <tt>a</tt> and <tt>b</tt></td></tr>
 <tr><td>$rownum</td><td>number current row</td></tr>
@@ -63,7 +63,7 @@ The field calculator allows you to update fields with expressions.
 <tr><td>$id</td><td>feature id</td></tr>
 <tr><td><tt>a</tt> ^ <tt>b</tt></td><td><tt>a</tt> raised to the power of <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> multiplied by <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> divided by <tt>b</tt></td></tr>
+<tr><td><tt>a</tt> / <tt>b</tt></td><td><tt>a</tt> divided by <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> + <tt>b</tt></td><td><tt>a</tt> plus <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> - <tt>b</tt></td><td><tt>a</tt> minus <tt>b</tt></td></tr>
 <tr><td>+<tt>a</tt></td><td>positive sign</td></tr>
