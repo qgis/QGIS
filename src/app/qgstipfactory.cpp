@@ -143,25 +143,25 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle(tr("Using the mouse scroll wheel"));
-  myTip.setContent(tr("You can use the scroll wheel on your mouse to zoom in, "
-        " out and pan the map. Scroll forwards to zoom in, scroll backwards to "
-        " zoom out and press and hold the scroll wheel down to pan the map. You "
-        " can configure options for scroll wheel behaviour in the Options panel."
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Using the mouse scroll wheel" ) );
+  myTip.setContent( tr( "You can use the scroll wheel on your mouse to zoom in,"
+                        " out and pan the map. Scroll forwards to zoom in, scroll backwards to"
+                        " zoom out and press and hold the scroll wheel down to pan the map. You"
+                        " can configure options for scroll wheel behaviour in the Options panel."
+                      ) );
+  addGuiTip( myTip );
   // by Tim
-  myTip.setTitle(tr("Stopping rendering"));
-  myTip.setContent(tr("Sometimes you have a very large dataset which takes ages "
-        " to draw. You can press 'esc' (the escape key), or click the small red "
-        " 'X' icon in the status bar to the bottom right of the window at any "
-        " time to halt rendering. If you are going to be performing several "
-        " actions (e.g. modifying symbology options) and wish to temporarily "
-        " disable map rendering while you do so, you can uncheck the 'Render' "
-        " checkbox in the bottom right of the status bar. Don't forget to check "
-        " it on again when you are ready to have the map draw itself again!"
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Stopping rendering" ) );
+  myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
+                        " to draw. You can press 'esc' (the escape key), or click the small red"
+                        " 'X' icon in the status bar to the bottom right of the window at any"
+                        " time to halt rendering. If you are going to be performing several"
+                        " actions (e.g. modifying symbology options) and wish to temporarily"
+                        " disable map rendering while you do so, you can uncheck the 'Render'"
+                        " checkbox in the bottom right of the status bar. Don't forget to check"
+                        " it on again when you are ready to have the map draw itself again!"
+                      ) );
+  addGuiTip( myTip );
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""
