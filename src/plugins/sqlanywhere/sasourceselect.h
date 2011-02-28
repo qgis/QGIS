@@ -114,6 +114,7 @@ class SaSourceSelect : public QDialog, private Ui::SaSourceSelectBase
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addTables();
+    void buildQuery();
 
     /*! Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.
@@ -123,7 +124,6 @@ class SaSourceSelect : public QDialog, private Ui::SaSourceSelectBase
     void on_btnNew_clicked();
     //! Opens a dialog to edit an existing connection
     void on_btnEdit_clicked();
-    void on_btnBuildQuery_clicked();
     //! Deletes the selected connection
     void on_btnDelete_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
@@ -182,6 +182,9 @@ class SaSourceSelect : public QDialog, private Ui::SaSourceSelectBase
     //! Model that acts as datasource for mTableTreeWidget
     SaDbTableModel mTableModel;
     SaDbFilterProxyModel mProxyModel;
+
+    // button for building queries
+    QPushButton *mBuildQueryButton;
 
     // button for adding layers
     QPushButton *mAddButton;

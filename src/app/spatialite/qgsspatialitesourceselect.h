@@ -76,10 +76,10 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();
+    void buildQuery();
     void addClicked();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
-    void on_btnBuildQuery_clicked();
     //! Deletes the selected connection
     void on_btnDelete_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
@@ -151,6 +151,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QgsDbFilterProxyModel mProxyModel;
 
     QString layerURI( const QModelIndex &index );
+    QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
 };
 
