@@ -410,7 +410,7 @@ void QgsSpit::dbConnect()
                        password,
                        ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
-    conn = PQconnectdb(( uri.connectionInfo() + " application_name='Quantum GIS'" ).toUtf8() );
+    conn = PQconnectdb( uri.connectionInfo().toUtf8() );
   }
 
   if ( conn == NULL || PQstatus( conn ) != CONNECTION_OK )
@@ -421,6 +421,17 @@ void QgsSpit::dbConnect()
       PQfinish( conn );
       conn = 0;
     }
+  }
+
+  if ( conn )
+  {
+    PGresult *res = PQexec( conn, "SET application_name='Quantum GIS'" );
+    if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
+    {
+      PQclear( res );
+      res = PQexec( conn, "ROLLBACK" );
+    }
+    PQclear( res );
   }
 
   schema_list.clear();
