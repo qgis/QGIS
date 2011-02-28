@@ -516,8 +516,7 @@ INSTALL (FILES AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS INSTALL CODING
 
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
-  INSTALL (FILES qgis.1 qgis_help.1
-           DESTINATION ${QGIS_MANUAL_DIR}/man1)
+  INSTALL (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
 ENDIF (UNIX AND NOT APPLE)
 
 #############################################################
