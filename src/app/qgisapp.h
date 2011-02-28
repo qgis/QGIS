@@ -44,7 +44,6 @@ class QgsClipboard;
 class QgsComposer;
 class QgsComposerView;
 class QgsGeometry;
-class QgsHelpViewer;
 class QgsFeature;
 
 class QgsLegend;
@@ -1161,8 +1160,6 @@ class QgisApp : public QMainWindow
     QTcpSocket *mSocket;
     QString mVersionMessage;
     QSplashScreen *mSplash;
-    //! help viewer
-    QgsHelpViewer *mHelpViewer;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
     //! Print composers of this project, accessible by id string

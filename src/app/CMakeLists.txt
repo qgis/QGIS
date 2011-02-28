@@ -25,7 +25,6 @@ SET(QGIS_APP_SRCS
   qgsfieldcalculator.cpp
   qgsnewvectorlayerdialog.cpp
   qgsgraduatedsymboldialog.cpp
-  qgshelpviewer.cpp
   qgsidentifyresults.cpp
   qgsfeatureaction.cpp
   qgslabeldialog.cpp
@@ -164,7 +163,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsfieldcalculator.h
   qgsformannotationdialog.h
   qgsgraduatedsymboldialog.h
-  qgshelpviewer.h
   qgsidentifyresults.h
   qgslabeldialog.h
   qgslabelengineconfigdialog.h

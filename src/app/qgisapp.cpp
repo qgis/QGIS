@@ -119,7 +119,6 @@
 #include "qgsformannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
-#include "qgshelpviewer.h"
 #include "qgslabelinggui.h"
 #include "qgslegend.h"
 #include "qgslegendlayer.h"
