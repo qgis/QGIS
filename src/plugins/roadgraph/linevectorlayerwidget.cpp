@@ -61,19 +61,19 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   v->addLayout( h );
 
   h = new QHBoxLayout();
-  h->addWidget( new QLabel( tr( "Direct direction" ), frame ) );
+  h->addWidget( new QLabel( tr( "Value for forward direction" ), frame ) );
   mleFirstPointToLastPointDirection = new QLineEdit( s->mFirstPointToLastPointDirectionVal, frame );
   h->addWidget( mleFirstPointToLastPointDirection );
   v->addLayout( h );
 
   h = new QHBoxLayout();
-  h->addWidget( new QLabel( tr( "Reverse direction" ), frame ) );
+  h->addWidget( new QLabel( tr( "Value for reverse direction" ), frame ) );
   mleLastPointToFirstPointDirection = new QLineEdit( s->mLastPointToFirstPointDirectionVal, frame );
   h->addWidget( mleLastPointToFirstPointDirection );
   v->addLayout( h );
 
   h = new QHBoxLayout();
-  h->addWidget( new QLabel( tr( "Both direction" ), frame ) );
+  h->addWidget( new QLabel( tr( "Value two-way direction" ), frame ) );
   mleBothDirection = new QLineEdit( s->mBothDirectionVal, frame );
   h->addWidget( mleBothDirection );
   v->addLayout( h );
@@ -97,8 +97,8 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   h = new QHBoxLayout();
   l = new QLabel( tr( "Direction" ), frame );
   mcbDirectionDefault = new QComboBox( frame );
-  mcbDirectionDefault->insertItem( 0, tr( "Both direction" ) );
-  mcbDirectionDefault->insertItem( 1, tr( "Direct direction" ) );
+  mcbDirectionDefault->insertItem( 0, tr( "Two-way direction" ) );
+  mcbDirectionDefault->insertItem( 1, tr( "Forward direction" ) );
   mcbDirectionDefault->insertItem( 2, tr( "Reverse direction" ) );
   connect( mcbLayers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_mcbLayers_selectItem() ) );
 
