@@ -51,15 +51,15 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
 {
   setupUi( this );
 
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+
   mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
   mBuildQueryButton->setToolTip( tr( "Build query" ) );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setDisabled( true );
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
 
   QPushButton *pb;
   pb = new QPushButton( tr( "&Save" ) );
