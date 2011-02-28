@@ -51,11 +51,18 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
 {
   setupUi( this );
 
+  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
+  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+  mBuildQueryButton->setDisabled( true );
+
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
 
-  QPushButton *pb = new QPushButton( tr( "&Save" ) );
+  QPushButton *pb;
+  pb = new QPushButton( tr( "&Save" ) );
   pb->setToolTip( tr( "Save connections" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
@@ -208,14 +215,14 @@ void QgsPgSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
   on_btnConnect_clicked();
 }
 
-void QgsPgSourceSelect::on_btnBuildQuery_clicked()
+void QgsPgSourceSelect::buildQuery()
 {
   setSql( mTablesTreeView->currentIndex() );
 }
 
 void QgsPgSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 {
-  btnBuildQuery->setEnabled( index.parent().isValid() );
+  mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
 void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
@@ -472,7 +479,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   m_privConnInfo = m_connInfo;
 
-  pd = PQconnectdb(( m_privConnInfo + " application_name='Quantum GIS'" ).toLocal8Bit() );   // use what is set based on locale; after connecting, use Utf8
+  pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );   // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK )
   {
@@ -493,7 +500,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
       m_privConnInfo = uri.connectionInfo();
       QgsDebugMsg( "connecting " + m_privConnInfo );
-      pd = PQconnectdb(( m_privConnInfo + " application_name='Quantum GIS'" ).toLocal8Bit() );
+      pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );
     }
 
     if ( PQstatus( pd ) == CONNECTION_OK )
@@ -507,6 +514,16 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     //qDebug("Connection succeeded");
     // tell the DB that we want text encoded in UTF8
     PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
+
+    PGresult *res = PQexec( pd, "SET application_name='Quantum GIS'" );
+
+    if ( !res || PQresultStatus( res ) != PGRES_COMMAND_OK )
+    {
+      PQclear( res );
+      res = PQexec( pd, "ROLLBACK" );
+    }
+
+    PQclear( res );
 
     // get the list of suitable tables and columns and populate the UI
     geomCol details;
@@ -963,10 +980,18 @@ void QgsGeomColumnTypeThread::getLayerTypes()
 {
   mStopped = false;
 
-  PGconn *pd = PQconnectdb(( mConnInfo + " application_name='Quantum GIS'" ).toLocal8Bit() );
+  PGconn *pd = PQconnectdb( mConnInfo.toLocal8Bit() );
   if ( PQstatus( pd ) == CONNECTION_OK )
   {
     PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
+
+    PGresult *res = PQexec( pd, "SET application_name='Quantum GIS'" );
+    if ( !res || PQresultStatus( res ) != PGRES_COMMAND_OK )
+    {
+      PQclear( res );
+      res = PQexec( pd, "ROLLBACK" );
+    }
+    PQclear( res );
 
     for ( uint i = 0; i < schemas.size() && !mStopped; i++ )
     {
