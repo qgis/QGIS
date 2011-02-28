@@ -44,6 +44,8 @@ int main( int argc, char ** argv )
 #ifdef Q_WS_MACX
   // If we're on Mac, we have the resource library way above us...
   a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
+#else
+  a.setPkgDataPath( QgsApplication::prefixPath() + "/../" QGIS_DATA_SUBDIR );
 #endif
 
   QString i18nPath = QgsApplication::i18nPath();
