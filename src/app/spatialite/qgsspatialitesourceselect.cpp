@@ -47,15 +47,15 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   connectionsGroupBox->setTitle( tr( "Databases" ) );
   btnEdit->hide();  // hide the edit button
 
-  mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
-  mBuildQueryButton->setEnabled( false );
-
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
   mAddButton->setEnabled( false );
+
+  mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+  mBuildQueryButton->setEnabled( false );
 
   populateConnectionList();
 

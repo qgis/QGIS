@@ -78,16 +78,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="btnBuildQuery" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="text" >
-      <string>Build query</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="mSearchGroupBox" >
      <property name="title" >
       <string>Search options</string>

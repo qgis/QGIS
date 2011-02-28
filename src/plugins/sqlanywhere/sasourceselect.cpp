@@ -59,16 +59,16 @@ SaSourceSelect::SaSourceSelect( QWidget *parent, Qt::WFlags fl )
 {
   setupUi( this );
 
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+  mAddButton->setEnabled( false );
+
   mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setEnabled( false );
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
-
-  mAddButton->setEnabled( false );
   populateConnectionList();
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -180,7 +180,7 @@ void SaSourceSelect::buildQuery()
 
 void SaSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 {
-  btnBuildQuery->setEnabled( index.parent().isValid() );
+  mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
 void SaSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
