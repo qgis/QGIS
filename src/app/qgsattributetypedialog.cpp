@@ -542,13 +542,19 @@ void QgsAttributeTypeDialog::accept()
       mValueMap.clear();
       for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
       {
-        if ( tableWidget->item( i, 1 )->text().isNull() )
+        QTableWidgetItem *ki = tableWidget->item( i, 0 );
+        QTableWidgetItem *vi = tableWidget->item( i, 1 );
+
+        if ( !ki )
+          continue;
+
+        if ( !vi || vi->text().isNull() )
         {
-          mValueMap.insert( tableWidget->item( i, 0 )->text(), tableWidget->item( i, 0 )->text() );
+          mValueMap.insert( ki->text(), ki->text() );
         }
         else
         {
-          mValueMap.insert( tableWidget->item( i, 1 )->text(), tableWidget->item( i, 0 )->text() );
+          mValueMap.insert( vi->text(), ki->text() );
         }
       }
       mEditType = QgsVectorLayer::ValueMap;
