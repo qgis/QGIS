@@ -21,10 +21,10 @@ def description():
 	return "Tools for vector data analysis and management"
 
 def version():
-	return "0.5.10"
+	return "0.6"
   
 def qgisMinimumVersion():
-	return "1.0"
+	return "1.4"
 
 def icon():
 	return "icons/logo_small.png"
