@@ -59,6 +59,11 @@ SaSourceSelect::SaSourceSelect( QWidget *parent, Qt::WFlags fl )
 {
   setupUi( this );
 
+  mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+  mBuildQueryButton->setEnabled( false );
+
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
@@ -168,7 +173,7 @@ void SaSourceSelect::on_cmbConnections_activated( int )
   settings.setValue( "/SQLAnywhere/connections/selected", cmbConnections->currentText() );
 }
 
-void SaSourceSelect::on_btnBuildQuery_clicked()
+void SaSourceSelect::buildQuery()
 {
   setSql( mTablesTreeView->currentIndex() );
 }
