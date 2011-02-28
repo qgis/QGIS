@@ -109,6 +109,7 @@ class fToolsPlugin:
     self.multiToSingle.setIcon( QIcon( self.getThemeIcon( "multi_to_single.png") ) )
     self.singleToMulti.setIcon( QIcon( self.getThemeIcon( "single_to_multi.png") ) )
     self.polysToLines.setIcon( QIcon( self.getThemeIcon( "to_lines.png") ) )
+    self.linesToPolys.setIcon( QIcon( self.getThemeIcon( "to_lines.png") ) )
 
     self.dataManageMenu.setIcon( QIcon( self.getThemeIcon( "management.png") ) )
     self.project.setIcon( QIcon( self.getThemeIcon( "export_projection.png") ) )
@@ -175,8 +176,9 @@ class fToolsPlugin:
     self.multiToSingle = QAction( QCoreApplication.translate( "fTools", "Multipart to singleparts" ),self.iface.mainWindow() )
     self.singleToMulti = QAction( QCoreApplication.translate( "fTools", "Singleparts to multipart" ),self.iface.mainWindow() )
     self.polysToLines = QAction( QCoreApplication.translate( "fTools", "Polygons to lines" ),self.iface.mainWindow() )
+    self.linesToPolys = QAction( QCoreApplication.translate( "fTools", "Lines to polygons" ),self.iface.mainWindow() )
     self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay, self.voronoi,
-    self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.extNodes] )
+    self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.linesToPolys, self.extNodes] )
 
     self.dataManageMenu = QMenu( QCoreApplication.translate( "fTools", "&Data Management Tools") )
     self.project = QAction( QCoreApplication.translate( "fTools", "Export to new projection" ), self.iface.mainWindow() )
@@ -236,6 +238,7 @@ class fToolsPlugin:
     QObject.connect( self.delaunay, SIGNAL("triggered()"), self.dodelaunay )
     QObject.connect( self.voronoi, SIGNAL("triggered()"), self.dovoronoi )
     QObject.connect( self.polysToLines, SIGNAL("triggered()"), self.dopolysToLines )
+    QObject.connect( self.linesToPolys, SIGNAL("triggered()"), self.dolinesToPolys )
     QObject.connect( self.compGeo, SIGNAL("triggered()"), self.docompGeo )
     QObject.connect( self.extNodes, SIGNAL("triggered()"), self.doextNodes )
 
@@ -257,6 +260,10 @@ class fToolsPlugin:
 
   def dopolysToLines( self ):
     d = doGeometry.GeometryDialog( self.iface, 4 )
+    d.exec_()
+
+  def dolinesToPolys( self ):
+    d = doGeometry.GeometryDialog( self.iface, 11 )
     d.exec_()
 
   def docheckGeom( self ):
