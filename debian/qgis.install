@@ -1,4 +1,3 @@
-usr/bin/qgis_help
 usr/lib/qgis/plugins/libcopyrightlabelplugin.so
 usr/lib/qgis/plugins/libdelimitedtextplugin.so
 usr/lib/qgis/plugins/libgeorefplugin.so
@@ -20,6 +19,7 @@ usr/lib/qgis/plugins/libspatialqueryplugin.so
 usr/lib/qgis/plugins/libdisplacementplugin.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so
 usr/lib/qgis/plugins/libroadgraphplugin.so
+usr/lib/qgis/qgis_help
 usr/share/pixmaps/qgis-icon.xpm
 usr/share/pixmaps/qgis-mime-icon.png
 usr/share/pixmaps/qgis-mime-icon.png usr/share/icons/crystalsvg/128x128/mimetypes
