@@ -130,9 +130,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the help application.
     static const QString helpAppPath();
 
-    //! Returns the path to the mapserver export application.
-    static const QString msexportAppPath();
-
     //! Returns the path to the translation directory.
     static const QString i18nPath();
 

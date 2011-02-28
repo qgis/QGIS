@@ -241,26 +241,15 @@ const QString QgsApplication::developerPath()
 */
 const QString QgsApplication::helpAppPath()
 {
-  QString helpAppPath = applicationDirPath();
+  QString helpAppPath;
 #ifdef Q_OS_MACX
-  helpAppPath += "/bin/qgis_help.app/Contents/MacOS";
+  helpAppPath = applicationDirPath() + "/bin/qgis_help.app/Contents/MacOS";
+#else
+  helpAppPath = prefixPath() + "/" QGIS_LIBEXEC_SUBDIR;
 #endif
   helpAppPath += "/qgis_help";
   return helpAppPath;
 }
-/*!
-  Returns the path to the mapserverexport application.
-*/
-const QString QgsApplication::msexportAppPath()
-{
-  QString msexportAppPath = applicationDirPath();
-#ifdef Q_OS_MACX
-  msexportAppPath += "/bin/msexport.app/Contents/MacOS";
-#endif
-  msexportAppPath += "/msexport";
-  return msexportAppPath;
-}
-
 /*!
   Returns the path to the translation directory.
 */
