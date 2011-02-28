@@ -65,17 +65,8 @@ class Dialog(QDialog, Ui_Dialog):
             self.outShape.clear()
             addToTOC = QMessageBox.question(self, self.tr("Coordinate statistics"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
-                self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                if self.vlayer.geometryType() == QGis.Point:
-                    render = QgsSingleSymbolRenderer(QGis.Point)
-                    symbol = QgsSymbol(QGis.Point)
-                    symbol.setFillColor(Qt.red)
-                    symbol.setFillStyle(Qt.SolidPattern)
-                    symbol.setColor(Qt.red)
-                    symbol.setPointSize(5)
-                    render.addSymbol(symbol)
-                    self.vlayer.setRenderer(render)
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
+                QgsMapLayerRegistry.instance().addMapLayer(vlayer)
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
