@@ -5,6 +5,36 @@ from qgis.core import *
 from ui_frmVisual import Ui_Dialog
 import ftools_utils
 import math
+from qgis import gui
+
+class MarkerErrorGeometry():
+  def __init__(self, mapCanvas):
+    self.__canvas = mapCanvas
+    self.__marker = None
+
+  def __del__(self):
+    self.reset()
+
+  def __createMarker(self, point):
+    self.__marker = gui.QgsVertexMarker(self.__canvas)
+    self.__marker.setCenter(point)
+    self.__marker.setIconType(gui.QgsVertexMarker.ICON_X)
+    self.__marker.setPenWidth(3)
+
+  def setGeom(self, x, y):
+    if not self.__marker is None:
+      self.reset()
+    point  = QgsPoint(x, y)
+    if self.__marker is None:
+      self.__createMarker(point)
+    else:
+      self.__marker.setCenter(point)
+
+  def reset(self):
+    if not self.__marker is None:
+      self.__canvas.scene().removeItem(self.__marker) 
+      del self.__marker
+      self.__marker = None
 
 class ValidateDialog( QDialog, Ui_Dialog ):
   def __init__(self, iface):
@@ -31,6 +61,8 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
     self.progressBar.setValue(0)
     self.storedScale = self.iface.mapCanvas().scale()
+    # create marker for error
+    self.marker = MarkerErrorGeometry(self.iface.mapCanvas())
     
   def keyPressEvent( self, e ):
     if ( e.modifiers() == Qt.ControlModifier or \
@@ -64,6 +96,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         mc = self.iface.mapCanvas()
         x = item.data(Qt.UserRole).toPyObject().x()
         y = item.data(Qt.UserRole).toPyObject().y()
+        self.marker.setGeom(x, y) # Set Marker
         mc.zoomToPreviousExtent()
         scale = mc.scale()
         rect = QgsRectangle(float(x)-(4.0/scale),float(y)-(4.0/scale),
@@ -89,6 +122,11 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.testThread.start()
     return True
 
+  def reject(self):
+    # Remove Marker
+    self.marker.reset()
+    QDialog.reject(self)
+    
   def cancelThread( self ):
     self.testThread.stop()
     QApplication.restoreOverrideCursor()
@@ -171,6 +209,8 @@ class validateThread( QThread ):
       geom = QgsGeometry(feat.geometry()) # ger reference to geometry
       self.emit(SIGNAL("runStatus(PyQt_PyObject)"), nElement)
       nElement += 1
-      lstErrors.append((feat.id(), list(geom.validateGeometry())))
+      # Check Add error
+      if not (geom.isGeosEmpty() or geom.isGeosValid() ) :
+        lstErrors.append((feat.id(), list(geom.validateGeometry())))
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
     return lstErrors
