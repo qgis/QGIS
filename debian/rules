@@ -160,7 +160,6 @@ ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
 	dh_desktop
 endif
 	dh_installman -pqgis qgis.1
-	dh_installman -pqgis qgis_help.1
 	dh_installmime -pqgis
 	dh_link
 	if which dh_lintian >/dev/null; then dh_lintian; fi
