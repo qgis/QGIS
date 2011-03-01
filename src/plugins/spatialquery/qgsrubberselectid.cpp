@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsrubberselectid.cpp 13377 2010-04-25 01:07:36Z jef $ */
+/*  $Id$ */
 
 #include "qgsrubberselectid.h"
 
@@ -43,7 +43,7 @@ QgsRubberSelectId::~QgsRubberSelectId()
 
 void QgsRubberSelectId::reset()
 {
-    mRubberBand->reset( mIsPolygon );
+  mRubberBand->reset( mIsPolygon );
 } // void QgsRubberSelectId::reset()
 
 void QgsRubberSelectId::setStyle( int colorRed, int colorGreen, int colorBlue, int width )
@@ -58,7 +58,7 @@ void QgsRubberSelectId::setStyle( int colorRed, int colorGreen, int colorBlue, i
 void QgsRubberSelectId::addFeature( QgsVectorLayer* lyr, int fid )
 {
   bool isPolygon = ( lyr->geometryType() == QGis::Polygon );
-  if( mIsPolygon != isPolygon)
+  if ( mIsPolygon != isPolygon )
   {
     reset();
     delete mRubberBand;

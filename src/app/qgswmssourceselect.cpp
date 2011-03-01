@@ -253,7 +253,7 @@ void QgsWMSSourceSelect::saveClicked()
 void QgsWMSSourceSelect::loadClicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
-                                                   tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

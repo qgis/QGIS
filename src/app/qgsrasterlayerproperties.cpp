@@ -728,8 +728,8 @@ void QgsRasterLayerProperties::sync()
     {
       labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
     }
-    mDefaultStandardDeviation = myQSettings.value("/Raster/defaultStandardDeviation", 1.0).toDouble();
-    sboxThreeBandStdDev->setValue(mDefaultStandardDeviation);
+    mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toDouble();
+    sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
   }
 
   QgsDebugMsg( "populate transparency tab" );

@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquerydialog.cpp 15141 2011-02-08 13:34:43Z jef $ */
+/*  $Id$ */
 
 #include <QMessageBox>
 #include <QDateTime>
@@ -67,7 +67,7 @@ void QgsSpatialQueryDialog::messageLayersLessTwo()
 
 void QgsSpatialQueryDialog::initGui()
 {
-  mRubberSelectId->setStyle(250, 0, 0, 2); // Same identify
+  mRubberSelectId->setStyle( 250, 0, 0, 2 ); // Same identify
   visibleResult( false );
   populateTypeItems();
   populateCbTargetLayer();
@@ -187,7 +187,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   msg = tr( "Total of features =  %1" ).arg( mFeatureResult.size() );
   teStatus->append( msg );
   teStatus->append( "" );
-  teStatus->append( tr("Total of invalid features:") );
+  teStatus->append( tr( "Total of invalid features:" ) );
   teStatus->append( getDescriptionInvalidFeaturesShow( true ) );
   teStatus->append( getDescriptionInvalidFeaturesShow( false ) );
   teStatus->append( "" );
@@ -197,8 +197,8 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   teStatus->append( "" );
 
   ckbLogProcessing->setChecked( false );
-  QVariant item = QVariant::fromValue( (int)itemsResult );
-  int index = cbTypeItems->findData(item);
+  QVariant item = QVariant::fromValue(( int )itemsResult );
+  int index = cbTypeItems->findData( item );
   cbTypeItems->setCurrentIndex( index );
   on_cbTypeItems_currentIndexChanged( index );
 
@@ -206,8 +206,8 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   if ( mFeatureResult.size() > 0 )
   {
     // Select features
-    TypeResultFor typeResultFor = (TypeResultFor) cbResultFor->itemData( cbResultFor->currentIndex() ).toInt();
-    switch( typeResultFor )
+    TypeResultFor typeResultFor = ( TypeResultFor ) cbResultFor->itemData( cbResultFor->currentIndex() ).toInt();
+    switch ( typeResultFor )
     {
       case selectedNew:
         mLayerTarget->setSelectedFeatures( mFeatureResult );
@@ -216,7 +216,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
         mLayerTarget->setSelectedFeatures( mLayerTarget->selectedFeaturesIds() + mFeatureResult );
         break;
       case selectedRemove:
-        mLayerTarget->setSelectedFeatures( mLayerTarget->selectedFeaturesIds() - mFeatureResult);
+        mLayerTarget->setSelectedFeatures( mLayerTarget->selectedFeaturesIds() - mFeatureResult );
         break;
       default:
         return;
@@ -226,9 +226,9 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
 
 QString QgsSpatialQueryDialog::getSubsetFIDs( const QSet< int > *fids, QString fieldFID )
 {
-  if( fids->size() == 0 )
+  if ( fids->size() == 0 )
   {
-    return QString("");
+    return QString( "" );
   }
   QSetIterator <int>item( *fids );
   QStringList lstFID;
@@ -236,36 +236,36 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QSet< int > *fids, QString f
   {
     lstFID.append( QString::number( item.next() ) );
   }
-  QString qFormat("%1 in (%2)");
-  QString qReturn  = qFormat.arg( fieldFID ).arg( lstFID.join(",") );
+  QString qFormat( "%1 in (%2)" );
+  QString qReturn  = qFormat.arg( fieldFID ).arg( lstFID.join( "," ) );
   lstFID.clear();
   return qReturn;
 } // QString QgsSpatialQueryDialog::getSubsetFIDs( const QSet< int > *fids, QString fieldFID )
 
-QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
+QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset( QString &msg, QString &fieldFID )
 {
   QString providerType = mLayerTarget->providerType().toUpper();
   // OGR
-  if( providerType  == "OGR")
+  if ( providerType  == "OGR" )
   {
-    fieldFID = QString("FID");
+    fieldFID = QString( "FID" );
     return verifyOk;
   }
   // Database Postgis and Spatialite
-  if( providerType  == "POSTGRES" || providerType  == "SPATIALITE" )
+  if ( providerType  == "POSTGRES" || providerType  == "SPATIALITE" )
   {
     fieldFID = mLayerTarget->dataProvider()->fields().value( 0 ).name();
-    msg = tr("Using the field \"%1\" for subset").arg( fieldFID );
+    msg = tr( "Using the field \"%1\" for subset" ).arg( fieldFID );
     return verifyTry;
   }
-  msg = tr("Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE.");
+  msg = tr( "Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE." );
   return verifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 
 bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
 {
   QgsVectorLayer *addLyr = new QgsVectorLayer( mLayerTarget->source(), name, mLayerTarget->providerType() );
-  if( ! addLyr->setSubsetString( subset ) )
+  if ( ! addLyr->setSubsetString( subset ) )
   {
     delete addLyr;
     return false;
@@ -464,9 +464,9 @@ void QgsSpatialQueryDialog::removeLayer( bool isTarget, QgsVectorLayer* lyr )
       cmb->setCurrentIndex( 0 );
       setLayer( isTarget, 0 );
       evaluateCheckBoxLayer( isTarget );
-      if (isTarget)
+      if ( isTarget )
       {
-        if( gbResultQuery->isVisible() )
+        if ( gbResultQuery->isVisible() )
         {
           visibleResult( false );
         }
@@ -482,19 +482,19 @@ void QgsSpatialQueryDialog::populateCbResulFor()
   cbResultFor->blockSignals( true );
   cbResultFor->clear();
   QVariant item;
-  item = QVariant::fromValue( (int)selectedNew );
-  cbResultFor->addItem( tr("Create new selection"), item );
-  if( mLayerTarget->selectedFeatureCount() == 0 )
+  item = QVariant::fromValue(( int )selectedNew );
+  cbResultFor->addItem( tr( "Create new selection" ), item );
+  if ( mLayerTarget->selectedFeatureCount() == 0 )
   {
-      return;
+    return;
   }
-  if( ! ckbUsingSelectedTarget->isChecked() )
+  if ( ! ckbUsingSelectedTarget->isChecked() )
   {
-    item = QVariant::fromValue( (int)selectedAdd );
-    cbResultFor->addItem( tr("Add to current selection"), item );
+    item = QVariant::fromValue(( int )selectedAdd );
+    cbResultFor->addItem( tr( "Add to current selection" ), item );
   }
-  item = QVariant::fromValue( (int)selectedRemove );
-  cbResultFor->addItem( tr("Remove from current selection"), item );
+  item = QVariant::fromValue(( int )selectedRemove );
+  cbResultFor->addItem( tr( "Remove from current selection" ), item );
   cbResultFor->blockSignals( false );
 } // void QgsSpatialQueryDialog::populateCbResulFor()
 
@@ -502,12 +502,12 @@ void QgsSpatialQueryDialog::populateTypeItems()
 {
   QVariant item;
   cbTypeItems->blockSignals( true );
-  item = QVariant::fromValue( (int)itemsResult );
-  cbTypeItems->addItem( tr("Result query"), item );
-  item = QVariant::fromValue( (int)itemsInvalidTarget );
-  cbTypeItems->addItem( tr("Invalid source"), item );
-  item = QVariant::fromValue( (int)itemsInvalidReference );
-  cbTypeItems->addItem( tr("Invalid reference"), item );
+  item = QVariant::fromValue(( int )itemsResult );
+  cbTypeItems->addItem( tr( "Result query" ), item );
+  item = QVariant::fromValue(( int )itemsInvalidTarget );
+  cbTypeItems->addItem( tr( "Invalid source" ), item );
+  item = QVariant::fromValue(( int )itemsInvalidReference );
+  cbTypeItems->addItem( tr( "Invalid reference" ), item );
   cbTypeItems->blockSignals( false );
 }
 
@@ -621,10 +621,10 @@ void QgsSpatialQueryDialog::setSelectedGui()
 {
   int selectedFeat = mLayerTarget->selectedFeatureCount();
   int totalFeat = mLayerTarget->featureCount();
-  QString formatLabel( tr("%1 of %2 selected by \"%3\""));
-  if( ! mIsSelectedOperator )
+  QString formatLabel( tr( "%1 of %2 selected by \"%3\"" ) );
+  if ( ! mIsSelectedOperator )
   {
-    mSourceSelected = tr("user");
+    mSourceSelected = tr( "user" );
   }
   lbStatusSelected->setText( formatLabel.arg( selectedFeat ).arg( totalFeat ).arg( mSourceSelected ) );
   mIsSelectedOperator = false;
@@ -636,19 +636,19 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, int fid )
   lwFeatures->setEnabled( false ); // The showRubberFeature can be slow
   showRubberFeature( lyr, fid );
   // Zoom
-  if( ckbZoomItem->isChecked() )
+  if ( ckbZoomItem->isChecked() )
   {
-    zoomFeature(lyr, fid);
+    zoomFeature( lyr, fid );
   }
   lwFeatures->setEnabled( true );
   lwFeatures->setFocus();
 } // void QgsSpatialQueryDialog::changeLwFeature( QListWidget *listWidget, QgsVectorLayer* lyr, int fid )
 
-void QgsSpatialQueryDialog::zoomFeature(QgsVectorLayer* lyr, int fid)
+void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, int fid )
 {
   static QgsVectorLayer* lyrCheck = NULL;
   static bool hasMsg = false;
-  if( ! lyrCheck || lyrCheck != lyr )
+  if ( ! lyrCheck || lyrCheck != lyr )
   {
     lyrCheck = lyr;
     hasMsg = true;
@@ -668,26 +668,26 @@ void QgsSpatialQueryDialog::zoomFeature(QgsVectorLayer* lyr, int fid)
     return;
   }
   // Set system reference
- QgsCoordinateReferenceSystem srsSource = lyr->dataProvider()->crs();
+  QgsCoordinateReferenceSystem srsSource = lyr->dataProvider()->crs();
   QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapRenderer()->destinationSrs();
-  if( ! srsSource.isValid() )
+  if ( ! srsSource.isValid() )
   {
-    if( hasMsg )
+    if ( hasMsg )
     {
       long epsgMapcanvas = srcMapcanvas.epsg();
       bool isFly = mIface->mapCanvas()->mapRenderer()->hasCrsTransformEnabled();
-      QString msgFly = tr("Map \"%1\" \"on the fly\" transformation.").arg( isFly ? tr( "enable" ) : tr( "disable") );
-      QString msg = tr("Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider).").arg( lyr->name() );
-      msg.append( tr("\n\nEPSG of map is %1.\n%2.").arg( epsgMapcanvas ).arg( msgFly ) );
-      msg.append("\n\nUsing CRS of map for all features!");
+      QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
+      QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
+      msg.append( tr( "\n\nEPSG of map is %1.\n%2." ).arg( epsgMapcanvas ).arg( msgFly ) );
+      msg.append( "\n\nUsing CRS of map for all features!" );
 
-      QMessageBox::warning(this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
+      QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
     }
     mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
   }
-  else if ( srsSource == srcMapcanvas)
+  else if ( srsSource == srcMapcanvas )
   {
-     mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
   }
   else
   {
@@ -735,7 +735,7 @@ void QgsSpatialQueryDialog::apply()
   mIsSelectedOperator = true;
   runQuery();
   QDateTime datetimeEnd = QDateTime::currentDateTime();
-  if( mFeatureResult.count() == 0 )
+  if ( mFeatureResult.count() == 0 )
   {
     mIsSelectedOperator = false;
   }
@@ -746,7 +746,7 @@ void QgsSpatialQueryDialog::apply()
 void QgsSpatialQueryDialog::visibleResult( bool show )
 {
   blockSignals( true );
-  if( show == false)
+  if ( show == false )
   {
     mRubberSelectId->reset();
   }
@@ -754,7 +754,7 @@ void QgsSpatialQueryDialog::visibleResult( bool show )
   pgbStatus->setVisible( show );
   gbResultQuery->setVisible( show );
   gbSelected->setVisible( show );
-  ckbLogProcessing->setVisible(  show );
+  ckbLogProcessing->setVisible( show );
   teStatus->setVisible( false );
   pgbStatus->setVisible( !show );
   blockSignals( false );
@@ -762,9 +762,9 @@ void QgsSpatialQueryDialog::visibleResult( bool show )
 } // void QgsSpatialQueryDialog::visibleResult( bool show )
 
 //! Slots for signs of Dialog
-void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button)
+void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button )
 {
-  switch( bbMain->buttonRole( button ) )
+  switch ( bbMain->buttonRole( button ) )
   {
     case QDialogButtonBox::ApplyRole:
       apply();
@@ -780,9 +780,9 @@ void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button)
 
 void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 {
-  TypeItems typeItem = (TypeItems) cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt();
+  TypeItems typeItem = ( TypeItems ) cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt();
   QSet<int> * fids = 0;
-  switch( typeItem )
+  switch ( typeItem )
   {
     case itemsResult:
       fids = &mFeatureResult;
@@ -800,22 +800,22 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
   QString msg;
   QString fieldFID;
   TypeVerifyCreateSubset verify = verifyCreateSubset( msg, fieldFID );
-  if( verify == verifyImpossible )
+  if ( verify == verifyImpossible )
   {
-    QMessageBox::critical(this, title, msg, QMessageBox::Ok );
+    QMessageBox::critical( this, title, msg, QMessageBox::Ok );
     return;
   }
-  if( verify == verifyTry )
+  if ( verify == verifyTry )
   {
-    QMessageBox::warning(this, title, msg, QMessageBox::Ok );
+    QMessageBox::warning( this, title, msg, QMessageBox::Ok );
   }
 
-  QString subset = getSubsetFIDs(  fids, fieldFID );
-  QString name = QString("%1 < %2 > %3").arg( mLayerTarget->name() ).arg( cbOperation->currentText() ).arg( mLayerReference->name() );
-  if( ! addLayerSubset( name, subset ) )
+  QString subset = getSubsetFIDs( fids, fieldFID );
+  QString name = QString( "%1 < %2 > %3" ).arg( mLayerTarget->name() ).arg( cbOperation->currentText() ).arg( mLayerReference->name() );
+  if ( ! addLayerSubset( name, subset ) )
   {
-    msg = tr("The query from \"%1\" using \"%2\" in field not possible.").arg( mLayerTarget->name() ).arg( fieldFID );
-    QMessageBox::critical(this, title, msg, QMessageBox::Ok );
+    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name() ).arg( fieldFID );
+    QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
 } // void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 
@@ -826,22 +826,22 @@ void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
   QString msg;
   QString fieldFID;
   TypeVerifyCreateSubset verify = verifyCreateSubset( msg, fieldFID );
-  if( verify == verifyImpossible )
+  if ( verify == verifyImpossible )
   {
-    QMessageBox::critical(this, title, msg, QMessageBox::Ok );
+    QMessageBox::critical( this, title, msg, QMessageBox::Ok );
     return;
   }
-  if( verify == verifyTry )
+  if ( verify == verifyTry )
   {
-    QMessageBox::warning(this, title, msg, QMessageBox::Ok );
+    QMessageBox::warning( this, title, msg, QMessageBox::Ok );
   }
 
-  QString subset = getSubsetFIDs(  fids, fieldFID );
-  QString name = QString("%1 selected").arg( mLayerTarget->name() );
-  if( ! addLayerSubset( name, subset ) )
+  QString subset = getSubsetFIDs( fids, fieldFID );
+  QString name = QString( "%1 selected" ).arg( mLayerTarget->name() );
+  if ( ! addLayerSubset( name, subset ) )
   {
-    msg = tr("The query from \"%1\" using \"%2\" in field not possible.").arg( mLayerTarget->name() ).arg( fieldFID );
-    QMessageBox::critical(this, title, msg, QMessageBox::Ok );
+    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name() ).arg( fieldFID );
+    QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
 } // void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
 
@@ -860,7 +860,7 @@ void QgsSpatialQueryDialog::on_cbTargetLayer_currentIndexChanged( int index )
 
   populateCbOperation();
 
-  if( gbResultQuery->isVisible() )
+  if ( gbResultQuery->isVisible() )
   {
     visibleResult( false );
   }
@@ -873,7 +873,7 @@ void QgsSpatialQueryDialog::on_cbReferenceLayer_currentIndexChanged( int index )
 
   populateCbOperation();
 
-  if( gbResultQuery->isVisible() )
+  if ( gbResultQuery->isVisible() )
   {
     visibleResult( false );
   }
@@ -883,11 +883,11 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
 {
   // Get Value type Item
   QVariant qtypItem = cbTypeItems->itemData( index );
-  TypeItems typeItem = (TypeItems) qtypItem.toInt();
+  TypeItems typeItem = ( TypeItems ) qtypItem.toInt();
 
   QSet<int> * setItems = 0;
   int totalFeat = mLayerTarget->featureCount();
-  switch( typeItem )
+  switch ( typeItem )
   {
     case itemsResult:
       setItems = &mFeatureResult;
@@ -913,7 +913,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
     QListWidgetItem *lwItem = NULL;
     while ( item.hasNext() )
     {
-      lwItem = new QListWidgetItem(lwFeatures);
+      lwItem = new QListWidgetItem( lwFeatures );
       QVariant fid  = QVariant( item.next() );
       lwItem->setData( Qt::UserRole, fid ); // Data
       lwItem->setData( Qt::DisplayRole, fid ); // Label
@@ -921,7 +921,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
     }
     lwFeatures->sortItems();
     lwFeatures->blockSignals( false );
-    lwFeatures->setCurrentRow(0); // Has signal/slot for change current item in ListWidget
+    lwFeatures->setCurrentRow( 0 ); // Has signal/slot for change current item in ListWidget
   }
   else
   {
@@ -929,7 +929,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
     lwFeatures->blockSignals( false );
   }
   // Set lbStatusItems and pbCreateLayer
-  QString formatLabel( tr("%1 of %2 identified"));
+  QString formatLabel( tr( "%1 of %2 identified" ) );
   lbStatusItems->setText( formatLabel.arg( totalItens ).arg( totalFeat ) );
   pbCreateLayerItems->setEnabled( totalItens > 0 );
   ckbZoomItem->setEnabled( totalItens > 0 );
@@ -937,7 +937,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
 
 void QgsSpatialQueryDialog::on_cbResultFor_currentIndexChanged()
 {
-  if( gbResultQuery->isVisible() )
+  if ( gbResultQuery->isVisible() )
   {
     visibleResult( false );
   }
@@ -945,7 +945,7 @@ void QgsSpatialQueryDialog::on_cbResultFor_currentIndexChanged()
 
 void QgsSpatialQueryDialog::on_cbOperation_currentIndexChanged()
 {
-  if( gbResultQuery->isVisible() )
+  if ( gbResultQuery->isVisible() )
   {
     visibleResult( false );
   }
@@ -953,10 +953,10 @@ void QgsSpatialQueryDialog::on_cbOperation_currentIndexChanged()
 
 void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
 {
-  TypeItems typeItem = (TypeItems)( cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt() );
+  TypeItems typeItem = ( TypeItems )( cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt() );
   QgsVectorLayer *lyr = typeItem == itemsInvalidReference
                         ? mLayerReference : mLayerTarget;
-  int fid = item->data(Qt::UserRole).toInt();
+  int fid = item->data( Qt::UserRole ).toInt();
   changeLwFeature( lyr, fid );
 } // void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
 
@@ -973,15 +973,15 @@ void QgsSpatialQueryDialog::on_ckbLogProcessing_clicked( bool checked )
 
 void QgsSpatialQueryDialog::on_ckbZoomItem_clicked( bool checked )
 {
-  if( checked )
+  if ( checked )
   {
-    if( lwFeatures->count() > 0 )
+    if ( lwFeatures->count() > 0 )
     {
-      int fid = lwFeatures->currentItem()->data(Qt::UserRole).toInt();
-      TypeItems typeItem = (TypeItems)( cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt() );
+      int fid = lwFeatures->currentItem()->data( Qt::UserRole ).toInt();
+      TypeItems typeItem = ( TypeItems )( cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt() );
       QgsVectorLayer *lyr = typeItem == itemsInvalidReference
                             ? mLayerReference : mLayerTarget;
-      zoomFeature(lyr, fid);
+      zoomFeature( lyr, fid );
     }
   }
 } // QgsSpatialQueryDialog::on_ckbZoomItem_clicked( bool checked )
@@ -1033,18 +1033,18 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
     removeLayer( false, mLayerTarget );
   }
 
-  if( cbTargetLayer->count() < 2 )
+  if ( cbTargetLayer->count() < 2 )
   {
     bbMain->button( QDialogButtonBox::Apply )->hide();
     cbOperation->setEnabled( false );
     cbResultFor->setEnabled( false );
-    if( gbResultQuery->isVisible() )
+    if ( gbResultQuery->isVisible() )
     {
       visibleResult( false );
     }
 
     mLayerReference = NULL;
-    if( cbTargetLayer->count() < 1 )
+    if ( cbTargetLayer->count() < 1 )
     {
       mLayerTarget = NULL;
     }

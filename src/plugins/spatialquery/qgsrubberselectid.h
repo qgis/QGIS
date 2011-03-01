@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsrubberselectid.h 13377 2010-04-25 01:07:36Z jef $ */
+/*  $Id$ */
 
 #ifndef QGSRUBBERSELECTID_H
 #define QGSRUBBERSELECTID_H
@@ -52,7 +52,7 @@ class QgsRubberSelectId
     * \param colorGreen   integer for value green (0 - 255)
     * \param colorBlue    integer for value blue (0 - 255)
     */
-    void setStyle( int colorRed, int colorGreen, int colorBlue, int width);
+    void setStyle( int colorRed, int colorGreen, int colorBlue, int width );
 
     /**
     * \brief Create rubber band from geometry by feature

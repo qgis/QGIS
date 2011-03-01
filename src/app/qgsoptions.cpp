@@ -79,7 +79,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spinBoxIdentifyValue->setMinimum( 0.01 );
   spinBoxIdentifyValue->setValue( identifyValue );
 
-  //local directories to search when loading c++ plugins 
+  //local directories to search when loading c++ plugins
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
