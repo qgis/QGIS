@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsreaderfeatures.cpp 13377 2010-04-25 01:07:36Z jef $ */
 
 #include <qgsvectordataprovider.h>
 

@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialqueryplugin.cpp 14897 2010-12-12 19:19:54Z wonder $ */
 
 
 //
