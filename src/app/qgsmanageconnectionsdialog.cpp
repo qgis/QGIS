@@ -83,7 +83,7 @@ void QgsManageConnectionsDialog::doExportImport()
   if ( mDialogMode == Export )
   {
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), ".",
-                                                     tr( "XML files (*.xml *.XML)" ) );
+                       tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {
       return;
@@ -354,15 +354,15 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
       {
         case QMessageBox::Cancel:   return;
         case QMessageBox::No:       child = child.nextSiblingElement();
-                                    continue;
+          continue;
         case QMessageBox::Yes:      overwrite = true;
-                                    break;
+          break;
         case QMessageBox::YesToAll: prompt = false;
-                                    overwrite = true;
-                                    break;
+          overwrite = true;
+          break;
         case QMessageBox::NoToAll:  prompt = false;
-                                    overwrite = false;
-                                    break;
+          overwrite = false;
+          break;
       }
     }
 
@@ -429,15 +429,15 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
       {
         case QMessageBox::Cancel:   return;
         case QMessageBox::No:       child = child.nextSiblingElement();
-                                    continue;
+          continue;
         case QMessageBox::Yes:      overwrite = true;
-                                    break;
+          break;
         case QMessageBox::YesToAll: prompt = false;
-                                    overwrite = true;
-                                    break;
+          overwrite = true;
+          break;
         case QMessageBox::NoToAll:  prompt = false;
-                                    overwrite = false;
-                                    break;
+          overwrite = false;
+          break;
       }
     }
 

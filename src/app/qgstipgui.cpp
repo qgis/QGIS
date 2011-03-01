@@ -64,14 +64,14 @@ void QgsTipGui::showTip( QgsTip myTip )
   // TODO - This html construction can be simplified using QStringBuilder
   //        once Qt 4.6 is the minimum required version for building QGIS.
   //
-  QString content = "<img src='" 
-    + QgsApplication::iconsPath() 
-    + "qgis-icon-60x60.png" 
-    + "' style='float:left;'>" 
-    + "<h2>"
-    + myTip.title() 
-    + "</h2><br clear='all'/>" 
-    + myTip.content();
+  QString content = "<img src='"
+                    + QgsApplication::iconsPath()
+                    + "qgis-icon-60x60.png"
+                    + "' style='float:left;'>"
+                    + "<h2>"
+                    + myTip.title()
+                    + "</h2><br clear='all'/>"
+                    + myTip.content();
 
   txtTip->setHtml( content );
 }

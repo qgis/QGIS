@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquerydialog.h 15141 2011-02-08 13:34:43Z jef $ */
+/*  $Id$ */
 
 #ifndef SPATIALQUERYDIALOG_H
 #define SPATIALQUERYDIALOG_H
@@ -49,7 +49,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
 
   private slots:
     //! Slots for signs of Dialog
-    void on_bbMain_clicked( QAbstractButton * button);
+    void on_bbMain_clicked( QAbstractButton * button );
     void on_pbCreateLayerItems_clicked();
     void on_pbCreateLayerSelected_clicked();
     void on_cbTargetLayer_currentIndexChanged( int index );
@@ -95,7 +95,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Get string subset with selected FID
     QString getSubsetFIDs( const QSet< int > *fids, QString fieldFID );
     //! Verify can create layer subset
-    TypeVerifyCreateSubset verifyCreateSubset(QString &msg, QString &fieldFID);
+    TypeVerifyCreateSubset verifyCreateSubset( QString &msg, QString &fieldFID );
     //! Add layer target with subset
     bool addLayerSubset( QString name, QString subset );
     //! Get Description Layer to show result
@@ -133,7 +133,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Make action when change item in List feature
     void changeLwFeature( QgsVectorLayer* lyr, int fid );
     //! Zoom mapcanvas to current feature in listbox target
-    void zoomFeature(QgsVectorLayer* lyr, int fid);
+    void zoomFeature( QgsVectorLayer* lyr, int fid );
     //! Show rubber from feature
     void showRubberFeature( QgsVectorLayer* lyr, int id );
 

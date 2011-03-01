@@ -88,7 +88,7 @@ void QgsStyleV2ExportImportDialog::doExportImport()
   if ( mDialogMode == Export )
   {
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Save styles" ), ".",
-                                                     tr( "XML files (*.xml *.XML)" ) );
+                       tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {
       return;
@@ -184,7 +184,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   bool prompt = true;
   bool overwrite = true;
 
-  for( int i = 0; i < selection->size(); ++i )
+  for ( int i = 0; i < selection->size(); ++i )
   {
     index = selection->at( i );
     symbolName = index.model()->data( index, 0 ).toString();
@@ -197,7 +197,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
 
     if ( isSymbol )
     {
-      if ( dst->symbolNames().contains(  symbolName ) && prompt )
+      if ( dst->symbolNames().contains( symbolName ) && prompt )
       {
         int res = QMessageBox::warning( this, tr( "Duplicate names" ),
                                         tr( "Symbol with name '%1' already exists.\nOverwrite?" )
@@ -208,21 +208,21 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
           case QMessageBox::Cancel:   return;
           case QMessageBox::No:       continue;
           case QMessageBox::Yes:      dst->addSymbol( symbolName, symbol );
-                                      continue;
+            continue;
           case QMessageBox::YesToAll: prompt = false;
-                                      overwrite = true;
-                                      break;
+            overwrite = true;
+            break;
           case QMessageBox::NoToAll:  prompt = false;
-                                      overwrite = false;
-                                      break;
+            overwrite = false;
+            break;
         }
       }
 
-      if ( dst->symbolNames().contains(  symbolName ) && overwrite )
+      if ( dst->symbolNames().contains( symbolName ) && overwrite )
       {
         dst->addSymbol( symbolName, symbol );
       }
-      else if ( dst->symbolNames().contains(  symbolName ) && !overwrite )
+      else if ( dst->symbolNames().contains( symbolName ) && !overwrite )
       {
         continue;
       }
@@ -233,7 +233,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
     }
     else
     {
-      if ( dst->colorRampNames().contains(  symbolName ) && prompt )
+      if ( dst->colorRampNames().contains( symbolName ) && prompt )
       {
         int res = QMessageBox::warning( this, tr( "Duplicate names" ),
                                         tr( "Color ramp with name '%1' already exists.\nOverwrite?" )
@@ -244,21 +244,21 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
           case QMessageBox::Cancel:   return;
           case QMessageBox::No:       continue;
           case QMessageBox::Yes:      dst->addColorRamp( symbolName, ramp );
-                                      continue;
+            continue;
           case QMessageBox::YesToAll: prompt = false;
-                                      overwrite = true;
-                                      break;
+            overwrite = true;
+            break;
           case QMessageBox::NoToAll:  prompt = false;
-                                      overwrite = false;
-                                      break;
+            overwrite = false;
+            break;
         }
       }
 
-      if ( dst->colorRampNames().contains(  symbolName ) && overwrite )
+      if ( dst->colorRampNames().contains( symbolName ) && overwrite )
       {
         dst->addColorRamp( symbolName, ramp );
       }
-      else if ( dst->colorRampNames().contains(  symbolName ) && !overwrite )
+      else if ( dst->colorRampNames().contains( symbolName ) && !overwrite )
       {
         continue;
       }
