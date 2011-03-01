@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/icons">
         <file>spatialquery.png</file>
-        <file>selectall.png</file>
+        <file>select.png</file>
+        <file>selectadd.png</file>
+        <file>selectremove.png</file>
+        <file>selectesubsetlayer.png</file>
     </qresource>
 </RCC>

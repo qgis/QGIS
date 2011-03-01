@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquerydialog.h 15141 2011-02-08 13:34:43Z jef $ */
 
 #ifndef SPATIALQUERYDIALOG_H
 #define SPATIALQUERYDIALOG_H
@@ -25,19 +25,6 @@
 #include "ui_qgsspatialquerydialogbase.h"
 #include "qgisinterface.h"
 #include "qgsvectorlayer.h"
-
-/**
-* \brief Enum with feature listwidget
-* \enum Feature_Widget
-*
-*/
-enum Feature_Widget
-{
-  FW_Result,
-  FW_InvalidTarget,
-  FW_InvalidRefence
-};
-
 
 /**
 * \class QgsSpatialQueryDialog
@@ -68,20 +55,23 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
 
   private slots:
     //! Slots for signs of Dialog
-    void on_buttonBoxMain_accepted();
-    void on_buttonBoxMain_rejected();
-    void on_targetLayerComboBox_currentIndexChanged( int index );
-    void on_referenceLayerComboBox_currentIndexChanged( int index );
-    void on_resultFeatureTargetListWidget_itemClicked( QListWidgetItem * item );
-    void on_resultFeatureTargetListWidget_currentItemChanged( QListWidgetItem * item );
-    void on_invalidFeatureTargetListWidget_itemClicked( QListWidgetItem * item );
-    void on_invalidFeatureTargetListWidget_currentItemChanged( QListWidgetItem * item );
-    void on_invalidFeatureReferenceListWidget_itemClicked( QListWidgetItem * item );
-    void on_invalidFeatureReferenceListWidget_currentItemChanged( QListWidgetItem * item );
-    void on_ckboxLogProcessing_clicked( bool checked );
-    void on_pushButtonSelectResultTarget_clicked();
-    void on_pushButtonSelectInvalidTarget_clicked();
-    void on_pushButtonSelectInvalidReference_clicked();
+    void on_bbMain_accepted();
+    void on_bbMain_rejected();
+    void on_cbTargetLayer_currentIndexChanged( int index );
+    void on_cbReferenceLayer_currentIndexChanged( int index );
+    void on_lwResultFeatureTarget_currentItemChanged( QListWidgetItem * item );
+    void on_twResultInvalid_currentChanged ( int index );
+    void on_twInvalid_currentChanged ( int index );
+    void on_lwInvalidFeatureTarget_currentItemChanged( QListWidgetItem * item );
+    void on_lwInvalidFeatureReference_currentItemChanged( QListWidgetItem * item );
+    void on_ckbLogProcessing_clicked( bool checked );
+    void on_ckbZoomItem_clicked( bool checked );
+    void on_pbSelectResultTarget_clicked();
+    void on_pbSelectResultTargetAdd_clicked();
+    void on_pbSelectResultTargetRemove_clicked();
+    void on_pbSelectedSubsetLayer_clicked();
+    void on_pbSelectInvalidTarget_clicked();
+    void on_pbSelectInvalidReference_clicked();
 
     //! Slots for signs of QGIS
     void signal_qgis_layerWasAdded( QgsMapLayer* mapLayer );
@@ -101,13 +91,21 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Evaluate status of selected features from layer (Target or Reference)
     void evaluateCheckBox( bool isTarget );
     //! Run Query
+    //! Evaluate button selected add and remove
+    void evaluateButtonSelected();
     void runQuery();
     //! Show Log Processing
     void showLogProcessing( bool hasShow );
     //! Show result of query
     void showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd );
+    //! Set label with number's selected features of layer
+    void setLabelButtonSelected( QLabel *lb,  QgsVectorLayer* layer, QPushButton *pb);
+    //! Get string subset with selected FID
+    QString getSubsetSelected( QgsVectorLayer* layer );
     //! Get Description Layer to show result
     QString getDescriptionLayerShow( bool isTarget );
+    //! Get Description Layer to show result
+    QString getDescriptionInvalidFeaturesShow( bool isTarget );
     //! Connect all slots
     void connectAll();
     //! Disconnect all slots
@@ -119,23 +117,25 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Get Icon for vector layer
     QIcon getIconTypeGeometry( QGis::GeometryType geomType );
     //! Add layer in combobox (text, data and  tooltips)
-    void addLayerCombobox( bool isTarget, QgsVectorLayer* vectorLayer );
+    void addCbLayer( bool isTarget, QgsVectorLayer* vectorLayer );
     //! Find Layer in combobox
-    int getIndexLayerCombobox( bool isTarget, QgsVectorLayer* vectorLayer );
+    int getCbIndexLayer( bool isTarget, QgsVectorLayer* vectorLayer );
     //! Remove layer in combobox and setting GUI
     void removeLayer( bool isTarget, QgsVectorLayer* lyrRemove );
-    //! Populates targetLayerComboBox with all layers
-    void populateTargetLayerComboBox();
-    //! Populates referenceLayerComboBox with all layers except the current target layer
-    void populateReferenceLayerComboBox();
+    //! Populates cbTargetLayer with all layers
+    void populateCbTargetLayer();
+    //! Populates cbReferenceLayer with all layers except the current target layer
+    void populateCbReferenceLayer();
     //! Populates operationComboBox with the topological operations
-    void populateOperationComboBox();
+    void populateCbOperation();
     //! Populates the features in QListWidget (use by result, invalid target and reference)
-    void populateFeatureListWidget( QListWidget *listWidget, QSet<int> & setFeatures, bool hasSetRow = true );
+    void populateLwFeature( QListWidget *lw, QSet<int> & setFeatures );
     //! Clear the features of QListWidget (use by result, invalid target and reference)
-    void clearFeatureListWidget( QListWidget *listWidget );
+    void clearLwFeature( QListWidget *listWidget );
     //! Make action when change item in ListWidget
-    void changeFeatureListWidget( QListWidget *listWidget, QgsVectorLayer* vectorLayer, const QString& currentText );
+    void changeLwFeature( QListWidget *listWidget, QgsVectorLayer* vectorLayer, int fid );
+    //! Zoom mapcanvas to current feature in listbox target
+    void zoomFeatureTarget(QgsVectorLayer* vectorLayer, int fid);
     //! Show rubber from feature
     void showRubberFeature( QgsVectorLayer* vectorLayer, int id );
 
@@ -157,8 +157,6 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     QgsRubberSelectId* mRubberSelectId;
     //! RGB select feature result
     int mRGBRubberSelect[3];
-    //! Current Feature Widget
-    Feature_Widget mCurrentFeatureWidget;
 
     // Message
     QString mMsgLayersLessTwo;

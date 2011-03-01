@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquery.cpp 15141 2011-02-08 13:34:43Z jef $ */
 
 #include <QMessageBox>
 
@@ -324,7 +324,7 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
     mLayerReference->featureAtId( *iterIdReference, featureReference );
     geomReference = featureReference.geometry();
 
-    if ( !( geomTarget->*op )( geomTarget ) )
+    if ( !( geomTarget->*op )( geomReference ) )
     {
       addIndex = false;
       break;
