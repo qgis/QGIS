@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsrubberselectid.h 13377 2010-04-25 01:07:36Z jef $ */
 
 #ifndef QGSRUBBERSELECTID_H
 #define QGSRUBBERSELECTID_H
@@ -42,12 +42,6 @@ class QgsRubberSelectId
     ~QgsRubberSelectId();
 
     /**
-    * \brief Set if is geometry polygon for rubber band
-    * \param isPolygon   boolean for type geometry is polygon
-    */
-    void isGeometryNotPolygon( bool isPolygon );
-
-    /**
     * \brief Reset rubber band
     */
     void reset();
@@ -57,24 +51,28 @@ class QgsRubberSelectId
     * \param colorRed     integer for value red (0 - 255)
     * \param colorGreen   integer for value green (0 - 255)
     * \param colorBlue    integer for value blue (0 - 255)
-    * \param alfa         float for transparent(0.0 - 1)
     */
-    void setColor( int colorRed, int colorGreen, int colorBlue, int width, float alfa );
+    void setStyle( int colorRed, int colorGreen, int colorBlue, int width);
 
     /**
     * \brief Create rubber band from geometry by feature
     * \param mLayer    pointer to QgsVectorLayer
     * \param fid       integer for ID for feature
     */
-    void addFeature( QgsVectorLayer* mLayer, int fid );
+    void addFeature( QgsVectorLayer* lyr, int fid );
 
     /**
     * \brief Show rubber band
     */
     void show();
   private:
+    //! Set Style
+    void setStyle();
+
     //! RubberBand
     QgsRubberBand* mRubberBand;
+    int mColorRGB[3];
+    int mWidth;
     bool mIsPolygon;
     QgsMapCanvas* mMapCanvas;
 };

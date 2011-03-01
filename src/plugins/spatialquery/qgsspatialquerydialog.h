@@ -61,7 +61,6 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     void on_cbReferenceLayer_currentIndexChanged( int index );
     void on_lwResultFeatureTarget_currentItemChanged( QListWidgetItem * item );
     void on_twResultInvalid_currentChanged ( int index );
-    void on_twInvalid_currentChanged ( int index );
     void on_lwInvalidFeatureTarget_currentItemChanged( QListWidgetItem * item );
     void on_lwInvalidFeatureReference_currentItemChanged( QListWidgetItem * item );
     void on_ckbLogProcessing_clicked( bool checked );
@@ -84,8 +83,6 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
   private:
     //! Initialize the Gui
     void initGui();
-    //! Set Color RGB for select - mRGBRubberSelect
-    void setColorRubberSelect();
     //! Set Layer (Target or Reference)
     void setLayer( bool isTarget, int index );
     //! Evaluate status of selected features from layer (Target or Reference)
@@ -99,9 +96,9 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Show result of query
     void showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd );
     //! Set label with number's selected features of layer
-    void setLabelButtonSelected( QLabel *lb,  QgsVectorLayer* layer, QPushButton *pb);
+    void setLabelButtonSelected( QLabel *lb,  QgsVectorLayer* lyr, QPushButton *pb);
     //! Get string subset with selected FID
-    QString getSubsetSelected( QgsVectorLayer* layer );
+    QString getSubsetSelected( QgsVectorLayer* lyr );
     //! Get Description Layer to show result
     QString getDescriptionLayerShow( bool isTarget );
     //! Get Description Layer to show result
@@ -117,11 +114,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Get Icon for vector layer
     QIcon getIconTypeGeometry( QGis::GeometryType geomType );
     //! Add layer in combobox (text, data and  tooltips)
-    void addCbLayer( bool isTarget, QgsVectorLayer* vectorLayer );
+    void addCbLayer( bool isTarget, QgsVectorLayer* lyr );
     //! Find Layer in combobox
-    int getCbIndexLayer( bool isTarget, QgsVectorLayer* vectorLayer );
+    int getCbIndexLayer( bool isTarget, QgsVectorLayer* lyr );
     //! Remove layer in combobox and setting GUI
-    void removeLayer( bool isTarget, QgsVectorLayer* lyrRemove );
+    void removeLayer( bool isTarget, QgsVectorLayer* lyr );
     //! Populates cbTargetLayer with all layers
     void populateCbTargetLayer();
     //! Populates cbReferenceLayer with all layers except the current target layer
@@ -133,11 +130,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Clear the features of QListWidget (use by result, invalid target and reference)
     void clearLwFeature( QListWidget *listWidget );
     //! Make action when change item in ListWidget
-    void changeLwFeature( QListWidget *listWidget, QgsVectorLayer* vectorLayer, int fid );
+    void changeLwFeature( QListWidget *listWidget, QgsVectorLayer* lyr, int fid );
     //! Zoom mapcanvas to current feature in listbox target
-    void zoomFeatureTarget(QgsVectorLayer* vectorLayer, int fid);
+    void zoomFeatureTarget(QgsVectorLayer* lyr, int fid);
     //! Show rubber from feature
-    void showRubberFeature( QgsVectorLayer* vectorLayer, int id );
+    void showRubberFeature( QgsVectorLayer* lyr, int id );
 
     //! Pointer to Interface QGIS
     QgisInterface* mIface;
@@ -155,8 +152,6 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     QMap<QString, QgsVectorLayer *> mMapIdVectorLayers;
     //! Rubber band for features result
     QgsRubberSelectId* mRubberSelectId;
-    //! RGB select feature result
-    int mRGBRubberSelect[3];
 
     // Message
     QString mMsgLayersLessTwo;
