@@ -19,9 +19,8 @@
 
 #include <QMessageBox>
 
-#include <qgsvectordataprovider.h>
-#include <qgsfeature.h>
-
+#include "qgsvectordataprovider.h"
+#include "qgsfeature.h"
 #include "qgsgeometrycoordinatetransform.h"
 #include "qgsspatialquery.h"
 

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>495</height>
+    <width>353</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -34,26 +34,20 @@
   <property name="locale">
    <locale language="English" country="UnitedKingdom"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_6">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QHBoxLayout" name="lytOperatorResultInvalid">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
+    <layout class="QHBoxLayout" name="lyOperatorResult">
      <item>
       <layout class="QVBoxLayout" name="lytOperator">
        <item>
-        <widget class="QGroupBox" name="grpTargetGroupBox">
+        <widget class="QGroupBox" name="gbTarget">
          <property name="toolTip">
           <string>Layer on which the topological operation will select geometries</string>
          </property>
          <property name="title">
-          <string>Target layer</string>
+          <string>Select source features from</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMinimumSize</enum>
-          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <widget class="QComboBox" name="cbTargetLayer">
             <property name="maximumSize">
@@ -87,12 +81,32 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="grpReferenceGroupBox">
+        <widget class="QLabel" name="lbOperation">
+         <property name="text">
+          <string>Where the feature</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cbOperation">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Select the topological operation</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="gbReference">
          <property name="toolTip">
           <string>Layer whose geometries will be used as reference by the topological operation</string>
          </property>
          <property name="title">
-          <string>Reference layer</string>
+          <string>Reference features of </string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <property name="sizeConstraint">
@@ -135,27 +149,76 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="grpOperationGroupBox">
-         <property name="toolTip">
-          <string>Topological operations between layers of target and reference</string>
+        <widget class="QLabel" name="lbResultFor">
+         <property name="text">
+          <string>And use the result to</string>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cbResultFor"/>
+       </item>
+       <item>
+        <spacer name="spResult">
+         <property name="minimumSize">
+          <size>
+           <width>146</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="gbSelected">
          <property name="title">
-          <string>Topological operation</string>
+          <string>Selected features</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMinimumSize</enum>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QComboBox" name="cbOperantion">
+           <widget class="QLabel" name="lbStatusSelected">
+            <property name="toolTip">
+             <string>Number of selected features in map</string>
+            </property>
+            <property name="locale">
+             <locale language="English" country="UnitedStates"/>
+            </property>
+            <property name="text">
+             <string notr="true">selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbCreateLayerSelected">
+            <property name="minimumSize">
+             <size>
+              <width>44</width>
+              <height>32</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
-              <height>16777215</height>
+              <width>44</width>
+              <height>32</height>
              </size>
             </property>
             <property name="toolTip">
-             <string>Select the topological operation</string>
+             <string>Create layer with selected</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="qgsspatialquerydialogbase.qrc">
+              <normaloff>:/icons/selectcreatelayer.png</normaloff>:/icons/selectcreatelayer.png</iconset>
             </property>
            </widget>
           </item>
@@ -165,365 +228,185 @@ p, li { white-space: pre-wrap; }
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="lytResultInvalid">
+      <widget class="Line" name="leSpace">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="lyResult">
        <item>
-        <widget class="QTabWidget" name="twResultInvalid">
-         <property name="tabPosition">
-          <enum>QTabWidget::North</enum>
+        <widget class="QGroupBox" name="gbResultQuery">
+         <property name="title">
+          <string>FIDs identified</string>
          </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="tabResult">
-          <attribute name="title">
-           <string>Result</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <item>
-            <layout class="QHBoxLayout" name="lytTargetResult">
-             <item>
-              <widget class="QLabel" name="lbResultTarget">
-               <property name="minimumSize">
-                <size>
-                 <width>18</width>
-                 <height>20</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Target layer</string>
-               </property>
-               <property name="text">
-                <string>Layer</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pbSelectResultTarget">
-               <property name="toolTip">
-                <string>New selection with list of FIDs</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="qgsspatialquerydialogbase.qrc">
-                 <normaloff>:/icons/select.png</normaloff>:/icons/select.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pbSelectResultTargetAdd">
-               <property name="toolTip">
-                <string>Add selection with list of FIDs</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="qgsspatialquerydialogbase.qrc">
-                 <normaloff>:/icons/selectadd.png</normaloff>:/icons/selectadd.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pbSelectResultTargetRemove">
-               <property name="toolTip">
-                <string>Remove selection with list of FIDs</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="qgsspatialquerydialogbase.qrc">
-                 <normaloff>:/icons/selectremove.png</normaloff>:/icons/selectremove.png</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QLabel" name="lbFIDresultTarget">
-             <property name="toolTip">
-              <string>List of FIDs from result of query</string>
-             </property>
-             <property name="text">
-              <string>Feature IDs</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="lwResultFeatureTarget">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Select one FID to identify geometry of feature</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="lytSelected">
-             <item>
-              <widget class="QLabel" name="lbSelected">
-               <property name="toolTip">
-                <string>Number of selected features in map</string>
-               </property>
-               <property name="locale">
-                <locale language="English" country="UnitedStates"/>
-               </property>
-               <property name="text">
-                <string notr="true">selected features</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pbSelectedSubsetLayer">
-               <property name="toolTip">
-                <string>Set  subset in layer with list of FIDs</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="qgsspatialquerydialogbase.qrc">
-                 <normaloff>:/icons/selectesubsetlayer.png</normaloff>:/icons/selectesubsetlayer.png</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Invalid target</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <layout class="QHBoxLayout" name="lytTargetInvalid">
-             <item>
-              <widget class="QLabel" name="lbInvalidTarget">
-               <property name="toolTip">
-                <string>Target layer</string>
-               </property>
-               <property name="text">
-                <string>Layer</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pbSelectInvalidTarget">
-               <property name="toolTip">
-                <string>New selection with list of FIDs</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="qgsspatialquerydialogbase.qrc">
-                 <normaloff>:/icons/select.png</normaloff>:/icons/select.png</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QLabel" name="lbFIDinvalidTarget">
-             <property name="text">
-              <string>Feature IDs</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="lwInvalidFeatureTarget">
-             <property name="toolTip">
-              <string>Select item to identify geometry of feature</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Invalid reference</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <layout class="QHBoxLayout" name="lytReferenceInvalid">
-             <item>
-              <widget class="QLabel" name="lbInvalidReference">
-               <property name="toolTip">
-                <string>Reference layer</string>
-               </property>
-               <property name="text">
-                <string>Layer</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pbSelectInvalidReference">
-               <property name="toolTip">
-                <string>New selection with list of FIDs</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="qgsspatialquerydialogbase.qrc">
-                 <normaloff>:/icons/select.png</normaloff>:/icons/select.png</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QLabel" name="lbFIDinvalidReference">
-             <property name="text">
-              <string>Feature IDs</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="lwInvalidFeatureReference">
-             <property name="toolTip">
-              <string>Select item to identify geometry of feature</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
+          </property>
+          <item>
+           <widget class="QComboBox" name="cbTypeItems">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="lwFeatures">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Select one FID to identify geometry of feature</string>
+            </property>
+            <property name="resizeMode">
+             <enum>QListView::Fixed</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="lytItems">
+            <item>
+             <widget class="QLabel" name="lbStatusItems">
+              <property name="toolTip">
+               <string>Number of selected features in map</string>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedStates"/>
+              </property>
+              <property name="text">
+               <string notr="true">items</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pbCreateLayerItems">
+              <property name="minimumSize">
+               <size>
+                <width>35</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>35</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Create layer with list of items</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="qgsspatialquerydialogbase.qrc">
+                <normaloff>:/icons/itemscreatelayer.png</normaloff>:/icons/itemscreatelayer.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ckbZoomItem">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Zoom to item</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="lyLogMessage">
+         <item>
+          <widget class="QCheckBox" name="ckbLogProcessing">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Check to show log processing of query</string>
+           </property>
+           <property name="text">
+            <string>Log messages</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="teStatus">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="ckbZoomItem">
-     <property name="text">
-      <string>Zoom to identify FID</string>
+    <widget class="QProgressBar" name="pgbStatus">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="ckbLogProcessing">
+    <widget class="QDialogButtonBox" name="bbMain">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::DefaultContextMenu</enum>
+     </property>
      <property name="toolTip">
-      <string>Check to show log processing of query</string>
+      <string>Run query or close the window</string>
      </property>
-     <property name="text">
-      <string>Show log messages</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTextEdit" name="teStatus">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="textInteractionFlags">
-      <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close</set>
      </property>
     </widget>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="lytProgressBarButtonsMain">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
-     <item>
-      <widget class="QProgressBar" name="pgbStatus">
-       <property name="value">
-        <number>0</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="textVisible">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="bbMain">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::DefaultContextMenu</enum>
-       </property>
-       <property name="toolTip">
-        <string>Run query or close the window</string>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
@@ -532,7 +415,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>ckbUsingSelectedTarget</tabstop>
   <tabstop>cbReferenceLayer</tabstop>
   <tabstop>ckbUsingSelectedReference</tabstop>
-  <tabstop>cbOperantion</tabstop>
   <tabstop>bbMain</tabstop>
  </tabstops>
  <resources>
