@@ -908,7 +908,12 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   uniqueValues.clear();
 
   // get the field name
-  const QgsField & fld = field( index );
+  QgsFieldMap::const_iterator fieldIt = attributeFields.find( index );
+  if ( fieldIt == attributeFields.constEnd() )
+  {
+    return; //invalid field
+  }
+  const QgsField& fld = fieldIt.value();
 
   sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
