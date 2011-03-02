@@ -293,8 +293,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   }
   mOldClassificationAttribute = attributeName;
 
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
-  if ( provider )
+  if ( mVectorLayer )
   {
     int nr = mClassificationComboBox->itemData( mClassificationComboBox->currentIndex() ).toInt();
     if ( nr == -1 )
@@ -303,7 +302,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
     }
 
     QList<QVariant> values;
-    provider->uniqueValues( nr, values );
+    mVectorLayer->uniqueValues( nr, values );
 
     for ( int i = 0; i < values.size(); i++ )
     {
