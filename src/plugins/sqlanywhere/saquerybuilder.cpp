@@ -121,7 +121,7 @@ void SaQueryBuilder::fillValues( int idx, QString subsetString, int limit )
 
   // determine the field type
   QList<QVariant> values;
-  mLayer->dataProvider()->uniqueValues( idx, values, limit );
+  mLayer->uniqueValues( idx, values, limit );
 
   for ( int i = 0; i < values.size(); i++ )
   {
