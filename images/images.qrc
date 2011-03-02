@@ -401,4 +401,7 @@
     <file>themes/newgis/mIconPolygonLayer.png</file>
     <file>themes/newgis/mIconTableLayer.png</file>
   </qresource>
+  <qresource prefix="/images/tips" >
+    <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
+  </qresource>
 </RCC>
