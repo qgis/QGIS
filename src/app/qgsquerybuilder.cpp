@@ -98,7 +98,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
 
   // determine the field type
   QList<QVariant> values;
-  mLayer->dataProvider()->uniqueValues( idx, values, limit );
+  mLayer->uniqueValues( idx, values, limit );
 
   for ( int i = 0; i < values.size(); i++ )
   {
