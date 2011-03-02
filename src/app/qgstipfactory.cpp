@@ -162,6 +162,15 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " it on again when you are ready to have the map draw itself again!"
                       ) );
   addGuiTip( myTip );
+  // Tip contributed by Alister Hood
+  myTip.setTitle(tr("Join intersected polylines when rendering"));
+  myTip.setContent(tr("When applying layered styles to a polyline layer, you can join"
+                      " intersecting lines together simply by enabling symbol levels."
+                      " The image below shows a before (left) and after (right) view of"
+                      " an intersection when symbol levels are enabled.") +
+                      QString("<p><img src=\":/images/tips/symbol_levels.png\"/></p>")
+        );
+  addGuiTip(myTip);
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""
