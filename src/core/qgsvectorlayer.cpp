@@ -4942,6 +4942,67 @@ void QgsVectorLayer::createJoinCaches()
   }
 }
 
+void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
+{
+  uniqueValues.clear();
+  if ( !mDataProvider )
+  {
+    return;
+  }
+
+  int maxProviderIndex;
+  QgsVectorLayerJoinBuffer::maximumIndex( mDataProvider->fields(), maxProviderIndex );
+
+  if ( index <= maxProviderIndex && !mEditable ) //a provider field
+  {
+    return mDataProvider->uniqueValues( index, uniqueValues, limit );
+  }
+  else // a joined field?
+  {
+    if ( mJoinBuffer )
+    {
+      int indexOffset; //offset between layer index and joined provider index
+      const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, maxProviderIndex, indexOffset );
+      if ( join )
+      {
+        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
+        if ( vl && vl->dataProvider() )
+        {
+          return vl->dataProvider()->uniqueValues( index - indexOffset, uniqueValues, limit );
+        }
+      }
+    }
+  }
+
+
+  //the layer is editable, but in certain cases it can still be avoided going through all features
+  if ( mDeletedFeatureIds.size() < 1 && mAddedFeatures.size() < 1 && !mDeletedAttributeIds.contains( index ) && mChangedAttributeValues.size() < 1 )
+  {
+    return mDataProvider->uniqueValues( index, uniqueValues, limit );
+  }
+
+  //we need to go through each feature
+  QgsAttributeList attList;
+  attList << index;
+
+  select( attList, QgsRectangle(), false, false );
+
+  QgsFeature f;
+  QVariant currentValue;
+  QHash<QString, QVariant> val;
+  while ( nextFeature( f ) )
+  {
+    currentValue = f.attributeMap()[index];
+    val.insert( currentValue.toString(), currentValue );
+    if ( limit >= 0 && val.size() >= limit )
+    {
+      break;
+    }
+  }
+
+  uniqueValues = val.values();
+}
+
 void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )
 {
   mRendererV2->stopRender( rendererContext );

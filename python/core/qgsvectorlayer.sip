@@ -549,6 +549,13 @@ public:
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
+    /**Returns unique values for column
+      @param index column index for attribute
+      @param uniqueValues out: result list
+      @limit maximum number of values to return (-1 if unlimited)
+      @note: this method was added in version 1.7*/
+    void uniqueValues( int index, QList<QVariant>& uniqueValues, int limit );
+
 public slots:
 
   /** Select feature by its ID, optionally emit signal selectionChanged() */

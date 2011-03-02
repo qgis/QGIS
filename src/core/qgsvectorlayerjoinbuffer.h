@@ -66,6 +66,13 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
 
     const QList< QgsVectorJoinInfo >& vectorJoins() const { return mVectorJoins; }
 
+    /**Finds the vector join for a layer field index.
+      @param index this layers attribute index
+      @param maxProviderIndex maximum attribute index of the vectorlayer provider
+      @param indexOffset out: offset between layer index and original provider index
+       @return pointer to the join if the index belongs to a joined field, otherwise 0 (possibily provider field or added field)*/
+    const QgsVectorJoinInfo* joinForFieldIndex( int index, int maxProviderIndex, int& indexOffset ) const;
+
     /** Helper function to find out the maximum index of a field map
         @return true in case of success, otherwise false (e.g. empty map)*/
     static bool maximumIndex( const QgsFieldMap& fMap, int& index );
@@ -91,13 +98,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
       @param attributeIndexOffset index offset to get from join layer attribute index to layer index*/
     void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
                                      const QgsAttributeList& attributes, int attributeIndexOffset );
-
-    /**Finds the vector join for a layer field index.
-      @param index this layers attribute index
-      @param maxProviderIndex maximum attribute index of the vectorlayer provider
-      @param indexOffset out: offset between layer index and original provider index
-       @return pointer to the join if the index belongs to a joined field, otherwise 0 (possibily provider field or added field)*/
-    const QgsVectorJoinInfo* joinForFieldIndex( int index, int maxProviderIndex, int& indexOffset ) const;
 };
 
 #endif // QGSVECTORLAYERJOINBUFFER_H
