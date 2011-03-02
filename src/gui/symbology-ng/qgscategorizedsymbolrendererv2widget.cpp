@@ -10,8 +10,6 @@
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h" // for uniqueValues
-
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -245,7 +243,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   QString attrName = cboCategorizedColumn->currentText();
   int idx = mLayer->fieldNameIndex( attrName );
   QList<QVariant> unique_vals;
-  mLayer->dataProvider()->uniqueValues( idx, unique_vals );
+  mLayer->uniqueValues( idx, unique_vals );
 
   //DlgAddCategories dlg(mStyle, createDefaultSymbol(), unique_vals, this);
   //if (!dlg.exec())

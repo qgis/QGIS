@@ -638,6 +638,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Caches joined attributes if required (and not already done)*/
     void createJoinCaches();
 
+    /**Returns unique values for column
+      @param index column index for attribute
+      @param uniqueValues out: result list
+      @limit maximum number of values to return (-1 if unlimited)
+      @note: this method was added in version 1.7*/
+    void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
+
 
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
