@@ -394,6 +394,9 @@ class QgisApp : public QMainWindow
     //! open the properties dialog for the currently selected layer
     void layerProperties();
 
+    //! show the attribute table for the currently selected layer
+    void attributeTable();
+
     //! mark project dirty
     void markDirty();
 
@@ -715,9 +718,6 @@ class QgisApp : public QMainWindow
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
-
-    //! show the attribute table for the currently selected layer
-    void attributeTable();
 
     //! starts/stops editing mode of a layer
     bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );

@@ -522,7 +522,19 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsLegend::mouseDoubleClickEvent( QMouseEvent* e )
 {
-  QgisApp::instance()->layerProperties();
+  QSettings settings;
+
+  switch( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
+  {
+  case 0:
+    QgisApp::instance()->layerProperties();
+    break;
+  case 1:
+    QgisApp::instance()->attributeTable();
+    break;
+  default:
+    break;
+  }
 }
 
 void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& position )
