@@ -282,6 +282,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
 
+  cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
+
   //set the color for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
@@ -568,32 +570,33 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
   settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
-  settings.setValue( "qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
-  settings.setValue( "qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
-  settings.setValue( "qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
-  settings.setValue( "qgis/nullValue", leNullValue->text() );
+  settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
+  settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+  settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
+  settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
+  settings.setValue( "/qgis/nullValue", leNullValue->text() );
 
   //overlay placement method
   int overlayIndex = mOverlayAlgorithmComboBox->currentIndex();
   if ( overlayIndex == 1 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Chain" );
+    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Chain" );
   }
   else if ( overlayIndex == 2 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Popmusic tabu chain" );
+    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Popmusic tabu chain" );
   }
   else if ( overlayIndex == 3 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm",  "Popmusic tabu" );
+    settings.setValue( "/qgis/overlayPlacementAlgorithm",  "Popmusic tabu" );
   }
   else if ( overlayIndex == 4 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Popmusic chain" );
+    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Popmusic chain" );
   }
   else
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Central point" );
+    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Central point" );
   }
 
   if ( cmbTheme->currentText().length() == 0 )
