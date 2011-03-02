@@ -168,7 +168,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       " intersecting lines together simply by enabling symbol levels."
                       " The image below shows a before (left) and after (right) view of"
                       " an intersection when symbol levels are enabled.") +
-                      QString("<p><img src=\":/images/tips/symbol_levels.png\"/></p>")
+                      QString("<p><center><img src=\":/images/tips/symbol_levels.png\"/></center></p>")
         );
   addGuiTip(myTip);
   /* Template for adding more tips
