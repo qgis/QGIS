@@ -65,8 +65,8 @@ class Dialog(QDialog, Ui_Dialog):
                     srsDefine.createFromProj4(outProj)
                 else:
                     destLayer = ftools_utils.getVectorLayerByName(self.cmbLayer.currentText())
-                    srsDefine = destLayer.srs()
-                if srsDefine == vLayer.srs():
+                    srsDefine = destLayer.crs()
+                if srsDefine == vLayer.crs():
                     responce = QMessageBox.question(self, self.tr("Define current projection"),
                     self.tr("Identical output spatial reference system chosen\n\nAre you sure you want to proceed?"),
                     QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
