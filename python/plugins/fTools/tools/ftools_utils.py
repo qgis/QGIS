@@ -203,7 +203,7 @@ def getVectorLayerByName( myName ):
                 return layer
             else:
                 return None
-    
+
 # Return QgsMapLayer from a layer name ( as string )
 def getMapLayerByName( myName ):
     layermap = QgsMapLayerRegistry.instance().mapLayers()
@@ -249,15 +249,7 @@ def addShapeToCanvas( shapefile_path ):
 
 # Return all unique values in field based on field index
 def getUniqueValues( provider, index ):
-    allAttrs = provider.attributeIndexes()
-    provider.select( allAttrs )
-    f = QgsFeature()
-    values = []
-    check = []
-    while provider.nextFeature( f ):
-        if not f.attributeMap()[ index ].toString() in check:
-            values.append( f.attributeMap()[ index ] )
-            check.append( f.attributeMap()[ index ].toString() )
+    values = provider.uniqueValues( index )
     return values
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
