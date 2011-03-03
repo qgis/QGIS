@@ -55,6 +55,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
+/** @note added in 1.7 */
 struct CORE_EXPORT QgsVectorJoinInfo
 {
   /**Join field in the target layer*/
@@ -69,8 +70,10 @@ struct CORE_EXPORT QgsVectorJoinInfo
   QHash< QString, QgsAttributeMap> cachedAttributes;
 };
 
-/**Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
-  Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes*/
+/** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
+  Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
+ @note added in 1.7
+*/
 struct CORE_EXPORT QgsFetchJoinInfo
 {
   const QgsVectorJoinInfo* joinInfo;
@@ -150,14 +153,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Setup the coordinate system tranformation for the layer */
     void setCoordinateSystem();
 
-    /**Joins another vector layer to this layer
+    /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
-      @param cacheInMemory if true: caches the content of the join layer in virtual memory*/
+      @param cacheInMemory if true: caches the content of the join layer in virtual memory
+      @note added in 1.7 */
     void addJoin( QgsVectorJoinInfo joinInfo );
 
-    /**Removes  a vector layer join*/
+    /** Removes  a vector layer join
+      @note added in 1.7 */
     void removeJoin( const QString& joinLayerId );
 
+    /** @note added in 1.7 */
     const QList< QgsVectorJoinInfo >& vectorJoins() const;
 
     /** Get the label object associated with this layer */
@@ -631,11 +637,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
-    /**Assembles mUpdatedFields considering provider fields, joined fields and added fields
-     @note added in version 1.6*/
+    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
+     @note added in 1.7 */
     void updateFieldMap();
 
-    /**Caches joined attributes if required (and not already done)*/
+    /** Caches joined attributes if required (and not already done)
+      @note added in 1.7 */
     void createJoinCaches();
 
     /**Returns unique values for column
@@ -663,7 +670,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual void updateExtents();
 
-    /**Check if there is a join with a layer that will be removed*/
+    /** Check if there is a join with a layer that will be removed
+      @note added in 1.7 */
     void checkJoinLayerRemove( QString theLayerId );
 
   signals:
