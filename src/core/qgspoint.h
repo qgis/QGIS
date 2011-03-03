@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <QString>
+#include <QPoint>
 
 /** \ingroup core
  * A class to represent a vector.

@@ -34,7 +34,7 @@ class QMenu;
 
 class QgsVectorLayer;
 class QgsRasterLayer;
-class QgsRubberBand;
+class QgsHighlight;
 class QgsMapCanvas;
 class QDockWidget;
 
@@ -95,7 +95,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void copyFeatureAttributes();
     void highlightAll();
     void highlightLayer();
-    void clearRubberbands();
+    void clearHighlights();
     void expandAll();
     void collapseAll();
 
@@ -115,7 +115,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
   private:
     QMenu *mActionPopup;
-    QMap<QTreeWidgetItem *, QgsRubberBand * > mRubberBands;
+    QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas;
     QList<QgsFeature> mFeatures;
 

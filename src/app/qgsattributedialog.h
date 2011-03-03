@@ -25,7 +25,7 @@ class QgsFeature;
 class QLayout;
 class QgsField;
 class QgsVectorLayer;
-class QgsRubberBand;
+class QgsHighlight;
 
 class QgsAttributeDialog : public QObject
 {
@@ -46,7 +46,7 @@ class QgsAttributeDialog : public QObject
      */
     void restoreGeometry();
 
-    void setHighlight( QgsRubberBand *rb );
+    void setHighlight( QgsHighlight *h );
 
     QDialog *dialog() { return mDialog; }
 
@@ -68,7 +68,7 @@ class QgsAttributeDialog : public QObject
     QgsVectorLayer *mLayer;
     QgsFeature *mFeature;
     bool mFeatureOwner;
-    QgsRubberBand *mRubberBand;
+    QgsHighlight *mHighlight;
     int mFormNr;
     static int smFormCounter;
 };

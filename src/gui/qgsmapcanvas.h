@@ -48,7 +48,7 @@ class QgsMapToPixel;
 class QgsMapLayer;
 class QgsLegend;
 class QgsLegendView;
-class QgsRubberBand;
+class QgsHighlight;
 class QgsVectorLayer;
 
 class QgsMapRenderer;

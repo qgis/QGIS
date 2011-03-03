@@ -72,13 +72,13 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   return dialog;
 }
 
-bool QgsFeatureAction::viewFeatureForm( QgsRubberBand *rb )
+bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
 {
   if ( !mLayer )
     return false;
 
   QgsAttributeDialog *dialog = newDialog( true );
-  dialog->setHighlight( rb );
+  dialog->setHighlight( h );
   dialog->show();
 
   return true;

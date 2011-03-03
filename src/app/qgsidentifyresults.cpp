@@ -23,7 +23,7 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrubberband.h"
+#include "qgshighlight.h"
 #include "qgsgeometry.h"
 #include "qgsattributedialog.h"
 #include "qgsmapcanvas.h"
@@ -114,7 +114,7 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
 
 QgsIdentifyResults::~QgsIdentifyResults()
 {
-  clearRubberbands();
+  clearHighlights();
   if ( mActionPopup )
     delete mActionPopup;
 }
@@ -441,7 +441,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   }
 
   mActionPopup->addAction( tr( "Clear results" ), this, SLOT( clear() ) );
-  mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearRubberbands() ) );
+  mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearHighlights() ) );
   mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
   mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
   mActionPopup->addSeparator();
@@ -491,14 +491,14 @@ void QgsIdentifyResults::expandColumnsToFit()
   lstResults->resizeColumnToContents( 1 );
 }
 
-void QgsIdentifyResults::clearRubberbands()
+void QgsIdentifyResults::clearHighlights()
 {
-  foreach( QgsRubberBand *rb, mRubberBands )
+  foreach( QgsHighlight *h, mHighlights )
   {
-    delete rb;
+    delete h;
   }
 
-  mRubberBands.clear();
+  mHighlights.clear();
 }
 
 void QgsIdentifyResults::clear()
@@ -509,7 +509,7 @@ void QgsIdentifyResults::clear()
   }
 
   lstResults->clear();
-  clearRubberbands();
+  clearHighlights();
 }
 
 void QgsIdentifyResults::activate()
@@ -670,7 +670,7 @@ void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTr
   }
   else
   {
-    clearRubberbands();
+    clearHighlights();
     highlightFeature( current );
   }
 }
@@ -687,7 +687,7 @@ void QgsIdentifyResults::layerDestroyed()
     {
       for ( int j = 0; j < layItem->childCount(); j++ )
       {
-        delete mRubberBands.take( layItem->child( i ) );
+        delete mHighlights.take( layItem->child( i ) );
       }
     }
   }
@@ -734,7 +734,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
 
     if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
     {
-      delete mRubberBands.take( featItem );
+      delete mHighlights.take( featItem );
       delete featItem;
       break;
     }
@@ -794,7 +794,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem )
     return;
 
-  if ( mRubberBands.contains( featItem ) )
+  if ( mHighlights.contains( featItem ) )
     return;
 
   int fid = featItem->data( 0, Qt::UserRole ).toInt();
@@ -810,14 +810,13 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
     return;
   }
 
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, feat.geometry()->type() == QGis::Polygon );
-  if ( rb )
+  QgsHighlight *h = new QgsHighlight( mCanvas, feat.geometry(), layer );
+  if ( h )
   {
-    rb->setToGeometry( feat.geometry(), layer );
-    rb->setWidth( 2 );
-    rb->setColor( Qt::red );
-    rb->show();
-    mRubberBands.insert( featItem, rb );
+    h->setWidth( 2 );
+    h->setColor( Qt::red );
+    h->show();
+    mHighlights.insert( featItem, h );
   }
 }
 
@@ -888,7 +887,7 @@ void QgsIdentifyResults::featureForm()
   }
   else
   {
-    action.viewFeatureForm( mRubberBands.take( featItem ) );
+    action.viewFeatureForm( mHighlights.take( featItem ) );
   }
 }
 
@@ -916,7 +915,7 @@ void QgsIdentifyResults::highlightLayer( QTreeWidgetItem *item )
   if ( !layItem )
     return;
 
-  clearRubberbands();
+  clearHighlights();
 
   for ( int i = 0; i < layItem->childCount(); i++ )
   {
