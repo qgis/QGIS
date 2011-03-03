@@ -26,7 +26,7 @@
 
 class QgsIdentifyResults;
 class QgsVectorLayer;
-class QgsRubberBand;
+class QgsHighlight;
 class QgsAttributeDialog;
 
 class QgsFeatureAction : public QAction
@@ -38,7 +38,7 @@ class QgsFeatureAction : public QAction
 
   public slots:
     void execute();
-    bool viewFeatureForm( QgsRubberBand *rb = 0 );
+    bool viewFeatureForm( QgsHighlight *h = 0 );
     bool editFeature();
     bool addFeature();
 

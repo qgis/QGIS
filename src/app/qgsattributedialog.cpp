@@ -24,7 +24,7 @@
 #include "qgsuniquevaluerenderer.h"
 #include "qgssymbol.h"
 #include "qgsattributeeditor.h"
-#include "qgsrubberband.h"
+#include "qgshighlight.h"
 #include "qgssearchstring.h"
 #include "qgssearchtreenode.h"
 
@@ -52,7 +52,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     , mLayer( vl )
     , mFeature( thepFeature )
     , mFeatureOwner( featureOwner )
-    , mRubberBand( 0 )
+    , mHighlight( 0 )
     , mFormNr( -1 )
 {
   if ( !mFeature || !vl->dataProvider() )
@@ -299,10 +299,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
 QgsAttributeDialog::~QgsAttributeDialog()
 {
-  if ( mRubberBand )
+  if ( mHighlight )
   {
-    mRubberBand->hide();
-    delete mRubberBand;
+    mHighlight->hide();
+    delete mHighlight;
   }
 
   if ( mFeatureOwner )
@@ -381,14 +381,14 @@ void QgsAttributeDialog::restoreGeometry()
   }
 }
 
-void QgsAttributeDialog::setHighlight( QgsRubberBand *rb )
+void QgsAttributeDialog::setHighlight( QgsHighlight *h )
 {
-  if ( mRubberBand )
+  if ( mHighlight )
   {
-    delete mRubberBand;
+    delete mHighlight;
   }
 
-  mRubberBand = rb;
+  mHighlight = h;
 }
 
 
@@ -410,15 +410,15 @@ void QgsAttributeDialog::dialogDestroyed()
 
 bool QgsAttributeDialog::eventFilter( QObject *obj, QEvent *e )
 {
-  if ( mRubberBand && obj == mDialog )
+  if ( mHighlight && obj == mDialog )
   {
     switch ( e->type() )
     {
       case QEvent::WindowActivate:
-        mRubberBand->show();
+        mHighlight->show();
         break;
       case QEvent::WindowDeactivate:
-        mRubberBand->hide();
+        mHighlight->hide();
         break;
       default:
         break;
