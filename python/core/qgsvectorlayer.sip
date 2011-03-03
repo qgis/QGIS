@@ -4,6 +4,27 @@ typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
 
+/** @note added in 1.7 */
+struct QgsVectorJoinInfo
+{
+%TypeHeaderCode
+#include "qgsvectorlayer.h"
+%End
+
+  /**Join field in the target layer*/
+  int targetField;
+  /**Source layer*/
+  QString joinLayerId;
+  /**Join field in the source layer*/
+  int joinField;
+  /**True if the join is cached in virtual memory*/
+  bool memoryCache;
+  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)*/
+  // TODO: needs conversion
+  // QHash< QString, QgsAttributeMap> cachedAttributes;
+};
+
+
 class QgsVectorLayer : QgsMapLayer
 {
 %TypeHeaderCode
@@ -87,6 +108,19 @@ public:
 
   /** Setup the coordinate system tranformation for the layer */
   void setCoordinateSystem();
+
+  /** Joins another vector layer to this layer
+    @param joinInfo join object containing join layer id, target and source field
+    @param cacheInMemory if true: caches the content of the join layer in virtual memory
+    @note added in 1.7 */
+  void addJoin( QgsVectorJoinInfo joinInfo );
+
+  /** Removes  a vector layer join
+    @note added in 1.7 */
+  void removeJoin( const QString& joinLayerId );
+
+  /** @note added in 1.7 */
+  const QList< QgsVectorJoinInfo >& vectorJoins() const;
 
   QgsLabel *label();
 
@@ -549,12 +583,20 @@ public:
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
+    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
+     @note added in 1.7 */
+    void updateFieldMap();
+
+    /** Caches joined attributes if required (and not already done)
+      @note added in 1.7 */
+    void createJoinCaches();
+
     /**Returns unique values for column
       @param index column index for attribute
       @param uniqueValues out: result list
       @limit maximum number of values to return (-1 if unlimited)
       @note: this method was added in version 1.7*/
-    void uniqueValues( int index, QList<QVariant>& uniqueValues, int limit );
+    void uniqueValues( int index, QList<QVariant>& uniqueValues /Out/, int limit );
 
 public slots:
 
@@ -573,6 +615,10 @@ public slots:
    *  added/deleted or the layer has been subsetted.
    */
   virtual void updateExtents();
+
+  /** Check if there is a join with a layer that will be removed
+    @note added in 1.7 */
+  void checkJoinLayerRemove( QString theLayerId );
 
 signals:
 
