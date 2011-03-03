@@ -206,8 +206,8 @@ class GeometryDialog(QDialog, Ui_Dialog):
       self.cancel_close.setText( "Close" )
       QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
       if success:
-        addToTOC = QMessageBox.question( self, self.tr("Geometry"), 
-          self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ), 
+        addToTOC = QMessageBox.question( self, self.tr("Geometry"),
+          self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
           QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
         if addToTOC == QMessageBox.Yes:
           if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
@@ -603,7 +603,7 @@ class geometryThread( QThread ):
     del writer
     return True
 
-    
+
   def clip_voronoi(self, edges, c, width, height, extent, exX, exY):
     """ Clip voronoi function based on code written for Inkscape
         Copyright (C) 2010 Alvin Penner, penner@vaxxine.com
@@ -696,7 +696,7 @@ class geometryThread( QThread ):
       if hasYMin:
         lines.append(QgsPoint(width+extent.xMinimum()+exX, extent.yMinimum()-exY))
     return lines
-    
+
   def layer_extent( self ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, 0 ) )
@@ -713,7 +713,7 @@ class geometryThread( QThread ):
     9 : QgsField( "WIDTH", QVariant.Double ) }
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding,
-    fields, QGis.WKBPolygon, self.vlayer.srs() )
+    fields, QGis.WKBPolygon, self.vlayer.crs() )
     rect = self.vlayer.extent()
     minx = rect.xMinimum()
     miny = rect.yMinimum()
@@ -858,13 +858,13 @@ class geometryThread( QThread ):
 
   def singleToMultiGeom(self, wkbType):
       try:
-          if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint, 
+          if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
                          QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
               return QGis.WKBMultiPoint
           elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
                            QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
               return QGis.WKBMultiLineString
-          elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon, 
+          elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
                            QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
               return QGis.WKBMultiPolygon
           else:

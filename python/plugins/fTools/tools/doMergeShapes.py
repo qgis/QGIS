@@ -186,7 +186,7 @@ class ShapeMergeThread( QThread ):
     # get information about shapefiles
     layerPath = QFileInfo( self.baseDir + "/" + self.shapes[ 0 ] ).absoluteFilePath()
     newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
-    self.crs = newLayer.srs()
+    self.crs = newLayer.crs()
     self.geom = newLayer.wkbType()
     vprovider = newLayer.dataProvider()
     self.fields = vprovider.fields()
