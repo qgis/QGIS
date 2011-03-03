@@ -535,7 +535,7 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
     }
 
     addCbLayer( true, lyr );
-    mMapIdVectorLayers.insert( lyr->getLayerID(), lyr );
+    mMapIdVectorLayers.insert( lyr->id(), lyr );
   }
   cbTargetLayer->setCurrentIndex( 0 );
   cbTargetLayer->blockSignals( false );
@@ -674,11 +674,11 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, int fid )
   {
     if ( hasMsg )
     {
-      long epsgMapcanvas = srcMapcanvas.epsg();
+      QString crsMapcanvas = srcMapcanvas.authid();
       bool isFly = mIface->mapCanvas()->mapRenderer()->hasCrsTransformEnabled();
       QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
       QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
-      msg.append( tr( "\n\nEPSG of map is %1.\n%2." ).arg( epsgMapcanvas ).arg( msgFly ) );
+      msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas ).arg( msgFly ) );
       msg.append( "\n\nUsing CRS of map for all features!" );
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
@@ -1006,7 +1006,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
     cbResultFor->setEnabled( true );
   }
   addCbLayer( false, lyr );
-  mMapIdVectorLayers.insert( lyr->getLayerID(), lyr );
+  mMapIdVectorLayers.insert( lyr->id(), lyr );
 
 } // QgsSpatialQueryDialog::signal_qgis_layerWasAdded(QgsMapLayer* mapLayer)
 
