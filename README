@@ -17,7 +17,7 @@ daily GIS data viewing and editing needs. QGIS supports a number of raster
 and vector data formats, with new support easily added using the plugin
 architecture.
 
-QGIS is released under the GNU Public License (GPL) Version 2. Developing
+QGIS is released under the GNU Public License (GPL) Version 3. Developing
 QGIS under this license means that you can (if you want to) inspect and
 modify the source code and guarantees that you, our happy user will always
 have access to a GIS program that is free of cost and can be freely
