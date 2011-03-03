@@ -760,30 +760,6 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 
 }
 
-void QgsOptions::on_chkAntiAliasing_stateChanged()
-{
-  // We can't have the anti-aliasing turned on when QPixmap is being
-  // used (we we can. but it then doesn't do anti-aliasing, and this
-  // will confuse people).
-  if ( chkAntiAliasing->isChecked() )
-  {
-    chkUseQPixmap->setChecked( false );
-  }
-
-}
-
-void QgsOptions::on_chkUseQPixmap_stateChanged()
-{
-  // We can't have the anti-aliasing turned on when QPixmap is being
-  // used (we we can. but it then doesn't do anti-aliasing, and this
-  // will confuse people).
-  if ( chkUseQPixmap->isChecked() )
-  {
-    chkAntiAliasing->setChecked( false );
-  }
-
-}
-
 // Return state of the visibility flag for newly added layers. If
 
 bool QgsOptions::newVisible()
