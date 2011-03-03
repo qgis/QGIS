@@ -16,7 +16,6 @@
 
 #include "qgshighlight.h"
 #include "qgsgeometry.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
@@ -31,7 +30,6 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVecto
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( layer )
 {
-  QgsDebugMsg( geom ? "geometry!" : "no geometry" );
   mGeometry = geom ? new QgsGeometry( *geom ) : 0;
   updateRect();
   update();
@@ -66,13 +64,12 @@ void QgsHighlight::paintPoint( QPainter *p, QgsPoint point )
 {
   QPolygonF r( 5 );
 
-  double d = mMapCanvas->extent().width() * 0.005;
-
   if ( mLayer )
   {
     point = mMapCanvas->mapRenderer()->layerToMapCoordinates( mLayer, point );
   }
 
+  double d = mMapCanvas->extent().width() * 0.005;
   r[0] = toCanvasCoordinates( point + QgsVector( -d, -d ) ) - pos();
   r[1] = toCanvasCoordinates( point + QgsVector( d, -d ) ) - pos();
   r[2] = toCanvasCoordinates( point + QgsVector( d, d ) ) - pos();
@@ -129,7 +126,6 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
       poly = ring;
     else
       poly = poly.subtracted( ring );
-
   }
 
   // just fill, no outline
@@ -143,11 +139,8 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
   */
 void QgsHighlight::paint( QPainter* p )
 {
-  QgsDebugMsg( "entered." );
-
   if ( !mGeometry )
   {
-    QgsDebugMsg( "no geometry." );
     return;
   }
 
@@ -229,7 +222,7 @@ void QgsHighlight::updateRect()
       r.setXMinimum( r.xMinimum() - d );
       r.setYMinimum( r.yMinimum() - d );
       r.setXMaximum( r.xMaximum() + d );
-      r.setXMaximum( r.yMaximum() + d );
+      r.setYMaximum( r.yMaximum() + d );
     }
 
     setRect( r );
@@ -239,6 +232,4 @@ void QgsHighlight::updateRect()
   {
     setRect( QgsRectangle() );
   }
-
 }
-
