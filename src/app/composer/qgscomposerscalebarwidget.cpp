@@ -240,7 +240,12 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
 
   bool dialogAccepted;
   QFont oldFont = mComposerScaleBar->font();
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QFont newFont = QFontDialog::getFont( &dialogAccepted, oldFont, 0, QString(), QFontDialog::DontUseNativeDialog );
+#else
   QFont newFont = QFontDialog::getFont( &dialogAccepted, oldFont, 0 );
+#endif
   if ( dialogAccepted )
   {
     mComposerScaleBar->beginCommand( tr( "Scalebar font changed" ) );
