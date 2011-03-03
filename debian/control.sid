@@ -154,7 +154,7 @@ Description: collection of data providers to Quantum GIS
  This package contains the provider plugins for Quantum GIS.
 
 Package: qgis-providers-common
-Architecture: any
+Architecture: all
 Replaces: qgis-common (<= 1.6)
 Breaks: qgis-common (<= 1.6)
 Description: collection of data providers to Quantum GIS - architecture-independent files
