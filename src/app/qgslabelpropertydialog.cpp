@@ -249,7 +249,12 @@ void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
 void QgsLabelPropertyDialog::on_mFontPushButton_clicked()
 {
   bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  mLabelFont = QFontDialog::getFont( &ok, mLabelFont, 0, tr( "Label font" ), QFontDialog::DontUseNativeDialog );
+#else
   mLabelFont = QFontDialog::getFont( &ok, mLabelFont, 0, tr( "Label font" ) );
+#endif
   if ( ok )
   {
     insertChangedValue( QgsPalLayerSettings::Size, mLabelFont.pointSizeF() );

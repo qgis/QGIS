@@ -169,8 +169,8 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
-    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont() );
@@ -191,8 +191,8 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
-    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont() );
@@ -213,8 +213,8 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
-    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont() );
@@ -235,8 +235,8 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
-    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont() );

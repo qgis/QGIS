@@ -203,7 +203,12 @@ void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
   }
 
   bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for QT Carbon
+  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ), QFontDialog::DontUseNativeDialog );
+#else
   QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ) );
+#endif
   if ( ok )
   {
     mRenderer->setLabelFont( newFont );

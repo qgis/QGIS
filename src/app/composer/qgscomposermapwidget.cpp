@@ -646,8 +646,8 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
-  // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
   QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
   QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont(), this );
