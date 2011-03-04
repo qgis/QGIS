@@ -33,7 +33,10 @@ void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDom
   messageBox.addButton( QMessageBox :: Cancel );
     
   messageBox.setWindowTitle(tr("QGIS Project Read Error"));
-  messageBox.setText(tr("Unable to open one or more project layers\nTry to find missing layers?"));
+  messageBox.setText(tr("Unable to open one or more project layers.\nChoose "
+        "ignore to continue loading without the missing layers. Choose cancel to "
+        "return to your pre-project load state. Choose OK to try to find the "
+        "missing layers."));
   messageBox.setIcon(QMessageBox::Critical);
   messageBox.exec();
   
