@@ -211,7 +211,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation>Estrai nodi</translation>
+        <translation>Estrai vertici</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
@@ -3271,7 +3271,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation>Estrai nodi</translation>
+        <translation>Estrai vertici</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
@@ -25446,27 +25446,27 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="476"/>
         <source>Min. X</source>
-        <translation type="unfinished"></translation>
+        <translation>X Min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="493"/>
         <source>Min. Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="510"/>
         <source>Max. X</source>
-        <translation type="unfinished"></translation>
+        <translation>X Max</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="527"/>
         <source>Max. Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Max</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="544"/>
         <source>Use Current Canvas Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta alla estensione della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="567"/>
@@ -25761,7 +25761,9 @@ Because of this the projection selector will not work...</source>
         <source>
 The data provider said:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>
+La sorgente dati riporta:
+%1</translation>
     </message>
     <message>
         <source>An error occurred when executing the query</source>
@@ -32878,7 +32880,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="32"/>
         <source>Road graph plugin settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni del plugin grafo strade</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="36"/>
@@ -32893,7 +32895,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="66"/>
         <source>second</source>
-        <translation type="unfinished"></translation>
+        <translation>secondi</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="67"/>
@@ -32916,12 +32918,12 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="54"/>
         <source>Shortest path</source>
-        <translation type="unfinished"></translation>
+        <translation>Via più breve</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="65"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Partenza</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="77"/>
@@ -32943,7 +32945,7 @@ URL provata: %1</translation>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="93"/>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="107"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempo</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="115"/>
@@ -32979,12 +32981,12 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="249"/>
         <source>Start point doesn&apos;t tie to the road!</source>
-        <translation type="unfinished"></translation>
+        <translation>Il punto di partenza non è sulla strada!</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="254"/>
         <source>Stop point doesn&apos;t tie to the road!</source>
-        <translation type="unfinished"></translation>
+        <translation>Il punto di arrivo non è sulla strada!</translation>
     </message>
 </context>
 <context>
@@ -32992,12 +32994,12 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="98"/>
         <source>Road graph settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni del grafo strade</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="99"/>
         <source>Show road&apos;s direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra la direzione della strada</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="100"/>
@@ -33026,7 +33028,7 @@ URL provata: %1</translation>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="134"/>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="135"/>
         <source>Road graph</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafo strade</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="196"/>
@@ -33046,7 +33048,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="207"/>
         <source>&lt;b&gt;Homepage:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Homepage:&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="235"/>
@@ -33079,7 +33081,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sadbtablemodel.cpp" line="42"/>
         <source>Line Interpretation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpretazione della linea</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sadbtablemodel.cpp" line="43"/>
@@ -33107,7 +33109,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnection.cpp" line="127"/>
         <source>Failed to load interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare l&apos;interfaccia</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnection.cpp" line="154"/>
@@ -33126,7 +33128,10 @@ URL provata: %1</translation>
 
 SQL Anywhere error code: %1
 Description: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Connessione non riuscita. Controlla le impostazioni e riprova. 
+
+Codice di errore SQL Anywhere: %1
+Descrizione: %2</translation>
     </message>
 </context>
 <context>
@@ -33397,7 +33402,7 @@ Description: %2</source>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="77"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="220"/>
         <source>Line Interpretation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpretazione della linea</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="78"/>
@@ -33434,7 +33439,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="352"/>
         <source>Failed to load interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare l&apos;interfaccia</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="409"/>
@@ -33462,7 +33467,7 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="566"/>
         <source>found</source>
-        <translation type="unfinished"></translation>
+        <translation>trovato</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="566"/>
@@ -35133,7 +35138,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation>Estrai nodi</translation>
+        <translation>Estrai vertici</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
