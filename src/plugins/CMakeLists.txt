@@ -7,7 +7,6 @@ SUBDIRS (copyright_label
   raster_terrain_analysis
   coordinate_capture
   dxf2shp_converter
-  ogr_converter
   diagram_overlay
   evis
   point_displacement_renderer
