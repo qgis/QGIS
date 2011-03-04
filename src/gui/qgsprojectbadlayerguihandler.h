@@ -19,6 +19,9 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
 
     /** implementation of the handler */
     virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
+    
+    /** Flag to store the Ignore button press of MessageBox used by QgsLegend */
+    static bool mIgnore;
 
   protected:
 

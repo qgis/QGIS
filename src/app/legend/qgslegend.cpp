@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsprojectbadlayerguihandler.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -999,9 +1000,19 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       bool isOpen;
       QgsLegendLayer* currentLayer = readLayerFromXML( childelem, isOpen );
 
+      bool ignorePressed = QgsProjectBadLayerGuiHandler::mIgnore;
+      
       if ( !currentLayer )
-        return false;
-
+      {  
+        if( ignorePressed == true )
+        {
+          continue;
+        }
+        else
+        {
+          return false;
+        }
+      }
       // add to tree - either as a top-level node or a child of a group
       if ( parent )
       {
