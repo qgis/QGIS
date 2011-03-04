@@ -943,6 +943,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
   clearMinMaxCache();
 
+  setIgnoredFields( true, QgsAttributeList() );
+
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
     long fid = ( long ) it.key();
@@ -1011,6 +1013,8 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   OGRErr res;
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
+
+  setIgnoredFields( true, QgsAttributeList() );
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
