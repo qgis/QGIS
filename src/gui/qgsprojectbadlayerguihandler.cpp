@@ -4,6 +4,7 @@
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QtGui/QPushButton> 
 
 #include "qgslogger.h"
 #include "qgisgui.h"
@@ -13,27 +14,50 @@ QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 {
 }
 
+bool QgsProjectBadLayerGuiHandler::mIgnore = false;
+
 void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom )
 {
   QgsDebugMsg( QString( "%1 bad layers found" ).arg( layers.size() ) );
 
   // make sure we have arrow cursor (and not a wait cursor)
   QApplication::setOverrideCursor( Qt::ArrowCursor );
-
-  if ( QMessageBox::Ok == QMessageBox::critical( NULL,
-       tr( "QGIS Project Read Error" ),
-       tr( "Unable to open one or more project layers\nTry to find missing layers?" ),
-       QMessageBox::Ok | QMessageBox::Cancel ) )
+  
+  QMessageBox messageBox;
+      
+  QAbstractButton *ignoreButton = 
+     messageBox.addButton(tr("Ignore"),QMessageBox::ActionRole);  
+    
+  QAbstractButton *okButton = messageBox.addButton( QMessageBox :: Ok );
+  
+  messageBox.addButton( QMessageBox :: Cancel );
+    
+  messageBox.setWindowTitle(tr("QGIS Project Read Error"));
+  messageBox.setText(tr("Unable to open one or more project layers\nTry to find missing layers?"));
+  messageBox.setIcon(QMessageBox::Critical);
+  messageBox.exec();
+  
+  QgsProjectBadLayerGuiHandler::mIgnore = false;
+  
+  if(messageBox.clickedButton() == okButton)
   {
     QgsDebugMsg( "want to find missing layers is true" );
-
+      
     // attempt to find the new locations for missing layers
     // XXX vector file hard-coded -- but what if it's raster?
 
     QString filter = QgsProviderRegistry::instance()->fileVectorFilters();
     findLayers( filter, layers );
-  }
-
+  }       
+  else if (messageBox.clickedButton() == ignoreButton)
+  {
+    QgsProjectBadLayerGuiHandler::mIgnore = true;   
+  } 
+  else
+  {
+    // Do nothing
+  }  
+ 
   QApplication::restoreOverrideCursor();
 }
 
