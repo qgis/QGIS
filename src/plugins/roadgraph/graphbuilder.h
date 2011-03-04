@@ -56,7 +56,7 @@ class RgGraphBuilder
     /**
      * add arc
      */
-    virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed ) = 0;
+    virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed, int featureId ) = 0;
 
   private:
     QgsCoordinateReferenceSystem mCrs;
