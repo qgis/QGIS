@@ -19,6 +19,7 @@ SET (VRP_SRCS
 #SET ([pluginlcasename]_UIS [pluginlcasename]guibase.ui)
 
 SET (VRP_MOC_HDRS
+  graphdirector.h
   roadgraphplugin.h
   settingsdlg.h
   shortestpathwidget.h

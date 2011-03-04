@@ -16,6 +16,7 @@
 #define ROADGRAPH_GRAPHDIRECTOR
 
 //QT4 includes
+#include <QObject>
 
 //QGIS includes
 #include <qgsrectangle.h>
@@ -27,8 +28,14 @@ class RgGraphBuilder;
  * \class RgGraphDirector
  * \brief Determine making the graph
  */
-class RgGraphDirector
+class RgGraphDirector : public QObject
 {
+    Q_OBJECT
+
+  signals:
+    void buildProgress( int, int ) const;
+    void buildMessage( QString ) const;
+
   public:
     //! Destructor
     virtual ~RgGraphDirector() { };

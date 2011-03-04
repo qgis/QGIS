@@ -69,6 +69,9 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
   if ( vl == NULL )
     return;
 
+  int featureCount = ( int ) vl->featureCount() * 2;
+  int step = 0;
+
   QgsCoordinateTransform ct( vl->crs(), builder->destinationCrs() );
 
   QgsDistanceArea da;
@@ -117,6 +120,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
       pt1 = pt2;
       isFirstPoint = false;
     }
+    emit buildProgress( ++step, featureCount );
   }
   // end: tie points to graph
 
@@ -212,12 +216,12 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
             if ( directionType == 1 ||
                  directionType == 3 )
             {
-              builder->addArc( pt1, pt2, cost, speed*su.multipler() );
+              builder->addArc( pt1, pt2, cost, speed*su.multipler(), feature.id() );
             }
             if ( directionType == 2 ||
                  directionType == 3 )
             {
-              builder->addArc( pt2, pt1, cost, speed*su.multipler() );
+              builder->addArc( pt2, pt1, cost, speed*su.multipler(), feature.id() );
             }
           }
           pt1 = pt2;
@@ -227,7 +231,7 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
       pt1 = pt2;
       isFirstPoint = false;
     } // for (it = pl.begin(); it != pl.end(); ++it)
-
+    emit buildProgress( ++step, featureCount );
   } // while( vl->nextFeature(feature) )
 } // makeGraph( RgGraphBuilder *builder, const QgsRectangle& rt )
 

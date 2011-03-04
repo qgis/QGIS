@@ -53,9 +53,9 @@ QgsPoint RgSimpleGraphBuilder::addVertex( const QgsPoint& pt )
   return pt;
 }
 
-void RgSimpleGraphBuilder::addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed )
+void RgSimpleGraphBuilder::addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed, int featureId )
 {
-  mMatrix[ pt1 ][ pt2 ] = ArcAttributes( cost, cost / speed, 0 );
+  mMatrix[ pt1 ][ pt2 ] = ArcAttributes( cost, cost / speed, featureId );
 }
 
 AdjacencyMatrix RgSimpleGraphBuilder::adjacencyMatrix()

@@ -44,7 +44,7 @@ class RgSimpleGraphBuilder : public RgGraphBuilder
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
     QgsPoint addVertex( const QgsPoint& pt );
-    void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed );
+    void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed, int featureId );
 
     /**
      * return Adjacecncy matrix;
