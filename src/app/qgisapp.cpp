@@ -2668,21 +2668,21 @@ void QgisApp::about()
                             .arg( QGis::QGIS_VERSION )
                             .arg( QGis::QGIS_SVN_VERSION );
 
-    versionString += tr( "\nThis copy of QGIS has been built with GDAL/OGR %1." ).arg( GDAL_RELEASE_NAME );
+    versionString += tr( "\nGDAL/OGR Version: %1." ).arg( GDAL_RELEASE_NAME );
 
 #ifdef HAVE_POSTGRESQL
-    versionString += tr( "\nThis copy of QGIS has been built with PostgreSQL support (%1)." ).arg( PG_VERSION );
+    versionString += tr( "\nPostgreSQL Client Version: %1." ).arg( PG_VERSION );
 #else
-    versionString += tr( "\nThis copy of QGIS has been built without PostgreSQL support." );
+    versionString += tr( "\nNo PostgreSQL support." );
 #endif
 
 #ifdef HAVE_SPATIALITE
-    versionString += tr( "\nThis copy of QGIS has been built with SpatiaLite support (%1)." ).arg( spatialite_version() );
+    versionString += tr( "\nSpatiaLite Version: %1." ).arg( spatialite_version() );
 #else
-    versionString += tr( "\nThis copy of QGIS has been built without SpatiaLite support." );
+    versionString += tr( "\nNo SpatiaLite support." );
 #endif
 
-    versionString += tr( "\nThis copy of QGIS has been built with QWT %1." ).arg( QWT_VERSION_STR );
+    versionString += tr( "\nQWT Version: %1." ).arg( QWT_VERSION_STR );
 
 #ifdef QGISDEBUG
     versionString += tr( "\nThis copy of QGIS writes debugging output." );
