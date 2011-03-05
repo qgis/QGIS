@@ -42,24 +42,23 @@ ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
+     ${OSGEARTH_INCLUDE_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
 )
 
-# SET(TARGET_LIBRARIES_VARS OSG_LIBRARY OSGDB_LIBRARY OSGUTIL_LIBRARY OSGVIEWER_LIBRARY OPENTHREADS_LIBRARY)
-
 TARGET_LINK_LIBRARIES(globeplugin
   qgis_core
   qgis_gui
   QtOpenGL
-  osgDB
-  osgGA
-  osg
-  osgViewer
-  osgEarth
-  osgEarthFeatures
-  osgEarthUtil
+  ${OSGDB_LIBRARY}
+  ${OSGGA_LIBRARY}
+  ${OSG_LIBRARY}
+  ${OSGVIEWER_LIBRARY}
+  ${OSGEARTH_LIBRARY}
+  ${OSGEARTHFEATURES_LIBRARY}
+  ${OSGEARTHUTIL_LIBRARY}
   ${OPENTHREADS_LIBRARY}
 )
 
