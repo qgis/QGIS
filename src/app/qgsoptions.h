@@ -50,6 +50,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
   public slots:
     //! Slot called when user chooses to change the project wide projection.
     void on_pbnSelectProjection_clicked();
+    //! Slot called when user chooses to change the default 'on the fly' projection.
+    void on_pbnSelectOtfProjection_clicked();
     void saveOptions();
     //! Slot to change the theme this is handled when the user
     // activates or highlights a theme name in the drop-down list
@@ -125,12 +127,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QString getEllipsoidName( QString theEllipsoidAcronym );
 
   private:
-    //
     QStringList i18nList();
-
-    //!Default proj4 string used for new layers added that have no projection
-    QString mGlobalProj4String;
-
 };
 
 #endif // #ifndef QGSOPTIONS_H

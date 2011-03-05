@@ -60,8 +60,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>744</width>
-            <height>817</height>
+            <width>746</width>
+            <height>862</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -499,8 +499,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>666</width>
-            <height>466</height>
+            <width>746</width>
+            <height>481</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -670,8 +670,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>612</width>
-            <height>469</height>
+            <width>746</width>
+            <height>500</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -950,8 +950,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>310</width>
-            <height>86</height>
+            <width>762</width>
+            <height>457</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1025,8 +1025,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>838</width>
-            <height>432</height>
+            <width>837</width>
+            <height>454</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1354,9 +1354,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>416</width>
-            <height>568</height>
+            <y>-59</y>
+            <width>746</width>
+            <height>516</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1414,17 +1414,30 @@
             </widget>
            </item>
            <item row="3" column="0">
-            <spacer>
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+            <widget class="QGroupBox" name="grpOtfTransform">
+             <property name="title">
+              <string>Always use 'on the fly' CRS transformation for new projects</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>51</width>
-               <height>135</height>
-              </size>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
-            </spacer>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QLineEdit" name="leGlobalOtfProjString">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pbnSelectOtfProjection">
+                <property name="text">
+                 <string>Select CRS for 'on the fly' transformation ...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1451,8 +1464,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>567</height>
+            <width>746</width>
+            <height>551</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1542,8 +1555,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>407</width>
-            <height>508</height>
+            <width>746</width>
+            <height>548</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

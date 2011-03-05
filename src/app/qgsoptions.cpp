@@ -191,6 +191,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   txtGlobalWkt->setText( settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
 
+  //on the fly CRS transformation settings
+  grpOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
+  leGlobalOtfProjString->setText( settings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString() );
+
   // populate combo box with ellipsoids
   getEllipsoidList();
   QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
@@ -631,6 +635,10 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/Projections/defaultProjectionString", txtGlobalWkt->toPlainText() );
 
+  // save 'on the fly' CRS transformation settings
+  settings.setValue( "/Projections/otfTransformEnabled", grpOtfTransform->isChecked() );
+  settings.setValue( "/Projections/defaultOTFProjectionString", leGlobalOtfProjString->text() );
+
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
   if ( radFeet->isChecked() )
@@ -758,6 +766,30 @@ void QgsOptions::on_pbnSelectProjection_clicked()
     QApplication::restoreOverrideCursor();
   }
 
+}
+
+void QgsOptions::on_pbnSelectOtfProjection_clicked()
+{
+  QSettings settings;
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+
+  //find out srs id of current proj4 string
+  QgsCoordinateReferenceSystem refSys;
+  if ( refSys.createFromProj4( leGlobalOtfProjString->text() ) )
+  {
+    mySelector->setSelectedCrsId( refSys.srsid() );
+  }
+
+  if ( mySelector->exec() )
+  {
+    leGlobalOtfProjString->setText( mySelector->selectedProj4String() );
+    QgsDebugMsg( QString( "------ Global OTF Projection Selection set to ----------\n%1" ).arg( leGlobalOtfProjString->text() ) );
+  }
+  else
+  {
+    QgsDebugMsg( "------ Global OTF Projection Selection change cancelled ----------" );
+    QApplication::restoreOverrideCursor();
+  }
 }
 
 // Return state of the visibility flag for newly added layers. If
