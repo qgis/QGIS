@@ -137,7 +137,7 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
     if ( myResult )
     {
       //if the database cannot be opened, add at least the epsg number of the source coordinate system
-      crsNumbers.push_back( theMapLayer->srs().authid() );
+      crsNumbers.push_back( theMapLayer->crs().authid() );
       return crsNumbers;
     };
     QString mySql = "select upper(auth_name||':'||auth_id) from tbl_srs";
@@ -154,7 +154,7 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
   }
   else //rasters cannot be reprojected. Use the epsg number of the layers native CRS
   {
-    crsNumbers.push_back( theMapLayer->srs().authid() );
+    crsNumbers.push_back( theMapLayer->crs().authid() );
   }
   return crsNumbers;
 }

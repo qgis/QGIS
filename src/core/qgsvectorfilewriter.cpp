@@ -573,7 +573,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->srs();
+    outputCRS = &layer->crs();
   }
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions );
@@ -603,7 +603,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   // Create our transform
   if ( destCRS )
   {
-    ct = new QgsCoordinateTransform( layer->srs(), *destCRS );
+    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
   }
 
   // Check for failure

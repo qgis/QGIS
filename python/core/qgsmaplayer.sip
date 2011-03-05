@@ -225,7 +225,7 @@ public:
     and will be deprecated in 2.0
     @see crs()
     */
-    const QgsCoordinateReferenceSystem& srs();
+    const QgsCoordinateReferenceSystem& srs() /Deprecated/;
     
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */

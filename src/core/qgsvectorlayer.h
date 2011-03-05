@@ -155,7 +155,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
-      @param cacheInMemory if true: caches the content of the join layer in virtual memory
       @note added in 1.7 */
     void addJoin( QgsVectorJoinInfo joinInfo );
 
@@ -648,8 +647,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Returns unique values for column
       @param index column index for attribute
       @param uniqueValues out: result list
-      @limit maximum number of values to return (-1 if unlimited)
-      @note: this method was added in version 1.7*/
+      @param limit maximum number of values to return (-1 if unlimited)
+      @note this method was added in version 1.7*/
     void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
 

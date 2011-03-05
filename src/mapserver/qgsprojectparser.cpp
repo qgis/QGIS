@@ -235,7 +235,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       //Ex_GeographicBoundingBox
       if ( mapExtent.isEmpty() )
       {
-        appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->srs() );
+        appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
       }
       else
       {

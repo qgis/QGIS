@@ -486,43 +486,44 @@ _getProperties( QDomDocument const &doc, QgsPropertyKey & project_properties )
     QgsDebugMsg( "Project_properties.readXML() failed" );
   }
 
+#if 0
 // DEPRECATED as functionality has been shoved down to QgsProperyKey::readXML()
+  size_t i = 0;
+  while ( i < scopes.count() )
+  {
+    QDomNode curr_scope_node = scopes.item( i );
 
-//     size_t i = 0;
-//     while (i < scopes.count())
-//     {
-//         QDomNode curr_scope_node = scopes.item(i);
+    qDebug( "found %d property node(s) for scope %s",
+            curr_scope_node.childNodes().count(),
+            curr_scope_node.nodeName().utf8().constData() );
 
-//         qDebug("found %d property node(s) for scope %s",
-//                curr_scope_node.childNodes().count(),
-//                curr_scope_node.nodeName().utf8().constData());
+    QString key( curr_scope_node.nodeName() );
 
-//         QString key(curr_scope_node.nodeName());
+    QgsPropertyKey * currentKey =
+      dynamic_cast<QgsPropertyKey*>( project_properties.find( key ) );
 
-//         QgsPropertyKey * currentKey =
-//             dynamic_cast<QgsPropertyKey*>(project_properties.find( key ));
+    if ( ! currentKey )
+    {
+      // if the property key doesn't yet exist, create an empty instance
+      // of that key
 
-//         if ( ! currentKey )
-//         {
-//             // if the property key doesn't yet exist, create an empty instance
-//             // of that key
+      currentKey = project_properties.addKey( key );
 
-//             currentKey = project_properties.addKey( key );
+      if ( ! currentKey )
+      {
+        qDebug( "%s:%d unable to add key", __FILE__, __LINE__ );
+      }
+    }
 
-//             if ( ! currentKey )
-//             {
-//                 qDebug( "%s:%d unable to add key", __FILE__, __LINE__ );
-//             }
-//         }
+    if ( ! currentKey->readXML( curr_scope_node ) )
+    {
+      qDebug( "%s:%d unable to read XML for property %s", __FILE__, __LINE__,
+              curr_scope_node.nodeName().utf8().constData() );
+    }
 
-//         if (! currentKey->readXML(curr_scope_node))
-//         {
-//             qDebug("%s:%d unable to read XML for property %s", __FILE__, __LINE__,
-//                    curr_scope_node.nodeName().utf8().constData());
-//         }
-
-//         ++i;
-//     }
+    ++i;
+  }
+#endif
 } // _getProperties
 
 
@@ -647,7 +648,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
 QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &doc )
 {
   // Layer order is set by the restoring the legend settings from project file.
-  // This is done on the 'readProject( ... ) signal
+  // This is done on the 'readProject( ... )' signal
 
   QDomNodeList nl = doc.elementsByTagName( "maplayer" );
 
@@ -763,7 +764,7 @@ bool QgsProject::read( QFileInfo const &file )
 
 
 /**
-   it's presumed that the caller has already reset the map canvas, map registry, and legend
+   presuming that the caller has already reset the map canvas, map registry, and legend
  */
 bool QgsProject::read()
 {
