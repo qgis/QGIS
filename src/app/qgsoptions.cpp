@@ -188,12 +188,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     radUseGlobalProjection->setChecked( true );
   }
-
   txtGlobalWkt->setText( settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
-
   //on the fly CRS transformation settings
   grpOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
-  leGlobalOtfProjString->setText( settings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString() );
+  QString myDefaultSrsString = settings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString();
+  mDefaultCrs.createFromProj4( myDefaultSrsString );
+  //display the crs as friendly text rather than in wkt
+  leGlobalOtfProjString->setText( mDefaultCrs.authid() + " - " +
+      mDefaultCrs.description() );
 
   // populate combo box with ellipsoids
   getEllipsoidList();
@@ -637,7 +639,7 @@ void QgsOptions::saveOptions()
 
   // save 'on the fly' CRS transformation settings
   settings.setValue( "/Projections/otfTransformEnabled", grpOtfTransform->isChecked() );
-  settings.setValue( "/Projections/defaultOTFProjectionString", leGlobalOtfProjString->text() );
+  settings.setValue( "/Projections/defaultOTFProjectionString", mDefaultCrs.toProj4() );
 
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
@@ -774,15 +776,14 @@ void QgsOptions::on_pbnSelectOtfProjection_clicked()
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
 
   //find out srs id of current proj4 string
-  QgsCoordinateReferenceSystem refSys;
-  if ( refSys.createFromProj4( leGlobalOtfProjString->text() ) )
-  {
-    mySelector->setSelectedCrsId( refSys.srsid() );
-  }
+  mySelector->setSelectedCrsId( mDefaultCrs.srsid() );
 
   if ( mySelector->exec() )
   {
-    leGlobalOtfProjString->setText( mySelector->selectedProj4String() );
+    mDefaultCrs.createFromProj4( mySelector->selectedProj4String() );
+    QgsDebugMsg( QString( "Setting default project CRS to : %1").arg( mySelector->selectedProj4String() ) );
+    leGlobalOtfProjString->setText( mDefaultCrs.authid() + " - " +
+      mDefaultCrs.description() );
     QgsDebugMsg( QString( "------ Global OTF Projection Selection set to ----------\n%1" ).arg( leGlobalOtfProjString->text() ) );
   }
   else
