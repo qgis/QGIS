@@ -4014,9 +4014,9 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
     QString format = rpNode.namedItem( "wmsFormat" ).toElement().text();
 
     // Collect CRS
-    QString crs = srs().authid();
+    QString authid = crs().authid();
 
-    setDataProvider( mProviderKey, layers, styles, format, crs );
+    setDataProvider( mProviderKey, layers, styles, format, authid );
   }
   else
   {

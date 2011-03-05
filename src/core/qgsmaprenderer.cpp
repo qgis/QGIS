@@ -385,7 +385,7 @@ void QgsMapRenderer::render( QPainter* painter )
       {
         r1 = mExtent;
         split = splitLayersExtent( ml, r1, r2 );
-        ct = new QgsCoordinateTransform( ml->srs(), *mDestCRS );
+        ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
         mRenderContext.setExtent( r1 );
         if ( !r1.isFinite() || !r2.isFinite() ) //there was a problem transforming the extent. Skip the layer
         {
@@ -566,7 +566,7 @@ void QgsMapRenderer::render( QPainter* painter )
           {
             QgsRectangle r1 = mExtent;
             split = splitLayersExtent( ml, r1, r2 );
-            ct = new QgsCoordinateTransform( ml->srs(), *mDestCRS );
+            ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
             mRenderContext.setExtent( r1 );
           }
           else
@@ -691,7 +691,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
   {
     try
     {
-      QgsCoordinateTransform tr( layer->srs(), *mDestCRS );
+      QgsCoordinateTransform tr( layer->crs(), *mDestCRS );
 
 #ifdef QGISDEBUG
       // QgsLogger::debug<QgsRectangle>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__, __FUNCTION__, __LINE__);
@@ -747,7 +747,7 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
   {
     try
     {
-      QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
+      QgsCoordinateTransform tr( theLayer->crs(), *mDestCRS );
       extent = tr.transformBoundingBox( extent );
     }
     catch ( QgsCsException &cse )
@@ -770,7 +770,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
   {
     try
     {
-      QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
+      QgsCoordinateTransform tr( theLayer->crs(), *mDestCRS );
       point = tr.transform( point, QgsCoordinateTransform::ForwardTransform );
     }
     catch ( QgsCsException &cse )
@@ -792,7 +792,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
   {
     try
     {
-      QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
+      QgsCoordinateTransform tr( theLayer->crs(), *mDestCRS );
       point = tr.transform( point, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
@@ -814,7 +814,7 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
   {
     try
     {
-      QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
+      QgsCoordinateTransform tr( theLayer->crs(), *mDestCRS );
       rect = tr.transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )

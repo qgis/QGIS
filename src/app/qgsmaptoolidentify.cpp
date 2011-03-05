@@ -214,7 +214,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   QgsDistanceArea calc;
   calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
   calc.setEllipsoid( ellipsoid );
-  calc.setSourceCrs( layer->srs().srsid() );
+  calc.setSourceCrs( layer->crs().srsid() );
 
   QgsFeatureList featureList;
 

@@ -221,10 +221,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Returns layer's spatial reference system
     @note This method is here for API compatibility
-    and will be deprecited in 2.0
-    @see crs()
+    and will be deprecated in 2.0
+    @deprecated use crs()
     */
-    const QgsCoordinateReferenceSystem& srs();
+    QGISDEPRECATED const QgsCoordinateReferenceSystem& srs();
 
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */
