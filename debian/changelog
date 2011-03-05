@@ -9,7 +9,7 @@ qgis (1.7.0) UNRELEASED; urgency=low
   * drop quickprint and ogrconverter plugin
   * fix qgis-providers-common's architecture to all
 
- -- Jürgen E. Fischer jef@norbit.de>  Sat, 05 Mar 2011 10:52:27 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 05 Mar 2011 10:52:27 +0100
 
 qgis (1.6.0) UNRELEASED; urgency=low
 
