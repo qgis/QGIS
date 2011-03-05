@@ -130,8 +130,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       return arguments
 
   def getInputFileName(self):
-      #if self.inputLayerCombo.currentIndex() >= 0:
-      #  return self.layers[self.inputLayerCombo.currentIndex()].source()
+      if self.inputLayerCombo.currentIndex() >= 0:
+        return self.layers[self.inputLayerCombo.currentIndex()].source()
       return self.inputLayerCombo.currentText()
 
   def getOutputFileName(self):
