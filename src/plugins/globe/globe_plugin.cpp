@@ -51,10 +51,11 @@
 #include <osgEarth/MapNode>
 #include <osgEarth/TileSource>
 #include <osgEarthDrivers/gdal/GDALOptions>
+#include "WorldWindOptions"
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
-using namespace osgEarthUtil::Controls2;
+using namespace osgEarth::Util::Controls;
 
 #define MOVE_OFFSET 0.05
 
@@ -94,20 +95,20 @@ GlobePlugin::~GlobePlugin()
 
 struct PanControlHandler : public NavigationControlHandler
 {
-    PanControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+    PanControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
     virtual void onMouseDown( Control* control, int mouseButtonMask )
     {
       _manip->pan( _dx, _dy );
     }
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
     double _dx;
     double _dy;
 };
 
 struct RotateControlHandler : public NavigationControlHandler
 {
-    RotateControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+    RotateControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
     virtual void onMouseDown( Control* control, int mouseButtonMask )
     {
       if( 0 == _dx && 0 == _dy )
@@ -120,33 +121,33 @@ struct RotateControlHandler : public NavigationControlHandler
       }
     }
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
     double _dx;
     double _dy;
 };
 
 struct ZoomControlHandler : public NavigationControlHandler
 {
-    ZoomControlHandler( osgEarthUtil::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+    ZoomControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
     virtual void onMouseDown( Control* control, int mouseButtonMask )
     {
       _manip->zoom( _dx, _dy );
     }
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
     double _dx;
     double _dy;
 };
 
 struct HomeControlHandler : public NavigationControlHandler
 {
-    HomeControlHandler( osgEarthUtil::EarthManipulator* manip ) : _manip( manip ) { }
+    HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
     virtual void onClick( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
     {
       _manip->home( ea, aa );
     }
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
 };
 
 struct RefreshControlHandler : public ControlEventHandler
@@ -224,7 +225,7 @@ void GlobePlugin::run()
   setupProxy();
 
   // install the programmable manipulator.
-  osgEarthUtil::EarthManipulator* manip = new osgEarthUtil::EarthManipulator();
+  osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
   viewer.setCameraManipulator( manip );
 
   setupMap();
@@ -233,7 +234,7 @@ void GlobePlugin::run()
 
   // Set a home viewpoint
   manip->setHomeViewpoint(
-    osgEarthUtil::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
+    osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
     1.0 );
 
   // create a surface to house the controls
@@ -273,7 +274,6 @@ void GlobePlugin::setupMap()
 {
   // read base layers from earth file
   QString earthFileName = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/globe.earth" );
-  EarthFile earthFile;
   QFile earthFileTemplate( earthFileName );
   if( !earthFileTemplate.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
@@ -294,7 +294,8 @@ void GlobePlugin::setupMap()
   }
 
   std::istringstream istream( earthxml.toStdString() );
-  if( !earthFile.readXML( istream, earthFileName.toStdString() ) )
+  osg::Node* node = osgDB::readNodeFile( earthFileName.toStdString() ); //TODO: from istream earthFile.readXML( istream, earthFileName.toStdString() )
+  if( !node )
   {
     return;
   }
@@ -302,18 +303,18 @@ void GlobePlugin::setupMap()
   mRootNode = new osg::Group();
 
   // The MapNode will render the Map object in the scene graph.
-  mMapNode = new osgEarth::MapNode( earthFile.getMap() );
+  mMapNode = MapNode::findMapNode( node );
   mRootNode->addChild( mMapNode );
 
   // Add layers to the map
   layersChanged();
 
   // model placement utils
-  mElevationManager = new osgEarthUtil::ElevationManager( mMapNode->getMap() );
-  mElevationManager->setTechnique( osgEarthUtil::ElevationManager::TECHNIQUE_GEOMETRIC );
+  mElevationManager = new osgEarth::Util::ElevationManager( mMapNode->getMap() );
+  mElevationManager->setTechnique( osgEarth::Util::ElevationManager::TECHNIQUE_GEOMETRIC );
   mElevationManager->setMaxTilesToCache( 50 );
 
-  mObjectPlacer = new osgEarthUtil::ObjectPlacer( mMapNode );
+  mObjectPlacer = new osgEarth::Util::ObjectPlacer( mMapNode );
 
   // place 3D model on point layer
   if ( mSettingsDialog.modelLayer() && !mSettingsDialog.modelPath().isEmpty() )
@@ -398,7 +399,7 @@ double GlobePlugin::getSelectedElevation()
 
 void GlobePlugin::syncExtent()
 {
-  osgEarthUtil::EarthManipulator* manip = dynamic_cast<osgEarthUtil::EarthManipulator*>( viewer.getCameraManipulator() );
+  osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( viewer.getCameraManipulator() );
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
@@ -417,7 +418,7 @@ void GlobePlugin::syncExtent()
 
   OE_NOTICE << "map extent: " << height << " camera distance: " << distance << std::endl;
 
-  osgEarthUtil::Viewpoint viewpoint( osg::Vec3d( extent.center().x(), extent.center().y(), 0.0 ), 0.0, -90.0, distance );
+  osgEarth::Util::Viewpoint viewpoint( osg::Vec3d( extent.center().x(), extent.center().y(), 0.0 ), 0.0, -90.0, distance );
   manip->setViewpoint( viewpoint, 4.0 );
 }
 
@@ -438,7 +439,7 @@ void GlobePlugin::setupControls()
   moveHControls->setPosition( 5, 30 );
   moveHControls->setPadding( 6 );
 
-  osgEarthUtil::EarthManipulator* manip = dynamic_cast<osgEarthUtil::EarthManipulator*>( viewer.getCameraManipulator() );
+  osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( viewer.getCameraManipulator() );
   //Move Left
   osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png" );
   ImageControl* moveLeft = new NavigationControl( moveLeftImg );
@@ -637,24 +638,23 @@ void GlobePlugin::extentsChanged()
   QgsDebugMsg( "extentsChanged: " + mQGisIface->mapCanvas()->extent().toString() );
 }
 
-typedef std::list< osg::ref_ptr<VersionedTile> > TileList;
-
 void GlobePlugin::layersChanged()
 {
   if ( mIsGlobeRunning ){
     QgsDebugMsg( "layersChanged: Globe Running, executing" );
     osg::ref_ptr<Map> map = mMapNode->getMap();
 
-    if( map->getImageMapLayers().size() > 1 || map->getHeightFieldMapLayers().size() > 1)
+    if( map->getNumImageLayers() > 1 || map->getNumElevationLayers() > 1)
     {
       viewer.getDatabasePager()->clear();
     }
 
     // Remove elevation layers
-    MapLayerList list = map->getHeightFieldMapLayers();
-    for( MapLayerList::iterator i = list.begin(); i != list.end(); i++ )
+    ElevationLayerVector list;
+    map->getElevationLayers( list );
+    for( ElevationLayerVector::iterator i = list.begin(); i != list.end(); i++ )
     {
-      map->removeMapLayer( *i );
+      map->removeElevationLayer( *i );
     }
 
     // Add elevation layers
@@ -666,32 +666,27 @@ void GlobePlugin::layersChanged()
       QString type = table->item(i, 0)->text();
       bool cache = table->item(i, 1)->checkState();
       QString uri = table->item(i, 2)->text();
-      MapLayer* layer = 0;
+      ElevationLayer* layer = 0;
 
       if( "Raster" == type)
       {
-        GDALOptions* options = new GDALOptions();
-        options->url() = uri.toStdString();
-        layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
+        GDALOptions options;
+        options.url() = uri.toStdString();
+        layer = new osgEarth::ElevationLayer( uri.toStdString(), options );
       }
       else if ( "Worldwind" == type )
       {
-        EarthFile* tmpEarth = new EarthFile(); //Hack for programatic WorldWind layer generation
-        std::string xml = "<map name=\"Dummy\" type=\"geocentric\"><heightfield name=\"WorldWind bil\" driver=\"worldwind\"><worldwind_cache>" + cacheDirectory.toStdString() + "/globe/worldwind_srtm</worldwind_cache></heightfield></map>";
-        std::stringstream strstr(xml);
-        tmpEarth->readXML( strstr, "" );
-        layer = tmpEarth->getMap()->getHeightFieldMapLayers().front();
+        WorldWindOptions options;
+        //TODO: <heightfield name=\"WorldWind bil\" driver=\"worldwind\"><worldwind_cache>" + cacheDirectory.toStdString() + "/globe/worldwind_srtm";
+        layer = new osgEarth::ElevationLayer( "WorldWind bil", options );
       }
       else if ( "TMS" == type )
       {
-        TMSOptions* options = new TMSOptions();
-        options->url() = uri.toStdString();
-        layer = new osgEarth::HeightFieldMapLayer( uri.toStdString(), options );
-        //osgEarth 2.0 API:
-        //TMSOptions tms( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
-        //map->addElevationLayer( new osgEarth::ElevationLayer( "SRTM", tms ) );
+        TMSOptions options;
+        options.url() = uri.toStdString();
+        layer = new osgEarth::ElevationLayer( uri.toStdString(), options );
       }
-      map->addMapLayer( layer );
+      map->addElevationLayer( layer );
 
       if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
@@ -700,15 +695,16 @@ void GlobePlugin::layersChanged()
     if( mQgisMapLayer )
     {
       QgsDebugMsg( "removeMapLayer" );
-      map->removeMapLayer( mQgisMapLayer );
+      map->removeImageLayer( mQgisMapLayer );
     }
 
     //add QGIS layer
     QgsDebugMsg( "addMapLayer" );
     mTileSource = new QgsOsgEarthTileSource( mQGisIface );
     mTileSource->initialize( "", 0 );
-    mQgisMapLayer = new ImageMapLayer( "QGIS", mTileSource );
-    map->addMapLayer( mQgisMapLayer );
+    ImageLayerOptions options( "QGIS" );
+    mQgisMapLayer = new ImageLayer( options, mTileSource );
+    map->addImageLayer( mQgisMapLayer );
     mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
@@ -822,40 +818,40 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
 bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 {
   /*
-  osgEarthUtil::EarthManipulator::Settings* _manipSettings = _manip->getSettings();
-  _manip->getSettings()->bindKey(osgEarthUtil::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Space);
+  osgEarth::Util::EarthManipulator::Settings* _manipSettings = _manip->getSettings();
+  _manip->getSettings()->bindKey(osgEarth::Util::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Space);
   //install default action bindings:
-  osgEarthUtil::EarthManipulator::ActionOptions options;
+  osgEarth::Util::EarthManipulator::ActionOptions options;
 
-  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_HOME, osgGA::GUIEventAdapter::KEY_Space );
+  _manipSettings->bindKey( osgEarth::Util::EarthManipulator::ACTION_HOME, osgGA::GUIEventAdapter::KEY_Space );
 
-  _manipSettings->bindMouse( osgEarthUtil::EarthManipulator::ACTION_PAN, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON );
+  _manipSettings->bindMouse( osgEarth::Util::EarthManipulator::ACTION_PAN, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON );
 
   // zoom as you hold the right button:
   options.clear();
-  options.add( osgEarthUtil::EarthManipulator::OPTION_CONTINUOUS, true );
-  _manipSettings->bindMouse( osgEarthUtil::EarthManipulator::ACTION_ROTATE, osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options );
+  options.add( osgEarth::Util::EarthManipulator::OPTION_CONTINUOUS, true );
+  _manipSettings->bindMouse( osgEarth::Util::EarthManipulator::ACTION_ROTATE, osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options );
 
   // zoom with the scroll wheel:
-  _manipSettings->bindScroll( osgEarthUtil::EarthManipulator::ACTION_ZOOM_IN,  osgGA::GUIEventAdapter::SCROLL_DOWN );
-  _manipSettings->bindScroll( osgEarthUtil::EarthManipulator::ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::SCROLL_UP );
+  _manipSettings->bindScroll( osgEarth::Util::EarthManipulator::ACTION_ZOOM_IN,  osgGA::GUIEventAdapter::SCROLL_DOWN );
+  _manipSettings->bindScroll( osgEarth::Util::EarthManipulator::ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::SCROLL_UP );
 
   // pan around with arrow keys:
-  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_LEFT,  osgGA::GUIEventAdapter::KEY_Left );
-  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_RIGHT, osgGA::GUIEventAdapter::KEY_Right );
-  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_UP,    osgGA::GUIEventAdapter::KEY_Up );
-  _manipSettings->bindKey( osgEarthUtil::EarthManipulator::ACTION_PAN_DOWN,  osgGA::GUIEventAdapter::KEY_Down );
+  _manipSettings->bindKey( osgEarth::Util::EarthManipulator::ACTION_PAN_LEFT,  osgGA::GUIEventAdapter::KEY_Left );
+  _manipSettings->bindKey( osgEarth::Util::EarthManipulator::ACTION_PAN_RIGHT, osgGA::GUIEventAdapter::KEY_Right );
+  _manipSettings->bindKey( osgEarth::Util::EarthManipulator::ACTION_PAN_UP,    osgGA::GUIEventAdapter::KEY_Up );
+  _manipSettings->bindKey( osgEarth::Util::EarthManipulator::ACTION_PAN_DOWN,  osgGA::GUIEventAdapter::KEY_Down );
 
   // double click the left button to zoom in on a point:
   options.clear();
-  options.add( osgEarthUtil::EarthManipulator::OPTION_GOTO_RANGE_FACTOR, 0.4 );
-  _manipSettings->bindMouseDoubleClick( osgEarthUtil::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, 0L, options );
+  options.add( osgEarth::Util::EarthManipulator::OPTION_GOTO_RANGE_FACTOR, 0.4 );
+  _manipSettings->bindMouseDoubleClick( osgEarth::Util::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, 0L, options );
 
   // double click the right button(or CTRL-left button) to zoom out to a point
   options.clear();
-  options.add( osgEarthUtil::EarthManipulator::OPTION_GOTO_RANGE_FACTOR, 2.5 );
-  _manipSettings->bindMouseDoubleClick( osgEarthUtil::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options );
-  _manipSettings->bindMouseDoubleClick( osgEarthUtil::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, osgGA::GUIEventAdapter::MODKEY_CTRL, options );
+  options.add( osgEarth::Util::EarthManipulator::OPTION_GOTO_RANGE_FACTOR, 2.5 );
+  _manipSettings->bindMouseDoubleClick( osgEarth::Util::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options );
+  _manipSettings->bindMouseDoubleClick( osgEarth::Util::EarthManipulator::ACTION_GOTO, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, osgGA::GUIEventAdapter::MODKEY_CTRL, options );
 
   _manipSettings->setThrowingEnabled( false );
   _manipSettings->setLockAzimuthWhilePanning( true );

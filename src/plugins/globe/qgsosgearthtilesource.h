@@ -17,12 +17,11 @@ namespace osgEarth { namespace Drivers
     class QgsOsgEarthTileSource : public TileSource
     {
     public:
-        QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const PluginOptions* options = NULL );
+        QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const TileSourceOptions& options =TileSourceOptions() );
 
         void initialize( const std::string& referenceURI, const Profile* overrideProfile = NULL );
 
-        osg::Image* createImage( const TileKey* key,
-                                ProgressCallback* progress );
+        osg::Image* createImage( const TileKey& key, ProgressCallback* progress );
 
         osg::HeightField* createHeightField( const TileKey* key,
                                             ProgressCallback* progress)

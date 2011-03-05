@@ -23,11 +23,11 @@
 #include "qgsosgviewer.h"
 #include "qgsosgearthtilesource.h"
 #include "globe_plugin_dialog.h"
-#include "Controls"
 #include <QObject>
 #include <osgEarth/MapNode>
-#include <osgEarth/MapLayer>
+#include <osgEarth/ImageLayer>
 #include <osgEarthUtil/EarthManipulator>
+#include <osgEarthUtil/Controls>
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
 
@@ -122,15 +122,15 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Map node
     osgEarth::MapNode* mMapNode;
     //! QGIS maplayer
-    osgEarth::MapLayer* mQgisMapLayer;
+    osgEarth::ImageLayer* mQgisMapLayer;
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
-    osgEarthUtil::Controls2::ControlCanvas* mControlCanvas;
+    osgEarth::Util::Controls::ControlCanvas* mControlCanvas;
     //! Elevation manager
-    osgEarthUtil::ElevationManager* mElevationManager;
+    osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
-    osgEarthUtil::ObjectPlacer* mObjectPlacer;
+    osgEarth::Util::ObjectPlacer* mObjectPlacer;
     //! tracks if the globe is open
     bool mIsGlobeRunning;
     //! coordinates of the right-clicked point on the globe
@@ -158,7 +158,7 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
 class QueryCoordinatesHandler : public osgGA::GUIEventHandler
 {
 public:
-    QueryCoordinatesHandler( GlobePlugin* globe, osgEarthUtil::ElevationManager* elevMan,
+    QueryCoordinatesHandler( GlobePlugin* globe, osgEarth::Util::ElevationManager* elevMan,
                              const osgEarth::SpatialReference* mapSRS )
         :  mGlobe ( globe ), _elevMan(elevMan), _mapSRS( mapSRS ), _mouseDown( false ) { }
 
@@ -169,7 +169,7 @@ public:
 private:
     GlobePlugin* mGlobe;
     osg::ref_ptr<const SpatialReference> _mapSRS;
-    osg::ref_ptr<osgEarthUtil::ElevationManager> _elevMan;
+    osg::ref_ptr<osgEarth::Util::ElevationManager> _elevMan;
     bool _mouseDown;
 };
 
@@ -177,40 +177,41 @@ private:
 class KeyboardControlHandler : public osgGA::GUIEventHandler
 {
   public:
-    KeyboardControlHandler( osgEarthUtil::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
+    KeyboardControlHandler( osgEarth::Util::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip(manip), mQGisIface(qGisIface) { }
 
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
 
   private:
-    osg::observer_ptr<osgEarthUtil::EarthManipulator> _manip;
+    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
 
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
 };
 
-namespace osgEarthUtil
+
+namespace osgEarth { namespace Util
 {
-  namespace Controls2
+  namespace Controls
   {
     class NavigationControlHandler : public ControlEventHandler
     {
       public:
         virtual void onMouseDown( class Control* control, int mouseButtonMask ) { }
         virtual void onClick( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { }
-    };
+     };
 
-    class NavigationControl : public ImageControl
-    {
-      public:
+     class NavigationControl : public ImageControl
+     {
+       public:
         NavigationControl( osg::Image* image = 0L ) : ImageControl( image ),  _mouse_down_event( NULL ) {}
 
-      protected:
+       protected:
         virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx );
 
       private:
         osg::ref_ptr<const osgGA::GUIEventAdapter> _mouse_down_event;
     };
   }
-}
+} }
 
 #endif // QGS_GLOBE_PLUGIN_H

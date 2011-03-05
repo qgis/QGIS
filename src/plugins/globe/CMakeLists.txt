@@ -13,7 +13,6 @@ SET (globe_plugin_SRCS
      globe_plugin.cpp
      qgsosgviewer.cpp
      qgsosgearthtilesource.cpp
-     Controls.cpp
      globe_plugin_dialog.cpp
 )
 

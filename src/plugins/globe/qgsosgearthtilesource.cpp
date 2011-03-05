@@ -30,7 +30,7 @@ using namespace osgEarth;
 using namespace osgEarth::Drivers;
 
 
-QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const PluginOptions* options ) : TileSource(options), mQGisIface(theQgisInterface), mCoordTranform(0)
+QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const TileSourceOptions& options ) : TileSource(options), mQGisIface(theQgisInterface), mCoordTranform(0)
 {
 }
 
@@ -58,15 +58,14 @@ void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const P
     mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 }
 
-osg::Image* QgsOsgEarthTileSource::createImage( const TileKey* key,
-                          ProgressCallback* progress )
+osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCallback* progress )
 {
     osg::ref_ptr<osg::Image> image;
-    if (intersects(key))
+    if (intersects(&key))
     {
         //Get the extents of the tile
         double xmin, ymin, xmax, ymax;
-        key->getGeoExtent().getBounds(xmin, ymin, xmax, ymax);
+        key.getExtent().getBounds(xmin, ymin, xmax, ymax);
 
         int tileSize = getPixelsPerTile();
         int target_width = tileSize;
@@ -162,7 +161,7 @@ bool QgsOsgEarthTileSource::intersects(const TileKey* key)
 {
     //Get the native extents of the tile
     double xmin, ymin, xmax, ymax;
-    key->getGeoExtent().getBounds(xmin, ymin, xmax, ymax);
+    key->getExtent().getBounds(xmin, ymin, xmax, ymax);
     QgsRectangle extent = mQGisIface->mapCanvas()->fullExtent();
     if (mCoordTranform) extent = mCoordTranform->transformBoundingBox(extent);
     return ! ( xmin >= extent.xMaximum() || xmax <= extent.xMinimum() || ymin >= extent.yMaximum() || ymax <= extent.yMinimum() );
