@@ -137,6 +137,7 @@ void RoadGraphPlugin::unload()
   // remove the GUI
   mQGisIface->removePluginMenu( tr( "Road graph" ), mQSettingsAction );
   mQGisIface->removePluginMenu( tr( "Road graph" ), mQShowDirectionAction );
+  mQGisIface->removePluginMenu( tr( "Road graph" ), mInfoAction );
 
   mQGisIface->removeToolBarIcon( mQShowDirectionAction );
 
