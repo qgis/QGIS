@@ -8,7 +8,6 @@ usr/lib/qgis/plugins/libspitplugin.so
 usr/lib/qgis/plugins/libwfsplugin.so
 usr/lib/qgis/plugins/libdxf2shpconverterplugin.so
 usr/lib/qgis/plugins/libinterpolationplugin.so 
-usr/lib/qgis/plugins/libogrconverterplugin.so
 usr/lib/qgis/plugins/libcoordinatecaptureplugin.so
 usr/lib/qgis/plugins/liboracleplugin.so
 usr/lib/qgis/plugins/libdiagramoverlay.so 
