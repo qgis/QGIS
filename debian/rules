@@ -31,6 +31,10 @@ CMAKE_OPTS := \
 	-D WITH_MAPSERVER=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin
 
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -D WITH_APIDOC=TRUE
+endif
+
 ifneq (,$(findstring $(DISTRIBUTION),"natty"))
 	CMAKE_OPTS += -D QT_QTWEBKIT_INCLUDE_DIR=/usr/include/QtWebKit
 endif
