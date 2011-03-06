@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>804</width>
-    <height>567</height>
+    <width>825</width>
+    <height>503</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="1" column="0">
+   <item row="3" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -30,10 +30,10 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -60,8 +60,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>745</width>
-            <height>831</height>
+            <width>780</width>
+            <height>755</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -499,8 +499,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>745</width>
-            <height>473</height>
+            <width>780</width>
+            <height>433</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -670,8 +670,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>745</width>
-            <height>473</height>
+            <width>780</width>
+            <height>456</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -950,8 +950,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>458</height>
+            <width>795</width>
+            <height>415</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1025,8 +1025,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>458</height>
+            <width>795</width>
+            <height>415</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1355,18 +1355,86 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>458</height>
+            <width>795</width>
+            <height>415</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_22">
+          <layout class="QGridLayout" name="gridLayout_15">
            <item row="0" column="0">
-            <widget class="QGroupBox" name="grpProjectionBehaviour">
+            <widget class="QGroupBox" name="grpOtfTransform">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
-              <string>Default Coordinate Reference System</string>
+              <string>Default Coordinate Reference System for new projects</string>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_22">
+              <item row="1" column="0">
+               <widget class="QLineEdit" name="leProjectGlobalCrs">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QCheckBox" name="chkOtfTransform">
+                <property name="text">
+                 <string>Enable 'on the &amp;fly' reprojection by defaut</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="pbnSelectOtfProjection">
+                <property name="text">
+                 <string>Select...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0" colspan="2">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>Always start new projects with this CRS</string>
+                </property>
+                <property name="buddy">
+                 <cstring>leProjectGlobalCrs</cstring>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="grpProjectionBehaviour">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Coordinate Reference System for new layers</string>
              </property>
              <layout class="QGridLayout" name="gridLayout">
-              <item row="0" column="0">
+              <item row="0" column="0" colspan="3">
                <widget class="QLabel" name="label_8">
                 <property name="text">
                  <string>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</string>
@@ -1379,81 +1447,53 @@
               <item row="1" column="0">
                <widget class="QRadioButton" name="radPromptForProjection">
                 <property name="text">
-                 <string>Prompt for CRS</string>
+                 <string>Prompt for &amp;CRS</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="0">
                <widget class="QRadioButton" name="radUseProjectProjection">
                 <property name="text">
-                 <string>Project wide default CRS will be used</string>
+                 <string>Use &amp;project CRS</string>
                 </property>
                </widget>
               </item>
               <item row="3" column="0">
                <widget class="QRadioButton" name="radUseGlobalProjection">
                 <property name="text">
-                 <string>Global default CRS displa&amp;yed below will be used</string>
+                 <string>Use default CRS displa&amp;yed below</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_9">
-                <item>
-                 <widget class="QLineEdit" name="leGlobalCRS">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="pbnSelectProjection">
-                  <property name="text">
-                   <string>Select ...</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QGroupBox" name="grpOtfTransform">
-             <property name="title">
-              <string>Enable 'on the fly' reprojection by defaul</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_15">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_16">
-                <property name="text">
-                 <string>When this option is enabled, any new project you create will have 'on the fly' projection enabled by default and the CRS below will be used for the project.</string>
-                </property>
-                <property name="wordWrap">
+               <widget class="QLineEdit" name="leLayerGlobalCrs">
+                <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_10">
-                <item>
-                 <widget class="QLineEdit" name="leGlobalOtfProjString">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="pbnSelectOtfProjection">
-                  <property name="text">
-                   <string>Select ...</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
+              <item row="4" column="1">
+               <widget class="QPushButton" name="pbnSelectProjection">
+                <property name="text">
+                 <string>Select...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>10</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </widget>
@@ -1483,8 +1523,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>745</width>
-            <height>542</height>
+            <width>780</width>
+            <height>527</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1574,8 +1614,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>745</width>
-            <height>533</height>
+            <width>780</width>
+            <height>461</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -1805,34 +1845,58 @@
  </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
+  <tabstop>scrollArea_2</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbTheme</tabstop>
+  <tabstop>cmbSize</tabstop>
+  <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>capitaliseCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
+  <tabstop>cbxCreateRasterLegendIcons</tabstop>
   <tabstop>cbxHideSplash</tabstop>
+  <tabstop>cbxShowTips</tabstop>
   <tabstop>cbxIdentifyResultsDocked</tabstop>
+  <tabstop>cbxSnappingOptionsDocked</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
   <tabstop>cbxAddPostgisDC</tabstop>
+  <tabstop>cbxAddNewLayersToCurrentGroup</tabstop>
+  <tabstop>cmbAttrTableBehaviour</tabstop>
+  <tabstop>leNullValue</tabstop>
+  <tabstop>mListPluginPaths</tabstop>
+  <tabstop>mBtnAddPluginPath</tabstop>
+  <tabstop>mBtnRemovePluginPath</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>scrollArea_3</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
   <tabstop>spinBoxUpdateThreshold</tabstop>
   <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
   <tabstop>chkUseQPixmap</tabstop>
+  <tabstop>chkUseSymbologyNG</tabstop>
+  <tabstop>mListSVGPaths</tabstop>
   <tabstop>mBtnAddSVGPath</tabstop>
   <tabstop>mBtnRemoveSVGPath</tabstop>
-  <tabstop>mListSVGPaths</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>cmbIdentifyMode</tabstop>
+  <tabstop>cbxAutoFeatureForm</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>pbnMeasureColor</tabstop>
+  <tabstop>mDecimalPlacesSpinBox</tabstop>
+  <tabstop>mKeepBaseUnitCheckBox</tabstop>
   <tabstop>radMeters</tabstop>
   <tabstop>radFeet</tabstop>
+  <tabstop>mDegreesRadioButton</tabstop>
+  <tabstop>mRadiansRadioButton</tabstop>
+  <tabstop>mGonRadioButton</tabstop>
   <tabstop>cmbWheelAction</tabstop>
   <tabstop>spinZoomFactor</tabstop>
+  <tabstop>scrollArea_4</tabstop>
   <tabstop>mOverlayAlgorithmComboBox</tabstop>
+  <tabstop>scrollArea_5</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
@@ -1840,24 +1904,39 @@
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
   <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
-  <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
+  <tabstop>chkReuseLastValues</tabstop>
   <tabstop>chkDisableAttributeValuesDlg</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>pbnSelectOtfProjection</tabstop>
+  <tabstop>leProjectGlobalCrs</tabstop>
+  <tabstop>chkOtfTransform</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
+  <tabstop>leLayerGlobalCrs</tabstop>
   <tabstop>pbnSelectProjection</tabstop>
+  <tabstop>scrollArea_7</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
-  <tabstop>mNetworkTimeoutSpinBox</tabstop>
-  <tabstop>grpProxy</tabstop>
   <tabstop>leProxyHost</tabstop>
   <tabstop>leProxyPort</tabstop>
   <tabstop>leProxyUser</tabstop>
   <tabstop>leProxyPassword</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mExcludeUrlListWidget</tabstop>
+  <tabstop>mAddUrlPushButton</tabstop>
+  <tabstop>mRemoveUrlPushButton</tabstop>
+  <tabstop>mCacheDirectory</tabstop>
+  <tabstop>mBrowseCacheDirectory</tabstop>
+  <tabstop>mCacheSize</tabstop>
+  <tabstop>mClearCache</tabstop>
+  <tabstop>leWmsSearch</tabstop>
+  <tabstop>mNetworkTimeoutSpinBox</tabstop>
+  <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
+  <tabstop>grpProxy</tabstop>
+  <tabstop>scrollArea_8</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
@@ -1870,8 +1949,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>190</x>
-     <y>532</y>
+     <x>194</x>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>730</x>
@@ -1886,8 +1965,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>190</x>
-     <y>532</y>
+     <x>194</x>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>731</x>
