@@ -188,14 +188,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     radUseGlobalProjection->setChecked( true );
   }
-  txtGlobalWkt->setText( settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
+  QString myGlobalCrsString = settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString();
+  mGlobalCrs.createFromProj4( myGlobalCrsString );
+  //display the crs as friendly text rather than in wkt
+  leGlobalCRS->setText( mGlobalCrs.authid() + " - " + mGlobalCrs.description() );
+
   //on the fly CRS transformation settings
   grpOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
-  QString myDefaultSrsString = settings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString();
-  mDefaultCrs.createFromProj4( myDefaultSrsString );
+  QString myDefaultCrsString = settings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString();
+  mDefaultCrs.createFromProj4( myDefaultCrsString );
   //display the crs as friendly text rather than in wkt
-  leGlobalOtfProjString->setText( mDefaultCrs.authid() + " - " +
-      mDefaultCrs.description() );
+  leGlobalOtfProjString->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
 
   // populate combo box with ellipsoids
   getEllipsoidList();
@@ -635,7 +638,7 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Projections/defaultBehaviour", "useGlobal" );
   }
 
-  settings.setValue( "/Projections/defaultProjectionString", txtGlobalWkt->toPlainText() );
+  settings.setValue( "/Projections/defaultProjectionString", mGlobalCrs.toProj4() );
 
   // save 'on the fly' CRS transformation settings
   settings.setValue( "/Projections/otfTransformEnabled", grpOtfTransform->isChecked() );
@@ -748,19 +751,15 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 {
   QSettings settings;
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-
-  //find out srs id of current proj4 string
-  QgsCoordinateReferenceSystem refSys;
-  if ( refSys.createFromProj4( txtGlobalWkt->toPlainText() ) )
-  {
-    mySelector->setSelectedCrsId( refSys.srsid() );
-  }
+  mySelector->setSelectedCrsId( mGlobalCrs.srsid() );
 
   if ( mySelector->exec() )
   {
-    //! @todo changes this control name in gui to txtGlobalProjString
-    txtGlobalWkt->setText( mySelector->selectedProj4String() );
-    QgsDebugMsg( QString( "------ Global Default Projection Selection set to ----------\n%1" ).arg( txtGlobalWkt->toPlainText() ) );
+    mGlobalCrs.createFromProj4( mySelector->selectedProj4String() );
+    leGlobalCRS->setText( mySelector->selectedProj4String() );
+    leGlobalCRS->setText( mGlobalCrs.authid() + " - " +
+      mGlobalCrs.description() );
+    QgsDebugMsg( QString( "------ Global Default Projection Selection set to ----------\n%1" ).arg( leGlobalCRS->text() ) );
   }
   else
   {
@@ -774,8 +773,6 @@ void QgsOptions::on_pbnSelectOtfProjection_clicked()
 {
   QSettings settings;
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-
-  //find out srs id of current proj4 string
   mySelector->setSelectedCrsId( mDefaultCrs.srsid() );
 
   if ( mySelector->exec() )
