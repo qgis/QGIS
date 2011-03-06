@@ -799,28 +799,14 @@ void QgsLegend::setGroupCRS( QgsLegendGroup *lg, const QgsCoordinateReferenceSys
     return;
   }
 
-  //delete the legend layers first
-  QTreeWidgetItem * child = lg->child( 0 );
-  while ( child )
+  foreach( QgsLegendLayer *cl, lg->legendLayers() )
   {
-    QgsLegendLayer *cl = dynamic_cast<QgsLegendLayer *>( child );
-    QgsLegendGroup *cg = dynamic_cast<QgsLegendGroup *>( child );
-
     if ( cl )
     {
       cl->layer()->setCrs( crs );
     }
-    else if ( cg )
-    {
-      setGroupCRS( cg, crs );
-    }
-
-    child = lg->child( 0 );
   }
-
-  delete lg;
 }
-
 
 void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
 {
