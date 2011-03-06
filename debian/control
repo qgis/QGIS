@@ -24,7 +24,9 @@ Build-Depends:
  python-dev,
  python-qt4-dev (>=4.1.0),
  python-sip4-dev (>= 4.5.0) | sip4 (>= 4.5),
- subversion
+ subversion,
+ txt2tags,
+ doxygen
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current
