@@ -2144,7 +2144,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionConfigureShortcuts->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
 #ifdef WITH_APIDOC
-  mActionHelpAPI->setIcon( getThemeIcon( "/mActionHelpApi.png" ) );
+  mActionHelpAPI->setIcon( getThemeIcon( "/mActionHelpAPI.png" ) );
 #endif
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
