@@ -223,7 +223,7 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
 {
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
   {
-    QMessageBox::critical( this, tr( "Point not selected" ), tr( "Frist, select start and stop points." ) );
+    QMessageBox::critical( this, tr( "Point not selected" ), tr( "First, select start and stop points." ) );
     return false;
   }
 
