@@ -179,6 +179,18 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       " choice is used."
         ));
   addGuiTip(myTip);
+  // by Tim
+  myTip.setTitle(tr("Sponsor QGIS"));
+  myTip.setContent(tr("If QGIS is saving you money or you like our work and"
+        " have the financial ability to help, please consider sponsoring the"
+        " development of Quantum GIS. We use money from sponsors to pay for"
+        " travel and costs related to our bi-annual hackfests, and to generally"
+        " support the goals of our project.  Please see the <a"
+        " href=\"http://qgis.org/en/sponsorship.html\">QGIS Sponsorship Web"
+        " Page</a> for more details." 
+        ));
+  addGenericTip(myTip);
+
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""
