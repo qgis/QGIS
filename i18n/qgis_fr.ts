@@ -5287,12 +5287,12 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
         <translation>Estimation des dérivés normaux...</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1197"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1202"/>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
         <translation>Impossible d&apos;ouvrir la base des SCRs %1&lt;br&gt;Erreur(%2): %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1261"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1266"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>SCR généré</translation>
@@ -22746,34 +22746,34 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="374"/>
-        <location filename="../src/app/qgsoptions.cpp" line="381"/>
-        <location filename="../src/app/qgsoptions.cpp" line="722"/>
+        <location filename="../src/app/qgsoptions.cpp" line="377"/>
+        <location filename="../src/app/qgsoptions.cpp" line="384"/>
+        <location filename="../src/app/qgsoptions.cpp" line="725"/>
         <source>Semi transparent circle</source>
         <translation>Cercle semi-transparent</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="375"/>
-        <location filename="../src/app/qgsoptions.cpp" line="385"/>
-        <location filename="../src/app/qgsoptions.cpp" line="726"/>
+        <location filename="../src/app/qgsoptions.cpp" line="378"/>
+        <location filename="../src/app/qgsoptions.cpp" line="388"/>
+        <location filename="../src/app/qgsoptions.cpp" line="729"/>
         <source>Cross</source>
         <translation>Croix</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="324"/>
+        <location filename="../src/app/qgsoptions.cpp" line="327"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Les paramètres de lieu (locales) suivants ont été trouvé sur votre système : %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="376"/>
-        <location filename="../src/app/qgsoptions.cpp" line="389"/>
-        <location filename="../src/app/qgsoptions.cpp" line="730"/>
+        <location filename="../src/app/qgsoptions.cpp" line="379"/>
+        <location filename="../src/app/qgsoptions.cpp" line="392"/>
+        <location filename="../src/app/qgsoptions.cpp" line="733"/>
         <source>None</source>
         <translation>Aucun(e)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="354"/>
-        <location filename="../src/app/qgsoptions.cpp" line="363"/>
+        <location filename="../src/app/qgsoptions.cpp" line="357"/>
+        <location filename="../src/app/qgsoptions.cpp" line="366"/>
         <source>map units</source>
         <translation>Identique à celle de la carte</translation>
     </message>
@@ -22808,60 +22808,60 @@ p, li { white-space: pre-wrap; }
         <translation>Montrer les entités dans le caneva actuel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="344"/>
+        <location filename="../src/app/qgsoptions.cpp" line="347"/>
         <source>To vertex</source>
         <translation>Sur un sommet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="345"/>
+        <location filename="../src/app/qgsoptions.cpp" line="348"/>
         <source>To segment</source>
         <translation>Sur un segment</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="346"/>
+        <location filename="../src/app/qgsoptions.cpp" line="349"/>
         <source>To vertex and segment</source>
         <translation>Sur un somment et un segment</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="358"/>
-        <location filename="../src/app/qgsoptions.cpp" line="367"/>
+        <location filename="../src/app/qgsoptions.cpp" line="361"/>
+        <location filename="../src/app/qgsoptions.cpp" line="370"/>
         <source>pixels</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="401"/>
+        <location filename="../src/app/qgsoptions.cpp" line="404"/>
         <source>Central point (fastest)</source>
         <translation>Point central (plus rapide)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="402"/>
+        <location filename="../src/app/qgsoptions.cpp" line="405"/>
         <source>Chain (fast)</source>
         <translation>Chaîne (rapide)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="403"/>
+        <location filename="../src/app/qgsoptions.cpp" line="406"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation>Chaîne popmusic tabu (lent)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="404"/>
+        <location filename="../src/app/qgsoptions.cpp" line="407"/>
         <source>Popmusic tabu (slow)</source>
         <translation>Popmusic tabu (lent)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="405"/>
+        <location filename="../src/app/qgsoptions.cpp" line="408"/>
         <source>Popmusic chain (very slow)</source>
         <translation>Chaîne popmusic (très lent)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="444"/>
+        <location filename="../src/app/qgsoptions.cpp" line="447"/>
         <source>Selection color</source>
         <translation>Couleur de la sélection</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="927"/>
-        <location filename="../src/app/qgsoptions.cpp" line="954"/>
-        <location filename="../src/app/qgsoptions.cpp" line="996"/>
+        <location filename="../src/app/qgsoptions.cpp" line="924"/>
+        <location filename="../src/app/qgsoptions.cpp" line="951"/>
+        <location filename="../src/app/qgsoptions.cpp" line="993"/>
         <source>Choose a directory</source>
         <translation>Choisir un répertoire</translation>
     </message>
@@ -22879,14 +22879,13 @@ p, li { white-space: pre-wrap; }
         <translation>L&apos;afffichage de la carte sera mise à jour (dessinée) après que les données soient lues depuis la source</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1713"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1732"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
         <source>Select Global Default ...</source>
-        <translation>Sélectionner le Système de Coordonnées de Référence (SCR) par défaut</translation>
+        <translation type="obsolete">Sélectionner le Système de Coordonnées de Référence (SCR) par défaut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="569"/>
@@ -22939,22 +22938,22 @@ p, li { white-space: pre-wrap; }
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1454"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1473"/>
         <source>Locale</source>
         <translation>Langue</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1484"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1503"/>
         <source>Locale to use instead</source>
         <translation>Paramètres de lieu à utiliser</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1507"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Additional Info</source>
         <translation>Informations supplémentaires</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1513"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1532"/>
         <source>Detected active locale on your system:</source>
         <translation>Paramètres de lieu (locale) sur votre système : </translation>
     </message>
@@ -23138,7 +23137,23 @@ p, li { white-space: pre-wrap; }
         <translation>Garder l&apos;unité de base</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1756"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1372"/>
+        <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1452"/>
+        <source>Select ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1424"/>
+        <source>Enable &apos;on the fly&apos; reprojection by defaul</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1775"/>
         <source>Timeout for network requests (ms)</source>
         <translation>Délai d&apos;abandon pour les requêtes réseaux (ms)</translation>
     </message>
@@ -23193,32 +23208,37 @@ p, li { white-space: pre-wrap; }
         <translation>Algorithme de placement</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1652"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1433"/>
+        <source>When this option is enabled, any new project you create will have &apos;on the fly&apos; projection enabled by default and the CRS below will be used for the project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1671"/>
         <source>Exclude URLs (starting with)</source>
         <translation>Exclure les adresses (débutant par)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1697"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Cache settings</source>
         <translation>Paramètres du cache</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1703"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1722"/>
         <source>Directory</source>
         <translation>Répertoire</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1720"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1739"/>
         <source>Size</source>
         <translation>Taille</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1730"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1749"/>
         <source>Clear</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1742"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1761"/>
         <source>WMS search address</source>
         <translation>Adresse de recherche WMS</translation>
     </message>
@@ -23352,63 +23372,60 @@ p, li { white-space: pre-wrap; }
         <translation>Système de coordonnées de référence par défaut</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1375"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation>Quand une nouvelle couche est créée ou quand une nouvelle couche est chargée sans système de coordonnées de référence (SCR)</translation>
+        <translation type="obsolete">Quand une nouvelle couche est créée ou quand une nouvelle couche est chargée sans système de coordonnées de référence (SCR)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1419"/>
         <source>Always use &apos;on the fly&apos; CRS transformation for new projects</source>
-        <translation>Toujours utiliser la reprojection à la volée pour les nouveaux projets</translation>
+        <translation type="obsolete">Toujours utiliser la reprojection à la volée pour les nouveaux projets</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1435"/>
         <source>Select CRS for &apos;on the fly&apos; transformation ...</source>
-        <translation>Sélection du SCR pour la reprojection à la volée</translation>
+        <translation type="obsolete">Sélection du SCR pour la reprojection à la volée</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1475"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1494"/>
         <source>Override system locale</source>
         <translation>Forcer la nationalité du système</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1494"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1513"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>Note : l&apos;activation ou le changement de paramètre du lieu nécessite le redémarrage de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1545"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1564"/>
         <source>Network</source>
         <translation>Réseau</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1566"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1585"/>
         <source>Use proxy for web access</source>
         <translation>Utiliser un proxy pour l&apos;accès internet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1578"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1597"/>
         <source>Host</source>
         <translation>Hôte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1588"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1607"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1598"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1617"/>
         <source>User</source>
         <translation>Utilisateur</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1605"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1619"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1624"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1638"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation>Laissez vide si il n&apos;y pas d&apos;identification / mot de passe requis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1612"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1631"/>
         <source>Password</source>
         <translation>Mot de Passe</translation>
     </message>
@@ -23422,17 +23439,17 @@ p, li { white-space: pre-wrap; }
         <translation>SCR</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1385"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1382"/>
         <source>Prompt for CRS</source>
         <translation>Demander pour la projection</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1392"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1389"/>
         <source>Project wide default CRS will be used</source>
         <translation>La projection par défaut du projet sera employée. </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1399"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1396"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>La projection par défaut ci-dessous sera emplo&amp;yée</translation>
     </message>
@@ -23462,21 +23479,21 @@ p, li { white-space: pre-wrap; }
         <translation>Supprimer les fenêtres d&apos;avertissements lors de la création de chaque entité</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1629"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1648"/>
         <source>Proxy type</source>
         <translation>Type de proxy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="457"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="631"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1668"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1687"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="464"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="638"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1661"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1680"/>
         <source>Remove</source>
         <translation>Supprimer</translation>
     </message>
@@ -26114,21 +26131,25 @@ Le prestataire de donné a dit :
     <name>QgsQueryBuilderBase</name>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="22"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="22"/>
         <source>Query Builder</source>
         <translation>Constructeur de requête</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="259"/>
         <source>Datasource</source>
         <translation>Source de données</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="49"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="42"/>
         <source>Fields</source>
         <translation>Champs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="58"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="51"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -26137,11 +26158,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="77"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="70"/>
         <source>Values</source>
         <translation>Valeurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="86"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="79"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -26163,6 +26186,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="118"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="98"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -26171,88 +26195,115 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="124"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="104"/>
         <source>All</source>
         <translation>Tout</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="121"/>
         <source>Operators</source>
         <translation>Opérateurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="143"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="130"/>
         <source>=</source>
         <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="150"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="137"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="157"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="144"/>
         <source>NOT</source>
         <translation>NOT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="164"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="151"/>
         <source>OR</source>
         <translation>OR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="171"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="158"/>
         <source>AND</source>
         <translation>AND</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="178"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="165"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="185"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="172"/>
         <source>IN</source>
         <translation>IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="192"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="179"/>
         <source>NOT IN</source>
         <translation>NOT IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="199"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="186"/>
         <source>!=</source>
         <translation>!=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="206"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="193"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="213"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="200"/>
         <source>LIKE</source>
         <translation>LIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="220"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="207"/>
         <source>ILIKE</source>
         <translation>ILIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="227"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="214"/>
         <source>&gt;=</source>
         <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="234"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="221"/>
         <source>&lt;=</source>
         <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="250"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="237"/>
         <source>SQL where clause</source>
         <translation>Clause SQL WHERE</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="111"/>
+        <source>Auto Sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="266"/>
+        <source>Selected Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31063,6 +31114,26 @@ Voulez-vous l&apos;&apos;écraser ?</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="167"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="175"/>
+        <source>Auto-enable on the fly projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="176"/>
+        <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="183"/>
+        <source>Sponsor QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="184"/>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -35987,7 +36058,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Lines to polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lignes vers polygones</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>

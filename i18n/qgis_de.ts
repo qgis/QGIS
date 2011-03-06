@@ -5028,12 +5028,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Schätze Normalenableitungen...</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1197"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1202"/>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
         <translation>Konnte KBS-Datenbank %1 nicht öffnen&lt;br&gt;Fehler(%2): %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1261"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1266"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>Erzeugtes KBS</translation>
@@ -7316,12 +7316,12 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1243"/>
         <source>Local Histogram Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokale Histogramdehnung</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1244"/>
         <source>Stretch histogram of active raster to view extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Strecke das Histogram des aktiven Rasters um Ausdehnung zu zeigen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1261"/>
@@ -8123,7 +8123,7 @@ Diese QGIS-Kopie wurde mit QWT %1 erzeugt.</translation>
         <location filename="../src/app/qgisapp.cpp" line="5620"/>
         <location filename="../src/app/qgisapp.cpp" line="5629"/>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Um eine lokale Histogramdehnung vorzunehmen muss ein Raster Layer ausgewählt sein.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5628"/>
@@ -8138,7 +8138,7 @@ Diese QGIS-Kopie wurde mit QWT %1 erzeugt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5647"/>
         <source>To perform a local histogram stretch, you need to have a grayscale (multiband single layer, or singleband grayscale) raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Um eine lokale Histogrammstreckung vorzunehmen muss ein Graustufen (multiband single oder singleband Graustufen) Raster Layer ausgewählt sein.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5753"/>
@@ -17814,60 +17814,75 @@ in Zeile %2, Spalte %3</translation>
 <context>
     <name>QgsHandleBadLayers</name>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="53"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="56"/>
         <source>Browse</source>
         <translation>Durchsuchen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="69"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="71"/>
         <source>Layer name</source>
         <translation>Layername</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="70"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="72"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="71"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="73"/>
         <source>Provider</source>
         <translation>Datenlieferant</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="72"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="74"/>
         <source>New file</source>
         <translation>Neue Datei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="73"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="75"/>
         <source>New datasource</source>
         <translation>Neue Datenquelle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="111"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="115"/>
         <source>none</source>
         <translation>Keiner</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="191"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="218"/>
         <source>Select file to replace &apos;%1&apos;</source>
         <translation>Ersatzdatei für &apos;%1&apos; wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="197"/>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="213"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="224"/>
         <source>Please select exactly one file.</source>
         <translation>Bitte genau eine Datei wählen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="207"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="234"/>
         <source>Select new directory of selected files</source>
         <translation>Verzeichnis mit den gewählten Dateien wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="209"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="236"/>
         <source>All files (*)</source>
         <translation>Alle Dateien (*)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="328"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="347"/>
+        <source>Unhandled layer will be lost.</source>
+        <translation>Unbehandelte Layer gehen verloren.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="329"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="348"/>
+        <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
+        <comment>unhandled layers</comment>
+        <translation>
+            <numerusform>Es gibt noch %n unbehandelte Layer die verlorengehen wenn nun geschlossen wird.</numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -21750,21 +21765,21 @@ Primärschlüssel erzeugen</translation>
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="374"/>
-        <location filename="../src/app/qgsoptions.cpp" line="381"/>
-        <location filename="../src/app/qgsoptions.cpp" line="722"/>
+        <location filename="../src/app/qgsoptions.cpp" line="377"/>
+        <location filename="../src/app/qgsoptions.cpp" line="384"/>
+        <location filename="../src/app/qgsoptions.cpp" line="725"/>
         <source>Semi transparent circle</source>
         <translation>Teiltransparenter Kreis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="375"/>
-        <location filename="../src/app/qgsoptions.cpp" line="385"/>
-        <location filename="../src/app/qgsoptions.cpp" line="726"/>
+        <location filename="../src/app/qgsoptions.cpp" line="378"/>
+        <location filename="../src/app/qgsoptions.cpp" line="388"/>
+        <location filename="../src/app/qgsoptions.cpp" line="729"/>
         <source>Cross</source>
         <translation>Kreuz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="324"/>
+        <location filename="../src/app/qgsoptions.cpp" line="327"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Festgestellte Spracheinstellung des Systems: %1</translation>
     </message>
@@ -21799,73 +21814,73 @@ Primärschlüssel erzeugen</translation>
         <translation>Alle Objekte des aktuellen Kartenausschnitts anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="344"/>
+        <location filename="../src/app/qgsoptions.cpp" line="347"/>
         <source>To vertex</source>
         <translation>Zum Stützpunkt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="345"/>
+        <location filename="../src/app/qgsoptions.cpp" line="348"/>
         <source>To segment</source>
         <translation>Zum Segment</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="346"/>
+        <location filename="../src/app/qgsoptions.cpp" line="349"/>
         <source>To vertex and segment</source>
         <translation>Zum Stützpunkt und Segment</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="376"/>
-        <location filename="../src/app/qgsoptions.cpp" line="389"/>
-        <location filename="../src/app/qgsoptions.cpp" line="730"/>
+        <location filename="../src/app/qgsoptions.cpp" line="379"/>
+        <location filename="../src/app/qgsoptions.cpp" line="392"/>
+        <location filename="../src/app/qgsoptions.cpp" line="733"/>
         <source>None</source>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="444"/>
+        <location filename="../src/app/qgsoptions.cpp" line="447"/>
         <source>Selection color</source>
         <translation>Auswahlfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="927"/>
-        <location filename="../src/app/qgsoptions.cpp" line="954"/>
-        <location filename="../src/app/qgsoptions.cpp" line="996"/>
+        <location filename="../src/app/qgsoptions.cpp" line="924"/>
+        <location filename="../src/app/qgsoptions.cpp" line="951"/>
+        <location filename="../src/app/qgsoptions.cpp" line="993"/>
         <source>Choose a directory</source>
         <translation>Verzeichnis wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="354"/>
-        <location filename="../src/app/qgsoptions.cpp" line="363"/>
+        <location filename="../src/app/qgsoptions.cpp" line="357"/>
+        <location filename="../src/app/qgsoptions.cpp" line="366"/>
         <source>map units</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="358"/>
-        <location filename="../src/app/qgsoptions.cpp" line="367"/>
+        <location filename="../src/app/qgsoptions.cpp" line="361"/>
+        <location filename="../src/app/qgsoptions.cpp" line="370"/>
         <source>pixels</source>
         <translation>Pixel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="401"/>
+        <location filename="../src/app/qgsoptions.cpp" line="404"/>
         <source>Central point (fastest)</source>
         <translation>Zentrum (am schnellsten)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="402"/>
+        <location filename="../src/app/qgsoptions.cpp" line="405"/>
         <source>Chain (fast)</source>
         <translation>Kette (schnell)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="403"/>
+        <location filename="../src/app/qgsoptions.cpp" line="406"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation>Popmusik-Tabu-Kette (langsam)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="404"/>
+        <location filename="../src/app/qgsoptions.cpp" line="407"/>
         <source>Popmusic tabu (slow)</source>
         <translation>Popmusik-Tabu (langsam)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="405"/>
+        <location filename="../src/app/qgsoptions.cpp" line="408"/>
         <source>Popmusic chain (very slow)</source>
         <translation>Popmusik-Kette (sehr langsam)</translation>
     </message>
@@ -21883,9 +21898,8 @@ Primärschlüssel erzeugen</translation>
         <translation>Kartenanzeige wird erneuert (gezeichnet) nachdem so viele Objekte von der Datenquelle gelesen wurden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
         <source>Select Global Default ...</source>
-        <translation>Globale Voreinstellung wählen ...</translation>
+        <translation type="obsolete">Globale Voreinstellung wählen ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="569"/>
@@ -21933,22 +21947,27 @@ Primärschlüssel erzeugen</translation>
         <translation>Nichts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1454"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1433"/>
+        <source>When this option is enabled, any new project you create will have &apos;on the fly&apos; projection enabled by default and the CRS below will be used for the project.</source>
+        <translation>Is diese Option aktiviert haben alle neu erzeugten Projekte &apos;on-the-fly&apos; KBS Transformation voreingestellt und das KBS unterhalb wird für das Projekt verwendet.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1473"/>
         <source>Locale</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1484"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1503"/>
         <source>Locale to use instead</source>
         <translation>Stattdessen folgende Spracheinstellungen benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1507"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Additional Info</source>
         <translation>Ergänzende Informationen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1513"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1532"/>
         <source>Detected active locale on your system:</source>
         <translation>Festgestellte aktive Spracheinstellung:</translation>
     </message>
@@ -22173,22 +22192,20 @@ Primärschlüssel erzeugen</translation>
         <translation>Letzte Attributwerteingaben wiederverwenden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1419"/>
         <source>Always use &apos;on the fly&apos; CRS transformation for new projects</source>
-        <translation>Für neue Projekte immer &apos;On-The-Fly&apos;-KBS-Transformation benutzen</translation>
+        <translation type="obsolete">Für neue Projekte immer &apos;On-The-Fly&apos;-KBS-Transformation benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1435"/>
         <source>Select CRS for &apos;on the fly&apos; transformation ...</source>
-        <translation>KBS für &apos;On-The-Fly&apos;-Transformation wählen ...</translation>
+        <translation type="obsolete">KBS für &apos;On-The-Fly&apos;-Transformation wählen ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1545"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1564"/>
         <source>Network</source>
         <translation>Netzwerk</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1756"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1775"/>
         <source>Timeout for network requests (ms)</source>
         <translation>Zeitüberschreitung bei Netzwerkanfragen (ms)</translation>
     </message>
@@ -22248,37 +22265,57 @@ Primärschlüssel erzeugen</translation>
         <translation>Platzierungsalgorithmus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1652"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1372"/>
+        <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
+        <translation>Wenn ein neuer Layer erzeugt wird oder ein Layer geladen wird der kein Koordinatenbezugssystem hat.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1452"/>
+        <source>Select ...</source>
+        <translation>Wählen...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1424"/>
+        <source>Enable &apos;on the fly&apos; reprojection by defaul</source>
+        <translation>&apos;On-The-Fly&apos;-KBS-Transformation als Voreinstellung aktivieren</translation>
+    </message>
+    <message>
+        <source>When this opton is enabled, any new project you create will have &apos;on the fly&apos; projection enabled by default and the CRS below will be used for the project.</source>
+        <translation type="obsolete">Is diese Option aktiviert haben alle neu erzeugten Projekte &apos;on-the-fly&apos; KBS Transformation voreingestellt und das KBS unterhalb wird für das Projekt verwendet.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1671"/>
         <source>Exclude URLs (starting with)</source>
         <translation>URL ausschließen, die beginnen mit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1697"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Cache settings</source>
         <translation>Cache-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1703"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1722"/>
         <source>Directory</source>
         <translation>Verzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1713"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1732"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1720"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1739"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1730"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1749"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1742"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1761"/>
         <source>WMS search address</source>
         <translation>WMS-Suchadresse</translation>
     </message>
@@ -22373,48 +22410,47 @@ Primärschlüssel erzeugen</translation>
         <translation>Markierungsgröße</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1375"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation>Wenn ein neuer Layer angelegt oder geladen wird, der kein Koordinatenbezugssystem (KBS) hat</translation>
+        <translation type="obsolete">Wenn ein neuer Layer angelegt oder geladen wird, der kein Koordinatenbezugssystem (KBS) hat</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1475"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1494"/>
         <source>Override system locale</source>
         <translation>System-Locale überschreiben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1494"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1513"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>&lt;b&gt;Note:&lt;/b&gt; Einschalten/Änderung der Locale-Überschreibung erfordert einen Anwendungsneustart</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1566"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1585"/>
         <source>Use proxy for web access</source>
         <translation>Proxy für Webzugriff benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1578"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1597"/>
         <source>Host</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1588"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1607"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1598"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1617"/>
         <source>User</source>
         <translation>Benutzer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1605"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1619"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1624"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1638"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation>Lassen Sie Benutzer/Passwort leer, wenn sie nicht benötigt werden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1612"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1631"/>
         <source>Password</source>
         <translation>Passwort</translation>
     </message>
@@ -22424,17 +22460,17 @@ Primärschlüssel erzeugen</translation>
         <translation>KBS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1385"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1382"/>
         <source>Prompt for CRS</source>
         <translation>KBS abfragen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1392"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1389"/>
         <source>Project wide default CRS will be used</source>
         <translation>Projektweite KBS-Voreinstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1399"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1396"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>Unten stehende globale &amp;Voreinstellung wird genutzt</translation>
     </message>
@@ -22459,21 +22495,21 @@ Primärschlüssel erzeugen</translation>
         <translation>Eingabe der Attributwerte bei der Erstellung neuer Objekte unterdrücken</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1629"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1648"/>
         <source>Proxy type</source>
         <translation>Proxytyp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="457"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="631"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1668"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1687"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="464"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="638"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1661"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1680"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
@@ -24938,21 +24974,25 @@ The data provider said:
     <name>QgsQueryBuilderBase</name>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="22"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="22"/>
         <source>Query Builder</source>
         <translation>Abfrageerstellung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="259"/>
         <source>Datasource</source>
         <translation>Datenquelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="49"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="42"/>
         <source>Fields</source>
         <translation>Felder</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="58"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="51"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -24964,11 +25004,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="77"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="70"/>
         <source>Values</source>
         <translation>Werte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="86"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="79"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -24996,6 +25038,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="118"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="98"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -25007,88 +25050,115 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="124"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="104"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="121"/>
         <source>Operators</source>
         <translation>Operatoren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="143"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="130"/>
         <source>=</source>
         <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="150"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="137"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="157"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="144"/>
         <source>NOT</source>
         <translation>NICHT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="164"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="151"/>
         <source>OR</source>
         <translation>ODER</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="171"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="158"/>
         <source>AND</source>
         <translation>UND</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="178"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="165"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="185"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="172"/>
         <source>IN</source>
         <translation>IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="192"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="179"/>
         <source>NOT IN</source>
         <translation>NICHT IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="199"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="186"/>
         <source>!=</source>
         <translation>!=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="206"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="193"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="213"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="200"/>
         <source>LIKE</source>
         <translation>ÄHNLICH</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="220"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="207"/>
         <source>ILIKE</source>
         <translation>ILIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="227"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="214"/>
         <source>&gt;=</source>
         <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="234"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="221"/>
         <source>&lt;=</source>
         <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="250"/>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="237"/>
         <source>SQL where clause</source>
         <translation>SQL-Where-Klausel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="111"/>
+        <source>Auto Sample</source>
+        <translation>Auto Beispiel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="266"/>
+        <source>Selected Layer</source>
+        <translation>Gewählter Layer</translation>
     </message>
 </context>
 <context>
@@ -29731,6 +29801,26 @@ Ersetzen?</translation>
         <location filename="../src/app/qgstipfactory.cpp" line="167"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
         <translation>Wenn ein geschichteter Stil auf einem Polylinienlayer verwendet wird, kann man Kreuzungen einfach durch die Aktivierung von Symbolebenen anzeigen.  Das Bild unten zeigt eine Kreuzung vor (links) und nach (rechts) der Aktivierung von Symbolenebenen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="175"/>
+        <source>Auto-enable on the fly projection</source>
+        <translation>automatisch &apos;On-The-Fly&apos;-KBS-Transformation als Voreinstellung aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="176"/>
+        <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
+        <translation>Im Optionen Dialog unter KBS kann QGIS so eingestellt werden das jedes neue Projekt &apos;on-the-fly&apos;-KBS-Transformation verwendet und ein voreingestelltes Koordinatensystem ihrer Wahl verwendet wird.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="183"/>
+        <source>Sponsor QGIS</source>
+        <translation>Unterstütze QGIS</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="184"/>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation>Wenn QGIS hilft Geld zu sparen oder Sie Ihre Arbeit lieben und die finanziellen Möglichkeiten haben zu helfen denken Sie bitte darüber nach die Entwicklung von Quantum GIS zu unterstützen. Das Geld unserer Sponsoren wird dazu verwendet um Fahrtkosten und Kosten unserer Entwicklertreffen zu decken und auch um die allgemeinen Kosten des Projekts zu decken. Bitte gehen Sie auf  &lt;a href=&quot;http://www.qgis.org/de/sponsoring.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; für nähere Einzelheiten.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="91"/>
