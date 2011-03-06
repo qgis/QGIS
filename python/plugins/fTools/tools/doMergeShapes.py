@@ -74,10 +74,14 @@ class Dialog( QDialog, Ui_Dialog ):
       self.label.setText( self.tr( "Input files" ) )
       QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
       QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFile )
+      self.lblGeometry.setEnabled( False )
+      self.cmbGeometry.setEnabled( False )
     else:
       self.label.setText( self.tr( "Input directory" ) )
       QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFile )
       QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
+      self.lblGeometry.setEnabled( True )
+      self.cmbGeometry.setEnabled( True )
 
   def reject( self ):
     QDialog.reject( self )
@@ -95,24 +99,27 @@ class Dialog( QDialog, Ui_Dialog ):
         self.inputFiles = None
         return
 
-      self.progressFiles.setRange( 0, self.inputFiles.count() )
-
     if self.outFileName is None:
       QMessageBox.warning( self, self.tr( "No output file" ),
         self.tr( "Please specify output file." ) )
       return
-
-    outFile = QFile( self.outFileName )
-    if outFile.exists():
-      if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
-        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
-        return
 
     if self.chkListMode.isChecked():
       files = self.leInputDir.text().split( ";" )
       baseDir = QFileInfo( files[ 0 ] ).absolutePath()
     else:
       baseDir = self.leInputDir.text()
+
+    # look for shapes with specified geometry type
+    self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
+
+    self.progressFiles.setRange( 0, self.inputFiles.count() )
+
+    outFile = QFile( self.outFileName )
+    if outFile.exists():
+      if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
+        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
+        return
 
     QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
     self.btnOk.setEnabled( False )
@@ -197,6 +204,8 @@ class ShapeMergeThread( QThread ):
     for fileName in self.shapes:
       layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+      if not newLayer.isValid():
+        continue
       vprovider = newLayer.dataProvider()
       allAttrs = vprovider.attributeIndexes()
       vprovider.select( allAttrs )
