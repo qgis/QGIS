@@ -19,6 +19,8 @@
 #include "qgslogger.h"
 #include <QtDebug>
 
+int QgsLogger::mDebugLevel = -999; // undefined value
+
 void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, const char* function, int line )
 {
   const char* dfile = debugFile();
@@ -147,23 +149,33 @@ void QgsLogger::fatal( const QString& msg )
 
 int QgsLogger::debugLevel()
 {
-  const char* dlevel = getenv( "QGIS_DEBUG" );
-  if ( dlevel == NULL ) //environment variable not set
+  if ( mDebugLevel == -999 )
   {
+    // read the environment variable QGIS_DEBUG just once,
+    // then reuse the value
+
+    const char* dlevel = getenv( "QGIS_DEBUG" );
+    if ( dlevel == NULL ) //environment variable not set
+    {
 #ifdef QGISDEBUG
-    return 1; //1 is default value in debug mode
+      mDebugLevel = 1; //1 is default value in debug mode
 #else
-    return 0;
+      mDebugLevel = 0;
 #endif
-  }
-  int level = atoi( dlevel );
+    }
+    else
+    {
+      mDebugLevel = atoi( dlevel );
 #ifdef QGISDEBUG
-  if ( level == 0 )
-  {
-    level = 1;
-  }
+      if ( mDebugLevel == 0 )
+      {
+        mDebugLevel = 1;
+      }
 #endif
-  return level;
+    }
+  }
+
+  return mDebugLevel;
 }
 
 const char* QgsLogger::debugFile()
