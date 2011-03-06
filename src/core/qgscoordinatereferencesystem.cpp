@@ -302,7 +302,18 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
   //now that we have the proj4string, delegate to createFromProj4 so
   // that we can try to fill in the remaining class members...
   //create from Proj will set the isValidFlag
-  createFromProj4( QString( proj4src ) );
+  if ( !createFromProj4( proj4src ) )
+  {
+    CPLFree( proj4src );
+
+    // try fixed up version
+    OSRFixup( mCRS );
+
+    OSRExportToProj4( mCRS, &proj4src );
+
+    createFromProj4( proj4src );
+  }
+
   CPLFree( proj4src );
 
   return mIsValidFlag;
@@ -324,42 +335,36 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   // +proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=2.337229166666664 +k_0=0.99987742
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
+  QgsDebugMsg( "proj4: " + theProj4String );
   mIsValidFlag = false;
 
-  QRegExp myProjRegExp( "\\+proj=\\S+" );
-  int myStart = 0;
-  int myLength = 0;
-  myStart = myProjRegExp.indexIn( theProj4String, myStart );
+  QRegExp myProjRegExp( "\\+proj=(\\S+)" );
+  int myStart = myProjRegExp.indexIn( theProj4String );
   if ( myStart == -1 )
   {
-    QgsDebugMsg( "error proj string supplied has no +proj argument" );
+    QgsDebugMsg( "proj string supplied has no +proj argument" );
     return mIsValidFlag;
+  }
+
+  mProjectionAcronym = myProjRegExp.cap( 1 );
+
+  QRegExp myEllipseRegExp( "\\+ellps=(\\S+)" );
+  myStart = myEllipseRegExp.indexIn( theProj4String );
+  if ( myStart == -1 )
+  {
+    QgsDebugMsg( "proj string supplied has no +ellps argument" );
+    mEllipsoidAcronym = "";
   }
   else
   {
-    myLength = myProjRegExp.matchedLength();
+    mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
 
-  mProjectionAcronym = theProj4String.mid( myStart + PROJ_PREFIX_LEN, myLength - PROJ_PREFIX_LEN );
-
-  QRegExp myEllipseRegExp( "\\+ellps=\\S+" );
-  myStart = 0;
-  myLength = 0;
-  myStart = myEllipseRegExp.indexIn( theProj4String, myStart );
-  if ( myStart != -1 )
+  QRegExp myAxisRegExp( "\\+a=(\\S+)" );
+  myStart = myAxisRegExp.indexIn( theProj4String );
+  if ( myStart == -1 )
   {
-    myLength = myEllipseRegExp.matchedLength();
-    mEllipsoidAcronym = theProj4String.mid( myStart + ELLPS_PREFIX_LEN, myLength - ELLPS_PREFIX_LEN );
-  }
-
-  QRegExp myAxisRegExp( "\\+a=\\S+" );
-  myStart = 0;
-  myLength = 0;
-  myStart = myAxisRegExp.indexIn( theProj4String, myStart );
-  if ( myStart == -1 && mEllipsoidAcronym.isNull() )
-  {
-    QgsDebugMsg( "proj string supplied has no +ellps or +a argument" );
-    return mIsValidFlag;
+    QgsDebugMsg( "proj string supplied has no +a argument" );
   }
 
   /*
