@@ -34,6 +34,7 @@ class QDomElement;
 class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
+class QgsCoordinateReferenceSystem;
 
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
@@ -266,6 +267,9 @@ class QgsLegend : public QTreeWidget
     /** Remove selected layers */
     void removeSelectedLayers();
 
+    /** Set CRS for selected layers */
+    void setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs );
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -362,8 +366,12 @@ class QgsLegend : public QTreeWidget
     void handleRightClickEvent( QTreeWidgetItem* item, const QPoint& position );
     /**Removes the current legend group*/
     void legendGroupRemove();
+    /**Set the CRS of the current legend group*/
+    void legendGroupSetCRS();
     /**Removes a legend group and its layers*/
     void removeGroup( QgsLegendGroup * lg );
+    /**Removes a legend group and its layers*/
+    void setGroupCRS( QgsLegendGroup * lg, const QgsCoordinateReferenceSystem &crs );
     /**Sets all listview items to open*/
     void expandAll();
     /**Sets all listview items to closed*/

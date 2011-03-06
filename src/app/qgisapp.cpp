@@ -141,7 +141,7 @@
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
-#include "qgsprojectbadlayerguihandler.h"
+#include "qgshandlebadlayers.h"
 #include "qgsproject.h"
 #include "qgsprojectproperties.h"
 #include "qgsproviderregistry.h"
@@ -506,7 +506,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
 
   // set handler for missing layers (will be owned by QgsProject)
-  QgsProject::instance()->setBadLayerHandler( new QgsProjectBadLayerGuiHandler() );
+  QgsProject::instance()->setBadLayerHandler( new QgsHandleBadLayersHandler() );
 
 #if 0
   // Set the background color for toolbox and overview as they default to
@@ -1125,6 +1125,12 @@ void QgisApp::createActions()
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   mActionRemoveLayer->setEnabled( false );
 
+  mActionSetLayerCRS = new QAction( getThemeIcon( "mActionSetLayerCRS.png" ), tr( "Set CRS of Layer(s)" ), this );
+  shortcuts->registerAction( mActionSetLayerCRS, tr( "Ctrl+Shift+C", "Set CRS of Layer(s)" ) );
+  mActionSetLayerCRS->setStatusTip( tr( "Set CRS of Layer(s)" ) );
+  connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
+  mActionSetLayerCRS->setEnabled( false );
+
   mActionTileScale = new QAction( getThemeIcon( "mActionTileScale.png" ), tr( "Tile scale slider" ), this );
   shortcuts->registerAction( mActionTileScale, tr( "", "Tile scale slider" ) );
   mActionTileScale->setStatusTip( tr( "Show tile scale slider" ) );
@@ -1249,6 +1255,14 @@ void QgisApp::createActions()
 #endif
   mActionHelpContents->setStatusTip( tr( "Help Documentation" ) );
   connect( mActionHelpContents, SIGNAL( triggered() ), this, SLOT( helpContents() ) );
+  mActionHelpContents->setEnabled( QFileInfo( QgsApplication::pkgDataPath() + "/doc/index.html" ).exists() );
+
+#ifdef WITH_APIDOC
+  mActionHelpAPI = new QAction( getThemeIcon( "mActionHelpAPI.png" ), tr( "API documentation" ), this );
+  connect( mActionHelpAPI, SIGNAL( triggered() ), this, SLOT( apiDocumentation() ) );
+  mActionHelpAPI->setEnabled( QFileInfo( QgsApplication::pkgDataPath() + "/doc/api/index.html" ).exists() );
+#endif
+
 
   mActionQgisHomePage = new QAction( getThemeIcon( "mActionQgisHomePage.png" ), tr( "QGIS Home Page" ), this );
 #ifndef Q_WS_MAC
@@ -1609,6 +1623,7 @@ void QgisApp::createMenus()
   mLayerMenu->addAction( mActionLayerSaveAs );
   mLayerMenu->addAction( mActionLayerSelectionSaveAs );
   mLayerMenu->addAction( mActionRemoveLayer );
+  mLayerMenu->addAction( mActionSetLayerCRS );
   mLayerMenu->addAction( mActionLayerProperties );
   mLayerMenu->addAction( mActionLayerSubsetString );
   mActionLayerSeparator2 = mLayerMenu->addSeparator();
@@ -1684,6 +1699,9 @@ void QgisApp::createMenus()
   mHelpMenu = menuBar()->addMenu( tr( "&Help" ) );
 
   mHelpMenu->addAction( mActionHelpContents );
+#ifdef WITH_APIDOC
+  mHelpMenu->addAction( mActionHelpAPI );
+#endif
   mActionHelpSeparator1 = mHelpMenu->addSeparator();
 
   mHelpMenu->addAction( mActionQgisHomePage );
@@ -1730,6 +1748,7 @@ void QgisApp::createToolBars()
   mLayerToolBar->addAction( mActionAddWmsLayer );
   mLayerToolBar->addAction( mActionNewVectorLayer );
   mLayerToolBar->addAction( mActionRemoveLayer );
+  mLayerToolBar->addAction( mActionSetLayerCRS );
   //commented out for QGIS 1.4 by Tim
   //mLayerToolBar->addAction( mActionAddToOverview );
   //mLayerToolBar->addAction( mActionShowAllLayers );
@@ -1898,6 +1917,9 @@ void QgisApp::createToolBars()
   mHelpToolBar = addToolBar( tr( "Help" ) );
   mHelpToolBar->setObjectName( "Help" );
   mHelpToolBar->addAction( mActionHelpContents );
+#ifdef WITH_APIDOC
+  mHelpToolBar->addAction( mActionHelpAPI );
+#endif
   mHelpToolBar->addAction( QWhatsThis::createAction() );
   mToolbarMenu->addAction( mHelpToolBar->toggleViewAction() );
 
@@ -2108,6 +2130,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddPgLayer->setIcon( getThemeIcon( "/mActionAddLayer.png" ) );
   mActionAddSpatiaLiteLayer->setIcon( getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
   mActionRemoveLayer->setIcon( getThemeIcon( "/mActionRemoveLayer.png" ) );
+  mActionSetLayerCRS->setIcon( getThemeIcon( "/mActionSetLayerCRS.png" ) );
   mActionNewVectorLayer->setIcon( getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddAllToOverview->setIcon( getThemeIcon( "/mActionAddAllToOverview.png" ) );
   mActionHideAllLayers->setIcon( getThemeIcon( "/mActionHideAllLayers.png" ) );
@@ -2120,6 +2143,9 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOptions->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionConfigureShortcuts->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
+#ifdef WITH_APIDOC
+  mActionHelpAPI->setIcon( getThemeIcon( "/mActionHelpApi.png" ) );
+#endif
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
@@ -4107,7 +4133,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       }
       else
       {
-        destCRS = vlayer->srs();
+        destCRS = vlayer->crs();
       }
     }
     else
@@ -4812,7 +4838,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
-      clipboard()->setCRS( selectionVectorLayer->srs() );
+      clipboard()->setCRS( selectionVectorLayer->crs() );
       selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
       selectionVectorLayer->deleteSelectedFeatures();
       selectionVectorLayer->endEditCommand();
@@ -4839,7 +4865,7 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
-      clipboard()->setCRS( selectionVectorLayer->srs() );
+      clipboard()->setCRS( selectionVectorLayer->crs() );
     }
   }
 }
@@ -4865,7 +4891,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       QgsFeatureList features;
       if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
       {
-        features = clipboard()->transformedCopyOf( pasteVectorLayer->srs() );
+        features = clipboard()->transformedCopyOf( pasteVectorLayer->crs() );
       }
       else
       {
@@ -5233,6 +5259,34 @@ void QgisApp::removeLayer()
   mMapCanvas->refresh();
 }
 
+void QgisApp::setLayerCRS()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  if ( !mMapLegend )
+  {
+    return;
+  }
+
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setMessage();
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem crs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+    mMapLegend->setCRSForSelectedLayers( crs );
+    mMapCanvas->refresh();
+  }
+  else
+  {
+    QApplication::restoreOverrideCursor();
+  }
+
+  delete mySelector;
+}
+
 void QgisApp::showGpsTool()
 {
   if ( !mpGpsWidget )
@@ -5550,7 +5604,7 @@ void QgisApp::options()
       myRenderer->setProjectionsEnabled( false );
     }
     mMapCanvas->refresh();
- }
+  }
 
   delete optionsDialog;
 }
@@ -5600,6 +5654,11 @@ void QgisApp::localHistogramStretch()
 void QgisApp::helpContents()
 {
   openURL( "index.html" );
+}
+
+void QgisApp::apiDocumentation()
+{
+  openURL( "api/index.html" );
 }
 
 void QgisApp::helpQgisHomePage()
@@ -6283,6 +6342,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 void QgisApp::legendLayerSelectionChanged( void )
 {
   mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
+  mActionSetLayerCRS->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
 }
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
