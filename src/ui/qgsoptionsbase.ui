@@ -33,7 +33,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -1354,87 +1354,106 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-59</y>
-            <width>746</width>
-            <height>516</height>
+            <y>0</y>
+            <width>762</width>
+            <height>457</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_15">
+          <layout class="QGridLayout" name="gridLayout_22">
            <item row="0" column="0">
             <widget class="QGroupBox" name="grpProjectionBehaviour">
              <property name="title">
               <string>Default Coordinate Reference System</string>
              </property>
-             <layout class="QVBoxLayout">
-              <property name="margin">
-               <number>11</number>
-              </property>
-              <item>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
                <widget class="QLabel" name="label_8">
                 <property name="text">
-                 <string>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</string>
+                 <string>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="1" column="0">
                <widget class="QRadioButton" name="radPromptForProjection">
                 <property name="text">
                  <string>Prompt for CRS</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="2" column="0">
                <widget class="QRadioButton" name="radUseProjectProjection">
                 <property name="text">
                  <string>Project wide default CRS will be used</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="3" column="0">
                <widget class="QRadioButton" name="radUseGlobalProjection">
                 <property name="text">
                  <string>Global default CRS displa&amp;yed below will be used</string>
                 </property>
                </widget>
               </item>
+              <item row="4" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <item>
+                 <widget class="QLineEdit" name="leGlobalCRS">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnSelectProjection">
+                  <property name="text">
+                   <string>Select ...</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QTextBrowser" name="txtGlobalWkt"/>
-           </item>
-           <item row="2" column="0">
-            <widget class="QPushButton" name="pbnSelectProjection">
-             <property name="text">
-              <string>Select Global Default ...</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
             <widget class="QGroupBox" name="grpOtfTransform">
              <property name="title">
-              <string>Always use 'on the fly' CRS transformation for new projects</string>
+              <string>Enable 'on the fly' reprojection by defaul</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item>
-               <widget class="QLineEdit" name="leGlobalOtfProjString">
-                <property name="readOnly">
+             <layout class="QGridLayout" name="gridLayout_15">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>When this opton is enabled, any new project you create will have 'on the fly' projection enabled by default and the CRS below will be used for the project.</string>
+                </property>
+                <property name="wordWrap">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QPushButton" name="pbnSelectOtfProjection">
-                <property name="text">
-                 <string>Select CRS for 'on the fly' transformation ...</string>
-                </property>
-               </widget>
+              <item row="1" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QLineEdit" name="leGlobalOtfProjString">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnSelectOtfProjection">
+                  <property name="text">
+                   <string>Select ...</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -1828,7 +1847,6 @@
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
-  <tabstop>txtGlobalWkt</tabstop>
   <tabstop>pbnSelectProjection</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
