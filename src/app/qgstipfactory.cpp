@@ -171,6 +171,14 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       QString("<p><center><img src=\":/images/tips/symbol_levels.png\"/></center></p>")
         );
   addGuiTip(myTip);
+  // by Tim
+  myTip.setTitle(tr("Auto-enable on the fly projection"));
+  myTip.setContent(tr("In the options dialog, under the CRS tab, you can set QGIS so that"
+                      " whenever you create a new project, 'on the fly projection' is enabled"
+                      " automatically and a pre-selected Coordinate Reference System of your"
+                      " choice is used."
+        ));
+  addGuiTip(myTip);
   /* Template for adding more tips
   myTip.setTitle(tr(""));
   myTip.setContent(tr(""
