@@ -57,6 +57,9 @@ ENDIF (WITH_GRASS)
 # mapserver by us disabled default because it needs FastCGI (which is optional dependency)
 SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should be built")
 
+# include doxygen documentation
+SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
+
 # try to configure and build POSTGRESQL support
 SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
 IF (WITH_POSTGRESQL)
@@ -320,13 +323,13 @@ ELSE (WIN32)
 
   ELSE (APPLE)
     # UNIX
-  SET (DEFAULT_BIN_SUBDIR     bin)
-  SET (DEFAULT_CGIBIN_SUBDIR  bin)
-  SET (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
-  SET (DEFAULT_DATA_SUBDIR    share/qgis)
-  SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
-  SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
-  SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
+    SET (DEFAULT_BIN_SUBDIR     bin)
+    SET (DEFAULT_CGIBIN_SUBDIR  bin)
+    SET (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
+    SET (DEFAULT_DATA_SUBDIR    share/qgis)
+    SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
+    SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
+    SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
   ENDIF (APPLE)
 
 ENDIF (WIN32)
@@ -508,16 +511,12 @@ IF (APPLE)
   SUBDIRS (mac)
 ENDIF (APPLE)
 
-#############################################################
-# install stuff
-
-INSTALL (FILES AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS INSTALL CODING
-         DESTINATION ${QGIS_DATA_DIR}/doc)
-
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
   INSTALL (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
 ENDIF (UNIX AND NOT APPLE)
+
+INSTALL(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
 
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ

@@ -1,14 +1,25 @@
+INCLUDE(Txt2Tags)
+ADD_TXT2TAGS_FILES(QGIS_DOC_FILES INSTALL.t2t CODING.t2t AUTHORS.t2t CONTRIBUTORS.t2t SPONSORS.t2t DONORS.t2t TRANSLATORS.t2t)
+SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html favicon.ico qgisdoc.css)
 
-SET (DOC_FILES
-favicon.ico
-index.html
-qgisdoc.css
-)
+ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES})
+
+INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
+INSTALL(FILES images/qgis_new_80pct.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
+
+IF(WITH_APIDOC)
+  FIND_PACKAGE(Doxygen)
+  IF(DOXYGEN_FOUND)
+    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    ADD_CUSTOM_TARGET(apidoc ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            DEPENDS qgis_core qgis_gui qgis_analysis
+            COMMENT "Generating API documentation" VERBATIM)
+    INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
+  ELSE(DOXYGEN_FOUND)
+    MESSAGE(STATUS "QGIS api documentation not built - Doxygen not found")
+  ENDIF(DOXYGEN_FOUND)
+ENDIF(WITH_APIDOC)
 
 #SUBDIRS (images plugins install_guide)
-
-INSTALL(FILES ${DOC_FILES}
-        DESTINATION ${QGIS_DATA_DIR}/doc)
-
-INSTALL(FILES images/qgis_new_80pct.png
-        DESTINATION ${QGIS_DATA_DIR}/doc/images)
