@@ -131,7 +131,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
   private:
     QStringList i18nList();
     QgsCoordinateReferenceSystem mDefaultCrs;
-    QgsCoordinateReferenceSystem mGlobalCrs;
+    QgsCoordinateReferenceSystem mLayerDefaultCrs;
 };
 
 #endif // #ifndef QGSOPTIONS_H

@@ -3282,27 +3282,29 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
 
+  // set project CRS
+  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+  QString projString = settings.value( "/Projections/projectDefaultProjectionString", GEOPROJ4 ).toString();
+  QgsCoordinateReferenceSystem srs;
+  srs.createFromProj4( projString );
+  myRenderer->setDestinationSrs( srs );
+  // write the projections _proj string_ to project settings
+  prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projString );
+  prj->dirty( false );
+  if ( srs.mapUnits() != QGis::UnknownUnit )
+  {
+    myRenderer->setMapUnits( srs.mapUnits() );
+  }
+
   // enable OTF CRS transformation if necessary
   if ( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() )
   {
-    QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-    QString projString = settings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString();
-    QgsCoordinateReferenceSystem srs;
-    srs.createFromProj4( projString );
     myRenderer->setProjectionsEnabled( true );
-    myRenderer->setDestinationSrs( srs );
-    // write the projections _proj string_ to project settings
-    prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projString );
-    prj->dirty( false );
-    if ( srs.mapUnits() != QGis::UnknownUnit )
-    {
-      myRenderer->setMapUnits( srs.mapUnits() );
-    }
     mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionEnabled.png" ) );
   }
   else
   {
-    mMapCanvas->mapRenderer()->setProjectionsEnabled( false );
+    myRenderer->setProjectionsEnabled( false );
   }
 
   // set the initial map tool
@@ -5582,25 +5584,26 @@ void QgisApp::options()
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
+    // set project CRS
+    QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+    QString projString = mySettings.value( "/Projections/projectDefaultProjectionString", GEOPROJ4 ).toString();
+    QgsCoordinateReferenceSystem srs;
+    srs.createFromProj4( projString );
+    myRenderer->setDestinationSrs( srs );
+    // write the projections _proj string_ to project settings
+    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projString );
+    if ( srs.mapUnits() != QGis::UnknownUnit )
+    {
+      myRenderer->setMapUnits( srs.mapUnits() );
+    }
+
     //apply OTF CRS transformation if necessary
     if ( mySettings.value( "/Projections/otfTransformEnabled", 0 ).toBool() )
     {
-      QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-      QString projString = mySettings.value( "/Projections/defaultOTFProjectionString", GEOPROJ4 ).toString();
-      QgsCoordinateReferenceSystem srs;
-      srs.createFromProj4( projString );
       myRenderer->setProjectionsEnabled( true );
-      myRenderer->setDestinationSrs( srs );
-      // write the projections _proj string_ to project settings
-      QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projString );
-      if ( srs.mapUnits() != QGis::UnknownUnit )
-      {
-        myRenderer->setMapUnits( srs.mapUnits() );
-      }
     }
     else
     {
-      QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
       myRenderer->setProjectionsEnabled( false );
     }
     mMapCanvas->refresh();
