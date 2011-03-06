@@ -50,6 +50,7 @@
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarth/TileSource>
+#include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include "WorldWindOptions"
 #include <osgEarthDrivers/tms/TMSOptions>
@@ -227,6 +228,8 @@ void GlobePlugin::run()
   // install the programmable manipulator.
   osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
   viewer.setCameraManipulator( manip );
+  // add a handler that will automatically calculate good clipping planes
+  //viewer.addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
 
   setupMap();
 
@@ -272,20 +275,33 @@ void GlobePlugin::settings()
 
 void GlobePlugin::setupMap()
 {
-  // read base layers from earth file
-  QString earthFileName = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/globe.earth" );
-  QFile earthFileTemplate( earthFileName );
-  if( !earthFileTemplate.open( QIODevice::ReadOnly | QIODevice::Text ) )
-  {
-    return;
-  }
-
-  QTextStream in( &earthFileTemplate );
-  QString earthxml = in.readAll();
   QSettings settings;
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  earthxml.replace( "/home/pi/devel/gis/qgis/.qgis/cache", cacheDirectory );
-  earthxml.replace( "/usr/share/osgearth/data", QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe" ) );
+  TMSCacheOptions cacheOptions;
+  cacheOptions.setPath(cacheDirectory.toStdString());
+
+  MapOptions mapOptions;
+  mapOptions.cache() = cacheOptions;
+  osgEarth::Map *map = new osgEarth::Map(mapOptions);
+
+  //Default image layer
+  GDALOptions driverOptions;
+  driverOptions.url() = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" ).toStdString();
+  ImageLayerOptions layerOptions( "world", driverOptions );
+  layerOptions.cacheEnabled() = false;
+  map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
+
+  MapNodeOptions nodeOptions;
+  //nodeOptions.proxySettings() =
+  //nodeOptions.enableLighting() = false;
+
+  //LoadingPolicy loadingPolicy( LoadingPolicy::MODE_SEQUENTIAL );
+  TerrainOptions terrainOptions;
+  //terrainOptions.loadingPolicy() = loadingPolicy;
+  nodeOptions.setTerrainOptions( terrainOptions );
+
+  // The MapNode will render the Map object in the scene graph.
+  mMapNode = new osgEarth::MapNode( map, nodeOptions );
 
   //prefill cache
   if( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
@@ -293,17 +309,7 @@ void GlobePlugin::setupMap()
     copyFolder( QgsApplication::pkgDataPath() + "/globe/data/worldwind_srtm", cacheDirectory + "/globe/worldwind_srtm" );
   }
 
-  std::istringstream istream( earthxml.toStdString() );
-  osg::Node* node = osgDB::readNodeFile( earthFileName.toStdString() ); //TODO: from istream earthFile.readXML( istream, earthFileName.toStdString() )
-  if( !node )
-  {
-    return;
-  }
-
   mRootNode = new osg::Group();
-
-  // The MapNode will render the Map object in the scene graph.
-  mMapNode = MapNode::findMapNode( node );
   mRootNode->addChild( mMapNode );
 
   // Add layers to the map
@@ -677,8 +683,11 @@ void GlobePlugin::layersChanged()
       else if ( "Worldwind" == type )
       {
         WorldWindOptions options;
-        //TODO: <heightfield name=\"WorldWind bil\" driver=\"worldwind\"><worldwind_cache>" + cacheDirectory.toStdString() + "/globe/worldwind_srtm";
+        options.elevationCachePath() = cacheDirectory.toStdString() + "/globe/worldwind_srtm";
         layer = new osgEarth::ElevationLayer( "WorldWind bil", options );
+        TerrainEngineNode* terrainEngineNode = mMapNode->getTerrainEngine();
+        terrainEngineNode->setVerticalScale(2);
+        terrainEngineNode->setElevationSamplingRatio(0.25);
       }
       else if ( "TMS" == type )
       {

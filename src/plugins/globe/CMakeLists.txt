@@ -69,8 +69,5 @@ INSTALL(TARGETS globeplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-INSTALL (FILES images/world.tif globe.earth
-         DESTINATION ${QGIS_DATA_DIR}/globe)
-
 INSTALL (DIRECTORY data images/gui
          DESTINATION ${QGIS_DATA_DIR}/globe)
