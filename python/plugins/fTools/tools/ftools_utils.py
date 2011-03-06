@@ -324,3 +324,23 @@ def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
                 values.append( feat.attributeMap()[ fieldIndex ].toString() )
                 count += 1
     return count
+
+def getShapesByGeometryType( baseDir, inShapes, geomType ):
+  outShapes = QStringList()
+  for fileName in inShapes:
+    layerPath = QFileInfo( baseDir + "/" + fileName ).absoluteFilePath()
+    vLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+    if not vLayer.isValid():
+      continue
+    layerGeometry = vLayer.geometryType()
+    if layerGeometry == QGis.Polygon and geomType == 0:
+      outShapes << fileName
+    elif layerGeometry == QGis.Line and geomType == 1:
+      outShapes << fileName
+    elif layerGeometry == QGis.Point and geomType == 2:
+      outShapes << fileName
+
+  if outShapes.count() == 0:
+    return None
+
+  return outShapes

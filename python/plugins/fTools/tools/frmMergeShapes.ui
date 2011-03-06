@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>377</width>
-    <height>273</height>
+    <height>302</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,36 @@
       <string>Select by layers in the folder</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="lblGeometry">
+       <property name="text">
+        <string>Shapefile type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbGeometry">
+       <item>
+        <property name="text">
+         <string>Polygon</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Line</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Point</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="label">
