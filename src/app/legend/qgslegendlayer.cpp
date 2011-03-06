@@ -432,6 +432,9 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   // remove from canvas
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
+  // remove from canvas
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+
   theMenu.addSeparator();
 
   if ( lyr->type() == QgsMapLayer::VectorLayer )

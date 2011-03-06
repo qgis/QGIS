@@ -287,6 +287,7 @@ class QgisApp : public QMainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionTileScale() { return mActionTileScale; }
     QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
@@ -321,6 +322,7 @@ class QgisApp : public QMainWindow
 #endif
 
     QAction *actionHelpContents() { return mActionHelpContents; }
+    QAction *actionHelpAPI() { return mActionHelpAPI; }
     QAction *actionHelpSeparator1() { return mActionHelpSeparator1; }
     QAction *actionQgisHomePage() { return mActionQgisHomePage; }
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
@@ -496,6 +498,8 @@ class QgisApp : public QMainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
+    //! Set CRS of a layer
+    void setLayerCRS();
     //! Show GPS tool
     void showGpsTool();
     //! Show tile scale slider
@@ -577,6 +581,8 @@ class QgisApp : public QMainWindow
     bool setActiveLayer( QgsMapLayer * );
     //! Open the help contents in a browser
     void helpContents();
+    //! Open the API documentation in a browser
+    void apiDocumentation();
     //! Open the QGIS homepage in users browser
     void helpQgisHomePage();
     //! Open a url in the users configured browser
@@ -980,6 +986,7 @@ class QgisApp : public QMainWindow
     QAction *mActionLayerSaveAs;
     QAction *mActionLayerSelectionSaveAs;
     QAction *mActionRemoveLayer;
+    QAction *mActionSetLayerCRS;
     QAction *mActionTileScale;
     QAction *mActionGpsTool;
     QAction *mActionLayerProperties;
@@ -1013,6 +1020,7 @@ class QgisApp : public QMainWindow
 #endif
 
     QAction *mActionHelpContents;
+    QAction *mActionHelpAPI;
     QAction *mActionHelpSeparator1;
     QAction *mActionQgisHomePage;
     QAction *mActionCheckQgisVersion;

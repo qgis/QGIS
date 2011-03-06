@@ -33,7 +33,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
-#include "qgsprojectbadlayerguihandler.h"
+#include "qgsgenericprojectionselector.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -525,16 +525,16 @@ void QgsLegend::mouseDoubleClickEvent( QMouseEvent* e )
 {
   QSettings settings;
 
-  switch( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
+  switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
   {
-  case 0:
-    QgisApp::instance()->layerProperties();
-    break;
-  case 1:
-    QgisApp::instance()->attributeTable();
-    break;
-  default:
-    break;
+    case 0:
+      QgisApp::instance()->layerProperties();
+      break;
+    case 1:
+      QgisApp::instance()->attributeTable();
+      break;
+    default:
+      break;
   }
 }
 
@@ -558,7 +558,6 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
       {
         theMenu.addAction( tr( "&Make to toplevel item" ), this, SLOT( makeToTopLevelItem() ) );
       }
-
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
@@ -567,6 +566,9 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ),
                          tr( "&Remove" ), this, SLOT( legendGroupRemove() ) );
+
+      theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ),
+                         tr( "&Set group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
     if ( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP )
@@ -739,6 +741,30 @@ void QgsLegend::legendGroupRemove()
   }
 }
 
+void QgsLegend::legendGroupSetCRS()
+{
+  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setMessage();
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem crs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
+    setGroupCRS( lg, crs );
+  }
+  else
+  {
+    QApplication::restoreOverrideCursor();
+  }
+
+  delete mySelector;
+}
+
 void QgsLegend::removeGroup( QgsLegendGroup *lg )
 {
   if ( !mMapCanvas || mMapCanvas->isDrawing() )
@@ -765,6 +791,36 @@ void QgsLegend::removeGroup( QgsLegendGroup *lg )
 
   adjustIconSize();
 }
+
+void QgsLegend::setGroupCRS( QgsLegendGroup *lg, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  //delete the legend layers first
+  QTreeWidgetItem * child = lg->child( 0 );
+  while ( child )
+  {
+    QgsLegendLayer *cl = dynamic_cast<QgsLegendLayer *>( child );
+    QgsLegendGroup *cg = dynamic_cast<QgsLegendGroup *>( child );
+
+    if ( cl )
+    {
+      cl->layer()->setCrs( crs );
+    }
+    else if ( cg )
+    {
+      setGroupCRS( cg, crs );
+    }
+
+    child = lg->child( 0 );
+  }
+
+  delete lg;
+}
+
 
 void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
 {
@@ -999,20 +1055,11 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
     {
       bool isOpen;
       QgsLegendLayer* currentLayer = readLayerFromXML( childelem, isOpen );
-
-      bool ignorePressed = QgsProjectBadLayerGuiHandler::mIgnore;
-      
       if ( !currentLayer )
-      {  
-        if( ignorePressed == true )
-        {
-          continue;
-        }
-        else
-        {
-          return false;
-        }
+      {
+        continue;
       }
+
       // add to tree - either as a top-level node or a child of a group
       if ( parent )
       {
@@ -1912,6 +1959,35 @@ void QgsLegend::removeSelectedLayers()
     if ( ll && ll->layer() )
     {
       QgsMapLayerRegistry::instance()->removeMapLayer( ll->layer()->id() );
+      continue;
+    }
+  }
+
+  // Turn on rendering (if it was on previously)
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
+}
+
+void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs )
+{
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
+  foreach( QTreeWidgetItem * item, selectedItems() )
+  {
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
+    if ( lg )
+    {
+      setGroupCRS( lg, crs );
+      continue;
+    }
+
+    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+    if ( ll && ll->layer() )
+    {
+      ll->layer()->setCrs( crs );
       continue;
     }
   }
