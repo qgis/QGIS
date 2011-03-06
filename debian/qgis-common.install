@@ -7,11 +7,8 @@ usr/share/qgis/doc/SPONSORS
 usr/share/qgis/doc/CONTRIBUTORS
 usr/share/qgis/doc/TRANSLATORS
 usr/share/qgis/doc/DONORS
-usr/share/qgis/doc/AUTHORS.html
-usr/share/qgis/doc/SPONSORS.html
-usr/share/qgis/doc/CONTRIBUTORS.html
-usr/share/qgis/doc/TRANSLATORS.html
-usr/share/qgis/doc/DONORS.html
+usr/share/qgis/doc/INSTALL
+usr/share/qgis/doc/INSTALL.html
 usr/share/qgis/doc/images
 usr/share/qgis/i18n/*
 usr/share/qgis/images/*
