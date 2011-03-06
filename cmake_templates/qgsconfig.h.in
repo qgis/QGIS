@@ -32,5 +32,7 @@
 
 #cmakedefine HAVE_PYTHON
 
+#cmakedefine WITH_APIDOC
+
 #endif
 
