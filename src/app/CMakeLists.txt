@@ -92,6 +92,7 @@ SET(QGIS_APP_SRCS
   qgsvectorlayerproperties.cpp
   qgsquerybuilder.cpp
   qgshighlight.cpp
+  qgshandlebadlayers.cpp
 
   qgsmanageconnectionsdialog.cpp
 
@@ -218,6 +219,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
   qgswmssourceselect.h
+  qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h
   composer/qgscomposer.h
