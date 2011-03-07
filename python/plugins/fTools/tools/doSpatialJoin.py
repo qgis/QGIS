@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
 #
-# Spatial Join
-#
-# Performing an attribute join between vector layers based on spatial
-# relationship. Attributes from one vector layer are appended to the
-# attribute table of another layer based on the relative locations of
-# the features in the two layers.
-#
-# Copyright (C) 2008  Carson Farmer
-#
+# fTools
+# Copyright (C) 2008-2011  Carson Farmer
 # EMAIL: carson.farmer (at) gmail.com
-# WEB  : www.geog.uvic.ca/spar/carson
+# WEB  : http://www.ftools.ca/fTools.html
+#
+# A collection of data management and analysis tools for vector data
 #
 #-----------------------------------------------------------
 #
