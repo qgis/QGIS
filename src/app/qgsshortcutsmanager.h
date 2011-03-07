@@ -31,6 +31,9 @@ class QgsShortcutsManager
     //! return instance of the manager
     static QgsShortcutsManager* instance();
 
+    //! register all actions which are children of the passed object
+    void registerAllChildrenActions( QObject* object );
+
     //! add action to the manager so the shortcut can be changed in GUI
     bool registerAction( QAction* action, QString defaultShortcut = QString() );
 

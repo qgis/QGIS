@@ -80,10 +80,12 @@ class QgsGPSInformationWidget;
 #include "qgspoint.h"
 #include "qgssnappingdialog.h"
 
+#include "ui_qgisapp.h"
+
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
-class QgisApp : public QMainWindow
+class QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
@@ -213,39 +215,28 @@ class QgisApp : public QMainWindow
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
     QAction *actionOpenProject() { return mActionOpenProject; }
-    QAction *actionFileSeparator1() { return mActionFileSeparator1; }
     QAction *actionSaveProject() { return mActionSaveProject; }
     QAction *actionSaveProjectAs() { return mActionSaveProjectAs; }
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
-    QAction *actionFileSeparator2() { return mActionFileSeparator2; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
-    QAction *actionFileSeparator3() { return mActionFileSeparator3; }
     QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
-    QAction *actionFileSeparator4() { return mActionFileSeparator4; }
     QAction *actionExit() { return mActionExit; }
 
     QAction *actionCutFeatures() { return mActionCutFeatures; }
     QAction *actionCopyFeatures() { return mActionCopyFeatures; }
     QAction *actionPasteFeatures() { return mActionPasteFeatures; }
-    QAction *actionEditSeparator1() { return mActionEditSeparator1; }
     QAction *actionCapturePoint() { return mActionCapturePoint; }
     QAction *actionCaptureLine() { return mActionCaptureLine; }
     QAction *actionCapturePolygon() { return mActionCapturePolygon; }
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
-#if 0 //These three tools are deprecated - use node tool rather...
-    QAction *actionAddVertex() { return mActionAddVertex; }
-    QAction *actionDeleteVertex() { return mActionDeleteVertex; }
-    QAction *actionMoveVertex() { return mActionMoveVertex; }
-#endif
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionNodeTool() { return mActionNodeTool; }
-    QAction *actionEditSeparator2() { return mActionEditSeparator2; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
 
     QAction *actionPan() { return mActionPan; }
@@ -259,19 +250,16 @@ class QgisApp : public QMainWindow
     QAction *actionIdentify() { return mActionIdentify; }
     QAction *actionMeasure() { return mActionMeasure; }
     QAction *actionMeasureArea() { return mActionMeasureArea; }
-    QAction *actionViewSeparator1() { return mActionViewSeparator1; }
     QAction *actionZoomFullExtent() { return mActionZoomFullExtent; }
     QAction *actionZoomToLayer() { return mActionZoomToLayer; }
     QAction *actionZoomToSelected() { return mActionZoomToSelected; }
     QAction *actionZoomLast() { return mActionZoomLast; }
     QAction *actionZoomNext() { return mActionZoomNext; }
     QAction *actionZoomActualSize() { return mActionZoomActualSize; }
-    QAction *actionViewSeparator2() { return mActionViewSeparator2; }
     QAction *actionMapTips() { return mActionMapTips; }
     QAction *actionNewBookmark() { return mActionNewBookmark; }
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
     QAction *actionDraw() { return mActionDraw; }
-    QAction *actionViewSeparator3() { return mActionViewSeparator3; }
 
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatialiteLayer; }
@@ -280,7 +268,6 @@ class QgisApp : public QMainWindow
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
-    QAction *actionLayerSeparator1() { return mActionLayerSeparator1; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
@@ -292,23 +279,18 @@ class QgisApp : public QMainWindow
     QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
-    QAction *actionLayerSeparator2() { return mActionLayerSeparator2; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
     QAction *actionAddAllToOverview() { return mActionAddAllToOverview; }
     QAction *actionRemoveAllFromOverview() { return mActionRemoveAllFromOverview; }
-    QAction *actionLayerSeparator3() { return mActionLayerSeparator3; }
     QAction *actionHideAllLayers() { return mActionHideAllLayers; }
     QAction *actionShowAllLayers() { return mActionShowAllLayers; }
 
     QAction *actionManagePlugins() { return mActionManagePlugins; }
-    QAction *actionPluginSeparator1() { return mActionPluginSeparator1; }
     QAction *actionPluginListSeparator() { return mActionPluginSeparator1; }
-    QAction *actionPluginSeparator2() { return mActionPluginSeparator2; }
     QAction *actionPluginPythonSeparator() { return mActionPluginSeparator2; }
     QAction *actionShowPythonDialog() { return mActionShowPythonDialog; }
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
-    QAction *actionSettingsSeparator1() { return mActionSettingsSeparator1; }
     QAction *actionOptions() { return mActionOptions; }
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
@@ -316,17 +298,13 @@ class QgisApp : public QMainWindow
 #ifdef Q_WS_MAC
     QAction *actionWindowMinimize() { return mActionWindowMinimize; }
     QAction *actionWindowZoom() { return mActionWindowZoom; }
-    QAction *actionWindowSeparator1() { return mActionWindowSeparator1; }
     QAction *actionWindowAllToFront() { return mActionWindowAllToFront; }
-    QAction *actionWindowSeparator2() { return mActionWindowSeparator2; }
 #endif
 
     QAction *actionHelpContents() { return mActionHelpContents; }
     QAction *actionHelpAPI() { return mActionHelpAPI; }
-    QAction *actionHelpSeparator1() { return mActionHelpSeparator1; }
     QAction *actionQgisHomePage() { return mActionQgisHomePage; }
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
-    QAction *actionHelpSeparator2() { return mActionHelpSeparator2; }
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
 
@@ -878,137 +856,7 @@ class QgisApp : public QMainWindow
     bool createDB();
     void createMapTips();
 
-    // toolbars ---------------------------------------
-    QToolBar *mFileToolBar;
-    QToolBar *mLayerToolBar;
-    QToolBar *mMapNavToolBar;
-    QToolBar *mDigitizeToolBar;
-    QToolBar *mAdvancedDigitizeToolBar;
-    QToolBar *mAttributesToolBar;
-    QToolBar *mPluginToolBar;
-    QToolBar *mHelpToolBar;
-    QToolBar *mRasterToolBar;
-    QToolBar *mLabelToolBar;
-
     // actions for menus and toolbars -----------------
-
-    QAction *mActionNewProject;
-    QAction *mActionOpenProject;
-    QAction *mActionFileSeparator1;
-    QAction *mActionSaveProject;
-    QAction *mActionSaveProjectAs;
-    QAction *mActionSaveMapAsImage;
-    QAction *mActionFileSeparator2;
-    QAction *mActionProjectProperties;
-    QAction *mActionFileSeparator3;
-    QAction *mActionNewPrintComposer;
-    QAction *mActionShowComposerManager;
-    QAction *mActionFileSeparator4;
-    QAction *mActionExit;
-
-    QAction *mActionUndo;
-    QAction *mActionRedo;
-    QAction *mActionEditSeparator0;
-    QAction *mActionCutFeatures;
-    QAction *mActionCopyFeatures;
-    QAction *mActionPasteFeatures;
-    QAction *mActionEditSeparator1;
-    QAction *mActionCapturePoint;
-    QAction *mActionCaptureLine;
-    QAction *mActionCapturePolygon;
-    QAction *mActionDeleteSelected;
-    QAction *mActionMoveFeature;
-    QAction *mActionReshapeFeatures;
-    QAction *mActionSplitFeatures;
-#if 0 // deprecated
-    QAction *mActionAddVertex;
-    QAction *mActionDeleteVertex;
-    QAction *mActionMoveVertex;
-#endif
-    QAction *mActionAddRing;
-    QAction *mActionAddIsland;
-    QAction *mActionEditSeparator2;
-    QAction *mActionSimplifyFeature;
-    QAction *mActionDeleteRing;
-    QAction *mActionDeletePart;
-    QAction *mActionMergeFeatures;
-    QAction *mActionMergeFeatureAttributes;
-    QAction *mActionNodeTool;
-    QAction *mActionRotatePointSymbols;
-    QAction *mActionEditSeparator3;
-    QAction *mActionSnappingOptions;
-
-    QAction *mActionPan;
-    QAction *mActionZoomIn;
-    QAction *mActionZoomOut;
-    QAction *mActionViewSeparator1;
-    QAction *mActionSelect;
-    QAction *mActionSelectRectangle;
-    QAction *mActionSelectPolygon;
-    QAction *mActionSelectFreehand;
-    QAction *mActionSelectRadius;
-    QAction *mActionDeselectAll;
-    QAction *mActionViewSeparator2;
-    QAction *mActionIdentify;
-    QAction *mActionMeasure;
-    QAction *mActionMeasureAngle;
-    QAction *mActionMeasureArea;
-    QAction *mActionViewSeparator3;
-    QAction *mActionZoomFullExtent;
-    QAction *mActionZoomToLayer;
-    QAction *mActionZoomToSelected;
-    QAction *mActionZoomLast;
-    QAction *mActionZoomNext;
-    QAction *mActionZoomActualSize;
-    QAction *mActionViewSeparator4;
-    QAction *mActionMapTips;
-    QAction *mActionNewBookmark;
-    QAction *mActionShowBookmarks;
-    QAction *mActionDraw;
-    QAction *mActionViewSeparator5;
-    QAction *mActionTextAnnotation;
-    QAction *mActionFormAnnotation;
-    QAction *mActionAnnotation;
-    QAction *mActionLabeling;
-
-    QAction *mActionNewVectorLayer;
-    QAction *mActionNewSpatialiteLayer;
-    QAction *mActionShowRasterCalculator;
-    QAction *mActionAddOgrLayer;
-    QAction *mActionAddRasterLayer;
-    QAction *mActionAddPgLayer;
-    QAction *mActionAddSpatiaLiteLayer;
-    QAction *mActionAddWmsLayer;
-    QAction *mActionLayerSeparator1;
-    QAction *mActionOpenTable;
-    QAction *mActionToggleEditing;
-    QAction *mActionSaveEdits;
-    QAction *mActionLayerSaveAs;
-    QAction *mActionLayerSelectionSaveAs;
-    QAction *mActionRemoveLayer;
-    QAction *mActionSetLayerCRS;
-    QAction *mActionTileScale;
-    QAction *mActionGpsTool;
-    QAction *mActionLayerProperties;
-    QAction *mActionLayerSubsetString;
-    QAction *mActionLayerSeparator2;
-    QAction *mActionAddToOverview;
-    QAction *mActionAddAllToOverview;
-    QAction *mActionRemoveAllFromOverview;
-    QAction *mActionLayerSeparator3;
-    QAction *mActionHideAllLayers;
-    QAction *mActionShowAllLayers;
-
-    QAction *mActionManagePlugins;
-    QAction *mActionPluginSeparator1;
-    QAction *mActionPluginSeparator2;
-    QAction *mActionShowPythonDialog;
-
-    QAction *mActionToggleFullScreen;
-    QAction *mActionSettingsSeparator1;
-    QAction *mActionOptions;
-    QAction *mActionCustomProjection;
-    QAction *mActionConfigureShortcuts;
 
 #ifdef Q_WS_MAC
     QAction *mActionWindowMinimize;
@@ -1019,41 +867,19 @@ class QgisApp : public QMainWindow
     QActionGroup *mWindowActions;
 #endif
 
-    QAction *mActionHelpContents;
-    QAction *mActionHelpAPI;
-    QAction *mActionHelpSeparator1;
-    QAction *mActionQgisHomePage;
-    QAction *mActionCheckQgisVersion;
-    QAction *mActionHelpSeparator2;
-    QAction *mActionAbout;
-    QAction *mActionSponsors;
-
-    QAction *mActionLocalHistogramStretch;
-
-    QAction *mActionMoveLabel;
-    QAction *mActionRotateLabel;
-    QAction *mActionChangeLabelProperties;
-
-    QAction *mActionUseRendererV2;
-    QAction *mActionStyleManagerV2;
+    QAction* mActionPluginSeparator1;
+    QAction* mActionPluginSeparator2;
 
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup;
 
     // menus ------------------------------------------
-    QMenu *mFileMenu;
-    QMenu *mEditMenu;
-    QMenu *mRecentProjectsMenu;
-    QMenu *mViewMenu;
-    QMenu *mPanelMenu;
-    QMenu *mToolbarMenu;
-    QMenu *mLayerMenu;
-    QMenu *mSettingsMenu;
+
 #ifdef Q_WS_MAC
     QMenu *mWindowMenu;
 #endif
-    QMenu *mPrintComposersMenu;
-    QMenu *mHelpMenu;
+    QMenu *mPanelMenu;
+    QMenu *mToolbarMenu;
 
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
@@ -1132,12 +958,8 @@ class QgisApp : public QMainWindow
     QToolButton * mOnTheFlyProjectionStatusButton;
     //! Popup menu
     QMenu * mPopupMenu;
-    //! Top level plugin menu
-    QMenu *mPluginMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
-    //! Top level raster menu
-    QMenu *mRasterMenu;
     //! Popup menu for the map overview tools
     QMenu *toolPopupOverviews;
     //! Popup menu for the display tools
