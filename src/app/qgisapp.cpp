@@ -1257,12 +1257,8 @@ void QgisApp::createActions()
   connect( mActionHelpContents, SIGNAL( triggered() ), this, SLOT( helpContents() ) );
   mActionHelpContents->setEnabled( QFileInfo( QgsApplication::pkgDataPath() + "/doc/index.html" ).exists() );
 
-#ifdef WITH_APIDOC
   mActionHelpAPI = new QAction( getThemeIcon( "mActionHelpAPI.png" ), tr( "API documentation" ), this );
   connect( mActionHelpAPI, SIGNAL( triggered() ), this, SLOT( apiDocumentation() ) );
-  mActionHelpAPI->setEnabled( QFileInfo( QgsApplication::pkgDataPath() + "/doc/api/index.html" ).exists() );
-#endif
-
 
   mActionQgisHomePage = new QAction( getThemeIcon( "mActionQgisHomePage.png" ), tr( "QGIS Home Page" ), this );
 #ifndef Q_WS_MAC
@@ -1699,9 +1695,7 @@ void QgisApp::createMenus()
   mHelpMenu = menuBar()->addMenu( tr( "&Help" ) );
 
   mHelpMenu->addAction( mActionHelpContents );
-#ifdef WITH_APIDOC
   mHelpMenu->addAction( mActionHelpAPI );
-#endif
   mActionHelpSeparator1 = mHelpMenu->addSeparator();
 
   mHelpMenu->addAction( mActionQgisHomePage );
@@ -1748,7 +1742,6 @@ void QgisApp::createToolBars()
   mLayerToolBar->addAction( mActionAddWmsLayer );
   mLayerToolBar->addAction( mActionNewVectorLayer );
   mLayerToolBar->addAction( mActionRemoveLayer );
-  mLayerToolBar->addAction( mActionSetLayerCRS );
   //commented out for QGIS 1.4 by Tim
   //mLayerToolBar->addAction( mActionAddToOverview );
   //mLayerToolBar->addAction( mActionShowAllLayers );
@@ -1917,9 +1910,6 @@ void QgisApp::createToolBars()
   mHelpToolBar = addToolBar( tr( "Help" ) );
   mHelpToolBar->setObjectName( "Help" );
   mHelpToolBar->addAction( mActionHelpContents );
-#ifdef WITH_APIDOC
-  mHelpToolBar->addAction( mActionHelpAPI );
-#endif
   mHelpToolBar->addAction( QWhatsThis::createAction() );
   mToolbarMenu->addAction( mHelpToolBar->toggleViewAction() );
 
@@ -2143,9 +2133,6 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOptions->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionConfigureShortcuts->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
-#ifdef WITH_APIDOC
-  mActionHelpAPI->setIcon( getThemeIcon( "/mActionHelpAPI.png" ) );
-#endif
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
@@ -5661,7 +5648,14 @@ void QgisApp::helpContents()
 
 void QgisApp::apiDocumentation()
 {
-  openURL( "api/index.html" );
+  if( QFileInfo( QgsApplication::pkgDataPath() + "/doc/api/index.html" ).exists() )
+  {
+    openURL( "api/index.html" );
+  } 
+  else
+  {
+    openURL( "http://qgis.org/api/", false );
+  }
 }
 
 void QgisApp::helpQgisHomePage()
