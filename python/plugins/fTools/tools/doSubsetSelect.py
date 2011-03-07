@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
 #
-# Random selection within subsets
-#
-# A QGIS plugin for randomly selecting features from
-# within multiple user defined subsets based on an input field.
-#
-# Copyright (C) 2008  Carson Farmer
-#
+# fTools
+# Copyright (C) 2008-2011  Carson Farmer
 # EMAIL: carson.farmer (at) gmail.com
-# WEB  : www.geog.uvic.ca/spar/carson
+# WEB  : http://www.ftools.ca/fTools.html
+#
+# A collection of data management and analysis tools for vector data
 #
 #-----------------------------------------------------------
 #
@@ -29,7 +26,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-#--------------------------------------------------------------------
+#---------------------------------------------------------------------
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import random, ftools_utils
