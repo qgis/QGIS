@@ -1,0 +1,1462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>717</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>QGIS</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>717</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="mEditMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="mActionUndo"/>
+    <addaction name="mActionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="mActionCutFeatures"/>
+    <addaction name="mActionCopyFeatures"/>
+    <addaction name="mActionPasteFeatures"/>
+    <addaction name="separator"/>
+    <addaction name="mActionCapturePoint"/>
+    <addaction name="mActionCaptureLine"/>
+    <addaction name="mActionCapturePolygon"/>
+    <addaction name="mActionMoveFeature"/>
+    <addaction name="mActionDeleteSelected"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSimplifyFeature"/>
+    <addaction name="mActionAddRing"/>
+    <addaction name="mActionAddIsland"/>
+    <addaction name="mActionDeleteRing"/>
+    <addaction name="mActionDeletePart"/>
+    <addaction name="mActionReshapeFeatures"/>
+    <addaction name="mActionSplitFeatures"/>
+    <addaction name="mActionMergeFeatures"/>
+    <addaction name="mActionMergeFeatureAttributes"/>
+    <addaction name="mActionNodeTool"/>
+    <addaction name="mActionRotatePointSymbols"/>
+   </widget>
+   <widget class="QMenu" name="mFileMenu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="mRecentProjectsMenu">
+     <property name="title">
+      <string>&amp;Open Recent Projects</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mPrintComposersMenu">
+     <property name="title">
+      <string>Print Composers</string>
+     </property>
+    </widget>
+    <addaction name="mActionNewProject"/>
+    <addaction name="mActionOpenProject"/>
+    <addaction name="separator"/>
+    <addaction name="mRecentProjectsMenu"/>
+    <addaction name="mActionSaveProject"/>
+    <addaction name="mActionSaveProjectAs"/>
+    <addaction name="mActionSaveMapAsImage"/>
+    <addaction name="separator"/>
+    <addaction name="mActionNewPrintComposer"/>
+    <addaction name="mActionShowComposerManager"/>
+    <addaction name="mPrintComposersMenu"/>
+    <addaction name="separator"/>
+    <addaction name="mActionExit"/>
+   </widget>
+   <widget class="QMenu" name="mViewMenu">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menuSelect">
+     <property name="title">
+      <string>Select</string>
+     </property>
+     <addaction name="mActionSelect"/>
+     <addaction name="mActionSelectRectangle"/>
+     <addaction name="mActionSelectPolygon"/>
+     <addaction name="mActionSelectFreehand"/>
+     <addaction name="mActionSelectRadius"/>
+     <addaction name="mActionDeselectAll"/>
+    </widget>
+    <widget class="QMenu" name="menuMeasure">
+     <property name="title">
+      <string>Measure</string>
+     </property>
+     <addaction name="mActionMeasure"/>
+     <addaction name="mActionMeasureArea"/>
+     <addaction name="mActionMeasureAngle"/>
+    </widget>
+    <addaction name="mActionPan"/>
+    <addaction name="mActionZoomIn"/>
+    <addaction name="mActionZoomOut"/>
+    <addaction name="separator"/>
+    <addaction name="menuSelect"/>
+    <addaction name="mActionIdentify"/>
+    <addaction name="menuMeasure"/>
+    <addaction name="separator"/>
+    <addaction name="mActionZoomFullExtent"/>
+    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomToSelected"/>
+    <addaction name="mActionZoomLast"/>
+    <addaction name="mActionZoomNext"/>
+    <addaction name="mActionZoomActualSize"/>
+    <addaction name="separator"/>
+    <addaction name="mActionMapTips"/>
+    <addaction name="mActionNewBookmark"/>
+    <addaction name="mActionShowBookmarks"/>
+    <addaction name="mActionDraw"/>
+    <addaction name="mActionTileScale"/>
+    <addaction name="mActionGpsTool"/>
+   </widget>
+   <widget class="QMenu" name="mLayerMenu">
+    <property name="title">
+     <string>&amp;Layer</string>
+    </property>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>New</string>
+     </property>
+     <addaction name="mActionNewVectorLayer"/>
+     <addaction name="mActionNewSpatialiteLayer"/>
+    </widget>
+    <addaction name="menuNew"/>
+    <addaction name="mActionAddOgrLayer"/>
+    <addaction name="mActionAddRasterLayer"/>
+    <addaction name="mActionAddPgLayer"/>
+    <addaction name="mActionAddSpatiaLiteLayer"/>
+    <addaction name="mActionAddWmsLayer"/>
+    <addaction name="separator"/>
+    <addaction name="mActionOpenTable"/>
+    <addaction name="mActionSaveEdits"/>
+    <addaction name="mActionToggleEditing"/>
+    <addaction name="mActionLayerSaveAs"/>
+    <addaction name="mActionLayerSelectionSaveAs"/>
+    <addaction name="mActionRemoveLayer"/>
+    <addaction name="mActionSetLayerCRS"/>
+    <addaction name="mActionLayerProperties"/>
+    <addaction name="mActionLayerSubsetString"/>
+    <addaction name="mActionLabeling"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAddToOverview"/>
+    <addaction name="mActionAddAllToOverview"/>
+    <addaction name="mActionRemoveAllFromOverview"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowAllLayers"/>
+    <addaction name="mActionHideAllLayers"/>
+   </widget>
+   <widget class="QMenu" name="mSettingsMenu">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="mActionProjectProperties"/>
+    <addaction name="mActionCustomProjection"/>
+    <addaction name="mActionStyleManagerV2"/>
+    <addaction name="mActionConfigureShortcuts"/>
+    <addaction name="mActionOptions"/>
+    <addaction name="mActionSnappingOptions"/>
+   </widget>
+   <widget class="QMenu" name="mPluginMenu">
+    <property name="title">
+     <string>&amp;Plugins</string>
+    </property>
+    <addaction name="mActionManagePlugins"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowPythonDialog"/>
+   </widget>
+   <widget class="QMenu" name="mRasterMenu">
+    <property name="title">
+     <string>&amp;Raster</string>
+    </property>
+    <addaction name="mActionShowRasterCalculator"/>
+   </widget>
+   <widget class="QMenu" name="mHelpMenu">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="mActionHelpContents"/>
+    <addaction name="mActionHelpAPI"/>
+    <addaction name="separator"/>
+    <addaction name="mActionQgisHomePage"/>
+    <addaction name="mActionCheckQgisVersion"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAbout"/>
+    <addaction name="mActionSponsors"/>
+   </widget>
+   <addaction name="mFileMenu"/>
+   <addaction name="mEditMenu"/>
+   <addaction name="mViewMenu"/>
+   <addaction name="mLayerMenu"/>
+   <addaction name="mSettingsMenu"/>
+   <addaction name="mPluginMenu"/>
+   <addaction name="mRasterMenu"/>
+   <addaction name="mHelpMenu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="mFileToolBar">
+   <property name="windowTitle">
+    <string>File</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionNewProject"/>
+   <addaction name="mActionOpenProject"/>
+   <addaction name="mActionSaveProject"/>
+   <addaction name="mActionSaveProjectAs"/>
+   <addaction name="mActionNewPrintComposer"/>
+   <addaction name="mActionShowComposerManager"/>
+  </widget>
+  <widget class="QToolBar" name="mLayerToolBar">
+   <property name="windowTitle">
+    <string>Manage Layerrs</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionAddOgrLayer"/>
+   <addaction name="mActionAddRasterLayer"/>
+   <addaction name="mActionAddPgLayer"/>
+   <addaction name="mActionAddSpatiaLiteLayer"/>
+   <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionNewVectorLayer"/>
+   <addaction name="mActionRemoveLayer"/>
+  </widget>
+  <widget class="QToolBar" name="mDigitizeToolBar">
+   <property name="windowTitle">
+    <string>Digitizing</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionToggleEditing"/>
+   <addaction name="mActionSaveEdits"/>
+   <addaction name="mActionCapturePoint"/>
+   <addaction name="mActionCaptureLine"/>
+   <addaction name="mActionCapturePolygon"/>
+   <addaction name="mActionMoveFeature"/>
+   <addaction name="mActionNodeTool"/>
+   <addaction name="mActionDeleteSelected"/>
+   <addaction name="mActionCutFeatures"/>
+   <addaction name="mActionCopyFeatures"/>
+   <addaction name="mActionPasteFeatures"/>
+  </widget>
+  <widget class="QToolBar" name="mAdvancedDigitizeToolBar">
+   <property name="windowTitle">
+    <string>Advanced Digitizing</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
+   <addaction name="mActionSimplifyFeature"/>
+   <addaction name="mActionAddRing"/>
+   <addaction name="mActionAddIsland"/>
+   <addaction name="mActionDeleteRing"/>
+   <addaction name="mActionDeletePart"/>
+   <addaction name="mActionReshapeFeatures"/>
+   <addaction name="mActionSplitFeatures"/>
+   <addaction name="mActionMergeFeatures"/>
+   <addaction name="mActionMergeFeatureAttributes"/>
+   <addaction name="mActionRotatePointSymbols"/>
+  </widget>
+  <widget class="QToolBar" name="mMapNavToolBar">
+   <property name="windowTitle">
+    <string>Map Navigation</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomFullExtent"/>
+   <addaction name="mActionZoomToSelected"/>
+   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomLast"/>
+   <addaction name="mActionZoomNext"/>
+   <addaction name="mActionDraw"/>
+  </widget>
+  <widget class="QToolBar" name="mAttributesToolBar">
+   <property name="windowTitle">
+    <string>Attributes</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionIdentify"/>
+   <addaction name="mActionDeselectAll"/>
+   <addaction name="mActionOpenTable"/>
+   <addaction name="mActionMapTips"/>
+   <addaction name="mActionNewBookmark"/>
+   <addaction name="mActionShowBookmarks"/>
+  </widget>
+  <widget class="QToolBar" name="mPluginToolBar">
+   <property name="windowTitle">
+    <string>Plugins</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mHelpToolBar">
+   <property name="windowTitle">
+    <string>Help</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionHelpContents"/>
+  </widget>
+  <widget class="QToolBar" name="mRasterToolBar">
+   <property name="windowTitle">
+    <string>Raster</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionLocalHistogramStretch"/>
+  </widget>
+  <widget class="QToolBar" name="mLabelToolBar">
+   <property name="windowTitle">
+    <string>Label</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionLabeling"/>
+   <addaction name="mActionMoveLabel"/>
+   <addaction name="mActionRotateLabel"/>
+   <addaction name="mActionChangeLabelProperties"/>
+  </widget>
+  <action name="mActionNewProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="mActionOpenProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open Project...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="mActionSaveProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="mActionSaveProjectAs">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSaveAs.png</normaloff>:/images/themes/default/mActionFileSaveAs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Project &amp;As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="mActionSaveMapAsImage">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as Image...</string>
+   </property>
+  </action>
+  <action name="mActionNewPrintComposer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewComposer.png</normaloff>:/images/themes/default/mActionNewComposer.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New Print Composer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mActionShowComposerManager">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionComposerManager.png</normaloff>:/images/themes/default/mActionComposerManager.png</iconset>
+   </property>
+   <property name="text">
+    <string>Composer manager...</string>
+   </property>
+  </action>
+  <action name="mActionExit">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileExit.png</normaloff>:/images/themes/default/mActionFileExit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
+   </property>
+  </action>
+  <action name="mActionUndo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="mActionRedo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="mActionCutFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCut.png</normaloff>:/images/themes/default/mActionEditCut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut Features</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="mActionCopyFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCopy.png</normaloff>:/images/themes/default/mActionEditCopy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy Features</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="mActionPasteFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste Features</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="mActionCapturePoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCapturePoint.png</normaloff>:/images/themes/default/mActionCapturePoint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Capture Point</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="mActionCaptureLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCaptureLine.png</normaloff>:/images/themes/default/mActionCaptureLine.png</iconset>
+   </property>
+   <property name="text">
+    <string>Capture Line</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+/</string>
+   </property>
+  </action>
+  <action name="mActionCapturePolygon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCapturePolygon.png</normaloff>:/images/themes/default/mActionCapturePolygon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Capture Polygon</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+?</string>
+   </property>
+  </action>
+  <action name="mActionMoveFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveFeature.png</normaloff>:/images/themes/default/mActionMoveFeature.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionReshapeFeatures">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionReshape.png</normaloff>:/images/themes/default/mActionReshape.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reshape Features</string>
+   </property>
+  </action>
+  <action name="mActionSplitFeatures">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSplitFeatures.png</normaloff>:/images/themes/default/mActionSplitFeatures.png</iconset>
+   </property>
+   <property name="text">
+    <string>Split Features</string>
+   </property>
+  </action>
+  <action name="mActionDeleteSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.png</normaloff>:/images/themes/default/mActionDeleteSelected.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Selected</string>
+   </property>
+  </action>
+  <action name="mActionAddRing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddRing.png</normaloff>:/images/themes/default/mActionAddRing.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ring</string>
+   </property>
+  </action>
+  <action name="mActionAddIsland">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddIsland.png</normaloff>:/images/themes/default/mActionAddIsland.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Part</string>
+   </property>
+  </action>
+  <action name="mActionSimplifyFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSimplify.png</normaloff>:/images/themes/default/mActionSimplify.png</iconset>
+   </property>
+   <property name="text">
+    <string>Simplify Feature</string>
+   </property>
+  </action>
+  <action name="mActionDeleteRing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteRing.png</normaloff>:/images/themes/default/mActionDeleteRing.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Ring</string>
+   </property>
+  </action>
+  <action name="mActionDeletePart">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeletePart.png</normaloff>:/images/themes/default/mActionDeletePart.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Part</string>
+   </property>
+  </action>
+  <action name="mActionMergeFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMergeFeatures.png</normaloff>:/images/themes/default/mActionMergeFeatures.png</iconset>
+   </property>
+   <property name="text">
+    <string>Merge selected features</string>
+   </property>
+  </action>
+  <action name="mActionMergeFeatureAttributes">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMergeFeatureAttributes.png</normaloff>:/images/themes/default/mActionMergeFeatureAttributes.png</iconset>
+   </property>
+   <property name="text">
+    <string>Merge attributes of selected features</string>
+   </property>
+  </action>
+  <action name="mActionNodeTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNodeTool.png</normaloff>:/images/themes/default/mActionNodeTool.png</iconset>
+   </property>
+   <property name="text">
+    <string>Node Tool</string>
+   </property>
+  </action>
+  <action name="mActionRotatePointSymbols">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotatePointSymbols.png</normaloff>:/images/themes/default/mActionRotatePointSymbols.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate Point Symbols</string>
+   </property>
+  </action>
+  <action name="mActionSnappingOptions">
+   <property name="text">
+    <string>Snapping Options...</string>
+   </property>
+  </action>
+  <action name="mActionPan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.png</normaloff>:/images/themes/default/mActionPan.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pan Map</string>
+   </property>
+  </action>
+  <action name="mActionZoomIn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.png</normaloff>:/images/themes/default/mActionZoomIn.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="mActionZoomOut">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.png</normaloff>:/images/themes/default/mActionZoomOut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="mActionSelect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelect.png</normaloff>:/images/themes/default/mActionSelect.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select single feature</string>
+   </property>
+  </action>
+  <action name="mActionSelectRectangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectRectangle.png</normaloff>:/images/themes/default/mActionSelectRectangle.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select features by rectangle</string>
+   </property>
+  </action>
+  <action name="mActionSelectPolygon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectPolygon.png</normaloff>:/images/themes/default/mActionSelectPolygon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select features by polygon</string>
+   </property>
+  </action>
+  <action name="mActionSelectFreehand">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectFreehand.png</normaloff>:/images/themes/default/mActionSelectFreehand.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select features by freehand</string>
+   </property>
+  </action>
+  <action name="mActionSelectRadius">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectRadius.png</normaloff>:/images/themes/default/mActionSelectRadius.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select features by radius</string>
+   </property>
+  </action>
+  <action name="mActionDeselectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.png</normaloff>:/images/themes/default/mActionDeselectAll.png</iconset>
+   </property>
+   <property name="text">
+    <string>Deselect features from all layers</string>
+   </property>
+  </action>
+  <action name="mActionIdentify">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentify.png</normaloff>:/images/themes/default/mActionIdentify.png</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+I</string>
+   </property>
+  </action>
+  <action name="mActionMeasure">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasure.png</normaloff>:/images/themes/default/mActionMeasure.png</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Line</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+M</string>
+   </property>
+  </action>
+  <action name="mActionMeasureArea">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureArea.png</normaloff>:/images/themes/default/mActionMeasureArea.png</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Area</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+J</string>
+   </property>
+  </action>
+  <action name="mActionMeasureAngle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureAngle.png</normaloff>:/images/themes/default/mActionMeasureAngle.png</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Angle</string>
+   </property>
+  </action>
+  <action name="mActionZoomFullExtent">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.png</normaloff>:/images/themes/default/mActionZoomFullExtent.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Full</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F</string>
+   </property>
+  </action>
+  <action name="mActionZoomToLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.png</normaloff>:/images/themes/default/mActionZoomToLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to Layer</string>
+   </property>
+  </action>
+  <action name="mActionZoomToSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.png</normaloff>:/images/themes/default/mActionZoomToSelected.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to Selection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
+  </action>
+  <action name="mActionZoomLast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomLast.png</normaloff>:/images/themes/default/mActionZoomLast.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Last</string>
+   </property>
+  </action>
+  <action name="mActionZoomNext">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomNext.png</normaloff>:/images/themes/default/mActionZoomNext.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Next</string>
+   </property>
+  </action>
+  <action name="mActionZoomActualSize">
+   <property name="text">
+    <string>Zoom Actual Size</string>
+   </property>
+  </action>
+  <action name="mActionMapTips">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMapTips.png</normaloff>:/images/themes/default/mActionMapTips.png</iconset>
+   </property>
+   <property name="text">
+    <string>Map Tips</string>
+   </property>
+   <property name="statusTip">
+    <string>Show information about a feature when the mouse is hovered over it</string>
+   </property>
+  </action>
+  <action name="mActionNewBookmark">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewBookmark.png</normaloff>:/images/themes/default/mActionNewBookmark.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Bookmark...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="mActionShowBookmarks">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowBookmarks.png</normaloff>:/images/themes/default/mActionShowBookmarks.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Bookmarks</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionDraw">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDraw.png</normaloff>:/images/themes/default/mActionDraw.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="mActionTextAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionTextAnnotation.png</normaloff>:/images/themes/default/mActionTextAnnotation.png</iconset>
+   </property>
+   <property name="text">
+    <string>Text Annotation</string>
+   </property>
+  </action>
+  <action name="mActionFormAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
+   </property>
+   <property name="text">
+    <string>Form annotation</string>
+   </property>
+  </action>
+  <action name="mActionAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAnnotation.png</normaloff>:/images/themes/default/mActionAnnotation.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move Annotation</string>
+   </property>
+  </action>
+  <action name="mActionLabeling">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLabeling.png</normaloff>:/images/themes/default/mActionLabeling.png</iconset>
+   </property>
+   <property name="text">
+    <string>Labeling</string>
+   </property>
+  </action>
+  <action name="mActionNewVectorLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Shapefile Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="mActionNewSpatialiteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>New SpatiaLite Layer ...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionShowRasterCalculator">
+   <property name="text">
+    <string>Raster calculator ...</string>
+   </property>
+  </action>
+  <action name="mActionAddOgrLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOgrLayer.png</normaloff>:/images/themes/default/mActionAddOgrLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="mActionAddRasterLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddRasterLayer.png</normaloff>:/images/themes/default/mActionAddRasterLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Raster Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="mActionAddPgLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddLayer.png</normaloff>:/images/themes/default/mActionAddLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add PostGIS Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="mActionAddSpatiaLiteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.png</normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add SpatiaLite Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionAddWmsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWmsLayer.png</normaloff>:/images/themes/default/mActionAddWmsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add WMS Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="mActionOpenTable">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table</string>
+   </property>
+  </action>
+  <action name="mActionToggleEditing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionToggleEditing.png</normaloff>:/images/themes/default/mActionToggleEditing.png</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle editing</string>
+   </property>
+   <property name="statusTip">
+    <string>Toggles the editing state of the current layer</string>
+   </property>
+  </action>
+  <action name="mActionSaveEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveEdits.png</normaloff>:/images/themes/default/mActionSaveEdits.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save edits</string>
+   </property>
+   <property name="statusTip">
+    <string>Save edits to current layer, but continue editing</string>
+   </property>
+  </action>
+  <action name="mActionLayerSaveAs">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="mActionLayerSelectionSaveAs">
+   <property name="text">
+    <string>Save Selection as vector file...</string>
+   </property>
+  </action>
+  <action name="mActionRemoveLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRemoveLayer.png</normaloff>:/images/themes/default/mActionRemoveLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove Layer(s)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="mActionSetLayerCRS">
+   <property name="text">
+    <string>Set CRS of Layer(s)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="mActionTileScale">
+   <property name="text">
+    <string>Tile scale slider</string>
+   </property>
+  </action>
+  <action name="mActionGpsTool">
+   <property name="text">
+    <string>Live GPS tracking</string>
+   </property>
+  </action>
+  <action name="mActionLayerProperties">
+   <property name="text">
+    <string>Properties...</string>
+   </property>
+  </action>
+  <action name="mActionLayerSubsetString">
+   <property name="text">
+    <string>Query...</string>
+   </property>
+  </action>
+  <action name="mActionAddToOverview">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInOverview.png</normaloff>:/images/themes/default/mActionInOverview.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add to Overview</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
+  <action name="mActionAddAllToOverview">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAllToOverview.png</normaloff>:/images/themes/default/mActionAddAllToOverview.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add All to Overview</string>
+   </property>
+  </action>
+  <action name="mActionRemoveAllFromOverview">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRemoveAllFromOverview.png</normaloff>:/images/themes/default/mActionRemoveAllFromOverview.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove All From Overview</string>
+   </property>
+  </action>
+  <action name="mActionShowAllLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowAllLayers.png</normaloff>:/images/themes/default/mActionShowAllLayers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show All Layers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+U</string>
+   </property>
+  </action>
+  <action name="mActionHideAllLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHideAllLayers.png</normaloff>:/images/themes/default/mActionHideAllLayers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hide All Layers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+H</string>
+   </property>
+  </action>
+  <action name="mActionManagePlugins">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowPluginManager.png</normaloff>:/images/themes/default/mActionShowPluginManager.png</iconset>
+   </property>
+   <property name="text">
+    <string>Manage Plugins...</string>
+   </property>
+  </action>
+  <action name="mActionToggleFullScreen">
+   <property name="text">
+    <string>Toggle Full Screen Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="mActionProjectProperties">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Project Properties...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="mActionOptions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+   </property>
+   <property name="text">
+    <string>Options...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
+  <action name="mActionCustomProjection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCustomProjection.png</normaloff>:/images/themes/default/mActionCustomProjection.png</iconset>
+   </property>
+   <property name="text">
+    <string>Custom CRS...</string>
+   </property>
+  </action>
+  <action name="mActionConfigureShortcuts">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+   </property>
+   <property name="text">
+    <string>Configure shortcuts...</string>
+   </property>
+  </action>
+  <action name="mActionLocalHistogramStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLocalHistogramStretch.png</normaloff>:/images/themes/default/mActionLocalHistogramStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Local Histogram Stretch</string>
+   </property>
+   <property name="statusTip">
+    <string>Stretch histogram of active raster to view extents</string>
+   </property>
+  </action>
+  <action name="mActionHelpContents">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpContents.png</normaloff>:/images/themes/default/mActionHelpContents.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help Contents</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="mActionHelpAPI">
+   <property name="text">
+    <string>API documentation</string>
+   </property>
+  </action>
+  <action name="mActionQgisHomePage">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionQgisHomePage.png</normaloff>:/images/themes/default/mActionQgisHomePage.png</iconset>
+   </property>
+   <property name="text">
+    <string>QGIS Home Page</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="mActionCheckQgisVersion">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCheckQgisVersion.png</normaloff>:/images/themes/default/mActionCheckQgisVersion.png</iconset>
+   </property>
+   <property name="text">
+    <string>Check QGIS Version</string>
+   </property>
+   <property name="statusTip">
+    <string>Check if your QGIS version is up to date (requires internet access)</string>
+   </property>
+  </action>
+  <action name="mActionAbout">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpAbout.png</normaloff>:/images/themes/default/mActionHelpAbout.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="mActionSponsors">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpSponsors.png</normaloff>:/images/themes/default/mActionHelpSponsors.png</iconset>
+   </property>
+   <property name="text">
+    <string>QGIS Sponsors</string>
+   </property>
+  </action>
+  <action name="mActionMoveLabel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveLabel.png</normaloff>:/images/themes/default/mActionMoveLabel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move Label</string>
+   </property>
+  </action>
+  <action name="mActionRotateLabel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotateLabel.png</normaloff>:/images/themes/default/mActionRotateLabel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate Label</string>
+   </property>
+  </action>
+  <action name="mActionChangeLabelProperties">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionChangeLabelProperties.png</normaloff>:/images/themes/default/mActionChangeLabelProperties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Change Label</string>
+   </property>
+  </action>
+  <action name="mActionStyleManagerV2">
+   <property name="text">
+    <string>Style manager...</string>
+   </property>
+  </action>
+  <action name="mActionShowPythonDialog">
+   <property name="text">
+    <string>Python Console</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

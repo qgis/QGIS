@@ -103,3 +103,15 @@ QAction* QgsShortcutsManager::actionByName( QString name )
 
   return NULL;
 }
+
+void QgsShortcutsManager::registerAllChildrenActions( QObject* object )
+{
+  foreach( QObject* child, object->children() )
+  {
+    if ( child->inherits( "QAction" ) )
+    {
+      QAction* a = qobject_cast<QAction*>( child );
+      registerAction( a, a->shortcut() );
+    }
+  }
+}
