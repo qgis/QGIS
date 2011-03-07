@@ -121,6 +121,9 @@ string      "'"{str_char}*"'"
 
 "$area" { return AREA; }
 "$length" { return LENGTH; }
+"$perimeter" { return PERIMETER; }
+"$x" { return X; }
+"$y" { return Y; }
 "$id" { return ID; }
 
 {column_ref}   { return COLUMN_REF; }

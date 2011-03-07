@@ -139,7 +139,7 @@ void QgsSearchTreeNode::init()
 {
   mCalc = NULL;
 
-  if ( mType == tOperator && ( mOp == opLENGTH || mOp == opAREA ) )
+  if ( mType == tOperator && ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER ) )
   {
     //initialize QgsDistanceArea
     mCalc = new QgsDistanceArea;
@@ -232,14 +232,17 @@ QString QgsSearchTreeNode::makeSearchString()
       // currently all functions take one parameter
       str += QString( "(%1)" ).arg( mLeft->makeSearchString() );
     }
-    else if ( mOp == opLENGTH || mOp == opAREA || mOp == opROWNUM || mOp == opID )
+    else if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opROWNUM || mOp == opID || mOp == opX || mOp == opY )
     {
       // special nullary opeators
       switch ( mOp )
       {
         case opLENGTH: str += "$length"; break;
         case opAREA: str += "$area"; break;
+        case opPERIMETER: str += "$perimeter"; break;
         case opROWNUM: str += "$rownum"; break;
+        case opX: str += "$x"; break;
+        case opY: str += "$y"; break;
         case opID: str += "$id"; break;
         default: str += "?";
       }
@@ -361,7 +364,7 @@ bool QgsSearchTreeNode::needsGeometry()
 {
   if ( mType == tOperator )
   {
-    if ( mOp == opLENGTH || mOp == opAREA )
+    if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
       return true;
 
     if ( mLeft && mLeft->needsGeometry() )
@@ -656,7 +659,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         if ( !getValue( value2, mRight, fields, f ) ) return value2;
       }
 
-      if ( mOp == opLENGTH || mOp == opAREA )
+      if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
       {
         if ( !f.geometry() )
         {
@@ -664,15 +667,27 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         }
 
         //check that we don't use area for lines or length for polygons
-        if ( mOp == opLENGTH && f.geometry()->type() != QGis::Line )
+        if ( mOp == opLENGTH && f.geometry()->type() == QGis::Line )
         {
-          return QgsSearchTreeValue( 0 );
+          return QgsSearchTreeValue( mCalc->measure( f.geometry() ) );
         }
-        if ( mOp == opAREA && f.geometry()->type() != QGis::Polygon )
+        if ( mOp == opAREA && f.geometry()->type() == QGis::Polygon )
         {
-          return QgsSearchTreeValue( 0 );
+          return QgsSearchTreeValue( mCalc->measure( f.geometry() ) );
         }
-        return QgsSearchTreeValue( mCalc->measure( f.geometry() ) );
+        if ( mOp == opPERIMETER && f.geometry()->type() == QGis::Polygon )
+        {
+          return QgsSearchTreeValue( mCalc->measurePerimeter( f.geometry() ) );
+        }
+        if ( mOp == opX && f.geometry()->type() == QGis::Point )
+        {
+          return QgsSearchTreeValue( f.geometry()->asPoint().x() );
+        }
+        if ( mOp == opY && f.geometry()->type() == QGis::Point )
+        {
+          return QgsSearchTreeValue( f.geometry()->asPoint().y() );
+        }
+        return QgsSearchTreeValue( 0 );
       }
 
       if ( mOp == opID )

@@ -74,7 +74,10 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %token IN
 %token ROWNUM
 %token AREA
+%token PERIMETER 
 %token LENGTH
+%token X
+%token Y
 %token ID
 %token NULLVALUE
 
@@ -177,7 +180,10 @@ scalar_exp:
     | scalar_exp CONCAT scalar_exp { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opCONCAT, $1, $3); joinTmpNodes($$, $1, $3); }
     | ROWNUM                      { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opROWNUM, 0, 0); addToTmpNodes($$); }
     | AREA                        { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opAREA, 0, 0); addToTmpNodes($$); }
+    | PERIMETER                   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPERIMETER, 0, 0); addToTmpNodes($$); }
     | LENGTH                      { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opLENGTH, 0, 0); addToTmpNodes($$); }
+    | X                           { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opX, 0, 0); addToTmpNodes($$); }
+    | Y                           { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opY, 0, 0); addToTmpNodes($$); }
     | ID                          { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opID, 0, 0); addToTmpNodes($$); }
     | NUMBER                      { $$ = new QgsSearchTreeNode($1); addToTmpNodes($$); }
     | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }

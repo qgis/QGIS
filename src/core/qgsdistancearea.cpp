@@ -223,7 +223,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
     case QGis::WKBPolygon25D:
       hasZptr = true;
     case QGis::WKBPolygon:
-      measurePolygon( wkb, &res, hasZptr );
+      measurePolygon( wkb, &res, 0, hasZptr );
       QgsDebugMsg( "returning " + QString::number( res ) );
       return res;
 
@@ -234,7 +234,60 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
       ptr = wkb + 9;
       for ( i = 0; i < count; i++ )
       {
-        ptr = measurePolygon( ptr, &res, hasZptr );
+        ptr = measurePolygon( ptr, &res, 0, hasZptr );
+        resTotal += res;
+      }
+      QgsDebugMsg( "returning " + QString::number( resTotal ) );
+      return resTotal;
+
+    default:
+      QgsDebugMsg( QString( "measure: unexpected geometry type: %1" ).arg( wkbType ) );
+      return 0;
+  }
+}
+
+double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
+{
+  if ( !geometry )
+    return 0.0;
+
+  unsigned char* wkb = geometry->asWkb();
+  if ( !wkb )
+    return 0.0;
+
+  unsigned char* ptr;
+  unsigned int wkbType;
+  double res, resTotal = 0;
+  int count, i;
+
+  memcpy( &wkbType, ( wkb + 1 ), sizeof( wkbType ) );
+
+  // measure distance or area based on what is the type of geometry
+  bool hasZptr = false;
+
+  switch ( wkbType )
+  {
+    case QGis::WKBLineString25D:
+    case QGis::WKBLineString:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiLineString:
+      return 0.0;
+
+    case QGis::WKBPolygon25D:
+      hasZptr = true;
+    case QGis::WKBPolygon:
+      measurePolygon( wkb, 0, &res, hasZptr );
+      QgsDebugMsg( "returning " + QString::number( res ) );
+      return res;
+
+    case QGis::WKBMultiPolygon25D:
+      hasZptr = true;
+    case QGis::WKBMultiPolygon:
+      count = *(( int* )( wkb + 5 ) );
+      ptr = wkb + 9;
+      for ( i = 0; i < count; i++ )
+      {
+        ptr = measurePolygon( ptr, 0, &res, hasZptr );
         resTotal += res;
       }
       QgsDebugMsg( "returning " + QString::number( resTotal ) );
@@ -344,7 +397,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
 }
 
 
-unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* area, bool hasZptr )
+unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* area, double* perimeter, bool hasZptr )
 {
   // get number of rings in the polygon
   unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
@@ -357,8 +410,11 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
   QList<QgsPoint> points;
   QgsPoint pnt;
-  double x, y, areaTmp;
-  *area = 0;
+  double x, y;
+  if ( area )
+    *area = 0;
+  if ( perimeter )
+    *perimeter = 0;
 
   try
   {
@@ -392,20 +448,38 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
       if ( points.size() > 2 )
       {
-        areaTmp = computePolygonArea( points );
-        if ( idx == 0 )
-          *area += areaTmp; // exterior ring
-        else
-          *area -= areaTmp; // interior rings
+        if ( area )
+        {
+          double areaTmp = computePolygonArea( points );
+          if ( idx == 0 )
+          {
+            // exterior ring
+            *area += areaTmp;
+          }
+          else
+          {
+            *area -= areaTmp; // interior rings
+          }
+        }
+
+        if ( perimeter )
+        {
+          *perimeter += measureLine( points );
+        }
       }
 
       points.clear();
+
+      if ( !area )
+      {
+        break;
+      }
     }
   }
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsLogger::warning( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area." ) );
+    QgsLogger::warning( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
   }
 
   return ptr;
@@ -679,7 +753,6 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
 {
   QString unitLabel;
 
-
   switch ( u )
   {
     case QGis::Meters:
@@ -785,5 +858,4 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
 
 
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
-
 }

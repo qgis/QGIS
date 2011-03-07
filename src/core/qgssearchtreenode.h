@@ -82,9 +82,14 @@ class CORE_EXPORT QgsSearchTreeNode
       opTOREAL,
       opTOSTRING,
 
+      // coordinates
+      opX,
+      opY,
+
       // measuring
       opLENGTH,
       opAREA,
+      opPERIMETER,
 
       // feature id
       opID,
