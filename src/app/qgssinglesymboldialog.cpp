@@ -252,7 +252,12 @@ QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
 
 void QgsSingleSymbolDialog::selectOutlineColor()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor c = QColorDialog::getColor( btnOutlineColor->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor c = QColorDialog::getColor( btnOutlineColor->color(), this );
+#endif
 
   if ( c.isValid() )
   {
@@ -265,7 +270,12 @@ void QgsSingleSymbolDialog::selectOutlineColor()
 
 void QgsSingleSymbolDialog::selectFillColor()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor c = QColorDialog::getColor( btnFillColor->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor c = QColorDialog::getColor( btnFillColor->color(), this );
+#endif
 
   if ( c.isValid() )
   {

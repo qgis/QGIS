@@ -84,7 +84,12 @@ void QgsSimpleLineSymbolLayerV2Widget::penWidthChanged()
 
 void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
+#endif
   if ( !color.isValid() )
     return;
   mLayer->setColor( color );
@@ -226,7 +231,12 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setName()
 
 void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this );
+#endif
   if ( !borderColor.isValid() )
     return;
   mLayer->setBorderColor( borderColor );
@@ -236,7 +246,12 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
 
 void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
+#endif
   if ( !color.isValid() )
     return;
   mLayer->setColor( color );
@@ -310,7 +325,12 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
 
 void QgsSimpleFillSymbolLayerV2Widget::setColor()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
+#endif
   if ( !color.isValid() )
     return;
   mLayer->setColor( color );
@@ -320,7 +340,12 @@ void QgsSimpleFillSymbolLayerV2Widget::setColor()
 
 void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor color = QColorDialog::getColor( mLayer->borderColor(), this );
+#endif
   if ( !color.isValid() )
     return;
   mLayer->setBorderColor( color );
@@ -638,7 +663,12 @@ QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2Widget::symbolLayer()
 
 void QgsLineDecorationSymbolLayerV2Widget::colorChanged()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
+#endif
   if ( !color.isValid() )
     return;
   mLayer->setColor( color );
@@ -829,7 +859,12 @@ void QgsFontMarkerSymbolLayerV2Widget::setFontFamily( const QFont& font )
 
 void QgsFontMarkerSymbolLayerV2Widget::setColor()
 {
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+  // Native Mac dialog works only for Qt Carbon
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+#else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
+#endif
   if ( !color.isValid() )
     return;
   mLayer->setColor( color );
