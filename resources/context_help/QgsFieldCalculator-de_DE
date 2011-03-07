@@ -59,8 +59,11 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
 <tr><td><tt>a</tt> || <tt>b</tt></td><td>Zeichenkette <tt>a</tt> and <tt>b</tt> zusammenziehen</td></tr>
 <tr><td>$rownum</td><td>Aktuelle Zeilennummer</td></tr>
 <tr><td>$area</td><td>Fl&auml;che des Polygons</td></tr>
+<tr><td>$perimeter</td><td>Umfang des Polygons</td></tr>
 <tr><td>$length</td><td>L&auml;nge der Linien</td></tr>
 <tr><td>$id</td><td>Objektkennung</td></tr>
+<tr><td>$x</td><td>X-Koordinate eines Punkts</td></tr>
+<tr><td>$y</td><td>Y-Koordinate eines Punkts</td></tr>
 <tr><td><tt>a</tt> ^ <tt>b</tt></td><td>Potenz <tt>b</tt> von <tt>a</tt></td></tr>
 <tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> mit <tt>b</tt> multipliziert</td></tr>
 <tr><td><tt>a</tt> / <tt>b</tt></td><td><tt>a</tt> durch <tt>b</tt> geteilt</td></tr>
