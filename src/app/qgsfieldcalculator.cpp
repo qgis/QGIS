@@ -35,12 +35,15 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   populateFields();
   populateOutputFieldTypes();
 
+
   //default values for field width and precision
   mOuputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
   //disable ok button until there is text for output field and expression
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  mExistingFieldComboBox->setDisabled( true );
 
   // disable creation of new fields if not supported by data provider
   if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
@@ -151,7 +154,12 @@ void QgsFieldCalculator::accept()
     // block layerModified signals (that would trigger table update)
     mVectorLayer->blockSignals( true );
 
-    bool useGeometry = calcString.contains( "$area" ) || calcString.contains( "$length" );
+    bool useGeometry =
+      calcString.contains( "$area" ) ||
+      calcString.contains( "$length" ) ||
+      calcString.contains( "$perimeter" ) ||
+      calcString.contains( "$x" ) ||
+      calcString.contains( "$y" );
     int rownum = 1;
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
@@ -267,14 +275,8 @@ void QgsFieldCalculator::populateOutputFieldTypes()
 
 void QgsFieldCalculator::on_mUpdateExistingFieldCheckBox_stateChanged( int state )
 {
-  if ( state == Qt::Checked )
-  {
-    mNewFieldGroupBox->setEnabled( false );
-  }
-  else
-  {
-    mNewFieldGroupBox->setEnabled( true );
-  }
+  mExistingFieldComboBox->setEnabled( state == Qt::Checked );
+  mNewFieldGroupBox->setDisabled( state == Qt::Checked );
   setOkButtonState();
 }
 

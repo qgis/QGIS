@@ -77,8 +77,12 @@ class CORE_EXPORT QgsDistanceArea
     //! general measurement (line distance or polygon area)
     double measure( QgsGeometry* geometry );
 
-    //! measures line with more segments
+    //! measures perimeter of polygon
+    double measurePerimeter( QgsGeometry* geometry );
+
+    //! measures line
     double measureLine( const QList<QgsPoint>& points );
+
     //! measures line with one segment
     double measureLine( const QgsPoint& p1, const QgsPoint& p2 );
 
@@ -91,11 +95,10 @@ class CORE_EXPORT QgsDistanceArea
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
   protected:
-
     //! measures line distance, line points are extracted from WKB
     unsigned char* measureLine( unsigned char* feature, double* area, bool hasZptr = false );
-    //! measures polygon area, vertices are extracted from WKB
-    unsigned char* measurePolygon( unsigned char* feature, double* area, bool hasZptr = false );
+    //! measures polygon area and perimeter, vertices are extracted from WKB
+    unsigned char* measurePolygon( unsigned char* feature, double* area, double* perimeter, bool hasZptr = false );
 
     /**
       calculates distance from two points on ellipsoid

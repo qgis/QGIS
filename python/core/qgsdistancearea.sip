@@ -49,6 +49,9 @@ class QgsDistanceArea
     
     //! general measurement (line distance or polygon area)
     double measure(QgsGeometry* geometry);
+
+    //! measurement perimater of polygon
+    double measurePerimeter(QgsGeometry* geometry);
     
     //! measures line with more segments
     double measureLine(const QList<QgsPoint>& points);
