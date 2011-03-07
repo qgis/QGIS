@@ -43,70 +43,74 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
   QString inf = name->text();
   QString outd = dirout->text();
 
-  if ( inf.size() > 1 )
+  if ( inf.isEmpty() )
   {
-    int type = SHPT_POINT;
-    bool convtexts = convertTextCheck->checkState();
-
-    if ( polyline->isChecked() )
-      type = SHPT_ARC;
-
-    if ( polygon->isChecked() )
-      type = SHPT_POLYGON;
-
-    if ( point->isChecked() )
-      type = SHPT_POINT;
-
-    InsertRetrClass *insertRetr = new InsertRetrClass();
-
-    DL_Dxf *dxf_inserts = new DL_Dxf();
-
-    if ( !dxf_inserts->in( inf.toStdString(), insertRetr ) )
-    {
-      // if file open failed
-      QgsDebugMsg( "Aborting: The input file could not be opened." );
-      return;
-    }
-
-    Builder *parser = new Builder(
-      outd.toStdString(),
-      type,
-      insertRetr->XVals, insertRetr->YVals,
-      insertRetr->Names,
-      insertRetr->countInserts,
-      convtexts );
-
-    QgsDebugMsg( QString( "Finished getting insertions. Count: %1" ).arg( insertRetr->countInserts ) );
-
-    DL_Dxf *dxf_Main = new DL_Dxf();
-
-    if ( !dxf_Main->in( inf.toStdString(), parser ) )
-    {
-      // if file open failed
-      QgsDebugMsg( "Aborting: The input file could not be opened." );
-      return;
-    }
-
-    delete insertRetr;
-    delete dxf_inserts;
-    delete dxf_Main;
-
-    parser->print_shpObjects();
-
-    emit createLayer( QString(( parser->outputShp() ).c_str() ), QString( "Data layer" ) );
-
-    if ( convtexts && parser->textObjectsSize() > 0 )
-    {
-      emit createLayer( QString(( parser->outputTShp() ).c_str() ), QString( "Text layer" ) );
-    }
-
-    delete parser;
-  }
-  else
-  {
-    QMessageBox::information( this, "Warning", "Please select a file to convert" );
+    QMessageBox::information( this, tr( "Warning" ), tr( "Please specify a file to convert." ) );
     return;
   }
+
+  if ( outd.isEmpty() )
+  {
+    QMessageBox::information( this, tr( "Warning" ), tr( "Please specify an output file" ) );
+    return;
+  }
+
+  int type = SHPT_POINT;
+  bool convtexts = convertTextCheck->checkState();
+
+  if ( polyline->isChecked() )
+    type = SHPT_ARC;
+
+  if ( polygon->isChecked() )
+    type = SHPT_POLYGON;
+
+  if ( point->isChecked() )
+    type = SHPT_POINT;
+
+  InsertRetrClass *insertRetr = new InsertRetrClass();
+
+  DL_Dxf *dxf_inserts = new DL_Dxf();
+
+  if ( !dxf_inserts->in( inf.toStdString(), insertRetr ) )
+  {
+    // if file open failed
+    QgsDebugMsg( "Aborting: The input file could not be opened." );
+    return;
+  }
+
+  Builder *parser = new Builder(
+    outd.toStdString(),
+    type,
+    insertRetr->XVals, insertRetr->YVals,
+    insertRetr->Names,
+    insertRetr->countInserts,
+    convtexts );
+
+  QgsDebugMsg( QString( "Finished getting insertions. Count: %1" ).arg( insertRetr->countInserts ) );
+
+  DL_Dxf *dxf_Main = new DL_Dxf();
+
+  if ( !dxf_Main->in( inf.toStdString(), parser ) )
+  {
+    // if file open failed
+    QgsDebugMsg( "Aborting: The input file could not be opened." );
+    return;
+  }
+
+  delete insertRetr;
+  delete dxf_inserts;
+  delete dxf_Main;
+
+  parser->print_shpObjects();
+
+  emit createLayer( QString(( parser->outputShp() ).c_str() ), QString( "Data layer" ) );
+
+  if ( convtexts && parser->textObjectsSize() > 0 )
+  {
+    emit createLayer( QString(( parser->outputTShp() ).c_str() ), QString( "Text layer" ) );
+  }
+
+  delete parser;
 
   accept();
 }
@@ -152,7 +156,7 @@ void dxf2shpConverterGui::getInputFileName()
   QString s = QFileDialog::getOpenFileName( this,
               tr( "Choose a DXF file to open" ),
               settings.value( "/Plugin-DXF/text_path", "./" ).toString(),
-              "Files DXF (*.dxf)" );
+              tr( "Files DXF (*.dxf)" ) );
 
   name->setText( s );
 }
@@ -162,7 +166,7 @@ void dxf2shpConverterGui::getOutputDir()
   QString s = QFileDialog::getSaveFileName( this,
               tr( "Choose a file name to save to" ),
               "output.shp",
-              "Shapefile (*.shp)" );
+              tr( "Shapefile (*.shp)" ) );
 
   dirout->setText( s );
 }
