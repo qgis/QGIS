@@ -1902,7 +1902,13 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
 QVariant QgsOgrProvider::minimumValue( int index )
 {
-  QgsField fld = mAttributeFields[index];
+  QgsFieldMap::const_iterator attIt = mAttributeFields.find( index );
+  if ( attIt == mAttributeFields.constEnd() )
+  {
+    return QVariant();
+  }
+  const QgsField& fld = attIt.value();
+
   QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
   QString sql = QString( "SELECT MIN(%1) FROM %2" )
@@ -1936,7 +1942,13 @@ QVariant QgsOgrProvider::minimumValue( int index )
 
 QVariant QgsOgrProvider::maximumValue( int index )
 {
-  QgsField fld = mAttributeFields[index];
+  QgsFieldMap::const_iterator attIt = mAttributeFields.find( index );
+  if ( attIt == mAttributeFields.constEnd() )
+  {
+    return QVariant();
+  }
+  const QgsField& fld = mAttributeFields[index];
+
   QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
   QString sql = QString( "SELECT MAX(%1) FROM %2" )
