@@ -1385,7 +1385,7 @@
               <item row="3" column="0">
                <widget class="QCheckBox" name="chkOtfTransform">
                 <property name="text">
-                 <string>Enable 'on the &amp;fly' reprojection by defaut</string>
+                 <string>Enable 'on the &amp;fly' reprojection by default</string>
                 </property>
                </widget>
               </item>

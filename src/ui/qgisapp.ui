@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>717</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -228,7 +228,7 @@
   </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
-    <string>Manage Layerrs</string>
+    <string>Manage Layers</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
