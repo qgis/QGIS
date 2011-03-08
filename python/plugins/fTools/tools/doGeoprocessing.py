@@ -321,6 +321,7 @@ class geoprocessingThread( QThread ):
     fields = vproviderA.fields()
     writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBPolygon, vproviderA.crs() )
+    # check if writer was created properly, if not, return with error
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, True, writer.errorMessage()
     outFeat = QgsFeature()
@@ -449,7 +450,7 @@ class geoprocessingThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, True
+    return GEOS_EXCEPT, FEATURE_EXCEPT, True, None
 
   def convex_hull(self, useField ):
     GEOS_EXCEPT = True
@@ -583,7 +584,7 @@ class geoprocessingThread( QThread ):
         except:
           GEOS_EXCEPT = False
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, True
+    return GEOS_EXCEPT, FEATURE_EXCEPT, True, None
 
   def dissolve( self, useField ):
     GEOS_EXCEPT = True
@@ -594,7 +595,7 @@ class geoprocessingThread( QThread ):
     writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
-      return GEOS_EXCEPT, FEATURE_EXCEPT, True, False
+      return GEOS_EXCEPT, FEATURE_EXCEPT, True, writer.errorMessage()
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     vproviderA.rewind()
@@ -722,7 +723,7 @@ class geoprocessingThread( QThread ):
             outFeat.setAttributeMap( attrs )
             writer.addFeature( outFeat )
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, True
+    return GEOS_EXCEPT, FEATURE_EXCEPT, True, None
 
   def difference( self ):
     GEOS_EXCEPT = True
@@ -881,7 +882,7 @@ class geoprocessingThread( QThread ):
               FEATURE_EXCEPT = False
               continue
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
+    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
 
   def intersect( self ):
     GEOS_EXCEPT = True
@@ -1531,7 +1532,7 @@ class geoprocessingThread( QThread ):
                 GEOS_EXCEPT = False
                 continue
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
+    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
 
   def checkParameter( self, layer, param ):
     if self.myFunction == 1:
