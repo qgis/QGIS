@@ -126,9 +126,6 @@ class CORE_EXPORT QgsProject : public QObject
        - Registers maplayers
 
        @note it's presumed that the caller has already reset the map canvas, map registry, and legend
-
-       @exception
-
      */
     //@{
     bool read( QFileInfo const & file );
