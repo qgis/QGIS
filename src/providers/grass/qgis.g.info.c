@@ -95,44 +95,45 @@ int main( int argc, char **argv )
   // raster informations
   else if ( strcmp( "info", info_opt->answer ) == 0 )
   {
-      struct FPRange range;
-      double zmin, zmax;
+    struct FPRange range;
+    double zmin, zmax;
 
-      // Data type
-      RASTER_MAP_TYPE raster_type = G_raster_map_type ( rast_opt->answer, "" );
-      fprintf( stdout, "TYPE:%d\n", raster_type );
+    // Data type
+    RASTER_MAP_TYPE raster_type = G_raster_map_type( rast_opt->answer, "" );
+    fprintf( stdout, "TYPE:%d\n", raster_type );
 
-      // Statistics
-      if (G_read_fp_range( rast_opt->answer, "", &range) < 0) {
-        G_fatal_error(("Unable to read range file"));
-      }
-      G_get_fp_range_min_max(&range, &zmin, &zmax);
-      fprintf( stdout, "MIN_VALUE:%f\n", zmin );
-      fprintf( stdout, "MAX_VALUE:%f\n", zmax );
+    // Statistics
+    if ( G_read_fp_range( rast_opt->answer, "", &range ) < 0 )
+    {
+      G_fatal_error(( "Unable to read range file" ) );
+    }
+    G_get_fp_range_min_max( &range, &zmin, &zmax );
+    fprintf( stdout, "MIN_VALUE:%f\n", zmin );
+    fprintf( stdout, "MAX_VALUE:%f\n", zmax );
   }
   else if ( strcmp( "colors", info_opt->answer ) == 0 )
   {
-      // Color table
-      struct Colors colors;
-      int i, ccount;
-      if( G_read_colors( rast_opt->answer, "", &colors ) == 1 )
-      {
-        //int maxcolor;
-        //CELL min, max;
-    
-        //G_get_color_range ( &min, &max, &colors);
-        ccount = G_colors_count ( &colors );
-        for( i = ccount-1; i >= 0; i-- ) 
-        {
-          DCELL val1, val2;
-          unsigned char r1, g1, b1, r2, g2, b2;
+    // Color table
+    struct Colors colors;
+    int i, ccount;
+    if ( G_read_colors( rast_opt->answer, "", &colors ) == 1 )
+    {
+      //int maxcolor;
+      //CELL min, max;
 
-          G_get_f_color_rule ( &val1, &r1, &g1, &b1, &val2, &r2, &g2, &b2, &colors, i );
-          fprintf ( stdout, "%e %e %d %d %d %d %d %d\n", val1, val2, r1, g1, b1, r2, g2, b2 );
-        }
-      }    
+      //G_get_color_range ( &min, &max, &colors);
+      ccount = G_colors_count( &colors );
+      for ( i = ccount - 1; i >= 0; i-- )
+      {
+        DCELL val1, val2;
+        unsigned char r1, g1, b1, r2, g2, b2;
+
+        G_get_f_color_rule( &val1, &r1, &g1, &b1, &val2, &r2, &g2, &b2, &colors, i );
+        fprintf( stdout, "%e %e %d %d %d %d %d %d\n", val1, val2, r1, g1, b1, r2, g2, b2 );
+      }
+    }
   }
-  
+
   else if ( strcmp( "query", info_opt->answer ) == 0 )
   {
     double x, y;

@@ -37,19 +37,19 @@
 //class QgsRectangle;
 class QgsPoint;
 
-//class CORE_EXPORT QgsRasterProjector 
-class QgsRasterProjector 
+//class CORE_EXPORT QgsRasterProjector
+class QgsRasterProjector
 {
 //    Q_OBJECT
   public:
-    /** \brief QgsRasterProjector implements approximate projection support for 
+    /** \brief QgsRasterProjector implements approximate projection support for
      * it calculates grid of points in source CRS for target CRS + extent
      * which are used to calculate affine transformation matrices.
      * */
-    QgsRasterProjector( 
-      QgsCoordinateReferenceSystem theSrcCRS, 
-      QgsCoordinateReferenceSystem theDestCRS, 
-      QgsRectangle theDestExtent, 
+    QgsRasterProjector(
+      QgsCoordinateReferenceSystem theSrcCRS,
+      QgsCoordinateReferenceSystem theDestCRS,
+      QgsRectangle theDestExtent,
       int theDestRows, int theDestCols,
       double theMaxSrcXRes, double theMaxSrcYRes
     );
@@ -59,17 +59,17 @@ class QgsRasterProjector
 
 
     /** \brief get destination point for _current_ destination position */
-    void destPointOnCPMatrix ( int theRow, int theCol, double *theX, double *theY );
+    void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
 
     /** \brief Get matrix upper left row/col indexes for destination row/col */
-    int matrixRow ( int theDestRow );
-    int matrixCol ( int theDestCol );
+    int matrixRow( int theDestRow );
+    int matrixCol( int theDestCol );
 
     /** \brief get destination point for _current_ matrix position */
-    QgsPoint srcPoint ( int theRow, int theCol );
+    QgsPoint srcPoint( int theRow, int theCol );
 
     /** \brief Get source row and column indexes for current source extent and resolution */
-    void srcRowCol ( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+    void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
 
     /** \brief insert rows to matrix */
     void insertRows();
@@ -78,7 +78,7 @@ class QgsRasterProjector
     void insertCols();
 
     /* calculate single control point in current matrix */
-    void calcCP ( int theRow, int theCol );
+    void calcCP( int theRow, int theCol );
 
     /** \brief calculate matrix row */
     bool calcRow( int theRow );
@@ -90,25 +90,25 @@ class QgsRasterProjector
     void calcSrcExtent();
 
     /** \brief calculate minimum source width and height */
-    void calcSrcRowsCols ();
+    void calcSrcRowsCols();
 
     /** \brief check error along columns
       * returns true if within threshold */
-    bool checkCols ();
-  
+    bool checkCols();
+
     /** \brief check error along rows
       * returns true if within threshold */
-    bool checkRows ();
+    bool checkRows();
 
     /** Calculate array of src helper points */
     //void calcHelper ( int theMatrixRow, QList<QgsPoint> *thePoints );
-    void calcHelper ( int theMatrixRow, QgsPoint *thePoints );
+    void calcHelper( int theMatrixRow, QgsPoint *thePoints );
 
     /** Calc / switch helper */
     void nextHelper();
 
     /** get source extent */
-    QgsRectangle srcExtent() { return mSrcExtent; } 
+    QgsRectangle srcExtent() { return mSrcExtent; }
 
     /** get/set source width/height */
     int srcRows() { return mSrcRows; }

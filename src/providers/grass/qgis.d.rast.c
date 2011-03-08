@@ -80,7 +80,7 @@ int main( int argc, char **argv )
   G_adjust_Cell_head( &window, 1, 1 );
   G_set_window( &window );
 
-  raster_type = G_raster_map_type ( name, "" );
+  raster_type = G_raster_map_type( name, "" );
   fp = G_raster_map_is_fp( name, mapset );
 
   /* use DCELL even if the map is FCELL */
@@ -180,7 +180,7 @@ static int cell_draw( char *name,
         alpha = 0;
       }
 
-      if ( strcmp(format,"color") == 0 ) 
+      if ( strcmp( format, "color" ) == 0 )
       {
         // We need data suitable for QImage 32-bpp
         // the data are stored in QImage as QRgb which is unsigned int.
@@ -198,28 +198,35 @@ static int cell_draw( char *name,
       }
       else
       {
-          int *val;
-          val = (int*) (ptr);
-          //G_debug ( 0, "val = %d", *val );
-          if ( data_type == CELL_TYPE) {
-            //G_debug ( 0, "valx = %d", *((CELL *) ptr));
-          }
-          if ( G_is_null_value(ptr, data_type) ) {
-            if ( data_type == CELL_TYPE) {
-              int nul = -2147483647;
-              fwrite( &nul , 4, 1, fo );
-            } else if ( data_type == DCELL_TYPE) {
-              double nul = 2.2250738585072014e-308;
-              fwrite( &nul , 8, 1, fo );
-            } else if ( data_type == FCELL_TYPE) {
-              double nul = 1.17549435e-38F;
-              fwrite( &nul , 4, 1, fo );
-            }
-          }
-          else
+        int *val;
+        val = ( int* )( ptr );
+        //G_debug ( 0, "val = %d", *val );
+        if ( data_type == CELL_TYPE )
+        {
+          //G_debug ( 0, "valx = %d", *((CELL *) ptr));
+        }
+        if ( G_is_null_value( ptr, data_type ) )
+        {
+          if ( data_type == CELL_TYPE )
           {
-            fwrite( ptr, raster_size, 1, fo );
+            int nul = -2147483647;
+            fwrite( &nul , 4, 1, fo );
           }
+          else if ( data_type == DCELL_TYPE )
+          {
+            double nul = 2.2250738585072014e-308;
+            fwrite( &nul , 8, 1, fo );
+          }
+          else if ( data_type == FCELL_TYPE )
+          {
+            double nul = 1.17549435e-38F;
+            fwrite( &nul , 4, 1, fo );
+          }
+        }
+        else
+        {
+          fwrite( ptr, raster_size, 1, fo );
+        }
       }
       ptr = G_incr_void_ptr( ptr, raster_size );
     }

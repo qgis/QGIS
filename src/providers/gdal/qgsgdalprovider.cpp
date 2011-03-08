@@ -85,13 +85,13 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
     if ( nPercent == 100 )
     {
-      fprintf( stdout, "%d - done.\n", (int) floor(dfComplete*100) );
+      fprintf( stdout, "%d - done.\n", ( int ) floor( dfComplete*100 ) );
       //mypLayer->showProgress( 100 );
     }
     else
     {
       int myProgress = ( int ) floor( dfComplete * 100 );
-      fprintf( stdout, "%d.", myProgress);
+      fprintf( stdout, "%d.", myProgress );
       //mypLayer->showProgress( myProgress );
       fflush( stdout );
     }
@@ -134,18 +134,18 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( mGdalBaseDataset == NULL )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-      QObject::tr( "Cannot open GDAL dataset ") + uri + " : "
-      + QString::fromUtf8( CPLGetLastErrorMsg()  ) );
-     return;
+                          QObject::tr( "Cannot open GDAL dataset " ) + uri + " : "
+                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return;
   }
 
-  QgsDebugMsg ("GdalDataset opened" );
+  QgsDebugMsg( "GdalDataset opened" );
 
   for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
-    mMinMaxComputed.append(false);
-    mMinimum.append(0);
-    mMaximum.append(0);
+    mMinMaxComputed.append( false );
+    mMinimum.append( 0 );
+    mMaximum.append( 0 );
   }
   // Check if we need a warped VRT for this file.
   if (( GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None
@@ -179,8 +179,8 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( myGDALBand == NULL )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-      QObject::tr( "Cannot get GDAL raster band : " )
-      + QString::fromUtf8( CPLGetLastErrorMsg()  ) ) ;
+                          QObject::tr( "Cannot get GDAL raster band : " )
+                          + QString::fromUtf8( CPLGetLastErrorMsg() ) ) ;
 
     GDALDereferenceDataset( mGdalBaseDataset );
     mGdalBaseDataset = NULL;
@@ -251,23 +251,24 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   mValidNoDataValue = true;
   for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
-    computeMinMax ( i );
+    computeMinMax( i );
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
     int isValid = false;
     double myNoDataValue = GDALGetRasterNoDataValue( GDALGetRasterBand( mGdalDataset, i ), &isValid );
     if ( isValid )
     {
-      QgsDebugMsg( QString("GDALGetRasterNoDataValue = %1").arg( myNoDataValue ) ) ;
+      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
       mGdalDataType.append( myGdalDataType );
-       
-    } 
-    else 
+
+    }
+    else
     {
-      // But we need a null value in case of reprojection and BTW also for 
+      // But we need a null value in case of reprojection and BTW also for
       // aligned margines
 
-      switch ( srcDataType( i ) ) {
+      switch ( srcDataType( i ) )
+      {
         case QgsRasterDataProvider::Byte:
           // Use longer data type to avoid conflict with real data
           myNoDataValue = -32768.0;
@@ -291,58 +292,58 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
           break;
         default:
           myNoDataValue = std::numeric_limits<int>::max();
-          // Would NaN work well? 
-          //myNoDataValue = std::numeric_limits<double>::quiet_NaN(); 
+          // Would NaN work well?
+          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
           mGdalDataType.append( myGdalDataType );
       }
     }
     mNoDataValue.append( myNoDataValue );
-    QgsDebugMsg( QString("mNoDataValue[%1] = %1").arg(i-1).arg ( mNoDataValue[i-1] ) ); 
+    QgsDebugMsg( QString( "mNoDataValue[%1] = %1" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
   }
 
-  // This block of code was in old version in QgsRasterLayer::bandStatistics 
+  // This block of code was in old version in QgsRasterLayer::bandStatistics
   //ifdefs below to remove compiler warning about unused vars
 #ifdef QGISDEBUG
-/*
-  int success;
-  double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
+  /*
+    int success;
+    double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
 
-  if ( ! success )
-  {
-    QgsDebugMsg( "myGdalBand->GetMinimum() failed" );
-  }
+    if ( ! success )
+    {
+      QgsDebugMsg( "myGdalBand->GetMinimum() failed" );
+    }
 
-  double GDALmaximum = GDALGetRasterMaximum( myGdalBand, &success );
+    double GDALmaximum = GDALGetRasterMaximum( myGdalBand, &success );
 
-  if ( ! success )
-  {
-    QgsDebugMsg( "myGdalBand->GetMaximum() failed" );
-  }
+    if ( ! success )
+    {
+      QgsDebugMsg( "myGdalBand->GetMaximum() failed" );
+    }
 
-  double GDALnodata = GDALGetRasterNoDataValue( myGdalBand, &success );
+    double GDALnodata = GDALGetRasterNoDataValue( myGdalBand, &success );
 
-  if ( ! success )
-  {
-    QgsDebugMsg( "myGdalBand->GetNoDataValue() failed" );
-  }
+    if ( ! success )
+    {
+      QgsDebugMsg( "myGdalBand->GetNoDataValue() failed" );
+    }
 
-  QgsLogger::debug( "GDALminium: ", GDALminimum, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "GDALmaximum: ", GDALmaximum, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "GDALnodata: ", GDALnodata, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "GDALminium: ", GDALminimum, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "GDALmaximum: ", GDALmaximum, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "GDALnodata: ", GDALnodata, __FILE__, __FUNCTION__, __LINE__ );
 
-  double GDALrange[2];          // calculated min/max, as opposed to the
-  // dataset provided
+    double GDALrange[2];          // calculated min/max, as opposed to the
+    // dataset provided
 
-  GDALComputeRasterMinMax( myGdalBand, 1, GDALrange );
-  QgsLogger::debug( "approximate computed GDALminium:", GDALrange[0], __FILE__, __FUNCTION__, __LINE__, 1 );
-  QgsLogger::debug( "approximate computed GDALmaximum:", GDALrange[1], __FILE__, __FUNCTION__, __LINE__, 1 );
+    GDALComputeRasterMinMax( myGdalBand, 1, GDALrange );
+    QgsLogger::debug( "approximate computed GDALminium:", GDALrange[0], __FILE__, __FUNCTION__, __LINE__, 1 );
+    QgsLogger::debug( "approximate computed GDALmaximum:", GDALrange[1], __FILE__, __FUNCTION__, __LINE__, 1 );
 
-  GDALComputeRasterMinMax( myGdalBand, 0, GDALrange );
-  QgsLogger::debug( "exactly computed GDALminium:", GDALrange[0] );
-  QgsLogger::debug( "exactly computed GDALmaximum:", GDALrange[1] );
+    GDALComputeRasterMinMax( myGdalBand, 0, GDALrange );
+    QgsLogger::debug( "exactly computed GDALminium:", GDALrange[0] );
+    QgsLogger::debug( "exactly computed GDALmaximum:", GDALrange[1] );
 
-  QgsDebugMsg( "starting manual stat computation" );
-*/
+    QgsDebugMsg( "starting manual stat computation" );
+  */
 #endif
 
   mValid = true;
@@ -375,7 +376,7 @@ void QgsGdalProvider::closeDataset()
   GDALClose( mGdalDataset );
   mGdalDataset = NULL;
 }
-    
+
 QString QgsGdalProvider::metadata()
 {
   QString myMetadata ;
@@ -512,16 +513,16 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
 void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
 {
   QgsDebugMsg( "Entered" );
-  
+
   QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //GDALReadBlock( myGdalBand, xBlock, yBlock, block );
 
   /* We have to read with correct data type consistent with other readBlock functions */
-  int xOff = xBlock * mXBlockSize; 
+  int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
-  GDALRasterIO ( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, block, mXBlockSize, mYBlockSize, (GDALDataType) mGdalDataType[theBandNo-1], 0, 0 );
+  GDALRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, block, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType[theBandNo-1], 0, 0 );
 }
 
 void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent, int thePixelWidth, int thePixelHeight, void *theBlock )
@@ -531,46 +532,42 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( "theExtent: " + theExtent.toString() );
   QgsDebugMsg( "crs(): " + crs().toWkt() );
 
-
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
-
   QString myMemDsn;
-  myMemDsn.sprintf ( "DATAPOINTER = %p", theBlock ); 
-  QgsDebugMsg(  myMemDsn );
- 
-  myMemDsn.sprintf ( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", (long)theBlock, thePixelWidth, thePixelHeight,  GDALGetDataTypeName( (GDALDataType)mGdalDataType[theBandNo-1] ) );
+  myMemDsn.sprintf( "DATAPOINTER = %p", theBlock );
+  QgsDebugMsg( myMemDsn );
+
+  myMemDsn.sprintf( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", ( long )theBlock, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
 
   QgsDebugMsg( "Open GDAL MEM : " + myMemDsn );
-  
+
   CPLErrorReset();
   GDALDatasetH myGdalMemDataset = GDALOpen( TO8F( myMemDsn ), GA_Update );
 
   if ( !myGdalMemDataset )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-      QObject::tr( "Cannot open GDAL MEM dataset ") + myMemDsn + " : "
-      + QString::fromUtf8( CPLGetLastErrorMsg()  ) );
-     return;
+                          QObject::tr( "Cannot open GDAL MEM dataset " ) + myMemDsn + " : "
+                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return;
   }
-  
+
   //GDALSetProjection( myGdalMemDataset, theDestCRS.toWkt().toAscii().constData() );
 
   double myMemGeoTransform[6];
   myMemGeoTransform[0] = theExtent.xMinimum(); /* top left x */
-  myMemGeoTransform[1] = theExtent.width()/thePixelWidth; /* w-e pixel resolution */
+  myMemGeoTransform[1] = theExtent.width() / thePixelWidth; /* w-e pixel resolution */
   myMemGeoTransform[2] = 0; /* rotation, 0 if image is "north up" */
   myMemGeoTransform[3] = theExtent.yMaximum(); /* top left y */
   myMemGeoTransform[4] = 0; /* rotation, 0 if image is "north up" */
-  myMemGeoTransform[5] = -1. *  theExtent.height()/thePixelHeight; /* n-s pixel resolution */
+  myMemGeoTransform[5] = -1. *  theExtent.height() / thePixelHeight; /* n-s pixel resolution */
 
   double myGeoTransform[6];
   GDALGetGeoTransform( mGdalDataset, myGeoTransform );
   GDALSetGeoTransform( myGdalMemDataset, myMemGeoTransform );
 
-  for ( int i = 0 ; i < 6; i++ ) 
+  for ( int i = 0 ; i < 6; i++ )
   {
-    QgsDebugMsg ( QString("transform : %1 %2").arg(myGeoTransform[i]).arg ( myMemGeoTransform[i] ) );
+    QgsDebugMsg( QString( "transform : %1 %2" ).arg( myGeoTransform[i] ).arg( myMemGeoTransform[i] ) );
   }
 
   GDALWarpOptions *myWarpOptions = GDALCreateWarpOptions();
@@ -579,44 +576,44 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   myWarpOptions->hDstDS = myGdalMemDataset;
 
   myWarpOptions->nBandCount = 1;
-  myWarpOptions->panSrcBands = 
-    (int *) CPLMalloc(sizeof(int) * myWarpOptions->nBandCount );
+  myWarpOptions->panSrcBands =
+    ( int * ) CPLMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panSrcBands[0] = theBandNo;
-  myWarpOptions->panDstBands = 
-    (int *) CPLMalloc(sizeof(int) * myWarpOptions->nBandCount );
+  myWarpOptions->panDstBands =
+    ( int * ) CPLMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panDstBands[0] = 1;
 
   // TODO move here progressCallback and use it
-  myWarpOptions->pfnProgress = GDALTermProgress;   
+  myWarpOptions->pfnProgress = GDALTermProgress;
 
-  QgsDebugMsg ( "src wkt: " +  QString (GDALGetProjectionRef(mGdalDataset) ) ); 
-  QgsDebugMsg ( "dst wkt: " +  QString (GDALGetProjectionRef(myGdalMemDataset) ) ); 
-  myWarpOptions->pTransformerArg = 
-      GDALCreateGenImgProjTransformer( 
-        mGdalDataset, 
-        NULL,
-        myGdalMemDataset,
-        NULL, 
-        FALSE, 0.0, 1 
-      );
+  QgsDebugMsg( "src wkt: " +  QString( GDALGetProjectionRef( mGdalDataset ) ) );
+  QgsDebugMsg( "dst wkt: " +  QString( GDALGetProjectionRef( myGdalMemDataset ) ) );
+  myWarpOptions->pTransformerArg =
+    GDALCreateGenImgProjTransformer(
+      mGdalDataset,
+      NULL,
+      myGdalMemDataset,
+      NULL,
+      FALSE, 0.0, 1
+    );
 
-  CPLAssert( myWarpOptions->pTransformerArg  != NULL); 
+  CPLAssert( myWarpOptions->pTransformerArg  != NULL );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
-  myWarpOptions->padfDstNoDataReal = (double *) CPLMalloc( myWarpOptions->nBandCount * sizeof(double));
-  myWarpOptions->padfDstNoDataImag = (double *) CPLMalloc( myWarpOptions->nBandCount * sizeof(double));
+  myWarpOptions->padfDstNoDataReal = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataImag = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
 
   myWarpOptions->padfDstNoDataReal[0] = mNoDataValue[theBandNo-1];
   myWarpOptions->padfDstNoDataImag[0] = 0.0;
 
-  GDALSetRasterNoDataValue( GDALGetRasterBand( myGdalMemDataset, 
-                      myWarpOptions->panDstBands[0] ),
-                      myWarpOptions->padfDstNoDataReal[0] );
+  GDALSetRasterNoDataValue( GDALGetRasterBand( myGdalMemDataset,
+                            myWarpOptions->panDstBands[0] ),
+                            myWarpOptions->padfDstNoDataReal[0] );
 
-  // TODO optimize somehow to avoid no data init if not necessary 
+  // TODO optimize somehow to avoid no data init if not necessary
   // i.e. no projection, but there is also the problem with margine
-  myWarpOptions->papszWarpOptions = 
-    CSLSetNameValue(myWarpOptions->papszWarpOptions,"INIT_DEST", "NO_DATA" );
+  myWarpOptions->papszWarpOptions =
+    CSLSetNameValue( myWarpOptions->papszWarpOptions, "INIT_DEST", "NO_DATA" );
 
   myWarpOptions->eResampleAlg = GRA_NearestNeighbour;
 
@@ -625,54 +622,56 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   myOperation.Initialize( myWarpOptions );
   CPLErrorReset();
   CPLErr myErr;
-  myErr = myOperation.ChunkAndWarpImage( 0, 0, thePixelWidth, thePixelHeight ); 
+  myErr = myOperation.ChunkAndWarpImage( 0, 0, thePixelWidth, thePixelHeight );
   if ( myErr != CPLE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-      QObject::tr( "Cannot ChunkAndWarpImage : " )
-      + QString::fromUtf8( CPLGetLastErrorMsg()  ) );
-     return;
+                          QObject::tr( "Cannot ChunkAndWarpImage : " )
+                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return;
   }
 
   GDALDestroyGenImgProjTransformer( myWarpOptions->pTransformerArg );
   GDALDestroyWarpOptions( myWarpOptions );
 
-  // flush should not be necessary 
+  // flush should not be necessary
   //GDALFlushCache  (  myGdalMemDataset );
   // this was causing crash ???
   // The MEM driver does not free() the memory passed as DATAPOINTER so we can closee the dataset
-  GDALClose( myGdalMemDataset ); 
+  GDALClose( myGdalMemDataset );
 
 }
 
-double  QgsGdalProvider::noDataValue() const {
-  if ( mNoDataValue.size () > 0 ) {
+double  QgsGdalProvider::noDataValue() const
+{
+  if ( mNoDataValue.size() > 0 )
+  {
     return mNoDataValue[0];
   }
   return std::numeric_limits<int>::max(); // should not happen or be used
 }
 
-void QgsGdalProvider::computeMinMax ( int theBandNo ) 
+void QgsGdalProvider::computeMinMax( int theBandNo )
 {
-  QgsDebugMsg( QString("theBandNo = %1 mMinMaxComputed = %2").arg(theBandNo).arg(mMinMaxComputed[theBandNo-1]) );
-  if ( mMinMaxComputed[theBandNo-1] ) return; 
+  QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
+  if ( mMinMaxComputed[theBandNo-1] ) return;
   double GDALrange[2];
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALComputeRasterMinMax( myGdalBand, 1, GDALrange ); //Approximate
-  QgsDebugMsg( QString("GDALrange[0] = %1 GDALrange[1] = %2").arg(GDALrange[0]).arg(GDALrange[1]) );
-  mMinimum[theBandNo-1] = GDALrange[0]; 
-  mMaximum[theBandNo-1] = GDALrange[1]; 
+  QgsDebugMsg( QString( "GDALrange[0] = %1 GDALrange[1] = %2" ).arg( GDALrange[0] ).arg( GDALrange[1] ) );
+  mMinimum[theBandNo-1] = GDALrange[0];
+  mMaximum[theBandNo-1] = GDALrange[1];
 }
 
-double  QgsGdalProvider::minimumValue( int theBandNo ) const 
+double  QgsGdalProvider::minimumValue( int theBandNo ) const
 {
-  QgsDebugMsg( QString("theBandNo = %1").arg(theBandNo) );
+  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
   //computeMinMax ( theBandNo );
   return  mMinimum[theBandNo-1];
 }
 double  QgsGdalProvider::maximumValue( int theBandNo ) const
 {
-  QgsDebugMsg( QString("theBandNo = %1").arg(theBandNo) );
+  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
   //computeMinMax ( theBandNo );
   return  mMaximum[theBandNo-1];
 }
@@ -682,11 +681,11 @@ double  QgsGdalProvider::maximumValue( int theBandNo ) const
  * @param theList a pointer the object that will hold the color table
  * @return true of a color table was able to be read, false otherwise
  */
-QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable(int theBandNumber)const 
+QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int theBandNumber )const
 {
   QgsDebugMsg( "entered." );
   QList<QgsColorRampShader::ColorRampItem> ct;
-  
+
 
   //Invalid band number, segfault prevention
   if ( 0 >= theBandNumber )
@@ -784,14 +783,16 @@ QgsRectangle QgsGdalProvider::extent()
 
 // this is only called once when statistics are calculated
 // TODO
-int QgsGdalProvider::xBlockSize() const { 
-  return mXBlockSize; 
-} 
-int QgsGdalProvider::yBlockSize() const { 
-  return mYBlockSize; 
+int QgsGdalProvider::xBlockSize() const
+{
+  return mXBlockSize;
+}
+int QgsGdalProvider::yBlockSize() const
+{
+  return mYBlockSize;
 }
 
-int QgsGdalProvider::xSize() const { return mWidth; } 
+int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
 bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
@@ -826,7 +827,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
       double value;
 
       CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-          &value, 1, 1, GDT_Float64, 0, 0 );
+                                 &value, 1, 1, GDT_Float64, 0, 0 );
 
       if ( err != CPLE_None )
       {
@@ -859,18 +860,19 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
 
 int QgsGdalProvider::capabilities() const
 {
-  int capability = QgsRasterDataProvider::Identify 
-                | QgsRasterDataProvider::ExactResolution
-                | QgsRasterDataProvider::EstimatedMinimumMaximum
-                | QgsRasterDataProvider::BuildPyramids
-                | QgsRasterDataProvider::Histogram
-                | QgsRasterDataProvider::Size;
+  int capability = QgsRasterDataProvider::Identify
+                   | QgsRasterDataProvider::ExactResolution
+                   | QgsRasterDataProvider::EstimatedMinimumMaximum
+                   | QgsRasterDataProvider::BuildPyramids
+                   | QgsRasterDataProvider::Histogram
+                   | QgsRasterDataProvider::Size;
   return capability;
 }
 
 int QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 {
-  switch ( theGdalDataType ) {
+  switch ( theGdalDataType )
+  {
     case GDT_Unknown:
       return QgsRasterDataProvider::UnknownDataType;
       break;
@@ -916,23 +918,24 @@ int QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 
 int QgsGdalProvider::srcDataType( int bandNo ) const
 {
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo ); 
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
-  return dataTypeFormGdal ( myGdalDataType );
+  return dataTypeFormGdal( myGdalDataType );
 }
 
 int QgsGdalProvider::dataType( int bandNo ) const
 {
-  return dataTypeFormGdal ( mGdalDataType[bandNo-1] );
+  return dataTypeFormGdal( mGdalDataType[bandNo-1] );
 }
 
 int QgsGdalProvider::bandCount() const
 {
-  return GDALGetRasterCount( mGdalDataset);
+  return GDALGetRasterCount( mGdalDataset );
 }
 
-int QgsGdalProvider::colorInterpretation ( int theBandNo ) const {
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo ); 
+int QgsGdalProvider::colorInterpretation( int theBandNo ) const
+{
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   return GDALGetRasterColorInterpretation( myGdalBand );
 }
 
@@ -945,7 +948,7 @@ void QgsGdalProvider::registerGdalDrivers()
 
 bool QgsGdalProvider::isValid()
 {
-  QgsDebugMsg ( QString("valid = %1").arg(mValid)); 
+  QgsDebugMsg( QString( "valid = %1" ).arg( mValid ) );
   return mValid;
 }
 
@@ -1061,8 +1064,8 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
  * @param theTryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
  * @return null string on success, otherwise a string specifying error
  */
-QString QgsGdalProvider::buildPyramids(  QList<QgsRasterPyramid> const & theRasterPyramidList,
-                                       QString const & theResamplingMethod, bool theTryInternalFlag )
+QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRasterPyramidList,
+                                        QString const & theResamplingMethod, bool theTryInternalFlag )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated infomation
@@ -1352,7 +1355,7 @@ QGISEXTERN bool isProvider()
 */
 QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
 {
-  QgsDebugMsg("Entered");
+  QgsDebugMsg( "Entered" );
   // first get the GDAL driver manager
   //registerGdalDrivers();
 

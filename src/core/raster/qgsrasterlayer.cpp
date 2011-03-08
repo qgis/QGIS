@@ -6,7 +6,7 @@ copyright            : (C) 2003 by Tim Sutton, Steve Halasz and Gary E.Sherman
 email                : tim at linfiniti.com
  ***************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -96,7 +96,7 @@ QgsRasterLayer::QgsRasterLayer(
     , mHeight( std::numeric_limits<int>::max() )
     , mInvertColor( false )
 {
-  QgsDebugMsg("Entered");
+  QgsDebugMsg( "Entered" );
 
   // TODO, call constructor with provider key for now
   init();
@@ -136,7 +136,7 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
   init();
   // if we're given a provider type, try to create and bind one to this layer
   bool loadDefaultStyleFlag = false ; // ???
-  setDataProvider( providerKey, layers, styles, format, crs, loadDefaultStyleFlag);
+  setDataProvider( providerKey, layers, styles, format, crs, loadDefaultStyleFlag );
 
   // Default for the popup menu
   // TODO: popMenu = 0;
@@ -178,7 +178,7 @@ QgsRasterLayer::~QgsRasterLayer()
 /////////////////////////////////////////////////////////
 /**
   Builds the list of file filter strings to later be used by
-  QgisApp::addRasterLayer() 
+  QgisApp::addRasterLayer()
   We query GDAL for a list of supported raster formats; we then build
   a list of file filter strings from that list.  We return a string
   that contains this list that is suitable for use in a
@@ -188,17 +188,18 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
 {
   QgsDebugMsg( "Entered" );
   QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal" );
-  if ( !myLib ) 
+  if ( !myLib )
   {
     QgsDebugMsg( "Could not load gdal provider library" );
     return;
   }
   buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( myLib->resolve( "buildSupportedRasterFileFilter" ) );
-  if ( ! pBuild ) {
-    QgsDebugMsg( "Could not resolve buildSupportedRasterFileFilter in gdal provider library");
+  if ( ! pBuild )
+  {
+    QgsDebugMsg( "Could not resolve buildSupportedRasterFileFilter in gdal provider library" );
     return;
   }
-  
+
   pBuild( theFileFiltersString );
   delete myLib;
 }
@@ -208,20 +209,21 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
  */
 bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg )
 {
-  
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal");
-  if ( !myLib ) 
+
+  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal" );
+  if ( !myLib )
   {
     QgsDebugMsg( "Could not load gdal provider library" );
     return false;
   }
   isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( myLib->resolve( "isValidRasterFileName" ) );
-  if ( ! pValid ) {
-    QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library");
+  if ( ! pValid )
+  {
+    QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library" );
     return false;
   }
-  
-  bool myIsValid = pValid( theFileNameQString, retErrMsg  );
+
+  bool myIsValid = pValid( theFileNameQString, retErrMsg );
   delete myLib;
   return myIsValid;
 }
@@ -267,7 +269,7 @@ const QString QgsRasterLayer::bandName( int theBandNo )
 {
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
-    //vector starts at base 0, band counts at base1 !
+    //vector starts at base 0, band counts at base1!
     return mRasterStatsList[theBandNo - 1].bandName;
   }
   else
@@ -319,8 +321,8 @@ int QgsRasterLayer::bandNumber( QString const & theBandName )
  */
 const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
 {
-  QgsDebugMsg( "theBandNo = " + QString::number(theBandNo) );
-  QgsDebugMsg( "mRasterType = " + QString::number(mRasterType) );
+  QgsDebugMsg( "theBandNo = " + QString::number( theBandNo ) );
+  QgsDebugMsg( "mRasterType = " + QString::number( mRasterType ) );
   if ( mRasterType == ColorLayer )
   {
     // Statistics have no sense for ColorLayer
@@ -369,7 +371,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
   //reset the main app progress bar
   emit drawingProgress( 0, 0 );
 
-  int myDataType = mDataProvider->dataType ( theBandNo );
+  int myDataType = mDataProvider->dataType( theBandNo );
 
   int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
   myXBlockSize = mDataProvider->xBlockSize();
@@ -378,7 +380,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
   myNXBlocks = ( mDataProvider->xSize() + myXBlockSize - 1 ) / myXBlockSize;
   myNYBlocks = ( mDataProvider->ySize() + myYBlockSize - 1 ) / myYBlockSize;
 
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( mDataProvider->dataTypeSize(theBandNo ) / 8 ) );
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( mDataProvider->dataTypeSize( theBandNo ) / 8 ) );
 
   // unfortunately we need to make two passes through the data to calculate stddev
   bool myFirstIterationFlag = true;
@@ -544,7 +546,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBand
 QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyramidList,
                                        QString const & theResamplingMethod, bool theTryInternalFlag )
 {
-  return mDataProvider->buildPyramids(  theRasterPyramidList, theResamplingMethod, theTryInternalFlag );
+  return mDataProvider->buildPyramids( theRasterPyramidList, theResamplingMethod, theTryInternalFlag );
 }
 
 
@@ -586,8 +588,8 @@ void QgsRasterLayer::computeMinimumMaximumEstimates( int theBand, double* theMin
 
   if ( 0 < theBand && theBand <= ( int ) bandCount() )
   {
-    theMinMax[0] = mDataProvider->minimumValue(theBand);
-    theMinMax[1] = mDataProvider->maximumValue(theBand);
+    theMinMax[0] = mDataProvider->minimumValue( theBand );
+    theMinMax[1] = mDataProvider->maximumValue( theBand );
   }
 }
 
@@ -768,17 +770,17 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
   const QgsRectangle& theViewExtent = rendererContext.extent();
-  
+
   QgsRectangle myProjectedViewExtent;
   QgsRectangle myProjectedLayerExtent;
-  
-  if ( rendererContext.coordinateTransform() ) 
+
+  if ( rendererContext.coordinateTransform() )
   {
     QgsDebugMsg( "coordinateTransform set -> project extents." );
-    myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox (
-      rendererContext.extent() );
-    myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox (
-      mLayerExtent );
+    myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox(
+                              rendererContext.extent() );
+    myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox(
+                               mLayerExtent );
   }
   else
   {
@@ -819,11 +821,13 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
 
   myRasterViewPort->mDrawnExtent = myRasterExtent;
-  if ( rendererContext.coordinateTransform() ) 
+  if ( rendererContext.coordinateTransform() )
   {
     myRasterViewPort->mSrcCRS = crs();
     myRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destCRS();
-  } else {
+  }
+  else
+  {
     myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
     myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
   }
@@ -835,38 +839,39 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   // align to output device grid, i.e. floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
   // for other devices (pdf) it can have floating point origin
-  // we could use floating point for raster devices as well, but respecting the 
-  // output device grid should make it more effective as the resampling is done in 
-  // the provider anyway      
-  if ( true ) 
+  // we could use floating point for raster devices as well, but respecting the
+  // output device grid should make it more effective as the resampling is done in
+  // the provider anyway
+  if ( true )
   {
     myRasterViewPort->topLeftPoint.setX( floor( myRasterViewPort->topLeftPoint.x() ) );
     myRasterViewPort->topLeftPoint.setY( floor( myRasterViewPort->topLeftPoint.y() ) );
     myRasterViewPort->bottomRightPoint.setX( ceil( myRasterViewPort->bottomRightPoint.x() ) );
     myRasterViewPort->bottomRightPoint.setY( ceil( myRasterViewPort->bottomRightPoint.y() ) );
     // recalc myRasterExtent to aligned values
-    myRasterExtent.set ( 
-      theQgsMapToPixel.toMapCoordinatesF ( myRasterViewPort->topLeftPoint.x(), 
-                                           myRasterViewPort->bottomRightPoint.y() ),
-      theQgsMapToPixel.toMapCoordinatesF ( myRasterViewPort->bottomRightPoint.x(), 
-                                           myRasterViewPort->topLeftPoint.y() )
+    myRasterExtent.set(
+      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->topLeftPoint.x(),
+                                          myRasterViewPort->bottomRightPoint.y() ),
+      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->bottomRightPoint.x(),
+                                          myRasterViewPort->topLeftPoint.y() )
     );
 
   }
 
-  myRasterViewPort->drawableAreaXDim = static_cast<int>( qAbs(( myRasterExtent.width() / theQgsMapToPixel.mapUnitsPerPixel() ) ));
-  myRasterViewPort->drawableAreaYDim = static_cast<int>( qAbs(( myRasterExtent.height() / theQgsMapToPixel.mapUnitsPerPixel() ) ));
+  myRasterViewPort->drawableAreaXDim = static_cast<int>( qAbs(( myRasterExtent.width() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
+  myRasterViewPort->drawableAreaYDim = static_cast<int>( qAbs(( myRasterExtent.height() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
 
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
   //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
-  /*
+#if 0
   if ( 2 >= myRasterViewPort->clippedWidth && 2 >= myRasterViewPort->clippedHeight )
   {
     myRasterViewPort->drawableAreaXDim = myRasterViewPort->clippedWidth;
     myRasterViewPort->drawableAreaYDim = myRasterViewPort->clippedHeight;
   }
-  */
+#endif
+
   QgsDebugMsgLevel( QString( "mapUnitsPerPixel = %1" ).arg( theQgsMapToPixel.mapUnitsPerPixel() ), 3 );
   QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( mWidth ), 3 );
   QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( mHeight ), 3 );
@@ -882,7 +887,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
   QgsDebugMsgLevel( QString( "drawableAreaXDim = %1" ).arg( myRasterViewPort->drawableAreaXDim ), 3 );
   QgsDebugMsgLevel( QString( "drawableAreaYDim = %1" ).arg( myRasterViewPort->drawableAreaYDim ), 3 );
-  
+
   QgsDebugMsgLevel( "ReadXml: gray band name : " + mGrayBandName, 3 );
   QgsDebugMsgLevel( "ReadXml: red band name : " + mRedBandName, 3 );
   QgsDebugMsgLevel( "ReadXml: green band name : " + mGreenBandName, 3 );
@@ -917,7 +922,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // procedure to use :
   //
 
-  QgsDebugMsg( "mDrawingStyle = " + QString::number(mDrawingStyle) );
+  QgsDebugMsg( "mDrawingStyle = " + QString::number( mDrawingStyle ) );
   switch ( mDrawingStyle )
   {
       // a "Gray" or "Undefined" layer drawn as a range of gray colors
@@ -1055,7 +1060,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       else
       {
         drawSingleBandColorData( theQPainter, theRasterViewPort,
-                            theQgsMapToPixel, bandNumber( mGrayBandName ) );
+                                 theQgsMapToPixel, bandNumber( mGrayBandName ) );
         break;
       }
 
@@ -1109,7 +1114,7 @@ QString QgsRasterLayer::drawingStyleAsString() const
 }
 
 /**
- * @note Note implemented yet
+ * @note Not implemented yet
  * @return always returns false
  */
 bool QgsRasterLayer::hasCompatibleSymbology( const QgsMapLayer& theOther ) const
@@ -1130,7 +1135,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
 {
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
-    //vector starts at base 0, band counts at base1 !
+    //vector starts at base 0, band counts at base1!
     return mRasterStatsList[theBandNo - 1].statsGathered;
   }
   else
@@ -1150,7 +1155,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
 
   QgsDebugMsg( "identify provider : " + mProviderKey ) ;
   return ( mDataProvider->identify( thePoint, theResults ) );
-} 
+}
 
 /**
  * @note  The arbitraryness of the returned document is enforced by WMS standards up to at least v1.3.0
@@ -1249,7 +1254,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
     //
     // Get the adjusted matrix stats
     //
-    QString myColorerpretation = mDataProvider->colorInterpretationName ( 1 );
+    QString myColorerpretation = mDataProvider->colorInterpretationName( 1 );
 
     //
     // Create the legend pixmap - note it is generated on the preadjusted stats
@@ -1502,7 +1507,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
   //
   // Get the adjusted matrix stats
   //
-  QString myColorerpretation = mDataProvider->colorInterpretationName ( 1 );
+  QString myColorerpretation = mDataProvider->colorInterpretationName( 1 );
   QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
   QPainter myQPainter;
   //
@@ -1995,7 +2000,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
     //QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = myShader.colorRampItemList();
 
     //if ( readColorTable( 1, &myColorRampItemList ) )
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable ( 1 );
+    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( 1 );
     // TODO: add CT capability? It can depends on band (?)
     if ( myColorRampItemList.size() > 0 )
     {
@@ -2047,7 +2052,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
  */
 void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
 {
-  QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo ); 
+  QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
   mDataProvider->populateHistogram( theBandNo, myRasterBandStats, theBinCount, theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag );
 }
 
@@ -2089,10 +2094,9 @@ void QgsRasterLayer::resetNoDataValue()
   mValidNoDataValue = false;
   if ( mDataProvider != NULL && mDataProvider->bandCount() > 0 )
   {
-    int myRequestValid;
-
     // TODO: add 'has null value' to capabilities
-    /*
+#if 0
+    int myRequestValid;
     myRequestValid = 1;
     double myValue = mDataProvider->noDataValue();
 
@@ -2104,11 +2108,11 @@ void QgsRasterLayer::resetNoDataValue()
     {
       setNoDataValue( -9999.0 );
       mValidNoDataValue = false;
-      
+
     }
-    */
-    setNoDataValue ( mDataProvider->noDataValue() );
-    mValidNoDataValue = mDataProvider->isNoDataValueValid(); 
+#endif
+    setNoDataValue( mDataProvider->noDataValue() );
+    mValidNoDataValue = mDataProvider->isNoDataValueValid();
   }
 }
 
@@ -2120,7 +2124,7 @@ void QgsRasterLayer::setBlueBandName( QString const & theBandName )
 
 void QgsRasterLayer::init()
 {
-  // keep this until mGeoTransform occurences are removed ! 
+  // keep this until mGeoTransform occurences are removed!
   mGeoTransform[0] =  0;
   mGeoTransform[1] =  1;
   mGeoTransform[2] =  0;
@@ -2158,7 +2162,7 @@ void QgsRasterLayer::init()
   mLastViewPort.drawableAreaYDim = 0;
 }
 
-QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey ) 
+QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
 {
   QgsDebugMsg( "theProviderKey = " + theProviderKey );
   // load the plugin
@@ -2185,7 +2189,7 @@ QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
 
   // load the data provider
   QLibrary*  myLib = new QLibrary( myLibPath );
-  
+
   QgsDebugMsg( "Library name is " + myLib->fileName() );
   bool loaded = myLib->load();
 
@@ -2199,7 +2203,7 @@ QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
 }
 
 // This code should be shared also by vector layer -> move it to QgsMapLayer
-QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QString theDataSource ) 
+QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QString theDataSource )
 {
   QgsDebugMsg( "Entered" );
   QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( theProviderKey );
@@ -2215,8 +2219,8 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !classFactory )
   {
-      QgsLogger::warning( "QgsRasterLayer::setDataProvider: Cannot resolve the classFactory function" );
-      return NULL;
+    QgsLogger::warning( "QgsRasterLayer::setDataProvider: Cannot resolve the classFactory function" );
+    return NULL;
   }
   QgsDebugMsg( "Getting pointer to a mDataProvider object from the library" );
   //XXX - This was a dynamic cast but that kills the Windows
@@ -2240,8 +2244,9 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QStringList const & layers,
                                       QStringList const & styles,
                                       QString const & format,
-                                      QString const & crs) {
-  setDataProvider ( provider, layers, styles, format, crs, false );
+                                      QString const & crs )
+{
+  setDataProvider( provider, layers, styles, format, crs, false );
 }
 
 /** Copied from QgsVectorLayer::setDataProvider
@@ -2257,7 +2262,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
-  mProviderKey = provider;     
+  mProviderKey = provider;
   mValid = false;            // assume the layer is invalid until we determine otherwise
 
   // set the layer name (uppercase first character)
@@ -2270,17 +2275,17 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   mBandCount = 0;
   mRasterShader = new QgsRasterShader();
 
-  mDataProvider = QgsRasterLayer::loadProvider ( mProviderKey, mDataSource );
-  if ( !mDataProvider ) 
+  mDataProvider = QgsRasterLayer::loadProvider( mProviderKey, mDataSource );
+  if ( !mDataProvider )
   {
     return;
   }
 
 
-  QgsDebugMsg( "Instantiated the data provider plugin" 
-              + QString( " with layer list of " ) + layers.join( ", " ) 
-              + " and style list of " + styles.join( ", " ) 
-              + " and format of " + format +  " and CRS of " + crs );
+  QgsDebugMsg( "Instantiated the data provider plugin"
+               + QString( " with layer list of " ) + layers.join( ", " )
+               + " and style list of " + styles.join( ", " )
+               + " and format of " + format +  " and CRS of " + crs );
   if ( ! mDataProvider->isValid() )
   {
     QgsLogger::warning( "QgsRasterLayer::setDataProvider: Data provider is invalid." );
@@ -2307,7 +2312,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   mWidth = mDataProvider->xSize();
   mHeight = mDataProvider->ySize();
- 
+
 
   // upper case the first letter of the layer name
   QgsDebugMsg( "mLayerName: " + name() );
@@ -2347,7 +2352,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     //Store the default color table
     //readColorTable( i, &myRasterBandStats.colorTable );
     QList<QgsColorRampShader::ColorRampItem> ct;
-    ct = mDataProvider->colorTable(i);
+    ct = mDataProvider->colorTable( i );
     myRasterBandStats.colorTable = ct;
 
     mRasterStatsList.push_back( myRasterBandStats );
@@ -2366,8 +2371,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   //decide what type of layer this is...
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
-  QgsDebugMsg("bandCount = " + QString::number( mDataProvider->bandCount()));
-  QgsDebugMsg("dataType = " + QString::number( mDataProvider->dataType( 1 )));
+  QgsDebugMsg( "bandCount = " + QString::number( mDataProvider->bandCount() ) );
+  QgsDebugMsg( "dataType = " + QString::number( mDataProvider->dataType( 1 ) ) );
   if (( mDataProvider->bandCount() > 1 ) )
   {
     mRasterType = Multiband;
@@ -2375,13 +2380,13 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
   {
     mRasterType = ColorLayer;
-  } 
+  }
   //TODO hasBand is really obsolete and only used in the Palette instance, change to new function hasPalette(int)
   //else if ( hasBand( "Palette" ) ) //don't tr() this its a gdal word!
   // not sure if is worth to add colorTable capability - CT can be empty in any case
   // Calc bandStatistics is very slow!!!
-  //else if ( bandStatistics(1).colorTable.count() > 0 )  
-  else if ( mDataProvider->colorInterpretation(1) == QgsRasterDataProvider::PaletteIndex )
+  //else if ( bandStatistics(1).colorTable.count() > 0 )
+  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::PaletteIndex )
   {
     mRasterType = Palette;
   }
@@ -2390,10 +2395,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mRasterType = GrayOrUndefined;
   }
 
-  QgsDebugMsg("mRasterType = " + QString::number(mRasterType));
+  QgsDebugMsg( "mRasterType = " + QString::number( mRasterType ) );
   if ( mRasterType == ColorLayer )
   {
-    QgsDebugMsg("Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number ( SingleBandColorDataStyle ) );
+    QgsDebugMsg( "Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
     mDrawingStyle = SingleBandColorDataStyle;
     mGrayBandName = bandName( 1 );  //sensible default
   }
@@ -2486,12 +2491,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   // TODO ???
   //if ( loadDefaultStyleFlag )
   //{
-    //bool defaultLoadedFlag = false;
-    //loadDefaultStyle( defaultLoadedFlag );
-    //if ( defaultLoadedFlag )
-    //{
-      //return;
-    //}
+  //bool defaultLoadedFlag = false;
+  //loadDefaultStyle( defaultLoadedFlag );
+  //if ( defaultLoadedFlag )
+  //{
+  //return;
+  //}
   //}
 
   QgsDebugMsg( "exiting." );
@@ -2648,11 +2653,11 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
   }
   else if ( theDrawingStyleQString == "SingleBandColorDataStyle" )//no need to tr() this its not shown in ui
   {
-    QgsDebugMsg("Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number ( SingleBandColorDataStyle ) );
+    QgsDebugMsg( "Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
     mDrawingStyle = SingleBandColorDataStyle;
-    QgsDebugMsg("Setted mDrawingStyle to " + QString::number ( mDrawingStyle ) );
+    QgsDebugMsg( "Setted mDrawingStyle to " + QString::number( mDrawingStyle ) );
   }
-  else 
+  else
   {
     mDrawingStyle = UndefinedDrawingStyle;
   }
@@ -2682,7 +2687,7 @@ void QgsRasterLayer::setLayerOrder( QStringList const & layers )
 
 void QgsRasterLayer::setMaximumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag )
 {
-  QgsDebugMsg( "setMaximumValue theValue = " + QString::number(theValue) );
+  QgsDebugMsg( "setMaximumValue theValue = " + QString::number( theValue ) );
   if ( 0 < theBand && theBand <= bandCount() )
   {
     mContrastEnhancementList[theBand - 1].setMaximumValue( theValue, theGenerateLookupTableFlag );
@@ -2728,7 +2733,7 @@ void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
 
 void QgsRasterLayer::setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag )
 {
-  QgsDebugMsg( "setMinimumValue theValue = " + QString::number(theValue) );
+  QgsDebugMsg( "setMinimumValue theValue = " + QString::number( theValue ) );
   if ( 0 < theBand && theBand <= bandCount() )
   {
     mContrastEnhancementList[theBand - 1].setMinimumValue( theValue, theGenerateLookupTableFlag );
@@ -2823,23 +2828,23 @@ void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
   //TODO: This should be depreciated and a new function written that just returns a new QPixmap, it will be safer
   if ( 0 == theQPixmap ) { return; }
 
-  theQPixmap->fill ( ); //defaults to white
+  theQPixmap->fill( );  //defaults to white
 
   QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
-  
+
   double myMapUnitsPerPixel;
   double myX = 0.0;
   double myY = 0.0;
   QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width()/myExtent.height() >=  theQPixmap->width() / theQPixmap->height() )
+  if ( myExtent.width() / myExtent.height() >=  theQPixmap->width() / theQPixmap->height() )
   {
     myMapUnitsPerPixel = myExtent.width() / theQPixmap->width();
-    myY = (theQPixmap->height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
+    myY = ( theQPixmap->height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
   }
   else
   {
     myMapUnitsPerPixel = myExtent.height() / theQPixmap->height();
-    myX = (theQPixmap->width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
+    myX = ( theQPixmap->width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
   }
 
   double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
@@ -2849,7 +2854,7 @@ void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
   myRasterViewPort->topLeftPoint = QgsPoint( myX, myY );
 
   //myRasterViewPort->bottomRightPoint = QgsPoint( theQPixmap->width(), theQPixmap->height() );
-  
+
   myRasterViewPort->bottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
   myRasterViewPort->drawableAreaXDim = theQPixmap->width();
   myRasterViewPort->drawableAreaYDim = theQPixmap->height();
@@ -2860,7 +2865,7 @@ void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
   myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
   myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
 
-  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel); 
+  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
 
   QPainter * myQPainter = new QPainter( theQPixmap );
   draw( myQPainter, myRasterViewPort, myMapToPixel );
@@ -3181,9 +3186,7 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
     QString format = rpNode.namedItem( "wmsFormat" ).toElement().text();
 
     // Collect CRS
-    QString crs = srs().authid();
-
-    setDataProvider( mProviderKey, layers, styles, format, crs );
+    setDataProvider( mProviderKey, layers, styles, format, crs().authid() );
   }
   else
   {
@@ -3654,14 +3657,14 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
     //from calling generate raster band stats
     mRGBMinimumMaximumEstimated = true;
 
-    setMinimumValue( myRedBandNo, mDataProvider->minimumValue ( myRedBandNo ) );
-    setMaximumValue( myRedBandNo, mDataProvider->maximumValue ( myRedBandNo ) );
+    setMinimumValue( myRedBandNo, mDataProvider->minimumValue( myRedBandNo ) );
+    setMaximumValue( myRedBandNo, mDataProvider->maximumValue( myRedBandNo ) );
 
-    setMinimumValue( myGreenBandNo, mDataProvider->minimumValue ( myGreenBandNo ) );
-    setMaximumValue( myGreenBandNo, mDataProvider->maximumValue ( myGreenBandNo ) );
+    setMinimumValue( myGreenBandNo, mDataProvider->minimumValue( myGreenBandNo ) );
+    setMaximumValue( myGreenBandNo, mDataProvider->maximumValue( myGreenBandNo ) );
 
-    setMinimumValue( myBlueBandNo, mDataProvider->minimumValue ( myBlueBandNo ) );
-    setMaximumValue( myBlueBandNo, mDataProvider->maximumValue ( myBlueBandNo ) );
+    setMinimumValue( myBlueBandNo, mDataProvider->minimumValue( myBlueBandNo ) );
+    setMaximumValue( myBlueBandNo, mDataProvider->maximumValue( myBlueBandNo ) );
   }
 
   //Read and display pixels
@@ -3840,7 +3843,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
  * @param theRasterViewPort pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
  * @param theQgsMapToPixel transformation between map coordinates and canvas pixels
  * @param theBandNo band number
-  */
+ */
 void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
@@ -3924,7 +3927,6 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
  * @param theBandNo band number
  gray.
  */
-
 void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
@@ -4034,7 +4036,7 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
   }
 
   int myDataType = mDataProvider->dataType( theBandNo );
-  QgsDebugMsg( "myDataType = " + QString::number( myDataType) ); 
+  QgsDebugMsg( "myDataType = " + QString::number( myDataType ) );
   QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   imageBuffer.reset();
 
@@ -4061,12 +4063,12 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
     //This case will be true the first time the image is loaded, so just approimate the min max to keep
     //from calling generate raster band stats
     mGrayMinimumMaximumEstimated = true;
-    setMaximumValue( theBandNo, mDataProvider->maximumValue ( theBandNo ) );
-    setMinimumValue( theBandNo, mDataProvider->minimumValue ( theBandNo ) );
+    setMaximumValue( theBandNo, mDataProvider->maximumValue( theBandNo ) );
+    setMinimumValue( theBandNo, mDataProvider->minimumValue( theBandNo ) );
 
   }
 
-  QgsDebugMsg( " -> imageBuffer.nextScanLine");
+  QgsDebugMsg( " -> imageBuffer.nextScanLine" );
   while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
     //QgsDebugMsg( " rendering line");
@@ -4075,7 +4077,7 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
       myGrayValue = readValue( rasterScanLine, myDataType, i );
       //QgsDebugMsg( QString( "i = %1 myGrayValue = %2 ").arg(i).arg( myGrayValue ) );
       //if ( myGrayValue != -2147483647 ) {
-        //QgsDebugMsg( "myGrayValue = " + QString::number( myGrayValue ) );
+      //QgsDebugMsg( "myGrayValue = " + QString::number( myGrayValue ) );
       //}
 
       if ( mValidNoDataValue && ( qAbs( myGrayValue - mNoDataValue ) <= TINY_VALUE || myGrayValue != myGrayValue ) )
@@ -4202,10 +4204,12 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   }
 }
 
-//QString QgsRasterLayer::generateBandName( int theBandNumber )
-//{
-  //return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
-//}
+#if 0
+QString QgsRasterLayer::generateBandName( int theBandNumber )
+{
+  return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
+}
+#endif
 
 /**
  * This method looks to see if a given band name exists.
@@ -4218,7 +4222,7 @@ bool QgsRasterLayer::hasBand( QString const & theBandName )
 
   for ( int i = 1; i <= mDataProvider->bandCount(); i++ )
   {
-    QString myColorQString = mDataProvider->colorInterpretationName ( i );
+    QString myColorQString = mDataProvider->colorInterpretationName( i );
 #ifdef QGISDEBUG
     QgsLogger::debug( "band", i, __FILE__, __FUNCTION__, __LINE__, 2 );
 #endif
@@ -4249,9 +4253,9 @@ QString QgsRasterLayer::projectionWkt()
  */
 void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
 {
-  int size = mDataProvider->dataTypeSize(bandNo)/8;
+  int size = mDataProvider->dataTypeSize( bandNo ) / 8;
 
-/*
+#if 0
   QgsDebugMsg( "calling RasterIO with " +
                QString( ", source NW corner: " ) + QString::number( viewPort->rectXOffset ) +
                ", " + QString::number( viewPort->rectYOffset ) +
@@ -4259,7 +4263,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
                ", " + QString::number( viewPort->clippedHeight ) +
                ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
-*/
+#endif
   void *data = VSIMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
 
   /* Abort if out of memory */
@@ -4270,13 +4274,13 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
   else
   {
     // TODO: check extent
-    QgsRectangle partExtent ( 
-      viewPort->mDrawnExtent.xMinimum(), 
+    QgsRectangle partExtent(
+      viewPort->mDrawnExtent.xMinimum(),
       viewPort->mDrawnExtent.yMinimum(),
-      viewPort->mDrawnExtent.xMaximum(), 
-      viewPort->mDrawnExtent.yMaximum() 
+      viewPort->mDrawnExtent.xMaximum(),
+      viewPort->mDrawnExtent.yMaximum()
     );
-    mDataProvider->readBlock ( bandNo, partExtent, viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), data );
+    mDataProvider->readBlock( bandNo, partExtent, viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), data );
   }
   return data;
 }
@@ -4422,7 +4426,7 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
 }
 
 QgsRasterImageBuffer::QgsRasterImageBuffer( QgsRasterDataProvider *dataProvider, int bandNo, QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* geoTransform ):
-    mDataProvider( dataProvider ), mBandNo(bandNo), mPainter( p ), mViewPort( viewPort ), mMapToPixel( mapToPixel ), mGeoTransform( geoTransform ), mValid( false ), mWritingEnabled( true ), mDrawPixelRect( false ), mCurrentImage( 0 ), mCurrentGDALData( 0 )
+    mDataProvider( dataProvider ), mBandNo( bandNo ), mPainter( p ), mViewPort( viewPort ), mMapToPixel( mapToPixel ), mGeoTransform( geoTransform ), mValid( false ), mWritingEnabled( true ), mDrawPixelRect( false ), mCurrentImage( 0 ), mCurrentGDALData( 0 )
 {
 
 }
@@ -4496,7 +4500,7 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
   {
     *imageScanLine = 0;
   }
-  int size = mDataProvider->dataTypeSize(mBandNo)/8;
+  int size = mDataProvider->dataTypeSize( mBandNo ) / 8;
   *rasterScanLine = ( unsigned char * )mCurrentGDALData + mCurrentPartImageRow * mViewPort->drawableAreaXDim * size;
 
   ++mCurrentPartImageRow;
@@ -4512,7 +4516,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
   {
     if ( mWritingEnabled )
     {
-      // TODO: consider similar system with raster providers, see the comment 
+      // TODO: consider similar system with raster providers, see the comment
       // in QgsRasterImageBuffer::drawPixelRectangle()
       // e.g request the block with raster resolution and draw pixels as rectangles
       //if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight )
@@ -4533,9 +4537,9 @@ bool QgsRasterImageBuffer::createNextPartImage()
           imageY = mViewPort->topLeftPoint.y() + mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel();
         }
 
-        QgsDebugMsg( QString("mCurrentPartRasterMin = %1").arg( mCurrentPartRasterMin) );
-        QgsDebugMsg( QString("imageX = %1 imageY = %2").arg(imageX).arg(imageY) );
-        mPainter->drawImage( QPointF ( imageX, imageY ), //the top-left point in the paint device
+        QgsDebugMsg( QString( "mCurrentPartRasterMin = %1" ).arg( mCurrentPartRasterMin ) );
+        QgsDebugMsg( QString( "imageX = %1 imageY = %2" ).arg( imageX ).arg( imageY ) );
+        mPainter->drawImage( QPointF( imageX, imageY ),  //the top-left point in the paint device
                              *mCurrentImage );
       }
     }
@@ -4545,7 +4549,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
   CPLFree( mCurrentGDALData ); mCurrentGDALData = 0;
 
   mCurrentPart++; // NEW
-  QgsDebugMsg( QString("mCurrentPartRasterMax = %1 mViewPort->drawableAreaYDim = %2").arg(mCurrentPartRasterMax).arg(mViewPort->drawableAreaYDim) );
+  QgsDebugMsg( QString( "mCurrentPartRasterMax = %1 mViewPort->drawableAreaYDim = %2" ).arg( mCurrentPartRasterMax ).arg( mViewPort->drawableAreaYDim ) );
   if ( mCurrentPartRasterMax >= mViewPort->drawableAreaYDim )
   {
     return false; //already at the end...
@@ -4561,7 +4565,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
   mCurrentPartImageRow = 0;
 
   //read GDAL image data
-  int size = mDataProvider->dataTypeSize ( mBandNo ) / 8 ;
+  int size = mDataProvider->dataTypeSize( mBandNo ) / 8 ;
   int xSize = mViewPort->drawableAreaXDim;
   int ySize = mViewPort->drawableAreaYDim;
 
@@ -4578,7 +4582,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
     overlapRows = 0;
   }
   int rasterYSize = mCurrentPartRasterMax - mCurrentPartRasterMin + overlapRows;
-  QgsDebugMsg( "rasterYSize = " + QString::number( rasterYSize ));
+  QgsDebugMsg( "rasterYSize = " + QString::number( rasterYSize ) );
 
   // TODO: consider something like this
   //if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight ) //for zoomed in rasters
@@ -4595,23 +4599,23 @@ bool QgsRasterImageBuffer::createNextPartImage()
       //ySize = qAbs((( rasterYSize ) / mMapToPixel->mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5;
     }
   }
-  QgsDebugMsg( QString("xSize = %1 ySize = %2").arg(xSize).arg(ySize) );
+  QgsDebugMsg( QString( "xSize = %1 ySize = %2" ).arg( xSize ).arg( ySize ) );
   if ( ySize < 1 || xSize < 1 )
   {
     return false;
   }
   mNumCurrentImageRows = ySize;
-  QgsDebugMsg( "alloc " + QString::number( size * xSize * ySize) );
+  QgsDebugMsg( "alloc " + QString::number( size * xSize * ySize ) );
   mCurrentGDALData = VSIMalloc( size * xSize * ySize );
 
   double yMax = mViewPort->mDrawnExtent.yMaximum() - mCurrentRow * mMapToPixel->mapUnitsPerPixel();
   double yMin = yMax - ySize * mMapToPixel->mapUnitsPerPixel();
 
-  QgsDebugMsg( QString("mCurrentRow = %1 yMaximum = %2 ySize = %3 mapUnitsPerPixel = %4").arg(mCurrentRow).arg(mViewPort->mDrawnExtent.yMaximum()).arg(ySize).arg(mMapToPixel->mapUnitsPerPixel()) );
-  QgsRectangle myPartExtent ( mViewPort->mDrawnExtent.xMinimum(), yMin,
-                            mViewPort->mDrawnExtent.xMaximum(), yMax );
+  QgsDebugMsg( QString( "mCurrentRow = %1 yMaximum = %2 ySize = %3 mapUnitsPerPixel = %4" ).arg( mCurrentRow ).arg( mViewPort->mDrawnExtent.yMaximum() ).arg( ySize ).arg( mMapToPixel->mapUnitsPerPixel() ) );
+  QgsRectangle myPartExtent( mViewPort->mDrawnExtent.xMinimum(), yMin,
+                             mViewPort->mDrawnExtent.xMaximum(), yMax );
   QgsDebugMsg( "myPartExtent is " + myPartExtent.toString() );
-  mDataProvider->readBlock ( mBandNo, myPartExtent, xSize, ySize, mViewPort->mSrcCRS, mViewPort->mDestCRS, mCurrentGDALData );
+  mDataProvider->readBlock( mBandNo, myPartExtent, xSize, ySize, mViewPort->mSrcCRS, mViewPort->mDestCRS, mCurrentGDALData );
 
   //create the QImage
   if ( mWritingEnabled )
@@ -4630,9 +4634,9 @@ void QgsRasterImageBuffer::drawPixelRectangle()
 {
 // TODO: consider using similar with raster providers, originaly it was used only with
 //    2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight
-// but why? but I believe that it should be used always if the ration of original 
+// but why? but I believe that it should be used always if the ration of original
 // raster resolution and device resolution is under certain limit
-/*
+#if 0
   // Set up the initial offset into the myQImage we want to copy to the map canvas
   // This is useful when the source image pixels are larger than the screen image.
   int paintXoffset = 0;
@@ -4654,7 +4658,7 @@ void QgsRasterImageBuffer::drawPixelRectangle()
                      * qAbs( mGeoTransform[5] )
                    );
 
-    
+
   }
 
   //fix for zoomed in rasters
@@ -4753,7 +4757,7 @@ void QgsRasterImageBuffer::drawPixelRectangle()
       }
     }
   }
-*/
+#endif
 }
 
 // Keep this for now, it is used by Python interface!!!
@@ -4767,8 +4771,9 @@ void QgsRasterLayer::registerGdalDrivers()
 bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList )
 {
   // TODO : check if exists - returned vale?
-  QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable ( theBandNumber );
-  if ( myColorRampItemList.size() == 0 ) {
+  QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( theBandNumber );
+  if ( myColorRampItemList.size() == 0 )
+  {
     return false;
   }
   *theList = myColorRampItemList;

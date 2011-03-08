@@ -23,12 +23,13 @@
 #include <QTime>
 #include <QMap>
 
-void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data ) 
+void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data )
 {
-  QgsDebugMsg("Entered");
+  QgsDebugMsg( "Entered" );
   QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
 
-  if ( ! theSrcCRS.isValid() || ! theDestCRS.isValid() ) {
+  if ( ! theSrcCRS.isValid() || ! theDestCRS.isValid() )
+  {
     readBlock( bandNo, viewExtent, width, height, data );
     return;
   }
@@ -38,21 +39,21 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExt
 
   double mMaxSrcXRes = 0;
   double mMaxSrcYRes = 0;
-  
-  if ( capabilities() & QgsRasterDataProvider::ExactResolution ) 
+
+  if ( capabilities() & QgsRasterDataProvider::ExactResolution )
   {
-    mMaxSrcXRes = extent().width()/xSize();
-    mMaxSrcYRes = extent().height()/ySize();
+    mMaxSrcXRes = extent().width() / xSize();
+    mMaxSrcYRes = extent().height() / ySize();
   }
 
-  QgsRasterProjector myProjector = QgsRasterProjector ( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes );
+  QgsRasterProjector myProjector = QgsRasterProjector( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes );
 
   QgsDebugMsg( QString( "create projector time  (ms): %1" ).arg( time.elapsed() ) );
 
   // TODO: init data by nulls
 
   // Allocate memory for not projected source data
-  int mySize = dataTypeSize(bandNo)/8;
+  int mySize = dataTypeSize( bandNo ) / 8;
   void *mySrcData = malloc( mySize * myProjector.srcRows() * myProjector.srcCols() );
 
   time.restart();
@@ -67,13 +68,15 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExt
   int mySrcCol;
   int mySrcOffset;
   int myDestOffset;
-  for ( int r = 0; r < height; r++) {
-    for ( int c = 0; c < width; c++) {
-      myProjector.srcRowCol ( r, c, &mySrcRow, &mySrcCol );
+  for ( int r = 0; r < height; r++ )
+  {
+    for ( int c = 0; c < width; c++ )
+    {
+      myProjector.srcRowCol( r, c, &mySrcRow, &mySrcCol );
       mySrcOffset = mySize * ( mySrcRow * myProjector.srcCols() + mySrcCol );
       myDestOffset = mySize * ( r * width + c );
-      // retype to char is just to avoid g++ warning 
-      memcpy( (char*) data + myDestOffset, (char*)mySrcData + mySrcOffset, mySize );
+      // retype to char is just to avoid g++ warning
+      memcpy(( char* ) data + myDestOffset, ( char* )mySrcData + mySrcOffset, mySize );
     }
   }
   QgsDebugMsg( QString( "reproject block time  (ms): %1" ).arg( time.elapsed() ) );

@@ -298,14 +298,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //
 
     /** \brief Initialize default values */
-    void init ();
+    void init();
 
     // For backward compatibility (Python) get rid of it once python is updated
     void setDataProvider( const QString & provider,
                           const QStringList & layers,
                           const QStringList & styles,
                           const QString & format,
-                          const QString & crs);
+                          const QString & crs );
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider,
                           const QStringList & layers,
@@ -314,9 +314,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                           const QString & crs,
                           bool loadDefaultStyleFlag );
 
-    static QLibrary* loadProviderLibrary( QString theProviderKey);
-    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0);
-    
+    static QLibrary* loadProviderLibrary( QString theProviderKey );
+    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );
+
 
     /** \brief  Accessor for blue band name mapping */
     QString blueBandName() const { return mBlueBandName; }
@@ -657,7 +657,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                            bool theTryInternalFlag = false );
 
     /** \brief Populate the histogram vector for a given band */
-    
+
     void populateHistogram( int theBandNoInt,
                             int theBinCountInt = 256,
                             bool theIgnoreOutOfRangeFlag = true,
@@ -692,9 +692,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //
     /** \brief Drawing routine for color type data  */
     void drawSingleBandColorData( QPainter * theQPainter,
-                             QgsRasterViewPort * theRasterViewPort,
-                             const QgsMapToPixel* theQgsMapToPixel,
-                             int theBandNoInt  );
+                                  QgsRasterViewPort * theRasterViewPort,
+                                  const QgsMapToPixel* theQgsMapToPixel,
+                                  int theBandNoInt );
 
     /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor( QPainter * theQPainter,
@@ -912,7 +912,7 @@ class CORE_EXPORT QgsRasterImageBuffer
 {
   public:
     QgsRasterImageBuffer( QgsRasterDataProvider *dataProvider, int bandNo, QPainter* p,
-                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform  );
+                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform );
     ~QgsRasterImageBuffer();
     void reset( int maxPixelsInVirtualMemory = 5000000 );
     /**Returns a pointer to the next scan line (or 0 if end)*/
@@ -948,7 +948,7 @@ class CORE_EXPORT QgsRasterImageBuffer
     int mCurrentPartImageRow; //current image row
     int mNumCurrentImageRows; //number of image rows for the current part
 
-    int mCurrentPart; 
+    int mCurrentPart;
 
     //current memory image and gdal scan data
     QImage* mCurrentImage;

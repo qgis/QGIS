@@ -516,7 +516,7 @@ void QgsRasterLayerProperties::sync()
       break;
   }
 
-  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType ) 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
   {
     delete tabPageSymbology;
     delete tabPageColormap;
@@ -525,12 +525,12 @@ void QgsRasterLayerProperties::sync()
     tabBar->setCurrentWidget( tabPageMetadata );
   }
 
-  if ( ! ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
+  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
     delete tabPagePyramids;
   }
 
-  if ( ! ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
+  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
   {
     delete tabPageHistogram;
   }
@@ -562,8 +562,8 @@ void QgsRasterLayerProperties::sync()
   //
   // Populate the various controls on the form
   //
-  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
-  { 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
+  {
     QgsDebugMsg( "colorShadingAlgorithm = " + QString::number( mRasterLayer->colorShadingAlgorithm() ) );
     if ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandPseudoColor ||
          mRasterLayer->drawingStyle() == QgsRasterLayer::PalettedColor ||
@@ -593,7 +593,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
   {
     if ( rbtnThreeBand->isChecked() )
     {
@@ -782,7 +782,7 @@ void QgsRasterLayerProperties::sync()
 
   //display the raster dimensions and no data value
   if ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
-  {  
+  {
     lblColumns->setText( tr( "Columns: %1" ).arg( mRasterLayer->width() ) );
     lblRows->setText( tr( "Rows: %1" ).arg( mRasterLayer->height() ) );
   }
@@ -793,8 +793,8 @@ void QgsRasterLayerProperties::sync()
     lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
   }
 
-  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType )
-  { 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
+  {
     lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
   }
   else
@@ -843,7 +843,7 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
 
-  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType ) 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
   {
     return;
   }
@@ -935,7 +935,7 @@ bool QgsRasterLayerProperties::validUserDefinedMinMax()
  */
 void QgsRasterLayerProperties::apply()
 {
-  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
   {
     QgsDebugMsg( "apply processing symbology tab" );
     /*
@@ -1425,7 +1425,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->triggerRepaint();
 
   //Because Min Max values can be set during the redraw if a strech is requested we need to resync after apply
-  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
   {
     if ( QgsContrastEnhancement::NoEnhancement != mRasterLayer->contrastEnhancementAlgorithm() )
     {
@@ -1668,7 +1668,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 
 void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QString& theText )
 {
-  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType ) 
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
   {
     return;
   }
@@ -2586,9 +2586,9 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
 
 void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
 {
-  if (   mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray
-         || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray
-         || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor ) 
+  if ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray
+       || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray
+       || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor )
   {
     QgsRasterBandStats myRasterBandStats;
     double myMinimumMaximum[2];

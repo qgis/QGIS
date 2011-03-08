@@ -52,7 +52,8 @@ class QgsGrass
       Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {}
     };
 
-    struct Color {
+    struct Color
+    {
       double value1, value2;
       int red1, red2, green1, green2, blue1, blue2;
     };
@@ -196,7 +197,7 @@ class QgsGrass
 
     // ! Get raster map size
     static GRASS_EXPORT void size( QString gisdbase, QString location,
-        QString mapset, QString map, int *cols, int *rows );
+                                   QString mapset, QString map, int *cols, int *rows );
 
     // ! Get raster info
     static GRASS_EXPORT QHash<QString, QString> info( QString gisdbase, QString location,
