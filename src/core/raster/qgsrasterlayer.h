@@ -241,8 +241,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       //added in 1.6 to fix naming glitch
       MultiBandSingleBandGray = MultiBandSingleGandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
       MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
-      MultiBandColor                  //a layer containing 2 or more bands, mapped to RGB color space.
-      //In the case of a multiband with only two bands, one band will be mapped to more than one color.
+      MultiBandColor,                  //a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
+      SingleBandColorDataStyle         // ARGB values rendered directly
     };
 
     /** \brief This enumerator describes the type of raster layer */
@@ -250,7 +250,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     {
       GrayOrUndefined,
       Palette,
-      Multiband
+      Multiband,
+      ColorLayer
     } ;
 
     /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
@@ -270,10 +271,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * band populated, any additional stats are calculated on a need to know basis.*/
     typedef QList<QgsRasterBandStats> RasterStatsList;
 
-
-
-
-
     //
     // Static methods:
     //
@@ -286,21 +283,40 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
     static bool isValidRasterFileName( const QString & theFileNameQString );
-    static QStringList subLayers( GDALDatasetH dataset );
+    //static QStringList subLayers( GDALDatasetH dataset );
 
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
+    // Keep this for now, it is used by Python interface!!!
     /** \brief ensures that GDAL drivers are registered, but only once */
     static void registerGdalDrivers();
-
-
-
 
     //
     // Non Static inline methods
     //
+
+    /** \brief Initialize default values */
+    void init ();
+
+    // For backward compatibility (Python) get rid of it once python is updated
+    void setDataProvider( const QString & provider,
+                          const QStringList & layers,
+                          const QStringList & styles,
+                          const QString & format,
+                          const QString & crs);
+    /**  [ data provider interface ] Set the data provider */
+    void setDataProvider( const QString & provider,
+                          const QStringList & layers,
+                          const QStringList & styles,
+                          const QString & format,
+                          const QString & crs,
+                          bool loadDefaultStyleFlag );
+
+    static QLibrary* loadProviderLibrary( QString theProviderKey);
+    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0);
+    
 
     /** \brief  Accessor for blue band name mapping */
     QString blueBandName() const { return mBlueBandName; }
@@ -362,12 +378,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red color) */
     QString redBandName() const { return mRedBandName; }
 
-    /**  [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider,
-                          const QStringList & layers,
-                          const QStringList & styles,
-                          const QString & format,
-                          const QString & crs );
 
     /** \brief Mutator for drawing style */
     void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; }
@@ -401,10 +411,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Accessor that returns the width of the (unclipped) raster  */
     int width() { return mWidth; }
-
-
-
-
 
     //
     // Non Static methods
@@ -550,6 +556,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     double rasterUnitsPerPixel();
 
     /** \brief Read color table from GDAL raster band */
+    // Keep this for QgsRasterLayerProperties
     bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
 
     /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
@@ -627,10 +634,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
 
-
-
-
-
     //
     // Virtural methods
     //
@@ -647,10 +650,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     virtual void setSubLayerVisibility( const QString & name, bool vis );
 
-
-
-
-
   public slots:
     /** \brief Create GDAL pyramid overviews */
     QString buildPyramids( const RasterPyramidList &,
@@ -658,6 +657,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                            bool theTryInternalFlag = false );
 
     /** \brief Populate the histogram vector for a given band */
+    
     void populateHistogram( int theBandNoInt,
                             int theBinCountInt = 256,
                             bool theIgnoreOutOfRangeFlag = true,
@@ -668,16 +668,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Propagate progress updates from GDAL up to the parent app */
     void updateProgress( int, int );
 
-
-
-
-
   signals:
     /** \brief Signal for notifying listeners of long running processes */
     void progressUpdate( int theValue );
-
-
-
 
   protected:
 
@@ -693,14 +686,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Write layer specific state to project file Dom node */
     bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
-
-
-
-
   private:
     //
     // Private methods
     //
+    /** \brief Drawing routine for color type data  */
+    void drawSingleBandColorData( QPainter * theQPainter,
+                             QgsRasterViewPort * theRasterViewPort,
+                             const QgsMapToPixel* theQgsMapToPixel,
+                             int theBandNoInt  );
 
     /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor( QPainter * theQPainter,
@@ -764,30 +758,25 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Find out whether a given band exists.    */
     bool hasBand( const QString &  theBandName );
 
-    /** \brief Places the rendered image onto the canvas */
-    void paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPort * theRasterViewPort,
-                             const QgsMapToPixel* theQgsMapToPixel, QImage* theImage );
-
     /** \brief Query GDAL to find out the Wkt projection string for this layer.*/
     QString projectionWkt();
 
     /** \brief Allocate memory and load data to that allocated memory */
-    void* readData( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort );
+    //void* readData( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort );
+    void* readData( int bandNo, QgsRasterViewPort *viewPort );
 
     /** \brief Load the given raster file */
     bool readFile( const QString & fileName );
 
     /** \brief Read a raster value given position from memory block created by readData() */
-    inline double readValue( void *data, GDALDataType type, int index );
+    //inline double readValue( void *data, GDALDataType type, int index );
+    inline double readValue( void *data, int type, int index );
 
     /** \brief Update the layer if it is outdated */
     bool update();
 
     /** \brief Verify and transform band name for internal consistency. Return 'Not Set' on any type of failure */
     QString validateBandName( const QString & theBandName );
-
-
-
 
     //
     // Private member vars
@@ -829,10 +818,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString mErrorCaption;
 
     /** \brief Pointer to the gdaldataset */
-    GDALDatasetH mGdalBaseDataset;
+    //GDALDatasetH mGdalBaseDataset;
 
     /** \brief Pointer to the gdaldataset (possibly warped vrt) */
-    GDALDatasetH mGdalDataset;
+    //GDALDatasetH mGdalDataset;
 
     /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
     double mGeoTransform[6];
@@ -864,7 +853,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterViewPort mLastViewPort;
 
     /**  [ data provider interface ] pointer for loading the provider library */
-    QLibrary* mLib;
+    //QLibrary* mLib;
 
     /**  [ data provider interface ] Flag indicating whether the layer has been modified since the last commit*/
     bool mModified;
@@ -922,8 +911,8 @@ class QPainter;*/
 class CORE_EXPORT QgsRasterImageBuffer
 {
   public:
-    QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p,
-                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform );
+    QgsRasterImageBuffer( QgsRasterDataProvider *dataProvider, int bandNo, QPainter* p,
+                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform  );
     ~QgsRasterImageBuffer();
     void reset( int maxPixelsInVirtualMemory = 5000000 );
     /**Returns a pointer to the next scan line (or 0 if end)*/
@@ -939,7 +928,8 @@ class CORE_EXPORT QgsRasterImageBuffer
     /**Peter's fix for zoomed in rasters*/
     void drawPixelRectangle();
 
-    GDALRasterBandH mRasterBand; //raster band
+    QgsRasterDataProvider* mDataProvider;
+    int mBandNo;
     QPainter* mPainter;
     QgsRasterViewPort* mViewPort;
     const QgsMapToPixel* mMapToPixel;
@@ -957,6 +947,8 @@ class CORE_EXPORT QgsRasterImageBuffer
     int mCurrentPartRasterMax; //maximum (raster source) row of current image
     int mCurrentPartImageRow; //current image row
     int mNumCurrentImageRows; //number of image rows for the current part
+
+    int mCurrentPart; 
 
     //current memory image and gdal scan data
     QImage* mCurrentImage;

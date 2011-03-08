@@ -27,6 +27,7 @@ extern "C"
 #include "qgsexception.h"
 #include <QString>
 #include <QMap>
+#include <QHash>
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
 
@@ -49,6 +50,11 @@ class QgsGrass
     {
       //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
       Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {}
+    };
+
+    struct Color {
+      double value1, value2;
+      int red1, red2, green1, green2, blue1, blue2;
     };
 
     //! Get info about the mode
@@ -187,6 +193,18 @@ class QgsGrass
     // ! Get map extent
     static GRASS_EXPORT QgsRectangle extent( QString gisdbase, QString location,
         QString mapset, QString map, MapType type = None );
+
+    // ! Get raster map size
+    static GRASS_EXPORT void size( QString gisdbase, QString location,
+        QString mapset, QString map, int *cols, int *rows );
+
+    // ! Get raster info
+    static GRASS_EXPORT QHash<QString, QString> info( QString gisdbase, QString location,
+        QString mapset, QString map, MapType type );
+
+    // ! List of Color
+    static GRASS_EXPORT QList<QgsGrass::Color> colors( QString gisdbase, QString location,
+        QString mapset, QString map );
 
     // ! Get map value / feautre info
     static GRASS_EXPORT QMap<QString, QString> query( QString gisdbase, QString location,

@@ -111,13 +111,13 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
      * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
      * @return QgsCoordinateReferenceSystem of the layer's coordinate system
      */
-    QgsCoordinateReferenceSystem& sourceCrs() { return mSourceCRS; }
+    const QgsCoordinateReferenceSystem& sourceCrs() const { return mSourceCRS; }
 
     /*!
      * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
      * @return QgsCoordinateReferenceSystem of the map canvas coordinate system
      */
-    QgsCoordinateReferenceSystem& destCRS() { return mDestCRS; }
+    const QgsCoordinateReferenceSystem& destCRS() const { return mDestCRS; }
 
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,

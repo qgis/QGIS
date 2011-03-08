@@ -1,8 +1,8 @@
 /***************************************************************************
-      qgsgrassrasterprovider.h  -  QGIS Data provider for
-                           GRASS rasters
+      qgsgdalprovider.h  -  QGIS Data provider for
+                           GDAL rasters
                              -------------------
-    begin                : 16 Jan, 2010
+    begin                : November, 2010
     copyright            : (C) 2010 by Radim Blazek
     email                : radim dot blazek at gmail dot com
  ***************************************************************************/
@@ -16,15 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgrassrasterprovider.h 12528 2009-12-20 12:29:07Z jef $ */
+/* $Id: qgsgdalprovider.h 12528 2009-12-20 12:29:07Z jef $ */
 
-#ifndef QGSWMSPROVIDER_H
-#define QGSWMSPROVIDER_H
+#ifndef QGSGDALPROVIDER_H
+#define QGSGDALPROVIDER_H
 
-extern "C"
-{
-#include <grass/gis.h>
-}
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterdataprovider.h"
@@ -37,6 +33,19 @@ extern "C"
 #include <QMap>
 #include <QVector>
 
+class QgsRasterPyramid;
+
+#define CPL_SUPRESS_CPLUSPLUS
+#include <gdal.h>
+
+/** \ingroup core
+ * A call back function for showing progress of gdal operations.
+ */
+int CPL_STDCALL progressCallback( double dfComplete,
+                                  const char *pszMessage,
+                                  void * pProgressArg );
+
+
 class QgsCoordinateTransform;
 
 /**
@@ -48,7 +57,7 @@ class QgsCoordinateTransform;
   data residing in a OGC Web Map Service.
 
 */
-class QgsGrassRasterProvider : public QgsRasterDataProvider
+class QgsGdalProvider : public QgsRasterDataProvider
 {
     //Q_OBJECT
 
@@ -60,10 +69,10 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     *                otherwise we contact the host directly.
     *
     */
-    QgsGrassRasterProvider( QString const & uri = 0 );
+    QgsGdalProvider( QString const & uri = 0 );
 
     //! Destructor
-    ~QgsGrassRasterProvider();
+    ~QgsGdalProvider();
 
     /** \brief   Renders the layer as an image
      */
@@ -180,6 +189,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     int dataType ( int bandNo ) const;
     int srcDataType ( int bandNo ) const;
 
+    int dataTypeFormGdal ( int theGdalDataType ) const;
+
     int bandCount() const;
 
     int colorInterpretation ( int bandNo ) const;
@@ -195,12 +206,12 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
     double noDataValue() const;
-    double minimumValue(int bandNo)const;
-    double maximumValue(int bandNo)const;
+    void computeMinMax(int bandNo);
+    double minimumValue(int bandNo) const;
+    double maximumValue(int bandNo) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable(int bandNo)const;
 
-   // void buildSupportedRasterFileFilter( QString & theFileFiltersString );
 
     /**
      * Get metadata in a format suitable for feeding directly
@@ -215,12 +226,26 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     void setImageEncoding( QString const & mimeType ) {}
     void setImageCrs( QString const & crs ) {}
 
+    /** \brief ensures that GDAL drivers are registered, but only once */
+    static void registerGdalDrivers();
+
+    /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
+    QStringList subLayers() const;
+
     void populateHistogram( int theBandNoInt,
                     QgsRasterBandStats & theBandStats,
                     int theBinCountInt = 256,
                     bool theIgnoreOutOfRangeFlag = true,
                     bool theThoroughBandScanFlag = false
                      );
+
+    QString buildPyramids( const QList<QgsRasterPyramid> &,
+                           const QString &  theResamplingMethod = "NEAREST",
+                           bool theTryInternalFlag = false );
+    QList<QgsRasterPyramid> buildPyramidList();
+
+    /** \brief Close data set and release related data */
+    void closeDataset();
 
 
   private:
@@ -230,20 +255,43 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     bool mValid;
 
-    QString mGisdbase;      // map gisdabase
-    QString mLocation;      // map location name (not path!)
-    QString mMapset;        // map mapset
-    QString mMapName;       // map name
+    /** \brief Whether this raster has overviews / pyramids or not */
+    bool mHasPyramids;
 
-    RASTER_MAP_TYPE mGrassDataType; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
+    /** \brief Gdal data types used to represent data in in QGIS, 
+               may be longer than source data type to keep nulls 
+               indexed from 0 
+     */
+    QList<int>mGdalDataType;
 
-    int mCols;
-    int mRows;
+    QgsRectangle mExtent;
+    int mWidth;
+    int mHeight;
+    int mXBlockSize;
     int mYBlockSize;
 
-    QHash<QString, QString> mInfo;
+    QList<bool> mMinMaxComputed;
+
+    // List of estimated min values, index 0 for band 1
+    QList<double> mMinimum;
+
+    // List of estimated max values, index 0 for band 1
+    QList<double> mMaximum;
+
+    //GDALDataType mGdalDataType;
+
+    /** \brief Pointer to the gdaldataset */
+    GDALDatasetH mGdalBaseDataset;
+
+    /** \brief Pointer to the gdaldataset (possibly warped vrt) */
+    GDALDatasetH mGdalDataset;
+
+    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
+    double mGeoTransform[6];
 
     QgsCoordinateReferenceSystem mCrs;
+
+    QList<QgsRasterPyramid> mPyramidList;
 
 };
 
