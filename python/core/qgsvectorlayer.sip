@@ -598,6 +598,14 @@ public:
       @note: this method was added in version 1.7*/
     void uniqueValues( int index, QList<QVariant>& uniqueValues /Out/, int limit );
 
+    /**Returns minimum value for an attribute column or invalid variant in case of error
+         @note added in 1.7*/
+     QVariant minimumValue( int index );
+
+       /**Returns maximum value for an attribute column or invalid variant in case of error
+         @note added in 1.7*/
+     QVariant maximumValue( int index );
+
 public slots:
 
   /** Select feature by its ID, optionally emit signal selectionChanged() */

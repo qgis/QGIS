@@ -684,12 +684,11 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp )
 {
-  QgsVectorDataProvider* provider = vlayer->dataProvider();
 
   int attrNum = vlayer->fieldNameIndex( attrName );
 
-  double minimum = provider->minimumValue( attrNum ).toDouble();
-  double maximum = provider->maximumValue( attrNum ).toDouble();
+  double minimum = vlayer->minimumValue( attrNum ).toDouble();
+  double maximum = vlayer->maximumValue( attrNum ).toDouble();
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
 
   QList<double> breaks;
@@ -709,8 +708,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     QgsFeature f;
     QgsAttributeList lst;
     lst.append( attrNum );
-    provider->select( lst, QgsRectangle(), false );
-    while ( provider->nextFeature( f ) )
+    vlayer->select( lst, QgsRectangle(), false );
+    while ( vlayer->nextFeature( f ) )
       values.append( f.attributeMap()[attrNum].toDouble() );
     // calculate the breaks
     if ( mode == Quantile )

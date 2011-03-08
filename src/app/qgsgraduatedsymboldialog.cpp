@@ -265,7 +265,6 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 {
   mClassListWidget->clear();
   QGis::GeometryType m_type = mVectorLayer->geometryType();
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   double minimum = 0;
   double maximum = 0;
 
@@ -288,20 +287,16 @@ void QgsGraduatedSymbolDialog::adjustClassification()
   std::map < QString, int >::iterator iter = mFieldMap.find( fieldstring );
   int field = iter->second;
 
-
-  if ( provider )
+  if ( modeComboBox->currentText() == tr( "Equal Interval" ) ||
+       modeComboBox->currentText() == tr( "Quantiles" ) )
   {
-    if ( modeComboBox->currentText() == tr( "Equal Interval" ) ||
-         modeComboBox->currentText() == tr( "Quantiles" ) )
-    {
-      minimum = provider->minimumValue( field ).toDouble();
-      maximum = provider->maximumValue( field ).toDouble();
-    }
-    else                    //don't waste performance if mMode is QgsGraduatedSymbolDialog::EMPTY
-    {
-      minimum = 0;
-      maximum = 0;
-    }
+    minimum = mVectorLayer->minimumValue( field ).toDouble();
+    maximum = mVectorLayer->maximumValue( field ).toDouble();
+  }
+  else                    //don't waste performance if mMode is QgsGraduatedSymbolDialog::EMPTY
+  {
+    minimum = 0;
+    maximum = 0;
   }
 
   //todo: setup a data structure which holds the symbols
@@ -500,30 +495,25 @@ int QgsGraduatedSymbolDialog::quantilesFromVectorLayer( std::list<double>& resul
 {
   if ( mVectorLayer )
   {
-    QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
+    std::vector<double> attributeValues( mVectorLayer->featureCount() );
+    QgsAttributeList attList;
+    attList.push_back( attributeIndex );
+    QgsFeature currentFeature;
+    QgsAttributeMap currentAttributeMap;
+    double currentValue;
+    int index = 0;
 
-    if ( provider )
+    mVectorLayer->select( attList, QgsRectangle(), false );
+    while ( mVectorLayer->nextFeature( currentFeature ) )
     {
-      std::vector<double> attributeValues( provider->featureCount() );
-      QgsAttributeList attList;
-      attList.push_back( attributeIndex );
-      QgsFeature currentFeature;
-      QgsAttributeMap currentAttributeMap;
-      double currentValue;
-      int index = 0;
-
-      provider->select( attList, QgsRectangle(), false );
-      while ( provider->nextFeature( currentFeature ) )
-      {
-        currentAttributeMap = currentFeature.attributeMap();
-        currentValue = currentAttributeMap[attributeIndex].toDouble();
-        attributeValues[index] = currentValue;
-        ++index;
-      }
-
-      sort( attributeValues.begin(), attributeValues.end() );
-      return calculateQuantiles( result, attributeValues, numQuantiles );
+      currentAttributeMap = currentFeature.attributeMap();
+      currentValue = currentAttributeMap[attributeIndex].toDouble();
+      attributeValues[index] = currentValue;
+      ++index;
     }
+
+    sort( attributeValues.begin(), attributeValues.end() );
+    return calculateQuantiles( result, attributeValues, numQuantiles );
   }
   return 1;
 }

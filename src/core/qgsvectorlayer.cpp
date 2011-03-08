@@ -5003,6 +5003,114 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   uniqueValues = val.values();
 }
 
+QVariant QgsVectorLayer::minimumValue( int index )
+{
+  if ( !mDataProvider )
+  {
+    return QVariant();
+  }
+
+  int maxProviderIndex;
+  QgsVectorLayerJoinBuffer::maximumIndex( mDataProvider->fields(), maxProviderIndex );
+
+  if ( index <= maxProviderIndex && !mEditable ) //a provider field
+  {
+    return mDataProvider->minimumValue( index );
+  }
+  else // a joined field?
+  {
+    int indexOffset; //offset between layer index and joined provider index
+    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, maxProviderIndex, indexOffset );
+    if ( join )
+    {
+      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
+      if ( vl )
+      {
+        return vl->minimumValue( index );
+      }
+    }
+  }
+
+  //the layer is editable, but in certain cases it can still be avoided going through all features
+  if ( mDeletedFeatureIds.size() < 1 && mAddedFeatures.size() < 1 && !mDeletedAttributeIds.contains( index ) && mChangedAttributeValues.size() < 1 )
+  {
+    return mDataProvider->minimumValue( index );
+  }
+
+  //we need to go through each feature
+  QgsAttributeList attList;
+  attList << index;
+
+  select( attList, QgsRectangle(), false, false );
+
+  QgsFeature f;
+  double minimumValue = std::numeric_limits<double>::max();
+  double currentValue = 0;
+  while ( nextFeature( f ) )
+  {
+    currentValue = f.attributeMap()[index].toDouble();
+    if ( currentValue < minimumValue )
+    {
+      minimumValue = currentValue;
+    }
+  }
+  return QVariant( minimumValue );
+}
+
+QVariant QgsVectorLayer::maximumValue( int index )
+{
+  if ( !mDataProvider )
+  {
+    return QVariant();
+  }
+
+  int maxProviderIndex;
+  QgsVectorLayerJoinBuffer::maximumIndex( mDataProvider->fields(), maxProviderIndex );
+
+  if ( index <= maxProviderIndex && !mEditable ) //a provider field
+  {
+    return mDataProvider->maximumValue( index );
+  }
+  else // a joined field?
+  {
+    int indexOffset; //offset between layer index and joined provider index
+    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, maxProviderIndex, indexOffset );
+    if ( join )
+    {
+      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
+      if ( vl )
+      {
+        return vl->maximumValue( index );
+      }
+    }
+  }
+
+  //the layer is editable, but in certain cases it can still be avoided going through all features
+  if ( mDeletedFeatureIds.size() < 1 && mAddedFeatures.size() < 1 && !mDeletedAttributeIds.contains( index ) && mChangedAttributeValues.size() < 1 )
+  {
+    return mDataProvider->maximumValue( index );
+  }
+
+  //we need to go through each feature
+  QgsAttributeList attList;
+  attList << index;
+
+  select( attList, QgsRectangle(), false, false );
+
+  QgsFeature f;
+  double maximumValue = -std::numeric_limits<double>::max();
+  double currentValue = 0;
+  while ( nextFeature( f ) )
+  {
+    currentValue = f.attributeMap()[index].toDouble();
+    if ( currentValue > maximumValue )
+    {
+      maximumValue = currentValue;
+    }
+  }
+  return QVariant( maximumValue );
+}
+
 void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )
 {
   mRendererV2->stopRender( rendererContext );
