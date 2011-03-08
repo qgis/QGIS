@@ -807,17 +807,15 @@ void QgisApp::createActions()
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
-  shortcuts->registerAction( mActionWindowMinimize, tr( "Ctrl+M", "Minimize Window" ) );
+  mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
   connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showActiveWindowMinimized() ) );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
-  shortcuts->registerAction( mActionWindowZoom );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
   connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleActiveWindowMaximized() ) );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
-  shortcuts->registerAction( mActionWindowAllToFront );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
   connect( mActionWindowAllToFront, SIGNAL( triggered() ), this, SLOT( bringAllToFront() ) );
 
