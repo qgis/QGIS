@@ -81,29 +81,29 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
       /*! Complex Float64 */                      CFloat64 = 11,
       /*! Color, alpha, red, green, blue, 4 bytes */ ARGBDataType = 12,
       TypeCount = 13          /* maximum type # + 1 */
-    }; 
+    };
 
     // This is modified copy of GDALColorInterp
     enum ColorInterpretation
     {
-      UndefinedColorInterpretation=0,
-      /*! Greyscale */                                      GrayIndex=1,
-      /*! Paletted (see associated color table) */          PaletteIndex=2,
-      /*! Red band of RGBA image */                         RedBand=3,
-      /*! Green band of RGBA image */                       GreenBand=4,
-      /*! Blue band of RGBA image */                        BlueBand=5,
-      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand=6,
-      /*! Hue band of HLS image */                          HueBand=7,
-      /*! Saturation band of HLS image */                   SaturationBand=8,
-      /*! Lightness band of HLS image */                    LightnessBand=9,
-      /*! Cyan band of CMYK image */                        CyanBand=10,
-      /*! Magenta band of CMYK image */                     MagentaBand=11,
-      /*! Yellow band of CMYK image */                      YellowBand=12,
-      /*! Black band of CMLY image */                       BlackBand=13,
-      /*! Y Luminance */                                    YCbCr_YBand=14,
-      /*! Cb Chroma */                                      YCbCr_CbBand=15,
-      /*! Cr Chroma */                                      YCbCr_CrBand=16,
-      /*! Max current value */                              ColorInterpretationMax=16
+      UndefinedColorInterpretation = 0,
+      /*! Greyscale */                                      GrayIndex = 1,
+      /*! Paletted (see associated color table) */          PaletteIndex = 2,
+      /*! Red band of RGBA image */                         RedBand = 3,
+      /*! Green band of RGBA image */                       GreenBand = 4,
+      /*! Blue band of RGBA image */                        BlueBand = 5,
+      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
+      /*! Hue band of HLS image */                          HueBand = 7,
+      /*! Saturation band of HLS image */                   SaturationBand = 8,
+      /*! Lightness band of HLS image */                    LightnessBand = 9,
+      /*! Cyan band of CMYK image */                        CyanBand = 10,
+      /*! Magenta band of CMYK image */                     MagentaBand = 11,
+      /*! Yellow band of CMYK image */                      YellowBand = 12,
+      /*! Black band of CMLY image */                       BlackBand = 13,
+      /*! Y Luminance */                                    YCbCr_YBand = 14,
+      /*! Cb Chroma */                                      YCbCr_CbBand = 15,
+      /*! Cr Chroma */                                      YCbCr_CrBand = 16,
+      /*! Max current value */                              ColorInterpretationMax = 16
     };
 
     QgsRasterDataProvider();
@@ -164,23 +164,23 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual int dataType ( int bandNo ) const
+    virtual int dataType( int bandNo ) const
     {
-      return srcDataType ( bandNo );
+      return srcDataType( bandNo );
     }
 
     /** Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType  
+     *  source data type may be shorter than dataType
      */
-    virtual int srcDataType ( int bandNo ) const
+    virtual int srcDataType( int bandNo ) const
     {
       return QgsRasterDataProvider::UnknownDataType;
     }
 
-    int typeSize ( int dataType ) const
+    int typeSize( int dataType ) const
     {
       // modified copy from GDAL
-      switch( dataType )
+      switch ( dataType )
       {
         case Byte:
           return 8;
@@ -210,24 +210,27 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
           return 0;
       }
     }
-    int dataTypeSize ( int bandNo ) const
+    int dataTypeSize( int bandNo ) const
     {
-      return typeSize ( dataType ( bandNo ) );
+      return typeSize( dataType( bandNo ) );
     }
 
     /** Get numbur of bands */
-    virtual int bandCount() const {
+    virtual int bandCount() const
+    {
       return 1;
     }
 
     /** Returns data type for the band specified by number */
-    virtual int colorInterpretation ( int theBandNo ) const {
+    virtual int colorInterpretation( int theBandNo ) const
+    {
       return QgsRasterDataProvider::UndefinedColorInterpretation;
     }
 
-    QString colorName ( int colorInterpretation ) const {
+    QString colorName( int colorInterpretation ) const
+    {
       // Modified copy from GDAL
-      switch( colorInterpretation )
+      switch ( colorInterpretation )
       {
         case UndefinedColorInterpretation:
           return "Undefined";
@@ -285,23 +288,24 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
       }
     }
     /** Reload data (data could change) */
-    virtual bool reload ( ) { return true; }
+    virtual bool reload( ) { return true; }
 
-    virtual QString colorInterpretationName ( int theBandNo ) const {
-      return colorName ( colorInterpretation ( theBandNo ) );
+    virtual QString colorInterpretationName( int theBandNo ) const
+    {
+      return colorName( colorInterpretation( theBandNo ) );
     }
 
     /** Get block size */
     virtual int xBlockSize() const { return 0; }
     virtual int yBlockSize() const { return 0; }
-    
+
     /** Get raster size */
     virtual int xSize() const { return 0; }
     virtual int ySize() const { return 0; }
 
     /** read block of data  */
     // TODO clarify what happens on the last block (the part outside raster)
-    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data ){}
+    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data ) {}
 
     /** read block of data using give extent and size */
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) {};
@@ -312,30 +316,31 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /** value representing null data */
     virtual double noDataValue() const { return 0; }
 
-    virtual double minimumValue(int bandNo)const { return 0; }
-    virtual double maximumValue(int bandNo)const { return 0; }
+    virtual double minimumValue( int bandNo )const { return 0; }
+    virtual double maximumValue( int bandNo )const { return 0; }
 
-    virtual QList<QgsColorRampShader::ColorRampItem> colorTable(int bandNo)const { return QList<QgsColorRampShader::ColorRampItem>(); }
+    virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const { return QList<QgsColorRampShader::ColorRampItem>(); }
 
     // Defined in parent
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
-    virtual QStringList subLayers() const {
+    virtual QStringList subLayers() const
+    {
       return QStringList();
     }
 
     /** \brief Populate the histogram vector for a given band */
 
     virtual void populateHistogram( int theBandNoInt,
-                    QgsRasterBandStats & theBandStats,
-                    int theBinCountInt = 256,
-                    bool theIgnoreOutOfRangeFlag = true,
-                    bool theThoroughBandScanFlag = false
-                ) {};
+                                    QgsRasterBandStats & theBandStats,
+                                    int theBinCountInt = 256,
+                                    bool theIgnoreOutOfRangeFlag = true,
+                                    bool theThoroughBandScanFlag = false
+                                  ) {};
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false ) { return "FAILED_NOT_SUPPORTED"; };
+                                   const QString &  theResamplingMethod = "NEAREST",
+                                   bool theTryInternalFlag = false ) { return "FAILED_NOT_SUPPORTED"; };
 
     /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -346,7 +351,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
 
     /** \brief helper function to create zero padded band names */
-    QString  generateBandName( int theBandNumber ) 
+    QString  generateBandName( int theBandNumber )
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
     }

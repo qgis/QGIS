@@ -693,14 +693,16 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   // TODO: optimize to avoid writing to QImage
   QImage* image = draw( viewExtent, pixelWidth, pixelHeight );
 
-  if ( ! image ) { // should not happen
+  if ( ! image )   // should not happen
+  {
     QgsDebugMsg( "image is NULL" );
     return;
   }
-  QgsDebugMsg( QString("image height = %1 bytesPerLine = %2").arg(image->height() ) . arg ( image->bytesPerLine() ) ) ;
+  QgsDebugMsg( QString( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) ) ;
   int myExpectedSize = pixelWidth * pixelHeight * 4;
   int myImageSize = image->height() *  image->bytesPerLine();
-  if ( myExpectedSize != myImageSize ) { // should not happen
+  if ( myExpectedSize != myImageSize )   // should not happen
+  {
     QgsDebugMsg( "unexpected image size" );
     return;
   }
@@ -1009,7 +1011,7 @@ int QgsWmsProvider::srcDataType( int bandNo ) const
 int QgsWmsProvider::bandCount() const
 {
   return 1;
-} 
+}
 
 void QgsWmsProvider::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {

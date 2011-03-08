@@ -186,14 +186,14 @@ class QgsGdalProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    int dataType ( int bandNo ) const;
-    int srcDataType ( int bandNo ) const;
+    int dataType( int bandNo ) const;
+    int srcDataType( int bandNo ) const;
 
-    int dataTypeFormGdal ( int theGdalDataType ) const;
+    int dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
-    int colorInterpretation ( int bandNo ) const;
+    int colorInterpretation( int bandNo ) const;
 
     int xBlockSize() const;
     int yBlockSize() const;
@@ -206,18 +206,18 @@ class QgsGdalProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
     double noDataValue() const;
-    void computeMinMax(int bandNo);
-    double minimumValue(int bandNo) const;
-    double maximumValue(int bandNo) const;
+    void computeMinMax( int bandNo );
+    double minimumValue( int bandNo ) const;
+    double maximumValue( int bandNo ) const;
 
-    QList<QgsColorRampShader::ColorRampItem> colorTable(int bandNo)const;
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
 
     /**
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString metadata(); 
+    QString metadata();
 
     // Following methods specific for  WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
     void addLayers( QStringList const &  layers, QStringList const &  styles = QStringList() ) {}
@@ -233,11 +233,11 @@ class QgsGdalProvider : public QgsRasterDataProvider
     QStringList subLayers() const;
 
     void populateHistogram( int theBandNoInt,
-                    QgsRasterBandStats & theBandStats,
-                    int theBinCountInt = 256,
-                    bool theIgnoreOutOfRangeFlag = true,
-                    bool theThoroughBandScanFlag = false
-                     );
+                            QgsRasterBandStats & theBandStats,
+                            int theBinCountInt = 256,
+                            bool theIgnoreOutOfRangeFlag = true,
+                            bool theThoroughBandScanFlag = false
+                          );
 
     QString buildPyramids( const QList<QgsRasterPyramid> &,
                            const QString &  theResamplingMethod = "NEAREST",
@@ -258,9 +258,9 @@ class QgsGdalProvider : public QgsRasterDataProvider
     /** \brief Whether this raster has overviews / pyramids or not */
     bool mHasPyramids;
 
-    /** \brief Gdal data types used to represent data in in QGIS, 
-               may be longer than source data type to keep nulls 
-               indexed from 0 
+    /** \brief Gdal data types used to represent data in in QGIS,
+               may be longer than source data type to keep nulls
+               indexed from 0
      */
     QList<int>mGdalDataType;
 

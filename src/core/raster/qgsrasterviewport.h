@@ -40,7 +40,7 @@ struct QgsRasterViewPort
   QgsPoint bottomRightPoint;
   /** \brief Distance in map units from left edge to right edge for the part of the raster that
    * is to be rendered.*/
-  
+
   int drawableAreaXDim;
   /** \brief Distance in map units from bottom edge to top edge for the part of the raster that
    * is to be rendered.*/
