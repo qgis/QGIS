@@ -251,8 +251,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** find out the number of features of the whole layer */
     void recalculateFeatureCount();
 
-    /** tell OGR which fields not to fetch in nextFeature/featureAtId */
-    void setIgnoredFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
+    /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
+    void setRelevantFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );

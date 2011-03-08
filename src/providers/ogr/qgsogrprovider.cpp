@@ -416,7 +416,7 @@ QString QgsOgrProvider::storageType() const
   return ogrDriverName;
 }
 
-void QgsOgrProvider::setIgnoredFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes )
+void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes )
 {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
   if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
@@ -447,7 +447,7 @@ bool QgsOgrProvider::featureAtId( int featureId,
                                   bool fetchGeometry,
                                   QgsAttributeList fetchAttributes )
 {
-  setIgnoredFields( fetchGeometry, fetchAttributes );
+  setRelevantFields( fetchGeometry, fetchAttributes );
 
   OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, featureId );
   if ( fet == NULL )
@@ -461,7 +461,6 @@ bool QgsOgrProvider::featureAtId( int featureId,
     OGR_F_Destroy( fet );
     return false;
   }
-
 
   /* fetch geometry */
   if ( fetchGeometry )
@@ -633,7 +632,7 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
     OGR_G_DestroyGeometry( filter );
   }
 
-  setIgnoredFields( fetchGeometry, fetchAttributes );
+  setRelevantFields( fetchGeometry, fetchAttributes );
 
   //start with first feature
   OGR_L_ResetReading( ogrLayer );
@@ -875,6 +874,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
 bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
 {
+  setRelevantFields( true, mAttributeFields.keys() );
+
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -943,7 +944,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
   clearMinMaxCache();
 
-  setIgnoredFields( true, QgsAttributeList() );
+  setRelevantFields( true, mAttributeFields.keys() );
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -1014,7 +1015,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
 
-  setIgnoredFields( true, QgsAttributeList() );
+  setRelevantFields( true, mAttributeFields.keys() );
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
