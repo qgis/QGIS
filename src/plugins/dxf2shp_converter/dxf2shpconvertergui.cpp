@@ -156,7 +156,7 @@ void dxf2shpConverterGui::getInputFileName()
   QString s = QFileDialog::getOpenFileName( this,
               tr( "Choose a DXF file to open" ),
               settings.value( "/Plugin-DXF/text_path", "./" ).toString(),
-              tr( "Files DXF (*.dxf)" ) );
+              tr( "DXF files (*.dxf)" ) );
 
   name->setText( s );
 }
