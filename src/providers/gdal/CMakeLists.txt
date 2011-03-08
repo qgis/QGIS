@@ -1,0 +1,24 @@
+
+SET(GDAL_SRCS qgsgdalprovider.cpp)
+SET (GDAL_MOC_HDRS  qgsgdalprovider.h)
+
+INCLUDE_DIRECTORIES (
+  ../../core
+  ../../core/raster
+  ${GDAL_INCLUDE_DIR}
+#  ${PROJ_INCLUDE_DIR}
+#  ${GEOS_INCLUDE_DIR}
+)
+
+#QT4_WRAP_CPP(GDAL_MOC_SRCS ${GDAL_MOC_HDRS})
+#ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} ${GDAL_MOC_SRCS})
+ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} )
+
+TARGET_LINK_LIBRARIES (gdalprovider
+  qgis_core
+)
+
+INSTALL(TARGETS gdalprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+

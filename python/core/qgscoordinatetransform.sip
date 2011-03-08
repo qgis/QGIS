@@ -64,7 +64,7 @@ class QgsCoordinateTransform : QObject
      * Set the source (layer) QgsCoordinateReferenceSystem
      * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system
      */
-    void setSourceCrs(const QgsCoordinateReferenceSystem& theCRS);
+    void setSourceCrs( const QgsCoordinateReferenceSystem& theCRS );
 
     /*! 
      * Mutator for dest QgsCoordinateReferenceSystem 
@@ -76,13 +76,13 @@ class QgsCoordinateTransform : QObject
      * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
      * @return QgsCoordinateReferenceSystem of the layer's coordinate system
      */
-    QgsCoordinateReferenceSystem& sourceCrs();
+    const QgsCoordinateReferenceSystem& sourceCrs();
 
     /*! 
      * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
      * @return QgsCoordinateReferenceSystem of the map canvas coordinate system
      */
-    QgsCoordinateReferenceSystem& destCRS();
+    const QgsCoordinateReferenceSystem& destCRS();
 
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,

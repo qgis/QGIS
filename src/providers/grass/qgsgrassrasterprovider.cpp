@@ -29,6 +29,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrasterbandstats.h"
 
 #include <QImage>
 #include <QSettings>
@@ -38,6 +39,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
+#include <QHash>
 
 static QString PROVIDER_KEY = "grassraster";
 static QString PROVIDER_DESCRIPTION = "GRASS raster provider";
@@ -74,7 +76,30 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   QgsDebugMsg( QString( "mapset: %1" ).arg( mMapset ) );
   QgsDebugMsg( QString( "mapName: %1" ).arg( mMapName ) );
 
+  mValidNoDataValue = true; 
+
   mCrs = QgsGrass::crs( mGisdbase, mLocation );
+
+  // the block size can change of course when the raster is overridden
+  // ibut it is only called once when statistics are calculated
+  QgsGrass::size( mGisdbase, mLocation, mMapset, mMapName, &mCols, &mRows );
+
+  mInfo = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster );
+
+  mGrassDataType = mInfo["TYPE"].toInt();
+  QgsDebugMsg( "mGrassDataType = " + QString::number( mGrassDataType ) );
+
+  // TODO: refresh mRows and mCols if raster was rewritten
+  // We have to decide some reasonable block size, not to big to occupate too much
+  // memory, not too small to result in too many calls to readBlock -> qgis.d.rast 
+  // for statistics
+  int cache_size = 10000000; // ~ 10 MB
+  mYBlockSize = cache_size / (dataTypeSize(dataType ( 1 ) )/8) / mCols;
+  if ( mYBlockSize  > mRows ) 
+  {
+    mYBlockSize = mRows;
+  }
+  QgsDebugMsg( "mYBlockSize = " + QString::number ( mYBlockSize ) ); 
 }
 
 QgsGrassRasterProvider::~QgsGrassRasterProvider()
@@ -123,6 +148,153 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   return image;
 }
 
+
+void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
+{
+  QgsDebugMsg( "Entered" );
+  // TODO: optimize, see extent()
+  
+  QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
+
+  QStringList arguments;
+  arguments.append( "map=" +  mMapName + "@" + mMapset );
+
+  QgsRectangle ext = extent();
+
+
+  // TODO: cut the last block
+  double cellHeight = ext.height() / mRows;
+  double yMaximum = ext.yMaximum() - cellHeight * yBlock * mYBlockSize;
+  double yMinimum = yMaximum - cellHeight * mYBlockSize;
+
+  QgsDebugMsg( "mYBlockSize = " + QString::number ( mYBlockSize ) ); 
+  arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
+                     .arg( ext.xMinimum() ).arg( yMinimum )
+                     .arg( ext.xMaximum() ).arg( yMaximum )
+                     .arg( mCols  ).arg( mYBlockSize ) ) );
+
+  arguments.append( "format=value");
+  QProcess process( this );
+  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QByteArray data;
+  try
+  {
+    data = QgsGrass::runModule( mGisdbase, mLocation, cmd, arguments );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
+                          + e.what() );
+
+    // We don't set mValid to false, because the raster can be recreated and work next time
+  }
+  QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
+  // byteCount() in Qt >= 4.6
+  //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
+  int size = mCols * mYBlockSize * dataTypeSize(bandNo) / 8;
+  QgsDebugMsg ( QString ( "mCols = %1 mYBlockSize = %2 dataTypeSize = %3" ).arg ( mCols ).arg ( mYBlockSize ).arg ( dataTypeSize(bandNo) ) ); 
+  if ( size != data.size() ) {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), 
+      QString( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg(size).arg(data.size() )   );
+    size = size < data.size() ? size : data.size();
+  } 
+  memcpy( block, data.data(), size );
+}
+
+void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
+{
+  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
+  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
+  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
+
+  QStringList arguments;
+  arguments.append( "map=" +  mMapName + "@" + mMapset );
+
+  arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
+                     .arg( viewExtent.xMinimum() ).arg( viewExtent.yMinimum() )
+                     .arg( viewExtent.xMaximum() ).arg( viewExtent.yMaximum() )
+                     .arg( pixelWidth ).arg( pixelHeight ) ) );
+  arguments.append( "format=value");
+  QProcess process( this );
+  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QByteArray data;
+  try
+  {
+    data = QgsGrass::runModule( mGisdbase, mLocation, cmd, arguments );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
+                          + e.what() );
+
+    // We don't set mValid to false, because the raster can be recreated and work next time
+    return;
+  }
+  QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
+  // byteCount() in Qt >= 4.6
+  //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
+  int size = pixelWidth * pixelHeight * dataTypeSize(bandNo) / 8;
+  if ( size != data.size() ) {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), 
+      QString( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg(size).arg(data.size() )   );
+    size = size < data.size() ? size : data.size();
+  } 
+  memcpy( block, data.data(), size );
+}
+
+double  QgsGrassRasterProvider::noDataValue() const {
+  double nul;
+  if ( mGrassDataType == CELL_TYPE ) {
+    nul = -2147483647;
+  } else if ( mGrassDataType == DCELL_TYPE ) {
+    nul = 2.2250738585072014e-308;
+  } else if ( mGrassDataType == FCELL_TYPE ) {
+    nul = 1.17549435e-38F;
+  }
+  QgsDebugMsg( QString( "noDataValue = %1" ).arg( nul ) );
+  return nul;
+}
+
+double  QgsGrassRasterProvider::minimumValue( int bandNo ) const {
+  return mInfo["MIN_VALUE"].toDouble();
+}
+double  QgsGrassRasterProvider::maximumValue( int bandNo ) const {
+  return mInfo["MAX_VALUE"].toDouble();
+}
+
+QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable(int bandNo)const {
+  QList<QgsColorRampShader::ColorRampItem> ct;
+  
+  // TODO: check if color can be realy discontinuous in GRASS,
+  // for now we just believe that they are continuous, i.e. end and beginning
+  // of the ramp with the same value has the same color
+  // we are also expecting ordered CT records in the list
+  QList<QgsGrass::Color> colors = QgsGrass::colors( mGisdbase, mLocation, mMapset, mMapName );
+  QList<QgsGrass::Color>::iterator i;
+  
+  double v, r, g, b;
+  for (i = colors.begin(); i != colors.end(); ++i)
+  {
+    if ( ct.count() == 0 || i->value1 != v || i->red1 != r || i->green1 != g || i->blue1 != b ) {
+      // not added in previous rule
+      QgsColorRampShader::ColorRampItem ctItem1;
+      ctItem1.value = i->value1;
+      ctItem1.color = QColor::fromRgb( i->red1, i->green1, i->blue1);
+      ct.append(ctItem1);
+      QgsDebugMsg( QString("color %1 %2 %3 %4").arg(i->value1).arg(i->red1).arg(i->green1).arg(i->blue1) );
+    }
+    QgsColorRampShader::ColorRampItem ctItem2;
+    ctItem2.value = i->value2;
+    ctItem2.color = QColor::fromRgb( i->red2, i->green2, i->blue2);
+    ct.append(ctItem2);
+    QgsDebugMsg( QString("color %1 %2 %3 %4").arg(i->value2).arg(i->red2).arg(i->green2).arg(i->blue2) );
+
+    v = i->value2; r = i->red2; g = i->green2; b = i->blue2;
+  }
+  return ct;
+}
+
 QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs()
 {
   QgsDebugMsg( "Entered" );
@@ -134,10 +306,20 @@ QgsRectangle QgsGrassRasterProvider::extent()
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
 
-  QgsRectangle rect;
-  rect = QgsGrass::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster );
-  return rect;
+  mExtent = QgsGrass::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster );
+  return mExtent;
 }
+
+// this is only called once when statistics are calculated
+int QgsGrassRasterProvider::xBlockSize() const { return mCols; } 
+int QgsGrassRasterProvider::yBlockSize() const { 
+  return mYBlockSize; 
+}
+
+// TODO this should be always refreshed if raster has changed ?
+// maybe also only for stats
+int QgsGrassRasterProvider::xSize() const { return mCols; } 
+int QgsGrassRasterProvider::ySize() const { return mRows; }
 
 bool QgsGrassRasterProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
@@ -149,9 +331,94 @@ bool QgsGrassRasterProvider::identify( const QgsPoint& thePoint, QMap<QString, Q
 
 int QgsGrassRasterProvider::capabilities() const
 {
-  int capability = QgsRasterDataProvider::Identify;
+  int capability = QgsRasterDataProvider::Identify 
+                | QgsRasterDataProvider::ExactResolution
+                | QgsRasterDataProvider::ExactMinimumMaximum
+                | QgsRasterDataProvider::Size;
   return capability;
 }
+
+int QgsGrassRasterProvider::dataType( int bandNo ) const
+{
+  return srcDataType( bandNo );
+}
+
+int QgsGrassRasterProvider::srcDataType( int bandNo ) const
+{
+  switch ( mGrassDataType ) {
+    case CELL_TYPE:
+      return QgsRasterDataProvider::Int32;
+      break;
+    case FCELL_TYPE:
+      return QgsRasterDataProvider::Float32;
+      break;
+    case DCELL_TYPE:
+      return QgsRasterDataProvider::Float64;
+      break;
+  }
+  return QgsRasterDataProvider::UnknownDataType;
+}
+
+int QgsGrassRasterProvider::bandCount() const
+{
+  // TODO
+  return 1;
+}
+
+int QgsGrassRasterProvider::colorInterpretation ( int bandNo ) const {
+  // TODO: avoid loading color table here or cache it
+  QList<QgsColorRampShader::ColorRampItem> ct = colorTable(bandNo);
+  if ( ct.size() > 0 ) {
+    return QgsRasterDataProvider::PaletteIndex;
+  }
+  return QgsRasterDataProvider::GrayIndex;
+}
+
+QString QgsGrassRasterProvider::metadata()
+{
+  QString myMetadata ;
+  QStringList myList;
+  myList.append ( "GISDBASE: " + mGisdbase );
+  myList.append ( "LOCATION: " + mLocation );
+  myList.append ( "MAPSET: " + mMapset );
+  myList.append ( "MAP: " + mMapName );
+
+  QHash<QString, QString>::iterator i;
+  for (i = mInfo.begin(); i != mInfo.end(); ++i)
+  {
+     myList.append ( i.key() + " : " + i.value() );
+  }
+  myMetadata += QgsRasterDataProvider::makeTableCells( myList );
+ 
+
+  return myMetadata;
+}
+
+void QgsGrassRasterProvider::populateHistogram( int theBandNoInt,
+                    QgsRasterBandStats & theBandStats,
+                    int theBinCount,
+                    bool theIgnoreOutOfRangeFlag,
+                    bool theHistogramEstimatedFlag)
+{
+  // TODO: we could either implement it in QgsRasterDataProvider::populateHistogram
+  // or use r.stats (see d.histogram)
+  if ( theBandStats.histogramVector->size() != theBinCount ||
+       theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
+       theHistogramEstimatedFlag != theBandStats.isHistogramEstimated )
+  {
+    theBandStats.histogramVector->clear();
+    theBandStats.isHistogramEstimated = theHistogramEstimatedFlag;
+    theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
+    for ( int myBin = 0; myBin < theBinCount; myBin++ )
+    {
+      theBandStats.histogramVector->push_back( 0 );
+    }
+  }
+  QgsDebugMsg( ">>>>> Histogram vector now contains " + 
+    QString::number( theBandStats.histogramVector->size() ) + " elements" );
+
+}
+
 
 bool QgsGrassRasterProvider::isValid()
 {
@@ -188,6 +455,10 @@ QString  QgsGrassRasterProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
+//void QgsGrassRasterProvider::buildSupportedRasterFileFilter( QString & theFileFiltersString )
+//{
+//}
+
 /**
  * Class factory to return a pointer to a newly created
  * QgsGrassRasterProvider object
@@ -217,4 +488,5 @@ QGISEXTERN bool isProvider()
 {
   return true;
 }
+
 

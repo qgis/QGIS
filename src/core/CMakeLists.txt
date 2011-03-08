@@ -76,6 +76,7 @@ SET(QGIS_CORE_SRCS
   qgsproviderextentcalcevent.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
+  qgsrasterprojector.cpp
   qgsrasterdataprovider.cpp
   qgsrendercontext.cpp
   qgsrectangle.cpp
@@ -408,6 +409,7 @@ SET(QGIS_CORE_HDRS
   qgsproviderextentcalcevent.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
+  qgsrasterprojector.h
   qgsrasterdataprovider.h
   qgsrectangle.h
   qgsrendercontext.h

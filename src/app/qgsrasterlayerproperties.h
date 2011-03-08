@@ -185,7 +185,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         This variable is used to determine if various parts of the Properties UI are
         included or not
      */
-    bool mRasterLayerIsInternal;
+    //bool mRasterLayerIsInternal;
 
     /** \brief Clear current color map table and population with values from new list */
     void populateColorMapTable( const QList<QgsColorRampShader::ColorRampItem>& );

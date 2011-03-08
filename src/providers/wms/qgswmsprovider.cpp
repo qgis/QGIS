@@ -495,7 +495,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
     if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
     {
-      url += "&TRANSPARENT=true";
+      // some servers giving error for 'true' (lowercase)
+      //url += "&TRANSPARENT=true";
+      url += "&TRANSPARENT=TRUE";
     }
 
     mGetFeatureInfoUrlBase = mIgnoreGetFeatureInfoUrl ? mBaseUrl : getFeatureInfoUrl();
@@ -682,6 +684,31 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   }
 
   return cachedImage;
+}
+
+//void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *block )
+void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
+{
+  QgsDebugMsg( "Entered" );
+  // TODO: optimize to avoid writing to QImage
+  QImage* image = draw( viewExtent, pixelWidth, pixelHeight );
+
+  if ( ! image ) { // should not happen
+    QgsDebugMsg( "image is NULL" );
+    return;
+  }
+  QgsDebugMsg( QString("image height = %1 bytesPerLine = %2").arg(image->height() ) . arg ( image->bytesPerLine() ) ) ;
+  int myExpectedSize = pixelWidth * pixelHeight * 4;
+  int myImageSize = image->height() *  image->bytesPerLine();
+  if ( myExpectedSize != myImageSize ) { // should not happen
+    QgsDebugMsg( "unexpected image size" );
+    return;
+  }
+
+  uchar * ptr = image->bits( ) ;
+  memcpy( block, ptr, myExpectedSize );
+  // do not delete the image, it is handled by draw()
+  //delete image;
 }
 
 void QgsWmsProvider::tileReplyFinished()
@@ -969,6 +996,20 @@ void QgsWmsProvider::capabilitiesReplyFinished()
   mCapabilitiesReply->deleteLater();
   mCapabilitiesReply = 0;
 }
+
+int QgsWmsProvider::dataType( int bandNo ) const
+{
+  return srcDataType( bandNo );
+}
+int QgsWmsProvider::srcDataType( int bandNo ) const
+{
+  return QgsRasterDataProvider::ARGBDataType;
+}
+
+int QgsWmsProvider::bandCount() const
+{
+  return 1;
+} 
 
 void QgsWmsProvider::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
@@ -2133,7 +2174,7 @@ bool QgsWmsProvider::calculateExtent()
 
 int QgsWmsProvider::capabilities() const
 {
-  int capability = 0;
+  int capability = NoCapabilities;
   bool canIdentify = false;
 
   QgsDebugMsg( "entering." );
@@ -2168,7 +2209,7 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  QgsDebugMsg( "exiting with '"  + QString( capability )  + "'." );
+  //QgsDebugMsg( "exiting with '"  + QString( capability )  + "'." );
 
   return capability;
 }
@@ -2807,7 +2848,6 @@ QgsCoordinateReferenceSystem QgsWmsProvider::crs()
   // TODO: implement
   return QgsCoordinateReferenceSystem();
 }
-
 
 QString QgsWmsProvider::lastErrorTitle()
 {

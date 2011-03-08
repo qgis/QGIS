@@ -71,8 +71,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
 
-  mRasterLayerIsInternal = mRasterLayer->dataProvider() == 0;
-
   setupUi( this );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
@@ -218,7 +216,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( mRasterLayerIsInternal )
+  if ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids )
   {
     QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildPyramidList();
     QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
@@ -518,17 +516,23 @@ void QgsRasterLayerProperties::sync()
       break;
   }
 
-  if ( !mRasterLayerIsInternal )
+  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType ) 
   {
     delete tabPageSymbology;
     delete tabPageColormap;
-    delete tabPagePyramids;
-    delete tabPageHistogram;
-
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
-
     tabBar->setCurrentWidget( tabPageMetadata );
+  }
+
+  if ( ! ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
+  {
+    delete tabPagePyramids;
+  }
+
+  if ( ! ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
+  {
+    delete tabPageHistogram;
   }
 
 #if 0
@@ -558,35 +562,38 @@ void QgsRasterLayerProperties::sync()
   //
   // Populate the various controls on the form
   //
-  QgsDebugMsg( "colorShadingAlgorithm = " + QString::number( mRasterLayer->colorShadingAlgorithm() ) );
-  if ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandPseudoColor ||
-       mRasterLayer->drawingStyle() == QgsRasterLayer::PalettedColor ||
-       mRasterLayer->drawingStyle() == QgsRasterLayer::PalettedSingleBandPseudoColor ||
-       mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandPseudoColor )
-  {
-    if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::PseudoColorShader )
+  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
+  { 
+    QgsDebugMsg( "colorShadingAlgorithm = " + QString::number( mRasterLayer->colorShadingAlgorithm() ) );
+    if ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandPseudoColor ||
+         mRasterLayer->drawingStyle() == QgsRasterLayer::PalettedColor ||
+         mRasterLayer->drawingStyle() == QgsRasterLayer::PalettedSingleBandPseudoColor ||
+         mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandPseudoColor )
     {
-      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Pseudocolor" ) ) );
+      if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::PseudoColorShader )
+      {
+        cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Pseudocolor" ) ) );
+      }
+      else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::FreakOutShader )
+      {
+        cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Freak Out" ) ) );
+      }
+      else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::ColorRampShader )
+      {
+        cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Colormap" ) ) );
+      }
+      else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::UserDefinedShader )
+      {
+        cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "User Defined" ) ) );
+      }
     }
-    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::FreakOutShader )
+    else
     {
-      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Freak Out" ) ) );
+      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Grayscale" ) ) );
     }
-    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::ColorRampShader )
-    {
-      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Colormap" ) ) );
-    }
-    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::UserDefinedShader )
-    {
-      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "User Defined" ) ) );
-    }
-  }
-  else if ( mRasterLayerIsInternal )
-  {
-    cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Grayscale" ) ) );
   }
 
-  if ( mRasterLayerIsInternal )
+  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
   {
     if ( rbtnThreeBand->isChecked() )
     {
@@ -774,10 +781,24 @@ void QgsRasterLayerProperties::sync()
   leDisplayName->setText( mRasterLayer->name() );
 
   //display the raster dimensions and no data value
-  if ( mRasterLayerIsInternal )
-  {
+  if ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+  {  
     lblColumns->setText( tr( "Columns: %1" ).arg( mRasterLayer->width() ) );
     lblRows->setText( tr( "Rows: %1" ).arg( mRasterLayer->height() ) );
+  }
+  else
+  {
+    // TODO: Account for fixedWidth and fixedHeight WMS layers
+    lblColumns->setText( tr( "Columns: " ) + tr( "n/a" ) );
+    lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
+  }
+
+  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType )
+  { 
+    lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
+  }
+  else
+  {
     if ( mRasterLayer->isNoDataValueValid() )
     {
       lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->noDataValue() ) );
@@ -786,13 +807,6 @@ void QgsRasterLayerProperties::sync()
     {
       lblNoData->setText( tr( "No-Data Value: Not Set" ) );
     }
-  }
-  else
-  {
-    // TODO: Account for fixedWidth and fixedHeight WMS layers
-    lblColumns->setText( tr( "Columns: " ) + tr( "n/a" ) );
-    lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
-    lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
   }
 
   //get the thumbnail for the layer
@@ -824,12 +838,12 @@ void QgsRasterLayerProperties::sync()
 void QgsRasterLayerProperties::syncColormapTab()
 {
   QgsDebugMsg( "populate color ramp tab" );
-  if ( !mRasterLayerIsInternal )
+  if ( !mRasterLayer || !mRasterLayer->dataProvider() )
   {
     return;
   }
 
-  if ( !mRasterLayer )
+  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType ) 
   {
     return;
   }
@@ -921,7 +935,7 @@ bool QgsRasterLayerProperties::validUserDefinedMinMax()
  */
 void QgsRasterLayerProperties::apply()
 {
-  if ( mRasterLayerIsInternal )
+  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
   {
     QgsDebugMsg( "apply processing symbology tab" );
     /*
@@ -1411,7 +1425,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->triggerRepaint();
 
   //Because Min Max values can be set during the redraw if a strech is requested we need to resync after apply
-  if ( mRasterLayerIsInternal )
+  if ( mRasterLayer->dataProvider()->dataType(1) != QgsRasterDataProvider::ARGBDataType ) 
   {
     if ( QgsContrastEnhancement::NoEnhancement != mRasterLayer->contrastEnhancementAlgorithm() )
     {
@@ -1581,7 +1595,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
 void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged( const QString& theText )
 {
-  if ( mRasterLayerIsInternal && TRSTRING_NOT_SET != theText )
+  if ( TRSTRING_NOT_SET != theText )
   {
     leBlueMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
     leBlueMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
@@ -1590,7 +1604,7 @@ void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged( const QString& th
 
 void QgsRasterLayerProperties::on_cboGray_currentIndexChanged( const QString& theText )
 {
-  if ( mRasterLayerIsInternal && TRSTRING_NOT_SET != theText )
+  if ( TRSTRING_NOT_SET != theText )
   {
     leGrayMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
     leGrayMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
@@ -1599,7 +1613,7 @@ void QgsRasterLayerProperties::on_cboGray_currentIndexChanged( const QString& th
 
 void QgsRasterLayerProperties::on_cboGreen_currentIndexChanged( const QString& theText )
 {
-  if ( mRasterLayerIsInternal && TRSTRING_NOT_SET != theText )
+  if ( TRSTRING_NOT_SET != theText )
   {
     leGreenMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
     leGreenMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
@@ -1608,7 +1622,7 @@ void QgsRasterLayerProperties::on_cboGreen_currentIndexChanged( const QString& t
 
 void QgsRasterLayerProperties::on_cboRed_currentIndexChanged( const QString& theText )
 {
-  if ( mRasterLayerIsInternal && TRSTRING_NOT_SET != theText )
+  if ( TRSTRING_NOT_SET != theText )
   {
     leRedMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
     leRedMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
@@ -1654,8 +1668,10 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 
 void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QString& theText )
 {
-  if ( !mRasterLayerIsInternal )
+  if ( mRasterLayer->dataProvider()->dataType(1) == QgsRasterDataProvider::ARGBDataType ) 
+  {
     return;
+  }
 
   if ( theText == tr( "Pseudocolor" ) || theText == tr( "Freak Out" ) )
   {
@@ -2570,10 +2586,9 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
 
 void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
 {
-  if ( mRasterLayerIsInternal &&
-       ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray
+  if (   mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray
          || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray
-         || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor ) )
+         || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor ) 
   {
     QgsRasterBandStats myRasterBandStats;
     double myMinimumMaximum[2];
@@ -2994,16 +3009,13 @@ void QgsPixelSelectorTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 void QgsRasterLayerProperties::on_btnResetNull_clicked( )
 {
   //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
-  if ( mRasterLayerIsInternal )
+  mRasterLayer->resetNoDataValue();
+  if ( mRasterLayer->isNoDataValueValid() )
   {
-    mRasterLayer->resetNoDataValue();
-    if ( mRasterLayer->isNoDataValueValid() )
-    {
-      leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
-    }
-    else
-    {
-      leNoDataValue->clear();
-    }
+    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+  }
+  else
+  {
+    leNoDataValue->clear();
   }
 }

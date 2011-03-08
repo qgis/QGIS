@@ -18,6 +18,7 @@ SET(QGIS_G_INFO_SRCS qgis.g.info.c)
 
 INCLUDE_DIRECTORIES (
   ../../core
+  ../../core/raster
   ${GRASS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
