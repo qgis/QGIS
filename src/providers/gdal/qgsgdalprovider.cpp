@@ -134,8 +134,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( mGdalBaseDataset == NULL )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot open GDAL dataset " ) + uri + " : "
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                          QObject::tr( "Cannot open GDAL dataset %1: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
@@ -179,8 +178,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( myGDALBand == NULL )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot get GDAL raster band : " )
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) ) ;
+                          QObject::tr( "Cannot get GDAL raster band: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
 
     GDALDereferenceDataset( mGdalBaseDataset );
     mGdalBaseDataset = NULL;
@@ -546,8 +544,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( !myGdalMemDataset )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot open GDAL MEM dataset " ) + myMemDsn + " : "
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                          QObject::tr( "Cannot open GDAL MEM dataset %1: %2" ).arg( myMemDsn ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
@@ -626,8 +623,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( myErr != CPLE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot ChunkAndWarpImage : " )
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                          QObject::tr( "Cannot ChunkAndWarpImage: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
