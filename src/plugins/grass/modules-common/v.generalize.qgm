@@ -4,20 +4,20 @@
 <qgisgrassmodule label="Simplify vector" module="v.generalize">
 	<option key="input" typeoption="type" layeroption="layer" />
         <flag key="c" answer="on" hidden="yes" />
-	<option key="type" />
+	<option key="type" label="Feature type (for polygons, choose Boundary)"/>
 	<option key="method" />
-	<option key="threshold" answer="1.0" />
-	<option key="look_ahead" answer="7" />
-	<option key="reduction" answer="50" />
-	<option key="slide" answer="0.5" />
-	<option key="angle_thresh" answer="3" />
-	<option key="degree_thresh" answer="0" />
-	<option key="closeness_thresh" answer="0" />
-	<option key="betweeness_thresh" answer="0" />
-	<option key="alpha" answer="1.0" />
-	<option key="beta" answer="1.0" />
-	<option key="iterations" answer="1" />
-	<option key="layer" answer="1" />
+	<option key="threshold" answer="1.0" label="Maximal tolerance value (higher value=more simplification)" />
+	<option key="look_ahead" answer="7" advanced="yes" />
+	<option key="reduction" answer="50" advanced="yes" />
+	<option key="slide" answer="0.5" advanced="yes" />
+	<option key="angle_thresh" answer="3" advanced="yes" />
+	<option key="degree_thresh" answer="0" advanced="yes" />
+	<option key="closeness_thresh" answer="0" advanced="yes" />
+	<option key="betweeness_thresh" answer="0" advanced="yes" />
+	<option key="alpha" answer="1.0" advanced="yes" />
+	<option key="beta" answer="1.0" advanced="yes" />
+	<option key="iterations" answer="1" advanced="yes"/>
+	<option key="layer" answer="1" advanced="yes"/>
 	<flag key="r" />
 	<option key="output" />
 </qgisgrassmodule>
