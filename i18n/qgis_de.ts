@@ -5486,12 +5486,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1225"/>
         <source>Cannot get map info</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Karteninfo nicht bekommen</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1254"/>
         <source>Cannot get colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Farben nicht bekommen</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1277"/>
@@ -6253,17 +6253,17 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="137"/>
         <source>Cannot open GDAL dataset </source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte GDAL Datenset nicht öffnen</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="182"/>
         <source>Cannot get GDAL raster band : </source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte GDAL Raster Band nicht bekommen : </translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="549"/>
         <source>Cannot open GDAL MEM dataset </source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte GDAL MEM Datenset nicht öffnen </translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="629"/>
@@ -6273,12 +6273,12 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1392"/>
         <source>[GDAL] All files (*)</source>
-        <translation type="unfinished">[GDAL] Alle Dateien (*)</translation>
+        <translation>[GDAL] Alle Dateien (*)</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1550"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation type="unfinished">Diese Rasterdatei hat keine Kanäle und ist als Rasterlayer ungültig.</translation>
+        <translation>Diese Rasterdatei hat keine Kanäle und ist als Rasterlayer ungültig.</translation>
     </message>
 </context>
 <context>
@@ -13608,52 +13608,52 @@ Bitte wählen Sie eine gültige Datei.</translation>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="390"/>
         <source>Dataset Description</source>
-        <translation type="unfinished">Datensatzbeschreibung</translation>
+        <translation>Datensatzbeschreibung</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="411"/>
         <source>Band %1</source>
-        <translation type="unfinished">Kanal %1</translation>
+        <translation>Kanal %1</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="442"/>
         <source>Dimensions:</source>
-        <translation type="unfinished">Dimensionen:</translation>
+        <translation>Dimensionen:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="445"/>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation type="unfinished">X: %1 Y: %2 Kanäle: %3</translation>
+        <translation>X: %1 Y: %2 Kanäle: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="477"/>
         <source>Origin:</source>
-        <translation type="unfinished">Ursprung:</translation>
+        <translation>Ursprung:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="486"/>
         <source>Pixel Size:</source>
-        <translation type="unfinished">Pixelgröße:</translation>
+        <translation>Pixelgröße:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="806"/>
         <source>out of extent</source>
-        <translation type="unfinished">außerhalb der Ausdehnung</translation>
+        <translation>außerhalb der Ausdehnung</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="845"/>
         <source>null (no data)</source>
-        <translation type="unfinished">Null (keine Daten)</translation>
+        <translation>Null (keine Daten)</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1171"/>
         <source>Average Magphase</source>
-        <translation type="unfinished">Durchschnittliche Magphase</translation>
+        <translation>Durchschnittliche Magphase</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1176"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchschnittlich</translation>
     </message>
 </context>
 <context>
@@ -24708,17 +24708,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrasterdataprovider.cpp" line="158"/>
         <source>Identify</source>
-        <translation type="unfinished">Abfragen</translation>
+        <translation>Abfragen</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrasterdataprovider.cpp" line="163"/>
         <source>Build Pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyramiden erzeugen</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrasterdataprovider.h" line="356"/>
         <source>Band</source>
-        <translation type="unfinished">Kanal</translation>
+        <translation>Kanal</translation>
     </message>
 </context>
 <context>
@@ -24764,7 +24764,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1836"/>
         <source>Layer Extent (layer original source projection): </source>
-        <translation type="unfinished"></translation>
+        <translation>Layer ausdehunung (originale Quelllayer projektion): </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1862"/>
