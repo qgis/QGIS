@@ -1299,22 +1299,22 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="29"/>
         <source>Shapefile type</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefileタイプ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="37"/>
         <source>Polygon</source>
-        <translation type="unfinished">ポリゴン</translation>
+        <translation>ポリゴン</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="42"/>
         <source>Line</source>
-        <translation type="unfinished">ライン</translation>
+        <translation>ライン</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="47"/>
         <source>Point</source>
-        <translation type="unfinished">点</translation>
+        <translation>点</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="57"/>
@@ -3551,842 +3551,842 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="14"/>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="28"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">編集(&amp;E)</translation>
+        <translation>編集(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="57"/>
         <source>&amp;File</source>
-        <translation type="unfinished">ファイル(&amp;F)</translation>
+        <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="61"/>
         <source>&amp;Open Recent Projects</source>
-        <translation type="unfinished">最近利用したプロジェクトを開く(&amp;O)</translation>
+        <translation>最近利用したプロジェクトを開く(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="66"/>
         <source>Print Composers</source>
-        <translation type="unfinished">プリントコンポーザ</translation>
+        <translation>プリントコンポーザ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="85"/>
         <source>&amp;View</source>
-        <translation type="unfinished">ビュー(&amp;V)</translation>
+        <translation>ビュー(&amp;V)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="89"/>
         <source>Select</source>
-        <translation type="unfinished">選択</translation>
+        <translation>選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="100"/>
         <source>Measure</source>
-        <translation type="unfinished"></translation>
+        <translation>計測</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="130"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished">レイヤ(&amp;L)</translation>
+        <translation>レイヤ(&amp;L)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="134"/>
         <source>New</source>
-        <translation type="unfinished">新規</translation>
+        <translation>新規</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="166"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">設定(&amp;S)</translation>
+        <translation>設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="177"/>
         <source>&amp;Plugins</source>
-        <translation type="unfinished">プラグイン(&amp;P)</translation>
+        <translation>プラグイン(&amp;P)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="185"/>
         <source>&amp;Raster</source>
-        <translation type="unfinished">ラスタ(&amp;R)</translation>
+        <translation>ラスタ(&amp;R)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="191"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">ヘルプ(&amp;H)</translation>
+        <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="214"/>
         <source>File</source>
-        <translation type="unfinished">ファイル</translation>
+        <translation>ファイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="231"/>
         <source>Manage Layers</source>
-        <translation type="unfinished">レイヤ管理</translation>
+        <translation>レイヤ管理</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="249"/>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>デジタイジング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="271"/>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished">先進的なデジタイズ</translation>
+        <translation>先進的なデジタイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="294"/>
         <source>Map Navigation</source>
-        <translation type="unfinished">地図ナビゲーション</translation>
+        <translation>地図ナビゲーション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="314"/>
         <source>Attributes</source>
-        <translation type="unfinished">属性</translation>
+        <translation>属性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="331"/>
         <source>Plugins</source>
-        <translation type="unfinished">プラグイン</translation>
+        <translation>プラグイン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="342"/>
         <source>Help</source>
-        <translation type="unfinished">ヘルプ</translation>
+        <translation>ヘルプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="354"/>
         <source>Raster</source>
-        <translation type="unfinished">ラスタ</translation>
+        <translation>ラスタ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="366"/>
         <source>Label</source>
-        <translation type="unfinished">ラベル</translation>
+        <translation>ラベル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="385"/>
         <source>&amp;New Project</source>
-        <translation type="unfinished">新規プロジェクト(&amp;N)</translation>
+        <translation>新規プロジェクト(&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="388"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="397"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished">プロジェクトを開く(&amp;O)</translation>
+        <translation>プロジェクトを開く(&amp;O)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="400"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished">Ctrl+O</translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="409"/>
         <source>&amp;Save Project</source>
-        <translation type="unfinished">プロジェクトを保存(&amp;S)</translation>
+        <translation>プロジェクトを保存(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="412"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="421"/>
         <source>Save Project &amp;As...</source>
-        <translation type="unfinished">プロジェクトを名前をつけて保存(&amp;A)...</translation>
+        <translation>プロジェクトを名前をつけて保存(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="424"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="433"/>
         <source>Save as Image...</source>
-        <translation type="unfinished">イメージで保存</translation>
+        <translation>イメージで保存...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="442"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished">新コンポーザマネージャ(&amp;N)</translation>
+        <translation>新コンポーザマネージャ(&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="445"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="454"/>
         <source>Composer manager...</source>
-        <translation type="unfinished">コンポーザーマネージャ...</translation>
+        <translation>コンポーザーマネージャ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="463"/>
         <source>Exit</source>
-        <translation type="unfinished">終了</translation>
+        <translation>終了</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="466"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="478"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">取り消し(&amp;U)</translation>
+        <translation>取り消し(&amp;U)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="481"/>
         <source>Ctrl+Z</source>
-        <translation type="unfinished">Ctrl+Z</translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="490"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">再実行(&amp;R)</translation>
+        <translation>再実行(&amp;R)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="493"/>
         <source>Ctrl+Shift+Z</source>
-        <translation type="unfinished">Ctrl+Shift+Z</translation>
+        <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="502"/>
         <source>Cut Features</source>
-        <translation type="unfinished">地物の切り取り</translation>
+        <translation>地物の切り取り</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="505"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="514"/>
         <source>Copy Features</source>
-        <translation type="unfinished">地物のコピー</translation>
+        <translation>地物のコピー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="517"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="526"/>
         <source>Paste Features</source>
-        <translation type="unfinished">地物の貼り付け</translation>
+        <translation>地物の貼り付け</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="529"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="541"/>
         <source>Capture Point</source>
-        <translation type="unfinished">点を入力</translation>
+        <translation>点を入力</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="544"/>
         <source>Ctrl+.</source>
-        <translation type="unfinished">Ctrl+.</translation>
+        <translation>Ctrl+.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="556"/>
         <source>Capture Line</source>
-        <translation type="unfinished">線を入力</translation>
+        <translation>線を入力</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="559"/>
         <source>Ctrl+/</source>
-        <translation type="unfinished">Ctrl+/</translation>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="571"/>
         <source>Capture Polygon</source>
-        <translation type="unfinished">ポリゴンを入力</translation>
+        <translation>ポリゴンを入力</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="574"/>
         <source>Ctrl+?</source>
-        <translation type="unfinished">Ctrl+?</translation>
+        <translation>Ctrl+?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="586"/>
         <source>Move Feature(s)</source>
-        <translation type="unfinished">地物の移動</translation>
+        <translation>地物の移動</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="598"/>
         <source>Reshape Features</source>
-        <translation type="unfinished">地物の変形</translation>
+        <translation>地物の変形</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="610"/>
         <source>Split Features</source>
-        <translation type="unfinished">地物を分割する</translation>
+        <translation>地物を分割する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="619"/>
         <source>Delete Selected</source>
-        <translation type="unfinished">選択物の削除</translation>
+        <translation>選択物の削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="631"/>
         <source>Add Ring</source>
-        <translation type="unfinished">リングの追加</translation>
+        <translation>リングの追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="643"/>
         <source>Add Part</source>
-        <translation type="unfinished">部分の追加</translation>
+        <translation>部分の追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="655"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished">地物の簡素化</translation>
+        <translation>地物の簡素化</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="667"/>
         <source>Delete Ring</source>
-        <translation type="unfinished">リングの削除</translation>
+        <translation>リングの削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="679"/>
         <source>Delete Part</source>
-        <translation type="unfinished">部分の削除</translation>
+        <translation>部分の削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="688"/>
         <source>Merge selected features</source>
-        <translation type="unfinished">選択地物の結合</translation>
+        <translation>選択地物の結合</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="697"/>
         <source>Merge attributes of selected features</source>
-        <translation type="unfinished">選択された地物の属性を結合します</translation>
+        <translation>選択された地物の属性を結合します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="709"/>
         <source>Node Tool</source>
-        <translation type="unfinished">ノードツール</translation>
+        <translation>ノードツール</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="721"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished">ポイントシンボルを回転する</translation>
+        <translation>ポイントシンボルを回転する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="726"/>
         <source>Snapping Options...</source>
-        <translation type="unfinished">スナップオプション...</translation>
+        <translation>スナップオプション...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="738"/>
         <source>Pan Map</source>
-        <translation type="unfinished">地図移動</translation>
+        <translation>地図移動</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="750"/>
         <source>Zoom In</source>
-        <translation type="unfinished">拡大</translation>
+        <translation>拡大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="753"/>
         <source>Ctrl++</source>
-        <translation type="unfinished">Ctrl++</translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="765"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">縮小</translation>
+        <translation>縮小</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="768"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Ctrl+-</translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="780"/>
         <source>Select single feature</source>
-        <translation type="unfinished">1個の地物を選択します</translation>
+        <translation>1個の地物を選択します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="792"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished">長方形領域による地物選択</translation>
+        <translation>長方形領域による地物選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="804"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished">ポリゴンによる地物選択</translation>
+        <translation>ポリゴンによる地物選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="816"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished">フリーハンドによる地物選択</translation>
+        <translation>フリーハンドによる地物選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="828"/>
         <source>Select features by radius</source>
-        <translation type="unfinished">半径指定による地物選択</translation>
+        <translation>半径指定による地物選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="837"/>
         <source>Deselect features from all layers</source>
-        <translation type="unfinished">すべてのレイヤから地物選択を取り消す</translation>
+        <translation>すべてのレイヤから地物選択を取り消す</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="849"/>
         <source>Identify Features</source>
-        <translation type="unfinished">地物情報表示</translation>
+        <translation>地物情報表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="852"/>
         <source>Ctrl+Shift+I</source>
-        <translation type="unfinished">Ctrl+Shift+I</translation>
+        <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="864"/>
         <source>Measure Line</source>
-        <translation type="unfinished"></translation>
+        <translation>線の長さを測る</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="867"/>
         <source>Ctrl+Shift+M</source>
-        <translation type="unfinished">Ctrl+Shift+M</translation>
+        <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="879"/>
         <source>Measure Area</source>
-        <translation type="unfinished">面積を測る</translation>
+        <translation>面積を測る</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="882"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished">Ctrl+Shift+J</translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="894"/>
         <source>Measure Angle</source>
-        <translation type="unfinished">角度の計測</translation>
+        <translation>角度の計測</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="903"/>
         <source>Zoom Full</source>
-        <translation type="unfinished">全域表示</translation>
+        <translation>全域表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="906"/>
         <source>Ctrl+Shift+F</source>
-        <translation type="unfinished">Ctrl+Shift+F</translation>
+        <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="915"/>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤの領域にズーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="924"/>
         <source>Zoom to Selection</source>
-        <translation type="unfinished">選択部分のズーム</translation>
+        <translation>選択部分のズーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="927"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="936"/>
         <source>Zoom Last</source>
-        <translation type="unfinished"></translation>
+        <translation>直前の表示領域にズーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="945"/>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation>次表示領域へズーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="950"/>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished">実際のサイズにズームする</translation>
+        <translation>実際のサイズにズームする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="962"/>
         <source>Map Tips</source>
-        <translation type="unfinished">マップチップス</translation>
+        <translation>マップチップス</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="965"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation type="unfinished">マウスカーソルが上にある時に地物の情報が表示されます</translation>
+        <translation>マウスカーソルが上にある時に地物の情報が表示されます</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="974"/>
         <source>New Bookmark...</source>
-        <translation type="unfinished">新しいブックマーク....</translation>
+        <translation>新しいブックマーク....</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="977"/>
         <source>Ctrl+B</source>
-        <translation type="unfinished">Ctrl+B</translation>
+        <translation>Ctrl+B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="986"/>
         <source>Show Bookmarks</source>
-        <translation type="unfinished">ブックマーク一覧を見る</translation>
+        <translation>ブックマーク一覧を見る</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="989"/>
         <source>Ctrl+Shift+B</source>
-        <translation type="unfinished">Ctrl+Shift+B</translation>
+        <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="998"/>
         <source>Refresh</source>
-        <translation type="unfinished">再読み込み</translation>
+        <translation>再読み込み</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1001"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1013"/>
         <source>Text Annotation</source>
-        <translation type="unfinished">文字注記</translation>
+        <translation>文字注記</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1025"/>
         <source>Form annotation</source>
-        <translation type="unfinished">注記フォーム</translation>
+        <translation>注記フォーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1037"/>
         <source>Move Annotation</source>
-        <translation type="unfinished">注記移動</translation>
+        <translation>注記移動</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1046"/>
         <source>Labeling</source>
-        <translation type="unfinished">ラベリング</translation>
+        <translation>ラベリング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1055"/>
         <source>New Shapefile Layer...</source>
-        <translation type="unfinished">新しいShapeファイルレイヤ...</translation>
+        <translation>新しいShapeファイルレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1058"/>
         <source>Ctrl+Shift+N</source>
-        <translation type="unfinished">Ctrl+Shift+N</translation>
+        <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1067"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation type="unfinished">新しいSpatialiteレイヤ...</translation>
+        <translation>新しいSpatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1070"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished">Ctrl+Shift+A</translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>Raster calculator ...</source>
-        <translation type="unfinished">ラスタ計算機...</translation>
+        <translation>ラスタ計算機...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1084"/>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished">ベクタレイヤの追加...</translation>
+        <translation>ベクタレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1087"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished">Ctrl+Shift+V</translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1096"/>
         <source>Add Raster Layer...</source>
-        <translation type="unfinished">ラスタレイヤの追加...</translation>
+        <translation>ラスタレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1099"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished">Ctrl+Shift+R</translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1108"/>
         <source>Add PostGIS Layer...</source>
-        <translation type="unfinished">PostGISレイヤの追加...</translation>
+        <translation>PostGISレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1111"/>
         <source>Ctrl+Shift+D</source>
-        <translation type="unfinished">Ctrl+Shift+D</translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1120"/>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished">SpatiaLiteレイヤの追加...</translation>
+        <translation>SpatiaLiteレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>Add WMS Layer...</source>
-        <translation type="unfinished">WMSレイヤの追加</translation>
+        <translation>WMSレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1135"/>
         <source>Ctrl+Shift+W</source>
-        <translation type="unfinished">Ctrl+Shift+W</translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>Open Attribute Table</source>
-        <translation type="unfinished">属性テーブルのオープン</translation>
+        <translation>属性テーブルのオープン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1156"/>
         <source>Toggle editing</source>
-        <translation type="unfinished">編集モード変更</translation>
+        <translation>編集モード変更</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1159"/>
         <source>Toggles the editing state of the current layer</source>
-        <translation type="unfinished">カレントレイヤの編集モードを変更する</translation>
+        <translation>カレントレイヤの編集モードを変更する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1168"/>
         <source>Save edits</source>
-        <translation type="unfinished">編集を保存する</translation>
+        <translation>編集を保存する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1171"/>
         <source>Save edits to current layer, but continue editing</source>
-        <translation type="unfinished">カレントレイヤへの編集を保存した後,編集作業を続けます</translation>
+        <translation>カレントレイヤへの編集を保存した後,編集作業を続けます</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1176"/>
         <source>Save as...</source>
-        <translation type="unfinished">名前をつけて保存...</translation>
+        <translation>名前をつけて保存...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1181"/>
         <source>Save Selection as vector file...</source>
-        <translation type="unfinished">選択部分をベクタファイルとして保存する...</translation>
+        <translation>選択部分をベクタファイルとして保存する...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1190"/>
         <source>Remove Layer(s)</source>
-        <translation type="unfinished">レイヤ（群）の削除</translation>
+        <translation>レイヤ（群）の削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1193"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished">Ctrl+D</translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1198"/>
         <source>Set CRS of Layer(s)</source>
-        <translation type="unfinished">レイヤのCRSを設定する</translation>
+        <translation>レイヤのCRSを設定する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished">Ctrl+Shift+C</translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1206"/>
         <source>Tile scale slider</source>
-        <translation type="unfinished">タイルスケールスライダー</translation>
+        <translation>タイルスケールスライダー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1211"/>
         <source>Live GPS tracking</source>
-        <translation type="unfinished">ライブGPSトラッキング</translation>
+        <translation>ライブGPSトラッキング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1216"/>
         <source>Properties...</source>
-        <translation type="unfinished">プロパティ</translation>
+        <translation>プロパティ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1221"/>
         <source>Query...</source>
-        <translation type="unfinished">検索...</translation>
+        <translation>検索...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1230"/>
         <source>Add to Overview</source>
-        <translation type="unfinished">全体図に追加</translation>
+        <translation>全体図に追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1233"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished">Ctrl+Shift+O</translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1242"/>
         <source>Add All to Overview</source>
-        <translation type="unfinished">全体図に全て追加</translation>
+        <translation>全体図に全て追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1251"/>
         <source>Remove All From Overview</source>
-        <translation type="unfinished">全体図から全て削除</translation>
+        <translation>全体図から全て削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1260"/>
         <source>Show All Layers</source>
-        <translation type="unfinished">全てのレイヤを表示</translation>
+        <translation>全てのレイヤを表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1263"/>
         <source>Ctrl+Shift+U</source>
-        <translation type="unfinished">Ctrl+Shift+U</translation>
+        <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1272"/>
         <source>Hide All Layers</source>
-        <translation type="unfinished">全てのレイヤを隠す</translation>
+        <translation>全てのレイヤを隠す</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1275"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished">Ctrl+Shift+H</translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1284"/>
         <source>Manage Plugins...</source>
-        <translation type="unfinished">プラグインの管理</translation>
+        <translation>プラグインの管理...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1289"/>
         <source>Toggle Full Screen Mode</source>
-        <translation type="unfinished">フルスクリーンモードへ切り替え</translation>
+        <translation>フルスクリーンモードへ切り替え</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1292"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished">Ctrl+F</translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1301"/>
         <source>Project Properties...</source>
-        <translation type="unfinished">プロジェクトのプロパティ</translation>
+        <translation>プロジェクトのプロパティ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1304"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished">Ctrl+Shift+P</translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1313"/>
         <source>Options...</source>
-        <translation type="unfinished">オプション</translation>
+        <translation>オプション...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1325"/>
         <source>Custom CRS...</source>
-        <translation type="unfinished">カスタムCRS...</translation>
+        <translation>カスタムCRS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1334"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished">ショートカットの構成...</translation>
+        <translation>ショートカットの構成...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1343"/>
         <source>Local Histogram Stretch</source>
-        <translation type="unfinished">ローカルヒストグラムの広がり</translation>
+        <translation>ローカルヒストグラムの広がり</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1346"/>
         <source>Stretch histogram of active raster to view extents</source>
-        <translation type="unfinished">アクティブラスタの領域を見えるようにするためにヒストグラムを伸ばす</translation>
+        <translation>アクティブラスタの領域を見えるようにするためにヒストグラムを伸ばす</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1355"/>
         <source>Help Contents</source>
-        <translation type="unfinished">QGIS ヘルプ</translation>
+        <translation>QGIS ヘルプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1358"/>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1363"/>
         <source>API documentation</source>
-        <translation type="unfinished">API文書</translation>
+        <translation>API文書</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1372"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished">QGIS ホームページ</translation>
+        <translation>QGIS ホームページ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1375"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1384"/>
         <source>Check QGIS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISのバージョンをチェックする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1387"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation type="unfinished">QGISのバージョンがアップデートされているか検証する（インターネットアクセスが必要)</translation>
+        <translation>QGISのバージョンがアップデートされているか検証する（インターネットアクセスが必要)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1396"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>アバウト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1408"/>
         <source>QGIS Sponsors</source>
-        <translation type="unfinished">QGISスポンサー</translation>
+        <translation>QGISスポンサー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1420"/>
         <source>Move Label</source>
-        <translation type="unfinished">ラベルの移動</translation>
+        <translation>ラベルの移動</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1432"/>
         <source>Rotate Label</source>
-        <translation type="unfinished">ラベルの回転</translation>
+        <translation>ラベルの回転</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1444"/>
         <source>Change Label</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルを変更する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1449"/>
         <source>Style manager...</source>
-        <translation type="unfinished">スタイルマネージャ...</translation>
+        <translation>スタイルマネージャ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1454"/>
         <source>Python Console</source>
-        <translation type="unfinished">Pythonコンソール</translation>
+        <translation>Pythonコンソール</translation>
     </message>
 </context>
 <context>
@@ -5468,7 +5468,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="482"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>座標入力システムで点座標変換中にエラーを発生しました。ポリゴンの面積または周囲の長さを計算できません.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="784"/>
@@ -6113,12 +6113,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1225"/>
         <source>Cannot get map info</source>
-        <translation type="unfinished"></translation>
+        <translation>地図の情報を取得できません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1254"/>
         <source>Cannot get colors</source>
-        <translation type="unfinished"></translation>
+        <translation>色を取得できません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1277"/>
@@ -6876,32 +6876,32 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="137"/>
         <source>Cannot open GDAL dataset </source>
-        <translation type="unfinished"></translation>
+        <translation>GDALデータセットを開けません</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="182"/>
         <source>Cannot get GDAL raster band : </source>
-        <translation type="unfinished"></translation>
+        <translation>GDALラスタバンドを取得できません:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="549"/>
         <source>Cannot open GDAL MEM dataset </source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL MEMデータセットを開けません</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="629"/>
         <source>Cannot ChunkAndWarpImage : </source>
-        <translation type="unfinished"></translation>
+        <translation>イメージの切り取りと変形ができません : </translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1392"/>
         <source>[GDAL] All files (*)</source>
-        <translation type="unfinished">[GDAL]全ファイル(*)</translation>
+        <translation>[GDAL]全ファイル(*)</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1550"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation type="unfinished">このラスタファイルはバンドを持ちません,よってラスタレイヤとしては不正です.</translation>
+        <translation>このラスタファイルはバンドを持ちません,よってラスタレイヤとしては不正です.</translation>
     </message>
 </context>
 <context>
@@ -15797,52 +15797,52 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="390"/>
         <source>Dataset Description</source>
-        <translation type="unfinished">データセットについての記述</translation>
+        <translation>データセットについての記述</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="411"/>
         <source>Band %1</source>
-        <translation type="unfinished">バンド %1</translation>
+        <translation>バンド %1</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="442"/>
         <source>Dimensions:</source>
-        <translation type="unfinished">次元:</translation>
+        <translation>次元:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="445"/>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation type="unfinished">X: %1 Y: %2 バンド: %3</translation>
+        <translation>X: %1 Y: %2 バンド: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="477"/>
         <source>Origin:</source>
-        <translation type="unfinished">原点:</translation>
+        <translation>原点:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="486"/>
         <source>Pixel Size:</source>
-        <translation type="unfinished">ピクセルの大きさ:</translation>
+        <translation>ピクセルの大きさ:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="806"/>
         <source>out of extent</source>
-        <translation type="unfinished">範囲外</translation>
+        <translation>範囲外</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="845"/>
         <source>null (no data)</source>
-        <translation type="unfinished">null (no data)</translation>
+        <translation>null (no data)</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1171"/>
         <source>Average Magphase</source>
-        <translation type="unfinished">平均 Magphase</translation>
+        <translation>平均 Magphase</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1176"/>
         <source>Average</source>
-        <translation type="unfinished">平均</translation>
+        <translation>平均</translation>
     </message>
 </context>
 <context>
@@ -23927,28 +23927,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1372"/>
         <source>Default Coordinate Reference System for new projects</source>
-        <translation type="unfinished"></translation>
+        <translation>新プロジェクトのデフォルト座標参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1388"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;オンザフライ&apos;再投影をデフォルトを有効にする(&amp;f)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1395"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1478"/>
         <source>Select...</source>
-        <translation type="unfinished">選択...</translation>
+        <translation>選択...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1415"/>
         <source>Always start new projects with this CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいプロジェクトはいつもこのCRSで開始する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1434"/>
         <source>Coordinate Reference System for new layers</source>
-        <translation type="unfinished"></translation>
+        <translation>新レイヤのための座標参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1440"/>
@@ -24195,17 +24195,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1450"/>
         <source>Prompt for &amp;CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRSを確認する(&amp;C)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
         <source>Use &amp;project CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクトのCRSを利用する(&amp;p)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1464"/>
         <source>Use default CRS displa&amp;yed below</source>
-        <translation type="unfinished"></translation>
+        <translation>以下に表示されているデフォルトCRSを利用する(&amp;y)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1688"/>
@@ -27323,17 +27323,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrasterdataprovider.cpp" line="158"/>
         <source>Identify</source>
-        <translation type="unfinished">地物情報表示</translation>
+        <translation>地物情報表示</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrasterdataprovider.cpp" line="163"/>
         <source>Build Pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>ピラミッドの作成</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrasterdataprovider.h" line="356"/>
         <source>Band</source>
-        <translation type="unfinished">バンド</translation>
+        <translation>バンド</translation>
     </message>
 </context>
 <context>
@@ -27371,7 +27371,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1836"/>
         <source>Layer Extent (layer original source projection): </source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ領域（レイヤのオリジナルプロジェクション):</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1862"/>
@@ -35935,17 +35935,17 @@ SQL Anywhereエラーコード %2
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="48"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="54"/>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="48"/>
         <source>Please specify a file to convert.</source>
-        <translation type="unfinished"></translation>
+        <translation>変換するファイルを指定して下さい.</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="54"/>
         <source>Please specify an output file</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ファイルを指定して下さい</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="125"/>
@@ -35979,7 +35979,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="159"/>
         <source>DXF files (*.dxf)</source>
-        <translation type="unfinished"></translation>
+        <translation>DXFファイル(*.dxf)</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="167"/>
@@ -35989,7 +35989,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="169"/>
         <source>Shapefile (*.shp)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile (*.shp)</translation>
     </message>
 </context>
 <context>
