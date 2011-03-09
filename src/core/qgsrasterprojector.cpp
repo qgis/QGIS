@@ -95,7 +95,7 @@ QgsRasterProjector::QgsRasterProjector(
   mDestRowsPerMatrixRow = ( float )mDestRows / ( mCPRows - 1 );
   mDestColsPerMatrixCol = ( float )mDestCols / ( mCPCols - 1 );
 
-  QgsDebugMsg( "CPMatrix:\n" + cpToString() );
+  //QgsDebugMsg( "CPMatrix:\n" + cpToString() );
 
   // Calculate source dimensions
   calcSrcExtent();
