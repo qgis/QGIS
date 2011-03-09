@@ -119,33 +119,33 @@
     </message>
     <message>
         <source>fTools About</source>
-        <translation>fRīks Par</translation>
+        <translation type="obsolete">fRīks Par</translation>
     </message>
     <message>
         <source>fTools</source>
-        <translation>fRīks</translation>
+        <translation type="obsolete">fRīks</translation>
     </message>
     <message>
         <source>Version x.x-xxxxxx</source>
-        <translation>Versija x.x-xxxxxx</translation>
+        <translation type="obsolete">Versija x.x-xxxxxx</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Palīdzība</translation>
+        <translation type="obsolete">Palīdzība</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation>Tīmeklis</translation>
+        <translation type="obsolete">Tīmeklis</translation>
     </message>
     <message>
         <source>Close</source>
@@ -233,7 +233,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation>Apvienot atribūtus</translation>
+        <translation type="obsolete">Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Target vector layer</source>
@@ -241,11 +241,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target join field</source>
-        <translation>Mērķa apvienojuma fails</translation>
+        <translation type="obsolete">Mērķa apvienojuma fails</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation>Savienot datus</translation>
+        <translation type="obsolete">Savienot datus</translation>
     </message>
     <message>
         <source>Join vector layer</source>
@@ -253,11 +253,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation>Savienot dbf tabulu</translation>
+        <translation type="obsolete">Savienot dbf tabulu</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation>Savienojuma lauks</translation>
+        <translation type="obsolete">Savienojuma lauks</translation>
     </message>
     <message>
         <source>Output table</source>
@@ -521,7 +521,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join attributes</source>
-        <translation>Apvienot atribūtus</translation>
+        <translation type="obsolete">Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Regular points</source>
@@ -740,34 +740,11 @@ Would you like to add the new layer to the TOC?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Created projected shapefile:
-%1
-
-Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose output CRS:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No Valid CRS selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Identical output spatial reference system chosen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -795,18 +772,6 @@ Following field names are longer than 10 characters:
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please specify target join field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please specify join field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please specify input table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -838,47 +803,6 @@ Following field names are longer than 10 characters:
         <translation>Apvieno</translation>
     </message>
     <message>
-        <source>
-The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
-
-fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to further facilitate and streamline GIS based research and analysis.
-
-If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
-
-LICENSING INFORMATION:
-fTools is copyright (C) 2009  Carson J.Q. Farmer
-Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
-(C) 2008 by Dr. Horst Duester, Stefan Ziegler
-
-licensed under the terms of GNU GPL 2
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-fTools DEVELOPERS:
-Carson J. Q. Farmer
-Alexander Bruy
-**If you have contributed code to fTools and I haven&apos;t mentioned your name here, please contact me and I will add your name.
-
-ACKNOWLEDGEMENTS:
-The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
-Hawthorn Beyer
-Borys Jurgiel
-Tim Sutton
-Barry Rowlingson
-Horst Duester and Stefan Ziegler
-Paolo Cavallini
-Aaron Racicot
-Colin Robertson
-Agustin Lobo
-Jurgen E. Fischer
-QGis developer and user communities
-Folks on #qgis at freenode.net
-All those who have reported bugs/fixes/suggestions/comments/etc.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Created output shapefile:
 %1
 
@@ -887,15 +811,15 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Join Table</source>
-        <translation>Savienot tabulu</translation>
+        <translation type="obsolete">Savienot tabulu</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation>Ievades tabula neeksistē</translation>
+        <translation type="obsolete">Ievades tabula neeksistē</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation>apvienotie lauki</translation>
+        <translation type="obsolete">apvienotie lauki</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -1083,10 +1007,6 @@ Are you sure you want to proceed?</source>
 %1</translation>
     </message>
     <message>
-        <source>Unable to read input table!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Merge shapefiles</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1132,7 +1052,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Encoding</source>
-        <translation type="unfinished">Kodējums</translation>
+        <translation type="obsolete">Kodējums</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
@@ -1170,6 +1090,22 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <source>Median</source>
         <translation type="unfinished">Vidējais</translation>
+    </message>
+    <message>
+        <source>Shapefile type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">Poligons</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">Līnija</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">Punkts</translation>
     </message>
 </context>
 <context>
@@ -2765,6 +2701,681 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
 %1</source>
         <translation>Kļūda ielādējot izvades shapefile:
 %1</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Rediģēt</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation type="unfinished">&amp;Fails</translation>
+    </message>
+    <message>
+        <source>&amp;Open Recent Projects</source>
+        <translation type="unfinished">&amp;Atvērt nesenos projektus</translation>
+    </message>
+    <message>
+        <source>Print Composers</source>
+        <translation type="unfinished">Drukas veidotāji</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Skats</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished">Izvēlēties</translation>
+    </message>
+    <message>
+        <source>Measure</source>
+        <translation type="unfinished">Mērīt</translation>
+    </message>
+    <message>
+        <source>&amp;Layer</source>
+        <translation type="unfinished">&amp;Slānis</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="unfinished">&amp;Iestatījumi</translation>
+    </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished">&amp;Spraudņi</translation>
+    </message>
+    <message>
+        <source>&amp;Raster</source>
+        <translation type="unfinished">&amp;Rastrs</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Palīdzība</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished">Fails</translation>
+    </message>
+    <message>
+        <source>Manage Layers</source>
+        <translation type="unfinished">Pārvaldīt slāņus</translation>
+    </message>
+    <message>
+        <source>Digitizing</source>
+        <translation type="unfinished">Digitizēšana</translation>
+    </message>
+    <message>
+        <source>Advanced Digitizing</source>
+        <translation type="unfinished">Paplašinātā digitizēšana</translation>
+    </message>
+    <message>
+        <source>Map Navigation</source>
+        <translation type="unfinished">Kartes navigācija</translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation type="unfinished">Atribūti</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation type="unfinished">Spraudņi</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Palīdzība</translation>
+    </message>
+    <message>
+        <source>Raster</source>
+        <translation type="unfinished">Rastrs</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Birka</translation>
+    </message>
+    <message>
+        <source>&amp;New Project</source>
+        <translation type="unfinished">&amp;Jauns projekts</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>&amp;Open Project...</source>
+        <translation type="unfinished">&amp;Atvērt projektu...</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="unfinished">Ctrl+O</translation>
+    </message>
+    <message>
+        <source>&amp;Save Project</source>
+        <translation type="unfinished">&amp;Saglabāt projektu</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Save Project &amp;As...</source>
+        <translation type="unfinished">Saglabāt projektu &amp;kā...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as Image...</source>
+        <translation type="unfinished">Saglabāt kā attēlu...</translation>
+    </message>
+    <message>
+        <source>&amp;New Print Composer</source>
+        <translation type="unfinished">&amp;Jauns drukas veidotājs</translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Composer manager...</source>
+        <translation type="unfinished">Drukas veidotāja pārvaldnieks</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation type="unfinished">Iziet</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation type="unfinished">Ctrl+Q</translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished">&amp;Atcelt</translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished">Ctrl+Z</translation>
+    </message>
+    <message>
+        <source>&amp;Redo</source>
+        <translation type="unfinished">&amp;Pārdarīt</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+Z</source>
+        <translation type="unfinished">Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <source>Cut Features</source>
+        <translation type="unfinished">Izgriezt objektus</translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Copy Features</source>
+        <translation type="unfinished">Kopēt objektus</translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished">Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Paste Features</source>
+        <translation type="unfinished">Ielīmēt objektus</translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished">Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Capture Point</source>
+        <translation type="unfinished">Atlikt punktu</translation>
+    </message>
+    <message>
+        <source>Ctrl+.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capture Line</source>
+        <translation type="unfinished">Atlikt līniju</translation>
+    </message>
+    <message>
+        <source>Ctrl+/</source>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <source>Capture Polygon</source>
+        <translation type="unfinished">Atlikt poligonu</translation>
+    </message>
+    <message>
+        <source>Ctrl+?</source>
+        <translation type="unfinished">Ctrl+?</translation>
+    </message>
+    <message>
+        <source>Move Feature(s)</source>
+        <translation type="unfinished">Pārvietot objektus</translation>
+    </message>
+    <message>
+        <source>Reshape Features</source>
+        <translation type="unfinished">Pārveidot objektus</translation>
+    </message>
+    <message>
+        <source>Split Features</source>
+        <translation type="unfinished">Sadalīt objektus</translation>
+    </message>
+    <message>
+        <source>Delete Selected</source>
+        <translation type="unfinished">Dzēst izvēlēto</translation>
+    </message>
+    <message>
+        <source>Add Ring</source>
+        <translation type="unfinished">Pievienot riņķi</translation>
+    </message>
+    <message>
+        <source>Add Part</source>
+        <translation type="unfinished">Pievienot daļu</translation>
+    </message>
+    <message>
+        <source>Simplify Feature</source>
+        <translation type="unfinished">Vienkāršot objektu</translation>
+    </message>
+    <message>
+        <source>Delete Ring</source>
+        <translation type="unfinished">Dzēst riņķi</translation>
+    </message>
+    <message>
+        <source>Delete Part</source>
+        <translation type="unfinished">Dzēst daļu</translation>
+    </message>
+    <message>
+        <source>Merge selected features</source>
+        <translation type="unfinished">Apvienot izvēlētos objektus</translation>
+    </message>
+    <message>
+        <source>Merge attributes of selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node Tool</source>
+        <translation type="unfinished">Virsotņu rīks</translation>
+    </message>
+    <message>
+        <source>Rotate Point Symbols</source>
+        <translation type="unfinished">Pagriezt punkta simbolus</translation>
+    </message>
+    <message>
+        <source>Snapping Options...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pan Map</source>
+        <translation type="unfinished">Panoramēt karti</translation>
+    </message>
+    <message>
+        <source>Zoom In</source>
+        <translation type="unfinished">Tuvināt</translation>
+    </message>
+    <message>
+        <source>Ctrl++</source>
+        <translation type="unfinished">Ctrl++</translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
+        <translation type="unfinished">Tālināt</translation>
+    </message>
+    <message>
+        <source>Ctrl+-</source>
+        <translation type="unfinished">Ctrl+-</translation>
+    </message>
+    <message>
+        <source>Select single feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features by rectangle</source>
+        <translation type="unfinished">Izvēlēties ar taisnstūri</translation>
+    </message>
+    <message>
+        <source>Select features by polygon</source>
+        <translation type="unfinished">Izvēlēties ar poligonu</translation>
+    </message>
+    <message>
+        <source>Select features by freehand</source>
+        <translation type="unfinished">Izvēlēties brīvi zīmējot</translation>
+    </message>
+    <message>
+        <source>Select features by radius</source>
+        <translation type="unfinished">Izvēlēties tuvumā</translation>
+    </message>
+    <message>
+        <source>Deselect features from all layers</source>
+        <translation type="unfinished">Atcelt izvēlētos objektus visiem slāņiem</translation>
+    </message>
+    <message>
+        <source>Identify Features</source>
+        <translation type="unfinished">Identificēt objektus</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+I</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure Area</source>
+        <translation type="unfinished">Mērīt laukumu</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+J</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure Angle</source>
+        <translation type="unfinished">Mērīt leņķi</translation>
+    </message>
+    <message>
+        <source>Zoom Full</source>
+        <translation type="unfinished">Tuvināt kopskatu</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to Layer</source>
+        <translation type="unfinished">Tuvina līdz slānim</translation>
+    </message>
+    <message>
+        <source>Zoom to Selection</source>
+        <translation type="unfinished">Tuvināt līdz izvēlei</translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Zoom Last</source>
+        <translation type="unfinished">Pēdējā tālummaiņa</translation>
+    </message>
+    <message>
+        <source>Zoom Next</source>
+        <translation type="unfinished">Nākošais skats</translation>
+    </message>
+    <message>
+        <source>Zoom Actual Size</source>
+        <translation type="unfinished">Tuvināt faktisko lielumu</translation>
+    </message>
+    <message>
+        <source>Map Tips</source>
+        <translation type="unfinished">Kartes padomi</translation>
+    </message>
+    <message>
+        <source>Show information about a feature when the mouse is hovered over it</source>
+        <translation type="unfinished">Rādīt informāciju par objektu, kad virs tā pārvieto peli.</translation>
+    </message>
+    <message>
+        <source>New Bookmark...</source>
+        <translation type="unfinished">Jauna grāmatzīme...</translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <translation type="unfinished">Ctrl+B</translation>
+    </message>
+    <message>
+        <source>Show Bookmarks</source>
+        <translation type="unfinished">Rādīt grāmatzīmes</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Text Annotation</source>
+        <translation type="unfinished">Teksta kopsavilkums</translation>
+    </message>
+    <message>
+        <source>Form annotation</source>
+        <translation type="unfinished">Formas kopsavilkums</translation>
+    </message>
+    <message>
+        <source>Move Annotation</source>
+        <translation type="unfinished">Pārvietot kopsavilkumu</translation>
+    </message>
+    <message>
+        <source>Labeling</source>
+        <translation type="unfinished">Tekstu attēlošana</translation>
+    </message>
+    <message>
+        <source>New Shapefile Layer...</source>
+        <translation type="unfinished">Jauns shapefile slānis...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+N</source>
+        <translation type="unfinished">Ctrl+Shift+N</translation>
+    </message>
+    <message>
+        <source>New SpatiaLite Layer ...</source>
+        <translation type="unfinished">Jauns SpatiaLite slānis...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+A</source>
+        <translation type="unfinished">Ctrl+Shift+A</translation>
+    </message>
+    <message>
+        <source>Raster calculator ...</source>
+        <translation type="unfinished">Rastra kalkulators...</translation>
+    </message>
+    <message>
+        <source>Add Vector Layer...</source>
+        <translation type="unfinished">Pievienot vektordatu slāni...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+V</source>
+        <translation type="unfinished">Ctrl+Shift+V</translation>
+    </message>
+    <message>
+        <source>Add Raster Layer...</source>
+        <translation type="unfinished">Pievienot rastra datu slāni...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add PostGIS Layer...</source>
+        <translation type="unfinished">Pievienot PostGIS slāni...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add SpatiaLite Layer...</source>
+        <translation type="unfinished">Pievienot SpatiaLite slāni...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add WMS Layer...</source>
+        <translation type="unfinished">Pievienot WMS slāni...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Attribute Table</source>
+        <translation type="unfinished">Atvērt atribūtu tabulu</translation>
+    </message>
+    <message>
+        <source>Toggle editing</source>
+        <translation type="unfinished">Pārslēgt rediģēšanu</translation>
+    </message>
+    <message>
+        <source>Toggles the editing state of the current layer</source>
+        <translation type="unfinished">Pārslēdz slāņa rediģēšanas statusu</translation>
+    </message>
+    <message>
+        <source>Save edits</source>
+        <translation type="unfinished">Saglabāt rediģēto</translation>
+    </message>
+    <message>
+        <source>Save edits to current layer, but continue editing</source>
+        <translation type="unfinished">Saglabāt aktīvā slāņa izmaiņas un turpināt rediģēt</translation>
+    </message>
+    <message>
+        <source>Save as...</source>
+        <translation type="unfinished">Saglabāt kā...</translation>
+    </message>
+    <message>
+        <source>Save Selection as vector file...</source>
+        <translation type="unfinished">Saglabāt izvēli kā vektordatu failu...</translation>
+    </message>
+    <message>
+        <source>Remove Layer(s)</source>
+        <translation type="unfinished">Noņemt slāni</translation>
+    </message>
+    <message>
+        <source>Ctrl+D</source>
+        <translation type="unfinished">Ctrl+D</translation>
+    </message>
+    <message>
+        <source>Set CRS of Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+C</source>
+        <translation type="unfinished">Ctrl+Shift+C</translation>
+    </message>
+    <message>
+        <source>Tile scale slider</source>
+        <translation type="unfinished">Mēroga slīdnis</translation>
+    </message>
+    <message>
+        <source>Live GPS tracking</source>
+        <translation type="unfinished">GPS sekošana</translation>
+    </message>
+    <message>
+        <source>Properties...</source>
+        <translation type="unfinished">Īpašības...</translation>
+    </message>
+    <message>
+        <source>Query...</source>
+        <translation type="unfinished">Vaicājums...</translation>
+    </message>
+    <message>
+        <source>Add to Overview</source>
+        <translation type="unfinished">Pievienot pārskatam</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add All to Overview</source>
+        <translation type="unfinished">Pievienot visu pārskatam</translation>
+    </message>
+    <message>
+        <source>Remove All From Overview</source>
+        <translation type="unfinished">Noņemt visu no pārskata</translation>
+    </message>
+    <message>
+        <source>Show All Layers</source>
+        <translation type="unfinished">Rādīt visus slāņus</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+U</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide All Layers</source>
+        <translation type="unfinished">Slēpt visus slāņus</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage Plugins...</source>
+        <translation type="unfinished">Parvaldīt spraudņus...</translation>
+    </message>
+    <message>
+        <source>Toggle Full Screen Mode</source>
+        <translation type="unfinished">Pārslēgt pilnekrāna režīmu</translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished">Ctrl+F</translation>
+    </message>
+    <message>
+        <source>Project Properties...</source>
+        <translation type="unfinished">Projekta īpašības...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options...</source>
+        <translation type="unfinished">Opcijas...</translation>
+    </message>
+    <message>
+        <source>Custom CRS...</source>
+        <translation type="unfinished">Pielāgota CRS...</translation>
+    </message>
+    <message>
+        <source>Configure shortcuts...</source>
+        <translation type="unfinished">Konfigurēt īsceļus...</translation>
+    </message>
+    <message>
+        <source>Local Histogram Stretch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stretch histogram of active raster to view extents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help Contents</source>
+        <translation type="unfinished">Palīdzības saturs</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>API documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Home Page</source>
+        <translation type="unfinished">QGIS mājaslapa</translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation type="unfinished">Ctrl+H</translation>
+    </message>
+    <message>
+        <source>Check QGIS Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check if your QGIS version is up to date (requires internet access)</source>
+        <translation type="unfinished">Pārbauda, vai izmantotā QGIS versija ir pati jaunākā (nepieciešama pieeja internetam)</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished">Par</translation>
+    </message>
+    <message>
+        <source>QGIS Sponsors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style manager...</source>
+        <translation type="unfinished">Stila pārvaldnieks...</translation>
+    </message>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished">Python konsole</translation>
     </message>
 </context>
 <context>
@@ -4686,6 +5297,42 @@ Only %1 of %2 features written.</source>
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open GDAL dataset </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get GDAL raster band : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open GDAL MEM dataset </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot ChunkAndWarpImage : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[GDAL] All files (*)</source>
+        <translation type="unfinished">[GDAL] Visi faili (*)</translation>
+    </message>
+    <message>
+        <source>This raster file has no bands and is invalid as a raster layer.</source>
+        <translation type="unfinished">Šim rastra failam nav neviena kanāla un tas nav derīgs kā rastra slānis.</translation>
+    </message>
+    <message>
+        <source>Cannot get map info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get colors</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -4843,7 +5490,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>&amp;Plugins</source>
-        <translation>&amp;Spraudņi</translation>
+        <translation type="obsolete">&amp;Spraudņi</translation>
     </message>
     <message>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
@@ -4907,11 +5554,11 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Show all layers</source>
-        <translation>Rādīt visus slāņus</translation>
+        <translation type="obsolete">Rādīt visus slāņus</translation>
     </message>
     <message>
         <source>Hide all layers</source>
-        <translation>Slēpt visus slāņus</translation>
+        <translation type="obsolete">Slēpt visus slāņus</translation>
     </message>
     <message>
         <source>Unsupported Data Source</source>
@@ -4967,83 +5614,83 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>&amp;New Project</source>
-        <translation>&amp;Jauns projekts</translation>
+        <translation type="obsolete">&amp;Jauns projekts</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>New Project</source>
-        <translation>Jauns projekts</translation>
+        <translation type="obsolete">Jauns projekts</translation>
     </message>
     <message>
         <source>&amp;Open Project...</source>
-        <translation>&amp;Atvērt projektu...</translation>
+        <translation type="obsolete">&amp;Atvērt projektu...</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
         <source>Open a Project</source>
-        <translation>Atvērt projektu</translation>
+        <translation type="obsolete">Atvērt projektu</translation>
     </message>
     <message>
         <source>&amp;Save Project</source>
-        <translation>&amp;Saglabāt projektu</translation>
+        <translation type="obsolete">&amp;Saglabāt projektu</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <source>Save Project</source>
-        <translation>Saglabāt projektu</translation>
+        <translation type="obsolete">Saglabāt projektu</translation>
     </message>
     <message>
         <source>Save Project &amp;As...</source>
-        <translation>Saglabāt projektu &amp;kā...</translation>
+        <translation type="obsolete">Saglabāt projektu &amp;kā...</translation>
     </message>
     <message>
         <source>Save Project under a new name</source>
-        <translation>Saglabā projektu ar jaunu nosaukumu</translation>
+        <translation type="obsolete">Saglabā projektu ar jaunu nosaukumu</translation>
     </message>
     <message>
         <source>Save as Image...</source>
-        <translation>Saglabāt kā attēlu...</translation>
+        <translation type="obsolete">Saglabāt kā attēlu...</translation>
     </message>
     <message>
         <source>Save map as image</source>
-        <translation>Saglabā karti kā attēlu</translation>
+        <translation type="obsolete">Saglabā karti kā attēlu</translation>
     </message>
     <message>
         <source>Exit</source>
-        <translation>Iziet</translation>
+        <translation type="obsolete">Iziet</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
-        <translation>Ctrl+Q</translation>
+        <translation type="obsolete">Ctrl+Q</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
-        <translation>Iziet no QGIS</translation>
+        <translation type="obsolete">Iziet no QGIS</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
-        <translation>Pievieno vektordatu slāni</translation>
+        <translation type="obsolete">Pievieno vektordatu slāni</translation>
     </message>
     <message>
         <source>Add a Raster Layer</source>
-        <translation>Pievieno rastra datu slāni</translation>
+        <translation type="obsolete">Pievieno rastra datu slāni</translation>
     </message>
     <message>
         <source>Add a PostGIS Layer</source>
-        <translation>Pievieno PostGIS slāni</translation>
+        <translation type="obsolete">Pievieno PostGIS slāni</translation>
     </message>
     <message>
         <source>Remove Layer</source>
@@ -5060,144 +5707,144 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Show all layers in the overview map</source>
-        <translation>Rādīt visus slāņus pārskata kartē</translation>
+        <translation type="obsolete">Rādīt visus slāņus pārskata kartē</translation>
     </message>
     <message>
         <source>Remove All From Overview</source>
-        <translation>Noņemt visu no pārskata</translation>
+        <translation type="obsolete">Noņemt visu no pārskata</translation>
     </message>
     <message>
         <source>Remove all layers from overview map</source>
-        <translation>Noņem visus slāņus no pārskata kartes</translation>
+        <translation type="obsolete">Noņem visus slāņus no pārskata kartes</translation>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation>Rādīt visus slāņus</translation>
+        <translation type="obsolete">Rādīt visus slāņus</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation>Slēpt visus slāņus</translation>
+        <translation type="obsolete">Slēpt visus slāņus</translation>
     </message>
     <message>
         <source>Project Properties...</source>
-        <translation>Projekta īpašības...</translation>
+        <translation type="obsolete">Projekta īpašības...</translation>
     </message>
     <message>
         <source>Set project properties</source>
-        <translation>Iestata projekta īpašības</translation>
+        <translation type="obsolete">Iestata projekta īpašības</translation>
     </message>
     <message>
         <source>Options...</source>
-        <translation>Opcijas...</translation>
+        <translation type="obsolete">Opcijas...</translation>
     </message>
     <message>
         <source>Change various QGIS options</source>
-        <translation>Maina dažādas QGIS opcijas</translation>
+        <translation type="obsolete">Maina dažādas QGIS opcijas</translation>
     </message>
     <message>
         <source>Help Contents</source>
-        <translation>Palīdzības saturs</translation>
+        <translation type="obsolete">Palīdzības saturs</translation>
     </message>
     <message>
         <source>F1</source>
         <comment>Help Documentation</comment>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Help Documentation</source>
-        <translation>Palīdzības dokumentācija</translation>
+        <translation type="obsolete">Palīdzības dokumentācija</translation>
     </message>
     <message>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
-        <translation>Ctrl+H</translation>
+        <translation type="obsolete">Ctrl+H</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
-        <translation>QGIS mājaslapa</translation>
+        <translation type="obsolete">QGIS mājaslapa</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Par</translation>
+        <translation type="obsolete">Par</translation>
     </message>
     <message>
         <source>About QGIS</source>
-        <translation>Par QGIS</translation>
+        <translation type="obsolete">Par QGIS</translation>
     </message>
     <message>
         <source>Check Qgis Version</source>
-        <translation>Pārbaudīt QGIS versiju</translation>
+        <translation type="obsolete">Pārbaudīt QGIS versiju</translation>
     </message>
     <message>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation>Pārbauda, vai izmantotā QGIS versija ir pati jaunākā (nepieciešama pieeja internetam)</translation>
+        <translation type="obsolete">Pārbauda, vai izmantotā QGIS versija ir pati jaunākā (nepieciešama pieeja internetam)</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Atjaunināt</translation>
+        <translation type="obsolete">Atjaunināt</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
-        <translation>Ctrl+R</translation>
+        <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
         <source>Refresh Map</source>
-        <translation>Atjaunināt karti</translation>
+        <translation type="obsolete">Atjaunināt karti</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation>Tuvināt</translation>
+        <translation type="obsolete">Tuvināt</translation>
     </message>
     <message>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
-        <translation>Ctrl++</translation>
+        <translation type="obsolete">Ctrl++</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>Tālināt</translation>
+        <translation type="obsolete">Tālināt</translation>
     </message>
     <message>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
-        <translation>Ctrl+-</translation>
+        <translation type="obsolete">Ctrl+-</translation>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation>Tuvināt kopskatu</translation>
+        <translation type="obsolete">Tuvināt kopskatu</translation>
     </message>
     <message>
         <source>Zoom to Full Extents</source>
-        <translation>Tālināt līdz kopskatam</translation>
+        <translation type="obsolete">Tālināt līdz kopskatam</translation>
     </message>
     <message>
         <source>Pan Map</source>
-        <translation>Panoramēt karti</translation>
+        <translation type="obsolete">Panoramēt karti</translation>
     </message>
     <message>
         <source>Pan the map</source>
-        <translation>Velk karti</translation>
+        <translation type="obsolete">Velk karti</translation>
     </message>
     <message>
         <source>Zoom Last</source>
-        <translation>Pēdējā tālummaiņa</translation>
+        <translation type="obsolete">Pēdējā tālummaiņa</translation>
     </message>
     <message>
         <source>Zoom to Last Extent</source>
-        <translation>Tuvina līdz iepriekšējam skatam</translation>
+        <translation type="obsolete">Tuvina līdz iepriekšējam skatam</translation>
     </message>
     <message>
         <source>Zoom to Layer</source>
-        <translation>Tuvina līdz slānim</translation>
+        <translation type="obsolete">Tuvina līdz slānim</translation>
     </message>
     <message>
         <source>Identify Features</source>
-        <translation>Identificēt objektus</translation>
+        <translation type="obsolete">Identificēt objektus</translation>
     </message>
     <message>
         <source>Click on features to identify them</source>
-        <translation>Klikšķiniet uz objektiem, lai tos identificētu</translation>
+        <translation type="obsolete">Klikšķiniet uz objektiem, lai tos identificētu</translation>
     </message>
     <message>
         <source>Select Features</source>
@@ -5205,136 +5852,136 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Measure Line </source>
-        <translation>Mērīt līniju </translation>
+        <translation type="obsolete">Mērīt līniju </translation>
     </message>
     <message>
         <source>Measure a Line</source>
-        <translation>Mēra līniju</translation>
+        <translation type="obsolete">Mēra līniju</translation>
     </message>
     <message>
         <source>Measure Area</source>
-        <translation>Mērīt laukumu</translation>
+        <translation type="obsolete">Mērīt laukumu</translation>
     </message>
     <message>
         <source>Measure an Area</source>
-        <translation>Mēra laukumu</translation>
+        <translation type="obsolete">Mēra laukumu</translation>
     </message>
     <message>
         <source>Show Bookmarks</source>
-        <translation>Rādīt grāmatzīmes</translation>
+        <translation type="obsolete">Rādīt grāmatzīmes</translation>
     </message>
     <message>
         <source>New Bookmark...</source>
-        <translation>Jauna grāmatzīme...</translation>
+        <translation type="obsolete">Jauna grāmatzīme...</translation>
     </message>
     <message>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
-        <translation>Ctrl+B</translation>
+        <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
         <source>Add WMS Layer...</source>
-        <translation>Pievienot WMS slāni...</translation>
+        <translation type="obsolete">Pievienot WMS slāni...</translation>
     </message>
     <message>
         <source>Add current layer to overview map</source>
-        <translation>Pievienot pašreizējo slāni pārskata kartei</translation>
+        <translation type="obsolete">Pievienot pašreizējo slāni pārskata kartei</translation>
     </message>
     <message>
         <source>Open the plugin manager</source>
-        <translation>Atver spraudņu pārvaldnieku</translation>
+        <translation type="obsolete">Atver spraudņu pārvaldnieku</translation>
     </message>
     <message>
         <source>Capture Point</source>
-        <translation>Atlikt punktu</translation>
+        <translation type="obsolete">Atlikt punktu</translation>
     </message>
     <message>
         <source>Capture Points</source>
-        <translation>Atliek punktus</translation>
+        <translation type="obsolete">Atliek punktus</translation>
     </message>
     <message>
         <source>Capture Line</source>
-        <translation>Atlikt līniju</translation>
+        <translation type="obsolete">Atlikt līniju</translation>
     </message>
     <message>
         <source>Capture Lines</source>
-        <translation>Atliek līnijas</translation>
+        <translation type="obsolete">Atliek līnijas</translation>
     </message>
     <message>
         <source>Capture Polygon</source>
-        <translation>Atlikt poligonu</translation>
+        <translation type="obsolete">Atlikt poligonu</translation>
     </message>
     <message>
         <source>Capture Polygons</source>
-        <translation>Atliek poligonus</translation>
+        <translation type="obsolete">Atliek poligonus</translation>
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation>Dzēst izvēlēto</translation>
+        <translation type="obsolete">Dzēst izvēlēto</translation>
     </message>
     <message>
         <source>Add Vertex</source>
-        <translation>Pievienot virsotni</translation>
+        <translation type="obsolete">Pievienot virsotni</translation>
     </message>
     <message>
         <source>Delete Vertex</source>
-        <translation>Dzēst virsotni</translation>
+        <translation type="obsolete">Dzēst virsotni</translation>
     </message>
     <message>
         <source>Move Vertex</source>
-        <translation>Pārvietot virsotni</translation>
+        <translation type="obsolete">Pārvietot virsotni</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Fails</translation>
+        <translation type="obsolete">&amp;Fails</translation>
     </message>
     <message>
         <source>&amp;Open Recent Projects</source>
-        <translation>&amp;Atvērt nesenos projektus</translation>
+        <translation type="obsolete">&amp;Atvērt nesenos projektus</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation>&amp;Skats</translation>
+        <translation type="obsolete">&amp;Skats</translation>
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation>&amp;Slānis</translation>
+        <translation type="obsolete">&amp;Slānis</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation>&amp;Iestatījumi</translation>
+        <translation type="obsolete">&amp;Iestatījumi</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Palīdzība</translation>
+        <translation type="obsolete">&amp;Palīdzība</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Fails</translation>
+        <translation type="obsolete">Fails</translation>
     </message>
     <message>
         <source>Manage Layers</source>
-        <translation>Pārvaldīt slāņus</translation>
+        <translation type="obsolete">Pārvaldīt slāņus</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Palīdzība</translation>
+        <translation type="obsolete">Palīdzība</translation>
     </message>
     <message>
         <source>Digitizing</source>
-        <translation>Digitizēšana</translation>
+        <translation type="obsolete">Digitizēšana</translation>
     </message>
     <message>
         <source>Map Navigation</source>
-        <translation>Kartes navigācija</translation>
+        <translation type="obsolete">Kartes navigācija</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation>Atribūti</translation>
+        <translation type="obsolete">Atribūti</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Spraudņi</translation>
+        <translation type="obsolete">Spraudņi</translation>
     </message>
     <message>
         <source>Ready</source>
@@ -5343,31 +5990,31 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     <message>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
-        <translation>Ctrl+?</translation>
+        <translation type="obsolete">Ctrl+?</translation>
     </message>
     <message>
         <source>Cut Features</source>
-        <translation>Izgriezt objektus</translation>
+        <translation type="obsolete">Izgriezt objektus</translation>
     </message>
     <message>
         <source>Cut selected features</source>
-        <translation>Izgriež izvēlētos objektus</translation>
+        <translation type="obsolete">Izgriež izvēlētos objektus</translation>
     </message>
     <message>
         <source>Copy Features</source>
-        <translation>Kopēt objektus</translation>
+        <translation type="obsolete">Kopēt objektus</translation>
     </message>
     <message>
         <source>Copy selected features</source>
-        <translation>Kopē izvēlētos objektus</translation>
+        <translation type="obsolete">Kopē izvēlētos objektus</translation>
     </message>
     <message>
         <source>Paste Features</source>
-        <translation>Ielīmēt objektus</translation>
+        <translation type="obsolete">Ielīmēt objektus</translation>
     </message>
     <message>
         <source>Paste selected features</source>
-        <translation>Ielīmē izvēlētos objektus</translation>
+        <translation type="obsolete">Ielīmē izvēlētos objektus</translation>
     </message>
     <message>
         <source>Network error while communicating with server</source>
@@ -5403,15 +6050,15 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation>Pārslēgt rediģēšanu</translation>
+        <translation type="obsolete">Pārslēgt rediģēšanu</translation>
     </message>
     <message>
         <source>Toggles the editing state of the current layer</source>
-        <translation>Pārslēdz slāņa rediģēšanas statusu</translation>
+        <translation type="obsolete">Pārslēdz slāņa rediģēšanas statusu</translation>
     </message>
     <message>
         <source>Add Ring</source>
-        <translation>Pievienot riņķi</translation>
+        <translation type="obsolete">Pievienot riņķi</translation>
     </message>
     <message>
         <source>Scale </source>
@@ -5431,15 +6078,15 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Split Features</source>
-        <translation>Sadalīt objektus</translation>
+        <translation type="obsolete">Sadalīt objektus</translation>
     </message>
     <message>
         <source>Map Tips</source>
-        <translation>Kartes padomi</translation>
+        <translation type="obsolete">Kartes padomi</translation>
     </message>
     <message>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation>Rādīt informāciju par objektu, kad virs tā pārvieto peli.</translation>
+        <translation type="obsolete">Rādīt informāciju par objektu, kad virs tā pārvieto peli.</translation>
     </message>
     <message>
         <source>Current map scale</source>
@@ -5464,7 +6111,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Toggle fullscreen mode</source>
-        <translation>Pārslēdz pilnekrāna režīmu</translation>
+        <translation type="obsolete">Pārslēdz pilnekrāna režīmu</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
@@ -5509,153 +6156,153 @@ Lūgums kontaktēties ar izstrādātājiem.
     <message>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
-        <translation>Saglabāt projektu ar jaunu nosaukumu</translation>
+        <translation type="obsolete">Saglabāt projektu ar jaunu nosaukumu</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation>&amp;Atcelt</translation>
+        <translation type="obsolete">&amp;Atcelt</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation>Ctrl+Z</translation>
+        <translation type="obsolete">Ctrl+Z</translation>
     </message>
     <message>
         <source>Undo the last operation</source>
-        <translation>Atcelt pēdējo darbību</translation>
+        <translation type="obsolete">Atcelt pēdējo darbību</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation>Iz&amp;griezt</translation>
+        <translation type="obsolete">Iz&amp;griezt</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation>Izgreiezt pašreizējās izvēles saturu un ievietot starpliktuvē</translation>
+        <translation type="obsolete">Izgreiezt pašreizējās izvēles saturu un ievietot starpliktuvē</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation>&amp;Kopēt</translation>
+        <translation type="obsolete">&amp;Kopēt</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation>Kopēt pašreizējās izvēles saturu un ievietot starpliktuvē</translation>
+        <translation type="obsolete">Kopēt pašreizējās izvēles saturu un ievietot starpliktuvē</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation>&amp;Ievietot</translation>
+        <translation type="obsolete">&amp;Ievietot</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
+        <translation type="obsolete">Ctrl+V</translation>
     </message>
     <message>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation>Ievietot starpliktuves saturu pašreizējā izvēlē</translation>
+        <translation type="obsolete">Ievietot starpliktuves saturu pašreizējā izvēlē</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
-        <translation>&amp;Pārdarīt</translation>
+        <translation type="obsolete">&amp;Pārdarīt</translation>
     </message>
     <message>
         <source>Ctrl+Shift+Z</source>
-        <translation>Ctrl+Shift+Z</translation>
+        <translation type="obsolete">Ctrl+Shift+Z</translation>
     </message>
     <message>
         <source>Redo the last operation</source>
-        <translation>Pārdarīt pēdējo darbību</translation>
+        <translation type="obsolete">Pārdarīt pēdējo darbību</translation>
     </message>
     <message>
         <source>Merge selected features</source>
-        <translation>Apvienot izvēlētos objektus</translation>
+        <translation type="obsolete">Apvienot izvēlētos objektus</translation>
     </message>
     <message>
         <source>Node Tool</source>
-        <translation>Virsotņu rīks</translation>
+        <translation type="obsolete">Virsotņu rīks</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation>Tuvināt līdz izvēlei</translation>
+        <translation type="obsolete">Tuvināt līdz izvēlei</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
-        <translation>Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>Zoom Actual Size</source>
-        <translation>Tuvināt faktisko lielumu</translation>
+        <translation type="obsolete">Tuvināt faktisko lielumu</translation>
     </message>
     <message>
         <source>Zoom to Actual Size</source>
-        <translation>Tuvināt līdz faktiskajam izmēram</translation>
+        <translation type="obsolete">Tuvināt līdz faktiskajam izmēram</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
-        <translation>Pievienot vektordatu slāni...</translation>
+        <translation type="obsolete">Pievienot vektordatu slāni...</translation>
     </message>
     <message>
         <source>Add Raster Layer...</source>
-        <translation>Pievienot rastra datu slāni...</translation>
+        <translation type="obsolete">Pievienot rastra datu slāni...</translation>
     </message>
     <message>
         <source>Add PostGIS Layer...</source>
-        <translation>Pievienot PostGIS slāni...</translation>
+        <translation type="obsolete">Pievienot PostGIS slāni...</translation>
     </message>
     <message>
         <source>Add a Web Mapping Server Layer</source>
-        <translation>Pievieno WMS slāni</translation>
+        <translation type="obsolete">Pievieno WMS slāni</translation>
     </message>
     <message>
         <source>Open Attribute Table</source>
-        <translation>Atvērt atribūtu tabulu</translation>
+        <translation type="obsolete">Atvērt atribūtu tabulu</translation>
     </message>
     <message>
         <source>Save edits to current layer, but continue editing</source>
-        <translation>Saglabāt aktīvā slāņa izmaiņas un turpināt rediģēt</translation>
+        <translation type="obsolete">Saglabāt aktīvā slāņa izmaiņas un turpināt rediģēt</translation>
     </message>
     <message>
         <source>Properties...</source>
-        <translation>Īpašības...</translation>
+        <translation type="obsolete">Īpašības...</translation>
     </message>
     <message>
         <source>Set properties of the current layer</source>
-        <translation>Definēt pašreizejā slāņa īpašības</translation>
+        <translation type="obsolete">Definēt pašreizejā slāņa īpašības</translation>
     </message>
     <message>
         <source>Add to Overview</source>
-        <translation>Pievienot pārskatam</translation>
+        <translation type="obsolete">Pievienot pārskatam</translation>
     </message>
     <message>
         <source>Add All to Overview</source>
-        <translation>Pievienot visu pārskatam</translation>
+        <translation type="obsolete">Pievienot visu pārskatam</translation>
     </message>
     <message>
         <source>Manage Plugins...</source>
-        <translation>Parvaldīt spraudņus...</translation>
+        <translation type="obsolete">Parvaldīt spraudņus...</translation>
     </message>
     <message>
         <source>Toggle Full Screen Mode</source>
-        <translation>Pārslēgt pilnekrāna režīmu</translation>
+        <translation type="obsolete">Pārslēgt pilnekrāna režīmu</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation>Ctrl+F</translation>
+        <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
         <source>Custom CRS...</source>
-        <translation>Pielāgota CRS...</translation>
+        <translation type="obsolete">Pielāgota CRS...</translation>
     </message>
     <message>
         <source>Manage custom coordinate reference systems</source>
-        <translation>Pārvaldīt pielāgotās koordinātu sistēmas</translation>
+        <translation type="obsolete">Pārvaldīt pielāgotās koordinātu sistēmas</translation>
     </message>
     <message>
         <source>Minimize</source>
@@ -5688,11 +6335,11 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>Print Composers</source>
-        <translation>Drukas veidotāji</translation>
+        <translation type="obsolete">Drukas veidotāji</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Rediģēt</translation>
+        <translation type="obsolete">&amp;Rediģēt</translation>
     </message>
     <message>
         <source>Panels</source>
@@ -5770,7 +6417,7 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     </message>
     <message>
         <source>Python Console</source>
-        <translation>Python konsole</translation>
+        <translation type="obsolete">Python konsole</translation>
     </message>
     <message>
         <source>Map coordinates for the current view extents</source>
@@ -5786,157 +6433,82 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     </message>
     <message>
         <source>&amp;New Print Composer</source>
-        <translation>&amp;Jauns drukas veidotājs</translation>
+        <translation type="obsolete">&amp;Jauns drukas veidotājs</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
-        <translation>Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>New Print Composer</source>
-        <translation>Jauns drukas veidotājs</translation>
+        <translation type="obsolete">Jauns drukas veidotājs</translation>
     </message>
     <message>
         <source>Composer manager...</source>
-        <translation>Drukas veidotāja pārvaldnieks</translation>
+        <translation type="obsolete">Drukas veidotāja pārvaldnieks</translation>
     </message>
     <message>
         <source>Composer manager</source>
-        <translation>Drukas veidotāja pārvaldnieks</translation>
-    </message>
-    <message>
-        <source>Ctrl+.</source>
-        <comment>Capture Points</comment>
-        <translation></translation>
+        <translation type="obsolete">Drukas veidotāja pārvaldnieks</translation>
     </message>
     <message>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
-        <translation>Ctrl+/</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+/</source>
-        <comment>Capture Polygons</comment>
-        <translation></translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <source>Reshape Features</source>
-        <translation>Pārveidot objektus</translation>
+        <translation type="obsolete">Pārveidot objektus</translation>
     </message>
     <message>
         <source>Add Part</source>
-        <translation>Pievienot daļu</translation>
+        <translation type="obsolete">Pievienot daļu</translation>
     </message>
     <message>
         <source>Add part to multipolygon</source>
-        <translation>Pievienot daļu multipoligonam</translation>
+        <translation type="obsolete">Pievienot daļu multipoligonam</translation>
     </message>
     <message>
         <source>Click a vertex of the ring to delete</source>
-        <translation>Uzklišķiniet, lai dzēstu riņķa virsotni</translation>
+        <translation type="obsolete">Uzklišķiniet, lai dzēstu riņķa virsotni</translation>
     </message>
     <message>
         <source>Click a vertex of the part to delete</source>
-        <translation>Uzklišķiniet, lai dzēstu daļas virsotni</translation>
+        <translation type="obsolete">Uzklišķiniet, lai dzēstu daļas virsotni</translation>
     </message>
     <message>
         <source>Rotate Point Symbols</source>
-        <translation>Pagriezt punkta simbolus</translation>
+        <translation type="obsolete">Pagriezt punkta simbolus</translation>
     </message>
     <message>
         <source>Deselect features from all layers</source>
-        <translation>Atcelt izvēlētos objektus visiem slāņiem</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+I</source>
-        <comment>Click on features to identify them</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+M</source>
-        <comment>Measure a Line</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+J</source>
-        <comment>Measure an Area</comment>
-        <translation></translation>
+        <translation type="obsolete">Atcelt izvēlētos objektus visiem slāņiem</translation>
     </message>
     <message>
         <source>Measure Angle</source>
-        <translation>Mērīt leņķi</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+F</source>
-        <comment>Zoom to Full Extents</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+B</source>
-        <comment>Show Bookmarks</comment>
-        <translation></translation>
+        <translation type="obsolete">Mērīt leņķi</translation>
     </message>
     <message>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
-        <translation>Ctrl+Shift+V</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+R</source>
-        <comment>Add a Raster Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+D</source>
-        <comment>Add a PostGIS Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+W</source>
-        <comment>Add a Web Mapping Server Layer</comment>
-        <translation></translation>
+        <translation type="obsolete">Ctrl+Shift+V</translation>
     </message>
     <message>
         <source>Live GPS tracking</source>
-        <translation>GPS sekošana</translation>
+        <translation type="obsolete">GPS sekošana</translation>
     </message>
     <message>
         <source>Show GPS tool</source>
-        <translation>Rādīt GPS rīku</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+U</source>
-        <comment>Show all layers</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+H</source>
-        <comment>Hide all layers</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+P</source>
-        <comment>Set project properties</comment>
-        <translation></translation>
+        <translation type="obsolete">Rādīt GPS rīku</translation>
     </message>
     <message>
         <source>Style manager...</source>
-        <translation>Stila pārvaldnieks...</translation>
+        <translation type="obsolete">Stila pārvaldnieks...</translation>
     </message>
     <message>
         <source>Show style manager V2</source>
-        <translation>Parādīt stila pārvaldnieku V2</translation>
+        <translation type="obsolete">Parādīt stila pārvaldnieku V2</translation>
     </message>
     <message>
         <source>Failed to open Python console:</source>
@@ -5980,20 +6552,20 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     </message>
     <message>
         <source>Move Feature(s)</source>
-        <translation>Pārvietot objektus</translation>
+        <translation type="obsolete">Pārvietot objektus</translation>
     </message>
     <message>
         <source>Text Annotation</source>
         <translatorcomment>Šis nav veiksmīgs tulkojums</translatorcomment>
-        <translation>Teksta kopsavilkums</translation>
+        <translation type="obsolete">Teksta kopsavilkums</translation>
     </message>
     <message>
         <source>Form annotation</source>
-        <translation>Formas kopsavilkums</translation>
+        <translation type="obsolete">Formas kopsavilkums</translation>
     </message>
     <message>
         <source>Move Annotation</source>
-        <translation>Pārvietot kopsavilkumu</translation>
+        <translation type="obsolete">Pārvietot kopsavilkumu</translation>
     </message>
     <message>
         <source>Labeling</source>
@@ -6001,69 +6573,65 @@ This copy of QGIS has been built with GDAL/OGR %1.</source>
     </message>
     <message>
         <source>New Shapefile Layer...</source>
-        <translation>Jauns shapefile slānis...</translation>
+        <translation type="obsolete">Jauns shapefile slānis...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Shapefile layer</comment>
-        <translation>Ctrl+Shift+N</translation>
+        <translation type="obsolete">Ctrl+Shift+N</translation>
     </message>
     <message>
         <source>Create a New Shapefile layer</source>
-        <translation>Izveido jaunu Shapefile slāni</translation>
+        <translation type="obsolete">Izveido jaunu Shapefile slāni</translation>
     </message>
     <message>
         <source>New SpatiaLite Layer ...</source>
-        <translation>Jauns SpatiaLite slānis...</translation>
+        <translation type="obsolete">Jauns SpatiaLite slānis...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
         <comment>Create a New SpatiaLite Layer </comment>
-        <translation>Ctrl+Shift+A</translation>
+        <translation type="obsolete">Ctrl+Shift+A</translation>
     </message>
     <message>
         <source>Create a New SpatiaLite Layer </source>
-        <translation>Izveidot jaunu SpatiaLite slāni </translation>
+        <translation type="obsolete">Izveidot jaunu SpatiaLite slāni </translation>
     </message>
     <message>
         <source>Save edits</source>
-        <translation>Saglabāt rediģēto</translation>
+        <translation type="obsolete">Saglabāt rediģēto</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation>Saglabāt kā...</translation>
+        <translation type="obsolete">Saglabāt kā...</translation>
     </message>
     <message>
         <source>Save the current layer as a vector file</source>
-        <translation>Saglabāt šo slāni kā vektordatu failu</translation>
+        <translation type="obsolete">Saglabāt šo slāni kā vektordatu failu</translation>
     </message>
     <message>
         <source>Save Selection as vector file...</source>
-        <translation>Saglabāt izvēli kā vektordatu failu...</translation>
+        <translation type="obsolete">Saglabāt izvēli kā vektordatu failu...</translation>
     </message>
     <message>
         <source>Save the selection as a vector file</source>
-        <translation>Saglabā izvēlētos objektus kā jaunu vektordatu failu</translation>
+        <translation type="obsolete">Saglabā izvēlētos objektus kā jaunu vektordatu failu</translation>
     </message>
     <message>
         <source>Tile scale slider</source>
-        <translation>Mēroga slīdnis</translation>
-    </message>
-    <message>
-        <source>Show tile scale slider</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Mēroga slīdnis</translation>
     </message>
     <message>
         <source>Query...</source>
-        <translation>Vaicājums...</translation>
+        <translation type="obsolete">Vaicājums...</translation>
     </message>
     <message>
         <source>Set subset query of the current layer</source>
-        <translation>Iestatīt datu apakškopas atlases vaicājumu šim slānim</translation>
+        <translation type="obsolete">Iestatīt datu apakškopas atlases vaicājumu šim slānim</translation>
     </message>
     <message>
         <source>New</source>
-        <translation>Jauns</translation>
+        <translation type="obsolete">Jauns</translation>
     </message>
     <message>
         <source>Private qgis.db</source>
@@ -6275,11 +6843,11 @@ Ignorēt kļūdas?</translation>
     </message>
     <message>
         <source>Add SpatiaLite Layer...</source>
-        <translation>Pievienot SpatiaLite slāni...</translation>
+        <translation type="obsolete">Pievienot SpatiaLite slāni...</translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
-        <translation>Pievienot SpatiaLite slāni</translation>
+        <translation type="obsolete">Pievienot SpatiaLite slāni</translation>
     </message>
     <message>
         <source>
@@ -6288,35 +6856,35 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Zoom Next</source>
-        <translation>Nākošais skats</translation>
+        <translation type="obsolete">Nākošais skats</translation>
     </message>
     <message>
         <source>Zoom to Forward Extent</source>
-        <translation>Tuvināt līdz priekšējam kopskatam</translation>
+        <translation type="obsolete">Tuvināt līdz priekšējam kopskatam</translation>
     </message>
     <message>
         <source>Simplify Feature</source>
-        <translation>Vienkāršot objektu</translation>
+        <translation type="obsolete">Vienkāršot objektu</translation>
     </message>
     <message>
         <source>Delete Ring</source>
-        <translation>Dzēst riņķi</translation>
+        <translation type="obsolete">Dzēst riņķi</translation>
     </message>
     <message>
         <source>Delete Part</source>
-        <translation>Dzēst daļu</translation>
+        <translation type="obsolete">Dzēst daļu</translation>
     </message>
     <message>
         <source>Configure shortcuts...</source>
-        <translation>Konfigurēt īsceļus...</translation>
+        <translation type="obsolete">Konfigurēt īsceļus...</translation>
     </message>
     <message>
         <source>Configure shortcuts</source>
-        <translation>Konfigurēt īsceļus</translation>
+        <translation type="obsolete">Konfigurēt īsceļus</translation>
     </message>
     <message>
         <source>Advanced Digitizing</source>
-        <translation>Paplašinātā digitizēšana</translation>
+        <translation type="obsolete">Paplašinātā digitizēšana</translation>
     </message>
     <message>
         <source>
@@ -6339,19 +6907,19 @@ This copy of QGIS writes debugging output.</source>
     </message>
     <message>
         <source>Select features by rectangle</source>
-        <translation>Izvēlēties ar taisnstūri</translation>
+        <translation type="obsolete">Izvēlēties ar taisnstūri</translation>
     </message>
     <message>
         <source>Select features by polygon</source>
-        <translation>Izvēlēties ar poligonu</translation>
+        <translation type="obsolete">Izvēlēties ar poligonu</translation>
     </message>
     <message>
         <source>Select features by freehand</source>
-        <translation>Izvēlēties brīvi zīmējot</translation>
+        <translation type="obsolete">Izvēlēties brīvi zīmējot</translation>
     </message>
     <message>
         <source>Select features by radius</source>
-        <translation>Izvēlēties tuvumā</translation>
+        <translation type="obsolete">Izvēlēties tuvumā</translation>
     </message>
     <message>
         <source>Select raster layers to add...</source>
@@ -6367,24 +6935,24 @@ This copy of QGIS writes debugging output.</source>
     </message>
     <message>
         <source>Raster calculator ...</source>
-        <translation>Rastra kalkulators...</translation>
+        <translation type="obsolete">Rastra kalkulators...</translation>
     </message>
     <message>
         <source>Remove Layer(s)</source>
-        <translation>Noņemt slāni</translation>
+        <translation type="obsolete">Noņemt slāni</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
         <comment>Remove Layer(s)</comment>
-        <translation>Ctrl+D</translation>
+        <translation type="obsolete">Ctrl+D</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation>Izvēlēties</translation>
+        <translation type="obsolete">Izvēlēties</translation>
     </message>
     <message>
         <source>Measure</source>
-        <translation>Mērīt</translation>
+        <translation type="obsolete">Mērīt</translation>
     </message>
     <message>
         <source>
@@ -6564,18 +7132,6 @@ This copy of QGIS has been built with QWT %1.</source>
         <translation>Atcelt...</translation>
     </message>
     <message>
-        <source>Merge attributes of selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Snapping Options...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Manage the background snapping options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6588,77 +7144,13 @@ This copy of QGIS has been built with QWT %1.</source>
         <translation type="unfinished">&amp;Rastrs</translation>
     </message>
     <message>
-        <source>Move Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move labels interactively</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotate Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotate labels interactively</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Change label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Change label properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Label</source>
-        <translation type="unfinished">Birka</translation>
-    </message>
-    <message>
-        <source>, hold ctrl to add/subtract current selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select single feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select single features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, hold shift to select by containment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set CRS of Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Birka</translation>
     </message>
     <message>
         <source>Ctrl+Shift+C</source>
         <comment>Set CRS of Layer(s)</comment>
-        <translation type="unfinished">Ctrl+Shift+C</translation>
-    </message>
-    <message>
-        <source>Local Histogram Stretch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stretch histogram of active raster to view extents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>API documentation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS Sponsors!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS Sponsors</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+Shift+C</translation>
     </message>
     <message>
         <source>
@@ -6726,7 +7218,7 @@ Always ignore these errors?</source>
     <name>QgisAppBase</name>
     <message>
         <source>QGIS</source>
-        <translation>QGIS</translation>
+        <translation type="obsolete">QGIS</translation>
     </message>
 </context>
 <context>
@@ -11742,6 +12234,49 @@ Lūdzu izvēlēties derīgu.</translation>
     <message>
         <source>Digitized in QGIS</source>
         <translation>Digitizēts iekš QGIS</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGdalProvider</name>
+    <message>
+        <source>Dataset Description</source>
+        <translation type="unfinished">Datu kopas apraksts</translation>
+    </message>
+    <message>
+        <source>Band %1</source>
+        <translation type="unfinished">Kanāls %1</translation>
+    </message>
+    <message>
+        <source>Dimensions:</source>
+        <translation type="unfinished">Dimensijas:</translation>
+    </message>
+    <message>
+        <source>X: %1 Y: %2 Bands: %3</source>
+        <translation type="unfinished">X: %1 Y: %2 Kanāli: %3</translation>
+    </message>
+    <message>
+        <source>Origin:</source>
+        <translation type="unfinished">Izcelsme:</translation>
+    </message>
+    <message>
+        <source>Pixel Size:</source>
+        <translation type="unfinished">Pikseļa izmērs:</translation>
+    </message>
+    <message>
+        <source>out of extent</source>
+        <translation type="unfinished">ārpus apjoma</translation>
+    </message>
+    <message>
+        <source>null (no data)</source>
+        <translation type="unfinished">null (nav datu)</translation>
+    </message>
+    <message>
+        <source>Average Magphase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18079,7 +18614,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Default Coordinate Reference System</source>
-        <translation>Noklusējuma koordinātu sistēma</translation>
+        <translation type="obsolete">Noklusējuma koordinātu sistēma</translation>
     </message>
     <message>
         <source>Vertex markers</source>
@@ -18143,15 +18678,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation>Vaicāt koordinātu sistēmu</translation>
+        <translation type="obsolete">Vaicāt koordinātu sistēmu</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
-        <translation>Tiks lietota projekta noklusējuma koordinātu sistēma</translation>
+        <translation type="obsolete">Tiks lietota projekta noklusējuma koordinātu sistēma</translation>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation>&amp;Tiks lietota globālā noklusējuma koordinātu sistēma, kas ir parādīta zemāk</translation>
+        <translation type="obsolete">&amp;Tiks lietota globālā noklusējuma koordinātu sistēma, kas ir parādīta zemāk</translation>
     </message>
     <message>
         <source>Enter attribute values</source>
@@ -18290,15 +18825,35 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select ...</source>
+        <source>Default Coordinate Reference System for new projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable &apos;on the fly&apos; reprojection by defaul</source>
+        <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>When this option is enabled, any new project you create will have &apos;on the fly&apos; projection enabled by default and the CRS below will be used for the project.</source>
+        <source>Select...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always start new projects with this CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System for new layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for &amp;CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use &amp;project CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use default CRS displa&amp;yed below</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20563,14 +21118,6 @@ p, li { white-space: pre-wrap; }
         <source>SQL where clause</source>
         <translation>SQL where nosacījums</translation>
     </message>
-    <message>
-        <source>Auto Sample</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selected Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsQuickPrint</name>
@@ -20795,6 +21342,21 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRasterDataProvider</name>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">Identificēt</translation>
+    </message>
+    <message>
+        <source>Build Pyramids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Kanāls</translation>
+    </message>
+</context>
+<context>
     <name>QgsRasterLayer</name>
     <message>
         <source>Not Set</source>
@@ -20802,7 +21364,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[GDAL] All files (*)</source>
-        <translation>[GDAL] Visi faili (*)</translation>
+        <translation type="obsolete">[GDAL] Visi faili (*)</translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -20810,7 +21372,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dimensions:</source>
-        <translation>Dimensijas:</translation>
+        <translation type="obsolete">Dimensijas:</translation>
     </message>
     <message>
         <source>Data Type:</source>
@@ -20870,11 +21432,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Origin:</source>
-        <translation>Izcelsme:</translation>
+        <translation type="obsolete">Izcelsme:</translation>
     </message>
     <message>
         <source>Pixel Size:</source>
-        <translation>Pikseļa izmērs:</translation>
+        <translation type="obsolete">Pikseļa izmērs:</translation>
     </message>
     <message>
         <source>Band</source>
@@ -20925,12 +21487,8 @@ p, li { white-space: pre-wrap; }
         <translation>Šūnu skaits</translation>
     </message>
     <message>
-        <source>Average Magphase</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Average</source>
-        <translation>Vidēji</translation>
+        <translation type="obsolete">Vidēji</translation>
     </message>
     <message>
         <source>Layer Spatial Reference System: </source>
@@ -20938,15 +21496,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>out of extent</source>
-        <translation>ārpus apjoma</translation>
+        <translation type="obsolete">ārpus apjoma</translation>
     </message>
     <message>
         <source>null (no data)</source>
-        <translation>null (nav datu)</translation>
+        <translation type="obsolete">null (nav datu)</translation>
     </message>
     <message>
         <source>Dataset Description</source>
-        <translation>Datu kopas apraksts</translation>
+        <translation type="obsolete">Datu kopas apraksts</translation>
     </message>
     <message>
         <source>No Data Value</source>
@@ -20958,11 +21516,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Band %1</source>
-        <translation>Kanāls %1</translation>
+        <translation type="obsolete">Kanāls %1</translation>
     </message>
     <message>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation>X: %1 Y: %2 Kanāli: %3</translation>
+        <translation type="obsolete">X: %1 Y: %2 Kanāli: %3</translation>
     </message>
     <message>
         <source>Project Spatial Reference System: </source>
@@ -20982,11 +21540,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation>Šim rastra failam nav neviena kanāla un tas nav derīgs kā rastra slānis.</translation>
+        <translation type="obsolete">Šim rastra failam nav neviena kanāla un tas nav derīgs kā rastra slānis.</translation>
     </message>
     <message>
         <source>Specify CRS for layer %1</source>
         <translation>Norādiet slāņa %1 CRS</translation>
+    </message>
+    <message>
+        <source>Layer Extent (layer original source projection): </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27490,6 +28052,26 @@ For support send a mail to scala@itc.cnr.it
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Brīdinājums</translation>
+    </message>
+    <message>
+        <source>Please specify a file to convert.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify an output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DXF files (*.dxf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shapefile (*.shp)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>eVis</name>
@@ -28142,7 +28724,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation>Eksportēt uz citu projekciju</translation>
+        <translation type="obsolete">Eksportēt uz citu projekciju</translation>
     </message>
     <message>
         <source>Define current projection</source>
@@ -28150,7 +28732,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation>Apvienot atribūtus</translation>
+        <translation type="obsolete">Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -28166,7 +28748,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation>fTools informācija</translation>
+        <translation type="obsolete">fTools informācija</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
