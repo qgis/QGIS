@@ -534,7 +534,12 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   myMemDsn.sprintf( "DATAPOINTER = %p", theBlock );
   QgsDebugMsg( myMemDsn );
 
-  myMemDsn.sprintf( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", ( long )theBlock, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
+  //myMemDsn.sprintf( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", ( long )theBlock, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
+  char szPointer[64];
+  memset( szPointer, 0, sizeof(szPointer) );
+  CPLPrintPointer( szPointer, theBlock, sizeof(szPointer) );
+
+  myMemDsn.sprintf( "MEM:::DATAPOINTER=%s,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", szPointer, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
 
   QgsDebugMsg( "Open GDAL MEM : " + myMemDsn );
 
@@ -560,6 +565,13 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   double myGeoTransform[6];
   GDALGetGeoTransform( mGdalDataset, myGeoTransform );
+  // TODO:
+  // Attention: GDALCreateGenImgProjTransformer failes if source data source
+  // is not georeferenced, e.g. matrix 0,1,0,0,0,1/-1
+  // as a workaround in such case we have to set some different value - really ugly
+  myGeoTransform[0] = DBL_MIN;
+  GDALSetGeoTransform( mGdalDataset, myGeoTransform );
+
   GDALSetGeoTransform( myGdalMemDataset, myMemGeoTransform );
 
   for ( int i = 0 ; i < 6; i++ )
@@ -593,8 +605,24 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       NULL,
       FALSE, 0.0, 1
     );
-
-  CPLAssert( myWarpOptions->pTransformerArg  != NULL );
+  /*
+  myWarpOptions->pTransformerArg =
+    GDALCreateGenImgProjTransformer2(
+      mGdalDataset,
+      myGdalMemDataset,
+      NULL
+    );
+  */
+  if ( !myWarpOptions->pTransformerArg ) 
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                          QObject::tr( "Cannot GDALCreateGenImgProjTransformer: " )
+                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return;
+    
+  };
+  
+  //CPLAssert( myWarpOptions->pTransformerArg  != NULL );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
   myWarpOptions->padfDstNoDataReal = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
@@ -616,7 +644,14 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   GDALWarpOperation myOperation;
 
-  myOperation.Initialize( myWarpOptions );
+  if ( myOperation.Initialize( myWarpOptions ) != CE_None ) 
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                          QObject::tr( "Cannot inittialize GDALWarpOperation : " )
+                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return;
+    
+  };
   CPLErrorReset();
   CPLErr myErr;
   myErr = myOperation.ChunkAndWarpImage( 0, 0, thePixelWidth, thePixelHeight );
