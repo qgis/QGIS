@@ -216,6 +216,11 @@ class QgsCoordinateReferenceSystem
          * @deprecated use authid()
          */
         long epsg () const /Deprecated/;
+        /*! Get the authority identifier for this srs
+         * @return  QString the Authority identifier for this srs
+         * @note added in 1.7
+         */
+        QString authid() const;
         /*! Get the Description
          * @return  QString the Description A textual description of the srs.
          * @note A zero length string will be returned if the description is uninitialised
