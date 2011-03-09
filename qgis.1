@@ -1,4 +1,4 @@
-.TH QGIS 1 "March 19, 2010"
+.TH QGIS 1 "March 9, 2011"
 .SH NAME
 qgis \- Quantum GIS Geographic Information System 
 .SH SYNOPSIS
@@ -14,7 +14,21 @@ qgis \- Quantum GIS Geographic Information System
 .B "     [--extent"
 .I xmin,ymin,xmax,ymax]
 .br
+.B "     [--width"
+.I width]
+.br
+.B "     [--height"
+.I height]
+.br
+.B "     [--nologo]"
+.br
 .B "     [--noplugins]"
+.br
+.B "     [--optionspath"
+.I path]
+.br
+.B "     [--configpath"
+.I path]
 .br
 .B "     [--help]"
 .br
@@ -67,9 +81,24 @@ are symbolized, and the view extent is restored.
 .B \--extent xmin,ymin,xmax,ymax
 Set initial map extent by passing coordinates of that rectangle.
 .TP
+.B \--width width
+Width of snapshot to emit
+.TP
+.B \--height height
+Height of snapshot to emit
+.TP
+.B \--nologo
+Hide splash screen
+.TP
 .B \--noplugins
 .br
 Don't restore plugins on startup. Useful if some third-party plugins make QGIS crash during startup.
+.TP
+.B \--optionspath path
+Use the given QSettings path
+.TP
+.B \--configpath path
+Use the given path for all user configuration
 .TP
 .B \--help
 .br 
