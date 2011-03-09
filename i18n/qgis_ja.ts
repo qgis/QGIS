@@ -26856,25 +26856,21 @@ The data provider said:
     <name>QgsQueryBuilderBase</name>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="22"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="22"/>
         <source>Query Builder</source>
         <translation>クエリビルダ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="259"/>
         <source>Datasource</source>
         <translation>データソース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="49"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="42"/>
         <source>Fields</source>
         <translation>フィールド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="58"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="51"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -26886,13 +26882,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="77"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="70"/>
         <source>Values</source>
         <translation>値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="86"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="79"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -26920,7 +26914,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="118"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="98"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -26932,115 +26925,96 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="124"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="104"/>
         <source>All</source>
         <translation>全ての</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="121"/>
         <source>Operators</source>
         <translation>演算子</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="143"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="130"/>
         <source>=</source>
         <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="150"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="137"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="157"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="144"/>
         <source>NOT</source>
         <translation>NOT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="164"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="151"/>
         <source>OR</source>
         <translation>OR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="171"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="158"/>
         <source>AND</source>
         <translation>AND</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="178"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="165"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="185"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="172"/>
         <source>IN</source>
         <translation>IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="192"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="179"/>
         <source>NOT IN</source>
         <translation>NOT IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="199"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="186"/>
         <source>!=</source>
         <translation>!=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="206"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="193"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="213"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="200"/>
         <source>LIKE</source>
         <translation>LIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="220"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="207"/>
         <source>ILIKE</source>
         <translation>ILIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="227"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="214"/>
         <source>&gt;=</source>
         <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="234"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="221"/>
         <source>&lt;=</source>
         <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="250"/>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="237"/>
         <source>SQL where clause</source>
         <translation>SQL where 句</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="111"/>
         <source>Auto Sample</source>
-        <translation>自動サンプル</translation>
+        <translation type="obsolete">自動サンプル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsquerybuilderbase_own.ui" line="266"/>
         <source>Selected Layer</source>
-        <translation>選択されたレイヤ</translation>
+        <translation type="obsolete">選択されたレイヤ</translation>
     </message>
 </context>
 <context>

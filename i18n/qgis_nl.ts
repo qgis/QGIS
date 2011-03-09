@@ -119,33 +119,33 @@
     </message>
     <message>
         <source>fTools About</source>
-        <translation>Info over fTools</translation>
+        <translation type="obsolete">Info over fTools</translation>
     </message>
     <message>
         <source>fTools</source>
-        <translation>fTools</translation>
+        <translation type="obsolete">fTools</translation>
     </message>
     <message>
         <source>Version x.x-xxxxxx</source>
-        <translation>Versie x.x-xxxxxx</translation>
+        <translation type="obsolete">Versie x.x-xxxxxx</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Help</translation>
+        <translation type="obsolete">Help</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation>Web</translation>
+        <translation type="obsolete">Web</translation>
     </message>
     <message>
         <source>Close</source>
@@ -229,7 +229,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation>Join Attributen</translation>
+        <translation type="obsolete">Join Attributen</translation>
     </message>
     <message>
         <source>Target vector layer</source>
@@ -237,11 +237,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target join field</source>
-        <translation>Doel-joinveld</translation>
+        <translation type="obsolete">Doel-joinveld</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation>Join data</translation>
+        <translation type="obsolete">Join data</translation>
     </message>
     <message>
         <source>Join vector layer</source>
@@ -249,15 +249,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation>Join dbf tabel</translation>
+        <translation type="obsolete">Join dbf tabel</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation>Join veld</translation>
+        <translation type="obsolete">Join veld</translation>
     </message>
     <message>
         <source>Encoding</source>
-        <translation>Encoding</translation>
+        <translation type="obsolete">Encoding</translation>
     </message>
     <message>
         <source>Output table</source>
@@ -533,7 +533,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join attributes</source>
-        <translation>Join attributen</translation>
+        <translation type="obsolete">Join attributen</translation>
     </message>
     <message>
         <source>Regular points</source>
@@ -781,21 +781,21 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>Uitvoer geherprojecteerde bestand aangemaakt:
+        <translation type="obsolete">Uitvoer geherprojecteerde bestand aangemaakt:
 %1
 Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation>Kies CRS voor uitvoer:</translation>
+        <translation type="obsolete">Kies CRS voor uitvoer:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation>Kies het ruimtelijk referentie systeem voor de uitvoerlaag.</translation>
+        <translation type="obsolete">Kies het ruimtelijk referentie systeem voor de uitvoerlaag.</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation>Uitvoerlaag zal worden geherprojecteerd van zijn huidige CRS naar de uitvoer CRS.</translation>
+        <translation type="obsolete">Uitvoerlaag zal worden geherprojecteerd van zijn huidige CRS naar de uitvoer CRS.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
@@ -807,7 +807,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation>Identiek ruimtelijk referentie systeem gekozen voor de uitvoer</translation>
+        <translation type="obsolete">Identiek ruimtelijk referentie systeem gekozen voor de uitvoer</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
@@ -819,15 +819,15 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
-        <translation>Selecteer het doelveld waarmee de &apos;join&apos; moet worden gemaakt</translation>
+        <translation type="obsolete">Selecteer het doelveld waarmee de &apos;join&apos; moet worden gemaakt</translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation>Selecteer veld waarmee de &apos;join&apos; moet worden gemaakt</translation>
+        <translation type="obsolete">Selecteer veld waarmee de &apos;join&apos; moet worden gemaakt</translation>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation>Selecteer een invoertabel</translation>
+        <translation type="obsolete">Selecteer een invoertabel</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -840,15 +840,15 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Join Table</source>
-        <translation>Join Tabel</translation>
+        <translation type="obsolete">Join Tabel</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation>Invoertabel bestaat niet</translation>
+        <translation type="obsolete">Invoertabel bestaat niet</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation>Velden &apos;gejoined&apos;</translation>
+        <translation type="obsolete">Velden &apos;gejoined&apos;</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -1032,48 +1032,7 @@ Dit een onverwacht resultaat opleveren.</translation>
     </message>
     <message>
         <source>Unable to read input table!</source>
-        <translation>Leesfout bij de invoertabel!</translation>
-    </message>
-    <message>
-        <source>
-The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
-
-fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to further facilitate and streamline GIS based research and analysis.
-
-If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
-
-LICENSING INFORMATION:
-fTools is copyright (C) 2009  Carson J.Q. Farmer
-Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
-(C) 2008 by Dr. Horst Duester, Stefan Ziegler
-
-licensed under the terms of GNU GPL 2
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-fTools DEVELOPERS:
-Carson J. Q. Farmer
-Alexander Bruy
-**If you have contributed code to fTools and I haven&apos;t mentioned your name here, please contact me and I will add your name.
-
-ACKNOWLEDGEMENTS:
-The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
-Hawthorn Beyer
-Borys Jurgiel
-Tim Sutton
-Barry Rowlingson
-Horst Duester and Stefan Ziegler
-Paolo Cavallini
-Aaron Racicot
-Colin Robertson
-Agustin Lobo
-Jurgen E. Fischer
-QGis developer and user communities
-Folks on #qgis at freenode.net
-All those who have reported bugs/fixes/suggestions/comments/etc.
-</source>
-        <translation></translation>
+        <translation type="obsolete">Leesfout bij de invoertabel!</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
@@ -1183,6 +1142,22 @@ Weet u zeker dat u door wilt?</translation>
     <message>
         <source>Median</source>
         <translation>Mediaan</translation>
+    </message>
+    <message>
+        <source>Shapefile type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">Polygoon</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">Lijn</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">Punt</translation>
     </message>
 </context>
 <context>
@@ -2817,6 +2792,681 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
         <translation>
 Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-informatie, onverwachte resultaten kunnen het gevolg zijn.</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Bewerken</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation type="unfinished">&amp;Bestand</translation>
+    </message>
+    <message>
+        <source>&amp;Open Recent Projects</source>
+        <translation type="unfinished">&amp;Open Recente Projecten</translation>
+    </message>
+    <message>
+        <source>Print Composers</source>
+        <translation type="unfinished">Print Layouter</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Beeld</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished">Selecteren</translation>
+    </message>
+    <message>
+        <source>Measure</source>
+        <translation type="unfinished">Opmeten</translation>
+    </message>
+    <message>
+        <source>&amp;Layer</source>
+        <translation type="unfinished">&amp;Kaartlagen</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished">Nieuw</translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="unfinished">E&amp;xtra</translation>
+    </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished">&amp;Plugins</translation>
+    </message>
+    <message>
+        <source>&amp;Raster</source>
+        <translation type="unfinished">&amp;Raster</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Help</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished">Bestand</translation>
+    </message>
+    <message>
+        <source>Manage Layers</source>
+        <translation type="unfinished">Kaartlagen bewerken</translation>
+    </message>
+    <message>
+        <source>Digitizing</source>
+        <translation type="unfinished">Digitaliseren</translation>
+    </message>
+    <message>
+        <source>Advanced Digitizing</source>
+        <translation type="unfinished">Geavanceerd Digitaliseren</translation>
+    </message>
+    <message>
+        <source>Map Navigation</source>
+        <translation type="unfinished">Kaart Navigatie</translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation type="unfinished">Attributen</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation type="unfinished">Plugins</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Help</translation>
+    </message>
+    <message>
+        <source>Raster</source>
+        <translation type="unfinished">Raster</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Label</translation>
+    </message>
+    <message>
+        <source>&amp;New Project</source>
+        <translation type="unfinished">&amp;Nieuw Project</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>&amp;Open Project...</source>
+        <translation type="unfinished">&amp;Open Project...</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="unfinished">Ctrl+O</translation>
+    </message>
+    <message>
+        <source>&amp;Save Project</source>
+        <translation type="unfinished">Project op&amp;slaan</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Save Project &amp;As...</source>
+        <translation type="unfinished">Project opslaan &amp;als...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as Image...</source>
+        <translation type="unfinished">Opslaan als afbeelding...</translation>
+    </message>
+    <message>
+        <source>&amp;New Print Composer</source>
+        <translation type="unfinished">&amp;Nieuwe print Layouter</translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Composer manager...</source>
+        <translation type="unfinished">Layouter manager...</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation type="unfinished">Afsluiten</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation type="unfinished">Ctrl+Q</translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished">&amp;Ongedaan maken</translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished">Ctrl+Z</translation>
+    </message>
+    <message>
+        <source>&amp;Redo</source>
+        <translation type="unfinished">&amp;Opnieuw</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+Z</source>
+        <translation type="unfinished">Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <source>Cut Features</source>
+        <translation type="unfinished">Kaartobjecten Knippen</translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Copy Features</source>
+        <translation type="unfinished">Kaartobjecten Kopiëren</translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished">Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Paste Features</source>
+        <translation type="unfinished">Kaartobjecten Plakken</translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished">Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Capture Point</source>
+        <translation type="unfinished">Punt Intekenen</translation>
+    </message>
+    <message>
+        <source>Ctrl+.</source>
+        <translation type="unfinished">Ctrl+.</translation>
+    </message>
+    <message>
+        <source>Capture Line</source>
+        <translation type="unfinished">Lijn Intekenen</translation>
+    </message>
+    <message>
+        <source>Ctrl+/</source>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <source>Capture Polygon</source>
+        <translation type="unfinished">Polygoon Intekenen</translation>
+    </message>
+    <message>
+        <source>Ctrl+?</source>
+        <translation type="unfinished">Ctrl+?</translation>
+    </message>
+    <message>
+        <source>Move Feature(s)</source>
+        <translation type="unfinished">Object(en) verplaatsen</translation>
+    </message>
+    <message>
+        <source>Reshape Features</source>
+        <translation type="unfinished">Objecten hervormen</translation>
+    </message>
+    <message>
+        <source>Split Features</source>
+        <translation type="unfinished">Kaartobjecten splitsen</translation>
+    </message>
+    <message>
+        <source>Delete Selected</source>
+        <translation type="unfinished">Geselecteerd Object(en) Verwijderen</translation>
+    </message>
+    <message>
+        <source>Add Ring</source>
+        <translation type="unfinished">Ring Toevoegen</translation>
+    </message>
+    <message>
+        <source>Add Part</source>
+        <translation type="unfinished">Onderdeel Toevoegen</translation>
+    </message>
+    <message>
+        <source>Simplify Feature</source>
+        <translation type="unfinished">Versimpel Object</translation>
+    </message>
+    <message>
+        <source>Delete Ring</source>
+        <translation type="unfinished">Verwijder Ring</translation>
+    </message>
+    <message>
+        <source>Delete Part</source>
+        <translation type="unfinished">Verwijder Onderdeel</translation>
+    </message>
+    <message>
+        <source>Merge selected features</source>
+        <translation type="unfinished">Geselecteerde objecten samenvoegen</translation>
+    </message>
+    <message>
+        <source>Merge attributes of selected features</source>
+        <translation type="unfinished">Attributen van geselecteerde objecten samenvoegen</translation>
+    </message>
+    <message>
+        <source>Node Tool</source>
+        <translation type="unfinished">Knooppunt-gereedschap</translation>
+    </message>
+    <message>
+        <source>Rotate Point Symbols</source>
+        <translation type="unfinished">Puntsymbolen Roteren</translation>
+    </message>
+    <message>
+        <source>Snapping Options...</source>
+        <translation type="unfinished">&apos;Snapping&apos;-opties...</translation>
+    </message>
+    <message>
+        <source>Pan Map</source>
+        <translation type="unfinished">Kaart verschuiven</translation>
+    </message>
+    <message>
+        <source>Zoom In</source>
+        <translation type="unfinished">Inzoomen</translation>
+    </message>
+    <message>
+        <source>Ctrl++</source>
+        <translation type="unfinished">Ctrl++</translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
+        <translation type="unfinished">Uitzoomen</translation>
+    </message>
+    <message>
+        <source>Ctrl+-</source>
+        <translation type="unfinished">Ctrl+-</translation>
+    </message>
+    <message>
+        <source>Select single feature</source>
+        <translation type="unfinished">Een object selecteren</translation>
+    </message>
+    <message>
+        <source>Select features by rectangle</source>
+        <translation type="unfinished">Selecteer objecten m.b.v. rechthoek</translation>
+    </message>
+    <message>
+        <source>Select features by polygon</source>
+        <translation type="unfinished">Selecteer objecten m.b.v. polygoon</translation>
+    </message>
+    <message>
+        <source>Select features by freehand</source>
+        <translation type="unfinished">Selecteer objecten door vrije selectie</translation>
+    </message>
+    <message>
+        <source>Select features by radius</source>
+        <translation type="unfinished">Selecteer objecten m.b.v. straal</translation>
+    </message>
+    <message>
+        <source>Deselect features from all layers</source>
+        <translation type="unfinished">Deselecteer objecten van alle lagen</translation>
+    </message>
+    <message>
+        <source>Identify Features</source>
+        <translation type="unfinished">Objecten Identificeren</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+I</source>
+        <translation type="unfinished">Ctrl+Shift+I</translation>
+    </message>
+    <message>
+        <source>Measure Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+M</source>
+        <translation type="unfinished">Ctrl+Shift+M</translation>
+    </message>
+    <message>
+        <source>Measure Area</source>
+        <translation type="unfinished">Vlak  Opmeten</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+J</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure Angle</source>
+        <translation type="unfinished">Hoek Opmeten</translation>
+    </message>
+    <message>
+        <source>Zoom Full</source>
+        <translation type="unfinished">Volledig Uitzoomen</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+F</source>
+        <translation type="unfinished">Ctrl+Shift+F</translation>
+    </message>
+    <message>
+        <source>Zoom to Layer</source>
+        <translation type="unfinished">Op Kaartlaag Inzoomen</translation>
+    </message>
+    <message>
+        <source>Zoom to Selection</source>
+        <translation type="unfinished">Inzoomen Op Selectie</translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Zoom Last</source>
+        <translation type="unfinished">Laatste Zoomniveau</translation>
+    </message>
+    <message>
+        <source>Zoom Next</source>
+        <translation type="unfinished">Zoom naar Volgende</translation>
+    </message>
+    <message>
+        <source>Zoom Actual Size</source>
+        <translation type="unfinished">Zoom naar Ware Grootte</translation>
+    </message>
+    <message>
+        <source>Map Tips</source>
+        <translation type="unfinished">Kaart Tips</translation>
+    </message>
+    <message>
+        <source>Show information about a feature when the mouse is hovered over it</source>
+        <translation type="unfinished">Toon informatie over een kaartobject als u de muis eroverheen beweegt</translation>
+    </message>
+    <message>
+        <source>New Bookmark...</source>
+        <translation type="unfinished">Nieuwe Favoriet...</translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <translation type="unfinished">Ctrl+B</translation>
+    </message>
+    <message>
+        <source>Show Bookmarks</source>
+        <translation type="unfinished">Toon Favorieten</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished">Bijwerken</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Text Annotation</source>
+        <translation type="unfinished">Tekst Annotatie</translation>
+    </message>
+    <message>
+        <source>Form annotation</source>
+        <translation type="unfinished">Formulier annotatie</translation>
+    </message>
+    <message>
+        <source>Move Annotation</source>
+        <translation type="unfinished">Veplaats Annotatie</translation>
+    </message>
+    <message>
+        <source>Labeling</source>
+        <translation type="unfinished">Labels</translation>
+    </message>
+    <message>
+        <source>New Shapefile Layer...</source>
+        <translation type="unfinished">Nieuw Shape Laag...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+N</source>
+        <translation type="unfinished">Ctrl+Shift+N</translation>
+    </message>
+    <message>
+        <source>New SpatiaLite Layer ...</source>
+        <translation type="unfinished">Nieuwe SpatialLite-laag ...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+A</source>
+        <translation type="unfinished">Ctrl+Shift+A</translation>
+    </message>
+    <message>
+        <source>Raster calculator ...</source>
+        <translation type="unfinished">Rasterberekeningen ...</translation>
+    </message>
+    <message>
+        <source>Add Vector Layer...</source>
+        <translation type="unfinished">Vectorlaag Toevoegen...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+V</source>
+        <translation type="unfinished">Ctrl+Shift+V</translation>
+    </message>
+    <message>
+        <source>Add Raster Layer...</source>
+        <translation type="unfinished">Rasterlaag Toevoegen...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add PostGIS Layer...</source>
+        <translation type="unfinished">PostGIS-laag Toevoegen...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add SpatiaLite Layer...</source>
+        <translation type="unfinished">SpatialLite-laag Toevoegen...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add WMS Layer...</source>
+        <translation type="unfinished">WMS-laag Toevoegen...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Attribute Table</source>
+        <translation type="unfinished">Open attributentabel</translation>
+    </message>
+    <message>
+        <source>Toggle editing</source>
+        <translation type="unfinished">Bewerken aan/uitzetten</translation>
+    </message>
+    <message>
+        <source>Toggles the editing state of the current layer</source>
+        <translation type="unfinished">Zet de modus van de objectinvoer om</translation>
+    </message>
+    <message>
+        <source>Save edits</source>
+        <translation type="unfinished">Aanpassingen opslaan</translation>
+    </message>
+    <message>
+        <source>Save edits to current layer, but continue editing</source>
+        <translation type="unfinished">Huidige aanpassingen opslaan, maar doorgaan met aanpassen</translation>
+    </message>
+    <message>
+        <source>Save as...</source>
+        <translation type="unfinished">Opslaan Als...</translation>
+    </message>
+    <message>
+        <source>Save Selection as vector file...</source>
+        <translation type="unfinished">Selectie Opslaan als vectorbestand...</translation>
+    </message>
+    <message>
+        <source>Remove Layer(s)</source>
+        <translation type="unfinished">Laag/lagen verwijderen</translation>
+    </message>
+    <message>
+        <source>Ctrl+D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set CRS of Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+C</source>
+        <translation type="unfinished">Ctrl+Shift+C</translation>
+    </message>
+    <message>
+        <source>Tile scale slider</source>
+        <translation type="unfinished">Tile schaalschuif</translation>
+    </message>
+    <message>
+        <source>Live GPS tracking</source>
+        <translation type="unfinished">Live GPS-tracking</translation>
+    </message>
+    <message>
+        <source>Properties...</source>
+        <translation type="unfinished">Eigenschappen...</translation>
+    </message>
+    <message>
+        <source>Query...</source>
+        <translation type="unfinished">Query...</translation>
+    </message>
+    <message>
+        <source>Add to Overview</source>
+        <translation type="unfinished">Toevoegen aan Overzichtskaart</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add All to Overview</source>
+        <translation type="unfinished">Alles aan Overzichtskaart Toevoegen</translation>
+    </message>
+    <message>
+        <source>Remove All From Overview</source>
+        <translation type="unfinished">Verwijder Alles Van Overzichtskaart</translation>
+    </message>
+    <message>
+        <source>Show All Layers</source>
+        <translation type="unfinished">Toon Alle Lagen</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+U</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide All Layers</source>
+        <translation type="unfinished">Verberg Alle Lagen</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage Plugins...</source>
+        <translation type="unfinished">Plugin-instellingen...</translation>
+    </message>
+    <message>
+        <source>Toggle Full Screen Mode</source>
+        <translation type="unfinished">Volledig scherm aan/uit</translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished">Ctrl+F</translation>
+    </message>
+    <message>
+        <source>Project Properties...</source>
+        <translation type="unfinished">Projectinstellingen...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options...</source>
+        <translation type="unfinished">Opties...</translation>
+    </message>
+    <message>
+        <source>Custom CRS...</source>
+        <translation type="unfinished">Aangepaste CRS...</translation>
+    </message>
+    <message>
+        <source>Configure shortcuts...</source>
+        <translation type="unfinished">Snelkoppelingen bewerken...</translation>
+    </message>
+    <message>
+        <source>Local Histogram Stretch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stretch histogram of active raster to view extents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help Contents</source>
+        <translation type="unfinished">Inhoudsopgave</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>API documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Home Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation type="unfinished">Ctrl+H</translation>
+    </message>
+    <message>
+        <source>Check QGIS Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check if your QGIS version is up to date (requires internet access)</source>
+        <translation type="unfinished">Controleer of er een nieuwere QGIS versie beschikbaar is (vereist internet toegang)</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished">Info</translation>
+    </message>
+    <message>
+        <source>QGIS Sponsors</source>
+        <translation type="unfinished">QGIS Sponsors</translation>
+    </message>
+    <message>
+        <source>Move Label</source>
+        <translation type="unfinished">Label Verplaatsen</translation>
+    </message>
+    <message>
+        <source>Rotate Label</source>
+        <translation type="unfinished">Labels roteren</translation>
+    </message>
+    <message>
+        <source>Change Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style manager...</source>
+        <translation type="unfinished">Stijl manager...</translation>
+    </message>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished">Python Console</translation>
     </message>
 </context>
 <context>
@@ -4728,6 +5378,42 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open GDAL dataset </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get GDAL raster band : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open GDAL MEM dataset </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot ChunkAndWarpImage : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[GDAL] All files (*)</source>
+        <translation type="unfinished">[GDAL] Alle bestanden (*)</translation>
+    </message>
+    <message>
+        <source>This raster file has no bands and is invalid as a raster layer.</source>
+        <translation type="unfinished">Dit rasterbestand bevat geen banden is is ongeldig als rasterlaag.</translation>
+    </message>
+    <message>
+        <source>Cannot get map info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get colors</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -4804,39 +5490,39 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>About</source>
-        <translation>Info</translation>
+        <translation type="obsolete">Info</translation>
     </message>
     <message>
         <source>About QGIS</source>
-        <translation>Info over QGIS</translation>
+        <translation type="obsolete">Info over QGIS</translation>
     </message>
     <message>
         <source>Add a PostGIS Layer</source>
-        <translation>PostGIS-laag toevoegen</translation>
+        <translation type="obsolete">PostGIS-laag toevoegen</translation>
     </message>
     <message>
         <source>Add a Raster Layer</source>
-        <translation>Rasterlaag toevoegen</translation>
+        <translation type="obsolete">Rasterlaag toevoegen</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
-        <translation>Vectorlaag toevoegen</translation>
+        <translation type="obsolete">Vectorlaag toevoegen</translation>
     </message>
     <message>
         <source>Add current layer to overview map</source>
-        <translation>Huidige kaartlaag aan overzichtskaart toevoegen</translation>
+        <translation type="obsolete">Huidige kaartlaag aan overzichtskaart toevoegen</translation>
     </message>
     <message>
         <source>Add Ring</source>
-        <translation>Ring Toevoegen</translation>
+        <translation type="obsolete">Ring Toevoegen</translation>
     </message>
     <message>
         <source>Add Vertex</source>
-        <translation>Hoekpunt Toevoegen</translation>
+        <translation type="obsolete">Hoekpunt Toevoegen</translation>
     </message>
     <message>
         <source>Add WMS Layer...</source>
-        <translation>WMS-laag Toevoegen...</translation>
+        <translation type="obsolete">WMS-laag Toevoegen...</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
@@ -4844,39 +5530,39 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Attributes</source>
-        <translation>Attributen</translation>
+        <translation type="obsolete">Attributen</translation>
     </message>
     <message>
         <source>Capture Line</source>
-        <translation>Lijn Intekenen</translation>
+        <translation type="obsolete">Lijn Intekenen</translation>
     </message>
     <message>
         <source>Capture Lines</source>
-        <translation>Lijnen Intekenen</translation>
+        <translation type="obsolete">Lijnen Intekenen</translation>
     </message>
     <message>
         <source>Capture Point</source>
-        <translation>Punt Intekenen</translation>
+        <translation type="obsolete">Punt Intekenen</translation>
     </message>
     <message>
         <source>Capture Points</source>
-        <translation>Punten Intekenen</translation>
+        <translation type="obsolete">Punten Intekenen</translation>
     </message>
     <message>
         <source>Capture Polygon</source>
-        <translation>Polygoon Intekenen</translation>
+        <translation type="obsolete">Polygoon Intekenen</translation>
     </message>
     <message>
         <source>Capture Polygons</source>
-        <translation>Polygonen Intekenen</translation>
+        <translation type="obsolete">Polygonen Intekenen</translation>
     </message>
     <message>
         <source>Change various QGIS options</source>
-        <translation>QGIS opties bewerken</translation>
+        <translation type="obsolete">QGIS opties bewerken</translation>
     </message>
     <message>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation>Controleer of er een nieuwere QGIS versie beschikbaar is (vereist internet toegang)</translation>
+        <translation type="obsolete">Controleer of er een nieuwere QGIS versie beschikbaar is (vereist internet toegang)</translation>
     </message>
     <message>
         <source>Checking database</source>
@@ -4888,7 +5574,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Check Qgis Version</source>
-        <translation>QGIS op updates controleren</translation>
+        <translation type="obsolete">QGIS op updates controleren</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
@@ -4900,7 +5586,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Click on features to identify them</source>
-        <translation>Klik op een kaartobject voor identificatie</translation>
+        <translation type="obsolete">Klik op een kaartobject voor identificatie</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
@@ -4908,31 +5594,31 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Copy Features</source>
-        <translation>Kaartobjecten Kopiëren</translation>
+        <translation type="obsolete">Kaartobjecten Kopiëren</translation>
     </message>
     <message>
         <source>Copy selected features</source>
-        <translation>Kopieer geselecteerde kaartobjecten</translation>
+        <translation type="obsolete">Kopieer geselecteerde kaartobjecten</translation>
     </message>
     <message>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
-        <translation>Ctrl+-</translation>
+        <translation type="obsolete">Ctrl+-</translation>
     </message>
     <message>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
-        <translation>Ctrl+?</translation>
+        <translation type="obsolete">Ctrl+?</translation>
     </message>
     <message>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
-        <translation>Ctrl++</translation>
+        <translation type="obsolete">Ctrl++</translation>
     </message>
     <message>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
-        <translation>Ctrl+B</translation>
+        <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
@@ -4942,32 +5628,32 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     <message>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
-        <translation>Ctrl+H</translation>
+        <translation type="obsolete">Ctrl+H</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
-        <translation>Ctrl+Q</translation>
+        <translation type="obsolete">Ctrl+Q</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
-        <translation>Ctrl+R</translation>
+        <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <source>Current map scale</source>
@@ -4979,11 +5665,11 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Cut Features</source>
-        <translation>Kaartobjecten Knippen</translation>
+        <translation type="obsolete">Kaartobjecten Knippen</translation>
     </message>
     <message>
         <source>Cut selected features</source>
-        <translation>Geselecteerde kaartobjecten knippen</translation>
+        <translation type="obsolete">Geselecteerde kaartobjecten knippen</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
@@ -4991,11 +5677,11 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation>Geselecteerd Object(en) Verwijderen</translation>
+        <translation type="obsolete">Geselecteerd Object(en) Verwijderen</translation>
     </message>
     <message>
         <source>Delete Vertex</source>
-        <translation>Hoekpunt Verwijderen</translation>
+        <translation type="obsolete">Hoekpunt Verwijderen</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
@@ -5003,7 +5689,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Digitizing</source>
-        <translation>Digitaliseren</translation>
+        <translation type="obsolete">Digitaliseren</translation>
     </message>
     <message>
         <source>Displays the current map scale</source>
@@ -5027,52 +5713,52 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Exit</source>
-        <translation>Afsluiten</translation>
+        <translation type="obsolete">Afsluiten</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
-        <translation>QGIS afsluiten</translation>
+        <translation type="obsolete">QGIS afsluiten</translation>
     </message>
     <message>
         <source>F1</source>
         <comment>Help Documentation</comment>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Bestand</translation>
+        <translation type="obsolete">Bestand</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Bestand</translation>
+        <translation type="obsolete">&amp;Bestand</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Help</translation>
+        <translation type="obsolete">Help</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Help</translation>
+        <translation type="obsolete">&amp;Help</translation>
     </message>
     <message>
         <source>Help Contents</source>
-        <translation>Inhoudsopgave</translation>
+        <translation type="obsolete">Inhoudsopgave</translation>
     </message>
     <message>
         <source>Help Documentation</source>
-        <translation>Help Handleiding</translation>
+        <translation type="obsolete">Help Handleiding</translation>
     </message>
     <message>
         <source>Hide all layers</source>
-        <translation>Verberg alle lagen</translation>
+        <translation type="obsolete">Verberg alle lagen</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation>Verberg Alle Lagen</translation>
+        <translation type="obsolete">Verberg Alle Lagen</translation>
     </message>
     <message>
         <source>Identify Features</source>
-        <translation>Objecten Identificeren</translation>
+        <translation type="obsolete">Objecten Identificeren</translation>
     </message>
     <message>
         <source>Initializing file filters</source>
@@ -5092,7 +5778,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation>&amp;Kaartlagen</translation>
+        <translation type="obsolete">&amp;Kaartlagen</translation>
     </message>
     <message>
         <source>Layer is not valid</source>
@@ -5104,7 +5790,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Manage Layers</source>
-        <translation>Kaartlagen bewerken</translation>
+        <translation type="obsolete">Kaartlagen bewerken</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
@@ -5121,7 +5807,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Map Navigation</source>
-        <translation>Kaart Navigatie</translation>
+        <translation type="obsolete">Kaart Navigatie</translation>
     </message>
     <message>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
@@ -5129,27 +5815,27 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Map Tips</source>
-        <translation>Kaart Tips</translation>
+        <translation type="obsolete">Kaart Tips</translation>
     </message>
     <message>
         <source>Measure a Line</source>
-        <translation>Lijn Opmeten</translation>
+        <translation type="obsolete">Lijn Opmeten</translation>
     </message>
     <message>
         <source>Measure an Area</source>
-        <translation>Vlak Opmeten</translation>
+        <translation type="obsolete">Vlak Opmeten</translation>
     </message>
     <message>
         <source>Measure Area</source>
-        <translation>Vlak  Opmeten</translation>
+        <translation type="obsolete">Vlak  Opmeten</translation>
     </message>
     <message>
         <source>Measure Line </source>
-        <translation>Lijn meten </translation>
+        <translation type="obsolete">Lijn meten </translation>
     </message>
     <message>
         <source>Move Vertex</source>
-        <translation>Hoekpunt Verschuiven</translation>
+        <translation type="obsolete">Hoekpunt Verschuiven</translation>
     </message>
     <message>
         <source>Network error while communicating with server</source>
@@ -5161,15 +5847,15 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>New Bookmark...</source>
-        <translation>Nieuwe Favoriet...</translation>
+        <translation type="obsolete">Nieuwe Favoriet...</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
-        <translation>&amp;Nieuw Project</translation>
+        <translation type="obsolete">&amp;Nieuw Project</translation>
     </message>
     <message>
         <source>New Project</source>
-        <translation>Nieuw Project</translation>
+        <translation type="obsolete">Nieuw Project</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
@@ -5185,47 +5871,47 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Open a Project</source>
-        <translation>Open een project</translation>
+        <translation type="obsolete">Open een project</translation>
     </message>
     <message>
         <source>&amp;Open Project...</source>
-        <translation>&amp;Open Project...</translation>
+        <translation type="obsolete">&amp;Open Project...</translation>
     </message>
     <message>
         <source>&amp;Open Recent Projects</source>
-        <translation>&amp;Open Recente Projecten</translation>
+        <translation type="obsolete">&amp;Open Recente Projecten</translation>
     </message>
     <message>
         <source>Open the plugin manager</source>
-        <translation>Open Plugin-instellingen</translation>
+        <translation type="obsolete">Open Plugin-instellingen</translation>
     </message>
     <message>
         <source>Options...</source>
-        <translation>Opties...</translation>
+        <translation type="obsolete">Opties...</translation>
     </message>
     <message>
         <source>Pan Map</source>
-        <translation>Kaart verschuiven</translation>
+        <translation type="obsolete">Kaart verschuiven</translation>
     </message>
     <message>
         <source>Pan the map</source>
-        <translation>Verschuif de kaart</translation>
+        <translation type="obsolete">Verschuif de kaart</translation>
     </message>
     <message>
         <source>Paste Features</source>
-        <translation>Kaartobjecten Plakken</translation>
+        <translation type="obsolete">Kaartobjecten Plakken</translation>
     </message>
     <message>
         <source>Paste selected features</source>
-        <translation>Geselecteerde kaartobjecten plakken</translation>
+        <translation type="obsolete">Geselecteerde kaartobjecten plakken</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
-        <translation>&amp;Plugins</translation>
+        <translation type="obsolete">&amp;Plugins</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
@@ -5241,7 +5927,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Project Properties...</source>
-        <translation>Projectinstellingen...</translation>
+        <translation type="obsolete">Projectinstellingen...</translation>
     </message>
     <message>
         <source>Provider does not support deletion</source>
@@ -5249,7 +5935,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>QGIS Home Page</source>
-        <translation>QGIS Start Pagina</translation>
+        <translation type="obsolete">QGIS Start Pagina</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
@@ -5277,11 +5963,11 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Bijwerken</translation>
+        <translation type="obsolete">Bijwerken</translation>
     </message>
     <message>
         <source>Refresh Map</source>
-        <translation>Kaart Bijwerken</translation>
+        <translation type="obsolete">Kaart Bijwerken</translation>
     </message>
     <message>
         <source>Remove a Layer</source>
@@ -5289,11 +5975,11 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Remove All From Overview</source>
-        <translation>Verwijder Alles Van Overzichtskaart</translation>
+        <translation type="obsolete">Verwijder Alles Van Overzichtskaart</translation>
     </message>
     <message>
         <source>Remove all layers from overview map</source>
-        <translation>Verwijder alle lagen van de overzichtskaart</translation>
+        <translation type="obsolete">Verwijder alle lagen van de overzichtskaart</translation>
     </message>
     <message>
         <source>Remove Layer</source>
@@ -5321,27 +6007,27 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Save as Image...</source>
-        <translation>Opslaan als afbeelding...</translation>
+        <translation type="obsolete">Opslaan als afbeelding...</translation>
     </message>
     <message>
         <source>Save map as image</source>
-        <translation>Kaart opslaan als afbeelding</translation>
+        <translation type="obsolete">Kaart opslaan als afbeelding</translation>
     </message>
     <message>
         <source>&amp;Save Project</source>
-        <translation>Project op&amp;slaan</translation>
+        <translation type="obsolete">Project op&amp;slaan</translation>
     </message>
     <message>
         <source>Save Project</source>
-        <translation>Project Opslaan</translation>
+        <translation type="obsolete">Project Opslaan</translation>
     </message>
     <message>
         <source>Save Project &amp;As...</source>
-        <translation>Project opslaan &amp;als...</translation>
+        <translation type="obsolete">Project opslaan &amp;als...</translation>
     </message>
     <message>
         <source>Save Project under a new name</source>
-        <translation>Project opslaan onder nieuwe naam</translation>
+        <translation type="obsolete">Project opslaan onder nieuwe naam</translation>
     </message>
     <message>
         <source>Scale </source>
@@ -5353,11 +6039,11 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Set project properties</source>
-        <translation>Projectinstellingen aanpassen</translation>
+        <translation type="obsolete">Projectinstellingen aanpassen</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation>E&amp;xtra</translation>
+        <translation type="obsolete">E&amp;xtra</translation>
     </message>
     <message>
         <source>Setting up the GUI</source>
@@ -5365,27 +6051,27 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Show all layers</source>
-        <translation>Toon alle lagen</translation>
+        <translation type="obsolete">Toon alle lagen</translation>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation>Toon Alle Lagen</translation>
+        <translation type="obsolete">Toon Alle Lagen</translation>
     </message>
     <message>
         <source>Show all layers in the overview map</source>
-        <translation>Toon alle lagen in de overzichtskaart</translation>
+        <translation type="obsolete">Toon alle lagen in de overzichtskaart</translation>
     </message>
     <message>
         <source>Show Bookmarks</source>
-        <translation>Toon Favorieten</translation>
+        <translation type="obsolete">Toon Favorieten</translation>
     </message>
     <message>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation>Toon informatie over een kaartobject als u de muis eroverheen beweegt</translation>
+        <translation type="obsolete">Toon informatie over een kaartobject als u de muis eroverheen beweegt</translation>
     </message>
     <message>
         <source>Split Features</source>
-        <translation>Kaartobjecten splitsen</translation>
+        <translation type="obsolete">Kaartobjecten splitsen</translation>
     </message>
     <message>
         <source>Starting Python</source>
@@ -5409,7 +6095,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation>Bewerken aan/uitzetten</translation>
+        <translation type="obsolete">Bewerken aan/uitzetten</translation>
     </message>
     <message>
         <source>Toggle map rendering</source>
@@ -5417,7 +6103,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Toggles the editing state of the current layer</source>
-        <translation>Zet de modus van de objectinvoer om</translation>
+        <translation type="obsolete">Zet de modus van de objectinvoer om</translation>
     </message>
     <message>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
@@ -5450,7 +6136,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>&amp;View</source>
-        <translation>&amp;Beeld</translation>
+        <translation type="obsolete">&amp;Beeld</translation>
     </message>
     <message>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
@@ -5474,35 +6160,35 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation>Volledig Uitzoomen</translation>
+        <translation type="obsolete">Volledig Uitzoomen</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation>Inzoomen</translation>
+        <translation type="obsolete">Inzoomen</translation>
     </message>
     <message>
         <source>Zoom Last</source>
-        <translation>Laatste Zoomniveau</translation>
+        <translation type="obsolete">Laatste Zoomniveau</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>Uitzoomen</translation>
+        <translation type="obsolete">Uitzoomen</translation>
     </message>
     <message>
         <source>Zoom to Full Extents</source>
-        <translation>Uitzoomen Tot Maximale Extent</translation>
+        <translation type="obsolete">Uitzoomen Tot Maximale Extent</translation>
     </message>
     <message>
         <source>Zoom to Last Extent</source>
-        <translation>Zoom naar Laatste Extent</translation>
+        <translation type="obsolete">Zoom naar Laatste Extent</translation>
     </message>
     <message>
         <source>Zoom to Layer</source>
-        <translation>Op Kaartlaag Inzoomen</translation>
+        <translation type="obsolete">Op Kaartlaag Inzoomen</translation>
     </message>
     <message>
         <source>Toggle fullscreen mode</source>
-        <translation>Volledig scherm aan/uit</translation>
+        <translation type="obsolete">Volledig scherm aan/uit</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
@@ -5548,23 +6234,23 @@ Neem alstublieft contact op met de ontwikkelaars.
     <message>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
-        <translation>Shift+Ctrl+S</translation>
+        <translation type="obsolete">Shift+Ctrl+S</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation>&amp;Ongedaan maken</translation>
+        <translation type="obsolete">&amp;Ongedaan maken</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation>Ctrl+Z</translation>
+        <translation type="obsolete">Ctrl+Z</translation>
     </message>
     <message>
         <source>Undo the last operation</source>
-        <translation>Laatste aktie ongedaan maken</translation>
+        <translation type="obsolete">Laatste aktie ongedaan maken</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation>K&amp;nippen</translation>
+        <translation type="obsolete">K&amp;nippen</translation>
     </message>
     <message>
         <source>Quantum GIS </source>
@@ -5572,124 +6258,124 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation>Huidige selectie naar het klembord knippen</translation>
+        <translation type="obsolete">Huidige selectie naar het klembord knippen</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation>&amp;CKopïeren</translation>
+        <translation type="obsolete">&amp;CKopïeren</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation>Inhoud van huidige selectie naar klembord kopïeren</translation>
+        <translation type="obsolete">Inhoud van huidige selectie naar klembord kopïeren</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation>&amp;Plakken</translation>
+        <translation type="obsolete">&amp;Plakken</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
+        <translation type="obsolete">Ctrl+V</translation>
     </message>
     <message>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation>Huidige selectie vervangen door inhoud van klembord</translation>
+        <translation type="obsolete">Huidige selectie vervangen door inhoud van klembord</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
-        <translation>&amp;Opnieuw</translation>
+        <translation type="obsolete">&amp;Opnieuw</translation>
     </message>
     <message>
         <source>Ctrl+Shift+Z</source>
-        <translation>Ctrl+Shift+Z</translation>
+        <translation type="obsolete">Ctrl+Shift+Z</translation>
     </message>
     <message>
         <source>Redo the last operation</source>
-        <translation>Laatste aktie opnieuw uitvoeren</translation>
+        <translation type="obsolete">Laatste aktie opnieuw uitvoeren</translation>
     </message>
     <message>
         <source>Merge selected features</source>
-        <translation>Geselecteerde objecten samenvoegen</translation>
+        <translation type="obsolete">Geselecteerde objecten samenvoegen</translation>
     </message>
     <message>
         <source>Node Tool</source>
-        <translation>Knooppunt-gereedschap</translation>
+        <translation type="obsolete">Knooppunt-gereedschap</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation>Inzoomen Op Selectie</translation>
+        <translation type="obsolete">Inzoomen Op Selectie</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
-        <translation>Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>Zoom Actual Size</source>
-        <translation>Zoom naar Ware Grootte</translation>
+        <translation type="obsolete">Zoom naar Ware Grootte</translation>
     </message>
     <message>
         <source>Zoom to Actual Size</source>
-        <translation>Zoom naar Ware Grootte</translation>
+        <translation type="obsolete">Zoom naar Ware Grootte</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
-        <translation>Vectorlaag Toevoegen...</translation>
+        <translation type="obsolete">Vectorlaag Toevoegen...</translation>
     </message>
     <message>
         <source>Add Raster Layer...</source>
-        <translation>Rasterlaag Toevoegen...</translation>
+        <translation type="obsolete">Rasterlaag Toevoegen...</translation>
     </message>
     <message>
         <source>Add PostGIS Layer...</source>
-        <translation>PostGIS-laag Toevoegen...</translation>
+        <translation type="obsolete">PostGIS-laag Toevoegen...</translation>
     </message>
     <message>
         <source>Add a Web Mapping Server Layer</source>
-        <translation>WebMappingServer-laag Toevoegen</translation>
+        <translation type="obsolete">WebMappingServer-laag Toevoegen</translation>
     </message>
     <message>
         <source>Open Attribute Table</source>
-        <translation>Open attributentabel</translation>
+        <translation type="obsolete">Open attributentabel</translation>
     </message>
     <message>
         <source>Properties...</source>
-        <translation>Eigenschappen...</translation>
+        <translation type="obsolete">Eigenschappen...</translation>
     </message>
     <message>
         <source>Set properties of the current layer</source>
-        <translation>Eigenschappen bewerken van huidige layer</translation>
+        <translation type="obsolete">Eigenschappen bewerken van huidige layer</translation>
     </message>
     <message>
         <source>Add to Overview</source>
-        <translation>Toevoegen aan Overzichtskaart</translation>
+        <translation type="obsolete">Toevoegen aan Overzichtskaart</translation>
     </message>
     <message>
         <source>Add All to Overview</source>
-        <translation>Alles aan Overzichtskaart Toevoegen</translation>
+        <translation type="obsolete">Alles aan Overzichtskaart Toevoegen</translation>
     </message>
     <message>
         <source>Manage Plugins...</source>
-        <translation>Plugin-instellingen...</translation>
+        <translation type="obsolete">Plugin-instellingen...</translation>
     </message>
     <message>
         <source>Toggle Full Screen Mode</source>
-        <translation>Volledig scherm aan/uit</translation>
+        <translation type="obsolete">Volledig scherm aan/uit</translation>
     </message>
     <message>
         <source>Custom CRS...</source>
-        <translation>Aangepaste CRS...</translation>
+        <translation type="obsolete">Aangepaste CRS...</translation>
     </message>
     <message>
         <source>Manage custom coordinate reference systems</source>
-        <translation>Beheer aangepaste Ruimtelijke Referentie Systemen</translation>
+        <translation type="obsolete">Beheer aangepaste Ruimtelijke Referentie Systemen</translation>
     </message>
     <message>
         <source>Minimize</source>
@@ -5722,11 +6408,11 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Print Composers</source>
-        <translation>Print Layouter</translation>
+        <translation type="obsolete">Print Layouter</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Bewerken</translation>
+        <translation type="obsolete">&amp;Bewerken</translation>
     </message>
     <message>
         <source>Panels</source>
@@ -5781,10 +6467,6 @@ Neem alstublieft contact op met de ontwikkelaars.
         <translation>Problemen bij de &apos;roll-back&apos;</translation>
     </message>
     <message>
-        <source>Python Console</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Map coordinates for the current view extents</source>
         <translation>Kaartcoördinaten van de extent van het huidige kaartbeeld</translation>
     </message>
@@ -5798,157 +6480,97 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>&amp;New Print Composer</source>
-        <translation>&amp;Nieuwe print Layouter</translation>
+        <translation type="obsolete">&amp;Nieuwe print Layouter</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
-        <translation>Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>New Print Composer</source>
-        <translation>Nieuwe Print Layouter</translation>
+        <translation type="obsolete">Nieuwe Print Layouter</translation>
     </message>
     <message>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
-        <translation>Ctrl+.</translation>
+        <translation type="obsolete">Ctrl+.</translation>
     </message>
     <message>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
-        <translation>Ctrl+/</translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
-        <translation>Ctrl+Shift+/</translation>
+        <translation type="obsolete">Ctrl+Shift+/</translation>
     </message>
     <message>
         <source>Reshape Features</source>
-        <translation>Objecten hervormen</translation>
+        <translation type="obsolete">Objecten hervormen</translation>
     </message>
     <message>
         <source>Add Part</source>
-        <translation>Onderdeel Toevoegen</translation>
+        <translation type="obsolete">Onderdeel Toevoegen</translation>
     </message>
     <message>
         <source>Add part to multipolygon</source>
-        <translation>Onderdeel aan multipolygoon toevoegen</translation>
+        <translation type="obsolete">Onderdeel aan multipolygoon toevoegen</translation>
     </message>
     <message>
         <source>Click a vertex of the ring to delete</source>
-        <translation>Klik een hoekpunt van de ring om te verwijderen</translation>
+        <translation type="obsolete">Klik een hoekpunt van de ring om te verwijderen</translation>
     </message>
     <message>
         <source>Click a vertex of the part to delete</source>
-        <translation>Klik een hoekpunt van het onderdeel om te verwijderen</translation>
+        <translation type="obsolete">Klik een hoekpunt van het onderdeel om te verwijderen</translation>
     </message>
     <message>
         <source>Rotate Point Symbols</source>
-        <translation>Puntsymbolen Roteren</translation>
+        <translation type="obsolete">Puntsymbolen Roteren</translation>
     </message>
     <message>
         <source>Select features by rectangle</source>
-        <translation>Selecteer objecten m.b.v. rechthoek</translation>
+        <translation type="obsolete">Selecteer objecten m.b.v. rechthoek</translation>
     </message>
     <message>
         <source>Select features by polygon</source>
-        <translation>Selecteer objecten m.b.v. polygoon</translation>
+        <translation type="obsolete">Selecteer objecten m.b.v. polygoon</translation>
     </message>
     <message>
         <source>Select features by freehand</source>
-        <translation>Selecteer objecten door vrije selectie</translation>
+        <translation type="obsolete">Selecteer objecten door vrije selectie</translation>
     </message>
     <message>
         <source>Select features by radius</source>
-        <translation>Selecteer objecten m.b.v. straal</translation>
+        <translation type="obsolete">Selecteer objecten m.b.v. straal</translation>
     </message>
     <message>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
-        <translation>Ctrl+Shift+I</translation>
+        <translation type="obsolete">Ctrl+Shift+I</translation>
     </message>
     <message>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
-        <translation>Ctrl+Shift+M</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+J</source>
-        <comment>Measure an Area</comment>
-        <translation></translation>
+        <translation type="obsolete">Ctrl+Shift+M</translation>
     </message>
     <message>
         <source>Measure Angle</source>
-        <translation>Hoek Opmeten</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+F</source>
-        <comment>Zoom to Full Extents</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+B</source>
-        <comment>Show Bookmarks</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+V</source>
-        <comment>Add a Vector Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+R</source>
-        <comment>Add a Raster Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+D</source>
-        <comment>Add a PostGIS Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+W</source>
-        <comment>Add a Web Mapping Server Layer</comment>
-        <translation></translation>
+        <translation type="obsolete">Hoek Opmeten</translation>
     </message>
     <message>
         <source>Save edits to current layer, but continue editing</source>
-        <translation>Huidige aanpassingen opslaan, maar doorgaan met aanpassen</translation>
+        <translation type="obsolete">Huidige aanpassingen opslaan, maar doorgaan met aanpassen</translation>
     </message>
     <message>
         <source>Live GPS tracking</source>
-        <translation>Live GPS-tracking</translation>
+        <translation type="obsolete">Live GPS-tracking</translation>
     </message>
     <message>
         <source>Show GPS tool</source>
-        <translation>Toon GPS-gereedschap</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+U</source>
-        <comment>Show all layers</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+H</source>
-        <comment>Hide all layers</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+P</source>
-        <comment>Set project properties</comment>
-        <translation></translation>
+        <translation type="obsolete">Toon GPS-gereedschap</translation>
     </message>
     <message>
         <source>Failed to open Python console:</source>
@@ -6024,31 +6646,31 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Move Feature(s)</source>
-        <translation>Object(en) verplaatsen</translation>
+        <translation type="obsolete">Object(en) verplaatsen</translation>
     </message>
     <message>
         <source>Merge attributes of selected features</source>
-        <translation>Attributen van geselecteerde objecten samenvoegen</translation>
+        <translation type="obsolete">Attributen van geselecteerde objecten samenvoegen</translation>
     </message>
     <message>
         <source>Snapping Options...</source>
-        <translation>&apos;Snapping&apos;-opties...</translation>
+        <translation type="obsolete">&apos;Snapping&apos;-opties...</translation>
     </message>
     <message>
         <source>Manage the background snapping options</source>
-        <translation>Opties voor ondergrond relaties (snapping) instellen</translation>
+        <translation type="obsolete">Opties voor ondergrond relaties (snapping) instellen</translation>
     </message>
     <message>
         <source>Text Annotation</source>
-        <translation>Tekst Annotatie</translation>
+        <translation type="obsolete">Tekst Annotatie</translation>
     </message>
     <message>
         <source>Form annotation</source>
-        <translation>Formulier annotatie</translation>
+        <translation type="obsolete">Formulier annotatie</translation>
     </message>
     <message>
         <source>Move Annotation</source>
-        <translation>Veplaats Annotatie</translation>
+        <translation type="obsolete">Veplaats Annotatie</translation>
     </message>
     <message>
         <source>Labeling</source>
@@ -6056,119 +6678,119 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>New Shapefile Layer...</source>
-        <translation>Nieuw Shape Laag...</translation>
+        <translation type="obsolete">Nieuw Shape Laag...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Shapefile layer</comment>
-        <translation>Ctrl+Shift+N</translation>
+        <translation type="obsolete">Ctrl+Shift+N</translation>
     </message>
     <message>
         <source>Create a New Shapefile layer</source>
-        <translation>Nieuwe Shape-bestand aanmaken</translation>
+        <translation type="obsolete">Nieuwe Shape-bestand aanmaken</translation>
     </message>
     <message>
         <source>New SpatiaLite Layer ...</source>
-        <translation>Nieuwe SpatialLite-laag ...</translation>
+        <translation type="obsolete">Nieuwe SpatialLite-laag ...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
         <comment>Create a New SpatiaLite Layer </comment>
-        <translation>Ctrl+Shift+A</translation>
+        <translation type="obsolete">Ctrl+Shift+A</translation>
     </message>
     <message>
         <source>Create a New SpatiaLite Layer </source>
-        <translation>Nieuwe SpatiaLite Laag aanmaken </translation>
+        <translation type="obsolete">Nieuwe SpatiaLite Laag aanmaken </translation>
     </message>
     <message>
         <source>Raster calculator ...</source>
-        <translation>Rasterberekeningen ...</translation>
+        <translation type="obsolete">Rasterberekeningen ...</translation>
     </message>
     <message>
         <source>Save edits</source>
-        <translation>Aanpassingen opslaan</translation>
+        <translation type="obsolete">Aanpassingen opslaan</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation>Opslaan Als...</translation>
+        <translation type="obsolete">Opslaan Als...</translation>
     </message>
     <message>
         <source>Save the current layer as a vector file</source>
-        <translation>Huidige laag opslaan als vectorbestand</translation>
+        <translation type="obsolete">Huidige laag opslaan als vectorbestand</translation>
     </message>
     <message>
         <source>Save Selection as vector file...</source>
-        <translation>Selectie Opslaan als vectorbestand...</translation>
+        <translation type="obsolete">Selectie Opslaan als vectorbestand...</translation>
     </message>
     <message>
         <source>Save the selection as a vector file</source>
-        <translation>Selectie Opslaan als vectorbestand</translation>
+        <translation type="obsolete">Selectie Opslaan als vectorbestand</translation>
     </message>
     <message>
         <source>Remove Layer(s)</source>
-        <translation>Laag/lagen verwijderen</translation>
+        <translation type="obsolete">Laag/lagen verwijderen</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
         <comment>Remove Layer(s)</comment>
-        <translation>Ctrl+D</translation>
+        <translation type="obsolete">Ctrl+D</translation>
     </message>
     <message>
         <source>Tile scale slider</source>
-        <translation>Tile schaalschuif</translation>
+        <translation type="obsolete">Tile schaalschuif</translation>
     </message>
     <message>
         <source>Show tile scale slider</source>
-        <translation>Toon tile-schaalschuif</translation>
+        <translation type="obsolete">Toon tile-schaalschuif</translation>
     </message>
     <message>
         <source>Query...</source>
-        <translation>Query...</translation>
+        <translation type="obsolete">Query...</translation>
     </message>
     <message>
         <source>Set subset query of the current layer</source>
-        <translation>Aanmaken subset-query voor huidige laag</translation>
+        <translation type="obsolete">Aanmaken subset-query voor huidige laag</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation>Ctrl+F</translation>
+        <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
         <source>Move Label</source>
-        <translation>Label Verplaatsen</translation>
+        <translation type="obsolete">Label Verplaatsen</translation>
     </message>
     <message>
         <source>Move labels interactively</source>
-        <translation>Labels interactief verplaatsen</translation>
+        <translation type="obsolete">Labels interactief verplaatsen</translation>
     </message>
     <message>
         <source>Rotate Label</source>
-        <translation>Labels roteren</translation>
+        <translation type="obsolete">Labels roteren</translation>
     </message>
     <message>
         <source>Rotate labels interactively</source>
-        <translation>Labels interactief roteren</translation>
+        <translation type="obsolete">Labels interactief roteren</translation>
     </message>
     <message>
         <source>Change label</source>
-        <translation>Label wijzigen</translation>
+        <translation type="obsolete">Label wijzigen</translation>
     </message>
     <message>
         <source>Change label properties</source>
-        <translation>Labeleigenschappen wijzigen</translation>
+        <translation type="obsolete">Labeleigenschappen wijzigen</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation>Selecteren</translation>
+        <translation type="obsolete">Selecteren</translation>
     </message>
     <message>
         <source>Measure</source>
-        <translation>Opmeten</translation>
+        <translation type="obsolete">Opmeten</translation>
     </message>
     <message>
         <source>New</source>
-        <translation>Nieuw</translation>
+        <translation type="obsolete">Nieuw</translation>
     </message>
     <message>
         <source>&amp;Database</source>
@@ -6176,7 +6798,7 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Label</source>
-        <translation>Label</translation>
+        <translation type="obsolete">Label</translation>
     </message>
     <message>
         <source>Private qgis.db</source>
@@ -6568,11 +7190,11 @@ Fouten negeren?</translation>
     </message>
     <message>
         <source>Add SpatiaLite Layer...</source>
-        <translation>SpatialLite-laag Toevoegen...</translation>
+        <translation type="obsolete">SpatialLite-laag Toevoegen...</translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
-        <translation>SpatialLite-laag Toevoegen</translation>
+        <translation type="obsolete">SpatialLite-laag Toevoegen</translation>
     </message>
     <message>
         <source>
@@ -6582,51 +7204,51 @@ Deze kopie van QGIS heeft geen SpatialLite ondersteuning.</translation>
     </message>
     <message>
         <source>Zoom Next</source>
-        <translation>Zoom naar Volgende</translation>
+        <translation type="obsolete">Zoom naar Volgende</translation>
     </message>
     <message>
         <source>Zoom to Forward Extent</source>
-        <translation>Zoom naar Vorige Extent</translation>
+        <translation type="obsolete">Zoom naar Vorige Extent</translation>
     </message>
     <message>
         <source>Simplify Feature</source>
-        <translation>Versimpel Object</translation>
+        <translation type="obsolete">Versimpel Object</translation>
     </message>
     <message>
         <source>Delete Ring</source>
-        <translation>Verwijder Ring</translation>
+        <translation type="obsolete">Verwijder Ring</translation>
     </message>
     <message>
         <source>Delete Part</source>
-        <translation>Verwijder Onderdeel</translation>
+        <translation type="obsolete">Verwijder Onderdeel</translation>
     </message>
     <message>
         <source>Configure shortcuts...</source>
-        <translation>Snelkoppelingen bewerken...</translation>
+        <translation type="obsolete">Snelkoppelingen bewerken...</translation>
     </message>
     <message>
         <source>Configure shortcuts</source>
-        <translation>Snelkoppelingen aanpassen</translation>
+        <translation type="obsolete">Snelkoppelingen aanpassen</translation>
     </message>
     <message>
         <source>Advanced Digitizing</source>
-        <translation>Geavanceerd Digitaliseren</translation>
+        <translation type="obsolete">Geavanceerd Digitaliseren</translation>
     </message>
     <message>
         <source>Composer manager...</source>
-        <translation>Layouter manager...</translation>
+        <translation type="obsolete">Layouter manager...</translation>
     </message>
     <message>
         <source>Composer manager</source>
-        <translation>Layouter manager</translation>
+        <translation type="obsolete">Layouter manager</translation>
     </message>
     <message>
         <source>Style manager...</source>
-        <translation>Stijl manager...</translation>
+        <translation type="obsolete">Stijl manager...</translation>
     </message>
     <message>
         <source>Show style manager V2</source>
-        <translation>Stijlmanager V2 tonen</translation>
+        <translation type="obsolete">Stijlmanager V2 tonen</translation>
     </message>
     <message>
         <source>
@@ -6654,7 +7276,7 @@ This copy of QGIS writes debugging output.</source>
     </message>
     <message>
         <source>Deselect features from all layers</source>
-        <translation>Deselecteer objecten van alle lagen</translation>
+        <translation type="obsolete">Deselecteer objecten van alle lagen</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
@@ -6662,35 +7284,23 @@ This copy of QGIS writes debugging output.</source>
     </message>
     <message>
         <source>, hold ctrl to add/subtract current selection</source>
-        <translation>, ctrl indrukken om selectie uit te breiden of te verkleinen</translation>
+        <translation type="obsolete">, ctrl indrukken om selectie uit te breiden of te verkleinen</translation>
     </message>
     <message>
         <source>Select single feature</source>
-        <translation>Een object selecteren</translation>
+        <translation type="obsolete">Een object selecteren</translation>
     </message>
     <message>
         <source>Select single features</source>
-        <translation>Enkele objecten selecteren</translation>
+        <translation type="obsolete">Enkele objecten selecteren</translation>
     </message>
     <message>
         <source>, hold shift to select by containment</source>
-        <translation>, shift indrukken om te selecteren op insluiting</translation>
-    </message>
-    <message>
-        <source>Local Histogram Stretch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stretch histogram of active raster to view extents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS Sponsors!</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">, shift indrukken om te selecteren op insluiting</translation>
     </message>
     <message>
         <source>QGIS Sponsors</source>
-        <translation type="unfinished">QGIS Sponsors</translation>
+        <translation type="obsolete">QGIS Sponsors</translation>
     </message>
     <message>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
@@ -6723,17 +7333,9 @@ Always ignore these errors?</source>
         </translation>
     </message>
     <message>
-        <source>Set CRS of Layer(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ctrl+Shift+C</source>
         <comment>Set CRS of Layer(s)</comment>
-        <translation type="unfinished">Ctrl+Shift+C</translation>
-    </message>
-    <message>
-        <source>API documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+Shift+C</translation>
     </message>
     <message>
         <source>
@@ -6770,7 +7372,7 @@ QWT Version: %1.</source>
     <name>QgisAppBase</name>
     <message>
         <source>QGIS</source>
-        <translation>QGIS</translation>
+        <translation type="obsolete">QGIS</translation>
     </message>
 </context>
 <context>
@@ -11806,6 +12408,49 @@ Selecteer alstublieft een geldig bestand.</translation>
     <message>
         <source>GPS eXchange file</source>
         <translation>GPS uitwisselingsbestand (gpx)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGdalProvider</name>
+    <message>
+        <source>Dataset Description</source>
+        <translation type="unfinished">Dataset Beschrijving</translation>
+    </message>
+    <message>
+        <source>Band %1</source>
+        <translation type="unfinished">Band %1</translation>
+    </message>
+    <message>
+        <source>Dimensions:</source>
+        <translation type="unfinished">Dimensies:</translation>
+    </message>
+    <message>
+        <source>X: %1 Y: %2 Bands: %3</source>
+        <translation type="unfinished">X: %1 Y: %2 Banden: %3</translation>
+    </message>
+    <message>
+        <source>Origin:</source>
+        <translation type="unfinished">Oorsprong:</translation>
+    </message>
+    <message>
+        <source>Pixel Size:</source>
+        <translation type="unfinished">Pixelgrootte:</translation>
+    </message>
+    <message>
+        <source>out of extent</source>
+        <translation type="unfinished">Buiten de extent</translation>
+    </message>
+    <message>
+        <source>null (no data)</source>
+        <translation type="unfinished">null (geen data)</translation>
+    </message>
+    <message>
+        <source>Average Magphase</source>
+        <translation type="unfinished">Gemiddelde &apos;Magphase&apos;</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation type="unfinished">Gemiddelde</translation>
     </message>
 </context>
 <context>
@@ -18240,15 +18885,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation>Vraag om CRS</translation>
+        <translation type="obsolete">Vraag om CRS</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
-        <translation>Gebruik de standaard projectie voor dit project</translation>
+        <translation type="obsolete">Gebruik de standaard projectie voor dit project</translation>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation>De standaard CRS zoals hieronder getoond zal worden gebruikt (&amp;y)</translation>
+        <translation type="obsolete">De standaard CRS zoals hieronder getoond zal worden gebruikt (&amp;y)</translation>
     </message>
     <message>
         <source>Enter attribute values</source>
@@ -18316,7 +18961,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Default Coordinate Reference System</source>
-        <translation>Standaard Ruimtelijk Referentie Systeem</translation>
+        <translation type="obsolete">Standaard Ruimtelijk Referentie Systeem</translation>
     </message>
     <message>
         <source>Rendering &amp; SVG</source>
@@ -18367,15 +19012,35 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select ...</source>
+        <source>Default Coordinate Reference System for new projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable &apos;on the fly&apos; reprojection by defaul</source>
+        <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>When this option is enabled, any new project you create will have &apos;on the fly&apos; projection enabled by default and the CRS below will be used for the project.</source>
+        <source>Select...</source>
+        <translation type="unfinished">Selecteren...</translation>
+    </message>
+    <message>
+        <source>Always start new projects with this CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System for new layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for &amp;CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use &amp;project CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use default CRS displa&amp;yed below</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20737,14 +21402,6 @@ p, li { white-space: pre-wrap; }
         <source>SQL where clause</source>
         <translation>SQL &apos;where&apos;-deel</translation>
     </message>
-    <message>
-        <source>Auto Sample</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selected Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsQuickPrint</name>
@@ -20969,14 +21626,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRasterDataProvider</name>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">Identificeren</translation>
+    </message>
+    <message>
+        <source>Build Pyramids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Band</translation>
+    </message>
+</context>
+<context>
     <name>QgsRasterLayer</name>
     <message>
         <source>Average</source>
-        <translation>Gemiddelde</translation>
+        <translation type="obsolete">Gemiddelde</translation>
     </message>
     <message>
         <source>Average Magphase</source>
-        <translation>Gemiddelde &apos;Magphase&apos;</translation>
+        <translation type="obsolete">Gemiddelde &apos;Magphase&apos;</translation>
     </message>
     <message>
         <source>Band</source>
@@ -20996,7 +21668,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dataset Description</source>
-        <translation>Dataset Beschrijving</translation>
+        <translation type="obsolete">Dataset Beschrijving</translation>
     </message>
     <message>
         <source>Data Type:</source>
@@ -21004,7 +21676,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dimensions:</source>
-        <translation>Dimensies:</translation>
+        <translation type="obsolete">Dimensies:</translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -21052,11 +21724,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[GDAL] All files (*)</source>
-        <translation>[GDAL] Alle bestanden (*)</translation>
+        <translation type="obsolete">[GDAL] Alle bestanden (*)</translation>
     </message>
     <message>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation>Dit rasterbestand bevat geen banden is is ongeldig als rasterlaag.</translation>
+        <translation type="obsolete">Dit rasterbestand bevat geen banden is is ongeldig als rasterlaag.</translation>
     </message>
     <message>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
@@ -21104,19 +21776,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>null (no data)</source>
-        <translation>null (geen data)</translation>
+        <translation type="obsolete">null (geen data)</translation>
     </message>
     <message>
         <source>Origin:</source>
-        <translation>Oorsprong:</translation>
+        <translation type="obsolete">Oorsprong:</translation>
     </message>
     <message>
         <source>out of extent</source>
-        <translation>Buiten de extent</translation>
+        <translation type="obsolete">Buiten de extent</translation>
     </message>
     <message>
         <source>Pixel Size:</source>
-        <translation>Pixelgrootte:</translation>
+        <translation type="obsolete">Pixelgrootte:</translation>
     </message>
     <message>
         <source>Pyramid overviews:</source>
@@ -21140,11 +21812,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Band %1</source>
-        <translation>Band %1</translation>
+        <translation type="obsolete">Band %1</translation>
     </message>
     <message>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation>X: %1 Y: %2 Banden: %3</translation>
+        <translation type="obsolete">X: %1 Y: %2 Banden: %3</translation>
     </message>
     <message>
         <source>Project Spatial Reference System: </source>
@@ -21161,6 +21833,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Calculating stats for %1</source>
         <translation>Berekenen statistieken voor %1</translation>
+    </message>
+    <message>
+        <source>Layer Extent (layer original source projection): </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27843,6 +28519,26 @@ Voor ondersteuning stuur email naar scala@itc.cnr.it
         <source>Output file type</source>
         <translation>Output bestandstype</translation>
     </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Waarschuwing</translation>
+    </message>
+    <message>
+        <source>Please specify a file to convert.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify an output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DXF files (*.dxf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shapefile (*.shp)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>eVis</name>
@@ -28581,7 +29277,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation>Naar nieuwe projectie exporteren</translation>
+        <translation type="obsolete">Naar nieuwe projectie exporteren</translation>
     </message>
     <message>
         <source>Define current projection</source>
@@ -28589,7 +29285,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation>Join attributen</translation>
+        <translation type="obsolete">Join attributen</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -28605,7 +29301,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation>fTools Informatie</translation>
+        <translation type="obsolete">fTools Informatie</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
