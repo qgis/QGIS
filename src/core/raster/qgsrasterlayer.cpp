@@ -61,7 +61,6 @@ email                : tim at linfiniti.com
 #include <QSlider>
 #include <QSettings>
 #include <QTime>
-#include "qgslogger.h"
 
 // typedefs for provider plugin functions of interest
 typedef void buildsupportedrasterfilefilter_t( QString & theFileFiltersString );

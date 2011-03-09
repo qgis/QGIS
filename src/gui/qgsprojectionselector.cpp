@@ -29,7 +29,6 @@
 #include <QResizeEvent>
 #include <QMessageBox>
 #include <QSettings>
-#include "qgslogger.h"
 
 const int NAME_COLUMN = 0;
 const int AUTHID_COLUMN = 1;

@@ -19,7 +19,6 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QPushButton>
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 

@@ -45,7 +45,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsgeometry.h>
 #include <qgsmaprenderer.h>
-#include "qgslogger.h"
 
 
 using namespace pal;

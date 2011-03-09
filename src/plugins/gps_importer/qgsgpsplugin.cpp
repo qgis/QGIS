@@ -46,7 +46,6 @@
 
 //the gui subclass
 #include "qgsgpsplugingui.h"
-#include "qgslogger.h"
 
 
 static const char * const ident_ = "$Id$";

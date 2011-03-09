@@ -32,7 +32,6 @@
 //stdc++ includes
 #include <fstream>
 #include <sqlite3.h>
-#include "qgslogger.h"
 
 //proj4 includes
 extern "C"

@@ -27,7 +27,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsexception.h"
 #include "qgsprojectproperty.h"
-#include "qgslogger.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsprojectversion.h"
 #include "qgspluginlayer.h"
