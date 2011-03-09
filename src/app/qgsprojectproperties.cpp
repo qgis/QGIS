@@ -32,7 +32,6 @@
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsgenericprojectionselector.h"
-#include "qgslogger.h"
 
 //qt includes
 #include <QColorDialog>

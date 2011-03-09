@@ -34,7 +34,6 @@
 #include <QDir>
 #include <QFileInfo>
 //#include <QString>
-#include "qgslogger.h"
 //do we have to include qstring?
 
 QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QString label ) :

@@ -48,7 +48,6 @@
 #include <QList>
 #include <QSettings>
 #include <QMouseEvent>
-#include "qgslogger.h"
 
 // QWT Charting widget
 #include <qwt_plot_canvas.h>

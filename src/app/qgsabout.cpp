@@ -28,7 +28,6 @@
 
 /* Uncomment this block to use preloaded images
 #include <map>
-#include "qgslogger.h"
 std::map<QString, QPixmap> mugs;
 */
 #ifdef Q_OS_MACX

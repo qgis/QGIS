@@ -25,7 +25,6 @@ email                : morb at ozemail dot com dot au
 #include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
-#include "qgslogger.h"
 
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"

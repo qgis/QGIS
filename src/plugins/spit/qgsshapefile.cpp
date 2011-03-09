@@ -34,7 +34,6 @@
 #include "qgslogger.h"
 
 #include "qgspgutil.h"
-#include "qgslogger.h"
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()

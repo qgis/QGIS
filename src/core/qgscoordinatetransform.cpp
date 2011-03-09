@@ -23,7 +23,6 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
-#include "qgslogger.h"
 
 extern "C"
 {
@@ -140,7 +139,7 @@ void QgsCoordinateTransform::initialise()
     //No destination projection is set so we set the default output projection to
     //be the same as input proj. This only happens on the first layer loaded
     //whatever that may be...
-    mDestCRS.createFromProj4( mSourceCRS.toProj4() );
+    mDestCRS.createFromOgcWmsCrs( mSourceCRS.authid() );
   }
 
   // init the projections (destination and source)

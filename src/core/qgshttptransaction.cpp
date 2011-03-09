@@ -29,7 +29,6 @@
 #include <QUrl>
 #include <QSettings>
 #include <QTimer>
-#include "qgslogger.h"
 
 static int HTTP_PORT_DEFAULT = 80;
 

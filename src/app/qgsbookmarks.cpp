@@ -32,7 +32,6 @@
 #include <cassert>
 #include <sqlite3.h>
 #include <fstream>
-#include "qgslogger.h"
 
 QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),

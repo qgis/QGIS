@@ -41,7 +41,6 @@
 
 #include <qgspythonutils.h>
 #include "qgsapplication.h"
-#include "qgslogger.h"
 
 // Do we need this?
 // #define TESTLIB

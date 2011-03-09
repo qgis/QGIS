@@ -420,7 +420,6 @@ void QgsSymbolV2PropertiesDialog::lockLayer()
   layer->setLocked( btnLock->isChecked() );
 }
 
-#include "qgslogger.h"
 
 void QgsSymbolV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
 {

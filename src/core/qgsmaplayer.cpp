@@ -38,7 +38,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 

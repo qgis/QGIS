@@ -31,7 +31,6 @@
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
-#include "qgslogger.h"
 
 
 QgsClipboard::QgsClipboard()
