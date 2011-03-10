@@ -670,6 +670,11 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   int topAddPixels = static_cast<int> ( round( topSpace / yRes ) );
 
   QgsDebugMsg( QString("xAddPixels = %1 yAddPixels = %2 leftAddPixels = %3 topAddPixels = %4").arg(xAddPixels).arg(yAddPixels).arg(leftAddPixels).arg(topAddPixels) );
+  // Currently only positive allowed, verify if negative has sense and check following use
+  xAddPixels = xAddPixels > 0 ? xAddPixels : 0;
+  yAddPixels = yAddPixels > 0 ? yAddPixels : 0;
+  leftAddPixels = leftAddPixels > 0 ? leftAddPixels : 0;
+  topAddPixels = topAddPixels > 0 ? topAddPixels : 0;
 
   int totalWidth = width + xAddPixels;
   int totalHeight = height + yAddPixels;
