@@ -4819,16 +4819,7 @@ void QgisApp::options()
     {
       myRenderer->setMapUnits( srs.mapUnits() );
     }
-
-    //apply OTF CRS transformation if necessary
-    if ( mySettings.value( "/Projections/otfTransformEnabled", 0 ).toBool() )
-    {
-      myRenderer->setProjectionsEnabled( true );
-    }
-    else
-    {
-      myRenderer->setProjectionsEnabled( false );
-    }
+    //do we need this? TS
     mMapCanvas->refresh();
   }
 
