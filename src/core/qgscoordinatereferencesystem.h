@@ -87,9 +87,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
      *
-     * \note This function only deals with EpsgCrsId labels only at this time.
-     *
-     * \retval false if not given an EpsgCrsId label
+     * \retval false if not given an valid label
      */
     bool createFromOgcWmsCrs( QString theCrs );
 

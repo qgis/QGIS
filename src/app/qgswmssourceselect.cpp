@@ -654,9 +654,9 @@ void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( mCRSs );
 
-  QString myDefaultProjString = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCRSProj4String", GEOPROJ4 );
+  QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
   QgsCoordinateReferenceSystem defaultCRS;
-  if ( defaultCRS.createFromProj4( myDefaultProjString ) )
+  if ( defaultCRS.createFromOgcWmsCrs( myDefaultCrs ) )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );
   }

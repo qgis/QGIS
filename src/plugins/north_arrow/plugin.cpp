@@ -308,7 +308,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
     {
       // Use a geographic CRS to get lat/long to work out direction
       QgsCoordinateReferenceSystem ourCRS;
-      ourCRS.createFromProj4( "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs" );
+      ourCRS.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
       assert( ourCRS.isValid() );
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );

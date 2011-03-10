@@ -319,7 +319,7 @@ static QgsMessageOutput *messageOutputViewer_()
  */
 static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 {
-  QString toProj4;
+  QString authid;
   QSettings mySettings;
   QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour" ).toString();
   if ( myDefaultProjectionOption == "prompt" )
@@ -327,13 +327,13 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     //@note this class is not a descendent of QWidget so we cant pass
     //it in the ctor of the layer projection selector
 
-    QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
+    QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not specified
-    toProj4 = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
-    QgsCoordinateReferenceSystem defaultCRS;
-    if ( defaultCRS.createFromProj4( toProj4 ) )
+    authid = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
+    QgsCoordinateReferenceSystem defaultCrs;
+    if ( defaultCrs.createFromOgcWmsCrs( authid ) )
     {
-      mySelector->setSelectedCrsId( defaultCRS.srsid() );
+      mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
 
     QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -341,7 +341,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     if ( mySelector->exec() )
     {
       QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
-      srs->createFromProj4( mySelector->selectedProj4String() );
+      srs->createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
     QApplication::restoreOverrideCursor();
@@ -351,14 +351,14 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
   else if ( myDefaultProjectionOption == "useProject" )
   {
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
-    toProj4 = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
-    QgsDebugMsg( "Layer srs set from project: " + toProj4 );
+    authid = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
+    QgsDebugMsg( "Layer srs set from project: " + authid );
     QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to project CRS" ) );
-    srs->createFromProj4( toProj4 );
+    srs->createFromOgcWmsCrs( authid );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
-    srs->createFromProj4( mySettings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
+    srs->createFromOgcWmsCrs( mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
     QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to default CRS" ) );
   }
 }
@@ -2489,12 +2489,12 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
   // set project CRS
   QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-  QString projString = settings.value( "/Projections/projectDefaultProjectionString", GEOPROJ4 ).toString();
+  QString defCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   QgsCoordinateReferenceSystem srs;
-  srs.createFromProj4( projString );
+  srs.createFromOgcWmsCrs( defCrs );
   myRenderer->setDestinationSrs( srs );
   // write the projections _proj string_ to project settings
-  prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projString );
+  prj->writeEntry( "SpatialRefSys", "/ProjectCrs", defCrs );
   prj->dirty( false );
   if ( srs.mapUnits() != QGis::UnknownUnit )
   {
@@ -4809,12 +4809,12 @@ void QgisApp::options()
 
     // set project CRS
     QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-    QString projString = mySettings.value( "/Projections/projectDefaultProjectionString", GEOPROJ4 ).toString();
+    QString defCrs = mySettings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
     QgsCoordinateReferenceSystem srs;
-    srs.createFromProj4( projString );
+    srs.createFromOgcWmsCrs( defCrs );
     myRenderer->setDestinationSrs( srs );
     // write the projections _proj string_ to project settings
-    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projString );
+    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", defCrs );
     if ( srs.mapUnits() != QGis::UnknownUnit )
     {
       myRenderer->setMapUnits( srs.mapUnits() );
