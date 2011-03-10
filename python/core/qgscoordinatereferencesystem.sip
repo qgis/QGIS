@@ -46,9 +46,7 @@ class QgsCoordinateReferenceSystem
          *
          * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
          *
-         * \note This function only deals with Epsg Id labels only at this time.
-         *
-         * \retval FALSE if not given an Epsg Id label
+         * \retval false if not given an valid label
          */
         bool createFromOgcWmsCrs(QString theCrs);
 

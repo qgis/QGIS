@@ -61,9 +61,13 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      * 'define the CRS for this layer'.
      */
     void setMessage( QString theMessage = "" );
-    QString selectedProj4String();
     long selectedCrsId();
     QString selectedAuthId();
+
+#ifndef Q_MOC_RUN
+    QGISDEPRECATED
+#endif
+    QString selectedProj4String();
 
 #ifndef Q_MOC_RUN
     QGISDEPRECATED

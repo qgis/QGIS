@@ -162,9 +162,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 
 
   // get spatial ref system for ellipsoid
-  QString proj4 = "+proj=longlat +ellps=";
-  proj4 += ellipsoid;
-  proj4 += " +no_defs";
+  QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromProj4( proj4 );
 

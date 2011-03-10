@@ -155,7 +155,7 @@ void QgsNewVectorLayerDialog::on_pbnChangeSpatialRefSys_clicked()
   if ( mySelector->exec() )
   {
     mCrsId = mySelector->selectedCrsId();
-    leSpatialRefSys->setText( mySelector->selectedProj4String() );
+    leSpatialRefSys->setText( mySelector->selectedAuthId() );
   }
   else
   {

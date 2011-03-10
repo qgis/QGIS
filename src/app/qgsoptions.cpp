@@ -188,16 +188,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     radUseGlobalProjection->setChecked( true );
   }
-  QString myLayerDefaultCrsString = settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString();
-  mLayerDefaultCrs.createFromProj4( myLayerDefaultCrsString );
+  QString myLayerDefaultCrs = settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
+  mLayerDefaultCrs.createFromOgcWmsCrs( myLayerDefaultCrs );
   //display the crs as friendly text rather than in wkt
   leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
 
   //on the fly CRS transformation settings
   chkOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
-  
-  QString myDefaultCrsString = settings.value( "/Projections/projectDefaultProjectionString", GEOPROJ4 ).toString();
-  mDefaultCrs.createFromProj4( myDefaultCrsString );
+
+  QString myDefaultCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
+  mDefaultCrs.createFromOgcWmsCrs( myDefaultCrs );
   //display the crs as friendly text rather than in wkt
   leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
 
@@ -639,11 +639,11 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Projections/defaultBehaviour", "useGlobal" );
   }
 
-  settings.setValue( "/Projections/defaultProjectionString", mLayerDefaultCrs.toProj4() );
+  settings.setValue( "/Projections/layerDefaultCrs", mLayerDefaultCrs.authid() );
 
   // save 'on the fly' CRS transformation settings
   settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
-  settings.setValue( "/Projections/projectDefaultProjectionString", mDefaultCrs.toProj4() );
+  settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
 
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
@@ -758,10 +758,9 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 
   if ( mySelector->exec() )
   {
-    mLayerDefaultCrs.createFromProj4( mySelector->selectedProj4String() );
-    QgsDebugMsg( QString( "Setting default project CRS to : %1").arg( mySelector->selectedProj4String() ) );
-    leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " +
-      mLayerDefaultCrs.description() );
+    mLayerDefaultCrs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+    QgsDebugMsg( QString( "Setting default project CRS to : %1" ).arg( mySelector->selectedAuthId() ) );
+    leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
     QgsDebugMsg( QString( "------ Global Layer Default Projection Selection set to ----------\n%1" ).arg( leLayerGlobalCrs->text() ) );
   }
   else
@@ -782,10 +781,9 @@ void QgsOptions::on_pbnSelectOtfProjection_clicked()
 
   if ( mySelector->exec() )
   {
-    mDefaultCrs.createFromProj4( mySelector->selectedProj4String() );
-    QgsDebugMsg( QString( "Setting default project CRS to : %1").arg( mySelector->selectedProj4String() ) );
-    leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " +
-      mDefaultCrs.description() );
+    mDefaultCrs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+    QgsDebugMsg( QString( "Setting default project CRS to : %1" ).arg( mySelector->selectedAuthId() ) );
+    leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
     QgsDebugMsg( QString( "------ Global OTF Projection Selection set to ----------\n%1" ).arg( leProjectGlobalCrs->text() ) );
   }
   else

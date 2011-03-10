@@ -128,6 +128,12 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
 {
+  QRegExp re( "(user|custom|qgis):(\\d+)", Qt::CaseInsensitive );
+  if ( re.exactMatch( theCrs ) && createFromSrsId( re.cap( 2 ).toInt() ) )
+  {
+    return true;
+  }
+
   if ( loadFromDb( QgsApplication::srsDbFilePath(), "lower(auth_name||':'||auth_id)", theCrs.toLower() ) )
     return true;
 
@@ -184,7 +190,7 @@ void QgsCoordinateReferenceSystem::validate()
 
   if ( !mIsValidFlag )
     // set the default
-    createFromProj4( GEOPROJ4 );
+    createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )
@@ -199,8 +205,8 @@ bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
-                     QgsApplication::qgisUserDbFilePath(), "srs_id", QString::number( id ) );
+  return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() : QgsApplication::qgisUserDbFilePath(),
+                     "srs_id", QString::number( id ) );
 }
 
 bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, QString value )
@@ -251,8 +257,13 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     QString toProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
     mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
     mAuthId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) );
-    int geo = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt();
-    mGeoFlag = ( geo == 0 ? false : true );
+    mGeoFlag = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt() != 0;
+
+    if ( mSrsId >= USER_CRS_START_ID && mAuthId.isEmpty() )
+    {
+      mAuthId = QString( "USER:%1" ).arg( mSrsId );
+    }
+
     setProj4String( toProj4 );
     setMapUnits();
   }
@@ -274,7 +285,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
     QgsDebugMsg( "theWkt is uninitialised, operation failed" );
     return mIsValidFlag;
   }
-  QgsDebugMsg( "QgsCoordinateReferenceSystem::createFromWkt(QString theWkt) using: " + theWkt );
+  QgsDebugMsg( "wkt: " + theWkt );
   QByteArray ba = theWkt.toLatin1();
   const char *pWkt = ba.data();
 
@@ -611,9 +622,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 #endif
 
   return myMap;
-
-
-
 }
 
 // Accessors -----------------------------------

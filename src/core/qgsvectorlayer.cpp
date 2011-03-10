@@ -4282,7 +4282,7 @@ void QgsVectorLayer::setCoordinateSystem()
     }
     else
     {
-      mCRS->createFromProj4( GEOPROJ4 );
+      mCRS->createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
     }
   }
 }
