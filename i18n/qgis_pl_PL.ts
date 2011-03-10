@@ -11520,7 +11520,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/core/composer/qgscomposeritem.cpp" line="374"/>
         <source>Change item position</source>
         <translatorcomment>czy zmienia?</translatorcomment>
-        <translation type="unfinished">Zmień lokalizację elementu</translation>
+        <translation type="unfinished">Przesunięto obiekt</translation>
     </message>
 </context>
 <context>
@@ -11543,7 +11543,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="116"/>
         <source>Item outline width</source>
-        <translation>Szerokość obrysu elementu</translation>
+        <translation>Zmieniono szerokość obrysu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="130"/>
@@ -11854,7 +11854,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Item Font...</source>
-        <translation>Czcionka obiektu...</translation>
+        <translation>Czcionka symbolu...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="109"/>
@@ -11879,17 +11879,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="129"/>
         <source>Layer space </source>
-        <translation>Odstęp warstwy </translation>
+        <translation>Odstęp warstw </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="139"/>
         <source>Symbol space </source>
-        <translation>Odstęp symbolu </translation>
+        <translation>Odstęp symboli </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="149"/>
         <source>Icon label space </source>
-        <translation>Odstęp etykiety ikony </translation>
+        <translation>Odstęp etykiet </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="159"/>
@@ -11899,7 +11899,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
         <source>Auto Update</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aktualizuj automatycznie</translation>
     </message>
     <message>
         <source>v</source>
@@ -11935,7 +11935,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="191"/>
         <source>Legend items</source>
-        <translation>Legenda obiektów</translation>
+        <translation>Pozycje legendy</translation>
     </message>
 </context>
 <context>
