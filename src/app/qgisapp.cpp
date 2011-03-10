@@ -792,6 +792,7 @@ void QgisApp::createActions()
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
+  connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
   connect( mActionTileScale, SIGNAL( triggered() ), this, SLOT( showTileScale() ) );
   connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
@@ -1339,6 +1340,7 @@ void QgisApp::setTheme( QString theThemeName )
 #endif
   mActionRemoveLayer->setIcon( getThemeIcon( "/mActionRemoveLayer.png" ) );
   mActionSetLayerCRS->setIcon( getThemeIcon( "/mActionSetLayerCRS.png" ) );
+  mActionSetProjectCRSFromLayer->setIcon( getThemeIcon( "/mActionSetProjectCRSFromLayer.png" ) );
   mActionNewVectorLayer->setIcon( getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddAllToOverview->setIcon( getThemeIcon( "/mActionAddAllToOverview.png" ) );
   mActionHideAllLayers->setIcon( getThemeIcon( "/mActionHideAllLayers.png" ) );
@@ -4492,7 +4494,7 @@ void QgisApp::setLayerCRS()
     return;
   }
 
-  if ( !mMapLegend )
+  if ( !( mMapLegend && mMapLegend->currentLayer() ) )
   {
     return;
   }
@@ -4511,6 +4513,28 @@ void QgisApp::setLayerCRS()
   }
 
   delete mySelector;
+}
+
+void QgisApp::setProjectCRSFromLayer()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  if ( !( mMapLegend && mMapLegend->currentLayer() ) )
+  {
+    return;
+  }
+
+  QgsCoordinateReferenceSystem crs = mMapLegend->currentLayer()->crs();
+  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+  myRenderer->setDestinationSrs( crs );
+  if ( crs.mapUnits() != QGis::UnknownUnit )
+  {
+    myRenderer->setMapUnits( crs.mapUnits() );
+  }
+  mMapCanvas->refresh();  
 }
 
 void QgisApp::showGpsTool()
@@ -5567,6 +5591,7 @@ void QgisApp::legendLayerSelectionChanged( void )
 {
   mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
   mActionSetLayerCRS->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
+  mActionSetProjectCRSFromLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() == 1 );
 }
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
