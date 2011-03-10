@@ -6,7 +6,6 @@
 #include <QKeyEvent>
 
 #include "qgssymbollayerv2.h"
-#include "qgssymbolv2.h"
 #include "qgssymbollayerv2registry.h"
 
 #include "qgsapplication.h"

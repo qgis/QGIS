@@ -23,7 +23,6 @@
 #include <QSettings> // TODO: get rid of it [MD]
 #include <QDir>
 #include <QFile>
-#include <QFileInfo>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomImplementation>

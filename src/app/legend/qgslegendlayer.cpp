@@ -25,7 +25,6 @@
 #include "qgslegendsymbologyitem.h"
 #include "qgslogger.h"
 
-#include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsmapcanvasmap.h"
 #include "qgsmaplayerregistry.h"

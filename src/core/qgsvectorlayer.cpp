@@ -65,7 +65,6 @@
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerjoinbuffer.h"
