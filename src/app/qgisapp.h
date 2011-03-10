@@ -276,6 +276,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
+    QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionTileScale() { return mActionTileScale; }
     QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
@@ -482,6 +483,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void removeLayer();
     //! Set CRS of a layer
     void setLayerCRS();
+    //! Assign layer CRS to project
+    void setProjectCRSFromLayer();
     //! Show GPS tool
     void showGpsTool();
     //! Show tile scale slider

@@ -147,6 +147,7 @@
     <addaction name="mActionLayerSelectionSaveAs"/>
     <addaction name="mActionRemoveLayer"/>
     <addaction name="mActionSetLayerCRS"/>
+    <addaction name="mActionSetProjectCRSFromLayer"/>
     <addaction name="mActionLayerProperties"/>
     <addaction name="mActionLayerSubsetString"/>
     <addaction name="mActionLabeling"/>
@@ -1196,6 +1197,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="mActionSetProjectCRSFromLayer">
+   <property name="text">
+    <string>Assign layer CRS to project</string>
    </property>
   </action>
   <action name="mActionTileScale">
