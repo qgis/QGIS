@@ -140,22 +140,23 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
     /** Open a raster or vector file; ignore other files.
-      Used to process a commandline argument or OpenDocument AppleEvent.
+      Used to process a commandline argument, FileOpen or Drop event.
+      Set interactive to true if it is ok to ask the user for information (mostly for
+      when a vector layer has sublayers and we want to ask which sublayers to use).
       @returns true if the file is successfully opened
       */
     bool openLayer( const QString & fileName, bool allowInteractive = false );
-    /** Open the specified file (project, vector, or raster); prompt to save
-      previous project if necessary.
-      Used to process a commandline argument, OpenDocument AppleEvent, or a
-      file drag/drop event. Set interactive to true if it is ok to ask the
-      user for information (mostly for when a vector layer has sublayers and
-      we want to ask which sublayers to use).
+    /** Open the specified project file; prompt to save previous project if necessary.
+      Used to process a commandline argument, FileOpen or Drop event.
       */
     void openProject( const QString & fileName );
     /** opens a qgis project file
       @returns false if unable to open the project
       */
     bool addProject( QString projectFile );
+    /** Convenience function to open either a project or a layer file.
+      */
+    void openFile( const QString & fileName );
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( QString, QPixmap * );
     /** Get the mapcanvas object from the app */
@@ -430,6 +431,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! layer selection changed
     void legendLayerSelectionChanged( void );
+
+    //! Watch for QFileOpenEvent.
+    virtual bool event( QEvent * event );
 
   protected:
 

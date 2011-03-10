@@ -570,6 +570,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsDebugMsg( QgsApplication::showSettings() );
   QgsDebugMsg( "\n--------------------------\n\n\n" );
 
+  // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
+  QgsApplication::setFileOpenEventReceiver( this );
+
 } // QgisApp ctor
 
 
@@ -622,6 +625,9 @@ QgisApp::~QgisApp()
   deletePrintComposers();
   removeAnnotationItems();
 
+  // cancel request for FileOpen events
+  QgsApplication::setFileOpenEventReceiver( nil );
+
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
 }
@@ -646,21 +652,28 @@ void QgisApp::dropEvent( QDropEvent *event )
     // so we test for length to make sure we have something
     if ( !fileName.isEmpty() )
     {
-      // check to see if we are opening a project file
-      QFileInfo fi( fileName );
-      if ( fi.completeSuffix() == "qgs" )
-      {
-        QgsDebugMsg( "Opening project " + fileName );
-        openProject( fileName );
-      }
-      else
-      {
-        QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
-        openLayer( fileName, true );
-      }
+      openFile( fileName );
     }
   }
   event->acceptProposedAction();
+}
+
+bool QgisApp::event( QEvent * event )
+{
+  bool done = false;
+  if ( event->type() == QEvent::FileOpen )
+  {
+    // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
+    QFileOpenEvent *foe = static_cast<QFileOpenEvent *>( event );
+    openFile( foe->file() );
+    done = true;
+  }
+  else
+  {
+    // pass other events to base class
+    done = QMainWindow::event( event );
+  }
+  return done;
 }
 
 
@@ -2969,6 +2982,25 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
 
   return ok;
 }
+
+
+// Open a file specified by a commandline argument, Drop or FileOpen event.
+void QgisApp::openFile( const QString & fileName )
+{
+  // check to see if we are opening a project file
+  QFileInfo fi( fileName );
+  if ( fi.completeSuffix() == "qgs" )
+  {
+    QgsDebugMsg( "Opening project " + fileName );
+    openProject( fileName );
+  }
+  else
+  {
+    QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
+    openLayer( fileName, true );
+  }
+}
+
 
 void QgisApp::newPrintComposer()
 {

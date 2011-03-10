@@ -17,6 +17,7 @@
 #define QGSAPPLICATION_H
 
 #include <QApplication>
+#include <QEvent>
 
 #include <qgis.h>
 
@@ -32,8 +33,14 @@ class CORE_EXPORT QgsApplication: public QApplication
     QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
 
+    //! Watch for QFileOpenEvent.
+    virtual bool event( QEvent * event );
+
     //! Catch exceptions when sending event to receiver.
     virtual bool notify( QObject * receiver, QEvent * event );
+
+    //! Set the FileOpen event receiver
+    static void setFileOpenEventReceiver( QObject * receiver );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -195,6 +202,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
   private:
+    static QObject* mFileOpenEventReceiver;
+    static QStringList mFileOpenEventList;
+
     static QString mPrefixPath;
     static QString mPluginPath;
     static QString mPkgDataPath;
