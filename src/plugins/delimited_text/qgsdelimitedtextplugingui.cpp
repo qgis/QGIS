@@ -132,11 +132,9 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
       url.addQueryItem( "skipLines", QString( "%1" ).arg( skipLines ) );
 
     // add the layer to the map
+    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), "delimitedtext" );
 
-    QString uri( url.toEncoded() );
-    emit drawVectorLayer( uri, txtLayerName->text(), "delimitedtext" );
     // store the settings
-
     QSettings settings;
     QString key = "/Plugin-DelimitedText";
     settings.setValue( key + "/delimiter", txtDelimiter->text() );
