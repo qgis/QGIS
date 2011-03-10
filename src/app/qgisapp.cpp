@@ -4831,18 +4831,6 @@ void QgisApp::options()
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
-    // set project CRS
-    QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-    QString defCrs = mySettings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-    QgsCoordinateReferenceSystem srs;
-    srs.createFromOgcWmsCrs( defCrs );
-    myRenderer->setDestinationSrs( srs );
-    // write the projections _proj string_ to project settings
-    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", defCrs );
-    if ( srs.mapUnits() != QGis::UnknownUnit )
-    {
-      myRenderer->setMapUnits( srs.mapUnits() );
-    }
     //do we need this? TS
     mMapCanvas->refresh();
   }
