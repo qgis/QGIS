@@ -10,9 +10,6 @@
     <height>480</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>QGIS</string>
-  </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -20,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>717</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
