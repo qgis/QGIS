@@ -16,7 +16,6 @@
  ***************************************************************************/
 /*  $Id: qgisapp.h 12390 2009-12-09 21:35:43Z jef $ */
 #include "qgsgpsinformationwidget.h"
-#include "qgsvectorlayer.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
@@ -44,7 +43,6 @@
 #include <qpen.h>
 #include <qwt_data.h>
 #include <qwt_symbol.h>
-#include <qwt_legend.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_curve.h>
 #include <qwt_scale_engine.h>
@@ -53,7 +51,6 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QPointF>
-#include <QSettings>
 #include <QColorDialog>
 
 

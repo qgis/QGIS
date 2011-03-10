@@ -626,7 +626,7 @@ QgisApp::~QgisApp()
   removeAnnotationItems();
 
   // cancel request for FileOpen events
-  QgsApplication::setFileOpenEventReceiver( 0 );
+  QgsApplication::setFileOpenEventReceiver( NULL );
 
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
