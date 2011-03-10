@@ -860,8 +860,9 @@ bool QgsProject::read()
   QPair< bool, QList<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );
 
   // review the integrity of the retrieved map layers
+  bool clean = getMapLayersResults.first;
 
-  if ( ! getMapLayersResults.first )
+  if ( !clean )
   {
     QgsDebugMsg( "Unable to get map layers from project file." );
 
@@ -878,8 +879,9 @@ bool QgsProject::read()
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 
-  // can't be dirty since we're allegedly in pristine state
-  dirty( false );
+  // if all went well, we're allegedly in pristine state
+  if ( clean )
+    dirty( false );
 
   return true;
 

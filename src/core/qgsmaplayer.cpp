@@ -27,6 +27,7 @@
 #include <QDomElement>
 #include <QDomImplementation>
 #include <QTextStream>
+#include <QUrl>
 
 #include <sqlite3.h>
 
@@ -177,9 +178,10 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   }
   else if ( provider == "delimitedtext" )
   {
-    QStringList theURIParts = mDataSource.split( "?" );
-    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
-    mDataSource = theURIParts.join( "?" );
+    QUrl urlSource = QUrl::fromEncoded( mDataSource.toAscii() );
+    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
+    urlDest.setQueryItems( urlSource.queryItems() );
+    mDataSource = QString::fromAscii( urlDest.toEncoded() );
   }
   else
   {

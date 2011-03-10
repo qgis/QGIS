@@ -150,7 +150,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWkbType( QGis::WKBNoGeometry )
 {
 
-  QUrl url = QUrl::fromEncoded( uri.toUtf8() );
+  QUrl url = QUrl::fromEncoded( uri.toAscii() );
 
   // Extract the provider definition from the url
 

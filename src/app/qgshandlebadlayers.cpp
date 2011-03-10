@@ -28,6 +28,7 @@
 #include <QDomElement>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QUrl>
 
 QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
 {
@@ -48,7 +49,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     , mLayers( layers )
 {
   setupUi( this );
-
 
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
@@ -102,8 +102,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
       }
       else if ( provider == "delimitedtext" )
       {
-        QStringList theURIParts = datasource.split( "?" );
-        filename = theURIParts[0];
+        filename = QUrl::fromEncoded( datasource.toAscii() ).toLocalFile();
       }
       else if ( provider == "postgres" || provider == "sqlanywhere" )
       {
@@ -296,9 +295,10 @@ void QgsHandleBadLayers::apply()
       }
       else if ( provider == "delimitedtext" )
       {
-        QStringList theURIParts = datasource.split( "?" );
-        theURIParts[0] = filename;
-        datasource = theURIParts.join( "?" );
+        QUrl uriSource = QUrl::fromEncoded( datasource.toAscii() );
+        QUrl uriDest = QUrl::fromLocalFile( filename );
+        uriDest.setQueryItems( uriSource.queryItems() );
+        datasource = QString::fromAscii( uriDest.toEncoded() );
       }
     }
     else
