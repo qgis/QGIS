@@ -33,6 +33,7 @@
 class QImage;
 class QgsPoint;
 class QgsRasterBandStats;
+class QByteArray;
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
@@ -456,6 +457,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     static QString makeTableCell( QString const & value );
     static QString makeTableCells( QStringList const & values );
 
+    /** \brief Set null value in char */
+    QByteArray noValueBytes(int theBandNo);
 
   protected:
     /**Dots per intch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
