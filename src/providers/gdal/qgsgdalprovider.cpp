@@ -532,6 +532,11 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( "thePixelHeight = "  + QString::number( thePixelHeight ) );
   QgsDebugMsg( "theExtent: " + theExtent.toString() );
 
+  for ( int i = 0 ; i < 6; i++ )
+  {
+    QgsDebugMsg( QString( "transform : %1" ).arg( mGeoTransform[i] ) );
+  }
+
   // TODO: fill block with no data values
 
   QgsRectangle myRasterExtent = theExtent.intersect( &mExtent ); 
@@ -589,46 +594,57 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   double center, centerRaster;
   int rasterTop, rasterBottom, rasterLeft, rasterRight;
 
+  // We have to extend destination grid for GDALRasterIO to keep resolution:
+  double topSpace, bottomSpace, leftSpace, rightSpace;
+
   // top
   center = myRasterExtent.yMaximum() - yRes/2;
   // center in raster space
   // GDAL states that mGeoTransform[3] is top, but probably it can be also bottom
-  // if mGeoTransform[5] is negative
-  if ( mGeoTransform[5] > 0 )
+  // if mGeoTransform[5] is negative ??? No, mGeoTransform[5] is negative normaly
+  // - vice versa?
+  //if ( mGeoTransform[5] > 0 )
+  if ( mGeoTransform[5] < 0 )
   {
-    centerRaster = ( mGeoTransform[3] - center ) / mGeoTransform[5];
+    centerRaster = -1. * ( mGeoTransform[3] - center ) / mGeoTransform[5];
   } 
   else 
   {
     centerRaster = ( center - mGeoTransform[3] ) / mGeoTransform[5];
   }
   rasterTop = static_cast<int> ( floor ( centerRaster ) );
+  topSpace = (mGeoTransform[3] + rasterTop*mGeoTransform[5])- myRasterExtent.yMaximum();
 
   // bottom
   center = myRasterExtent.yMinimum() + yRes/2;
-  if ( mGeoTransform[5] > 0 )
+  //if ( mGeoTransform[5] > 0 )
+  if ( mGeoTransform[5] < 0 )
   {
-    centerRaster = ( mGeoTransform[3] - center ) / mGeoTransform[5];
+    centerRaster = -1. * ( mGeoTransform[3] - center ) / mGeoTransform[5];
   } 
   else 
   {
     centerRaster = ( center - mGeoTransform[3] ) / mGeoTransform[5];
   }
   rasterBottom = static_cast<int> ( floor ( centerRaster ) );
+  bottomSpace = myRasterExtent.yMinimum() - ( mGeoTransform[3] + (rasterBottom+1)*mGeoTransform[5] );
 
   // left
   center = myRasterExtent.xMinimum() + xRes/2;
   centerRaster = ( center - mGeoTransform[0] ) / mGeoTransform[1];
   rasterLeft = static_cast<int> ( floor ( centerRaster ) );
+  leftSpace = myRasterExtent.xMinimum() - (mGeoTransform[0] + rasterLeft * mGeoTransform[1] );
 
   // right
   center = myRasterExtent.xMaximum() - xRes/2;
   centerRaster = ( center - mGeoTransform[0] ) / mGeoTransform[1];
   rasterRight = static_cast<int> ( floor ( centerRaster ) );
+  rightSpace = (mGeoTransform[0] + (rasterRight+1)*mGeoTransform[1]) - myRasterExtent.xMaximum();
 
   QgsDebugMsg( QString("rasterTop = %1 rasterBottom = %2 rasterLeft = %3 rasterRight = %4").arg(rasterTop).arg(rasterBottom).arg(rasterLeft).arg(rasterRight) );
 
-  // Allocate temporary block
+  QgsDebugMsg( QString("topSpace = %1 bottomSpace = %2 leftSpace = %3 rightSpace = %4").arg(topSpace).arg(bottomSpace).arg(leftSpace).arg(rightSpace) );
+
   int width = right - left + 1;
   int height = bottom - top + 1;
   
@@ -636,6 +652,29 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   int rasterHeight = rasterBottom - rasterTop + 1;
 
   QgsDebugMsg( QString("width = %1 height = %2 rasterWidth = %3 rasterHeight = %4").arg(width).arg(height).arg(rasterWidth).arg(rasterHeight) );
+
+
+  double rasterXRes = extent().width() / xSize();
+  double rasterYRes = extent().height() / ySize();
+
+  // TODO: what is better floor/ceil, can be negative?
+  // should be similar
+  //double xAdd = rasterWidth*rasterXRes - width*xRes;
+  double xAdd = leftSpace + rightSpace;
+  int xAddPixels = static_cast<int> ( round( xAdd / xRes ) );
+  int leftAddPixels = static_cast<int> ( round( leftSpace / xRes ) );
+
+  //double leftAdd = rasterWidth*rasterXRes - width*xRes;
+  double yAdd = topSpace + bottomSpace;
+  int yAddPixels = static_cast<int> ( round( yAdd / yRes ) );
+  int topAddPixels = static_cast<int> ( round( topSpace / yRes ) );
+
+  QgsDebugMsg( QString("xAddPixels = %1 yAddPixels = %2 leftAddPixels = %3 topAddPixels = %4").arg(xAddPixels).arg(yAddPixels).arg(leftAddPixels).arg(topAddPixels) );
+
+  int totalWidth = width + xAddPixels;
+  int totalHeight = height + yAddPixels;
+
+  QgsDebugMsg( QString("totalWidth = %1 totalHeight = %2").arg(totalWidth).arg(totalHeight) );
 
   int size = dataTypeSize(theBandNo) / 8;
 
@@ -650,7 +689,11 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   }
 
   GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+  GDALDataType type = ( GDALDataType )mGdalDataType[theBandNo-1];
+  CPLErrorReset();
 
+// This can be probably used if xAddPixels and yAddPixels are 0 to avoid memcpy
+#if 0
   // Calc beginnig of data if raster does not start at top
   block = (char *) theBlock;
   if ( top != 0 ) 
@@ -663,23 +706,40 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( left != 0 ) {
     block += size * left;
   } 
-
-  GDALDataType type = ( GDALDataType )mGdalDataType[theBandNo-1];
-
-  CPLErrorReset();
   CPLErr err = GDALRasterIO(  gdalBand, GF_Read, 
                               rasterLeft, rasterTop, rasterWidth, rasterHeight,
                               (void *)block, 
                               width, height, type, 
                               0, nLineSpace );
+#endif
+
+  // Allocate temporary block
+  void *tmpBlock = malloc( size * totalWidth * totalHeight );
+
+  CPLErrorReset();
+  CPLErr err = GDALRasterIO(  gdalBand, GF_Read, 
+                              rasterLeft, rasterTop, rasterWidth, rasterHeight,
+                              (void *)tmpBlock, 
+                              totalWidth, totalHeight, type, 
+                              0, 0 );
 
   if ( err != CPLE_None )
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     QgsDebugMsg ( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    free ( tmpBlock );
+    return;
   }
- 
 
+  for ( int i = 0; i < height; i++ ) {
+    int r = i + topAddPixels;
+    char *src = (char *)tmpBlock + size*r*totalWidth + size*leftAddPixels;
+    char *dst = (char *)theBlock + size*(top+i)*thePixelWidth + size*(left);
+    memcpy ( dst, src, size*width );
+  }
+
+  free ( tmpBlock );
+  return;
 }
 
 // this is old version which was using GDALWarpOperation, unfortunately
