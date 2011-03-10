@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 
 #include <QDir>
+#include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
 #include <QSettings>
@@ -34,6 +35,8 @@
 
 #include <ogr_api.h>
 
+QObject * QgsApplication::mFileOpenEventReceiver;
+QStringList QgsApplication::mFileOpenEventList;
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
@@ -79,6 +82,34 @@ QgsApplication::~QgsApplication()
 {
 }
 
+bool QgsApplication::event( QEvent * event )
+{
+  bool done = false;
+  if ( event->type() == QEvent::FileOpen )
+  {
+    // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
+    if ( mFileOpenEventReceiver )
+    {
+      // Forward event to main window.
+      done = notify( mFileOpenEventReceiver, event );
+    }
+    else
+    {
+      // Store filename because receiver has not registered yet.
+      // If QGIS has been launched by double clicking a file icon, FileOpen will be
+      // the first event; the main window is not yet ready to handle the event.
+      mFileOpenEventList.append( static_cast<QFileOpenEvent *>( event )->file() );
+      done = true;
+    }
+  }
+  else
+  {
+    // pass other events to base class
+    done = QApplication::event( event );
+  }
+  return done;
+}
+
 bool QgsApplication::notify( QObject * receiver, QEvent * event )
 {
   // Send event to receiver and catch unhandled exceptions
@@ -100,6 +131,23 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
     QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
   return done;
+}
+
+void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
+{
+  // Set receiver for FileOpen events
+  mFileOpenEventReceiver = receiver;
+  // Propagate any events collected before the receiver has registered.
+  if ( mFileOpenEventList.count() > 0 )
+  {
+    QStringListIterator i( mFileOpenEventList );
+    while ( i.hasNext() )
+    {
+      QFileOpenEvent foe( i.next() );
+      QgsApplication::sendEvent( mFileOpenEventReceiver, &foe );
+    }
+    mFileOpenEventList.clear();
+  }
 }
 
 void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefaultPaths )

@@ -129,70 +129,6 @@ static QString myProjectFileName = "";
 static QStringList myFileList;
 
 
-#ifdef Q_OS_MACX
-/* Mac OS OpenDocuments AppleEvent handler called when files are double-clicked.
- * May be called at startup before application is initialized as well as
- * at any time while the application is running.
- */
-OSErr openDocumentsAEHandler( const AppleEvent *event, AppleEvent *reply, SRefCon refCon )
-{
-  AEDescList docs;
-  if ( AEGetParamDesc( event, keyDirectObject, typeAEList, &docs ) == noErr )
-  {
-    // Get count of files to open
-    long count = 0;
-    AECountItems( &docs, &count );
-
-    // Examine files and load first project file followed by all other non-project files
-    myProjectFileName.truncate( 0 );
-    myFileList.clear();
-    for ( int i = 0; i < count; i++ )
-    {
-      FSRef ref;
-      UInt8 strBuffer[256];
-      if ( AEGetNthPtr( &docs, i + 1, typeFSRef, 0, 0, &ref, sizeof( ref ), 0 ) == noErr &&
-           FSRefMakePath( &ref, strBuffer, 256 ) == noErr )
-      {
-        QString fileName( QString::fromUtf8( reinterpret_cast<char *>( strBuffer ) ) );
-        if ( fileName.endsWith( ".qgs" ) )
-        {
-          // Load first project file and ignore all other project files
-          if ( myProjectFileName.isEmpty() )
-          {
-            myProjectFileName = fileName;
-          }
-        }
-        else
-        {
-          // Load all non-project files
-          myFileList.append( fileName );
-        }
-      }
-    }
-
-    // Open files now if application has been fully initialized (has objectName).
-    // Otherwise (if this routine is called by processEvents inside the QgisApp constructor
-    // at startup) wait for the command line file loader to notice these files.
-    QgisApp *qgis = QgisApp::instance();
-    if ( qgis && qgis->objectName() == "QgisApp" )
-    {
-      if ( !myProjectFileName.isEmpty() )
-      {
-        qgis->openProject( myProjectFileName );
-      }
-      for ( QStringList::Iterator myIterator = myFileList.begin();
-            myIterator != myFileList.end(); ++myIterator )
-      {
-        QString fileName = *myIterator;
-        qgis->openLayer( fileName );
-      }
-    }
-  }
-  return noErr;
-}
-#endif
-
-
 /* Test to determine if this program was started on Mac OS X by double-clicking
  * the application bundle rather then from a command line. If clicked, argv[1]
  * contains a process serial number in the form -psn_0_1234567. Don't process
@@ -512,13 +448,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( "QGIS" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 #ifdef Q_OS_MACX
-  // Install OpenDocuments AppleEvent handler after application object is initialized
-  // but before any other event handling (including dialogs or splash screens) occurs.
-  // If an OpenDocuments event has been created before the application was launched,
-  // it must be handled before some other event handler runs and dismisses it as unknown.
-  // If run at startup, the handler will set either or both of myProjectFileName and myFileList.
-  AEInstallEventHandler( kCoreEventClass, kAEOpenDocuments, openDocumentsAEHandler, 0, false );
-
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
   // is not already defined, use the GDAL plugins in the application bundle.
   QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
