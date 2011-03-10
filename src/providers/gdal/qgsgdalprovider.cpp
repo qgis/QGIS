@@ -510,6 +510,9 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
 
 void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
 {
+  // TODO!!!: Check data alignment!!! May it happen that nearest value which 
+  // is not nearest is assigned to an output cell???
+
   QgsDebugMsg( "Entered" );
 
   QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
@@ -528,7 +531,165 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( "thePixelWidth = "  + QString::number( thePixelWidth ) );
   QgsDebugMsg( "thePixelHeight = "  + QString::number( thePixelHeight ) );
   QgsDebugMsg( "theExtent: " + theExtent.toString() );
-  QgsDebugMsg( "crs(): " + crs().toWkt() );
+
+  // TODO: fill block with no data values
+
+  QgsRectangle myRasterExtent = theExtent.intersect( &mExtent ); 
+  if ( myRasterExtent.isEmpty() )
+  {
+    QgsDebugMsg( "draw request outside view extent." );
+    return;
+  }
+  QgsDebugMsg( "myRasterExtent: " + myRasterExtent.toString() );
+
+  double xRes = theExtent.width()/thePixelWidth;
+  double yRes = theExtent.height()/thePixelHeight;
+
+  // Find top, bottom rows and  left, right column the raster extent covers
+  // These are limits in target grid space
+  int top = 0;
+  int bottom = thePixelHeight-1;
+  int left = 0;
+  int right = thePixelWidth-1;
+  
+  if ( myRasterExtent.yMaximum() < theExtent.yMaximum() ) 
+  {
+    top = static_cast<int> ( round( ( theExtent.yMaximum() - myRasterExtent.yMaximum() ) / yRes ) );
+  }
+  if ( myRasterExtent.yMinimum() > theExtent.yMinimum() ) 
+  {
+    bottom = static_cast<int> ( round( ( theExtent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1 );
+  }
+
+  if ( myRasterExtent.xMinimum() > theExtent.xMinimum() ) 
+  {
+    left = static_cast<int> ( round( ( myRasterExtent.xMinimum() - theExtent.xMinimum() ) / xRes ) );
+  }
+  if ( myRasterExtent.xMaximum() < theExtent.xMaximum() ) 
+  {
+    right = static_cast<int> ( round( ( myRasterExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1 );
+  }
+  QgsDebugMsg( QString("top = %1 bottom = %2 left = %3 right = %4").arg(top).arg(bottom).arg(left).arg(right) );
+
+  // We want to avoid another resampling, so we read data approximately with 
+  // the same resolution as requested and exactly the width/height we need.
+  
+  // Calculate rows/cols limits in raster grid space
+  
+  // IMHO, we cannot align target grid to raster grid using target grid edges
+  // and finding the nearest raster grid because it could lead to cell center
+  // getting outside the right cell when doing resampling, example
+  // Raster width is 30m and it has 3 columns and we want to read xrange 5.1-30
+  // to 3 columns, the nearest edge for beginning in raster grid is 10.0
+  // reading cols 1-2, we get raster[1] value in target[0], but the center of 
+  // target[0] is 5.1 + ((30-5.1)/3)/2 = 9.25 so it falls to raster[0]. Is it right?
+  // => We are looking for such alignment with which the center of first/last cell
+  // alls to the right raster cell
+
+  double center, centerRaster;
+  int rasterTop, rasterBottom, rasterLeft, rasterRight;
+
+  // top
+  center = myRasterExtent.yMaximum() - yRes/2;
+  // center in raster space
+  // GDAL states that mGeoTransform[3] is top, but probably it can be also bottom
+  // if mGeoTransform[5] is negative
+  if ( mGeoTransform[5] > 0 )
+  {
+    centerRaster = ( mGeoTransform[3] - center ) / mGeoTransform[5];
+  } 
+  else 
+  {
+    centerRaster = ( center - mGeoTransform[3] ) / mGeoTransform[5];
+  }
+  rasterTop = static_cast<int> ( floor ( centerRaster ) );
+
+  // bottom
+  center = myRasterExtent.yMinimum() + yRes/2;
+  if ( mGeoTransform[5] > 0 )
+  {
+    centerRaster = ( mGeoTransform[3] - center ) / mGeoTransform[5];
+  } 
+  else 
+  {
+    centerRaster = ( center - mGeoTransform[3] ) / mGeoTransform[5];
+  }
+  rasterBottom = static_cast<int> ( floor ( centerRaster ) );
+
+  // left
+  center = myRasterExtent.xMinimum() + xRes/2;
+  centerRaster = ( center - mGeoTransform[0] ) / mGeoTransform[1];
+  rasterLeft = static_cast<int> ( floor ( centerRaster ) );
+
+  // right
+  center = myRasterExtent.xMaximum() - xRes/2;
+  centerRaster = ( center - mGeoTransform[0] ) / mGeoTransform[1];
+  rasterRight = static_cast<int> ( floor ( centerRaster ) );
+
+  QgsDebugMsg( QString("rasterTop = %1 rasterBottom = %2 rasterLeft = %3 rasterRight = %4").arg(rasterTop).arg(rasterBottom).arg(rasterLeft).arg(rasterRight) );
+
+  // Allocate temporary block
+  int width = right - left + 1;
+  int height = bottom - top + 1;
+  
+  int rasterWidth = rasterRight - rasterLeft + 1;
+  int rasterHeight = rasterBottom - rasterTop + 1;
+
+  QgsDebugMsg( QString("width = %1 height = %2 rasterWidth = %3 rasterHeight = %4").arg(width).arg(height).arg(rasterWidth).arg(rasterHeight) );
+
+  int size = dataTypeSize(theBandNo) / 8;
+
+  // fill with null values 
+  QByteArray ba = noValueBytes(theBandNo);
+  char *nodata = ba.data();
+  char *block = (char *) theBlock;
+  for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
+  {
+    memcpy ( block, nodata, size );
+    block += size;
+  }
+
+  GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+
+  // Calc beginnig of data if raster does not start at top
+  block = (char *) theBlock;
+  if ( top != 0 ) 
+  {
+    block += size * thePixelWidth * top;
+  }
+
+  // Cal nLineSpace if raster does not cover whole extent
+  int nLineSpace = size * thePixelWidth;
+  if ( left != 0 ) {
+    block += size * left;
+  } 
+
+  GDALDataType type = ( GDALDataType )mGdalDataType[theBandNo-1];
+
+  CPLErrorReset();
+  CPLErr err = GDALRasterIO(  gdalBand, GF_Read, 
+                              rasterLeft, rasterTop, rasterWidth, rasterHeight,
+                              (void *)block, 
+                              width, height, type, 
+                              0, nLineSpace );
+
+  if ( err != CPLE_None )
+  {
+    QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QgsDebugMsg ( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+  }
+ 
+
+}
+
+// this is old version which was using GDALWarpOperation, unfortunately
+// it may be very slow on large datasets
+#if 0
+void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent, int thePixelWidth, int thePixelHeight, void *theBlock )
+{
+  QgsDebugMsg( "thePixelWidth = "  + QString::number( thePixelWidth ) );
+  QgsDebugMsg( "thePixelHeight = "  + QString::number( thePixelHeight ) );
+  QgsDebugMsg( "theExtent: " + theExtent.toString() );
 
   QString myMemDsn;
   myMemDsn.sprintf( "DATAPOINTER = %p", theBlock );
@@ -672,6 +833,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   GDALClose( myGdalMemDataset );
 
 }
+#endif
 
 double  QgsGdalProvider::noDataValue() const
 {

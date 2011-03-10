@@ -22,6 +22,7 @@
 
 #include <QTime>
 #include <QMap>
+#include <QByteArray>
 
 void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data )
 {
@@ -177,6 +178,57 @@ bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QS
 QString QgsRasterDataProvider::lastErrorFormat()
 {
   return "text/plain";
+}
+
+QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
+{
+  int type = dataType(theBandNo);
+  int size = dataTypeSize(theBandNo) / 8;
+  QByteArray ba;
+  ba.resize(size);
+  char * data = ba.data();
+  double noval = mNoDataValue[theBandNo-1];
+  unsigned char uc;
+  unsigned short us;
+  short s;
+  unsigned int ui;
+  int i;
+  float f;
+  double d;
+  switch (type) 
+  {
+    case QgsRasterDataProvider::Byte:
+      uc = (unsigned char)noval;
+      memcpy ( data, &uc, size);
+      break;
+    case QgsRasterDataProvider::UInt16:
+      us = (unsigned short)noval;
+      memcpy ( data, &us, size);
+      break;
+    case QgsRasterDataProvider::Int16:
+      s = (short)noval;
+      memcpy ( data, &s, size);
+      break;
+    case QgsRasterDataProvider::UInt32:
+      ui = (unsigned int)noval;
+      memcpy ( data, &ui, size);
+      break;
+    case QgsRasterDataProvider::Int32:
+      i = (int)noval;
+      memcpy ( data, &i, size);
+      break;
+    case QgsRasterDataProvider::Float32:
+      f = (float)noval;
+      memcpy ( data, &f, size);
+      break;
+    case QgsRasterDataProvider::Float64:
+      d = (double)noval;
+      memcpy ( data, &d, size);
+      break;
+    default:
+      QgsLogger::warning( "GDAL data type is not supported" );
+  }
+  return ba;
 }
 
 // ENDS
