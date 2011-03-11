@@ -4859,7 +4859,8 @@ void QgisApp::localHistogramStretch()
     return;
   }
   if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
-       rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray
+       rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray ||
+       rlayer->drawingStyle() == QgsRasterLayer::MultiBandColor
      )
   {
     rlayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
@@ -4874,8 +4875,8 @@ void QgisApp::localHistogramStretch()
     QMessageBox::information( this,
                               tr( "No Valid Raster Layer Selected" ),
                               tr( "To perform a local histogram stretch, you need to have a grayscale "
-                                  "(multiband single layer, or singleband grayscale) raster layer "
-                                  "selected." ) );
+                                  "or multiband (multiband single layer, singleband grayscale or multiband color) "
+                                  " raster layer selected." ) );
     return;
   }
 }
