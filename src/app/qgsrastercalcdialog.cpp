@@ -111,7 +111,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
     QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( layerIt.value() );
-    if ( rlayer && !rlayer->usesProvider() )
+    if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == "gdal" )
     {
       if ( firstLayer ) //set bounding box / resolution of output to the values of the first possible input layer
       {
