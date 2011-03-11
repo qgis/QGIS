@@ -154,7 +154,7 @@ class GUI_EXPORT QgisInterface : public QObject
      \deprecated use QgsLegendInterface::refreshLayerSymbology
      */
 #ifndef Q_MOC_RUN
-    QGISDEPRECATED
+    Q_DECL_DEPRECATED
 #endif
     virtual void refreshLegend( QgsMapLayer *l ) = 0;
 
@@ -195,7 +195,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * url to the QGIS documentation directory path (prefix/share/doc)
      */
 #ifndef Q_MOC_RUN
-    QGISDEPRECATED
+    Q_DECL_DEPRECATED
 #endif
     virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0;
 

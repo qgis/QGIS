@@ -119,7 +119,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return bool TRUE if success else false
      * @deprecated use createFromOgcWmsCrs()
      */
-    QGISDEPRECATED bool createFromEpsg( const long theEpsg );
+    Q_DECL_DEPRECATED bool createFromEpsg( const long theEpsg );
 
     /*! Set up this srs by fetching the appropriate information from the
      * sqlite backend. If the srsid is < 100000, only the system srs.db
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return  long theEpsg the EPSG identifier for this srs (defaults to 0)
      * @deprecated there are other authorities - use authid()
      */
-    QGISDEPRECATED long epsg() const;
+    Q_DECL_DEPRECATED long epsg() const;
 
     /*! Get the authority identifier for this srs
      * @return  QString the Authority identifier for this srs

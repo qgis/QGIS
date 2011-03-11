@@ -103,11 +103,11 @@ class CORE_EXPORT QgsLabel
      *  \param rasterScaleFactor raster scale
      *  \deprecated
      */
-    QGISDEPRECATED void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
-                                     QgsCoordinateTransform* coordinateTransform,
-                                     const QgsMapToPixel *transform,
-                                     QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0,
-                                     double sizeScale = 1., double rasterScaleFactor = 1.0 )
+    Q_DECL_DEPRECATED void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
+                                        QgsCoordinateTransform* coordinateTransform,
+                                        const QgsMapToPixel *transform,
+                                        QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0,
+                                        double sizeScale = 1., double rasterScaleFactor = 1.0 )
     {
       QgsRenderContext r;
       r.setExtent( viewExtent );
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsLabel
     /** Pointer to default attributes.
      * @deprecated in version 2 as it is badly named. Rather use attributes.
      * @see labelAttributes method rather */
-    QGISDEPRECATED QgsLabelAttributes *layerAttributes( void );
+    Q_DECL_DEPRECATED QgsLabelAttributes *layerAttributes( void );
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.

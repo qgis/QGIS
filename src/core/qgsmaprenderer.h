@@ -135,7 +135,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Return the measuring object
     //! @deprecated
-    QGISDEPRECATED QgsDistanceArea *distanceArea() { return mDistArea; }
+    Q_DECL_DEPRECATED QgsDistanceArea *distanceArea() { return mDistArea; }
     QGis::UnitType mapUnits() const;
     void setMapUnits( QGis::UnitType u );
 

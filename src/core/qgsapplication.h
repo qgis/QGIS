@@ -116,8 +116,8 @@ class CORE_EXPORT QgsApplication: public QApplication
     static const QStringList svgPaths();
 
     //! Returns the paths to svg applications svg directory.
-    //! @deprecated since 1.4
-    QGISDEPRECATED static const QString svgPath();
+    //! @deprecated since 1.4 - use svgPaths()
+    Q_DECL_DEPRECATED static const QString svgPath();
 
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();

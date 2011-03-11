@@ -161,7 +161,7 @@ class CORE_EXPORT QgsSearchTreeNode
     bool checkAgainst( const QgsFieldMap& fields, QgsFeature &f );
 
     //! @deprecated
-    QGISDEPRECATED bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+    Q_DECL_DEPRECATED bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
     bool hasError() { return ( !mError.isEmpty() ); }
@@ -177,11 +177,11 @@ class CORE_EXPORT QgsSearchTreeNode
                    QgsFeature &f );
 
     //! @deprecated
-    QGISDEPRECATED bool getValue( QgsSearchTreeValue& value,
-                                  QgsSearchTreeNode* node,
-                                  const QgsFieldMap &fields,
-                                  const QgsAttributeMap &attributes,
-                                  QgsGeometry* geom = 0 );
+    Q_DECL_DEPRECATED bool getValue( QgsSearchTreeValue& value,
+                                     QgsSearchTreeNode* node,
+                                     const QgsFieldMap &fields,
+                                     const QgsAttributeMap &attributes,
+                                     QgsGeometry* geom = 0 );
 
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsSearchTreeNode
     QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, QgsFeature &f );
 
     //! @deprecated
-    QGISDEPRECATED QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+    Q_DECL_DEPRECATED QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type
     void stripText();
