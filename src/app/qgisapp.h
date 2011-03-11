@@ -495,6 +495,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomActualSize();
     //! perform a local histogram stretch on the active raster layer (stretch based on pixel values in view extent)
     void localHistogramStretch();
+    //! perform a full histogram stretch on the active raster layer (stretch based on pixels values in full dataset)
+    void fullHistogramStretch();
     //! plugin manager
     void showPluginManager();
     //! load python support if possible

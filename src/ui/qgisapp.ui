@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>717</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -357,6 +357,7 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionFullHistogramStretch"/>
    <addaction name="mActionLocalHistogramStretch"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
@@ -1455,6 +1456,18 @@
   <action name="mActionShowPythonDialog">
    <property name="text">
     <string>Python Console</string>
+   </property>
+  </action>
+  <action name="mActionFullHistogramStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFullHistogramStretch.png</normaloff>:/images/themes/default/mActionFullHistogramStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full histogram stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Stretch histogram to full dataset</string>
    </property>
   </action>
  </widget>

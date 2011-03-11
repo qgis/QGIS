@@ -2730,6 +2730,42 @@ void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
   }
 }
 
+void QgsRasterLayer::setMinimumMaximumUsingDataset()
+{
+  double myMinMax[2];
+  if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
+  {
+    QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mGrayBandName ) );
+    float myMin = myRasterBandStats.minimumValue;
+    float myMax = myRasterBandStats.maximumValue;
+    setMinimumValue( grayBandName(), myMin );
+    setMaximumValue( grayBandName(), myMax );
+    setUserDefinedGrayMinimumMaximum( false );
+  }
+  else if ( rasterType() == QgsRasterLayer::Multiband )
+  {
+    QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mRedBandName ) );
+    float myMin = myRasterBandStats.minimumValue;
+    float myMax = myRasterBandStats.maximumValue;
+    setMinimumValue( redBandName(), myMin );
+    setMaximumValue( redBandName(), myMax );
+
+    myRasterBandStats = bandStatistics( bandNumber( mGreenBandName ) );
+    myMin = myRasterBandStats.minimumValue;
+    myMax = myRasterBandStats.maximumValue;
+    setMinimumValue( greenBandName(), myMin );
+    setMaximumValue( greenBandName(), myMax );
+
+    myRasterBandStats = bandStatistics( bandNumber( mGreenBandName ) );
+    myMin = myRasterBandStats.minimumValue;
+    myMax = myRasterBandStats.maximumValue;
+    setMinimumValue( greenBandName(), myMin );
+    setMaximumValue( greenBandName(), myMax );
+
+    setUserDefinedRGBMinimumMaximum( false );
+  }
+}
+
 void QgsRasterLayer::setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag )
 {
   QgsDebugMsg( "setMinimumValue theValue = " + QString::number( theValue ) );
