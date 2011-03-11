@@ -50,7 +50,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
     void setPanningOffset( const QPoint& point );
 
     //! @deprecated Please use paintDevice() function which is also save in case QImage is used
-    QGISDEPRECATED QPixmap& pixmap() { return mPixmap; }
+    Q_DECL_DEPRECATED QPixmap& pixmap() { return mPixmap; }
 
     QPaintDevice& paintDevice();
 
