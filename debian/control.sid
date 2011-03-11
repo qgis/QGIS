@@ -16,6 +16,7 @@ Build-Depends:
  libpq-dev,
  libproj-dev,
  libqt4-dev (>=4.4.0),
+ libqtwebkit-dev,
  libqwt5-qt4-dev,
  libspatialite-dev,
  libsqlite3-dev,
@@ -174,6 +175,15 @@ Description: Quantum GIS mapserver
  and display databases of geographic information.
  .
  This package contains the Quantum GIS mapserver.
+
+Package: qgis-sqlanywhere{QGIS_ABI}
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quantum GIS sql anywhere plugin and provider
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the Quantum GIS sqlanywhere plugin and provider.
 
 Package: qgis-api-doc
 Architecture: all
