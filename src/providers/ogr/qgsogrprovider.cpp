@@ -1383,15 +1383,15 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "GML" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language (GML)" ), "*.gml" );
+        myFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), "*.gml" );
       }
       else if ( driverName.startsWith( "GMT" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "GMT" ), "*.gmt" );
+        myFileFilters += createFileFilter_( QObject::tr( "Generic Mapping Tools [GMT]" ), "*.gmt" );
       }
       else if ( driverName.startsWith( "GPX" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "GPX" ), "*.gpx" );
+        myFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), "*.gpx" );
       }
       else if ( driverName.startsWith( "GRASS" ) )
       {
@@ -1415,7 +1415,7 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "KML" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language (KML)" ), "*.kml" );
+        myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), "*.kml" );
       }
       else if ( driverName.startsWith( "MapInfo File" ) )
       {
@@ -1452,7 +1452,7 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SDTS" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard" ),
+        myFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
                                             "*catd.ddf" );
       }
       else if ( driverName.startsWith( "SQLite" ) )

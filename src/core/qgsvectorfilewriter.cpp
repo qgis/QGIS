@@ -793,10 +793,7 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
   QString trLongName;
   QString glob;
   QString ext;
-  if ( !QgsVectorFileWriter::driverMetadata( driverName, longName, trLongName, glob, ext )
-       || trLongName.isEmpty()
-       || glob.isEmpty()
-     )
+  if ( !driverMetadata( driverName, longName, trLongName, glob, ext ) || trLongName.isEmpty() || glob.isEmpty() )
     return "";
 
   return trLongName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ")";
@@ -855,22 +852,22 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
   else if ( driverName.startsWith( "GML" ) )
   {
-    longName = "Geography Markup Language (GML)";
-    trLongName = QObject::tr( "Geography Markup Language (GML)" );
+    longName = "Geography Markup Language [GML]";
+    trLongName = QObject::tr( "Geography Markup Language [GML]" );
     glob = "*.gml";
     ext = "gml";
   }
   else if ( driverName.startsWith( "GMT" ) )
   {
-    longName = "Generic Mapping Tools (GMT)";
-    trLongName = QObject::tr( "Generic Mapping Tools (GMT)" );
+    longName = "Generic Mapping Tools [GMT]";
+    trLongName = QObject::tr( "Generic Mapping Tools [GMT]" );
     glob = "*.gmt";
     ext = "gmt";
   }
   else if ( driverName.startsWith( "GPX" ) )
   {
-    longName = "GPS eXchange Format";
-    trLongName = QObject::tr( "GPS eXchange Format" );
+    longName = "GPS eXchange Format [GPX]";
+    trLongName = QObject::tr( "GPS eXchange Format [GPX]" );
     glob = "*.gpx";
     ext = "gpx";
   }
@@ -890,8 +887,8 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
   else if ( driverName.startsWith( "KML" ) )
   {
-    longName = "Keyhole Markup Language (KML)";
-    trLongName = QObject::tr( "Keyhole Markup Language (KML)" );
+    longName = "Keyhole Markup Language [KML]";
+    trLongName = QObject::tr( "Keyhole Markup Language [KML]" );
     glob = "*.kml" ;
     ext = "kml" ;
   }
@@ -918,8 +915,8 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
   else if ( driverName.startsWith( "SDTS" ) )
   {
-    longName = "Spatial Data Transfer Standard (SDTS)";
-    trLongName = QObject::tr( "Spatial Data Transfer Standard (SDTS)" );
+    longName = "Spatial Data Transfer Standard [SDTS]";
+    trLongName = QObject::tr( "Spatial Data Transfer Standard [SDTS]" );
     glob = "*catd.ddf";
     ext = "ddf";
   }
