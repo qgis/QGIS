@@ -22,8 +22,6 @@
 #include "qgsgdalprovider.h"
 #include "qgsconfig.h"
 
-#include <math.h>
-
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
@@ -302,7 +300,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   // This block of code was in old version in QgsRasterLayer::bandStatistics
   //ifdefs below to remove compiler warning about unused vars
 #ifdef QGISDEBUG
-  /*
+#if 0
     int success;
     double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
 
@@ -341,7 +339,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     QgsLogger::debug( "exactly computed GDALmaximum:", GDALrange[1] );
 
     QgsDebugMsg( "starting manual stat computation" );
-  */
+#endif
 #endif
 
   mValid = true;
@@ -510,7 +508,7 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
 
 void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
 {
-  // TODO!!!: Check data alignment!!! May it happen that nearest value which 
+  // TODO!!!: Check data alignment!!! May it happen that nearest value which
   // is not nearest is assigned to an output cell???
 
   QgsDebugMsg( "Entered" );
@@ -539,7 +537,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   // TODO: fill block with no data values
 
-  QgsRectangle myRasterExtent = theExtent.intersect( &mExtent ); 
+  QgsRectangle myRasterExtent = theExtent.intersect( &mExtent );
   if ( myRasterExtent.isEmpty() )
   {
     QgsDebugMsg( "draw request outside view extent." );
@@ -547,46 +545,46 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   }
   QgsDebugMsg( "myRasterExtent: " + myRasterExtent.toString() );
 
-  double xRes = theExtent.width()/thePixelWidth;
-  double yRes = theExtent.height()/thePixelHeight;
+  double xRes = theExtent.width() / thePixelWidth;
+  double yRes = theExtent.height() / thePixelHeight;
 
   // Find top, bottom rows and  left, right column the raster extent covers
   // These are limits in target grid space
   int top = 0;
-  int bottom = thePixelHeight-1;
+  int bottom = thePixelHeight - 1;
   int left = 0;
-  int right = thePixelWidth-1;
-  
-  if ( myRasterExtent.yMaximum() < theExtent.yMaximum() ) 
+  int right = thePixelWidth - 1;
+
+  if ( myRasterExtent.yMaximum() < theExtent.yMaximum() )
   {
-    top = static_cast<int> ( round( ( theExtent.yMaximum() - myRasterExtent.yMaximum() ) / yRes ) );
+    top = qRound(( theExtent.yMaximum() - myRasterExtent.yMaximum() ) / yRes );
   }
-  if ( myRasterExtent.yMinimum() > theExtent.yMinimum() ) 
+  if ( myRasterExtent.yMinimum() > theExtent.yMinimum() )
   {
-    bottom = static_cast<int> ( round( ( theExtent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1 );
+    bottom = qRound(( theExtent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1;
   }
 
-  if ( myRasterExtent.xMinimum() > theExtent.xMinimum() ) 
+  if ( myRasterExtent.xMinimum() > theExtent.xMinimum() )
   {
-    left = static_cast<int> ( round( ( myRasterExtent.xMinimum() - theExtent.xMinimum() ) / xRes ) );
+    left = qRound(( myRasterExtent.xMinimum() - theExtent.xMinimum() ) / xRes );
   }
-  if ( myRasterExtent.xMaximum() < theExtent.xMaximum() ) 
+  if ( myRasterExtent.xMaximum() < theExtent.xMaximum() )
   {
-    right = static_cast<int> ( round( ( myRasterExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1 );
+    right = qRound(( myRasterExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
   }
-  QgsDebugMsg( QString("top = %1 bottom = %2 left = %3 right = %4").arg(top).arg(bottom).arg(left).arg(right) );
+  QgsDebugMsg( QString( "top = %1 bottom = %2 left = %3 right = %4" ).arg( top ).arg( bottom ).arg( left ).arg( right ) );
 
-  // We want to avoid another resampling, so we read data approximately with 
+  // We want to avoid another resampling, so we read data approximately with
   // the same resolution as requested and exactly the width/height we need.
-  
+
   // Calculate rows/cols limits in raster grid space
-  
+
   // IMHO, we cannot align target grid to raster grid using target grid edges
   // and finding the nearest raster grid because it could lead to cell center
   // getting outside the right cell when doing resampling, example
   // Raster width is 30m and it has 3 columns and we want to read xrange 5.1-30
   // to 3 columns, the nearest edge for beginning in raster grid is 10.0
-  // reading cols 1-2, we get raster[1] value in target[0], but the center of 
+  // reading cols 1-2, we get raster[1] value in target[0], but the center of
   // target[0] is 5.1 + ((30-5.1)/3)/2 = 9.25 so it falls to raster[0]. Is it right?
   // => We are looking for such alignment with which the center of first/last cell
   // alls to the right raster cell
@@ -598,7 +596,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   double topSpace, bottomSpace, leftSpace, rightSpace;
 
   // top
-  center = myRasterExtent.yMaximum() - yRes/2;
+  center = myRasterExtent.yMaximum() - yRes / 2;
   // center in raster space
   // GDAL states that mGeoTransform[3] is top, but probably it can be also bottom
   // if mGeoTransform[5] is negative ??? No, mGeoTransform[5] is negative normaly
@@ -607,69 +605,65 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( mGeoTransform[5] < 0 )
   {
     centerRaster = -1. * ( mGeoTransform[3] - center ) / mGeoTransform[5];
-  } 
-  else 
+  }
+  else
   {
     centerRaster = ( center - mGeoTransform[3] ) / mGeoTransform[5];
   }
-  rasterTop = static_cast<int> ( floor ( centerRaster ) );
-  topSpace = (mGeoTransform[3] + rasterTop*mGeoTransform[5])- myRasterExtent.yMaximum();
+  rasterTop = static_cast<int>( floor( centerRaster ) );
+  topSpace = ( mGeoTransform[3] + rasterTop * mGeoTransform[5] ) - myRasterExtent.yMaximum();
 
   // bottom
-  center = myRasterExtent.yMinimum() + yRes/2;
+  center = myRasterExtent.yMinimum() + yRes / 2;
   //if ( mGeoTransform[5] > 0 )
   if ( mGeoTransform[5] < 0 )
   {
     centerRaster = -1. * ( mGeoTransform[3] - center ) / mGeoTransform[5];
-  } 
-  else 
+  }
+  else
   {
     centerRaster = ( center - mGeoTransform[3] ) / mGeoTransform[5];
   }
-  rasterBottom = static_cast<int> ( floor ( centerRaster ) );
-  bottomSpace = myRasterExtent.yMinimum() - ( mGeoTransform[3] + (rasterBottom+1)*mGeoTransform[5] );
+  rasterBottom = static_cast<int>( floor( centerRaster ) );
+  bottomSpace = myRasterExtent.yMinimum() - ( mGeoTransform[3] + ( rasterBottom + 1 ) * mGeoTransform[5] );
 
   // left
-  center = myRasterExtent.xMinimum() + xRes/2;
+  center = myRasterExtent.xMinimum() + xRes / 2;
   centerRaster = ( center - mGeoTransform[0] ) / mGeoTransform[1];
-  rasterLeft = static_cast<int> ( floor ( centerRaster ) );
-  leftSpace = myRasterExtent.xMinimum() - (mGeoTransform[0] + rasterLeft * mGeoTransform[1] );
+  rasterLeft = static_cast<int>( floor( centerRaster ) );
+  leftSpace = myRasterExtent.xMinimum() - ( mGeoTransform[0] + rasterLeft * mGeoTransform[1] );
 
   // right
-  center = myRasterExtent.xMaximum() - xRes/2;
+  center = myRasterExtent.xMaximum() - xRes / 2;
   centerRaster = ( center - mGeoTransform[0] ) / mGeoTransform[1];
-  rasterRight = static_cast<int> ( floor ( centerRaster ) );
-  rightSpace = (mGeoTransform[0] + (rasterRight+1)*mGeoTransform[1]) - myRasterExtent.xMaximum();
+  rasterRight = static_cast<int>( floor( centerRaster ) );
+  rightSpace = ( mGeoTransform[0] + ( rasterRight + 1 ) * mGeoTransform[1] ) - myRasterExtent.xMaximum();
 
-  QgsDebugMsg( QString("rasterTop = %1 rasterBottom = %2 rasterLeft = %3 rasterRight = %4").arg(rasterTop).arg(rasterBottom).arg(rasterLeft).arg(rasterRight) );
+  QgsDebugMsg( QString( "rasterTop = %1 rasterBottom = %2 rasterLeft = %3 rasterRight = %4" ).arg( rasterTop ).arg( rasterBottom ).arg( rasterLeft ).arg( rasterRight ) );
 
-  QgsDebugMsg( QString("topSpace = %1 bottomSpace = %2 leftSpace = %3 rightSpace = %4").arg(topSpace).arg(bottomSpace).arg(leftSpace).arg(rightSpace) );
+  QgsDebugMsg( QString( "topSpace = %1 bottomSpace = %2 leftSpace = %3 rightSpace = %4" ).arg( topSpace ).arg( bottomSpace ).arg( leftSpace ).arg( rightSpace ) );
 
   int width = right - left + 1;
   int height = bottom - top + 1;
-  
+
   int rasterWidth = rasterRight - rasterLeft + 1;
   int rasterHeight = rasterBottom - rasterTop + 1;
 
-  QgsDebugMsg( QString("width = %1 height = %2 rasterWidth = %3 rasterHeight = %4").arg(width).arg(height).arg(rasterWidth).arg(rasterHeight) );
-
-
-  double rasterXRes = extent().width() / xSize();
-  double rasterYRes = extent().height() / ySize();
+  QgsDebugMsg( QString( "width = %1 height = %2 rasterWidth = %3 rasterHeight = %4" ).arg( width ).arg( height ).arg( rasterWidth ).arg( rasterHeight ) );
 
   // TODO: what is better floor/ceil, can be negative?
   // should be similar
   //double xAdd = rasterWidth*rasterXRes - width*xRes;
   double xAdd = leftSpace + rightSpace;
-  int xAddPixels = static_cast<int> ( round( xAdd / xRes ) );
-  int leftAddPixels = static_cast<int> ( round( leftSpace / xRes ) );
+  int xAddPixels = qRound( xAdd / xRes );
+  int leftAddPixels = qRound( leftSpace / xRes );
 
   //double leftAdd = rasterWidth*rasterXRes - width*xRes;
   double yAdd = topSpace + bottomSpace;
-  int yAddPixels = static_cast<int> ( round( yAdd / yRes ) );
-  int topAddPixels = static_cast<int> ( round( topSpace / yRes ) );
+  int yAddPixels = qRound( yAdd / yRes );
+  int topAddPixels = qRound( topSpace / yRes );
 
-  QgsDebugMsg( QString("xAddPixels = %1 yAddPixels = %2 leftAddPixels = %3 topAddPixels = %4").arg(xAddPixels).arg(yAddPixels).arg(leftAddPixels).arg(topAddPixels) );
+  QgsDebugMsg( QString( "xAddPixels = %1 yAddPixels = %2 leftAddPixels = %3 topAddPixels = %4" ).arg( xAddPixels ).arg( yAddPixels ).arg( leftAddPixels ).arg( topAddPixels ) );
   // Currently only positive allowed, verify if negative has sense and check following use
   xAddPixels = xAddPixels > 0 ? xAddPixels : 0;
   yAddPixels = yAddPixels > 0 ? yAddPixels : 0;
@@ -679,17 +673,17 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   int totalWidth = width + xAddPixels;
   int totalHeight = height + yAddPixels;
 
-  QgsDebugMsg( QString("totalWidth = %1 totalHeight = %2").arg(totalWidth).arg(totalHeight) );
+  QgsDebugMsg( QString( "totalWidth = %1 totalHeight = %2" ).arg( totalWidth ).arg( totalHeight ) );
 
-  int size = dataTypeSize(theBandNo) / 8;
+  int size = dataTypeSize( theBandNo ) / 8;
 
-  // fill with null values 
-  QByteArray ba = noValueBytes(theBandNo);
+  // fill with null values
+  QByteArray ba = noValueBytes( theBandNo );
   char *nodata = ba.data();
-  char *block = (char *) theBlock;
+  char *block = ( char * ) theBlock;
   for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
   {
-    memcpy ( block, nodata, size );
+    memcpy( block, nodata, size );
     block += size;
   }
 
@@ -700,50 +694,52 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 // This can be probably used if xAddPixels and yAddPixels are 0 to avoid memcpy
 #if 0
   // Calc beginnig of data if raster does not start at top
-  block = (char *) theBlock;
-  if ( top != 0 ) 
+  block = ( char * ) theBlock;
+  if ( top != 0 )
   {
     block += size * thePixelWidth * top;
   }
 
   // Cal nLineSpace if raster does not cover whole extent
   int nLineSpace = size * thePixelWidth;
-  if ( left != 0 ) {
+  if ( left != 0 )
+  {
     block += size * left;
-  } 
-  CPLErr err = GDALRasterIO(  gdalBand, GF_Read, 
-                              rasterLeft, rasterTop, rasterWidth, rasterHeight,
-                              (void *)block, 
-                              width, height, type, 
-                              0, nLineSpace );
+  }
+  CPLErr err = GDALRasterIO( gdalBand, GF_Read,
+                             rasterLeft, rasterTop, rasterWidth, rasterHeight,
+                             ( void * )block,
+                             width, height, type,
+                             0, nLineSpace );
 #endif
 
   // Allocate temporary block
   void *tmpBlock = malloc( size * totalWidth * totalHeight );
 
   CPLErrorReset();
-  CPLErr err = GDALRasterIO(  gdalBand, GF_Read, 
-                              rasterLeft, rasterTop, rasterWidth, rasterHeight,
-                              (void *)tmpBlock, 
-                              totalWidth, totalHeight, type, 
-                              0, 0 );
+  CPLErr err = GDALRasterIO( gdalBand, GF_Read,
+                             rasterLeft, rasterTop, rasterWidth, rasterHeight,
+                             ( void * )tmpBlock,
+                             totalWidth, totalHeight, type,
+                             0, 0 );
 
   if ( err != CPLE_None )
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    QgsDebugMsg ( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    free ( tmpBlock );
+    QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    free( tmpBlock );
     return;
   }
 
-  for ( int i = 0; i < height; i++ ) {
+  for ( int i = 0; i < height; i++ )
+  {
     int r = i + topAddPixels;
-    char *src = (char *)tmpBlock + size*r*totalWidth + size*leftAddPixels;
-    char *dst = (char *)theBlock + size*(top+i)*thePixelWidth + size*(left);
-    memcpy ( dst, src, size*width );
+    char *src = ( char * )tmpBlock + size * r * totalWidth + size * leftAddPixels;
+    char *dst = ( char * )theBlock + size * ( top + i ) * thePixelWidth + size * ( left );
+    memcpy( dst, src, size*width );
   }
 
-  free ( tmpBlock );
+  free( tmpBlock );
   return;
 }
 
@@ -762,8 +758,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   //myMemDsn.sprintf( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", ( long )theBlock, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
   char szPointer[64];
-  memset( szPointer, 0, sizeof(szPointer) );
-  CPLPrintPointer( szPointer, theBlock, sizeof(szPointer) );
+  memset( szPointer, 0, sizeof( szPointer ) );
+  CPLPrintPointer( szPointer, theBlock, sizeof( szPointer ) );
 
   myMemDsn.sprintf( "MEM:::DATAPOINTER=%s,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", szPointer, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
 
@@ -839,15 +835,15 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       NULL
     );
   */
-  if ( !myWarpOptions->pTransformerArg ) 
+  if ( !myWarpOptions->pTransformerArg )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
                           QObject::tr( "Cannot GDALCreateGenImgProjTransformer: " )
                           + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return;
-    
-  };
-  
+
+  }
+
   //CPLAssert( myWarpOptions->pTransformerArg  != NULL );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
@@ -870,14 +866,14 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   GDALWarpOperation myOperation;
 
-  if ( myOperation.Initialize( myWarpOptions ) != CE_None ) 
+  if ( myOperation.Initialize( myWarpOptions ) != CE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
                           QObject::tr( "Cannot inittialize GDALWarpOperation : " )
                           + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return;
-    
-  };
+
+  }
   CPLErrorReset();
   CPLErr myErr;
   myErr = myOperation.ChunkAndWarpImage( 0, 0, thePixelWidth, thePixelHeight );
@@ -1212,30 +1208,30 @@ bool QgsGdalProvider::isValid()
 
 QString QgsGdalProvider::identifyAsText( const QgsPoint& point )
 {
-  return  QString( "Not implemented" );
+  return QString( "Not implemented" );
 }
 
 QString QgsGdalProvider::identifyAsHtml( const QgsPoint& point )
 {
-  return  QString( "Not implemented" );
+  return QString( "Not implemented" );
 }
 
 QString QgsGdalProvider::lastErrorTitle()
 {
-  return  QString( "Not implemented" );
+  return QString( "Not implemented" );
 }
 
 QString QgsGdalProvider::lastError()
 {
-  return  QString( "Not implemented" );
+  return QString( "Not implemented" );
 }
 
-QString  QgsGdalProvider::name() const
+QString QgsGdalProvider::name() const
 {
   return PROVIDER_KEY;
 }
 
-QString  QgsGdalProvider::description() const
+QString QgsGdalProvider::description() const
 {
   return PROVIDER_DESCRIPTION;
 }
@@ -1615,7 +1611,7 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
 {
   QgsDebugMsg( "Entered" );
   // first get the GDAL driver manager
-  //registerGdalDrivers();
+  QgsGdalProvider::registerGdalDrivers();
 
   // then iterate through all of the supported drivers, adding the
   // corresponding file filter
@@ -1785,7 +1781,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 {
   GDALDatasetH myDataset;
 
-  GDALAllRegister();
+  QgsGdalProvider::registerGdalDrivers();
 
   CPLErrorReset();
 

@@ -23,8 +23,6 @@
 #include "qgsgrassrasterprovider.h"
 #include "qgsconfig.h"
 
-#include <cmath>
-
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
