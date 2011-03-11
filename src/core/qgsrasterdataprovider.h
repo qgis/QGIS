@@ -458,7 +458,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     static QString makeTableCells( QStringList const & values );
 
     /** \brief Set null value in char */
-    QByteArray noValueBytes(int theBandNo);
+    QByteArray noValueBytes( int theBandNo );
 
   protected:
     /**Dots per intch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore

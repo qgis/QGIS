@@ -71,7 +71,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
     //! Gets the current EpsgCrsId-style projection identifier
     // @deprecated there are other authorities - use selectedAuthId()
-    QGISDEPRECATED long selectedEpsg();
+    Q_DECL_DEPRECATED long selectedEpsg();
 
     //! Gets the current InternalCrsId-style projection identifier
     long selectedSrsid();
@@ -90,10 +90,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
     //! Get the selected coordinate system
     // @deprecated there are other authorities - so not always defined
-#ifndef Q_MOC_RUN
-    QGISDEPRECATED
-#endif
-    void setSelectedEpsg( long epsg );
+    Q_DECL_DEPRECATED void setSelectedEpsg( long epsg );
 
     QString selectedProj4String();
 

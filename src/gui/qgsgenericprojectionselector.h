@@ -64,24 +64,14 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     long selectedCrsId();
     QString selectedAuthId();
 
-#ifndef Q_MOC_RUN
-    QGISDEPRECATED
-#endif
-    QString selectedProj4String();
-
-#ifndef Q_MOC_RUN
-    QGISDEPRECATED
-#endif
-    long selectedEpsg();
+    Q_DECL_DEPRECATED QString selectedProj4String();
+    Q_DECL_DEPRECATED long selectedEpsg();
 
     void setSelectedCrsName( QString theName );
     void setSelectedCrsId( long theID );
     void setSelectedAuthId( QString authId );
 
-#ifndef Q_MOC_RUN
-    QGISDEPRECATED
-#endif
-    void setSelectedEpsg( long theID );
+    Q_DECL_DEPRECATED void setSelectedEpsg( long theID );
 
     /**
      * \brief filters this dialog by the given CRSs
