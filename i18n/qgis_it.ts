@@ -1588,7 +1588,7 @@ Il plugin non sarà installato.</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation>Quasi nero</translation>
+        <translation>Sposta al nero (o bianco)</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
@@ -8755,7 +8755,6 @@ Always ignore these errors?</source>
         <comment>number of errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -11172,7 +11171,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Line width </source>
-        <translation>Larghezza linea </translation>
+        <translation>Spessore linea </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="52"/>
@@ -11522,7 +11521,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="494"/>
         <source>Revert last change</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla l&apos;ultimo cambiamento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="497"/>
@@ -11537,7 +11536,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="509"/>
         <source>Restore last change</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina l&apos;ultimo cambiamento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="512"/>
@@ -11611,7 +11610,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="57"/>
         <source>Outline width</source>
-        <translation>Spessore contorno esterno</translation>
+        <translation>Spessore cornice</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
@@ -12679,7 +12678,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation>Larghezza linea </translation>
+        <translation>Spessore linea </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
@@ -12806,7 +12805,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="48"/>
         <source>Outline width </source>
-        <translation>Larghezza margine esterno </translation>
+        <translation>Spessore cornice </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="55"/>
@@ -13574,7 +13573,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="117"/>
         <source>Outline width</source>
-        <translation>Spessore margine esterno</translation>
+        <translation>Spessore cornice</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="65"/>
@@ -19437,7 +19436,6 @@ alla linea %2 colonna %3</translation>
         <comment>unhandled layers</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -23693,7 +23691,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1049"/>
         <source>Line width in pixels</source>
-        <translation>Larghezza linea in pixel</translation>
+        <translation>Spessore linea in pixel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1082"/>
@@ -31439,7 +31437,7 @@ Overwrite?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2propertiesdialog.cpp" line="174"/>
         <source>Outline: %1</source>
-        <translation>Contorno esterno: %1</translation>
+        <translation type="unfinished">Cornice: %1</translation>
     </message>
 </context>
 <context>
@@ -35639,7 +35637,7 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="58"/>
         <source>Outline</source>
-        <translation>Contorno esterno</translation>
+        <translation>Cornice</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="65"/>
