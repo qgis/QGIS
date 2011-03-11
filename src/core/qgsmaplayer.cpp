@@ -179,6 +179,14 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   else if ( provider == "delimitedtext" )
   {
     QUrl urlSource = QUrl::fromEncoded( mDataSource.toAscii() );
+
+    if ( !mDataSource.startsWith( "file://" ) )
+    {
+      QUrl file = QUrl::fromLocalFile( mDataSource.left( mDataSource.indexOf( "?" ) ) );
+      urlSource.setScheme( "file" );
+      urlSource.setPath( file.path() );
+    }
+
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
@@ -309,9 +317,10 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
-    QStringList theURIParts = src.split( "?" );
-    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0] );
-    src = theURIParts.join( "?" );
+    QUrl urlSource = QUrl::fromEncoded( src.toAscii() );
+    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->writePath( urlSource.toLocalFile() ) );
+    urlDest.setQueryItems( urlSource.queryItems() );
+    src = QString::fromAscii( urlDest.toEncoded() );
   }
   else
   {
@@ -678,8 +687,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
-    QStringList theURIParts = theURI.split( "?" );
-    filename = theURIParts[0];
+    filename = QUrl::fromEncoded( theURI.toAscii() ).toLocalFile();
   }
   else
   {
