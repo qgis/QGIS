@@ -189,18 +189,4 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 #endif
 #endif
 
-#ifndef QGISDEPRECATED
-#ifndef Q_MOC_RUN
-#ifdef _MSC_VER
-#  define QGISDEPRECATED __declspec(deprecated)
-#elif __GNUC__
-#  define QGISDEPRECATED __attribute__((__deprecated__))
-#else
-#  define QGISDEPRECATED
-#endif
-#else
-#define QGISDEPRECATED
-#endif
-#endif
-
 #endif
