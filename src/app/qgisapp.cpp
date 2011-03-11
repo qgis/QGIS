@@ -839,6 +839,7 @@ void QgisApp::createActions()
 
   // Raster toolbar items
   connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
+  connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
 
   // Help Menu Items
 
@@ -1354,6 +1355,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionConfigureShortcuts->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
+  mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
   mActionSponsors->setIcon( getThemeIcon( "/mActionHelpSponsors.png" ) );
@@ -4836,6 +4838,49 @@ void QgisApp::options()
   }
 
   delete optionsDialog;
+}
+
+void QgisApp::fullHistogramStretch()
+{
+  QgsMapLayer * layer = mMapLegend->currentLayer();
+
+  if ( !layer )
+  {
+    QMessageBox::information( this,
+                              tr( "No Layer Selected" ),
+                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
+    return;
+  }
+
+  QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !rlayer )
+  {
+    QMessageBox::information( this,
+                              tr( "No Raster Layer Selected" ),
+                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
+    return;
+  }
+  if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
+       rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray ||
+       rlayer->drawingStyle() == QgsRasterLayer::MultiBandColor
+     )
+  {
+    rlayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
+    rlayer->setMinimumMaximumUsingDataset();
+    rlayer->setCacheImage( NULL );
+    //refreshLayerSymbology( rlayer->getLayerID() );
+    mMapCanvas->refresh();
+    return;
+  }
+  else
+  {
+    QMessageBox::information( this,
+                              tr( "No Valid Raster Layer Selected" ),
+                              tr( "To perform a local histogram stretch, you need to have a grayscale "
+                                  "or multiband (multiband single layer, singleband grayscale or multiband color) "
+                                  " raster layer selected." ) );
+    return;
+  }
 }
 
 void QgisApp::localHistogramStretch()

@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/images" >
+  <qresource prefix="/images">
     <file>icons/qgis-icon-16x16.png</file>
     <file>icons/qgis-icon-60x60.png</file>
     <file>north_arrows/gpsarrow2.svg</file>
@@ -74,6 +74,7 @@
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
+    <file>themes/default/mActionFullHistogramStretch.png</file>
     <file>themes/default/mActionGroupItems.png</file>
     <file>themes/default/mActionHelpAbout.png</file>
     <file>themes/default/mActionHelpAPI.png</file>
@@ -402,7 +403,7 @@
     <file>themes/newgis/mIconPolygonLayer.png</file>
     <file>themes/newgis/mIconTableLayer.png</file>
   </qresource>
-  <qresource prefix="/images/tips" >
+  <qresource prefix="/images/tips">
     <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
   </qresource>
 </RCC>
