@@ -5709,6 +5709,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionRotateLabel->setEnabled( false );
     mActionChangeLabelProperties->setEnabled( false );
 
+    mActionLocalHistogramStretch->setEnabled( false );
+    mActionFullHistogramStretch->setEnabled( false );
+
     return;
   }
 
@@ -5721,6 +5724,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     QgsVectorDataProvider* dprovider = vlayer->dataProvider();
     bool layerHasSelection = vlayer->selectedFeatureCount() != 0;
+
+    mActionLocalHistogramStretch->setEnabled( false );
+    mActionFullHistogramStretch->setEnabled( false );
 
     mActionSelect->setEnabled( true );
     mActionSelectRectangle->setEnabled( true );
@@ -5945,10 +5951,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     }
 
     mActionLayerSubsetString->setEnabled( false );
-  }
+  }//end vector layer block
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
+    mActionLocalHistogramStretch->setEnabled( true );
+    mActionFullHistogramStretch->setEnabled( true );
     mActionLayerSubsetString->setEnabled( false );
     mActionSelect->setEnabled( false );
     mActionSelectRectangle->setEnabled( false );
