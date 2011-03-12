@@ -305,7 +305,6 @@ void QgsProjectionSelector::applyCRSNameSelection()
     if ( nodes.count() > 0 )
     {
       lstCoordinateSystems->setCurrentItem( nodes.first() );
-      lstCoordinateSystems->scrollToItem( nodes.first() );
     }
     else // unselect the selected item to avoid confusing the user
     {
@@ -344,7 +343,6 @@ void QgsProjectionSelector::applyAuthIDSelection()
     if ( nodes.count() > 0 )
     {
       lstCoordinateSystems->setCurrentItem( nodes.first() );
-      lstCoordinateSystems->scrollToItem( nodes.first() );
     }
     else // unselect the selected item to avoid confusing the user
     {
@@ -367,7 +365,6 @@ void QgsProjectionSelector::applyCRSIDSelection()
     if ( nodes.count() > 0 )
     {
       lstCoordinateSystems->setCurrentItem( nodes.first() );
-      lstCoordinateSystems->scrollToItem( nodes.first() );
     }
     else // unselect the selected item to avoid confusing the user
     {
@@ -851,7 +848,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
     QString myDescription;
     emit sridSelected( QString::number( selectedCrsId() ) );
     QString myProjString = selectedProj4String();
-    lstCoordinateSystems->scrollToItem( theItem );
+    lstCoordinateSystems->scrollToItem( theItem, QAbstractItemView::PositionAtCenter );
     teProjection->setText( myProjString );
 
     lstRecent->clearSelection();
