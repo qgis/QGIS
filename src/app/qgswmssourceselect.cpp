@@ -597,7 +597,7 @@ void QgsWMSSourceSelect::addClicked()
       connArgs += "GetFeatureInfo";
     }
 
-    if ( connInfo.startsWith( "username=" ) )
+    if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "tiled=" ) )
     {
       connInfo.prepend( connArgs + "," );
     }
