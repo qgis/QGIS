@@ -715,7 +715,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     }
 
     // have the layer restore state that is stored in Dom node
-    if ( mapLayer->readXML( node ) )
+    if ( mapLayer->readXML( node ) && mapLayer->isValid() )
     {
       mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
       QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
@@ -746,7 +746,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     vIt->first->createJoinCaches();
     vIt->first->updateFieldMap();
     //for old symbology, it is necessary to read the symbology again after having the complete field map
-    if( !vIt->first->isUsingRendererV2() )
+    if ( !vIt->first->isUsingRendererV2() )
     {
       vIt->first->readSymbology( vIt->second, errorMessage );
     }
