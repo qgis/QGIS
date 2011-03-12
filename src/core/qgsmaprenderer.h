@@ -169,11 +169,23 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! returns true if projections are enabled for this layer set
     bool hasCrsTransformEnabled();
 
-    //! sets destination spatial reference system
-    void setDestinationSrs( const QgsCoordinateReferenceSystem& srs );
+    /** sets destination coordinate reference system
+     * @note deprecated by qgis 1.7
+     * @see setDestinationCrs
+     */
+    Q_DECL_DEPRECATED void setDestinationSrs( const QgsCoordinateReferenceSystem& srs ) { setDestinationCrs( srs ); };
 
-    //! returns CRS of destination spatial reference system
-    const QgsCoordinateReferenceSystem& destinationSrs();
+    /** returns CRS of destination coordinate reference system
+     * @note deprecated by qgis 1.7
+     * @see destinationCrs
+     */
+    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& destinationSrs() { return destinationCrs(); };
+
+    //! sets destination coordinate reference system
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    //! returns CRS of destination coordinate reference system
+    const QgsCoordinateReferenceSystem& destinationCrs();
 
     void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
 
