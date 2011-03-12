@@ -2732,7 +2732,6 @@ void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
 
 void QgsRasterLayer::setMinimumMaximumUsingDataset()
 {
-  double myMinMax[2];
   if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
   {
     QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mGrayBandName ) );
@@ -3182,27 +3181,33 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
 
   if ( pkeyNode.isNull() )
   {
-    mProviderKey = "";
+    mProviderKey = "gdal";
   }
   else
   {
     QDomElement pkeyElt = pkeyNode.toElement();
     mProviderKey = pkeyElt.text();
+    if ( mProviderKey.isEmpty() )
+    {
+      mProviderKey = "gdal";
+    }
   }
 
   // Open the raster source based on provider and datasource
 
-  if ( !mProviderKey.isEmpty() )
+  // Go down the raster-data-provider paradigm
+
+  // Collect provider-specific information
+
+  QDomNode rpNode = layer_node.namedItem( "rasterproperties" );
+
+  // Collect sublayer names and styles
+  QStringList layers;
+  QStringList styles;
+  QString format;
+
+  if ( mProviderKey == "wms" )
   {
-    // Go down the raster-data-provider paradigm
-
-    // Collect provider-specific information
-
-    QDomNode rpNode = layer_node.namedItem( "rasterproperties" );
-
-    // Collect sublayer names and styles
-    QStringList layers;
-    QStringList styles;
     QDomElement layerElement = rpNode.firstChildElement( "wmsSublayer" );
     while ( !layerElement.isNull() )
     {
@@ -3218,28 +3223,28 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
     }
 
     // Collect format
-    QString format = rpNode.namedItem( "wmsFormat" ).toElement().text();
-
-    // Collect CRS
-    setDataProvider( mProviderKey, layers, styles, format, crs().authid() );
+    format = rpNode.namedItem( "wmsFormat" ).toElement().text();
   }
-  else
-  {
-    // Go down the monolithic-gdal-provider paradigm
 
-    if ( !readFile( source() ) )   // Data source name set in
-      // QgsMapLayer::readXML()
-    {
-      QgsLogger::warning( QString( __FILE__ ) + ":" + QString( __LINE__ ) +
-                          " unable to read from raster file " + source() );
-      return false;
-    }
-
-  }
+  // Collect CRS
+  setDataProvider( mProviderKey, layers, styles, format, crs().authid() );
 
   QString theError;
-  return readSymbology( layer_node, theError );
+  bool res = readSymbology( layer_node, theError );
 
+  // old wms settings we need to correct
+  if ( res &&
+       mProviderKey == "wms" &&
+       mDrawingStyle == MultiBandColor &&
+       mRedBandName == TRSTRING_NOT_SET &&
+       mGreenBandName == TRSTRING_NOT_SET &&
+       mBlueBandName == TRSTRING_NOT_SET )
+  {
+    mDrawingStyle = SingleBandColorDataStyle;
+    mGrayBandName = bandName( 1 );
+  }
+
+  return res;
 } // QgsRasterLayer::readXml( QDomNode & layer_node )
 
 /*
@@ -3254,13 +3259,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
 
-  if ( !mProviderKey.isEmpty() )
+  QStringList sl = subLayers();
+  QStringList sls = mDataProvider->subLayerStyles();
+
+  QStringList::const_iterator layerStyle = sls.begin();
+
+  if ( mProviderKey == "wms" )
   {
-    QStringList sl = subLayers();
-    QStringList sls = mDataProvider->subLayerStyles();
-
-    QStringList::const_iterator layerStyle = sls.begin();
-
     // <rasterproperties><wmsSublayer>
     for ( QStringList::const_iterator layerName  = sl.begin();
           layerName != sl.end();
@@ -3297,7 +3302,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
       document.createTextNode( mDataProvider->imageEncoding() );
     formatElement.appendChild( formatText );
     rasterPropertiesElement.appendChild( formatElement );
-
   }
 
   // <mDrawingStyle>

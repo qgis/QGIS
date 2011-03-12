@@ -131,8 +131,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   CPLErrorReset();
   if ( mGdalBaseDataset == NULL )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot open GDAL dataset %1: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
@@ -301,44 +300,44 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   //ifdefs below to remove compiler warning about unused vars
 #ifdef QGISDEBUG
 #if 0
-    int success;
-    double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
+  int success;
+  double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
 
-    if ( ! success )
-    {
-      QgsDebugMsg( "myGdalBand->GetMinimum() failed" );
-    }
+  if ( ! success )
+  {
+    QgsDebugMsg( "myGdalBand->GetMinimum() failed" );
+  }
 
-    double GDALmaximum = GDALGetRasterMaximum( myGdalBand, &success );
+  double GDALmaximum = GDALGetRasterMaximum( myGdalBand, &success );
 
-    if ( ! success )
-    {
-      QgsDebugMsg( "myGdalBand->GetMaximum() failed" );
-    }
+  if ( ! success )
+  {
+    QgsDebugMsg( "myGdalBand->GetMaximum() failed" );
+  }
 
-    double GDALnodata = GDALGetRasterNoDataValue( myGdalBand, &success );
+  double GDALnodata = GDALGetRasterNoDataValue( myGdalBand, &success );
 
-    if ( ! success )
-    {
-      QgsDebugMsg( "myGdalBand->GetNoDataValue() failed" );
-    }
+  if ( ! success )
+  {
+    QgsDebugMsg( "myGdalBand->GetNoDataValue() failed" );
+  }
 
-    QgsLogger::debug( "GDALminium: ", GDALminimum, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "GDALmaximum: ", GDALmaximum, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "GDALnodata: ", GDALnodata, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "GDALminium: ", GDALminimum, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "GDALmaximum: ", GDALmaximum, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "GDALnodata: ", GDALnodata, __FILE__, __FUNCTION__, __LINE__ );
 
-    double GDALrange[2];          // calculated min/max, as opposed to the
-    // dataset provided
+  double GDALrange[2];          // calculated min/max, as opposed to the
+  // dataset provided
 
-    GDALComputeRasterMinMax( myGdalBand, 1, GDALrange );
-    QgsLogger::debug( "approximate computed GDALminium:", GDALrange[0], __FILE__, __FUNCTION__, __LINE__, 1 );
-    QgsLogger::debug( "approximate computed GDALmaximum:", GDALrange[1], __FILE__, __FUNCTION__, __LINE__, 1 );
+  GDALComputeRasterMinMax( myGdalBand, 1, GDALrange );
+  QgsLogger::debug( "approximate computed GDALminium:", GDALrange[0], __FILE__, __FUNCTION__, __LINE__, 1 );
+  QgsLogger::debug( "approximate computed GDALmaximum:", GDALrange[1], __FILE__, __FUNCTION__, __LINE__, 1 );
 
-    GDALComputeRasterMinMax( myGdalBand, 0, GDALrange );
-    QgsLogger::debug( "exactly computed GDALminium:", GDALrange[0] );
-    QgsLogger::debug( "exactly computed GDALmaximum:", GDALrange[1] );
+  GDALComputeRasterMinMax( myGdalBand, 0, GDALrange );
+  QgsLogger::debug( "exactly computed GDALminium:", GDALrange[0] );
+  QgsLogger::debug( "exactly computed GDALmaximum:", GDALrange[1] );
 
-    QgsDebugMsg( "starting manual stat computation" );
+  QgsDebugMsg( "starting manual stat computation" );
 #endif
 #endif
 
@@ -1184,7 +1183,10 @@ int QgsGdalProvider::dataType( int bandNo ) const
 
 int QgsGdalProvider::bandCount() const
 {
-  return GDALGetRasterCount( mGdalDataset );
+  if ( mGdalDataset )
+    return GDALGetRasterCount( mGdalDataset );
+  else
+    return 1;
 }
 
 int QgsGdalProvider::colorInterpretation( int theBandNo ) const
