@@ -567,8 +567,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double ymax = qMin( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
-    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum() + mTileWidth * tres * 0.001;
-    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum() + mTileHeight * tres * 0.001;
+    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum(); // + mTileWidth * tres * 0.001;
+    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum(); // + mTileHeight * tres * 0.001;
 
 #ifdef QGISDEBUG
     // calculate number of tiles
@@ -2095,7 +2095,7 @@ bool QgsWmsProvider::calculateExtent()
     {
       if ( tilesetsSupported[i].layers.join( "," ) == layers &&
            tilesetsSupported[i].styles.join( "," ) == styles &&
-           tilesetsSupported[i].boundingBox.crs == imageCrs )
+           tilesetsSupported[i].crs == imageCrs )
       {
         layerExtent = tilesetsSupported[i].boundingBox.box;
         return true;
@@ -2104,7 +2104,7 @@ bool QgsWmsProvider::calculateExtent()
       QgsDebugMsg( QString( "mismatch layers=%1, styles=%2 and crs=%3." )
                    .arg( tilesetsSupported[i].layers.join( "," ) )
                    .arg( tilesetsSupported[i].styles.join( "," ) )
-                   .arg( tilesetsSupported[i].boundingBox.crs ) );
+                   .arg( tilesetsSupported[i].crs ) );
     }
 
     QgsDebugMsg( "no extent for layer" );
