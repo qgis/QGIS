@@ -1190,7 +1190,7 @@ void QgisApp::createStatusBar()
   mCoordsEdit = new QLineEdit( QString(), statusBar() );
   mCoordsEdit->setFont( myFont );
   mCoordsEdit->setMinimumWidth( 10 );
-  mCoordsEdit->setMaximumWidth( 200 );
+  mCoordsEdit->setMaximumWidth( 300 );
   mCoordsEdit->setMaximumHeight( 20 );
   mCoordsEdit->setContentsMargins( 0, 0, 0, 0 );
   mCoordsEdit->setAlignment( Qt::AlignCenter );
