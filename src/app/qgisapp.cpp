@@ -1237,7 +1237,7 @@ void QgisApp::createStatusBar()
   mStopRenderButton = new QToolButton( statusBar() );
   mStopRenderButton->setMaximumWidth( 20 );
   mStopRenderButton->setMaximumHeight( 20 );
-  mStopRenderButton->setIcon( getThemeIcon( "mIconDelete.png" ) );
+  mStopRenderButton->setIcon( getThemeIcon( "mIconStopRendering.png" ) );
   mStopRenderButton->setToolTip( tr( "Stop map rendering" ) );
   statusBar()->addPermanentWidget( mStopRenderButton, 0 );
   // render suppression status bar widget
