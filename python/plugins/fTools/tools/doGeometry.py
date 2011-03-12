@@ -355,7 +355,7 @@ class geometryThread( QThread ):
     vprovider.select( allAttrs )
     fields = vprovider.fields()
     writer = QgsVectorFileWriter( self.myName, self.myEncoding,
-    fields, vprovider.geometryType(), vprovider.crs() )
+    fields, vprovider.geometryType()-3, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     inGeom = QgsGeometry()
