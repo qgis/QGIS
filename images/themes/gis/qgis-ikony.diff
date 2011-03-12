@@ -1,0 +1,56 @@
+Index: qgis/src/app/qgisapp.cpp
+===================================================================
+--- qgis/src/app/qgisapp.cpp	(wersja 15432)
++++ qgis/src/app/qgisapp.cpp	(kopia robocza)
+@@ -1417,6 +1417,11 @@
+   mActionFormAnnotation->setIcon( getThemeIcon( "/mActionFormAnnotation.png" ) );
+   mActionTextAnnotation->setIcon( getThemeIcon( "/mActionTextAnnotation.png" ) );
+ 
++  mActionLabeling->setIcon( getThemeIcon( "/mActionLabeling.png" ) );
++  mActionMoveLabel->setIcon( getThemeIcon( "/mActionMoveLabel.png" ) );
++  mActionRotateLabel->setIcon( getThemeIcon( "/mActionRotateLabel.png" ) );
++  mActionChangeLabelProperties->setIcon( getThemeIcon( "/mActionChangeLabelProperties.png" ) );
++
+   //change themes of all composers
+   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
+   for ( ; composerIt != mPrintComposers.end(); ++composerIt )
+Index: qgis/src/plugins/grass/modules-common/v.in.db.1.png
+===================================================================
+Nie można wyświetlić: plik binarny.
+svn:mime-type = application/octet-stream
+Index: qgis/images/images.qrc
+===================================================================
+--- qgis/images/images.qrc	(wersja 15432)
++++ qgis/images/images.qrc	(kopia robocza)
+@@ -240,6 +240,7 @@
+     <file>themes/gis/mActionCapturePolygon.png</file>
+     <file>themes/gis/mActionComposerManager.png</file>
+     <file>themes/gis/mActionCopySelected.png</file>
++    <file>themes/gis/mActionChangeLabelProperties.png</file>
+     <file>themes/gis/mActionDeleteAttribute.png</file>
+     <file>themes/gis/mActionDeletePart.png</file>
+     <file>themes/gis/mActionDeleteRing.png</file>
+@@ -263,6 +264,7 @@
+     <file>themes/gis/mActionInOverview.png</file>
+     <file>themes/gis/mActionInvertSelection.png</file>
+     <file>themes/gis/mActionLabel.png</file>
++    <file>themes/gis/mActionLabeling.png</file>
+     <file>themes/gis/mActionLowerItems.png</file>
+     <file>themes/gis/mActionMapTips.png</file>
+     <file>themes/gis/mActionMeasureAngle.png</file>
+@@ -274,6 +276,7 @@
+     <file>themes/gis/mActionMoveItemContent.png</file>
+     <file>themes/gis/mActionMoveItemsToBottom.png</file>
+     <file>themes/gis/mActionMoveItemsToTop.png</file>
++    <file>themes/gis/mActionMoveLabel.png</file>
+     <file>themes/gis/mActionMoveVertex.png</file>
+     <file>themes/gis/mActionNewAttribute.png</file>
+     <file>themes/gis/mActionNewBookmark.png</file>
+@@ -286,6 +289,7 @@
+     <file>themes/gis/mActionRedo.png</file>
+     <file>themes/gis/mActionRemoveLayer.png</file>
+     <file>themes/gis/mActionReshape.png</file>
++    <file>themes/gis/mActionRotateLabel.png</file>
+     <file>themes/gis/mActionSaveAsPDF.png</file>
+     <file>themes/gis/mActionSaveAsSVG.png</file>
+     <file>themes/gis/mActionSaveMapAsImage.png</file>
