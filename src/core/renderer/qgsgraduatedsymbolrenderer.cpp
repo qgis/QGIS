@@ -268,10 +268,10 @@ int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
     mMode = QgsGraduatedSymbolRenderer::EqualInterval;
   }
 
-  int classificationId = theProvider->fieldNameIndex( classificationField );
+  int classificationId = vl.fieldNameIndex( classificationField );
   if ( classificationId == -1 )
   {
-    return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
+    //go on. Because with joins, it might be the joined layer is not loaded yet
   }
   setClassificationField( classificationId );
 
