@@ -170,6 +170,9 @@
     <file>themes/default/mIconProjectionProblem.png</file>
     <file>themes/default/mIconProperties.png</file>
     <file>themes/default/mIconPyramid.png</file>
+    <file>themes/default/mIconStopRendering.png</file>
+    <file>themes/default/mIconRenderingEnabled.png</file>
+    <file>themes/default/mIconRenderingDisabled.png</file>
     <file>themes/default/mIconSymbology.png</file>
     <file>themes/default/mIconTableLayer.png</file>
     <file>themes/default/mIconUnknownLayerType.png</file>
