@@ -1416,6 +1416,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAnnotation->setIcon( getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionTextAnnotation->setIcon( getThemeIcon( "/mActionTextAnnotation.png" ) );
+  mActionLabeling->setIcon( getThemeIcon( "/mActionLabeling.png" ) );
+  mActionMoveLabel->setIcon( getThemeIcon( "/mActionMoveLabel.png" ) );
+  mActionRotateLabel->setIcon( getThemeIcon( "/mActionRotateLabel.png" ) );
+  mActionChangeLabelProperties->setIcon( getThemeIcon( "/mActionChangeLabelProperties.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
