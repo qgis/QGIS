@@ -337,7 +337,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   {
     QgsNumericSortTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
-    lItem->setData( 0, Qt::UserRole, layer->name );
+    lItem->setData( 0, Qt::UserRole + 0, layer->name );
     lItem->setData( 0, Qt::UserRole + 1, "" );
     lItem->setData( 0, Qt::UserRole + 2, layer->crs );
 
@@ -674,6 +674,8 @@ void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
     enableLayersForCrs( lstLayers->topLevelItem( i ) );
   }
 
+  updateButtons();
+
   // update the display of this widget
   update();
 }
@@ -758,7 +760,7 @@ void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
 void QgsWMSSourceSelect::collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles )
 {
   QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
-  QString styleName = item->data( 1, Qt::UserRole + 0 ).toString();
+  QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
   if ( layerName.isEmpty() )
   {
     // layer group
