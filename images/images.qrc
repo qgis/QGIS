@@ -316,6 +316,11 @@
     <file>themes/gis/mActionZoomOut.png</file>
     <file>themes/gis/mActionZoomToLayer.png</file>
     <file>themes/gis/mActionZoomToSelected.png</file>
+    <file>themes/gis/mIconEditable.png</file>
+    <file>themes/gis/mIconLineLayer.png</file>
+    <file>themes/gis/mIconPointLayer.png</file>
+    <file>themes/gis/mIconPolygonLayer.png</file>
+    <file>themes/gis/mIconTableLayer.png</file>
     <file>themes/gis/plugins/coordinate_capture/coordinate_capture.png</file>
     <file>themes/gis/plugins/copyright_label.png</file>
     <file>themes/gis/plugins/delimited_text.png</file>
