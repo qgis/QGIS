@@ -675,7 +675,10 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
   bool returnStatus = true;
 
   emit layerLoaded( 0, nl.count() );
-  QList<QgsVectorLayer*> vLayerList; //collect
+
+  //Collect vector layers with joins.
+  //They need to refresh join caches and symbology infos after all layers are loaded
+  QList< QPair< QgsVectorLayer*, QDomElement > > vLayerList;
 
   for ( int i = 0; i < nl.count(); i++ )
   {
@@ -716,9 +719,9 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     {
       mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
       QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-      if ( vLayer )
+      if ( vLayer && vLayer->vectorJoins().size() > 0 )
       {
-        vLayerList.push_back( vLayer );
+        vLayerList.push_back( qMakePair( vLayer, element ) );
       }
     }
     else
@@ -736,11 +739,17 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
   //Update field map of layers with joins and create join caches if necessary
   //Needs to be done here once all dependent layers are loaded
-  QList<QgsVectorLayer*>::iterator vIt = vLayerList.begin();
+  QString errorMessage;
+  QList< QPair< QgsVectorLayer*, QDomElement > >::iterator vIt = vLayerList.begin();
   for ( ; vIt != vLayerList.end(); ++vIt )
   {
-    ( *vIt )->createJoinCaches();
-    ( *vIt )->updateFieldMap();
+    vIt->first->createJoinCaches();
+    vIt->first->updateFieldMap();
+    //for old symbology, it is necessary to read the symbology again after having the complete field map
+    if( !vIt->first->isUsingRendererV2() )
+    {
+      vIt->first->readSymbology( vIt->second, errorMessage );
+    }
   }
 
   return qMakePair( returnStatus, brokenNodes );

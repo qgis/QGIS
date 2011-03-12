@@ -228,7 +228,7 @@ int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
   int classificationId = theProvider->fieldNameIndex( classificationField );
   if ( classificationId == -1 )
   {
-    return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
+    //go on. Because with joins, it might be the joined layer is not loaded yet
   }
   setClassificationField( classificationId );
 
