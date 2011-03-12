@@ -522,7 +522,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
   }
 
   //find out the current scale denominater and set it to the SLD parser
-  QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationSrs().mapUnits() );
+  QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, outputImage->width() ) );
   delete outputImage; //no longer needed for feature info
@@ -727,12 +727,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   //find out the current scale denominater and set it to the SLD parser
-  QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2 , mMapRenderer->destinationSrs().mapUnits() );
+  QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
 
   //create objects for qgis rendering
-  QStringList theLayers = layerSet( layersList, stylesList, mMapRenderer->destinationSrs() );
+  QStringList theLayers = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
   mMapRenderer->setLayerSet( theLayers );
   return theImage;
 }
@@ -916,7 +916,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
       throw QgsMapServiceException( "InvalidCRS", "Could not create output CRS" );
       return 5;
     }
-    mMapRenderer->setDestinationSrs( outputCRS );
+    mMapRenderer->setDestinationCrs( outputCRS );
     mMapRenderer->setProjectionsEnabled( true );
     mapUnits = outputCRS.mapUnits();
   }

@@ -108,7 +108,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   {
     try
     {
-      QgsCoordinateTransform ct( canvas->mapRenderer()->destinationSrs(), vlayer->crs() );
+      QgsCoordinateTransform ct( canvas->mapRenderer()->destinationCrs(), vlayer->crs() );
       selectGeomTrans.transform( ct );
     }
     catch ( QgsCsException &cse )

@@ -733,7 +733,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   lyr.xform = mMapRenderer->coordinateTransform();
   if ( mMapRenderer->hasCrsTransformEnabled() )
-    lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationSrs() );
+    lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
   else
     lyr.ct = NULL;
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );

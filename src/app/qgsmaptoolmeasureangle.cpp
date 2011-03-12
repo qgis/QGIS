@@ -181,7 +181,7 @@ void QgsMapToolMeasureAngle::configureDistanceArea( QgsDistanceArea& da )
 {
   QSettings settings;
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  da.setSourceCrs( mCanvas->mapRenderer()->destinationSrs().srsid() );
+  da.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
   da.setEllipsoid( ellipsoidId );
   da.setProjectionsEnabled( mResultDisplay->projectionEnabled() );
 }

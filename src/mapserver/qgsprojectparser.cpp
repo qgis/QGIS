@@ -184,7 +184,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
       appendCRSElementsToLayer( layerElem, doc, combinedCRSSet.toList() );
 
-      const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( 4326 );
+      const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
       appendExGeographicBoundingBox( layerElem, doc, combinedGeographicBBox, groupCRS );
     }
     else if ( currentChildElem.tagName() == "legendlayer" )

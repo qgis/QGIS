@@ -300,8 +300,8 @@ void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
 
 void QgsMapOverviewCanvas::destinationSrsChanged()
 {
-  const QgsCoordinateReferenceSystem& srs = mMapCanvas->mapRenderer()->destinationSrs();
-  mMapRenderer->setDestinationSrs( srs );
+  const QgsCoordinateReferenceSystem& srs = mMapCanvas->mapRenderer()->destinationCrs();
+  mMapRenderer->setDestinationCrs( srs );
 }
 
 QStringList& QgsMapOverviewCanvas::layerSet()

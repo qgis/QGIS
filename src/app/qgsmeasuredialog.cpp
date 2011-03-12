@@ -372,7 +372,7 @@ void QgsMeasureDialog::configureDistanceArea( QgsDistanceArea& da )
 {
   QSettings settings;
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  da.setSourceCrs( mTool->canvas()->mapRenderer()->destinationSrs().srsid() );
+  da.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
   da.setEllipsoid( ellipsoidId );
   da.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
 }

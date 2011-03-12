@@ -669,7 +669,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, int fid )
   }
   // Set system reference
   QgsCoordinateReferenceSystem srsSource = lyr->dataProvider()->crs();
-  QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapRenderer()->destinationSrs();
+  QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapRenderer()->destinationCrs();
   if ( ! srsSource.isValid() )
   {
     if ( hasMsg )

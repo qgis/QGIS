@@ -188,8 +188,8 @@ void CoordinateCapture::setCRS()
 
 void CoordinateCapture::setSourceCrs()
 {
-  mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs() );
-  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
+  mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs() );
+  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
 void CoordinateCapture::mouseClicked( QgsPoint thePoint )
