@@ -660,21 +660,21 @@ bool QgsMapRenderer::hasCrsTransformEnabled()
   return mProjectionsEnabled;
 }
 
-void QgsMapRenderer::setDestinationSrs( const QgsCoordinateReferenceSystem& srs )
+void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
-  QgsDebugMsg( "* Setting destCRS : = " + srs.toProj4() );
-  QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( srs.srsid() ) );
-  if ( *mDestCRS != srs )
+  QgsDebugMsg( "* Setting destCRS : = " + crs.toProj4() );
+  QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
+  if ( *mDestCRS != crs )
   {
-    QgsDebugMsg( "Setting DistArea CRS to " + QString::number( srs.srsid() ) );
-    mDistArea->setSourceCrs( srs.srsid() );
-    *mDestCRS = srs;
+    QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
+    mDistArea->setSourceCrs( crs.srsid() );
+    *mDestCRS = crs;
     updateFullExtent();
     emit destinationSrsChanged();
   }
 }
 
-const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationSrs()
+const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationCrs()
 {
   QgsDebugMsgLevel( "* Returning destCRS", 3 );
   QgsDebugMsgLevel( "* DestCRS.srsid() = " + QString::number( mDestCRS->srsid() ), 3 );
