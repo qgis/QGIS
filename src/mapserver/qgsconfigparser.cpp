@@ -79,7 +79,7 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   }
 
   QgsCoordinateReferenceSystem wgs84;
-  wgs84.createFromOgcWmsCrs( "EPSG:4326" );
+  wgs84.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
   //Ex_GeographicBoundingBox
   //transform the layers native CRS into WGS84
@@ -324,7 +324,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     QMap<QString, QString>::const_iterator versionIt = parameterMap.find( "VERSION" );
     if ( versionIt != parameterMap.end() )
     {
-      if ( mapRenderer && versionIt.value() == "1.3.0" && mapRenderer->destinationSrs().geographicFlag() )
+      if ( mapRenderer && versionIt.value() == "1.3.0" && mapRenderer->destinationCrs().geographicFlag() )
       {
         //switch coordinates of extent
         double tmp;

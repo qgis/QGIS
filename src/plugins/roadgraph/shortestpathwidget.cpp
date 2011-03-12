@@ -227,7 +227,7 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     return false;
   }
 
-  RgSimpleGraphBuilder builder( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs(),
+  RgSimpleGraphBuilder builder( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
                                 mPlugin->topologyToleranceFactor() );
   {
     const RgGraphDirector *director = mPlugin->director();
@@ -340,7 +340,7 @@ void RgShortestPathWidget::exportPath()
   if ( vl == NULL )
     return;
 
-  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationSrs(),
+  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
                              vl->crs() );
 
   QVector< QgsPoint > points;

@@ -483,7 +483,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
 
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
-      QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapRenderer( )->destinationSrs();
+      QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapRenderer()->destinationCrs();
       QgsCoordinateReferenceSystem myLatLongRefSys = QgsCoordinateReferenceSystem( 4326 );
       QgsCoordinateTransform myTransform( myLatLongRefSys, mypSRS );
 
@@ -539,7 +539,7 @@ void QgsGPSInformationWidget::addVertex( )
   QgsPoint myPoint;
   if ( mpCanvas && mpCanvas->mapRenderer() )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationSrs() );
+    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationCrs() );
     myPoint = t.transform( mLastGpsPosition );
   }
   else
@@ -850,7 +850,7 @@ QPointF QgsGPSInformationWidget::gpsToPixelPosition( const QgsPoint& point )
   QgsPoint myCenter;
   if ( mpCanvas && mpCanvas->mapRenderer() )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationSrs() );
+    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationCrs() );
     myCenter = t.transform( point );
   }
   else

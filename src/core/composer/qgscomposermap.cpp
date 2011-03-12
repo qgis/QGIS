@@ -145,7 +145,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
     theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
   }
   theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
-  theMapRenderer.setDestinationSrs( mMapRenderer->destinationSrs() );
+  theMapRenderer.setDestinationCrs( mMapRenderer->destinationCrs() );
 
   //set antialiasing if enabled in options
   QSettings settings;

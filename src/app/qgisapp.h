@@ -864,6 +864,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void createCanvasTools();
     bool createDB();
     void createMapTips();
+    void updateCRSStatusBar();
 
     // actions for menus and toolbars -----------------
 
@@ -963,7 +964,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QToolButton * mToggleExtentsViewButton;
     //! Button used to stop rendering
     QToolButton* mStopRenderButton;
-    //! Widget in status bar used to show current project CRS 
+    //! Widget in status bar used to show current project CRS
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton * mOnTheFlyProjectionStatusButton;

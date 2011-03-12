@@ -1009,7 +1009,7 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   QgsCoordinateReferenceSystem srs;
   QDomNode srsNode = theNode.namedItem( "destinationsrs" );
   srs.readXML( srsNode );
-  setDestinationSrs( srs );
+  setDestinationCrs( srs );
 
   return true;
 }
@@ -1078,7 +1078,7 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   // destination CRS
   QDomElement srsNode = theDoc.createElement( "destinationsrs" );
   theNode.appendChild( srsNode );
-  destinationSrs().writeXML( srsNode, theDoc );
+  destinationCrs().writeXML( srsNode, theDoc );
 
   return true;
 }

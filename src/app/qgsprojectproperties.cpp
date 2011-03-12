@@ -64,7 +64,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
   btnGrpMapUnits->setEnabled( !myProjectionEnabled );
 
-  long myCRSID = myRenderer->destinationSrs().srsid();
+  long myCRSID = myRenderer->destinationCrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( myCRSID ) );
   projectionSelector->setSelectedCrsId( myCRSID );
 
@@ -306,7 +306,7 @@ void QgsProjectProperties::apply()
   if ( myCRSID )
   {
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-    myRenderer->setDestinationSrs( srs );
+    myRenderer->setDestinationCrs( srs );
     QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
