@@ -5364,7 +5364,6 @@ void QgisApp::updateCRSStatusBar()
   else
   {
     mOnTheFlyProjectionStatusLabel->setEnabled( false );
-    mOnTheFlyProjectionStatusLabel->setToolTip( tr( "On the fly reprojection not active" ) );
     mOnTheFlyProjectionStatusLabel->setToolTip(
       tr( "Inactive project CRS: %1" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionDisabled.png" ) );
