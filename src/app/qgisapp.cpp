@@ -1250,6 +1250,18 @@ void QgisApp::createStatusBar()
                                         "to add a large number of layers and symbolize them before rendering." ) );
   mRenderSuppressionCBox->setToolTip( tr( "Toggle map rendering" ) );
   statusBar()->addPermanentWidget( mRenderSuppressionCBox, 0 );
+  // On the fly projection active CRS label
+  mOnTheFlyProjectionStatusLabel = new QLabel( QString(), statusBar() );
+  mOnTheFlyProjectionStatusLabel->setFont( myFont );
+  mOnTheFlyProjectionStatusLabel->setMinimumWidth( 10 );
+  mOnTheFlyProjectionStatusLabel->setMaximumHeight( 20 );
+  mOnTheFlyProjectionStatusLabel->setMargin( 3 );
+  mOnTheFlyProjectionStatusLabel->setAlignment( Qt::AlignCenter );
+  mOnTheFlyProjectionStatusLabel->setFrameStyle( QFrame::NoFrame );
+  QString myCrs = mMapCanvas->mapRenderer()->destinationCrs().authid();
+  mOnTheFlyProjectionStatusLabel->setText( myCrs );
+  mOnTheFlyProjectionStatusLabel->setToolTip( tr( "Current CRS" ) );
+  statusBar()->addPermanentWidget( mOnTheFlyProjectionStatusLabel, 0 );
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
   // sculpted on OS X and the icon is never displayed [gsherman]
@@ -1258,15 +1270,7 @@ void QgisApp::createStatusBar()
   // Maintain uniform widget height in status bar by setting button height same as labels
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
   mOnTheFlyProjectionStatusButton->setMaximumHeight( mScaleLabel->height() );
-  mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionDisabled.png" ) );
-  if ( !QFile::exists( QgsApplication::defaultThemePath() + "/mIconProjectionDisabled.png" ) )
-  {
-    QMessageBox::critical( this, tr( "Resource Location Error" ),
-                           tr( "Error reading icon resources from: \n %1\n Quitting..." ).arg(
-                             QgsApplication::defaultThemePath() + "/mIconProjectionDisabled.png"
-                           ) );
-    exit( 0 );
-  }
+  mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionEnabled.png" ) );
   mOnTheFlyProjectionStatusButton->setWhatsThis( tr( "This icon shows whether "
       "on the fly coordinate reference system transformation is enabled or not. "
       "Click the icon to bring up "
@@ -2512,11 +2516,14 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   // enable OTF CRS transformation if necessary
   if ( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() )
   {
+    QString myCrs = mMapCanvas->mapRenderer()->destinationCrs().authid();
+    mOnTheFlyProjectionStatusLabel->setText( myCrs );
     myRenderer->setProjectionsEnabled( true );
     mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionEnabled.png" ) );
   }
   else
   {
+    mOnTheFlyProjectionStatusLabel->setText( "---" );
     myRenderer->setProjectionsEnabled( false );
   }
 
@@ -5372,11 +5379,14 @@ void QgisApp::hasCrsTransformEnabled( bool theFlag )
   // update icon
   if ( theFlag )
   {
+    QString myCrs = mMapCanvas->mapRenderer()->destinationCrs().authid();
+    mOnTheFlyProjectionStatusLabel->setText( myCrs );
     mOnTheFlyProjectionStatusButton->setIcon(
-      getThemeIcon( "mIconProjectionEnabled.png" ) );
+        getThemeIcon( "mIconProjectionEnabled.png" ) );
   }
   else
   {
+    mOnTheFlyProjectionStatusLabel->setText( "---" );
     mOnTheFlyProjectionStatusButton->setIcon(
       getThemeIcon( "mIconProjectionDisabled.png" ) );
   }
