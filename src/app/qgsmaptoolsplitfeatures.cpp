@@ -82,6 +82,10 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
     {
       QMessageBox::warning( 0, tr( "No feature split done" ), tr( "If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection" ) );
     }
+    else if ( returnCode == 3 )
+    {
+      QMessageBox::warning( 0, tr( "No feature split done" ), tr( "Cut edges detected. Make sure the line splits features into multiple parts." ) );
+    }
     else if ( returnCode != 0 )
     {
       //several intersections but only one split (most likely line)
