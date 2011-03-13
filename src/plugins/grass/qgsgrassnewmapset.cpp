@@ -433,11 +433,11 @@ void QgsGrassNewMapset::setGrassProjection()
     }
     else
     {
-#ifdef QGISDEBUG
+      char *wkt = NULL;
+
       QgsDebugMsg( QString( "OSRIsGeographic = %1" ).arg( OSRIsGeographic( hCRS ) ) );
       QgsDebugMsg( QString( "OSRIsProjected = %1" ).arg( OSRIsProjected( hCRS ) ) );
 
-      char *wkt = NULL;
       if (( errcode = OSRExportToWkt( hCRS, &wkt ) ) != OGRERR_NONE )
       {
         QgsDebugMsg( QString( "OGR can't get Wkt-style parameter string\nOGR Error code was %1" ).arg( errcode ) );
@@ -446,27 +446,21 @@ void QgsGrassNewMapset::setGrassProjection()
       {
         QgsDebugMsg( QString( "wkt = %1" ).arg( wkt ) );
       }
-#endif
 
       int ret;
       // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
       //       cannot be set
 
       // There was a bug in GRASS, it is present in 6.0.x line
-#if GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 1
-      ret = GPJ_osr_to_grass( &mCellHead, &mProjInfo,
-                              &mProjUnits, hCRS, 0 );
-#else
-      // Buggy version:
-      ret = GPJ_osr_to_grass( &mCellHead, &mProjInfo,
-                              &mProjUnits, ( void ** )hCRS, 0 );
-#endif
+      ret = GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt, 0 );
 
       // Note: It seems that GPJ_osr_to_grass()returns always 1,
       //   -> test if mProjInfo was set
 
       QgsDebugMsg( QString( "ret = %1" ).arg( ret ) );
       QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number(( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
+
+      OGRFree( wkt );
     }
 
     if ( !mProjInfo || !mProjUnits )
