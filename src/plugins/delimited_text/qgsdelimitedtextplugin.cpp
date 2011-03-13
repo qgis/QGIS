@@ -109,7 +109,7 @@ void QgsDelimitedTextPlugin::initGui()
   connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginToMenu( tr( "&Delimited text" ), myQActionPointer );
+  qGisInterface->addAddLayer( myQActionPointer );
   // this is called when the icon theme is changed
   connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
@@ -143,7 +143,7 @@ void QgsDelimitedTextPlugin::drawVectorLayer( QString thePathNameQString,
 void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenu( tr( "&Delimited text" ), myQActionPointer );
+  qGisInterface->removeAddLayer( myQActionPointer );
   qGisInterface->removeToolBarIcon( myQActionPointer );
   delete myQActionPointer;
 }

@@ -34,8 +34,9 @@ static const QString version_ = QObject::tr( "Version 0.1" );
 static const QString icon_ = ":/wfs.png";
 
 QgsWFSPlugin::QgsWFSPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, version_, QgisPlugin::MAPLAYER ),
-    mIface( iface ), mWfsDialogAction( 0 )
+    : QgisPlugin( name_, description_, version_, QgisPlugin::MAPLAYER )
+    , mIface( iface )
+    , mWfsDialogAction( 0 )
 {
 
 }
@@ -49,11 +50,11 @@ void QgsWFSPlugin::initGui()
 {
   if ( mIface )
   {
-    mWfsDialogAction = new QAction( QIcon(), tr( "&Add WFS layer" ), 0 );
+    mWfsDialogAction = new QAction( QIcon(), tr( "Add W&FS layer..." ), 0 );
     setCurrentTheme( "" );
     QObject::connect( mWfsDialogAction, SIGNAL( triggered() ), this, SLOT( showSourceDialog() ) );
     mIface->layerToolBar()->addAction( mWfsDialogAction );
-    mIface->addPluginToMenu( tr( "&Add WFS layer" ), mWfsDialogAction );
+    mIface->addAddLayer( mWfsDialogAction );
     // this is called when the icon theme is changed
     connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
@@ -62,7 +63,7 @@ void QgsWFSPlugin::initGui()
 void QgsWFSPlugin::unload()
 {
   mIface->removeToolBarIcon( mWfsDialogAction );
-  mIface->removePluginMenu( tr( "&Add WFS layer" ), mWfsDialogAction );
+  mIface->removeAddLayer( mWfsDialogAction );
   delete mWfsDialogAction;
   mWfsDialogAction = 0;
 }

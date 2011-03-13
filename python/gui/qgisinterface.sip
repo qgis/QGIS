@@ -95,17 +95,33 @@ class QgisInterface : QObject
     /** Remove action from the plugins menu */
     virtual void removePluginMenu(QString name, QAction* action)=0;
 
+    /** Add "add layer" action to the layer menu
+     * @note added in 1.7
+     */
+    virtual void addAddLayer( QAction* action )=0;
+
+    /** Remove "add layer" action from the layer menu
+     * @note added in 1.7
+     */
+    virtual void removeAddLayer( QAction* action )=0;
+
     /** Add action to the Database menu
-       @note added in version 1.7 */
+      * @note added in 1.7
+      */
     virtual void addPluginToDatabaseMenu(QString name, QAction* action)=0;
-    /** Remove action from the Database menu */
+
+    /** Remove action from the Database menu
+      * @note added in 1.7 
+      */
     virtual void removePluginDatabaseMenu(QString name, QAction* action)=0;
 
     /** Add a dock widget to the main window
-       @note added in version 1.7 */
+       @note added in 1.7 */
     virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )=0;
 
-    /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
+    /** Remove specified dock widget from main window (doesn't delete it).
+      * @note added in 1.1
+      */
     virtual void removeDockWidget ( QDockWidget * dockwidget )=0;
 
     /** refresh legend of a layer
@@ -168,38 +184,38 @@ class QgisInterface : QObject
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
-    virtual QAction *actionFileSeparator1() = 0;
+    virtual QAction *actionFileSeparator1() = 0 /Deprecated/;
     virtual QAction *actionSaveProject() = 0;
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
-    virtual QAction *actionFileSeparator2() = 0;
+    virtual QAction *actionFileSeparator2() = 0 /Deprecated/;
     virtual QAction *actionProjectProperties() = 0;
-    virtual QAction *actionFileSeparator3() = 0;
+    virtual QAction *actionFileSeparator3() = 0 /Deprecated/;
     virtual QAction *actionPrintComposer() = 0;
-    virtual QAction *actionFileSeparator4() = 0;
+    virtual QAction *actionFileSeparator4() = 0 /Deprecated/;
     virtual QAction *actionExit() = 0;
 
     //! Edit menu actions
     virtual QAction *actionCutFeatures() = 0;
     virtual QAction *actionCopyFeatures() = 0;
     virtual QAction *actionPasteFeatures() = 0;
-    virtual QAction *actionEditSeparator1() = 0;
+    virtual QAction *actionEditSeparator1() = 0 /Deprecated/;
     virtual QAction *actionCapturePoint() = 0;
     virtual QAction *actionCaptureLine() = 0;
     virtual QAction *actionCapturePolygon() = 0;
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
-    virtual QAction *actionAddVertex() = 0;
-    virtual QAction *actionDeleteVertex() = 0;
-    virtual QAction *actionMoveVertex() = 0;
+    virtual QAction *actionAddVertex() = 0 /Deprecated/;
+    virtual QAction *actionDeleteVertex() = 0 /Deprecated/;
+    virtual QAction *actionMoveVertex() = 0 /Deprecated/;
     virtual QAction *actionAddRing() = 0;
     virtual QAction *actionAddIsland() = 0;
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
     virtual QAction *actionNodeTool() = 0;
-    virtual QAction *actionEditSeparator2() = 0;
+    virtual QAction *actionEditSeparator2() = 0 /Deprecated/;
 
     //! View menu actions
     virtual QAction *actionPan() = 0;
@@ -213,18 +229,18 @@ class QgisInterface : QObject
     virtual QAction *actionIdentify() = 0;
     virtual QAction *actionMeasure() = 0;
     virtual QAction *actionMeasureArea() = 0;
-    virtual QAction *actionViewSeparator1() = 0;
+    virtual QAction *actionViewSeparator1() = 0 /Deprecated/;
     virtual QAction *actionZoomFullExtent() = 0;
     virtual QAction *actionZoomToLayer() = 0;
     virtual QAction *actionZoomToSelected() = 0;
     virtual QAction *actionZoomLast() = 0;
     virtual QAction *actionZoomActualSize() = 0;
-    virtual QAction *actionViewSeparator2() = 0;
+    virtual QAction *actionViewSeparator2() = 0 /Deprecated/;
     virtual QAction *actionMapTips() = 0;
     virtual QAction *actionNewBookmark() = 0;
     virtual QAction *actionShowBookmarks() = 0;
     virtual QAction *actionDraw() = 0;
-    virtual QAction *actionViewSeparator3() = 0;
+    virtual QAction *actionViewSeparator3() = 0 /Deprecated/;
 
     //! Layer menu actions
     virtual QAction *actionNewVectorLayer() = 0;
@@ -232,41 +248,41 @@ class QgisInterface : QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
-    virtual QAction *actionLayerSeparator1() = 0;
+    virtual QAction *actionLayerSeparator1() = 0 /Deprecated/;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionToggleEditing() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
-    virtual QAction *actionLayerSeparator2() = 0;
+    virtual QAction *actionLayerSeparator2() = 0 /Deprecated/;
     virtual QAction *actionAddToOverview() = 0;
     virtual QAction *actionAddAllToOverview() = 0;
     virtual QAction *actionRemoveAllFromOverview() = 0;
-    virtual QAction *actionLayerSeparator3() = 0;
+    virtual QAction *actionLayerSeparator3() = 0 /Deprecated/;
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
 
     //! Plugin menu actions
     virtual QAction *actionManagePlugins() = 0;
-    virtual QAction *actionPluginSeparator1() = 0;
+    virtual QAction *actionPluginSeparator1() = 0 /Deprecated/;
     virtual QAction *actionPluginListSeparator() = 0;
-    virtual QAction *actionPluginSeparator2() = 0;
-    virtual QAction *actionPluginPythonSeparator() = 0;
+    virtual QAction *actionPluginSeparator2() = 0 /Deprecated/;
+    virtual QAction *actionPluginPythonSeparator() = 0 /Deprecated/;
     virtual QAction *actionShowPythonDialog() = 0;
 
     //! Settings menu actions
     virtual QAction *actionToggleFullScreen() = 0;
-    virtual QAction *actionSettingsSeparator1() = 0;
+    virtual QAction *actionSettingsSeparator1() = 0 /Deprecated/;
     virtual QAction *actionOptions() = 0;
     virtual QAction *actionCustomProjection() = 0;
 
     //! Help menu actions
     virtual QAction *actionHelpContents() = 0;
-    virtual QAction *actionHelpSeparator1() = 0;
+    virtual QAction *actionHelpSeparator1() = 0 /Deprecated/;
     virtual QAction *actionQgisHomePage() = 0;
     virtual QAction *actionCheckQgisVersion() = 0;
-    virtual QAction *actionHelpSeparator2() = 0;
+    virtual QAction *actionHelpSeparator2() = 0 /Deprecated/;
     virtual QAction *actionAbout() = 0;
 
     //! open feature form
@@ -312,4 +328,3 @@ class QgisInterface : QObject
       */
      void newProjectCreated();
 };
-

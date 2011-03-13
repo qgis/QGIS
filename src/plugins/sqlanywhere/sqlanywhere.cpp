@@ -83,13 +83,10 @@ void SqlAnywhere::initGui()
   connect( mActionAddSqlAnywhereLayer, SIGNAL( triggered() ), this, SLOT( addSqlAnywhereLayer() ) );
 
   // Add the icon to the new layers toolbar
-  //  mQGisIface->addToolBarIcon( mActionAddSqlAnywhereLayer );
-  mQGisIface->layerToolBar()->addAction( mActionAddSqlAnywhereLayer );
+  // mQGisIface->addToolBarIcon( mActionAddSqlAnywhereLayer );
 
-  // Add menu option to Plugins menu
-  mQGisIface->addPluginToMenu( tr( "&SQL Anywhere" ), mActionAddSqlAnywhereLayer );
-  // Also add to Layer menu, immediately before the first separator
-  mQGisIface->layerMenu()->insertAction( mQGisIface->actionLayerSeparator1(), mActionAddSqlAnywhereLayer );
+  // Also add to Layer menu
+  mQGisIface->addAddLayer( mActionAddSqlAnywhereLayer );
 }
 
 //method defined in interface
@@ -184,10 +181,8 @@ void SqlAnywhere::addSqlAnywhereLayer()
 // Unload the plugin and clean up the GUI
 void SqlAnywhere::unload()
 {
-  mQGisIface->removePluginMenu( "&SQL Anywhere", mActionAddSqlAnywhereLayer );
-  mQGisIface->layerMenu()->removeAction( mActionAddSqlAnywhereLayer );
-  //mQGisIface->removeToolBarIcon( mActionAddSqlAnywhereLayer );
-  mQGisIface->layerToolBar()->removeAction( mActionAddSqlAnywhereLayer );
+  // mQGisIface->removeToolBarIcon( mActionAddSqlAnywhereLayer );
+  mQGisIface->removeAddLayer( mActionAddSqlAnywhereLayer );
   delete mActionAddSqlAnywhereLayer;
 }
 

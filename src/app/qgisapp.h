@@ -493,7 +493,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
     void zoomActualSize();
-    /** Perform a local histogram stretch on the active raster layer 
+    /** Perform a local histogram stretch on the active raster layer
      * (stretch based on pixel values in view extent).
      * Valid for non wms raster layers only.
      * @note Added in QGIS 1.7 */
@@ -519,6 +519,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToDatabaseMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the Database menu
     void removePluginDatabaseMenu( QString name, QAction* action );
+    //! Add "add layer" action to layer menu
+    void addAddLayer( QAction* action );
+    //! Remove "add layer" action to layer menu
+    void removeAddLayer( QAction* action );
     //! Add an icon to the plugin toolbar
     int addPluginToolBarIcon( QAction * qAction );
     //! Remove an icon from the plugin toolbar
