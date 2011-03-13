@@ -18,13 +18,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_rasterize")
 
+      # set the default QSpinBoxes and QProgressBar value
+      self.widthSpin.setValue(3000)
+      self.heightSpin.setValue(3000)
+
       self.lastEncoding = Utils.getLastUsedEncoding()
 
       self.setParamsStatus(
         [
           (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
-          (self.attributeComboBox, SIGNAL("currentIndexChanged(int)"))
+          (self.attributeComboBox, SIGNAL("currentIndexChanged(int)")),
+          ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox, "1.8.0" ),
         ]
       )
 
@@ -63,18 +68,34 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      outputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+
+      # rasterize supports output file creation for GDAL 1.8
+      gdalVersion = Utils.GdalConfig.version()
+      fileDialogFunc = Utils.FileDialog.getSaveFileName
+      if gdalVersion < "1.8.0":
+        fileDialogFunc = Utils.FileDialog.getOpenFileName
+      outputFile = fileDialogFunc(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
       if outputFile.isEmpty():
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFileEdit.setText(outputFile)
 
+      # required either -ts or -tr to create the output file 
+      if gdalVersion >= "1.8.0":
+        if not QFileInfo(outputFile).exists():
+          QMessageBox.information( self, self.tr( "Output size required" ), self.tr( "The output file doesn't exist. You must set up the output size to create it." ) )
+          self.resizeGroupBox.setChecked(True)
+
   def getArguments(self):
       arguments = QStringList()
       if self.attributeComboBox.currentIndex() >= 0:
         arguments << "-a"
         arguments << self.attributeComboBox.currentText()
+      if self.resizeGroupBox.isChecked():
+        arguments << "-ts"
+        arguments << str( self.widthSpin.value() )
+        arguments << str( self.heightSpin.value() )
       if self.inputLayerCombo.currentIndex() >= 0:
         arguments << "-l"
         arguments << QFileInfo(self.layers[ self.inputLayerCombo.currentIndex() ].source()).baseName()
