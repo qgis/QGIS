@@ -376,7 +376,7 @@ public:
     QPixmap paletteAsPixmap( int theBand = 1 );
 
     /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
-    QString providerKey();
+    QString providerKey() const;
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
