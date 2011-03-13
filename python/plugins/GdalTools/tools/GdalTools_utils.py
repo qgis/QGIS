@@ -98,7 +98,9 @@ def getRasterLayers():
   layerMap = QgsMapLayerRegistry.instance().mapLayers()
   for name, layer in layerMap.iteritems():
     # only raster layers, but not WMS ones
-    if layer.type() == layer.RasterLayer and ( not layer.usesProvider() ):
+    if layer.type() == layer.RasterLayer:
+      if layer.usesProvider() and layer.providerKey() != 'gdal':
+        continue
       layers[count] = layer
       names.append(layer.name())
       count = count +1

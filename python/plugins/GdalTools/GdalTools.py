@@ -89,7 +89,7 @@ class GdalTools:
     rasterText = QCoreApplication.translate( "QgisApp", "&Raster" )
 
     for a in actions:
-        if a.menu().title() == rasterText:
+        if a.menu() != None and a.menu().title() == rasterText:
             rasterMenu = a.menu()
             break
 
