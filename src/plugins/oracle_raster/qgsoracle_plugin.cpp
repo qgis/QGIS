@@ -61,7 +61,7 @@ void QgsOraclePlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addAddLayer( mQActionPointer );
+  mQGisIface->insertAddLayerAction( mQActionPointer );
 
 }
 //method defined in interface

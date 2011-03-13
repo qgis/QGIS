@@ -98,7 +98,7 @@ class QgisInterface : QObject
     /** Add "add layer" action to the layer menu
      * @note added in 1.7
      */
-    virtual void addAddLayer( QAction* action )=0;
+    virtual void insertAddLayerAction( QAction* action )=0;
 
     /** Remove "add layer" action from the layer menu
      * @note added in 1.7
