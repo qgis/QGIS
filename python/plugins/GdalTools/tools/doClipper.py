@@ -59,12 +59,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       for i in range(self.canvas.layerCount()-1, -1, -1): 
         layer = self.canvas.layer(i) 
         # only raster layers, but not WMS ones
-        if layer.type() == layer.RasterLayer and ( not layer.usesProvider() ):
-            # do not use the output file as input
-            if layer.source() == self.outputFileEdit.text():
-              continue
+        if layer.type() == layer.RasterLayer:
+          if layer.usesProvider() and layer.providerKey() != 'gdal':
+            continue
 
-            self.inputFiles << layer.source()
+        # do not use the output file as input
+        if layer.source() == self.outputFileEdit.text():
+          continue
+        self.inputFiles << layer.source()
 
       if self.inputFiles.isEmpty():
         self.extentSelector.stop()
