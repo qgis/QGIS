@@ -522,7 +522,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction* action );
     //! Remove "add layer" action to layer menu
-    void removeAddLayer( QAction* action );
+    void removeAddLayerAction( QAction* action );
     //! Add an icon to the plugin toolbar
     int addPluginToolBarIcon( QAction * qAction );
     //! Remove an icon from the plugin toolbar

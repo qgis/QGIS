@@ -90,7 +90,7 @@ void QgsOraclePlugin::unload()
 {
   // remove the GUI
   mQGisIface->removeToolBarIcon( mQActionPointer );
-  mQGisIface->removeAddLayer( mQActionPointer );
+  mQGisIface->removeAddLayerAction( mQActionPointer );
   delete mQActionPointer;
 }
 

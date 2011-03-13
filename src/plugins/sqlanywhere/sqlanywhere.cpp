@@ -182,7 +182,7 @@ void SqlAnywhere::addSqlAnywhereLayer()
 void SqlAnywhere::unload()
 {
   // mQGisIface->removeToolBarIcon( mActionAddSqlAnywhereLayer );
-  mQGisIface->removeAddLayer( mActionAddSqlAnywhereLayer );
+  mQGisIface->removeAddLayerAction( mActionAddSqlAnywhereLayer );
   delete mActionAddSqlAnywhereLayer;
 }
 

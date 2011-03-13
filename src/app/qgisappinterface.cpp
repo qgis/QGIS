@@ -145,9 +145,9 @@ void QgisAppInterface::insertAddLayerAction( QAction *action )
   qgis->insertAddLayerAction( action );
 }
 
-void QgisAppInterface::removeAddLayer( QAction *action )
+void QgisAppInterface::removeAddLayerAction( QAction *action )
 {
-  qgis->removeAddLayer( action );
+  qgis->removeAddLayerAction( action );
 }
 
 void QgisAppInterface::removePluginMenu( QString name, QAction* action )
