@@ -143,7 +143,7 @@ void QgsDelimitedTextPlugin::drawVectorLayer( QString thePathNameQString,
 void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removeAddLayer( myQActionPointer );
+  qGisInterface->removeAddLayerAction( myQActionPointer );
   qGisInterface->removeToolBarIcon( myQActionPointer );
   delete myQActionPointer;
 }

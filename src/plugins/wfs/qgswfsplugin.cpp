@@ -63,7 +63,7 @@ void QgsWFSPlugin::initGui()
 void QgsWFSPlugin::unload()
 {
   mIface->removeToolBarIcon( mWfsDialogAction );
-  mIface->removeAddLayer( mWfsDialogAction );
+  mIface->removeAddLayerAction( mWfsDialogAction );
   delete mWfsDialogAction;
   mWfsDialogAction = 0;
 }

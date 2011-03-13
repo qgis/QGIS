@@ -144,7 +144,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Remove "add layer" action from layer menu
      * @note added in 1.7
      */
-    virtual void removeAddLayer( QAction *action ) = 0;
+    virtual void removeAddLayerAction( QAction *action ) = 0;
 
     /** Add action to the Database menu
      * @note added in 1.7

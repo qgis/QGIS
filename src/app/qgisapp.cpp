@@ -5304,7 +5304,7 @@ void QgisApp::insertAddLayerAction( QAction *action )
   mLayerMenu->insertAction( mActionAddLayerSeparator, action );
 }
 
-void QgisApp::removeAddLayer( QAction *action )
+void QgisApp::removeAddLayerAction( QAction *action )
 {
   mLayerMenu->removeAction( action );
 }

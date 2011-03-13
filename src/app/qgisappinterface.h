@@ -120,7 +120,7 @@ class QgisAppInterface : public QgisInterface
     /** Add "add layer" action to the layer menu */
     void insertAddLayerAction( QAction *action );
     /** remove "add layer" action from the layer menu */
-    void removeAddLayer( QAction *action );
+    void removeAddLayerAction( QAction *action );
 
     /** Add a dock widget to the main window */
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
