@@ -184,9 +184,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           arguments << "-co"
           arguments << opt
       if self.outsizeCheck.isChecked() and self.outsizeSpin.value() != 100:
-              arguments << "-outsize"
-              arguments << self.outsizeSpin.text()
-              arguments << self.outsizeSpin.text()
+          arguments << "-outsize"
+          arguments << self.outsizeSpin.text()
+          arguments << self.outsizeSpin.text()
       if self.expandCheck.isChecked():
           arguments << "-expand"
           arguments << self.expand_method[self.expandCombo.currentIndex()]

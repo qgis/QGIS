@@ -25,8 +25,8 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
           #( self.recurseCheck, SIGNAL( "stateChanged( int )" ),
           ( self.outputFileEdit, SIGNAL( "textChanged( const QString & )" ) ),
           ( self.indexFieldEdit, SIGNAL( "textChanged( const QString & )" ), self.indexFieldCheck),
-          ( self.absolutePathCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.skipDifferentProjCheck, SIGNAL( "stateChanged( int )" ) )
+          ( self.absolutePathCheck, SIGNAL( "stateChanged( int )" ), None, "1.5.0" ),
+          ( self.skipDifferentProjCheck, SIGNAL( "stateChanged( int )" ), None, "1.5.0" )
         ]
       )
 
