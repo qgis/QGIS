@@ -144,6 +144,7 @@
     <file>themes/default/mActionUndo.png</file>
     <file>themes/default/mActionUngroupItems.png</file>
     <file>themes/default/mActionUnselectAttributes.png</file>
+    <file>themes/default/mActionZoomActual.png</file>
     <file>themes/default/mActionZoomFullExtent.png</file>
     <file>themes/default/mActionZoomIn.png</file>
     <file>themes/default/mActionZoomLast.png</file>
@@ -309,6 +310,7 @@
     <file>themes/gis/mActionUndo.png</file>
     <file>themes/gis/mActionUngroupItems.png</file>
     <file>themes/gis/mActionUnselectAttributes.png</file>
+    <file>themes/gis/mActionZoomActual.png</file>
     <file>themes/gis/mActionZoomFullExtent.png</file>
     <file>themes/gis/mActionZoomIn.png</file>
     <file>themes/gis/mActionZoomLast.png</file>

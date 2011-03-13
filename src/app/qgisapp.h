@@ -493,9 +493,15 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
     void zoomActualSize();
-    //! perform a local histogram stretch on the active raster layer (stretch based on pixel values in view extent)
+    /** Perform a local histogram stretch on the active raster layer 
+     * (stretch based on pixel values in view extent).
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 1.7 */
     void localHistogramStretch();
-    //! perform a full histogram stretch on the active raster layer (stretch based on pixels values in full dataset)
+    /** perform a full histogram stretch on the active raster layer
+     * (stretch based on pixels values in full dataset)
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 1.7 */
     void fullHistogramStretch();
     //! plugin manager
     void showPluginManager();

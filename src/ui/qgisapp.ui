@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>481</height>
+    <width>1054</width>
+    <height>491</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>750</width>
+     <width>1054</width>
      <height>25</height>
     </rect>
    </property>
@@ -300,6 +300,7 @@
    <addaction name="mActionPan"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomFullExtent"/>
    <addaction name="mActionZoomToSelected"/>
    <addaction name="mActionZoomToLayer"/>
@@ -945,8 +946,15 @@
    </property>
   </action>
   <action name="mActionZoomActualSize">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomActual.png</normaloff>:/images/themes/default/mActionZoomActual.png</iconset>
+   </property>
    <property name="text">
     <string>Zoom Actual Size</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom to Native Pixel Resolution</string>
    </property>
   </action>
   <action name="mActionMapTips">

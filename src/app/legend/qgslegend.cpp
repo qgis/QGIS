@@ -1792,10 +1792,10 @@ void QgsLegend::legendLayerZoomNative()
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixel() ) );
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
 
-    mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / mMapCanvas->mapUnitsPerPixel() ) );
-    mMapCanvas->refresh();
-
-    QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
+   layer->setCacheImage( NULL );
+   mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / mMapCanvas->mapUnitsPerPixel() ) );
+   mMapCanvas->refresh();
+   QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
   }
 }
 

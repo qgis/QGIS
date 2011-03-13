@@ -1358,6 +1358,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.png" ) );
+  mActionZoomActualSize->setIcon( getThemeIcon( "/mActionZoomNative.png" ) );
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
   mActionSponsors->setIcon( getThemeIcon( "/mActionHelpSponsors.png" ) );
@@ -1398,6 +1399,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.png" ) );
   mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.png" ) );
   mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
+  mActionZoomActualSize->setIcon( getThemeIcon( "/mActionZoomActual.png" ) );
   mActionIdentify->setIcon( getThemeIcon( "/mActionIdentify.png" ) );
   mActionSelect->setIcon( getThemeIcon( "/mActionSelect.png" ) );
   mActionSelectRectangle->setIcon( getThemeIcon( "/mActionSelectRectangle.png" ) );
@@ -4858,6 +4860,10 @@ void QgisApp::fullHistogramStretch()
                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
     return;
   }
+  if ( rlayer->providerKey() == "wms" )
+  {
+    return; 
+  }
   if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
        rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray ||
        rlayer->drawingStyle() == QgsRasterLayer::MultiBandColor
@@ -4923,6 +4929,7 @@ void QgisApp::localHistogramStretch()
     return;
   }
 }
+
 
 void QgisApp::helpContents()
 {
@@ -5675,7 +5682,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
     mActionIdentify->setEnabled( QSettings().value( "/Map/identifyMode", 0 ).toInt() != 0 );
-    mActionZoomActualSize->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionSaveEdits->setEnabled( false );
@@ -5718,7 +5724,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
-
+    mActionZoomActualSize->setEnabled( false );
     return;
   }
 
@@ -5734,6 +5740,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
+    mActionZoomActualSize->setEnabled( false );
 
     mActionSelect->setEnabled( true );
     mActionSelectRectangle->setEnabled( true );
@@ -5741,7 +5748,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectFreehand->setEnabled( true );
     mActionSelectRadius->setEnabled( true );
     mActionIdentify->setEnabled( true );
-    mActionZoomActualSize->setEnabled( false );
     mActionOpenTable->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
@@ -5962,8 +5968,17 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    mActionLocalHistogramStretch->setEnabled( true );
-    mActionFullHistogramStretch->setEnabled( true );
+    const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
+    if ( rlayer->providerKey() == "wms" )
+    {
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+    }
+    else
+    {
+      mActionLocalHistogramStretch->setEnabled( true );
+      mActionFullHistogramStretch->setEnabled( true );
+    }
     mActionLayerSubsetString->setEnabled( false );
     mActionSelect->setEnabled( false );
     mActionSelectRectangle->setEnabled( false );
