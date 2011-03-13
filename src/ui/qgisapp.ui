@@ -1211,7 +1211,7 @@
   </action>
   <action name="mActionSetProjectCRSFromLayer">
    <property name="text">
-    <string>Assign layer CRS to project</string>
+    <string>Set project CRS from layer</string>
    </property>
   </action>
   <action name="mActionTileScale">

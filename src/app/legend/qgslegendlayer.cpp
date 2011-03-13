@@ -435,7 +435,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
   
   // assign layer crs to project
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Assign layer CRS to &project" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &project CRS from layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
   theMenu.addSeparator();
 
