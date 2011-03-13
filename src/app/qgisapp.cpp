@@ -5299,7 +5299,7 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
   return menu;
 }
 
-void QgisApp::addAddLayer( QAction *action )
+void QgisApp::insertAddLayerAction( QAction *action )
 {
   mLayerMenu->insertAction( mActionAddLayerSeparator, action );
 }

@@ -54,7 +54,7 @@ void QgsWFSPlugin::initGui()
     setCurrentTheme( "" );
     QObject::connect( mWfsDialogAction, SIGNAL( triggered() ), this, SLOT( showSourceDialog() ) );
     mIface->layerToolBar()->addAction( mWfsDialogAction );
-    mIface->addAddLayer( mWfsDialogAction );
+    mIface->insertAddLayerAction( mWfsDialogAction );
     // this is called when the icon theme is changed
     connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }

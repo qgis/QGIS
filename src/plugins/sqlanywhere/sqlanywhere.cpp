@@ -86,7 +86,7 @@ void SqlAnywhere::initGui()
   // mQGisIface->addToolBarIcon( mActionAddSqlAnywhereLayer );
 
   // Also add to Layer menu
-  mQGisIface->addAddLayer( mActionAddSqlAnywhereLayer );
+  mQGisIface->insertAddLayerAction( mActionAddSqlAnywhereLayer );
 }
 
 //method defined in interface

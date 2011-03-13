@@ -520,7 +520,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Remove the action to the submenu with the given name under the Database menu
     void removePluginDatabaseMenu( QString name, QAction* action );
     //! Add "add layer" action to layer menu
-    void addAddLayer( QAction* action );
+    void insertAddLayerAction( QAction* action );
     //! Remove "add layer" action to layer menu
     void removeAddLayer( QAction* action );
     //! Add an icon to the plugin toolbar

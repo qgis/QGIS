@@ -109,7 +109,7 @@ void QgsDelimitedTextPlugin::initGui()
   connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addAddLayer( myQActionPointer );
+  qGisInterface->insertAddLayerAction( myQActionPointer );
   // this is called when the icon theme is changed
   connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 

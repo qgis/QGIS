@@ -139,7 +139,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Add "add layer" action to layer menu
      * @note added in 1.7
      */
-    virtual void addAddLayer( QAction *action ) = 0;
+    virtual void insertAddLayerAction( QAction *action ) = 0;
 
     /** Remove "add layer" action from layer menu
      * @note added in 1.7
