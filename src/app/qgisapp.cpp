@@ -4862,7 +4862,7 @@ void QgisApp::fullHistogramStretch()
   }
   if ( rlayer->providerKey() == "wms" )
   {
-    return; 
+    return;
   }
   if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
        rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray ||
@@ -5297,6 +5297,16 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
     mDatabaseMenu->addMenu( menu );
 
   return menu;
+}
+
+void QgisApp::addAddLayer( QAction *action )
+{
+  mLayerMenu->insertAction( mActionAddLayerSeparator, action );
+}
+
+void QgisApp::removeAddLayer( QAction *action )
+{
+  mLayerMenu->removeAction( action );
 }
 
 void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )

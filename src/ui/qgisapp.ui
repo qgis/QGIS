@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1054</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -139,6 +139,7 @@
     <addaction name="mActionAddPgLayer"/>
     <addaction name="mActionAddSpatiaLiteLayer"/>
     <addaction name="mActionAddWmsLayer"/>
+    <addaction name="mActionAddLayerSeparator"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionSaveEdits"/>
@@ -1476,6 +1477,20 @@
    </property>
    <property name="toolTip">
     <string>Stretch histogram to full dataset</string>
+   </property>
+  </action>
+  <action name="mActionAddLayerSeparator">
+   <property name="text">
+    <string notr="true">More Add Layer actions here</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">More Add Layer actions here</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">More Add Layer actions here</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

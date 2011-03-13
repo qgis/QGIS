@@ -136,18 +136,32 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Remove action from the plugins menu */
     virtual void removePluginMenu( QString name, QAction* action ) = 0;
 
+    /** Add "add layer" action to layer menu
+     * @note added in 1.7
+     */
+    virtual void addAddLayer( QAction *action ) = 0;
+
+    /** Remove "add layer" action from layer menu
+     * @note added in 1.7
+     */
+    virtual void removeAddLayer( QAction *action ) = 0;
+
     /** Add action to the Database menu
      * @note added in 1.7
      */
     virtual void addPluginToDatabaseMenu( QString name, QAction* action ) = 0;
 
-    /** Remove action from the Database menu */
+    /** Remove action from the Database menu
+     * @note added in 1.7
+     */
     virtual void removePluginDatabaseMenu( QString name, QAction* action ) = 0;
 
     /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
 
-    /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
+    /** Remove specified dock widget from main window (doesn't delete it).
+     * @note Added in 1.1
+     */
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
 
     /** refresh the legend of a layer
@@ -228,14 +242,26 @@ class GUI_EXPORT QgisInterface : public QObject
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionFileSeparator1() = 0;
     virtual QAction *actionSaveProject() = 0;
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionFileSeparator2() = 0;
     virtual QAction *actionProjectProperties() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionFileSeparator3() = 0;
     virtual QAction *actionPrintComposer() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionFileSeparator4() = 0;
     virtual QAction *actionExit() = 0;
 
@@ -243,6 +269,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionCutFeatures() = 0;
     virtual QAction *actionCopyFeatures() = 0;
     virtual QAction *actionPasteFeatures() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionEditSeparator1() = 0;
     virtual QAction *actionCapturePoint() = 0;
     virtual QAction *actionCaptureLine() = 0;
@@ -250,8 +279,17 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionAddVertex() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionDeleteVertex() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionMoveVertex() = 0;
     virtual QAction *actionAddRing() = 0;
     virtual QAction *actionAddIsland() = 0;
@@ -259,6 +297,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
     virtual QAction *actionNodeTool() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionEditSeparator2() = 0;
 
     //! View menu actions
@@ -273,17 +314,26 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionIdentify() = 0;
     virtual QAction *actionMeasure() = 0;
     virtual QAction *actionMeasureArea() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionViewSeparator1() = 0;
     virtual QAction *actionZoomFullExtent() = 0;
     virtual QAction *actionZoomToLayer() = 0;
     virtual QAction *actionZoomToSelected() = 0;
     virtual QAction *actionZoomLast() = 0;
     virtual QAction *actionZoomActualSize() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionViewSeparator2() = 0;
     virtual QAction *actionMapTips() = 0;
     virtual QAction *actionNewBookmark() = 0;
     virtual QAction *actionShowBookmarks() = 0;
     virtual QAction *actionDraw() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionViewSeparator3() = 0;
 
     //! Layer menu actions
@@ -292,6 +342,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionLayerSeparator1() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionToggleEditing() = 0;
@@ -299,33 +352,54 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionLayerSeparator2() = 0;
     virtual QAction *actionAddToOverview() = 0;
     virtual QAction *actionAddAllToOverview() = 0;
     virtual QAction *actionRemoveAllFromOverview() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionLayerSeparator3() = 0;
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
 
     //! Plugin menu actions
     virtual QAction *actionManagePlugins() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionPluginSeparator1() = 0;
     virtual QAction *actionPluginListSeparator() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionPluginSeparator2() = 0;
     virtual QAction *actionPluginPythonSeparator() = 0;
     virtual QAction *actionShowPythonDialog() = 0;
 
     //! Settings menu actions
     virtual QAction *actionToggleFullScreen() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionSettingsSeparator1() = 0;
     virtual QAction *actionOptions() = 0;
     virtual QAction *actionCustomProjection() = 0;
 
     //! Help menu actions
     virtual QAction *actionHelpContents() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionHelpSeparator1() = 0;
     virtual QAction *actionQgisHomePage() = 0;
     virtual QAction *actionCheckQgisVersion() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionHelpSeparator2() = 0;
     virtual QAction *actionAbout() = 0;
 
@@ -340,13 +414,16 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void currentLayerChanged( QgsMapLayer * layer );
     /**This signal is emitted when a new composer instance has been created
-       @note added in version 1.4*/
+      * @note added in 1.4
+      */
     void composerAdded( QgsComposerView* v );
     /**This signal is emitted before a new composer instance is going to be removed
-       @note added in version 1.4*/
+      *  @note added in 1.4
+      */
     void composerWillBeRemoved( QgsComposerView* v );
     /**This signal is emitted when the initialization is complete
-       @note added in version 1.6*/
+      * @note added in version 1.6
+      */
     void initializationCompleted();
     /** emitted when a project file is successfully read
         @note

@@ -117,6 +117,11 @@ class QgisAppInterface : public QgisInterface
     /** Remove action from the Database menu */
     void removePluginDatabaseMenu( QString name, QAction* action );
 
+    /** Add "add layer" action to the layer menu */
+    void addAddLayer( QAction *action );
+    /** remove "add layer" action from the layer menu */
+    void removeAddLayer( QAction *action );
+
     /** Add a dock widget to the main window */
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
 

@@ -54,14 +54,14 @@ void QgsOraclePlugin::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleplugin.png" ), tr( "Select Oracle GeoRaster" ), this );
+  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleplugin.png" ), tr( "Add Oracle GeoRaster Layer..." ), this );
   // Set the what's this text
-  mQActionPointer->setWhatsThis( tr( "Open a Oracle Spatial GeoRaster" ) );
+  mQActionPointer->setWhatsThis( tr( "Add a Oracle Spatial GeoRaster..." ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToDatabaseMenu( tr( "&Oracle Spatial" ), mQActionPointer );
+  mQGisIface->addAddLayer( mQActionPointer );
 
 }
 //method defined in interface
@@ -89,8 +89,8 @@ void QgsOraclePlugin::run()
 void QgsOraclePlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginDatabaseMenu( "&Oracle Spatial", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removeAddLayer( mQActionPointer );
   delete mQActionPointer;
 }
 

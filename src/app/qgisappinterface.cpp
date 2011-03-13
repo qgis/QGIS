@@ -140,6 +140,16 @@ void QgisAppInterface::addPluginToMenu( QString name, QAction* action )
   qgis->addPluginToMenu( name, action );
 }
 
+void QgisAppInterface::addAddLayer( QAction *action )
+{
+  qgis->addAddLayer( action );
+}
+
+void QgisAppInterface::removeAddLayer( QAction *action )
+{
+  qgis->removeAddLayer( action );
+}
+
 void QgisAppInterface::removePluginMenu( QString name, QAction* action )
 {
   qgis->removePluginMenu( name, action );
