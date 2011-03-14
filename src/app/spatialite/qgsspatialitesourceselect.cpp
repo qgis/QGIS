@@ -887,25 +887,11 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
   QSettings settings;
   // If possible, set the item currently displayed database
   QString toSelect = settings.value( "/SpatiaLite/connections/selected" ).toString();
-  // Does toSelect exist in cmbConnections?
-  bool set = false;
-  for ( int i = 0; i < cmbConnections->count(); ++i )
-    if ( cmbConnections->itemText( i ) == toSelect )
-    {
-      cmbConnections->setCurrentIndex( i );
-      set = true;
-      break;
-    }
-  // If we couldn't find the stored item, but there are some,
-  // default to the last item (this makes some sense when deleting
-  // items as it allows the user to repeatidly click on delete to
-  // remove a whole lot of items).
-  if ( !set && cmbConnections->count() > 0 )
+
+  cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
+
+  if ( cmbConnections->currentIndex() < 0 )
   {
-    // If toSelect is null, then the selected connection wasn't found
-    // by QSettings, which probably means that this is the first time
-    // the user has used qgis with database connections, so default to
-    // the first in the list of connetions. Otherwise default to the last.
     if ( toSelect.isNull() )
       cmbConnections->setCurrentIndex( 0 );
     else

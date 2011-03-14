@@ -92,5 +92,7 @@ void QgsNewHttpConnection::accept()
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
 
+  settings.setValue( mBaseKey + "/selected", txtName->text() );
+
   QDialog::accept();
 }
