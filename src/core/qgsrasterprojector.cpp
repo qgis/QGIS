@@ -363,7 +363,7 @@ bool QgsRasterProjector::calcRow( int theRow )
 
 bool QgsRasterProjector::calcCol( int theCol )
 {
-  QgsDebugMsg( QString( "theCol = %1" ).arg( theCol ) );
+  QgsDebugMsgLevel( QString( "theCol = %1" ).arg( theCol ), 3 );
   for ( int i = 0; i < mCPRows; i++ )
   {
     calcCP( i, theCol );
