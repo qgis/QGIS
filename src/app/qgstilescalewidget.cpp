@@ -36,25 +36,34 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
 {
   QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
 
-  if ( !rl || rl->providerKey() != "wms" || !rl->publicSource().contains( "tiled=" ) )
+  mResolutions.clear();
+  mSlider->setDisabled( true );
+
+  if ( !rl || rl->providerKey() != "wms" )
+    return;
+
+  QString uri = rl->source();
+  int tiledpos = uri.indexOf( "tiled=" );
+  int urlpos = uri.indexOf( "url=" );
+
+  if ( tiledpos >= 0 && urlpos >= 0 && urlpos > tiledpos )
   {
-    mResolutions.clear();
-    mSlider->setDisabled( true );
-  }
-  else
-  {
-    QString uri = rl->publicSource().mid( rl->publicSource().indexOf( "tiled=" ) + 6 );
+    uri = uri.mid( tiledpos + 6 );
     int pos = uri.indexOf( "," );
     if ( pos >= 0 )
       uri = uri.left( pos );
     QStringList params = uri.split( ";" );
+    if ( params.size() < 3 )
+      return;
 
     params.takeFirst();
     params.takeFirst();
 
     mResolutions.clear();
     foreach( QString r, params )
-    mResolutions << r.toDouble();
+    {
+      mResolutions << r.toDouble();
+    }
     qSort( mResolutions );
 
     for ( int i = 0; i < mResolutions.size(); i++ )
