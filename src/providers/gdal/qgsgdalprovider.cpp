@@ -114,15 +114,6 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() ) return;
 
-  // Initialise the affine transform matrix
-  mGeoTransform[0] =  0;
-  mGeoTransform[1] =  1;
-  mGeoTransform[2] =  0;
-  mGeoTransform[3] =  0;
-  mGeoTransform[4] =  0;
-  mGeoTransform[5] = -1;
-
-
   mGdalDataset = NULL;
 
   //mGdalBaseDataset = GDALOpen( QFile::encodeName( uri ).constData(), GA_ReadOnly );
@@ -173,9 +164,6 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   
   if (!hasGeoTransform)
   {
-    mWidth = GDALGetRasterXSize( mGdalDataset );
-    mHeight = GDALGetRasterYSize( mGdalDataset );
-
     // Initialise the affine transform matrix
     mGeoTransform[0] =  0;
     mGeoTransform[1] =  1;
