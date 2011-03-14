@@ -20,6 +20,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QUrl>
+#include <QPushButton>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
   QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl ):
@@ -42,12 +43,18 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     txtUrl->setText( settings.value( key + "/url" ).toString() );
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
-
   }
+
+  on_txtName_textChanged( connName );
 }
 
 QgsNewHttpConnection::~QgsNewHttpConnection()
 {
+}
+
+void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )
+{
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( text.isEmpty() );
 }
 
 void QgsNewHttpConnection::accept()
