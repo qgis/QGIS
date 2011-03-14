@@ -37,7 +37,8 @@ class QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnecti
     enum Type
     {
       WMS,
-      PostGIS
+      PostGIS,
+      WFS,
     };
 
     // constructor
@@ -53,8 +54,10 @@ class QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnecti
   private:
     bool populateConnections();
     QDomDocument saveWMSConnections( const QStringList &connections );
+    QDomDocument saveWFSConnections( const QStringList &connections );
     QDomDocument savePgConnections( const QStringList & connections );
     void loadWMSConnections( const QDomDocument &doc, const QStringList &items );
+    void loadWFSConnections( const QDomDocument &doc, const QStringList &items );
     void loadPgConnections( const QDomDocument &doc, const QStringList &items );
 
     QString mFileName;

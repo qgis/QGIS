@@ -67,6 +67,9 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void capabilitiesReplyFinished();
     void capabilitiesReplyProgress( qint64, qint64 );
 
+    void saveClicked();
+    void loadClicked();
+
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 

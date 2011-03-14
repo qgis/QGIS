@@ -6,6 +6,7 @@ SET (WFS_SRCS
      qgswfsplugin.cpp
      qgswfssourceselect.cpp
      ../../app/qgsnewhttpconnection.cpp
+     ../../app/qgsmanageconnectionsdialog.cpp
 )
 
 SET (WFS_UIS qgswfssourceselectbase.ui)
@@ -14,6 +15,7 @@ SET (WFS_MOC_HDRS
      qgswfsplugin.h
      qgswfssourceselect.h
      ../../app/qgsnewhttpconnection.h
+     ../../app/qgsmanageconnectionsdialog.h
 )
 
 SET (WFS_RCCS  wfsplugin.qrc)

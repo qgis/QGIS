@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h" //for current view extent
 #include "qgsnetworkaccessmanager.h"
+#include "qgsmanageconnectionsdialog.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -32,6 +33,7 @@
 #include <QSettings>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QFileDialog>
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
@@ -43,6 +45,16 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface )
   setupUi( this );
   btnAdd = buttonBox->button( QDialogButtonBox::Ok );
   btnAdd->setEnabled( false );
+
+  QPushButton *pb = new QPushButton( tr( "&Save" ) );
+  pb->setToolTip( tr( "Save WFS server connections to file" ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
+
+  pb = new QPushButton( tr( "&Load" ) );
+  pb->setToolTip( tr( "Load WFS server connections from file" ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( loadClicked() ) );
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -455,4 +467,24 @@ void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 {
   QSettings s;
   s.setValue( "/Qgis/connections-wfs/selected", cmbConnections->currentText() );
+}
+
+void QgsWFSSourceSelect::saveClicked()
+{
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WFS );
+  dlg.exec();
+}
+
+void QgsWFSSourceSelect::loadClicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+                     tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WFS, fileName );
+  dlg.exec();
+  populateConnectionList();
 }

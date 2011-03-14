@@ -98,13 +98,17 @@ void QgsManageConnectionsDialog::doExportImport()
     mFileName = fileName;
 
     QDomDocument doc;
-    if ( mConnectionType == WMS )
+    switch ( mConnectionType )
     {
-      doc = saveWMSConnections( items );
-    }
-    else
-    {
-      doc = savePgConnections( items );
+      case WMS:
+        doc = saveWMSConnections( items );
+        break;
+      case WFS:
+        doc = saveWFSConnections( items );
+        break;
+      case PostGIS:
+        doc = savePgConnections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -147,13 +151,17 @@ void QgsManageConnectionsDialog::doExportImport()
       return;
     }
 
-    if ( mConnectionType == WMS )
+    switch ( mConnectionType )
     {
-      loadWMSConnections( doc, items );
-    }
-    else
-    {
-      loadPgConnections( doc, items );
+      case WMS:
+        loadWMSConnections( doc, items );
+        break;
+      case WFS:
+        loadWFSConnections( doc, items );
+        break;
+      case PostGIS:
+        loadPgConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -169,13 +177,17 @@ bool QgsManageConnectionsDialog::populateConnections()
   if ( mDialogMode == Export )
   {
     QSettings settings;
-    if ( mConnectionType == WMS )
+    switch ( mConnectionType )
     {
-      settings.beginGroup( "/Qgis/connections-wms" );
-    }
-    else
-    {
-      settings.beginGroup( "/PostgreSQL/connections" );
+      case WMS:
+        settings.beginGroup( "/Qgis/connections-wms" );
+        break;
+      case WFS:
+        settings.beginGroup( "/Qgis/connections-wfs" );
+        break;
+      case PostGIS:
+        settings.beginGroup( "/PostgreSQL/connections" );
+        break;
     }
     QStringList keys = settings.childGroups();
     QStringList::Iterator it = keys.begin();
@@ -217,23 +229,34 @@ bool QgsManageConnectionsDialog::populateConnections()
     }
 
     QDomElement root = doc.documentElement();
-    if ( mConnectionType == WMS )
+    switch ( mConnectionType )
     {
-      if ( root.tagName() != "qgsWMSConnections" )
-      {
-        QMessageBox::information( this, tr( "Loading connections" ),
-                                  tr( "The file is not an WMS connections exchange file." ) );
-        return false;
-      }
-    }
-    else
-    {
-      if ( root.tagName() != "qgsPgConnections" )
-      {
-        QMessageBox::information( this, tr( "Loading connections" ),
-                                  tr( "The file is not an PostGIS connections exchange file." ) );
-        return false;
-      }
+      case WMS:
+        if ( root.tagName() != "qgsWMSConnections" )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not an WMS connections exchange file." ) );
+          return false;
+        }
+        break;
+
+      case WFS:
+        if ( root.tagName() != "qgsWFSConnections" )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not an WFS connections exchange file." ) );
+          return false;
+        }
+        break;
+
+      case PostGIS:
+        if ( root.tagName() != "qgsPgConnections" )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not an PostGIS connections exchange file." ) );
+          return false;
+        }
+        break;
     }
 
     QDomElement child = root.firstChildElement();
@@ -265,6 +288,31 @@ QDomDocument QgsManageConnectionsDialog::saveWMSConnections( const QStringList &
     el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
 
     path = "/Qgis/WMS/";
+    el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
+    el.setAttribute( "password", settings.value( path + connections[ i ] + "/password", "" ).toString() );
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveWFSConnections( const QStringList &connections )
+{
+  QDomDocument doc( "connections" );
+  QDomElement root = doc.createElement( "qgsWFSConnections" );
+  root.setAttribute( "version", "1.0" );
+  doc.appendChild( root );
+
+  QSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = "/Qgis/connections-wfs/";
+    QDomElement el = doc.createElement( "wfs" );
+    el.setAttribute( "name", connections[ i ] );
+    el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
+
+    path = "/Qgis/WFS/";
     el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( "password", settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -387,6 +435,81 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
     child = child.nextSiblingElement();
   }
 }
+
+void QgsManageConnectionsDialog::loadWFSConnections( const QDomDocument &doc, const QStringList &items )
+{
+  QDomElement root = doc.documentElement();
+  if ( root.tagName() != "qgsWFSConnections" )
+  {
+    QMessageBox::information( this, tr( "Loading connections" ),
+                              tr( "The file is not an WFS connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QSettings settings;
+  settings.beginGroup( "/Qgis/connections-wfs" );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( "name" );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      int res = QMessageBox::warning( this, tr( "Loading connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
+      {
+        case QMessageBox::Cancel:   return;
+        case QMessageBox::No:       child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:      overwrite = true;
+          break;
+        case QMessageBox::YesToAll: prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:  prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // no dups detected or overwrite is allowed
+    settings.beginGroup( "/Qgis/connections-wfs" );
+    settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
+    settings.endGroup();
+
+    if ( !child.attribute( "username" ).isEmpty() )
+    {
+      settings.beginGroup( "/Qgis/WFS/" + connectionName );
+      settings.setValue( "/username", child.attribute( "username" ) );
+      settings.setValue( "/password", child.attribute( "password" ) );
+      settings.endGroup();
+    }
+    child = child.nextSiblingElement();
+  }
+}
+
 
 void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, const QStringList &items )
 {
