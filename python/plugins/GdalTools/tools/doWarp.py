@@ -40,7 +40,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           (self.cacheSpin, SIGNAL("valueChanged(int)"), self.cacheCheck),
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox ),
           (self.multithreadCheck, SIGNAL("stateChanged(int)")),
-          (self.noDataEdit, SIGNAL( "textChanged( const QString & )" ), self.noDataCheck)
+          (self.noDataEdit, SIGNAL( "textChanged( const QString & )" ), self.noDataCheck), 
+          (self.cutlineLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")], self.cutlineCheck, "1.6.0"), 
+          (self.selectCutlineFileButton, None, self.cutlineCheck, "1.6.0")
         ]
       )
 
@@ -49,6 +51,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
       self.connect(self.selectSourceSRSButton, SIGNAL("clicked()"), self.fillSourceSRSEdit)
       self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
+      self.connect(self.selectCutlineFileButton, SIGNAL("clicked()"), self.fillCutlineFile)
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
 
@@ -90,11 +93,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def onLayersChanged(self):
       self.fillInputLayerCombo()
+      self.fillCutlineLayerCombo()
 
   def fillInputLayerCombo(self):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
+      ( self.inputLayers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
       self.inputLayerCombo.addItems( names )
+
+  def fillCutlineLayerCombo(self):
+      self.cutlineLayerCombo.clear()
+      ( self.cutlineLayers, names ) = Utils.LayerRegistry.instance().getVectorLayers()
+      self.cutlineLayerCombo.addItems( names )
+
 
   def fillInputFile(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -118,6 +128,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
       self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
       self.outputFileEdit.setText(outputFile)
+
+  def fillCutlineFile(self):
+      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+      cutlineFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the cutline file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
+      if cutlineFile.isEmpty():
+        return
+      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+
+      self.cutlineLayerCombo.setCurrentIndex(-1)
+      self.cutlineLayerCombo.setEditText(cutlineFile)
+
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Warp" ))
@@ -187,6 +208,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         if not nodata.isEmpty():
           arguments << "-dstnodata"
           arguments << nodata
+      if self.cutlineCheck.isChecked():
+        cutline = self.getCutlineFileName()
+        if not cutline.isEmpty():
+          arguments << "-q"
+          arguments << "-cutline"
+          arguments << cutline
+          arguments << "-dstalpha"
       if self.isBatchEnabled():
         return arguments
 
@@ -199,11 +227,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def getInputFileName(self):
       if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[self.inputLayerCombo.currentIndex()].source()
+        return self.inputLayers[self.inputLayerCombo.currentIndex()].source()
       return self.inputLayerCombo.currentText()
 
   def getOutputFileName(self):
       return self.outputFileEdit.text()
+
+  def getCutlineFileName(self):
+      if self.cutlineLayerCombo.currentIndex() >= 0:
+        return self.cutlineLayers[self.cutlineLayerCombo.currentIndex()].source()
+      return self.cutlineLayerCombo.currentText()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
