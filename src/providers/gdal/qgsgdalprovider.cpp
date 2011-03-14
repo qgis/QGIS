@@ -143,9 +143,11 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     mMinimum.append( 0 );
     mMaximum.append( 0 );
   }
+
   // Check if we need a warped VRT for this file.
-  if (( GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None
-        && ( mGeoTransform[1] < 0.0
+  bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
+  if ( ( hasGeoTransform
+          && ( mGeoTransform[1] < 0.0
              || mGeoTransform[2] != 0.0
              || mGeoTransform[4] != 0.0
              || mGeoTransform[5] > 0.0 ) )
@@ -167,6 +169,20 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   {
     mGdalDataset = mGdalBaseDataset;
     GDALReferenceDataset( mGdalDataset );
+  }
+  
+  if (!hasGeoTransform)
+  {
+    mWidth = GDALGetRasterXSize( mGdalDataset );
+    mHeight = GDALGetRasterYSize( mGdalDataset );
+
+    // Initialise the affine transform matrix
+    mGeoTransform[0] =  0;
+    mGeoTransform[1] =  1;
+    mGeoTransform[2] =  0;
+    mGeoTransform[3] =  0;
+    mGeoTransform[4] =  0;
+    mGeoTransform[5] = -1;
   }
 
   //check if this file has pyramids
