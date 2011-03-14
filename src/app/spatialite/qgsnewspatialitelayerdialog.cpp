@@ -295,7 +295,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
 
   if ( !settings.contains( key ) )
   {
-    settings.setValue( "/SpatiaLite/connections/selected", fi.fileName() );
+    settings.setValue( "/SpatiaLite/connections/selected", fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
     settings.setValue( key, fi.canonicalFilePath() );
 
     QMessageBox::information( 0, tr( "SpatiaLite Database" ), tr( "Registered new database!" ) );
