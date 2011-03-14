@@ -260,6 +260,7 @@
     <file>themes/gis/mActionFilePrint.png</file>
     <file>themes/gis/mActionFileSaveAs.png</file>
     <file>themes/gis/mActionFileSave.png</file>
+    <file>themes/gis/mActionFolder.png</file>
     <file>themes/gis/mActionFormAnnotation.png</file>
     <file>themes/gis/mActionGroupItems.png</file>
     <file>themes/gis/mActionHelpContents.png</file>
@@ -296,6 +297,7 @@
     <file>themes/gis/mActionRotateLabel.png</file>
     <file>themes/gis/mActionSaveAsPDF.png</file>
     <file>themes/gis/mActionSaveAsSVG.png</file>
+    <file>themes/gis/mActionSaveEdits.png</file>
     <file>themes/gis/mActionSaveMapAsImage.png</file>
     <file>themes/gis/mActionScaleBar.png</file>
     <file>themes/gis/mActionSelectedToTop.png</file>
