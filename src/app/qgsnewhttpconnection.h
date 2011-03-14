@@ -37,6 +37,8 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
     //! Saves the connection to ~/.qt/qgisrc
     void accept();
 
+    void on_txtName_textChanged( const QString & );
+
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
