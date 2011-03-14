@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquery.cpp 15141 2011-02-08 13:34:43Z jef $ */
+/*  $Id: qgsspatialquery.cpp 15302 2011-03-01 08:00:54Z timlinux $ */
 
 #include <QMessageBox>
 
@@ -99,7 +99,7 @@ QMap<QString, int>* QgsSpatialQuery::getTypesOperations( QgsVectorLayer* lyrTarg
 
   QMap<QString, int> * operations = new QMap<QString, int>;
   operations->insert( QObject::tr( "Intersects" ), Intersects );
-  operations->insert( QObject::tr( "Disjoint" ), Disjoint );
+  operations->insert( QObject::tr( "Is disjoint" ), Disjoint );
 
   short int dimTarget = 0, dimReference = 0;
   dimTarget = dimensionGeometry( lyrTarget->geometryType() );

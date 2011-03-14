@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialqueryplugin.cpp 14897 2010-12-12 19:19:54Z wonder $ */
+/*  $Id: qgsspatialqueryplugin.cpp 15302 2011-03-01 08:00:54Z timlinux $ */
 
 
 //
@@ -107,9 +107,10 @@ void QgsSpatialQueryPlugin::run()
 {
   if ( !mDialog )
   {
-    if ( QgsMapLayerRegistry::instance()->mapLayers().size() < 2 )
+    QString msg;
+    if ( ! QgsSpatialQueryDialog::hasPossibleQuery( msg ) )
     {
-      QgsSpatialQueryDialog::messageLayersLessTwo();
+      QMessageBox::warning( mIface->mainWindow(), tr( "Not possible execute the query" ), msg, QMessageBox::Ok );
       return;
     }
     mDialog = new QgsSpatialQueryDialog( mIface->mainWindow(), mIface );

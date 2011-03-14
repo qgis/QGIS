@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquerydialog.cpp 15448 2011-03-12 10:17:05Z jef $ */
 
 #include <QMessageBox>
 #include <QDateTime>
@@ -44,8 +44,6 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
   initGui();
   connectAll();
 
-  mMsgLayersLessTwo = tr( "The spatial query requires at least two layers" );
-
 } // QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* iface )
 
 QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
@@ -59,11 +57,39 @@ QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
 
 } // QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
 
-void QgsSpatialQueryDialog::messageLayersLessTwo()
+bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
 {
-  QString msgLayersLessTwo = tr( "The spatial query requires at least two layers" );
-  QMessageBox::warning( 0, tr( "Insufficient number of layers" ), msgLayersLessTwo, QMessageBox::Ok );
-} // void QgsSpatialQueryDialog::messageLayersLessTwo()
+  // Count the number of vector layer
+  QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMapIterator <QString, QgsMapLayer*> item( layers );
+  QgsMapLayer * mapLayer = NULL;
+  QgsVectorLayer * lyr = NULL;
+  unsigned int totalVector = 0;
+  while ( item.hasNext() )
+  {
+    item.next();
+    mapLayer = item.value();
+    if ( mapLayer->type() != QgsMapLayer::VectorLayer )
+    {
+      continue;
+    }
+    lyr = qobject_cast<QgsVectorLayer *>( mapLayer );
+    if ( !lyr )
+    {
+      continue;
+    }
+    totalVector++;
+  }
+  // check is possible query
+  if( totalVector < 2 ) {
+    msg = tr( "The spatial query requires at least two vector layers" );
+    return false;
+  }
+  else {
+    return true;
+  }
+
+} // bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
 
 void QgsSpatialQueryDialog::initGui()
 {
@@ -515,8 +541,8 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
 {
   cbTargetLayer->blockSignals( true );
 
-  QMap <QString, QgsMapLayer*> map = QgsMapLayerRegistry::instance()->mapLayers();
-  QMapIterator <QString, QgsMapLayer*> item( map );
+  QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMapIterator <QString, QgsMapLayer*> item( layers );
   QgsMapLayer * mapLayer = NULL;
   QgsVectorLayer * lyr = NULL;
   QString layerId;
