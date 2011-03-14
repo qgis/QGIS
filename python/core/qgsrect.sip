@@ -39,11 +39,11 @@ class QgsRectangle
     void setMinimal();
     //! Get the x maximum value (right side of rectangle)
     double xMaximum() const;
-    //! Get the x maximum value (right side of rectangle)
-    double xMinimum() const;
     //! Get the x minimum value (left side of rectangle)
-    double yMaximum() const;
+    double xMinimum() const;
     //! Get the y maximum value (top side of rectangle)
+    double yMaximum() const;
+    //! Get the y minimum value (bottom side of rectangle)
     double yMinimum() const;
     //! Normalize the rectangle so it has non-negative width/height
     void normalize();
