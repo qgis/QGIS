@@ -61,8 +61,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       # add raster filters to combo
       self.formatCombo.addItems( Utils.FileFilter.allRastersFilter().split( ";;" ) )
 
-      # add layers to combo
-      self.fillInputLayerCombo()
 
   def switchToolMode( self ):
       self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
@@ -103,9 +101,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
         QObject.connect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputFileEdit )
 
+  def onLayersChanged(self):
+      self.fillInputLayerCombo()
+
   def fillInputLayerCombo(self):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.getRasterLayers()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
       self.inputLayerCombo.addItems( names )
 
   def fillInputFile( self ):

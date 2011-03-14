@@ -31,12 +31,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
 
-      # fill layers combo
+  def onLayersChanged(self):
       self.fillInputLayerCombo()
 
   def fillInputLayerCombo( self ):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.getRasterLayers()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
       self.inputLayerCombo.addItems( names )
 
   def fillInputFileEdit(self):

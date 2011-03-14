@@ -8,8 +8,10 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.core import *
 from qgis.gui import *
+
 from osgeo import gdal
 from osgeo.gdalconst import *
 from osgeo import ogr
@@ -90,34 +92,72 @@ def getVectorExtensions():
     extensions << FileFilter.getFilterExtensions( f )
   return extensions
 
-def getRasterLayers():
-  # mantein the reference between combobox indexes and canvas layers
-  layers = dict()
-  count = 0
-  names = []
-  layerMap = QgsMapLayerRegistry.instance().mapLayers()
-  for name, layer in layerMap.iteritems():
-    # only raster layers, but not WMS ones
-    if layer.type() == layer.RasterLayer:
-      if layer.usesProvider() and layer.providerKey() != 'gdal':
-        continue
-      layers[count] = layer
-      names.append(layer.name())
-      count = count +1
-  return (layers, names)
+class LayerRegistry(QObject):
 
-def getVectorLayers():
-  # mantein the reference between combobox indexes and canvas layers
-  layers = dict()
-  count = 0
-  names = []
-  layerMap = QgsMapLayerRegistry.instance().mapLayers()
-  for name, layer in layerMap.iteritems():
-    if layer.type() == layer.VectorLayer:
-      layers[count] = layer
-      names.append(layer.name())
-      count = count +1
-  return (layers, names)
+    _instance = None
+    _iface = None
+
+    @staticmethod
+    def instance():
+      if LayerRegistry._instance == None:
+        LayerRegistry._instance = LayerRegistry()
+      return LayerRegistry._instance
+
+    @staticmethod
+    def setIface(iface):
+      LayerRegistry._iface = iface
+
+    layers = []
+
+    def __init__(self):
+      QObject.__init__(self)
+      if LayerRegistry._instance != None:
+        return
+
+      LayerRegistry.layers = self.getAllLayers()
+      LayerRegistry._instance = self
+      self.connect(QgsMapLayerRegistry.instance(), SIGNAL("removedAll()"), self.removeAllLayers)
+      self.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
+      self.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
+
+    def getAllLayers(self):
+       if LayerRegistry._iface and hasattr(LayerRegistry._iface, 'legendInterface'):
+         return LayerRegistry._iface.legendInterface().layers()
+       return QgsMapLayerRegistry.instance().mapLayers().values()
+
+    def layerAdded(self, layer):
+       LayerRegistry.layers.append( layer )
+       self.emit( SIGNAL( "layersChanged" ) )
+
+    def removeLayer(self, layerId):
+       LayerRegistry.layers = filter( lambda x: x.getLayerID() != layerId, LayerRegistry.layers)
+       self.emit( SIGNAL( "layersChanged" ) )
+
+    def removeAllLayers(self):
+       LayerRegistry.layers = []
+       self.emit( SIGNAL( "layersChanged" ) )
+
+    def getRasterLayers(self):
+      layers = []
+      names = []
+
+      for layer in LayerRegistry.layers:
+        # only gdal raster layers
+        if layer.type() == layer.RasterLayer:
+          if layer.usesProvider() and layer.providerKey() != 'gdal':
+            continue
+          layers.append(layer)
+          names.append(layer.name())
+      return (layers, names)
+
+    def getVectorLayers(self):
+      layers = []
+      names = []
+      for layer in LayerRegistry.layers:
+        if layer.type() == layer.VectorLayer:
+          layers.append(layer)
+          names.append(layer.name())
+      return (layers, names)
 
 def getRasterFiles(path, recursive=False):
   rasters = QStringList()

@@ -13,6 +13,7 @@ class GdalToolsAboutDialog(QDialog, Ui_Dialog):
 
   def __init__(self, iface):
       QDialog.__init__(self, iface.mainWindow())
+      self.setAttribute(Qt.WA_DeleteOnClose)
       self.iface = iface
       self.setupUi(self)
 

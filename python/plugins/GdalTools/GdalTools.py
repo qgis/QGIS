@@ -78,8 +78,9 @@ class GdalTools:
       + QCoreApplication.translate( "GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
 
-    from tools.GdalTools_utils import Version, GdalConfig
+    from tools.GdalTools_utils import Version, GdalConfig, LayerRegistry
     self.GdalVersion = Version( GdalConfig.version() )
+    LayerRegistry.setIface( self.iface )
 
     # find the Raster menu
     rasterMenu = None

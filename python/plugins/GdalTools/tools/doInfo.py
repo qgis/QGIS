@@ -40,8 +40,6 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       self.copyAll = QAction( self.tr( "Copy all" ), self )
       QObject.connect( self.copyAll, SIGNAL( "triggered()" ), self.doCopyAll )
 
-      # fill layers combo
-      self.fillInputLayerCombo()
 
   def doCopyLine( self ):
       output = QString()
@@ -71,9 +69,12 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       else:
         QWidget.keyPressEvent( self, e )
 
+  def onLayersChanged(self):
+      self.fillInputLayerCombo()
+
   def fillInputLayerCombo( self ):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.getRasterLayers()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
       self.inputLayerCombo.addItems( names )
 
   def finished( self ):

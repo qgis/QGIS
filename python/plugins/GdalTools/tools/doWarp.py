@@ -51,7 +51,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
-      self.fillInputLayerCombo()
 
   # switch to batch or normal mode
   def switchToolMode( self ):
@@ -89,9 +88,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
         QObject.connect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputFileEdit )
 
+  def onLayersChanged(self):
+      self.fillInputLayerCombo()
+
   def fillInputLayerCombo(self):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.getRasterLayers()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
       self.inputLayerCombo.addItems( names )
 
   def fillInputFile(self):

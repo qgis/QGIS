@@ -24,11 +24,18 @@ class GdalToolsBasePluginWidget:
   def someValueChanged(self):
       self.emit(SIGNAL("valuesChanged(const QStringList &)"), self.getArguments())
 
+  def onLayersChanged(self):
+      pass
+
   def exec_(self):
+      self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
+      self.layersChanged()
       self.someValueChanged()
       return self.base.exec_()
 
   def show_(self):
+      self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
+      self.onLayersChanged()
       self.someValueChanged()
       return self.base.show()
 
@@ -40,6 +47,7 @@ class GdalToolsBasePluginWidget:
       self.base.onRun()
 
   def onClosing(self):
+      self.disconnect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
       self.base.onClosing()
 
   def onHelp(self):
