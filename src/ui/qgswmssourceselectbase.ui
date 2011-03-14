@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
+    <width>767</width>
     <height>539</height>
    </rect>
   </property>
@@ -17,6 +17,9 @@
    <iconset>
     <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
   </property>
+  <property name="toolTip">
+   <string>Save connections to file</string>
+  </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
@@ -24,6 +27,29 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelStatus">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Ready</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabServers">
      <property name="enabled">
@@ -37,7 +63,7 @@
        <string>Layers</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0" colspan="8">
+       <item row="0" column="0" colspan="12">
         <widget class="QComboBox" name="cmbConnections"/>
        </item>
        <item row="1" column="0" colspan="2">
@@ -77,7 +103,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="6">
+       <item row="1" column="7">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -90,7 +116,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="7">
+       <item row="1" column="11">
         <widget class="QPushButton" name="btnAddDefault">
          <property name="statusTip">
           <string>Adds a few example WMS servers</string>
@@ -103,7 +129,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" colspan="8">
+       <item row="2" column="0" colspan="12">
         <widget class="QTreeWidget" name="lstLayers">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -139,7 +165,7 @@
          </column>
         </widget>
        </item>
-       <item row="3" column="0" colspan="8">
+       <item row="3" column="0" colspan="12">
         <widget class="QGroupBox" name="btnGrpImageEncoding">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -158,7 +184,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="8">
+       <item row="4" column="0" colspan="12">
         <widget class="QGroupBox" name="gbCRS">
          <property name="title">
           <string>Options</string>
@@ -222,6 +248,23 @@
            </layout>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="1" column="9">
+        <widget class="QPushButton" name="btnSave">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="8">
+        <widget class="QPushButton" name="btnLoad">
+         <property name="toolTip">
+          <string>Load connections from file</string>
+         </property>
+         <property name="text">
+          <string>Load</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -299,9 +342,6 @@
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
          <column>
           <property name="text">
            <string>Layers</string>
@@ -363,9 +403,6 @@
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
          <column>
           <property name="text">
            <string>Title</string>
@@ -392,29 +429,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelStatus">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Ready</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
     </widget>
    </item>
   </layout>

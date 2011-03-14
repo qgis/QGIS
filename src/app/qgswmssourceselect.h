@@ -60,9 +60,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Deletes the selected connection
     void on_btnDelete_clicked();
     //! Saves connections to the file
-    void saveClicked();
+    void on_btnSave_clicked();
     //! Loads connections from the file
-    void loadClicked();
+    void on_btnLoad_clicked();
 
     /*! Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.

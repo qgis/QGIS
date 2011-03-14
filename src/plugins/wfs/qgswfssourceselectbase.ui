@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>577</width>
+    <width>590</width>
     <height>503</height>
    </rect>
   </property>
@@ -19,68 +19,86 @@
      <property name="title">
       <string>Server connections</string>
      </property>
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>9</number>
-      </property>
-      <property name="spacing">
-       <number>6</number>
-      </property>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnNew">
-        <property name="text">
-         <string>&amp;New</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="btnDelete">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btnEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Edit</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>171</width>
-          <height>30</height>
-         </size>
-        </property>
-       </spacer>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="cmbConnections"/>
       </item>
       <item row="1" column="0">
-       <widget class="QPushButton" name="btnConnect">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>C&amp;onnect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="5">
-       <widget class="QComboBox" name="cmbConnections"/>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="btnConnect">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>C&amp;onnect</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnNew">
+          <property name="text">
+           <string>&amp;New</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Edit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnDelete">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>171</width>
+            <height>30</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnLoad">
+          <property name="toolTip">
+           <string>Load connections from file</string>
+          </property>
+          <property name="text">
+           <string>Load</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSave">
+          <property name="toolTip">
+           <string>Save connections to file</string>
+          </property>
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
