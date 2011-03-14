@@ -46,16 +46,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface )
   btnAdd = buttonBox->button( QDialogButtonBox::Ok );
   btnAdd->setEnabled( false );
 
-  QPushButton *pb = new QPushButton( tr( "&Save" ) );
-  pb->setToolTip( tr( "Save WFS server connections to file" ) );
-  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
-
-  pb = new QPushButton( tr( "&Load" ) );
-  pb->setToolTip( tr( "Load WFS server connections from file" ) );
-  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( loadClicked() ) );
-
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
@@ -469,13 +459,13 @@ void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
   s.setValue( "/Qgis/connections-wfs/selected", cmbConnections->currentText() );
 }
 
-void QgsWFSSourceSelect::saveClicked()
+void QgsWFSSourceSelect::on_btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WFS );
   dlg.exec();
 }
 
-void QgsWFSSourceSelect::loadClicked()
+void QgsWFSSourceSelect::on_btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
                      tr( "XML files (*.xml *XML)" ) );

@@ -61,17 +61,6 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setDisabled( true );
 
-  QPushButton *pb;
-  pb = new QPushButton( tr( "&Save" ) );
-  pb->setToolTip( tr( "Save connections" ) );
-  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
-
-  pb = new QPushButton( tr( "&Load" ) );
-  pb->setToolTip( tr( "Load connections" ) );
-  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( loadClicked() ) );
-
   mAddButton->setEnabled( false );
   populateConnectionList();
 
@@ -166,13 +155,13 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   populateConnectionList();
 }
 
-void QgsPgSourceSelect::saveClicked()
+void QgsPgSourceSelect::on_btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::PostGIS );
   dlg.exec();
 }
 
-void QgsPgSourceSelect::loadClicked()
+void QgsPgSourceSelect::on_btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
                      tr( "XML files (*.xml *XML)" ) );

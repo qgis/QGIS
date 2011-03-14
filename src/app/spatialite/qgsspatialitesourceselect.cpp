@@ -46,6 +46,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   setWindowTitle( tr( "Add SpatiaLite Table(s)" ) );
   connectionsGroupBox->setTitle( tr( "Databases" ) );
   btnEdit->hide();  // hide the edit button
+  btnSave->hide();
+  btnLoad->hide();
 
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );

@@ -62,16 +62,6 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
 
-  QPushButton *pb = new QPushButton( tr( "&Save" ) );
-  pb->setToolTip( tr( "Save WMS server connections to file" ) );
-  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
-
-  pb = new QPushButton( tr( "&Load" ) );
-  pb->setToolTip( tr( "Load WMS server connections from file" ) );
-  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( loadClicked() ) );
-
   mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
   mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
 
@@ -244,13 +234,13 @@ void QgsWMSSourceSelect::on_btnDelete_clicked()
   }
 }
 
-void QgsWMSSourceSelect::saveClicked()
+void QgsWMSSourceSelect::on_btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WMS );
   dlg.exec();
 }
 
-void QgsWMSSourceSelect::loadClicked()
+void QgsWMSSourceSelect::on_btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
                      tr( "XML files (*.xml *XML)" ) );
