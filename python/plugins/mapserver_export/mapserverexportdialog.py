@@ -28,7 +28,10 @@ class MapServerExportDialog(QtGui.QDialog):
     self.ui = Ui_QgsMapserverExportBase() 
     self.ui.setupUi(self) 
 
-    for unit in ["meters", "dd", "feet", "miles", "inches", "kilometers"]:
+    units =  ["meters", "dd", "feet", "miles", "inches", "kilometers"]
+    # make them able to be translated
+    tr_units = [ QtGui.QApplication.translate("QgsMapserverExportBase", "meters", None, QtGui.QApplication.UnicodeUTF8), QtGui.QApplication.translate("QgsMapserverExportBase", "dd", None, QtGui.QApplication.UnicodeUTF8), QtGui.QApplication.translate("QgsMapserverExportBase", "feet", None, QtGui.QApplication.UnicodeUTF8), QtGui.QApplication.translate("QgsMapserverExportBase", "miles", None, QtGui.QApplication.UnicodeUTF8), QtGui.QApplication.translate("QgsMapserverExportBase", "inches", None, QtGui.QApplication.UnicodeUTF8), QtGui.QApplication.translate("QgsMapserverExportBase", "kilometers", None, QtGui.QApplication.UnicodeUTF8) ]
+    for unit in units:
         self.ui.cmbMapUnits.addItem( QtGui.QApplication.translate("QgsMapserverExportBase", unit, None, QtGui.QApplication.UnicodeUTF8), QtCore.QVariant(unit) )
     
     # TODO: set default unit. Is now the first value entered in the unit-list above
