@@ -149,6 +149,8 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     mGdalDataset =
       GDALAutoCreateWarpedVRT( mGdalBaseDataset, NULL, NULL,
                                GRA_NearestNeighbour, 0.2, NULL );
+    
+    GDALGetGeoTransform(mGdalDataset, mGeoTransform);
     if ( mGdalDataset == NULL )
     {
       QgsLogger::warning( "Warped VRT Creation failed." );
