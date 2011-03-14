@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: qgsspatialquerydialog.h 15303 2011-03-01 08:10:18Z jef $ */
 
 #ifndef SPATIALQUERYDIALOG_H
 #define SPATIALQUERYDIALOG_H
@@ -44,8 +44,8 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Destructor
     ~QgsSpatialQueryDialog();
 
-    //! Message about number layers less Two
-    static void messageLayersLessTwo();
+    //! Verify is possible execute the query
+    static bool hasPossibleQuery( QString &msg );
 
   private slots:
     //! Slots for signs of Dialog
@@ -156,9 +156,6 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Text for source selected
     QString mSourceSelected;
     bool mIsSelectedOperator;
-
-    // Message
-    QString mMsgLayersLessTwo;
 
     void MsgDEBUG( QString sMSg );
 };
