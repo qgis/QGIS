@@ -442,7 +442,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   // Check if the mapset is in use
   QString gisBase = getenv( "GISBASE" );
-  if ( gisBase.isNull() ) return QObject::tr( "GISBASE is not set." );
+  if ( gisBase.isEmpty() ) return QObject::tr( "GISBASE is not set." );
 
   QFileInfo fi( mapsetPath + "/WIND" );
   if ( !fi.exists() )
@@ -1104,7 +1104,7 @@ QString GRASS_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QString 
   QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.g.info";
 
   arguments.append( "info=" + info );
-  if ( !map.isNull() )
+  if ( !map.isEmpty() )
   {
     QString opt;
     switch ( type )
@@ -1138,8 +1138,8 @@ QgsCoordinateReferenceSystem GRASS_EXPORT QgsGrass::crs( QString gisdbase, QStri
   try
   {
     QString wkt = QgsGrass::getInfo( "proj", gisdbase, location );
+    QgsDebugMsg( "wkt: " + wkt );
     crs.createFromWkt( wkt );
-
   }
   catch ( QgsGrass::Exception &e )
   {
