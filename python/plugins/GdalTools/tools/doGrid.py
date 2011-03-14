@@ -58,8 +58,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillFieldsCombo)
       self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChenged)
 
-      # fill layers combo
-      self.fillInputLayerCombo()
 
   def onClosing(self):
       self.extentSelector.stop()
@@ -68,9 +66,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def onExtentCheckedChenged(self, enabled):
         self.extentSelector.start() if enabled else self.extentSelector.stop()
 
+  def onLayersChanged(self):
+      self.fillInputLayerCombo()
+
   def fillInputLayerCombo(self):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.getVectorLayers()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getVectorLayers()
       self.inputLayerCombo.addItems( names )
 
   def fillFieldsCombo(self):

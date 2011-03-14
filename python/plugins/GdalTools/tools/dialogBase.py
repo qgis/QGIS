@@ -17,6 +17,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
   def __init__(self, parent, iface, pluginBase, pluginName, pluginCommand):
       QDialog.__init__(self, parent)
+      self.setAttribute(Qt.WA_DeleteOnClose)
       self.iface = iface
 
       self.process = QProcess(self)

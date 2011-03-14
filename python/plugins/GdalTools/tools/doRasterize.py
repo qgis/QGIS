@@ -37,12 +37,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
       self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillFieldsCombo)
 
-      # fill layers combo
+  def onLayersChanged(self):
       self.fillInputLayerCombo()
 
   def fillInputLayerCombo( self ):
       self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.getVectorLayers()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getVectorLayers()
       self.inputLayerCombo.addItems( names )
 
   def fillFieldsCombo(self):
