@@ -151,6 +151,10 @@ class MapServerExport:
     if not(exporter.setQgsProject(self.dlg.ui.txtQgisFilePath.text())):
       QMessageBox.warning(self.dlg, "No Map file export!", "Map file not exported because no valid qgis project file was given.")
       return
+    if exporter.projectHasNewSymbology():
+      QMessageBox.information(self.dlg, "New Symbology layer(s) found", "The project you selected holds layer(s) which use 'New Symbology'.\n\nCurrently this plugin is not able to handle this.\n\nPlease change symbology of these layer(s) to 'Old Symbology'.")
+      self.dlg.hide()
+      return
     self.dlg.hide()
     print "Setting options"
     exporter.setOptions(
@@ -281,7 +285,7 @@ class MapServerExport:
       self.dlg.ui.txtQgisFilePath.setEnabled(False)
       return
     try:
-      # reading a nog qgs or not existing file results in qgis crash
+      # reading a non-qgs or not existing file results in qgis crash
       # QgsProject.instance().read(QFileInfo(qgisProjectFile))
       # we try to open the file first to see if it can be parsed...
       exporter = Qgis2Map(unicode(self.dlg.ui.txtMapFilePath.text()))
@@ -300,7 +304,7 @@ class MapServerExport:
       else:
         # NO postgis, go
         pass
-    except QgsException, err:
+    except Exception, err:
       QMessageBox.information(self.dlg, "Error reading or loading the selected project file", str(err))
       self.dlg.ui.checkBoxCurrentProject.setChecked(True)
       self.dlg.ui.txtQgisFilePath.setEnabled(False)

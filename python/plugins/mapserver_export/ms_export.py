@@ -191,6 +191,14 @@ class Qgis2Map:
         #print  "POSTGIS LAYER !!"
         return True
     return False
+
+  # method to check if there are layers which use 'New Symbology'
+  def projectHasNewSymbology(self):
+    maplayers = self.qgs.getElementsByTagName("maplayer")
+    for lyr in maplayers:
+      if len(lyr.getElementsByTagName("renderer-v2"))>0:
+        return True
+    return False
       
 
   ## All real work happens here by calling methods to write the
