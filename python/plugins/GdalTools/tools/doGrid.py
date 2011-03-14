@@ -20,6 +20,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_grid")
 
+      # set the default QSpinBoxes and QProgressBar value
+      self.widthSpin.setValue(3000)
+      self.heightSpin.setValue(3000)
+
       self.extentSelector.setCanvas(self.canvas)
       #self.extentSelector.stop()
 
@@ -44,7 +48,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.datametricsCombo, SIGNAL("currentIndexChanged(int)")),
           ([self.datametricsRadius1Spin, self.datametricsRadius2Spin, self.datametricsAngleSpin, self.datametricsNoDataSpin], SIGNAL("valueChanged(double)")),
           (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)")), 
-          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup)
+          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup), 
+          ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox )
         ]
       )
 
@@ -122,6 +127,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.algorithmCheck.isChecked() and self.algorithmCombo.currentIndex() >= 0:
         arguments << "-a"
         arguments << self.algorithmArguments(self.algorithmCombo.currentIndex())
+      if self.resizeGroupBox.isChecked():
+        arguments << "-outsize"
+        arguments << str( self.widthSpin.value() )
+        arguments << str( self.heightSpin.value() )
       if not self.outputFileEdit.text().isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
