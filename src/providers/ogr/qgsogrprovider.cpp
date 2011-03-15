@@ -1841,12 +1841,22 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
   {
     QgsDebugMsg( "no spatial reference found" );
   }
+  else if ( OSRAutoIdentifyEPSG( mySpatialRefSys ) == OGRERR_NONE )
+  {
+    QString authid = QString( "%1:%2" )
+                     .arg( OSRGetAuthorityName( mySpatialRefSys, NULL ) )
+                     .arg( OSRGetAuthorityCode( mySpatialRefSys, NULL ) );
+    QgsDebugMsg( "authid recognized as " + authid );
+    srs.createFromOgcWmsCrs( authid );
+  }
   else
   {
     // get the proj4 text
-    char *ppszProj4;
-    OSRExportToProj4( mySpatialRefSys, &ppszProj4 );
-    QgsDebugMsg( ppszProj4 );
+    char *pszProj4;
+    OSRExportToProj4( mySpatialRefSys, &pszProj4 );
+    QgsDebugMsg( pszProj4 );
+    OGRFree( pszProj4 );
+
     char *pszWkt = NULL;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
     QString myWktString = QString( pszWkt );
