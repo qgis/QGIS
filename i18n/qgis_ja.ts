@@ -1956,6 +1956,10 @@ Do you want terminate it anyway?</source>
         <translation>解析するファイルを選択して下さい</translation>
     </message>
     <message>
+        <source>Select the cutline file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Select the input file for Grid</source>
         <translation>グリッドのための入力ファイルを選択して下さい</translation>
     </message>
@@ -1986,6 +1990,14 @@ Do you want terminate it anyway?</source>
     <message>
         <source>Select the input file for Rasterize</source>
         <translation>ラスタライズする入力ファイルを選択してください</translation>
+    </message>
+    <message>
+        <source>Output size required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The output file doesn&apos;t exist. You must set up the output size to create it.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
@@ -2203,6 +2215,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="94"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="122"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="150"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="254"/>
         <source>Select...</source>
         <translation>選択...</translation>
     </message>
@@ -2280,7 +2293,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="75"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="780"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="843"/>
         <source>Extent</source>
         <translation>範囲</translation>
     </message>
@@ -2472,62 +2485,76 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation>データメトリックス</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="157"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="149"/>
         <source>Power</source>
         <translation>指数</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="347"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="169"/>
         <source>Smoothing</source>
         <translation>補正</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="177"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="361"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="496"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="643"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="195"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="359"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="497"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="644"/>
         <source>Radius1</source>
         <translation>半径1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="279"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="440"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="555"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="722"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="221"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="382"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="520"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="670"/>
         <source>Radius2</source>
         <translation>半径2</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="200"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="384"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="519"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="666"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="290"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="408"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="546"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="696"/>
         <source>Angle</source>
         <translation>角度</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="249"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="803"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="136"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="283"/>
+        <source>Width</source>
+        <translation type="unfinished">幅</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="823"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="156"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="303"/>
+        <source>Height</source>
+        <translation type="unfinished">高さ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="247"/>
         <source>Max points</source>
         <translation>最大点</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="256"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="407"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="689"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="267"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="434"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="745"/>
         <source>Min points</source>
         <translation>最小点</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="305"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="466"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="581"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="748"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="316"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="454"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="572"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="719"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="189"/>
         <source>No data</source>
         <translation>データ無</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="611"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="612"/>
         <source>Metrics</source>
         <translation></translation>
     </message>
@@ -2568,17 +2595,17 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation type="obsolete">メトリックス:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="625"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="626"/>
         <source>Minimum</source>
         <translation>最小値</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="630"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="631"/>
         <source>Maximum</source>
         <translation>最大値</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="635"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="636"/>
         <source>Range</source>
         <translation>範囲</translation>
     </message>
@@ -2898,8 +2925,17 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="85"/>
+        <source>&amp;Output file for rasterized vectors (raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="118"/>
+        <source>New size (required if output file doens&apos;t exist)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Output file for rasterized vectors (raster, must exists)</source>
-        <translation>ベクタをラスタ化した出力ファイル(ラスタが存在しなければなりません(&amp;O)</translation>
+        <translation type="obsolete">ベクタをラスタ化した出力ファイル(ラスタが存在しなければなりません(&amp;O)</translation>
     </message>
     <message>
         <source>&amp;Input file (shapefile):</source>
@@ -3114,6 +3150,11 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
         <translation>ランチョシュ</translation>
     </message>
     <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="229"/>
+        <source>Cutline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Memory used for caching:</source>
         <translation type="obsolete">キャッシュに利用するメモリ(&amp;M):</translation>
     </message>
@@ -3147,22 +3188,21 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
         <translation>キャッシュに利用するメモリ(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="231"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="785"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="265"/>
         <source>Resize</source>
         <translation>リサイズ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="246"/>
         <source>Image width</source>
-        <translation>画像幅</translation>
+        <translation type="obsolete">画像幅</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="260"/>
         <source>Image height</source>
-        <translation>画像高さ</translation>
+        <translation type="obsolete">画像高さ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="280"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="326"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
         <translation>マルチスレッドワーピングインプリメンテーションを使う(&amp;u)</translation>
     </message>
@@ -3549,97 +3589,96 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="14"/>
         <source>QGIS</source>
-        <translation>QGIS</translation>
+        <translation type="obsolete">QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="28"/>
+        <location filename="../src/ui/qgisapp.ui" line="25"/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="57"/>
+        <location filename="../src/ui/qgisapp.ui" line="54"/>
         <source>&amp;File</source>
         <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="61"/>
+        <location filename="../src/ui/qgisapp.ui" line="58"/>
         <source>&amp;Open Recent Projects</source>
         <translation>最近利用したプロジェクトを開く(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="66"/>
+        <location filename="../src/ui/qgisapp.ui" line="63"/>
         <source>Print Composers</source>
         <translation>プリントコンポーザ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="85"/>
+        <location filename="../src/ui/qgisapp.ui" line="82"/>
         <source>&amp;View</source>
         <translation>ビュー(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="89"/>
+        <location filename="../src/ui/qgisapp.ui" line="86"/>
         <source>Select</source>
         <translation>選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="100"/>
+        <location filename="../src/ui/qgisapp.ui" line="97"/>
         <source>Measure</source>
         <translation>計測</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="130"/>
+        <location filename="../src/ui/qgisapp.ui" line="127"/>
         <source>&amp;Layer</source>
         <translation>レイヤ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="134"/>
+        <location filename="../src/ui/qgisapp.ui" line="131"/>
         <source>New</source>
         <translation>新規</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="166"/>
+        <location filename="../src/ui/qgisapp.ui" line="165"/>
         <source>&amp;Settings</source>
         <translation>設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="177"/>
+        <location filename="../src/ui/qgisapp.ui" line="176"/>
         <source>&amp;Plugins</source>
         <translation>プラグイン(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="185"/>
+        <location filename="../src/ui/qgisapp.ui" line="184"/>
         <source>&amp;Raster</source>
         <translation>ラスタ(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="191"/>
+        <location filename="../src/ui/qgisapp.ui" line="190"/>
         <source>&amp;Help</source>
         <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="214"/>
+        <location filename="../src/ui/qgisapp.ui" line="213"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="231"/>
+        <location filename="../src/ui/qgisapp.ui" line="230"/>
         <source>Manage Layers</source>
         <translation>レイヤ管理</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="249"/>
+        <location filename="../src/ui/qgisapp.ui" line="248"/>
         <source>Digitizing</source>
         <translation>デジタイジング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="271"/>
+        <location filename="../src/ui/qgisapp.ui" line="270"/>
         <source>Advanced Digitizing</source>
         <translation>先進的なデジタイズ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="294"/>
+        <location filename="../src/ui/qgisapp.ui" line="293"/>
         <source>Map Navigation</source>
         <translation>地図ナビゲーション</translation>
     </message>
@@ -3664,729 +3703,749 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>ラスタ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="366"/>
+        <location filename="../src/ui/qgisapp.ui" line="367"/>
         <source>Label</source>
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="385"/>
+        <location filename="../src/ui/qgisapp.ui" line="386"/>
         <source>&amp;New Project</source>
         <translation>新規プロジェクト(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="388"/>
+        <location filename="../src/ui/qgisapp.ui" line="389"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="397"/>
+        <location filename="../src/ui/qgisapp.ui" line="398"/>
         <source>&amp;Open Project...</source>
         <translation>プロジェクトを開く(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="400"/>
+        <location filename="../src/ui/qgisapp.ui" line="401"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="409"/>
+        <location filename="../src/ui/qgisapp.ui" line="410"/>
         <source>&amp;Save Project</source>
         <translation>プロジェクトを保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="412"/>
+        <location filename="../src/ui/qgisapp.ui" line="413"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="421"/>
+        <location filename="../src/ui/qgisapp.ui" line="422"/>
         <source>Save Project &amp;As...</source>
         <translation>プロジェクトを名前をつけて保存(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="424"/>
+        <location filename="../src/ui/qgisapp.ui" line="425"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="433"/>
+        <location filename="../src/ui/qgisapp.ui" line="434"/>
         <source>Save as Image...</source>
         <translation>イメージで保存...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="442"/>
+        <location filename="../src/ui/qgisapp.ui" line="443"/>
         <source>&amp;New Print Composer</source>
         <translation>新コンポーザマネージャ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="445"/>
+        <location filename="../src/ui/qgisapp.ui" line="446"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="454"/>
+        <location filename="../src/ui/qgisapp.ui" line="455"/>
         <source>Composer manager...</source>
         <translation>コンポーザーマネージャ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="463"/>
+        <location filename="../src/ui/qgisapp.ui" line="464"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="466"/>
+        <location filename="../src/ui/qgisapp.ui" line="467"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="478"/>
+        <location filename="../src/ui/qgisapp.ui" line="479"/>
         <source>&amp;Undo</source>
         <translation>取り消し(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="481"/>
+        <location filename="../src/ui/qgisapp.ui" line="482"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="490"/>
+        <location filename="../src/ui/qgisapp.ui" line="491"/>
         <source>&amp;Redo</source>
         <translation>再実行(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="493"/>
+        <location filename="../src/ui/qgisapp.ui" line="494"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="502"/>
+        <location filename="../src/ui/qgisapp.ui" line="503"/>
         <source>Cut Features</source>
         <translation>地物の切り取り</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="505"/>
+        <location filename="../src/ui/qgisapp.ui" line="506"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="514"/>
+        <location filename="../src/ui/qgisapp.ui" line="515"/>
         <source>Copy Features</source>
         <translation>地物のコピー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="517"/>
+        <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="526"/>
+        <location filename="../src/ui/qgisapp.ui" line="527"/>
         <source>Paste Features</source>
         <translation>地物の貼り付け</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="529"/>
+        <location filename="../src/ui/qgisapp.ui" line="530"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="541"/>
+        <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Capture Point</source>
         <translation>点を入力</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="544"/>
+        <location filename="../src/ui/qgisapp.ui" line="545"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="556"/>
+        <location filename="../src/ui/qgisapp.ui" line="557"/>
         <source>Capture Line</source>
         <translation>線を入力</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="559"/>
+        <location filename="../src/ui/qgisapp.ui" line="560"/>
         <source>Ctrl+/</source>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="571"/>
+        <location filename="../src/ui/qgisapp.ui" line="572"/>
         <source>Capture Polygon</source>
         <translation>ポリゴンを入力</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="574"/>
+        <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>Ctrl+?</source>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="586"/>
+        <location filename="../src/ui/qgisapp.ui" line="587"/>
         <source>Move Feature(s)</source>
         <translation>地物の移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="598"/>
+        <location filename="../src/ui/qgisapp.ui" line="599"/>
         <source>Reshape Features</source>
         <translation>地物の変形</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="610"/>
+        <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Split Features</source>
         <translation>地物を分割する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="619"/>
+        <location filename="../src/ui/qgisapp.ui" line="620"/>
         <source>Delete Selected</source>
         <translation>選択物の削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="631"/>
+        <location filename="../src/ui/qgisapp.ui" line="632"/>
         <source>Add Ring</source>
         <translation>リングの追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="643"/>
+        <location filename="../src/ui/qgisapp.ui" line="644"/>
         <source>Add Part</source>
         <translation>部分の追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="655"/>
+        <location filename="../src/ui/qgisapp.ui" line="656"/>
         <source>Simplify Feature</source>
         <translation>地物の簡素化</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="667"/>
+        <location filename="../src/ui/qgisapp.ui" line="668"/>
         <source>Delete Ring</source>
         <translation>リングの削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="679"/>
+        <location filename="../src/ui/qgisapp.ui" line="680"/>
         <source>Delete Part</source>
         <translation>部分の削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="688"/>
+        <location filename="../src/ui/qgisapp.ui" line="689"/>
         <source>Merge selected features</source>
         <translation>選択地物の結合</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="697"/>
+        <location filename="../src/ui/qgisapp.ui" line="698"/>
         <source>Merge attributes of selected features</source>
         <translation>選択された地物の属性を結合します</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="709"/>
+        <location filename="../src/ui/qgisapp.ui" line="710"/>
         <source>Node Tool</source>
         <translation>ノードツール</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="721"/>
+        <location filename="../src/ui/qgisapp.ui" line="722"/>
         <source>Rotate Point Symbols</source>
         <translation>ポイントシンボルを回転する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="726"/>
+        <location filename="../src/ui/qgisapp.ui" line="727"/>
         <source>Snapping Options...</source>
         <translation>スナップオプション...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="738"/>
+        <location filename="../src/ui/qgisapp.ui" line="739"/>
         <source>Pan Map</source>
         <translation>地図移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="750"/>
+        <location filename="../src/ui/qgisapp.ui" line="751"/>
         <source>Zoom In</source>
         <translation>拡大</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="753"/>
+        <location filename="../src/ui/qgisapp.ui" line="754"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="765"/>
+        <location filename="../src/ui/qgisapp.ui" line="766"/>
         <source>Zoom Out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="768"/>
+        <location filename="../src/ui/qgisapp.ui" line="769"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="780"/>
+        <location filename="../src/ui/qgisapp.ui" line="781"/>
         <source>Select single feature</source>
         <translation>1個の地物を選択します</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="792"/>
+        <location filename="../src/ui/qgisapp.ui" line="793"/>
         <source>Select features by rectangle</source>
         <translation>長方形領域による地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="804"/>
+        <location filename="../src/ui/qgisapp.ui" line="805"/>
         <source>Select features by polygon</source>
         <translation>ポリゴンによる地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="816"/>
+        <location filename="../src/ui/qgisapp.ui" line="817"/>
         <source>Select features by freehand</source>
         <translation>フリーハンドによる地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="828"/>
+        <location filename="../src/ui/qgisapp.ui" line="829"/>
         <source>Select features by radius</source>
         <translation>半径指定による地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="837"/>
+        <location filename="../src/ui/qgisapp.ui" line="838"/>
         <source>Deselect features from all layers</source>
         <translation>すべてのレイヤから地物選択を取り消す</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="849"/>
+        <location filename="../src/ui/qgisapp.ui" line="850"/>
         <source>Identify Features</source>
         <translation>地物情報表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="852"/>
+        <location filename="../src/ui/qgisapp.ui" line="853"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="864"/>
+        <location filename="../src/ui/qgisapp.ui" line="865"/>
         <source>Measure Line</source>
         <translation>線の長さを測る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="867"/>
+        <location filename="../src/ui/qgisapp.ui" line="868"/>
         <source>Ctrl+Shift+M</source>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="879"/>
+        <location filename="../src/ui/qgisapp.ui" line="880"/>
         <source>Measure Area</source>
         <translation>面積を測る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="882"/>
+        <location filename="../src/ui/qgisapp.ui" line="883"/>
         <source>Ctrl+Shift+J</source>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="894"/>
+        <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Measure Angle</source>
         <translation>角度の計測</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="903"/>
+        <location filename="../src/ui/qgisapp.ui" line="904"/>
         <source>Zoom Full</source>
         <translation>全域表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="906"/>
+        <location filename="../src/ui/qgisapp.ui" line="907"/>
         <source>Ctrl+Shift+F</source>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="915"/>
+        <location filename="../src/ui/qgisapp.ui" line="916"/>
         <source>Zoom to Layer</source>
         <translation>レイヤの領域にズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="924"/>
+        <location filename="../src/ui/qgisapp.ui" line="925"/>
         <source>Zoom to Selection</source>
         <translation>選択部分のズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="927"/>
+        <location filename="../src/ui/qgisapp.ui" line="928"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="936"/>
+        <location filename="../src/ui/qgisapp.ui" line="937"/>
         <source>Zoom Last</source>
         <translation>直前の表示領域にズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="945"/>
+        <location filename="../src/ui/qgisapp.ui" line="946"/>
         <source>Zoom Next</source>
         <translation>次表示領域へズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="950"/>
+        <location filename="../src/ui/qgisapp.ui" line="955"/>
         <source>Zoom Actual Size</source>
         <translation>実際のサイズにズームする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="962"/>
+        <location filename="../src/ui/qgisapp.ui" line="958"/>
+        <source>Zoom to Native Pixel Resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="970"/>
         <source>Map Tips</source>
         <translation>マップチップス</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="965"/>
+        <location filename="../src/ui/qgisapp.ui" line="973"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>マウスカーソルが上にある時に地物の情報が表示されます</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="974"/>
+        <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>New Bookmark...</source>
         <translation>新しいブックマーク....</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="977"/>
+        <location filename="../src/ui/qgisapp.ui" line="985"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="986"/>
+        <location filename="../src/ui/qgisapp.ui" line="994"/>
         <source>Show Bookmarks</source>
         <translation>ブックマーク一覧を見る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="989"/>
+        <location filename="../src/ui/qgisapp.ui" line="997"/>
         <source>Ctrl+Shift+B</source>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="998"/>
+        <location filename="../src/ui/qgisapp.ui" line="1006"/>
         <source>Refresh</source>
         <translation>再読み込み</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1001"/>
+        <location filename="../src/ui/qgisapp.ui" line="1009"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1013"/>
+        <location filename="../src/ui/qgisapp.ui" line="1021"/>
         <source>Text Annotation</source>
         <translation>文字注記</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1025"/>
+        <location filename="../src/ui/qgisapp.ui" line="1033"/>
         <source>Form annotation</source>
         <translation>注記フォーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1037"/>
+        <location filename="../src/ui/qgisapp.ui" line="1045"/>
         <source>Move Annotation</source>
         <translation>注記移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1046"/>
+        <location filename="../src/ui/qgisapp.ui" line="1054"/>
         <source>Labeling</source>
         <translation>ラベリング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1055"/>
+        <location filename="../src/ui/qgisapp.ui" line="1063"/>
         <source>New Shapefile Layer...</source>
         <translation>新しいShapeファイルレイヤ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1058"/>
+        <location filename="../src/ui/qgisapp.ui" line="1066"/>
         <source>Ctrl+Shift+N</source>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1067"/>
+        <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>New SpatiaLite Layer ...</source>
         <translation>新しいSpatialiteレイヤ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1070"/>
+        <location filename="../src/ui/qgisapp.ui" line="1078"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1075"/>
+        <location filename="../src/ui/qgisapp.ui" line="1083"/>
         <source>Raster calculator ...</source>
         <translation>ラスタ計算機...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1084"/>
+        <location filename="../src/ui/qgisapp.ui" line="1092"/>
         <source>Add Vector Layer...</source>
         <translation>ベクタレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1087"/>
+        <location filename="../src/ui/qgisapp.ui" line="1095"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1096"/>
+        <location filename="../src/ui/qgisapp.ui" line="1104"/>
         <source>Add Raster Layer...</source>
         <translation>ラスタレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1099"/>
+        <location filename="../src/ui/qgisapp.ui" line="1107"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1108"/>
+        <location filename="../src/ui/qgisapp.ui" line="1116"/>
         <source>Add PostGIS Layer...</source>
         <translation>PostGISレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1111"/>
+        <location filename="../src/ui/qgisapp.ui" line="1119"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1120"/>
+        <location filename="../src/ui/qgisapp.ui" line="1128"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>SpatiaLiteレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1123"/>
+        <location filename="../src/ui/qgisapp.ui" line="1131"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1132"/>
+        <location filename="../src/ui/qgisapp.ui" line="1140"/>
         <source>Add WMS Layer...</source>
         <translation>WMSレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1135"/>
+        <location filename="../src/ui/qgisapp.ui" line="1143"/>
         <source>Ctrl+Shift+W</source>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1144"/>
+        <location filename="../src/ui/qgisapp.ui" line="1152"/>
         <source>Open Attribute Table</source>
         <translation>属性テーブルのオープン</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1156"/>
+        <location filename="../src/ui/qgisapp.ui" line="1164"/>
         <source>Toggle editing</source>
         <translation>編集モード変更</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1159"/>
+        <location filename="../src/ui/qgisapp.ui" line="1167"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>カレントレイヤの編集モードを変更する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1168"/>
+        <location filename="../src/ui/qgisapp.ui" line="1176"/>
         <source>Save edits</source>
         <translation>編集を保存する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1171"/>
+        <location filename="../src/ui/qgisapp.ui" line="1179"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>カレントレイヤへの編集を保存した後,編集作業を続けます</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1176"/>
+        <location filename="../src/ui/qgisapp.ui" line="1184"/>
         <source>Save as...</source>
         <translation>名前をつけて保存...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1181"/>
+        <location filename="../src/ui/qgisapp.ui" line="1189"/>
         <source>Save Selection as vector file...</source>
         <translation>選択部分をベクタファイルとして保存する...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1190"/>
+        <location filename="../src/ui/qgisapp.ui" line="1198"/>
         <source>Remove Layer(s)</source>
         <translation>レイヤ（群）の削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1193"/>
+        <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1198"/>
+        <location filename="../src/ui/qgisapp.ui" line="1206"/>
         <source>Set CRS of Layer(s)</source>
         <translation>レイヤのCRSを設定する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1201"/>
+        <location filename="../src/ui/qgisapp.ui" line="1209"/>
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1206"/>
+        <location filename="../src/ui/qgisapp.ui" line="1214"/>
+        <source>Set project CRS from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1219"/>
         <source>Tile scale slider</source>
         <translation>タイルスケールスライダー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1211"/>
+        <location filename="../src/ui/qgisapp.ui" line="1224"/>
         <source>Live GPS tracking</source>
         <translation>ライブGPSトラッキング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1216"/>
+        <location filename="../src/ui/qgisapp.ui" line="1229"/>
         <source>Properties...</source>
         <translation>プロパティ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1221"/>
+        <location filename="../src/ui/qgisapp.ui" line="1234"/>
         <source>Query...</source>
         <translation>検索...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1230"/>
+        <location filename="../src/ui/qgisapp.ui" line="1243"/>
         <source>Add to Overview</source>
         <translation>全体図に追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1233"/>
+        <location filename="../src/ui/qgisapp.ui" line="1246"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1242"/>
+        <location filename="../src/ui/qgisapp.ui" line="1255"/>
         <source>Add All to Overview</source>
         <translation>全体図に全て追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1251"/>
+        <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Remove All From Overview</source>
         <translation>全体図から全て削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1260"/>
+        <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Show All Layers</source>
         <translation>全てのレイヤを表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1263"/>
+        <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Ctrl+Shift+U</source>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1272"/>
+        <location filename="../src/ui/qgisapp.ui" line="1285"/>
         <source>Hide All Layers</source>
         <translation>全てのレイヤを隠す</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1275"/>
+        <location filename="../src/ui/qgisapp.ui" line="1288"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1284"/>
+        <location filename="../src/ui/qgisapp.ui" line="1297"/>
         <source>Manage Plugins...</source>
         <translation>プラグインの管理...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1289"/>
+        <location filename="../src/ui/qgisapp.ui" line="1302"/>
         <source>Toggle Full Screen Mode</source>
         <translation>フルスクリーンモードへ切り替え</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1292"/>
+        <location filename="../src/ui/qgisapp.ui" line="1305"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1301"/>
+        <location filename="../src/ui/qgisapp.ui" line="1314"/>
         <source>Project Properties...</source>
         <translation>プロジェクトのプロパティ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1304"/>
+        <location filename="../src/ui/qgisapp.ui" line="1317"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1313"/>
+        <location filename="../src/ui/qgisapp.ui" line="1326"/>
         <source>Options...</source>
         <translation>オプション...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1325"/>
+        <location filename="../src/ui/qgisapp.ui" line="1338"/>
         <source>Custom CRS...</source>
         <translation>カスタムCRS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1334"/>
+        <location filename="../src/ui/qgisapp.ui" line="1347"/>
         <source>Configure shortcuts...</source>
         <translation>ショートカットの構成...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1343"/>
+        <location filename="../src/ui/qgisapp.ui" line="1356"/>
         <source>Local Histogram Stretch</source>
         <translation>ローカルヒストグラムの広がり</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1346"/>
+        <location filename="../src/ui/qgisapp.ui" line="1359"/>
         <source>Stretch histogram of active raster to view extents</source>
         <translation>アクティブラスタの領域を見えるようにするためにヒストグラムを伸ばす</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1355"/>
+        <location filename="../src/ui/qgisapp.ui" line="1368"/>
         <source>Help Contents</source>
         <translation>QGIS ヘルプ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1358"/>
+        <location filename="../src/ui/qgisapp.ui" line="1371"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1363"/>
+        <location filename="../src/ui/qgisapp.ui" line="1376"/>
         <source>API documentation</source>
         <translation>API文書</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1372"/>
+        <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>QGIS Home Page</source>
         <translation>QGIS ホームページ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1375"/>
+        <location filename="../src/ui/qgisapp.ui" line="1388"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1384"/>
+        <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Check QGIS Version</source>
         <translation>QGISのバージョンをチェックする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1387"/>
+        <location filename="../src/ui/qgisapp.ui" line="1400"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>QGISのバージョンがアップデートされているか検証する（インターネットアクセスが必要)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1396"/>
+        <location filename="../src/ui/qgisapp.ui" line="1409"/>
         <source>About</source>
         <translation>アバウト</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1408"/>
+        <location filename="../src/ui/qgisapp.ui" line="1421"/>
         <source>QGIS Sponsors</source>
         <translation>QGISスポンサー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1420"/>
+        <location filename="../src/ui/qgisapp.ui" line="1433"/>
         <source>Move Label</source>
         <translation>ラベルの移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1432"/>
+        <location filename="../src/ui/qgisapp.ui" line="1445"/>
         <source>Rotate Label</source>
         <translation>ラベルの回転</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1444"/>
+        <location filename="../src/ui/qgisapp.ui" line="1457"/>
         <source>Change Label</source>
         <translation>ラベルを変更する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1449"/>
+        <location filename="../src/ui/qgisapp.ui" line="1462"/>
         <source>Style manager...</source>
         <translation>スタイルマネージャ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1454"/>
+        <location filename="../src/ui/qgisapp.ui" line="1467"/>
         <source>Python Console</source>
         <translation>Pythonコンソール</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1476"/>
+        <source>Full histogram stretch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1479"/>
+        <source>Stretch histogram to full dataset</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5210,12 +5269,12 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <translation type="obsolete">作業レポートをPDFファイルで保存する(.pdf)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2876"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2875"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation>レイヤプロパティをスタイルファイルから読み込む(.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2941"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2940"/>
         <source>Save layer properties as style file (.qml)</source>
         <translation>レイヤプロパティをスタイルファイルとして保存する(.qml)</translation>
     </message>
@@ -5305,13 +5364,13 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <translation>GPSデータ形式交換プロバイダー</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="369"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="394"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="367"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="392"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
         <translation>座標入力システムで点座標変換中にエラーを発生しました。ラインの長さを計算できません。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="511"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="509"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
         <translation>座標入力システムで点座標変換中にエラーを発生しました。ポリゴンの面積を計算できません。</translation>
     </message>
@@ -5352,7 +5411,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="55"/>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="53"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="41"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="55"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="54"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="52"/>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="61"/>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="33"/>
@@ -5384,12 +5443,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>デリミテッドテキストレイヤを追加する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="52"/>
         <source>GPS Tools</source>
         <translation>GPS ツール</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="54"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
         <source>Tools for loading and importing GPS data</source>
         <translation>GPSデータをロードまたはインポートするツール</translation>
     </message>
@@ -5450,89 +5509,89 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Pythonのエラー</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="767"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="765"/>
         <source> km2</source>
         <translation> km2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="772"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="770"/>
         <source> ha</source>
         <translation> ha</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="763"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="777"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="761"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="775"/>
         <source> m2</source>
         <translation> m2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="482"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="480"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
         <translation>座標入力システムで点座標変換中にエラーを発生しました。ポリゴンの面積または周囲の長さを計算できません.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="784"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="803"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="782"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="801"/>
         <source> m</source>
         <translation> m</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="788"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="786"/>
         <source> km</source>
         <translation> km</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="793"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="791"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="798"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="796"/>
         <source> cm</source>
         <translation> cm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="816"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="814"/>
         <source> sq mile</source>
         <translation>平方マイル</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="812"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="810"/>
         <source> sq ft</source>
         <translation>平方フィート</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="835"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="833"/>
         <source> mile</source>
         <translation>マイル</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="826"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="824"/>
         <source> foot</source>
         <translation>フィート</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="830"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="828"/>
         <source> feet</source>
         <translation>フィート</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="843"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="841"/>
         <source> sq.deg.</source>
         <translation>平方度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="848"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="846"/>
         <source> degree</source>
         <translation>度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="850"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="848"/>
         <source> degrees</source>
         <translation>度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="854"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="852"/>
         <source> unknown</source>
         <translation>不明</translation>
     </message>
@@ -5829,10 +5888,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="136"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="181"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="548"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="628"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="186"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="781"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="848"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="879"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="890"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="981"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="998"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1034"/>
@@ -5842,12 +5902,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1224"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1253"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1276"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="61"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="135"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="186"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="198"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="229"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="241"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="133"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="184"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="196"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="227"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="239"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -6186,12 +6246,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>通常のデリバティブを推定しています...</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1202"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1209"/>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
         <translation>CRSデータベース%1を開けませんでした&lt;br&gt;エラー(%2) %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1266"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1273"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>作成された空間参照系</translation>
@@ -6271,38 +6331,38 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6326"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6325"/>
         <source>invalid line</source>
         <translation>不正なライン</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6404"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6403"/>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
         <translation>セグメント %1 リング %2　ポリゴン %3  が交差   セグメント %4　リング %5　ポリゴン %6　%7 のうち</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6412"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6500"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6411"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6499"/>
         <source>stopping validation after more than 100 errors</source>
         <translation>100件以上のエラーがあるので検証を中止します</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6430"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6429"/>
         <source>ring %1 with less than three points</source>
         <translation>%1のリングは3個未満の点で構成されています</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6438"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6437"/>
         <source>ring %1 not closed</source>
         <translation>%1のリングは閉じていません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6446"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6445"/>
         <source>line %1 with less than two points</source>
         <translation>%1のラインは2点未満の点で構成されています</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsgeometry.cpp" line="6464"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6463"/>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation>
@@ -6310,24 +6370,24 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6495"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6494"/>
         <source>segments %1 and %2 of line %3 intersect at %4</source>
         <translation>%1のセグメントと%2のラインが%3だけ%4で交差しています</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6516"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6515"/>
         <source>ring %1 of polygon %2 not in exterior ring</source>
         <translation>リング%1 リングに関係無いポリゴン%2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6586"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6590"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6585"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6589"/>
         <source>polygon %1 inside polygon %2</source>
         <translation>ポリゴン%1 内部ポリゴン%2</translation>
     </message>
     <message>
+        <location filename="../src/core/qgsgeometry.cpp" line="6602"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6603"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6604"/>
         <source>Unknown geometry type</source>
         <translation>不明なジオメトリタイプ</translation>
     </message>
@@ -6372,119 +6432,142 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>不正な異なる型が存在します　フィールド%1[%2]：受信 %3 型 %4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="810"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1343"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="807"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1342"/>
         <source>Arc/Info ASCII Coverage</source>
         <translation>Arc/Info ASCIIカバレッジ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="817"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1347"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="814"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1346"/>
         <source>Atlas BNA</source>
         <translation>Atlas BNA</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="824"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1351"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="821"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1350"/>
         <source>Comma Separated Value</source>
         <translation>カンマ区切りファイル</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="831"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="828"/>
         <source>ESRI Shapefile</source>
         <translation>ESRI　Shapefile</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="838"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1372"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1374"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="835"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1371"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1373"/>
         <source>FMEObjects Gateway</source>
         <translation>FMEObjects Gateway</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="845"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1379"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="842"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1378"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="852"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1383"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="849"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1382"/>
         <source>GeoRSS</source>
         <translation>GeoRSS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="859"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1387"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="856"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1386"/>
+        <source>Geography Markup Language [GML]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="863"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1390"/>
+        <source>Generic Mapping Tools [GMT]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="870"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1394"/>
+        <source>GPS eXchange Format [GPX]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="891"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1418"/>
+        <source>Keyhole Markup Language [KML]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="919"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1455"/>
+        <source>Spatial Data Transfer Standard [SDTS]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Geography Markup Language (GML)</source>
-        <translation>Geography Markup Language(GML)</translation>
+        <translation type="obsolete">Geography Markup Language(GML)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="866"/>
         <source>Generic Mapping Tools (GMT)</source>
-        <translation>Generic Mapping Tools(GMT)</translation>
+        <translation type="obsolete">Generic Mapping Tools(GMT)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
         <source>GPS eXchange Format</source>
-        <translation>GPS eXchange Format</translation>
+        <translation type="obsolete">GPS eXchange Format</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="880"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1407"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="877"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1406"/>
         <source>INTERLIS 1</source>
         <translation>INTELIS 1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="887"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1411"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="884"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1410"/>
         <source>INTERLIS 2</source>
         <translation>INTELIS 2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="894"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1419"/>
         <source>Keyhole Markup Language (KML)</source>
-        <translation>Keyhole Markup Language(KML)</translation>
+        <translation type="obsolete">Keyhole Markup Language(KML)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="901"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1423"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="898"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1422"/>
         <source>Mapinfo File</source>
         <translation>Mapinfo File</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="908"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1427"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="905"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1426"/>
         <source>Microstation DGN</source>
         <translation>Microstation DGN</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="915"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1451"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="912"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1450"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base file</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="922"/>
         <source>Spatial Data Transfer Standard (SDTS)</source>
-        <translation>Spatial Data Transfer Standard (SDTS)</translation>
+        <translation type="obsolete">Spatial Data Transfer Standard (SDTS)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="929"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1461"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="926"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1460"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="936"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1488"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="933"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1487"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="943"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1484"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="940"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1483"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
@@ -6527,14 +6610,14 @@ Only %1 of %2 features written.</source>
 %2中%1の地物のみが書き込まれました.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="62"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="60"/>
         <source>Groups not yet supported</source>
         <translation>グループはまだサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="135"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="186"/>
-        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="229"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="133"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="184"/>
+        <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="227"/>
         <source>Cannot draw raster</source>
         <translation>ラスタの描画ができません</translation>
     </message>
@@ -6589,9 +6672,13 @@ Only %1 of %2 features written.</source>
         <translation>交差</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
         <source>Disjoint</source>
-        <translation>接合していない</translation>
+        <translation type="obsolete">接合していない</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
+        <source>Is disjoint</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="110"/>
@@ -6639,12 +6726,12 @@ Only %1 of %2 features written.</source>
         <translation>ベクタレイヤに対する空間検索を行うプラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="331"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="333"/>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
         <translation>SQLite DB(*.sqlite *.db);;全ファイル (*)</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="487"/>
+        <location filename="../src/app/main.cpp" line="423"/>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
@@ -6718,17 +6805,17 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>選択した領域がレイヤの座標系を越えている.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1845"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1844"/>
         <source>Raster Histogram</source>
         <translation>ラスタヒストグラム</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1848"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1847"/>
         <source>Pixel Value</source>
         <translation>ピクセル値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1849"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1848"/>
         <source>Frequency</source>
         <translation>フリーケンシー</translation>
     </message>
@@ -6768,138 +6855,156 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>SQL Anywhereデータデータベースにベクタレイヤを格納します</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1339"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1338"/>
         <source>Arc/Info Binary Coverage</source>
         <translation>Arc/Info Binary Coverage</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1353"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1352"/>
         <source>DODS</source>
         <translation>DODS</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1359"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1361"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1358"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1360"/>
         <source>ESRI Personal GeoDatabase</source>
         <translation>ESRI Personal Geo Database</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1366"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1365"/>
         <source>ESRI ArcSDE</source>
         <translation>ESRI ArcSDE</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1370"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1369"/>
         <source>ESRI Shapefiles</source>
         <translation>ESRI Shapefiles</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1391"/>
         <source>GMT</source>
-        <translation>GMT</translation>
+        <translation type="obsolete">GMT</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1395"/>
         <source>GPX</source>
-        <translation>GPX</translation>
+        <translation type="obsolete">GPX</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1399"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1398"/>
         <source>Grass Vector</source>
         <translation>Grass Vector</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1403"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1402"/>
         <source>Informix DataBlade</source>
         <translation>Informix DataBlade</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1415"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1414"/>
         <source>INGRES</source>
         <translation>INGRES</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1431"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1430"/>
         <source>MySQL</source>
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1435"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1434"/>
         <source>Oracle Spatial</source>
         <translation>Oracle Spatial</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1439"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1438"/>
         <source>ODBC</source>
         <translation>ODBC</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1443"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1442"/>
         <source>OGDI Vectors</source>
         <translation>OGDI Vectors</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1447"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1446"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1456"/>
         <source>Spatial Data Transfer Standard</source>
-        <translation>Spatial Data transfer Standard</translation>
+        <translation type="obsolete">Spatial Data transfer Standard</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1466"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1465"/>
         <source>UK. NTF2</source>
         <translation>UK NTF2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1470"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1469"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>US Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1474"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1473"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - Virtual Datasource</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1479"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1478"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1501"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1500"/>
         <source>All files</source>
         <translation>全ファイル</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="137"/>
         <source>Cannot open GDAL dataset </source>
-        <translation>GDALデータセットを開けません</translation>
+        <translation type="obsolete">GDALデータセットを開けません</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="182"/>
         <source>Cannot get GDAL raster band : </source>
-        <translation>GDALラスタバンドを取得できません:</translation>
+        <translation type="obsolete">GDALラスタバンドを取得できません:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="549"/>
         <source>Cannot open GDAL MEM dataset </source>
-        <translation>GDAL MEMデータセットを開けません</translation>
+        <translation type="obsolete">GDAL MEMデータセットを開けません</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="629"/>
         <source>Cannot ChunkAndWarpImage : </source>
-        <translation>イメージの切り取りと変形ができません : </translation>
+        <translation type="obsolete">イメージの切り取りと変形ができません : </translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1392"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="187"/>
+        <source>Cannot get GDAL raster band: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="782"/>
+        <source>Cannot open GDAL MEM dataset %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="849"/>
+        <source>Cannot GDALCreateGenImgProjTransformer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="880"/>
+        <source>Cannot inittialize GDALWarpOperation : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="891"/>
+        <source>Cannot ChunkAndWarpImage: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1657"/>
         <source>[GDAL] All files (*)</source>
         <translation>[GDAL]全ファイル(*)</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1550"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1815"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
         <translation>このラスタファイルはバンドを持ちません,よってラスタレイヤとしては不正です.</translation>
     </message>
@@ -6990,12 +7095,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1645"/>
+        <location filename="../src/app/qgisapp.cpp" line="1670"/>
         <source>Layers</source>
         <translation>レイヤ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1916"/>
+        <location filename="../src/app/qgisapp.cpp" line="1941"/>
         <source>Version</source>
         <translation>バージョン</translation>
     </message>
@@ -7004,122 +7109,123 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">QgsHttpTransactionの代わりに QNetworkAccessManagerを使います(キャッシングとウェッブサイトとプロキシのダイナミック認証を含みます)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2095"/>
-        <location filename="../src/app/qgisapp.cpp" line="2102"/>
-        <location filename="../src/app/qgisapp.cpp" line="6050"/>
+        <location filename="../src/app/qgisapp.cpp" line="2120"/>
+        <location filename="../src/app/qgisapp.cpp" line="2127"/>
+        <location filename="../src/app/qgisapp.cpp" line="6172"/>
         <source>Invalid Data Source</source>
         <translation>無効なデータソース</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3387"/>
-        <location filename="../src/app/qgisapp.cpp" line="4813"/>
+        <location filename="../src/app/qgisapp.cpp" line="3423"/>
+        <location filename="../src/app/qgisapp.cpp" line="4850"/>
+        <location filename="../src/app/qgisapp.cpp" line="4897"/>
         <source>No Layer Selected</source>
         <translation>レイヤが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4670"/>
+        <location filename="../src/app/qgisapp.cpp" line="4728"/>
         <source>There is a new version of QGIS available</source>
         <translation>新しいバージョンの QGIS が出ています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4676"/>
+        <location filename="../src/app/qgisapp.cpp" line="4734"/>
         <source>You are running a development version of QGIS</source>
         <translation>これは開発バージョンの QGIS です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4680"/>
+        <location filename="../src/app/qgisapp.cpp" line="4738"/>
         <source>You are running the current version of QGIS</source>
         <translation>これは最新バージョンの QGIS です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4685"/>
+        <location filename="../src/app/qgisapp.cpp" line="4743"/>
         <source>Would you like more information?</source>
         <translation>もっと情報が欲しいですか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4688"/>
-        <location filename="../src/app/qgisapp.cpp" line="4701"/>
-        <location filename="../src/app/qgisapp.cpp" line="4706"/>
-        <location filename="../src/app/qgisapp.cpp" line="4734"/>
+        <location filename="../src/app/qgisapp.cpp" line="4746"/>
+        <location filename="../src/app/qgisapp.cpp" line="4759"/>
+        <location filename="../src/app/qgisapp.cpp" line="4764"/>
+        <location filename="../src/app/qgisapp.cpp" line="4792"/>
         <source>QGIS Version Information</source>
         <translation>QGIS バージョン情報</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4706"/>
+        <location filename="../src/app/qgisapp.cpp" line="4764"/>
         <source>Unable to get current version information from server</source>
         <translation>サーバから現在のバージョン情報が取得できませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4720"/>
+        <location filename="../src/app/qgisapp.cpp" line="4778"/>
         <source>Connection refused - server may be down</source>
         <translation>接続拒否 - サーバがダウンしているかもしれません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4723"/>
+        <location filename="../src/app/qgisapp.cpp" line="4781"/>
         <source>QGIS server was not found</source>
         <translation>QGIS サーバが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2273"/>
-        <location filename="../src/app/qgisapp.cpp" line="2345"/>
+        <location filename="../src/app/qgisapp.cpp" line="2298"/>
+        <location filename="../src/app/qgisapp.cpp" line="2370"/>
         <source>Invalid Layer</source>
         <translation>無効なレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2273"/>
-        <location filename="../src/app/qgisapp.cpp" line="2345"/>
+        <location filename="../src/app/qgisapp.cpp" line="2298"/>
+        <location filename="../src/app/qgisapp.cpp" line="2370"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1は無効なレイヤでロードできません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3425"/>
+        <location filename="../src/app/qgisapp.cpp" line="3461"/>
         <source>Problem deleting features</source>
         <translation>地物削除中の問題</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3426"/>
+        <location filename="../src/app/qgisapp.cpp" line="3462"/>
         <source>A problem occured during deletion of features</source>
         <translation>地物削除中に問題が発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3396"/>
+        <location filename="../src/app/qgisapp.cpp" line="3432"/>
         <source>No Vector Layer Selected</source>
         <translation>ベクタレイヤが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3397"/>
+        <location filename="../src/app/qgisapp.cpp" line="3433"/>
         <source>Deleting features only works on vector layers</source>
         <translation>地物の削除はベクタレイヤでのみ有効です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3388"/>
+        <location filename="../src/app/qgisapp.cpp" line="3424"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>地物を削除するには、凡例中のベクタレイヤを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1229"/>
+        <location filename="../src/app/qgisapp.cpp" line="1244"/>
         <source>Render</source>
         <translation>レンダ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2653"/>
-        <location filename="../src/app/qgisapp.cpp" line="2794"/>
-        <location filename="../src/app/qgisapp.cpp" line="2856"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2811"/>
+        <location filename="../src/app/qgisapp.cpp" line="2873"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGis ファイル (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2793"/>
+        <location filename="../src/app/qgisapp.cpp" line="2810"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS プロジェクトファイルを選択</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1644"/>
+        <location filename="../src/app/qgisapp.cpp" line="1669"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>地図キャンバスにある全てのレイヤの凡例。チェックボックスのクリックでレイヤの表示、非表示を切り替えます。凡例中のレイヤ名をダブルクリックして外観などの設定を変更します。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1574"/>
+        <location filename="../src/app/qgisapp.cpp" line="1599"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>全体図キャンバス。このキャンバスは、現在の地図キャンバスの位置を特定するために用いられます。現在の表示領域が赤の矩形で表示されます。全体図キャンバスには、任意のレイヤを表示することができます。</translation>
     </message>
@@ -7133,37 +7239,37 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">プラグイン(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1143"/>
+        <location filename="../src/app/qgisapp.cpp" line="1158"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>レイヤのレンダリングなど、時間のかかる操作の状態を表示するプログレスバー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1216"/>
+        <location filename="../src/app/qgisapp.cpp" line="1231"/>
         <source>Displays the current map scale</source>
         <translation>現在の地図縮尺を表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1232"/>
+        <location filename="../src/app/qgisapp.cpp" line="1247"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>チェックされている場合、地図レイヤはナビゲーションコマンドなどのイベント時にレンダリングされます。チェックされていない場合、レンダリングされません。これにより、レンダリングせずに多くのレイヤを追加してシンボル化することができます。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1236"/>
+        <location filename="../src/app/qgisapp.cpp" line="1251"/>
         <source>Toggle map rendering</source>
         <translation>地図レンダリングを循環</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2678"/>
+        <location filename="../src/app/qgisapp.cpp" line="2695"/>
         <source>QGIS Project Read Error</source>
         <translation>QGIS プロジェクト読み込み時にエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5962"/>
+        <location filename="../src/app/qgisapp.cpp" line="6084"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>GDAL のサポートするラスタデータソースを開く</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2653"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
         <source>Choose a QGIS project file to open</source>
         <translation>開く QGIS プロジェクトファイルを選択</translation>
     </message>
@@ -7520,7 +7626,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6346"/>
+        <location filename="../src/app/qgisapp.cpp" line="6468"/>
         <source>New Bookmark</source>
         <translation>新しいブックマーク</translation>
     </message>
@@ -7629,16 +7735,16 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">プラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1264"/>
+        <location filename="../src/app/qgisapp.cpp" line="1281"/>
         <source>Ready</source>
         <translation>準備</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
-        <location filename="../src/app/qgisapp.cpp" line="4182"/>
-        <location filename="../src/app/qgisapp.cpp" line="4264"/>
-        <location filename="../src/app/qgisapp.cpp" line="4278"/>
-        <location filename="../src/app/qgisapp.cpp" line="6364"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
+        <location filename="../src/app/qgisapp.cpp" line="4218"/>
+        <location filename="../src/app/qgisapp.cpp" line="4300"/>
+        <location filename="../src/app/qgisapp.cpp" line="4314"/>
+        <location filename="../src/app/qgisapp.cpp" line="6486"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
@@ -7682,19 +7788,19 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>Pythonを開始しています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3403"/>
+        <location filename="../src/app/qgisapp.cpp" line="3439"/>
         <source>Provider does not support deletion</source>
         <translation>プロバイダは削除をサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3404"/>
+        <location filename="../src/app/qgisapp.cpp" line="3440"/>
         <source>Data provider does not support deleting features</source>
         <translation>データプロバイダが地物の削除をサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3410"/>
-        <location filename="../src/app/qgisapp.cpp" line="3696"/>
-        <location filename="../src/app/qgisapp.cpp" line="3755"/>
+        <location filename="../src/app/qgisapp.cpp" line="3446"/>
+        <location filename="../src/app/qgisapp.cpp" line="3732"/>
+        <location filename="../src/app/qgisapp.cpp" line="3791"/>
         <source>Layer not editable</source>
         <translation>レイヤは編集不可です</translation>
     </message>
@@ -7711,22 +7817,22 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">リングの追加</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1201"/>
+        <location filename="../src/app/qgisapp.cpp" line="1216"/>
         <source>Scale </source>
         <translation>縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1217"/>
+        <location filename="../src/app/qgisapp.cpp" line="1232"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>現在の地図の縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5341"/>
+        <location filename="../src/app/qgisapp.cpp" line="5446"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>マウスカーソル位置の地図座標</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2538"/>
+        <location filename="../src/app/qgisapp.cpp" line="2555"/>
         <source>Save As</source>
         <translation>名前をつけて保存</translation>
     </message>
@@ -7967,87 +8073,109 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">さらに多くのGEOS機能操作のサポート</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2094"/>
+        <location filename="../src/app/qgisapp.cpp" line="2119"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1にはレイヤがありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2719"/>
+        <location filename="../src/app/qgisapp.cpp" line="2736"/>
         <source>Unable to open project</source>
         <translation>プロジェクトを開けません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3249"/>
+        <location filename="../src/app/qgisapp.cpp" line="3285"/>
         <source>Please select a vector layer first.</source>
         <translation>ベクタレイヤを最初に選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3411"/>
+        <location filename="../src/app/qgisapp.cpp" line="3447"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>カレントレイヤは編集できません.デジタイジングツールバーで&apos;編集開始&apos;を選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3704"/>
-        <location filename="../src/app/qgisapp.cpp" line="3770"/>
-        <location filename="../src/app/qgisapp.cpp" line="3809"/>
+        <location filename="../src/app/qgisapp.cpp" line="3740"/>
+        <location filename="../src/app/qgisapp.cpp" line="3806"/>
+        <location filename="../src/app/qgisapp.cpp" line="3845"/>
         <source>Not enough features selected</source>
         <translation>十分な数の地物が選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3792"/>
+        <location filename="../src/app/qgisapp.cpp" line="3828"/>
         <source>Union operation canceled</source>
         <translation>結合操作がキャンセルされました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4351"/>
+        <location filename="../src/app/qgisapp.cpp" line="4387"/>
         <source>Invalid scale</source>
         <translation>無効な縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4726"/>
+        <location filename="../src/app/qgisapp.cpp" line="4784"/>
         <source>Network error while communicating with server</source>
         <translation>サーバー接続中のネットワークエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4729"/>
+        <location filename="../src/app/qgisapp.cpp" line="4787"/>
         <source>Unknown network socket error</source>
         <translation>不明なネットワークソケットエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4953"/>
-        <location filename="../src/app/qgisapp.cpp" line="4995"/>
-        <location filename="../src/app/qgisapp.cpp" line="6131"/>
+        <location filename="../src/app/qgisapp.cpp" line="4851"/>
+        <location filename="../src/app/qgisapp.cpp" line="4860"/>
+        <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="4883"/>
+        <location filename="../src/app/qgisapp.cpp" line="4926"/>
+        <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="5039"/>
+        <location filename="../src/app/qgisapp.cpp" line="5081"/>
+        <location filename="../src/app/qgisapp.cpp" line="6253"/>
         <source>Layer is not valid</source>
         <translation>レイヤが不正です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4996"/>
-        <location filename="../src/app/qgisapp.cpp" line="6132"/>
+        <location filename="../src/app/qgisapp.cpp" line="5082"/>
+        <location filename="../src/app/qgisapp.cpp" line="6254"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>このレイヤは不正なので地図に追加できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5041"/>
+        <location filename="../src/app/qgisapp.cpp" line="5127"/>
         <source>Save?</source>
         <translation>保存しますか？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5042"/>
+        <location filename="../src/app/qgisapp.cpp" line="5128"/>
         <source>Do you want to save the current project?</source>
         <translation>現在のプロジェクトを保存しますか？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6230"/>
+        <location filename="../src/app/qgisapp.cpp" line="5378"/>
+        <source>Current CRS: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="5385"/>
+        <source>Inactive project CRS: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="6352"/>
         <source>Unsupported Data Source</source>
         <translation>サポートされていないデータソース</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6347"/>
+        <location filename="../src/app/qgisapp.cpp" line="6469"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>新しいブックマークの名前を入力してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6364"/>
+        <location filename="../src/app/qgisapp.cpp" line="6486"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>ブックマークを作れません。ユーザデータベースが無いか壊れています。</translation>
     </message>
@@ -8064,23 +8192,23 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">マウスカーソルが上にある時に地物の情報が表示されます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1202"/>
+        <location filename="../src/app/qgisapp.cpp" line="1217"/>
         <source>Current map scale</source>
         <translation>現在の地図の縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6379"/>
+        <location filename="../src/app/qgisapp.cpp" line="6501"/>
         <source>Project file is older</source>
         <translation>プロジェクトファイルは古いです</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6396"/>
+        <location filename="../src/app/qgisapp.cpp" line="6518"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;設定:オプション:一般&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6397"/>
+        <location filename="../src/app/qgisapp.cpp" line="6519"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>オープンしたプロジェクトファイルを古いバージョンで保存する時は警告してください</translation>
     </message>
@@ -8089,35 +8217,33 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">フルスクリーンモード切替</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1249"/>
         <source>Resource Location Error</source>
-        <translation>リソース位置エラー</translation>
+        <translation type="obsolete">リソース位置エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1250"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation>アイコンリソースを%1から読み込み時にエラーが発生しました。終了しています...</translation>
+        <translation type="obsolete">アイコンリソースを%1から読み込み時にエラーが発生しました。終了しています...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1583"/>
+        <location filename="../src/app/qgisapp.cpp" line="1608"/>
         <source>Overview</source>
         <translation>全体図</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1885"/>
+        <location filename="../src/app/qgisapp.cpp" line="1910"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>ご利用中のQGISは　バージョン　%1 です　レビジョン %2 のコードでビルドされました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1909"/>
+        <location filename="../src/app/qgisapp.cpp" line="1934"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>このバイナリはQt%1を利用してコンパイルされています。現在Qt%2が動作しています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1226"/>
+        <location filename="../src/app/qgisapp.cpp" line="1241"/>
         <source>Stop map rendering</source>
         <translation>地図描画の中止</translation>
     </message>
@@ -8274,7 +8400,7 @@ Please contact the developers.
         <translation type="obsolete">実際のサイズにズームする</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3249"/>
+        <location filename="../src/app/qgisapp.cpp" line="3285"/>
         <source>Labeling</source>
         <translation>ラベリング</translation>
     </message>
@@ -8398,38 +8524,38 @@ Please contact the developers.
         <translation type="obsolete">カスタム座標参照系の管理</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="823"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="810"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="811"/>
+        <location filename="../src/app/qgisapp.cpp" line="825"/>
         <source>Minimizes the active window to the dock</source>
         <translation>アクティブウィンドウの最小化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="814"/>
+        <location filename="../src/app/qgisapp.cpp" line="828"/>
         <source>Zoom</source>
         <translation>ズーム</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="815"/>
+        <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>定義されたサイズとユーザ設定サイズ間の切り替え</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="818"/>
+        <location filename="../src/app/qgisapp.cpp" line="832"/>
         <source>Bring All to Front</source>
         <translation>全てを前面に</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="819"/>
+        <location filename="../src/app/qgisapp.cpp" line="833"/>
         <source>Bring forward all open windows</source>
         <translation>開いているすべてのウィンドウを前面に</translation>
     </message>
@@ -8486,7 +8612,7 @@ Please contact the developers.
         <translation type="obsolete">スタイルマネージャV2表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
         <source>Failed to open Python console:</source>
         <translation>Pythomコンソールのオープンに失敗しました:</translation>
     </message>
@@ -8499,12 +8625,12 @@ Please contact the developers.
         <translation type="obsolete">編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="971"/>
+        <location filename="../src/app/qgisapp.cpp" line="986"/>
         <source>Panels</source>
         <translation>パネル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="972"/>
+        <location filename="../src/app/qgisapp.cpp" line="987"/>
         <source>Toolbars</source>
         <translation>ツールバー</translation>
     </message>
@@ -8521,12 +8647,12 @@ Please contact the developers.
         <translation type="obsolete">新規</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1025"/>
+        <location filename="../src/app/qgisapp.cpp" line="1040"/>
         <source>&amp;Window</source>
         <translation>ウィンドウ(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6631"/>
+        <location filename="../src/app/qgisapp.cpp" line="6753"/>
         <source>
 
 Always ignore these errors?</source>
@@ -8535,7 +8661,7 @@ Always ignore these errors?</source>
 いつもこれらのエラーを無視しますか?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6635"/>
+        <location filename="../src/app/qgisapp.cpp" line="6757"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -8547,54 +8673,54 @@ Always ignore these errors?</source>
         <translation type="obsolete">選択ツール</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1157"/>
+        <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Toggle extents and mouse position display</source>
         <translation>切り替えで表示が広がりマウス位置が表示されます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1170"/>
-        <location filename="../src/app/qgisapp.cpp" line="5343"/>
+        <location filename="../src/app/qgisapp.cpp" line="1185"/>
+        <location filename="../src/app/qgisapp.cpp" line="5448"/>
         <source>Coordinate:</source>
         <translation>座標:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1171"/>
+        <location filename="../src/app/qgisapp.cpp" line="1186"/>
         <source>Current map coordinate</source>
         <translation>現在の地図の座標</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1185"/>
+        <location filename="../src/app/qgisapp.cpp" line="1200"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation>カーソル位置の地図座標を表示します。表示はマウスが動くたびに更新されます。また指定した位置を中心にして地図表示領域を変更することができます。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1189"/>
+        <location filename="../src/app/qgisapp.cpp" line="1204"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>現在の地図の座標(x,y形式）</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1255"/>
+        <location filename="../src/app/qgisapp.cpp" line="1272"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>このアイコンはオンザフライ座標参照系変換が有効かどうかを表します。アイコンをクリックするとこの機能についてのプロジェクトプロパティダイアログが表示されます。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1259"/>
+        <location filename="../src/app/qgisapp.cpp" line="1276"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRSステータス-クリックすると座標参照系ダイアログが開きます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1685"/>
-        <location filename="../src/app/qgisapp.cpp" line="1727"/>
+        <location filename="../src/app/qgisapp.cpp" line="1710"/>
+        <location filename="../src/app/qgisapp.cpp" line="1752"/>
         <source>Private qgis.db</source>
         <translation>プライベートqgisデータベース</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1685"/>
+        <location filename="../src/app/qgisapp.cpp" line="1710"/>
         <source>Could not open qgis.db</source>
         <translation>qgis dbを開けません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1727"/>
+        <location filename="../src/app/qgisapp.cpp" line="1752"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>プライベートqgis ｄｂの移動に失敗しました
@@ -8630,443 +8756,443 @@ This copy of QGIS has been built without QWT support.</source>
 このQGISはQWTのサポート抜きでビルドされました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1906"/>
+        <location filename="../src/app/qgisapp.cpp" line="1931"/>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation>
 このQGISはデバッグ情報を出力します.</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/app/qgisapp.cpp" line="1917"/>
+        <location filename="../src/app/qgisapp.cpp" line="1942"/>
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
         <translation>Version 1.6.0 &apos;Capiapóの新機能は&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1919"/>
+        <location filename="../src/app/qgisapp.cpp" line="1944"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
         <translation>このリリースは私たちの&apos;最先端&apos;リリースシリーズであることに注意して下さい. QGIS1.0.xとQGIS1.5.0に対して新しい機能やプログラムインターフェースの拡張が加えられています.私たちは以前のリリースよりこのバージョンを利用することを推奨します.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1922"/>
+        <location filename="../src/app/qgisapp.cpp" line="1947"/>
         <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
         <translation>このリリースは117個以上のバグ修正と多くの機能追加、拡張がなされました.すべてのことをここに記述することは不可能なので主要な新機能について箇条書きにします.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1925"/>
+        <location filename="../src/app/qgisapp.cpp" line="1950"/>
         <source>General Improvements</source>
         <translation>一般的な改善</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1927"/>
+        <location filename="../src/app/qgisapp.cpp" line="1952"/>
         <source>Added gpsd support to live gps tracking.</source>
         <translation>gpsライブトラッキングにgpsdのサポートを追加しました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1928"/>
+        <location filename="../src/app/qgisapp.cpp" line="1953"/>
         <source>A new plugin has been included that allows for offline editing.</source>
         <translation>オフライン編集が実行できる新しいプラグインが追加されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1929"/>
+        <location filename="../src/app/qgisapp.cpp" line="1954"/>
         <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
         <translation>フィールド計算機はエラーが発生した場合に停止して全ての地物の計算を元に戻すのではなくNULLの地物を挿入します.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1930"/>
+        <location filename="../src/app/qgisapp.cpp" line="1955"/>
         <source>Update srs.db to include grid reference.</source>
         <translation>srs.dbはグリッド参照を追加して更新されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1931"/>
+        <location filename="../src/app/qgisapp.cpp" line="1956"/>
         <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
         <translation>C++を利用したネイティブラスタ計算機が実装されました.これは効率的に巨大ラスタを扱います.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1932"/>
+        <location filename="../src/app/qgisapp.cpp" line="1957"/>
         <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
         <translation>ステータスバーの領域ウィジェットでテキストのコピーアンドペーストができるように改善されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1933"/>
+        <location filename="../src/app/qgisapp.cpp" line="1958"/>
         <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
         <translation>フィールド計算機には多くの改善と新しい演算子が追加されました.それにはフィールドの連結や行数カウンタ等が含まれます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1934"/>
+        <location filename="../src/app/qgisapp.cpp" line="1959"/>
         <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
         <translation>--configpathオプションが追加されました.これはユーザ設定とQSettingsのデフォルトパス（~/.qgis)をこのディレクトリでオーバーライドします.これによってユーザはたとえばQGISのインストールを全てのプラグインと設定情報と一緒にフラッシュドライブで持ち運ぶことができます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1935"/>
+        <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
         <translation>実験的なWFS-Tサポート.ネットワークマネージャにwfsが追加で移植されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1936"/>
+        <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Georeferencer has had many tidy ups and improvements.</source>
         <translation>ジオレファレンサに多くの整理と改善が加えられました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1937"/>
+        <location filename="../src/app/qgisapp.cpp" line="1962"/>
         <source>Support for long int in attribute dialog and editor.</source>
         <translation>long int型が属性ダイアログとエディタでサポートされました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1938"/>
+        <location filename="../src/app/qgisapp.cpp" line="1963"/>
         <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
         <translation>QGIS MapserverプロジェクトがメインSVNレポジトリに統合され,パッケージが利用可能になりました.QGIS MapserverではQGISのプロジェクトファイルを使ってOGC WMSプロトコルの配信ができます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1938"/>
-        <location filename="../src/app/qgisapp.cpp" line="1959"/>
+        <location filename="../src/app/qgisapp.cpp" line="1963"/>
+        <location filename="../src/app/qgisapp.cpp" line="1984"/>
         <source>Read More.</source>
         <translation>さらに読んで下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1939"/>
+        <location filename="../src/app/qgisapp.cpp" line="1964"/>
         <source>Select and measure toolbar flyouts and submenus.</source>
         <translation>選択と計測ツールバーがフライアウトとサブメニューになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1940"/>
+        <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
         <translation>空間情報が無いテーブル(OGR,デリミテッドテキスト,PostgreSQLプロバイダ)のサポートが追加されました.これらのテーブルはフィールドの検索,閲覧,編集がテーブルビューで行えます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1941"/>
+        <location filename="../src/app/qgisapp.cpp" line="1966"/>
         <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
         <translation>検索に地物のid($id)が利用できるようになりました,また他の多彩な検索関係機能が改善されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1942"/>
+        <location filename="../src/app/qgisapp.cpp" line="1967"/>
         <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
         <translation>地図のレイヤとプロバイダインターフェースのリロードメソッドが追加されました.同じようにキャッシングするプロバイダ（現在はWMSとWFS)でデータソース内の変更と同期する機能が追加されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1945"/>
+        <location filename="../src/app/qgisapp.cpp" line="1970"/>
         <source>Table of contents (TOC) improvements</source>
         <translation>コンテンツテーブル(TOC)が改良されました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1947"/>
+        <location filename="../src/app/qgisapp.cpp" line="1972"/>
         <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
         <translation>ラスタ凡例メニューに新たなオプションが追加されました.これはカレントレイヤを現在の領域のピクセルの最小値,最大値で拡張します.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1948"/>
+        <location filename="../src/app/qgisapp.cpp" line="1973"/>
         <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
         <translation>TOCのコンテキストメニューの&apos;名前をつけて保存のオプションでOGR作成オプションを選択できるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1949"/>
+        <location filename="../src/app/qgisapp.cpp" line="1974"/>
         <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
         <translation>TOCで複数のレイヤを一度に選択,削除,移動できるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1952"/>
+        <location filename="../src/app/qgisapp.cpp" line="1977"/>
         <source>Labelling (New generation only)</source>
         <translation>ラベリング(新機能のみ)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1954"/>
+        <location filename="../src/app/qgisapp.cpp" line="1979"/>
         <source>Data defined label position.</source>
         <translation>ラベルの位置をデータで定義できるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1955"/>
+        <location filename="../src/app/qgisapp.cpp" line="1980"/>
         <source>Line wrapping, data defined font and buffer settings.</source>
         <translation>ラインの被覆.フォントと縁取りの設定をデータで定義できるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1957"/>
+        <location filename="../src/app/qgisapp.cpp" line="1982"/>
         <source>Layer properties and symbology</source>
         <translation>レイヤプロパティとシンボロジー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1959"/>
+        <location filename="../src/app/qgisapp.cpp" line="1984"/>
         <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
         <translation>グラデーションレンダラ（バージョン2）に3個の新しい分類モードが追加されました.自然なブレーク(Jenks) 標準偏差 プリティブレーク(R統計環境のprettyにもとづく）.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1960"/>
+        <location filename="../src/app/qgisapp.cpp" line="1985"/>
         <source>Improved loading speed of the symbol properties dialog.</source>
         <translation>シンボルプロパティダイアログのローディングスピードが改善しました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1961"/>
+        <location filename="../src/app/qgisapp.cpp" line="1986"/>
         <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
         <translation>レンダラの分類とグラデーションでデータ定義の回転とサイズが利用できます（新シンボロジ).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1962"/>
+        <location filename="../src/app/qgisapp.cpp" line="1987"/>
         <source>Use size scale also for line symbols to modify line width.</source>
         <translation>ラインシンボルでもラインの幅を修正するためにサイズスケールが利用できるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1963"/>
+        <location filename="../src/app/qgisapp.cpp" line="1988"/>
         <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
         <translation>ラスタヒストグラムがQwtを利用したものに置き換えられました.イメージファイルとしてヒストグラムを保存するオプションが追加されました.ラスタヒストグラムのx軸にピクセルの実際の値が表示されます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1964"/>
+        <location filename="../src/app/qgisapp.cpp" line="1989"/>
         <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
         <translation>ラスタレイヤプロパティダイアログに透過性テーブルを定着させるためにキャンバスからピクセルを対話式に選択する機能が追加されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1965"/>
+        <location filename="../src/app/qgisapp.cpp" line="1990"/>
         <source>Allow creation of color ramps in vector color ramp combo box.</source>
         <translation>ベクタカラーランプコンボボックスを使ってカラーランプを作ることができるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1966"/>
+        <location filename="../src/app/qgisapp.cpp" line="1991"/>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
         <translation>シンボルセレクタに&apos;スタイルマネージャ...&apos;ボタンが追加され,ユーザはスタイルマネージャをさらに簡単に見つけることができるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1969"/>
+        <location filename="../src/app/qgisapp.cpp" line="1994"/>
         <source>Map Composer</source>
         <translation>マップコンポーザ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1971"/>
+        <location filename="../src/app/qgisapp.cpp" line="1996"/>
         <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
         <translation>コンポーザアイテムの幅/高さをポジションダイアログで操作する機能が追加されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1972"/>
+        <location filename="../src/app/qgisapp.cpp" line="1997"/>
         <source>Composer items can now be deleted with the backspace key.</source>
         <translation>コンポーザアイテムがバックスペースキーで削除できるようになりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1973"/>
+        <location filename="../src/app/qgisapp.cpp" line="1998"/>
         <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
         <translation>コンポーザ属性テーブルのソート機能(それぞれのカラムで昇順/降順).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2139"/>
+        <location filename="../src/app/qgisapp.cpp" line="2164"/>
         <source>Select raster layers to add...</source>
         <translation>追加するラスタレイヤの選択...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2144"/>
+        <location filename="../src/app/qgisapp.cpp" line="2169"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1889"/>
+        <location filename="../src/app/qgisapp.cpp" line="1914"/>
         <source>
 GDAL/OGR Version: %1.</source>
         <translation>
 GDAL/OGRバージョン %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1892"/>
+        <location filename="../src/app/qgisapp.cpp" line="1917"/>
         <source>
 PostgreSQL Client Version: %1.</source>
         <translation>
 PostgreSQLクライアント %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1894"/>
+        <location filename="../src/app/qgisapp.cpp" line="1919"/>
         <source>
 No PostgreSQL support.</source>
         <translation>
 PostgreSQLのサポートがありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1898"/>
+        <location filename="../src/app/qgisapp.cpp" line="1923"/>
         <source>
 SpatiaLite Version: %1.</source>
         <translation>
 SpatiaLite バージョン %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1900"/>
+        <location filename="../src/app/qgisapp.cpp" line="1925"/>
         <source>
 No SpatiaLite support.</source>
         <translation>SpatiaLiteのサポートがありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1903"/>
+        <location filename="../src/app/qgisapp.cpp" line="1928"/>
         <source>
 QWT Version: %1.</source>
         <translation>QWTバージョン %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2178"/>
+        <location filename="../src/app/qgisapp.cpp" line="2203"/>
         <source>Select vector layers to add...</source>
         <translation>追加するベクタレイヤの選択...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2628"/>
+        <location filename="../src/app/qgisapp.cpp" line="2645"/>
         <source>Calculating...</source>
         <translation>計算中...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2628"/>
+        <location filename="../src/app/qgisapp.cpp" line="2645"/>
         <source>Abort...</source>
         <translation>中断...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2856"/>
+        <location filename="../src/app/qgisapp.cpp" line="2873"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>QGISのプロジェクトとして保存するファイル名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2991"/>
+        <location filename="../src/app/qgisapp.cpp" line="3027"/>
         <source>Choose a file name to save the map image as</source>
         <translation>地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3354"/>
+        <location filename="../src/app/qgisapp.cpp" line="3390"/>
         <source>Saving done</source>
         <translation>保存完了</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3354"/>
+        <location filename="../src/app/qgisapp.cpp" line="3390"/>
         <source>Export to vector file has been completed</source>
         <translation>ベクタファイルへのエキスポートが完了しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3359"/>
+        <location filename="../src/app/qgisapp.cpp" line="3395"/>
         <source>Save error</source>
         <translation>保存エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3360"/>
+        <location filename="../src/app/qgisapp.cpp" line="3396"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>ベクタファイルへのエキスポートが失敗しました.
 エラー:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3422"/>
+        <location filename="../src/app/qgisapp.cpp" line="3458"/>
         <source>Features deleted</source>
         <translation>削除された地物</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3467"/>
+        <location filename="../src/app/qgisapp.cpp" line="3503"/>
         <source>Merging features...</source>
         <translation>地物を結合しています...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3467"/>
+        <location filename="../src/app/qgisapp.cpp" line="3503"/>
         <source>Abort</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3520"/>
-        <location filename="../src/app/qgisapp.cpp" line="3553"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
+        <location filename="../src/app/qgisapp.cpp" line="3589"/>
         <source>Composer %1</source>
         <translation>コンポーザー%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3683"/>
-        <location filename="../src/app/qgisapp.cpp" line="3744"/>
+        <location filename="../src/app/qgisapp.cpp" line="3719"/>
+        <location filename="../src/app/qgisapp.cpp" line="3780"/>
         <source>No active layer</source>
         <translation>アクティブレイヤ無し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3683"/>
-        <location filename="../src/app/qgisapp.cpp" line="3744"/>
+        <location filename="../src/app/qgisapp.cpp" line="3719"/>
+        <location filename="../src/app/qgisapp.cpp" line="3780"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>アクティブレイヤがありません。レイヤリストでレイヤを選択してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3690"/>
-        <location filename="../src/app/qgisapp.cpp" line="3750"/>
+        <location filename="../src/app/qgisapp.cpp" line="3726"/>
+        <location filename="../src/app/qgisapp.cpp" line="3786"/>
         <source>Active layer is not vector</source>
         <translation>アクティブレイヤはベクタ形式ではありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3690"/>
-        <location filename="../src/app/qgisapp.cpp" line="3750"/>
+        <location filename="../src/app/qgisapp.cpp" line="3726"/>
+        <location filename="../src/app/qgisapp.cpp" line="3786"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>地物結合ツールはベクタレイヤでのみ利用できます。レイヤリストでベクタレイヤを選択してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3696"/>
-        <location filename="../src/app/qgisapp.cpp" line="3755"/>
+        <location filename="../src/app/qgisapp.cpp" line="3732"/>
+        <location filename="../src/app/qgisapp.cpp" line="3791"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>地物結合は編集モードのレイヤでのみ利用できます。結合を利用するためにはレイヤ-&gt;編集切り替えを実行してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3704"/>
-        <location filename="../src/app/qgisapp.cpp" line="3770"/>
-        <location filename="../src/app/qgisapp.cpp" line="3809"/>
+        <location filename="../src/app/qgisapp.cpp" line="3740"/>
+        <location filename="../src/app/qgisapp.cpp" line="3806"/>
+        <location filename="../src/app/qgisapp.cpp" line="3845"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>結合ツールを利用するためには少なくとも２個の地物を選択する必要があります。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3718"/>
+        <location filename="../src/app/qgisapp.cpp" line="3754"/>
         <source>Merged feature attributes</source>
         <translation>結合された地物属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3782"/>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3818"/>
+        <location filename="../src/app/qgisapp.cpp" line="3860"/>
         <source>Merge failed</source>
         <translation>結合に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3782"/>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3818"/>
+        <location filename="../src/app/qgisapp.cpp" line="3860"/>
         <source>An error occured during the merge operation</source>
         <translation>結合処理中にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3792"/>
-        <location filename="../src/app/qgisapp.cpp" line="3833"/>
+        <location filename="../src/app/qgisapp.cpp" line="3828"/>
+        <location filename="../src/app/qgisapp.cpp" line="3869"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>統合操作の結果のジオメトリタイプはカレントレイヤのジオメトリタイプと互換性がありませんので処理がキャンセルされました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3839"/>
+        <location filename="../src/app/qgisapp.cpp" line="3875"/>
         <source>Merged features</source>
         <translation>結合された地物群</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4036"/>
+        <location filename="../src/app/qgisapp.cpp" line="4072"/>
         <source>Features cut</source>
         <translation>地物群の削除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4084"/>
+        <location filename="../src/app/qgisapp.cpp" line="4120"/>
         <source>Features pasted</source>
         <translation>地物群の貼付け</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4241"/>
+        <location filename="../src/app/qgisapp.cpp" line="4277"/>
         <source>Start editing failed</source>
         <translation>編集開始に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4241"/>
+        <location filename="../src/app/qgisapp.cpp" line="4277"/>
         <source>Provider cannot be opened for editing</source>
         <translation>指定プロバイダは編集できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4252"/>
+        <location filename="../src/app/qgisapp.cpp" line="4288"/>
         <source>Stop editing</source>
         <translation>編集を終了</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4253"/>
+        <location filename="../src/app/qgisapp.cpp" line="4289"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>%1レイヤーの変更を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4278"/>
+        <location filename="../src/app/qgisapp.cpp" line="4314"/>
         <source>Problems during roll back</source>
         <translation>ロールバック中に問題が発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4490"/>
+        <location filename="../src/app/qgisapp.cpp" line="4548"/>
         <source>GPS Information</source>
         <translation>GPS情報</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4512"/>
+        <location filename="../src/app/qgisapp.cpp" line="4570"/>
         <source>Tile scale</source>
         <translation>タイルスケール</translation>
     </message>
@@ -9075,48 +9201,49 @@ Error: %1</source>
         <translation type="obsolete">Pythonコンソール</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4814"/>
-        <location filename="../src/app/qgisapp.cpp" line="4823"/>
+        <location filename="../src/app/qgisapp.cpp" line="4898"/>
+        <location filename="../src/app/qgisapp.cpp" line="4907"/>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
         <translation>ローカルヒストグラムを拡張するためにはラスタレイヤを選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4822"/>
+        <location filename="../src/app/qgisapp.cpp" line="4859"/>
+        <location filename="../src/app/qgisapp.cpp" line="4906"/>
         <source>No Raster Layer Selected</source>
         <translation>ラスタレイヤが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4840"/>
+        <location filename="../src/app/qgisapp.cpp" line="4882"/>
+        <location filename="../src/app/qgisapp.cpp" line="4925"/>
         <source>No Valid Raster Layer Selected</source>
         <translation>有効なラスタレイヤが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4841"/>
         <source>To perform a local histogram stretch, you need to have a grayscale (multiband single layer, or singleband grayscale) raster layer selected.</source>
-        <translation>ローカルヒストグラムを拡張するためにはグレイスケールラスタレイヤ(マルチバンドのシングルレイヤまたはシングルバンドのグレイスケール)を選択する必要があります.</translation>
+        <translation type="obsolete">ローカルヒストグラムを拡張するためにはグレイスケールラスタレイヤ(マルチバンドのシングルレイヤまたはシングルバンドのグレイスケール)を選択する必要があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4954"/>
+        <location filename="../src/app/qgisapp.cpp" line="5040"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>レイヤ%1は正しいレイヤではないので地図に追加できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5333"/>
+        <location filename="../src/app/qgisapp.cpp" line="5438"/>
         <source>Map coordinates for the current view extents</source>
         <translation>現在の地図表示領域矩形の座標</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5381"/>
+        <location filename="../src/app/qgisapp.cpp" line="5486"/>
         <source>Extents:</source>
         <translation>範囲:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5454"/>
+        <location filename="../src/app/qgisapp.cpp" line="5559"/>
         <source>Maptips require an active layer</source>
         <translation>マップチップスの表示にはアクティブレイヤの選択が必要です</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5538"/>
+        <location filename="../src/app/qgisapp.cpp" line="5643"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -9124,27 +9251,27 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6560"/>
+        <location filename="../src/app/qgisapp.cpp" line="6682"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6560"/>
+        <location filename="../src/app/qgisapp.cpp" line="6682"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>このレイヤはプロパティダイアログがありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6591"/>
+        <location filename="../src/app/qgisapp.cpp" line="6713"/>
         <source>Authentication required</source>
         <translation>認証が必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6607"/>
+        <location filename="../src/app/qgisapp.cpp" line="6729"/>
         <source>Proxy authentication required</source>
         <translation>プロキシの認証が必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6618"/>
+        <location filename="../src/app/qgisapp.cpp" line="6740"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>URL%1アクセス中にSSLエラーが発生しました:</translation>
     </message>
@@ -9314,7 +9441,7 @@ Ignore errors?</source>
         <translation type="obsolete">タイルスケールスライダを表示する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1037"/>
+        <location filename="../src/app/qgisapp.cpp" line="1052"/>
         <source>&amp;Database</source>
         <translation>データベース(&amp;D)</translation>
     </message>
@@ -9335,30 +9462,30 @@ This copy of QGIS has been built with QWT %1.</source>
 このQGISはQWT(%1)を利用してビルドされています.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2101"/>
+        <location filename="../src/app/qgisapp.cpp" line="2126"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1は正しくないか認識できないデータソースです</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2825"/>
-        <location filename="../src/app/qgisapp.cpp" line="2876"/>
+        <location filename="../src/app/qgisapp.cpp" line="2842"/>
+        <location filename="../src/app/qgisapp.cpp" line="2893"/>
         <source>Saved project to: %1</source>
         <translation>%1に保存されたプロジェクト</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2837"/>
-        <location filename="../src/app/qgisapp.cpp" line="2883"/>
+        <location filename="../src/app/qgisapp.cpp" line="2854"/>
+        <location filename="../src/app/qgisapp.cpp" line="2900"/>
         <source>Unable to save project %1</source>
         <translation>プロジェクトを%1に保存できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2996"/>
+        <location filename="../src/app/qgisapp.cpp" line="3032"/>
         <source>Saved map image to %1</source>
         <translation>%1に保存された地図イメージ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4183"/>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
+        <location filename="../src/app/qgisapp.cpp" line="4219"/>
+        <location filename="../src/app/qgisapp.cpp" line="4301"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -9368,38 +9495,38 @@ Errors: %2
 エラー:%2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4694"/>
+        <location filename="../src/app/qgisapp.cpp" line="4752"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS-最後のリリース以来のSVN内の変更</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4734"/>
+        <location filename="../src/app/qgisapp.cpp" line="4792"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>QGISバージョンサーバーと通信できません %1 　</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6049"/>
+        <location filename="../src/app/qgisapp.cpp" line="6171"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1は正しく認識できるラスタデータソースではありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6225"/>
+        <location filename="../src/app/qgisapp.cpp" line="6347"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1はサポートされているラスタデータソースではありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6380"/>
+        <location filename="../src/app/qgisapp.cpp" line="6502"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;このプロジェクトファイルは別の古いバージョンのQGISで保存されています. このプロジェクトが保存される時にQGISはプロジェクトファイルを最新の版で保存します.その場合古いバージョンのQGISでは利用できない表現に更新されます.&lt;p&gt;QGISの開発者はバックワードコンパチビリティを保守しようとしていますが古いプロジェクトの情報のいくつかは失われるでしょう. QGISの品質を向上させるために%3にバグレポートをしていただけると感謝いたします. その場合古いプロジェクトファイルとエラーを発見したQGISのバージョンを含めることを忘れないでください.&lt;p&gt;古いプロジェクトファイルが開かれる度にこの警告が表示されることを停止するためには%4メニューの&apos;%5&apos;ボックスのチェックをはずして下さい.&lt;p&gt;プロジェクトファイルのバージョン: %1&lt;br&gt; QGISのバージョン: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3417"/>
+        <location filename="../src/app/qgisapp.cpp" line="3453"/>
         <source>Delete features</source>
         <translation>地物群の削除</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3417"/>
+        <location filename="../src/app/qgisapp.cpp" line="3453"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -9475,7 +9602,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="obsolete">アクションを実行する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisappinterface.cpp" line="399"/>
+        <location filename="../src/app/qgisappinterface.cpp" line="409"/>
         <source>Attributes changed</source>
         <translation>属性が変更されました</translation>
     </message>
@@ -9574,42 +9701,42 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;p&gt;以下の個人と機関からQGIS開発やその他プロジェクトのための費用に使われる基金に寄付をいただきました&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="129"/>
+        <location filename="../src/app/qgsabout.cpp" line="128"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;QGISの開発とその他のプロジェクトにかかる費用を寄付した個人と機関のリストは次のWEBページで閲覧できます &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="176"/>
+        <location filename="../src/app/qgsabout.cpp" line="175"/>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
         <translation>&lt;p&gt;以下の方々はユーザーインターフェースやドキュメントの翻訳作業でQGISに貢献していただきました&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="180"/>
+        <location filename="../src/app/qgsabout.cpp" line="179"/>
         <source>Language</source>
         <translation>言語</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="181"/>
+        <location filename="../src/app/qgsabout.cpp" line="180"/>
         <source>Names</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="234"/>
+        <location filename="../src/app/qgsabout.cpp" line="233"/>
         <source>Available QGIS Data Provider Plugins</source>
         <translation>利用可能なQGISデータプロバイダプラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="237"/>
+        <location filename="../src/app/qgsabout.cpp" line="236"/>
         <source>Available Qt Database Plugins</source>
         <translation>利用可能なQtデータベースプラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="243"/>
+        <location filename="../src/app/qgsabout.cpp" line="242"/>
         <source>Available Qt Image Plugins</source>
         <translation>利用可能なQtイメージプラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="244"/>
+        <location filename="../src/app/qgsabout.cpp" line="243"/>
         <source>Qt Image Plugin Search Paths &lt;br&gt;</source>
         <translation>Qtイメージプラグインサーチパス&lt;br&gt;</translation>
     </message>
@@ -9733,14 +9860,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="92"/>
-        <location filename="../src/core/qgsapplication.cpp" line="96"/>
-        <location filename="../src/core/qgsapplication.cpp" line="100"/>
+        <location filename="../src/core/qgsapplication.cpp" line="123"/>
+        <location filename="../src/core/qgsapplication.cpp" line="127"/>
+        <location filename="../src/core/qgsapplication.cpp" line="131"/>
         <source>Exception</source>
         <translation>例外</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="100"/>
+        <location filename="../src/core/qgsapplication.cpp" line="131"/>
         <source>unknown exception</source>
         <translation>不明な例外が発生しました</translation>
     </message>
@@ -10694,32 +10821,32 @@ Error was:%2</source>
 <context>
     <name>QgsBookmarks</name>
     <message>
-        <location filename="../src/app/qgsbookmarks.cpp" line="156"/>
+        <location filename="../src/app/qgsbookmarks.cpp" line="155"/>
         <source>Really Delete?</source>
         <translation>本当に削除しますか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsbookmarks.cpp" line="173"/>
+        <location filename="../src/app/qgsbookmarks.cpp" line="172"/>
         <source>Error deleting bookmark</source>
         <translation>ブックマーク削除エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsbookmarks.cpp" line="58"/>
+        <location filename="../src/app/qgsbookmarks.cpp" line="57"/>
         <source>&amp;Delete</source>
         <translation>&amp;D削除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsbookmarks.cpp" line="59"/>
+        <location filename="../src/app/qgsbookmarks.cpp" line="58"/>
         <source>&amp;Zoom to</source>
         <translation>&amp;Zズーム</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsbookmarks.cpp" line="157"/>
+        <location filename="../src/app/qgsbookmarks.cpp" line="156"/>
         <source>Are you sure you want to delete the %1 bookmark?</source>
         <translation>本当に%1のブックマークを削除しますか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsbookmarks.cpp" line="174"/>
+        <location filename="../src/app/qgsbookmarks.cpp" line="173"/>
         <source>Failed to delete the %1 bookmark from the database. The database said:
 %2</source>
         <translation>%1のブックマークをデータベースから削除するのに失敗しました。データベースのログは以下のとおりです
@@ -12036,13 +12163,13 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="84"/>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="106"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="83"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="105"/>
         <source>Map %1</source>
         <translation>地図 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="255"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="254"/>
         <source>Map will be printed here</source>
         <translation>ここに地図を印刷する予定</translation>
     </message>
@@ -13605,27 +13732,27 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsCoordinateTransform</name>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="415"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="414"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
         <translation>変換元の空間参照系（CRS)が不正です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="423"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="422"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
         <translation>変換先の空間参照系(CRS)が不正です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="454"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="453"/>
         <source>inverse transform</source>
         <translation>逆変換</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="461"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="460"/>
         <source>forward transform</source>
         <translation>順変換</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="481"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="480"/>
         <source>%1 of
 %2
 failed with error: %3
@@ -13635,8 +13762,8 @@ failed with error: %3
 でエラー発生:%3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="416"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="424"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="415"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="423"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>指定座標は再投影できません。CRSは%1です</translation>
     </message>
@@ -13789,102 +13916,102 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCustomProjectionDialog</name>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="99"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="98"/>
         <source>Delete Projection Definition?</source>
         <translation>投影法の定義を削除しますか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="100"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="99"/>
         <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
         <translation>投影法定義の削除は取り消せません。削除しますか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="347"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="419"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="492"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="561"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="346"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="418"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="491"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="560"/>
         <source>%1 of %2</source>
         <translation>%1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="590"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="617"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="719"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="777"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="589"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="616"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="718"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="776"/>
         <source>Abort</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="595"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="779"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="594"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="778"/>
         <source>New</source>
         <translation>新規</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="623"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="622"/>
         <source>* of %1</source>
         <translation>* / %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="639"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="646"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="662"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="679"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="695"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="860"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="875"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="887"/>
+        <source>QGIS Custom Projection</source>
+        <translation>QGIS カスタム投影法</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="640"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="647"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="663"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="680"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="696"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="861"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="876"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="888"/>
-        <source>QGIS Custom Projection</source>
-        <translation>QGIS カスタム投影法</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="641"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="648"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="664"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="697"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="862"/>
         <source>This proj4 projection definition is not valid.</source>
         <translation>この proj4 定義は正しくありません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="877"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="876"/>
         <source>Northing and Easthing must be in decimal form.</source>
         <translation>北進と東進は１０進数でなければなりません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="889"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="888"/>
         <source>Internal Error (source projection invalid?)</source>
         <translation>内部エラー(変換元の投影法が不正?)</translation>
     </message>
     <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="900"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="901"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="902"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="642"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="641"/>
         <source> Please give the projection a name before pressing save.</source>
         <translation>saveボタンを押す前に投影法の名前を入力してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="649"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="648"/>
         <source> Please add the parameters before pressing save.</source>
         <translation>saveボタンを押す前にパラメータを追加してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="665"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="664"/>
         <source> Please add a proj= clause before pressing save.</source>
         <translation>保存を押す前にproj=節を追加して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="681"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="680"/>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
         <translation>proj4 投影法定義は不正です。保存する前にellips=句を追加してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="698"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="697"/>
         <source> Please correct before pressing save.</source>
         <translation>saveボタンを押す前に修正してください</translation>
     </message>
@@ -14044,27 +14171,43 @@ p, li { white-space: pre-wrap; }
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="82"/>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="83"/>
+        <source>Load</source>
+        <comment>Load connections from file</comment>
+        <translation type="unfinished">読み込み</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="90"/>
+        <source>Save connections to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="93"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="112"/>
         <source>Also list tables with no geometry</source>
         <translation>ジオメトリを持たないテーブルもリストする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="89"/>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="119"/>
         <source>Search options</source>
         <translation>検索オプション</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="113"/>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="143"/>
         <source>Search</source>
         <translation>検索</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="126"/>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="156"/>
         <source>Search mode</source>
         <translation>検索モード</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="146"/>
+        <location filename="../src/ui/qgsdbsourceselectbase.ui" line="176"/>
         <source>Search in columns</source>
         <translation>カラム内検索</translation>
     </message>
@@ -14153,10 +14296,8 @@ p, li { white-space: pre-wrap; }
         <translation>地図レイヤとしてデリミテッドテキストファイルを追加します.このファイルはヘッダ行にフィールド名が必要です.ファイルはXとY座標を10進数単位かWKTフィールドとして持たなければいけません.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="112"/>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="146"/>
         <source>&amp;Delimited text</source>
-        <translation>デリミティッドテキスト(&amp;D)</translation>
+        <translation type="obsolete">デリミティッドテキスト(&amp;D)</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="58"/>
@@ -14171,12 +14312,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextPluginGui</name>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="158"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="156"/>
         <source>No layer name</source>
         <translation>レイヤ名がありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="158"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="156"/>
         <source>Please enter a layer name before adding the layer to the map</source>
         <translation>レイヤを地図に追加する前にレイヤ名を入力してください</translation>
     </message>
@@ -14189,7 +14330,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ファイルをパースする前にデリミタを指定してください</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="422"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="420"/>
         <source>Choose a delimited text file to open</source>
         <translation>デリミティッドテキストファイルを開く</translation>
     </message>
@@ -15079,136 +15220,136 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGPSInformationWidget</name>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="342"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="339"/>
         <source>Connecting...</source>
         <translation>接続中...</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="353"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="350"/>
         <source>Timed out!</source>
         <translation>タイムアウト!</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="361"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="358"/>
         <source>Connected!</source>
         <translation>接続成功!</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="362"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="359"/>
         <source>Disconnect</source>
         <translation>切断</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="373"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="370"/>
         <source>Connect</source>
         <translation>接続</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="330"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="327"/>
         <source>/gps</source>
         <translation>/gps</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="330"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="327"/>
         <source>No path to the GPS port is specified. Please enter a path then try again.</source>
         <translation>GPSポートのパスが指定されていません。パスを入力して再実行して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="371"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="368"/>
         <source>Disconnected...</source>
         <translation>切断しました....</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="576"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="573"/>
         <source>Not a vector layer</source>
         <translation>ベクタレイヤではない</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="577"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="574"/>
         <source>The current layer is not a vector layer</source>
         <translation>カレントレイヤはベクタレイヤではない</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="587"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="584"/>
         <source>2.5D shape type not supported</source>
         <translation>2.5次元shape形式はサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="587"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="584"/>
         <source>Adding features to 2.5D shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
         <translation>2.5D shapetypeの地物を追加することはまだサポートされていません.別の編集可能な2.5Dではないレイヤを選択して再度実行して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="600"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="597"/>
         <source>Multipart shape type not supported</source>
         <translation>マルチパートのshapeはサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="600"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="597"/>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
         <translation>マルチパートの地物を追加することはまだサポートされていません.別の編集可能な2.5Dではないレイヤを選択して再度実行して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="612"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="609"/>
         <source>Layer cannot be added to</source>
         <translation>レイヤを追加することはできない</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="613"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="610"/>
         <source>The data provider for this layer does not support the addition of features.</source>
         <translation>このレイヤのデータプロバイダーでは地物を追加できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="620"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="617"/>
         <source>Layer not editable</source>
         <translation>レイヤは編集不可</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="621"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="618"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation>そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="630"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="639"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="627"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="636"/>
         <source>Not enough vertices</source>
         <translation>頂点の数が足りません</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="631"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="628"/>
         <source>Cannot close a line feature until it has at least two vertices.</source>
         <translation>ラインは少なくとも2個の頂点がないと作れません.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="640"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="637"/>
         <source>Cannot close a polygon feature until it has at least three vertices.</source>
         <translation>ポリゴンは少なくとも3個の頂点がないと作れません.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="678"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="790"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="675"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="787"/>
         <source>Feature added</source>
         <translation>地物が追加された</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="770"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="767"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="774"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="781"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="770"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="767"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
         <translation>この地物は削除しているのでポリゴンの交差とジオメトリタイプの変更機能を追加できませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="774"/>
         <source>An error was reported during intersection removal</source>
         <translation>交差部分の削除中にエラーが報告されました</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="781"/>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
         <translation>地物を追加できません.不明なWKBタイプです.違うレイヤを選択して再度実行してみて下さい.</translation>
     </message>
@@ -15389,126 +15530,126 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGPSPlugin</name>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="91"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
         <source>&amp;Gps Tools</source>
         <translation>GPSツール(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="92"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="91"/>
         <source>&amp;Create new GPX layer</source>
         <translation>新規GPXレイヤ作成(&amp;C)</translation>
     </message>
     <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="94"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="95"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="96"/>
         <source>Creates a new GPX layer and displays it on the map canvas</source>
         <translation>新規にGPXレイヤ作成してマップキャンバスに表示します</translation>
     </message>
     <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="100"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="101"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="102"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="203"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="204"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="205"/>
         <source>&amp;Gps</source>
         <translation>Gps(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="165"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="164"/>
         <source>Save new GPX file as...</source>
         <translation>GPXファイル別名保存...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="167"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="166"/>
         <source>GPS eXchange file (*.gpx)</source>
         <translation>GPX eXchange ファイル (*.gpx)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="173"/>
         <source>Could not create file</source>
         <translation>ファイルを作成できません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="175"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
         <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
         <translation>指定名所のGPXファイルを作成できませんでした.他の他の名前または他のディレクトリを試してみてください.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="217"/>
         <source>GPX Loader</source>
         <translation>GPXローダー</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="268"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="344"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="437"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="529"/>
+        <source>Could not start process</source>
+        <translation>処理を開始できません</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="269"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="345"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="438"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="530"/>
-        <source>Could not start process</source>
-        <translation>処理を開始できません</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="270"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="346"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="439"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="531"/>
         <source>Could not start GPSBabel!</source>
         <translation>GPSBabelを開始できません!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="275"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="351"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="274"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="350"/>
         <source>Importing data...</source>
         <translation>データインポート中...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="275"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="351"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="444"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="536"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="274"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="350"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="443"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="535"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="288"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="287"/>
         <source>Could not import data from %1!
 
 </source>
         <translation>%1からデータインポートできませんでした</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="291"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="290"/>
         <source>Error importing data</source>
         <translation>データ取り込みエラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="425"/>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="518"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="424"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="517"/>
         <source>Not supported</source>
         <translation>サポート対象外</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="444"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="443"/>
         <source>Downloading data...</source>
         <translation>データをダウンロード中...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="457"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="456"/>
         <source>Could not download data from GPS!
 
 </source>
         <translation>GPSからデータダウンロードできませんでした!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="459"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="458"/>
         <source>Error downloading data</source>
         <translation>データダウンロードエラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="536"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="535"/>
         <source>Uploading data...</source>
         <translation>データアップデート中...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="549"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="548"/>
         <source>Error while uploading data to GPS!
 
 </source>
@@ -15516,12 +15657,12 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="551"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="550"/>
         <source>Error uploading data</source>
         <translation>データアップロードエラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="364"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="363"/>
         <source>Could not convert data from %1!
 
 </source>
@@ -15529,12 +15670,12 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="367"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="366"/>
         <source>Error converting data</source>
         <translation>データ変換エラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="219"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
         <translation>選択したファイルを読めません
@@ -15545,12 +15686,12 @@ Please reselect a valid file.</source>
         <translation type="obsolete">指定名称でGPXファイルを作成できません. 別の名前または別のディレクトリで再度試してください.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="426"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="425"/>
         <source>This device does not support downloading of %1.</source>
         <translation>このデバイスは%1のダウンロードをサポートしていません。</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="519"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="518"/>
         <source>This device does not support uploading of %1.</source>
         <translation>このデバイスは%1のアップロードをサポートしていません</translation>
     </message>
@@ -15795,52 +15936,52 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGdalProvider</name>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="390"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="394"/>
         <source>Dataset Description</source>
         <translation>データセットについての記述</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="411"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="415"/>
         <source>Band %1</source>
         <translation>バンド %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="442"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="446"/>
         <source>Dimensions:</source>
         <translation>次元:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="445"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="449"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 バンド: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="477"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="481"/>
         <source>Origin:</source>
         <translation>原点:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="486"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="490"/>
         <source>Pixel Size:</source>
         <translation>ピクセルの大きさ:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="806"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1068"/>
         <source>out of extent</source>
         <translation>範囲外</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="845"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1107"/>
         <source>null (no data)</source>
         <translation>null (no data)</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1171"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1436"/>
         <source>Average Magphase</source>
         <translation>平均 Magphase</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1176"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1441"/>
         <source>Average</source>
         <translation>平均</translation>
     </message>
@@ -18379,123 +18520,123 @@ at line %2 column %3</source>
         <translation>ロケーションは存在します!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="474"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="468"/>
         <source>Selected projection is not supported by GRASS!</source>
         <translation>選択した投影法はGRASSでサポートされていません!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="509"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="557"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="503"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="551"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="726"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="732"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="738"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="752"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="843"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="853"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="880"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="966"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1054"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1063"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="746"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="837"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="847"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="874"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="960"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1048"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1057"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="509"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="503"/>
         <source>Cannot create projection.</source>
         <translation>投影法を作成できません。</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="557"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="551"/>
         <source>Cannot reproject previously set region, default region set.</source>
         <translation>前に設定されていたリージョンを再投影できません，デフォルトリージョンを設定します。</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="684"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="678"/>
         <source>North must be greater than south</source>
         <translation>北の値は南の値より大きくなければなりません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="689"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="683"/>
         <source>East must be greater than west</source>
         <translation>東の値は西の値より大きくなければなりません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="881"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="875"/>
         <source>Cannot reproject selected region.</source>
         <translation>選択したリージョンを再投影できません。</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="966"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="960"/>
         <source>Cannot reproject region</source>
         <translation>リージョンを再投影できません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1184"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1178"/>
         <source>Enter mapset name.</source>
         <translation>マップセット名を入力。</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1194"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1188"/>
         <source>The mapset already exists</source>
         <translation>マップセットはすでに存在します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1212"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1206"/>
         <source>Database: </source>
         <translation>データベース:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1223"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1217"/>
         <source>Location: </source>
         <translation>Location:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1225"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1219"/>
         <source>Mapset: </source>
         <translation>マップセット:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1264"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1258"/>
         <source>Create location</source>
         <translation>ロケーションを作成</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1291"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1301"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1308"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1285"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1295"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1302"/>
         <source>Create mapset</source>
         <translation>マップセットを作成</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1301"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1295"/>
         <source>Cannot open DEFAULT_WIND</source>
         <translation>DEFAULT_WINDを開けません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1308"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1302"/>
         <source>Cannot open WIND</source>
         <translation>WINDを開けません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1330"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1335"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1324"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1329"/>
         <source>New mapset</source>
         <translation>新しいマップセット</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1336"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1330"/>
         <source>New mapset successfully created and set as current working mapset.</source>
         <translation>新しいマップセットを作成し、利用するマップセットに設定しました。</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1292"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1286"/>
         <source>Cannot create new mapset directory</source>
         <translation>新しいマップセットディレクトリを作成できません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="844"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="854"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1055"/>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1064"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="838"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="848"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1049"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1058"/>
         <source>Cannot create QgsCoordinateReferenceSystem</source>
         <translation>QgsCoordinateReferenceSystemを作成できません</translation>
     </message>
@@ -18505,22 +18646,22 @@ at line %2 column %3</source>
         <translation>書き込み可能なロケーションがありません、データベースは書き込みできません!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="733"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="727"/>
         <source>Regions file (%1) not found.</source>
         <translation>領域ファイル(%1)がみつかりません.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="739"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="733"/>
         <source>Cannot open locations file (%1)</source>
         <translation>ロケーションファイル(%1)を開けません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="749"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="743"/>
         <source>Cannot read locations file (%1):</source>
         <translation>ロケーションファイル(%1)を読めません:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="750"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="744"/>
         <source>
 %1
 at line %2 column %3</source>
@@ -18529,12 +18670,12 @@ at line %2 column %3</source>
 行 %2  カラム %3</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1265"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1259"/>
         <source>Cannot create new location: %1</source>
         <translation>新規ロケーション%1を作れません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1331"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1325"/>
         <source>New mapset successfully created, but cannot be opened: %1</source>
         <translation>新規マップセットの作成に成功しました、しかし%1を開けません</translation>
     </message>
@@ -19400,27 +19541,27 @@ at line %2 column %3</source>
         <translation>新データソース</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="115"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="114"/>
         <source>none</source>
         <translation>無し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="218"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="217"/>
         <source>Select file to replace &apos;%1&apos;</source>
         <translation>&apos;%1&apos;を置き換えるファイルを選択する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="224"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="223"/>
         <source>Please select exactly one file.</source>
         <translation>正しく1個のファイルを選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="234"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="233"/>
         <source>Select new directory of selected files</source>
         <translation>選択されたファイルのための新しいディレクトリを選択して下さい</translation>
     </message>
     <message>
-        <location filename="../src/app/qgshandlebadlayers.cpp" line="236"/>
+        <location filename="../src/app/qgshandlebadlayers.cpp" line="235"/>
         <source>All files (*)</source>
         <translation>全ファイル(*)</translation>
     </message>
@@ -19581,67 +19722,67 @@ at line %2 column %3</source>
 <context>
     <name>QgsHttpTransaction</name>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="275"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="274"/>
         <source>WMS Server responded unexpectedly with HTTP Status Code %1 (%2)</source>
         <translation>WMSサーバーは予期せぬ応答を返しました　HTTPステータスコード %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="354"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="353"/>
         <source>HTTP response completed, however there was an error: %1</source>
         <translation>HTTレスポンスは完了しました。しかしエラーが発生しました: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="403"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="402"/>
         <source>HTTP transaction completed, however there was an error: %1</source>
         <translation>HTTトランザクションは完了しました。しかしエラーが発生しました: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="317"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="316"/>
         <source>Received %1 of %2 bytes</source>
         <translation>受信済 %1 bytes 全体 % bytes</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="321"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="320"/>
         <source>Received %1 bytes (total unknown)</source>
         <translation>受信済 %1 bytes (全体サイズ不明)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="430"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="429"/>
         <source>Not connected</source>
         <translation>接続していません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="436"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="435"/>
         <source>Looking up &apos;%1&apos;</source>
         <translation>&apos;%1&apos;を検索中</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="442"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="441"/>
         <source>Connecting to &apos;%1&apos;</source>
         <translation>&apos;%1&apos;へ接続中</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="448"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="447"/>
         <source>Sending request &apos;%1&apos;</source>
         <translation>&apos;%1&apos;へリクエスト送信中</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="454"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="453"/>
         <source>Receiving reply</source>
         <translation>応答を受信しています</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="460"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="459"/>
         <source>Response is complete</source>
         <translation>応答が完了しました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="466"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="465"/>
         <source>Closing down connection</source>
         <translation>接続を閉じています</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgshttptransaction.cpp" line="476"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="475"/>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
@@ -20864,74 +21005,79 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsLegendLayer</name>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="413"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="412"/>
         <source>&amp;Zoom to layer extent</source>
         <translation>レイヤの領域にズーム(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="416"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="415"/>
         <source>&amp;Zoom to best scale (100%)</source>
         <translation>最適スケール(100%)にズームする(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="421"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="420"/>
         <source>&amp;Stretch using current extent</source>
         <translation>現在の領域を使って伸ばす(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="426"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="425"/>
         <source>&amp;Show in overview</source>
         <translation>全体図に表示(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="433"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="432"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="436"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="435"/>
         <source>&amp;Set layer CRS</source>
         <translation>レイヤCRSを設定する(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="445"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="438"/>
+        <source>Set &amp;project CRS from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="447"/>
         <source>&amp;Open attribute table</source>
         <translation>属性テーブルを開く</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="460"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="462"/>
         <source>Save as...</source>
         <translation>名前をつけて保存...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="463"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="465"/>
         <source>Save selection as...</source>
         <translation>選択を名前をつけて保存...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="470"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="472"/>
         <source>&amp;Query...</source>
         <translation>検索(&amp;Q)...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="473"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="475"/>
         <source>Show feature count</source>
         <translation>地物数の表示</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="483"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="485"/>
         <source>&amp;Properties</source>
         <translation>プロパティ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="588"/>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="650"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="590"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="652"/>
         <source>Updating feature count for layer </source>
         <translation>レイヤの地物の数を更新中です</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="588"/>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="650"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="590"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="652"/>
         <source>Abort</source>
         <translation>取り消し</translation>
     </message>
@@ -21056,62 +21202,72 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>リストから少なくても1個の接続を選択してください.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="113"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="117"/>
         <source>Saving connections</source>
         <translation>コネクションを保存しています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="114"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="118"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>ファイル%1に書き込めません
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="128"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="142"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="197"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="211"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="224"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="233"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="322"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="348"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="397"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="424"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="132"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="146"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="209"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="223"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="237"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="246"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="255"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="370"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="396"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="444"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="470"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="520"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="547"/>
         <source>Loading connections</source>
         <translation>コネクションをロードしています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="129"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="198"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="133"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="210"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>ファイル%1を読み込めません
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="143"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="212"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="147"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="224"/>
         <source>Parse error at line %1, column %2:
 %3</source>
         <translation>解析エラー 行%1 カラム %2
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="225"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="323"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="238"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="371"/>
         <source>The file is not an WMS connections exchange file.</source>
         <translation>指定ファイルはWMSコネクションエクスチェンジファイルではありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="234"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="398"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="247"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="445"/>
+        <source>The file is not an WFS connections exchange file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="256"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="521"/>
         <source>The file is not an PostGIS connections exchange file.</source>
         <translation>指定ファイルはPostGISコネクションエクスチェンジファイルではありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="349"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="425"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="397"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="471"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="548"/>
         <source>Connection with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation>%1という名前の接続はすでに存在します.上書きしますか?</translation>
     </message>
@@ -21194,82 +21350,82 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMapLayer</name>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="566"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="582"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="575"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="591"/>
         <source>%1 at line %2 column %3</source>
         <translation>%2行目 %3カラムで%1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="601"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="610"/>
         <source>Error: qgis element could not be found in %1</source>
         <translation>エラ-:%1にｑgisエレメントを見つけることができませんでした</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="730"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="738"/>
         <source>User database could not be opened.</source>
         <translation>ユーザデータベースを開けません.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="745"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="753"/>
         <source>The style table could not be created.</source>
         <translation>スタイルテーブルを作成できません.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="760"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="768"/>
         <source>The style %1 was saved to database</source>
         <translation>スタイル%1をデータベースに保存しました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="777"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="785"/>
         <source>The style %1 was updated in the database.</source>
         <translation>データベースへスタイル%1の更新を反映しました.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="782"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="790"/>
         <source>The style %1 could not be updated in the database.</source>
         <translation>データベースへのスタイル%1の更新に失敗しました.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="788"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="796"/>
         <source>The style %1 could not be inserted into database.</source>
         <translation>スタイル%1をデータベースに追加できません.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="587"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="596"/>
         <source>style not found in database</source>
         <translation>データベースにスタイル情報がありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="200"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="208"/>
         <source>Specify CRS for layer %1</source>
         <translation>レイヤ%1のCRSを指定して下さい</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="625"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="634"/>
         <source>Loading style file %1 failed because:
 %2</source>
         <translation>スタイルファイル%1ローティングエラー 理由
 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="665"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="674"/>
         <source>Could not save symbology because:
 %1</source>
         <translation>シンボロジーの保存ができませんでした　なぜならば
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="695"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="703"/>
         <source>The directory containing your dataset needs to be writeable!</source>
         <translation>データセットがおいてあるディレクトリは書き込み許可が必要です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="709"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="717"/>
         <source>Created default style file as %1</source>
         <translation>デフォルトスタイルファイルが%1として作成されました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="722"/>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
         <translation>エラー デフォルトスタイルファイルを%1として作成できません。ファイルのパーミッションをチェックしてリトライしてください</translation>
     </message>
@@ -21845,17 +22001,18 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMapToolSplitFeatures</name>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="88"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
         <source>Split error</source>
         <translation>分割エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="88"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
         <source>An error occured during feature splitting</source>
         <translation>要素の分割でエラーが発生しました</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
         <source>No feature split done</source>
         <translation>分割した要素はありません</translation>
     </message>
@@ -21898,6 +22055,11 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>指定点はこのレイヤの座標システムには変換できません</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
+        <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22130,6 +22292,30 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Save As...</source>
         <translation>名前をつけて保存する</translation>
     </message>
+    <message>
+        <source>meters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>feet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>miles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>inches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>kilometers</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMeasureBase</name>
@@ -22297,12 +22483,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsNewHttpConnection</name>
     <message>
-        <location filename="../src/app/qgsnewhttpconnection.cpp" line="63"/>
+        <location filename="../src/app/qgsnewhttpconnection.cpp" line="70"/>
         <source>Save connection</source>
         <translation>接続を保存する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewhttpconnection.cpp" line="64"/>
+        <location filename="../src/app/qgsnewhttpconnection.cpp" line="71"/>
         <source>Should the existing connection %1 be overwritten?</source>
         <translation>存在する接続 %1を上書きしますか？</translation>
     </message>
@@ -22523,6 +22709,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="275"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
         <translation>FOREIGN_KEY制約を有効にできません</translation>
+    </message>
+    <message>
+        <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="298"/>
+        <source>@</source>
+        <translation type="unfinished">@</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="301"/>
@@ -23232,17 +23423,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOgrProvider</name>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="203"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="202"/>
         <source>Whole number (integer)</source>
         <translation>整数値(integer)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="204"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="203"/>
         <source>Decimal number (real)</source>
         <translation>小数点付き数値(real)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="205"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="204"/>
         <source>Text (string)</source>
         <translation>テキスト(string)</translation>
     </message>
@@ -23526,9 +23717,9 @@ p, li { white-space: pre-wrap; }
         <translation>選択色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="929"/>
-        <location filename="../src/app/qgsoptions.cpp" line="956"/>
-        <location filename="../src/app/qgsoptions.cpp" line="998"/>
+        <location filename="../src/app/qgsoptions.cpp" line="927"/>
+        <location filename="../src/app/qgsoptions.cpp" line="954"/>
+        <location filename="../src/app/qgsoptions.cpp" line="996"/>
         <source>Choose a directory</source>
         <translation>ディレクトリを選択</translation>
     </message>
@@ -24260,19 +24451,26 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOraclePlugin</name>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="57"/>
         <source>Select Oracle GeoRaster</source>
-        <translation>Oracle GeoRasterの選択</translation>
+        <translation type="obsolete">Oracle GeoRasterの選択</translation>
+    </message>
+    <message>
+        <source>Open a Oracle Spatial GeoRaster</source>
+        <translation type="obsolete">Oracle Spatial geoRasterを開く</translation>
+    </message>
+    <message>
+        <source>&amp;Oracle Spatial</source>
+        <translation type="obsolete">(&amp;O)racle Spatial</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="57"/>
+        <source>Add Oracle GeoRaster Layer...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="59"/>
-        <source>Open a Oracle Spatial GeoRaster</source>
-        <translation>Oracle Spatial geoRasterを開く</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="64"/>
-        <source>&amp;Oracle Spatial</source>
-        <translation>(&amp;O)racle Spatial</translation>
+        <source>Add a Oracle Spatial GeoRaster...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24695,112 +24893,108 @@ Extended error information:
         <translation>クエリ作成</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="65"/>
         <source>&amp;Save</source>
-        <translation>保存(&amp;S)</translation>
+        <translation type="obsolete">保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="66"/>
         <source>Save connections</source>
-        <translation>接続情報を保存する</translation>
+        <translation type="obsolete">接続情報を保存する</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="70"/>
         <source>&amp;Load</source>
-        <translation>ロード(&amp;L)</translation>
+        <translation type="obsolete">ロード(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="71"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="177"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="166"/>
         <source>Load connections</source>
         <translation>接続情報をロードする</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="78"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="243"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="67"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="232"/>
         <source>Wildcard</source>
         <translation>ワイルドカード</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="79"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="247"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="68"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="236"/>
         <source>RegExp</source>
         <translation>正規表現</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="81"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="255"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="70"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="244"/>
         <source>All</source>
         <translation>全ての</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="82"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="259"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="71"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="248"/>
         <source>Schema</source>
         <translation>スキーマ</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="83"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="263"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="72"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="252"/>
         <source>Table</source>
         <translation>テーブル</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="84"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="267"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="73"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="256"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="85"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="271"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="74"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="260"/>
         <source>Geometry column</source>
         <translation>ジオメトリカラム</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="86"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="275"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="75"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="264"/>
         <source>Primary key column</source>
         <translation>プライマリキーカラム</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="87"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="279"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="76"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="268"/>
         <source>Sql</source>
         <translation>Sql</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="145"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="134"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="147"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="136"/>
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="178"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="167"/>
         <source>XML files (*.xml *XML)</source>
         <translation>XMLファイル(*.xml *XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="422"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="411"/>
         <source>Select Table</source>
         <translation>テーブルを選択</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="422"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="411"/>
         <source>You must select a table in order to add a layer.</source>
         <translation>レイヤを追加するにはテーブルを選択してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="555"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="544"/>
         <source>Connection failed</source>
         <translation>接続失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="556"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="545"/>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
 
 Check your username and password and try again.
@@ -24812,20 +25006,20 @@ The database said:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="756"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="816"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="878"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="745"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="805"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="867"/>
         <source>Accessible tables could not be determined</source>
         <translation>アクセス可能なテーブルを決定できません</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="757"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="746"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>データベース接続は成功しました.しかしアクセス可能なテーブルを特定できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="817"/>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="879"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="806"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="868"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 
 The error message from the database was:
@@ -24838,22 +25032,22 @@ The error message from the database was:
 </translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="843"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="832"/>
         <source>Waiting</source>
         <translation>待機中</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="895"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="884"/>
         <source>No geometry</source>
         <translation>ジオメトリがありません</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="907"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="896"/>
         <source>No accessible tables found</source>
         <translation>アクセス可能なテーブルが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="908"/>
+        <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="897"/>
         <source>Database connection was successful, but no accessible tables were found.
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
@@ -25775,37 +25969,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginManager</name>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="252"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="251"/>
         <source>No Plugins</source>
         <translation>プラグイン無し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="87"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="86"/>
         <source>&amp;Select All</source>
         <translation>全てを選択(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="88"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="87"/>
         <source>&amp;Clear All</source>
         <translation>全てクリア(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="184"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="183"/>
         <source>[ incompatible ]</source>
         <translation>[互換性なし]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="252"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="251"/>
         <source>No QGIS plugins found in %1</source>
         <translation>%1にはQGISプラグインはありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="595"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="594"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginmanager.cpp" line="595"/>
+        <location filename="../src/app/qgspluginmanager.cpp" line="594"/>
         <source>Failed to open plugin installer!</source>
         <translation>プラグインインストーラのオープンに失敗しました！</translation>
     </message>
@@ -26267,42 +26461,42 @@ SQL:%2
 <context>
     <name>QgsProject</name>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="780"/>
+        <location filename="../src/core/qgsproject.cpp" line="788"/>
         <source>Unable to open %1</source>
         <translation>%1を開けません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="793"/>
+        <location filename="../src/core/qgsproject.cpp" line="801"/>
         <source>Project File Read Error</source>
         <translation>プロジェクトファイルリードエラー</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="794"/>
+        <location filename="../src/core/qgsproject.cpp" line="802"/>
         <source>%1 at line %2 column %3</source>
         <translation>%2行目 %3カラムで%1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="797"/>
+        <location filename="../src/core/qgsproject.cpp" line="805"/>
         <source>Project file read error: %1 at line %2 column %3</source>
         <translation>%1プロジェクトファイルリードエラー 行 %2  カラム %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="804"/>
+        <location filename="../src/core/qgsproject.cpp" line="812"/>
         <source>%1 for file %2</source>
         <translation>ファイル%2のための%1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="963"/>
+        <location filename="../src/core/qgsproject.cpp" line="973"/>
         <source>Unable to save to file %1</source>
         <translation>ファイル%1に保存できません。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="972"/>
+        <location filename="../src/core/qgsproject.cpp" line="982"/>
         <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1は書き込みできません。権限を調整して（可能なら）再度実行してください。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="1058"/>
+        <location filename="../src/core/qgsproject.cpp" line="1068"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation>ファイル%1に保存できません。あなたのプロジェクトは多分ディスク上でこわれています。再度保存ボタンを押す前にディスクボリューム上の領域をクリアにしてファイルパーミッションをチェックしてください。</translation>
     </message>
@@ -26336,63 +26530,63 @@ Try to find missing layers?</source>
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="119"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="118"/>
         <source>Layer</source>
         <translation>レイヤ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="120"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="119"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="121"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="120"/>
         <source>Identifiable</source>
         <translation>情報表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="141"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="140"/>
         <source>Vector</source>
         <translation>ベクター</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="149"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="148"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="153"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="152"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="391"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="529"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="390"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="528"/>
         <source>Coordinate System Restriction</source>
         <translation>座標システムの制限</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="391"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="390"/>
         <source>No coordinate systems selected. Disabling restriction.</source>
         <translation>座標システムが選択されていません.制限は無効にします.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="429"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="428"/>
         <source>Selection color</source>
         <translation>選択色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="529"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="528"/>
         <source>CRS %1 was already selected</source>
         <translation>CRS %1はすでに選択されています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="547"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="546"/>
         <source>Coordinate System Restrictions</source>
         <translation>座標システムの制限</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="548"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="547"/>
         <source>The current selection of coordinate systems will be lost.
 Proceed?</source>
         <translation>現在選択されている座標システムは無くなります.
@@ -26667,42 +26861,42 @@ Proceed?</source>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="60"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="59"/>
         <source>All</source>
         <translation>全ての</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="628"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="624"/>
         <source>User Defined Coordinate Systems</source>
         <translation>ユーザ定義座標系</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="703"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="699"/>
         <source>Geographic Coordinate Systems</source>
         <translation>地理座標系</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="712"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="708"/>
         <source>Projected Coordinate Systems</source>
         <translation>投影座標系</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1006"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1002"/>
         <source>Find projection</source>
         <translation>投影法検索</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1006"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1002"/>
         <source>No matching projection found.</source>
         <translation>合致する投影法はありません.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1145"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1141"/>
         <source>Resource Location Error</source>
         <translation>リソース位置エラー</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1146"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1142"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -26775,12 +26969,12 @@ Because of this the projection selector will not work...</source>
 <context>
     <name>QgsQueryBuilder</name>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="35"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="34"/>
         <source>&amp;Test</source>
         <translation>(&amp;T)テスト</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="39"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="38"/>
         <source>&amp;Clear</source>
         <translation>(&amp;C)クリア</translation>
     </message>
@@ -26801,12 +26995,12 @@ Because of this the projection selector will not work...</source>
         <translation type="obsolete">テストの前にクエリの作成が必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="151"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="150"/>
         <source>Query Result</source>
         <translation>クエリ結果</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsquerybuilder.cpp" line="152"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="151"/>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation>
@@ -26814,22 +27008,22 @@ Because of this the projection selector will not work...</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="157"/>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="165"/>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="181"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="156"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="164"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="180"/>
         <source>Query Failed</source>
         <translation>クエリ失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="158"/>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="166"/>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="182"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="157"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="165"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="181"/>
         <source>An error occurred when executing the query.</source>
         <translation>検索実行中にエラーが発生しました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="159"/>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="183"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="158"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="182"/>
         <source>
 The data provider said:
 %1</source>
@@ -26842,12 +27036,12 @@ The data provider said:
         <translation type="obsolete">クエリ実行中にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="188"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="187"/>
         <source>Error in Query</source>
         <translation>クエリエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsquerybuilder.cpp" line="188"/>
+        <location filename="../src/app/qgsquerybuilder.cpp" line="187"/>
         <source>The subset string could not be set</source>
         <translation>サブセット文字列が設定できませんでした</translation>
     </message>
@@ -27295,17 +27489,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterDataProvider</name>
     <message>
-        <location filename="../src/core/qgsrasterdataprovider.cpp" line="158"/>
+        <location filename="../src/core/qgsrasterdataprovider.cpp" line="159"/>
         <source>Identify</source>
         <translation>地物情報表示</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsrasterdataprovider.cpp" line="163"/>
+        <location filename="../src/core/qgsrasterdataprovider.cpp" line="164"/>
         <source>Build Pyramids</source>
         <translation>ピラミッドの作成</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsrasterdataprovider.h" line="356"/>
+        <location filename="../src/core/qgsrasterdataprovider.h" line="357"/>
         <source>Band</source>
         <translation>バンド</translation>
     </message>
@@ -27313,15 +27507,15 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="92"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1740"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2699"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2745"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="91"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1739"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2698"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2779"/>
         <source>Not Set</source>
         <translation>未設定</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1752"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1751"/>
         <source>Driver:</source>
         <translation>ドライバ:</translation>
     </message>
@@ -27338,78 +27532,78 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ピクセルの大きさ:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1824"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1823"/>
         <source>Pyramid overviews:</source>
         <translation>ピラミッドオーバービュー:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1836"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1835"/>
         <source>Layer Extent (layer original source projection): </source>
         <translation>レイヤ領域（レイヤのオリジナルプロジェクション):</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1862"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="4210"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1861"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="4280"/>
         <source>Band</source>
         <translation>バンド</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1869"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1868"/>
         <source>Band No</source>
         <translation>バンド番号</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1881"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1880"/>
         <source>No Stats</source>
         <translation>未統計化</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1884"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1883"/>
         <source>No stats collected yet</source>
         <translation>まだ統計化されていません</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1894"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1893"/>
         <source>Min Val</source>
         <translation>最小値</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1902"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1901"/>
         <source>Max Val</source>
         <translation>最大値</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1910"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1909"/>
         <source>Range</source>
         <translation>範囲</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1918"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1917"/>
         <source>Mean</source>
         <translation>平均値</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1926"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1925"/>
         <source>Sum of squares</source>
         <translation>スクエア合計</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1934"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1933"/>
         <source>Standard Deviation</source>
         <translation>標準偏差</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1942"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1941"/>
         <source>Sum of all cells</source>
         <translation>セル数合計</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1950"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1949"/>
         <source>Cell Count</source>
         <translation>セル数を数える</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1779"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1778"/>
         <source>Data Type:</source>
         <translation>データタイプ:</translation>
     </message>
@@ -27422,67 +27616,67 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">このラスタファイルはバンドを持ちません,よってラスタレイヤとしては不正です.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1786"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1785"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - 8 bit unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1789"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1788"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - 16 bit unsigned integer </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1792"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1791"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - 16 bit signed integer </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1795"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1794"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - 32 bit unsigned integer </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1798"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1797"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - 32 bit signed integer </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1801"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1800"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - 32 bit floating point </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1804"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1803"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - 64 bit floating point </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1807"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1806"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1810"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1809"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1813"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1812"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1816"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1815"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1819"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1818"/>
         <source>Could not determine raster data type.</source>
         <translation>ラスタデータのタイプが判定できません。</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2337"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2336"/>
         <source>Specify CRS for layer %1</source>
         <translation>レイヤ%1のCRSを指定して下さい</translation>
     </message>
@@ -27495,12 +27689,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">平均</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1829"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1828"/>
         <source>Layer Spatial Reference System: </source>
         <translation>レイヤ空間参照システム:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1846"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1845"/>
         <source>Project Spatial Reference System: </source>
         <translation>プロジェクト空間参照システム:</translation>
     </message>
@@ -27517,12 +27711,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">データセットについての記述</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1764"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1763"/>
         <source>No Data Value</source>
         <translation>データ無しとする値</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1773"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1772"/>
         <source>NoDataValue not set</source>
         <translation>データ無しとする値は設定されていません</translation>
     </message>
@@ -27535,17 +27729,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">X: %1 Y: %2 バンド: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="164"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="163"/>
         <source>QgsRasterLayer created</source>
         <translation>QgsRasterLayerが作成されました</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="364"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="363"/>
         <source>Retrieving stats for %1</source>
         <translation>%1の回復状況</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="370"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="369"/>
         <source>Calculating stats for %1</source>
         <translation>%1の計算状況</translation>
     </message>
@@ -27553,322 +27747,322 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterLayerProperties</name>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="112"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="592"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="953"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="971"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1000"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="111"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="591"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="952"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="970"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="999"/>
         <source>Grayscale</source>
         <translation>原色グレースケール</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="575"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1049"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1676"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2057"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2062"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="112"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="574"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1048"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1675"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2056"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2061"/>
         <source>Pseudocolor</source>
         <translation>原色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="114"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="579"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1053"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1676"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2062"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="578"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1052"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1675"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2061"/>
         <source>Freak Out</source>
         <translation>フリークアウト</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="67"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="66"/>
         <source>Not Set</source>
         <translation>未設定</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="792"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="791"/>
         <source>Columns: </source>
         <translation>カラム:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="793"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="792"/>
         <source>Rows: </source>
         <translation>行:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="798"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="797"/>
         <source>No-Data Value: </source>
         <translation>データ無しとする値:</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="791"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="792"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="793"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="798"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="797"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1531"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1822"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2482"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1530"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1821"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2481"/>
         <source>Write access denied</source>
         <translation>書き込み権限がありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1822"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2482"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1821"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2481"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
         <translation>書き込み権限がありません。ファイルパーミッションを設定して再度実行してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1536"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1542"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1547"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1552"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1535"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1541"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1546"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1551"/>
         <source>Building pyramids failed.</source>
         <translation>ピラミッド建設に失敗しました。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1543"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1553"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1542"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1552"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>このラスタ種別では、ピラミッドオーバービューはサポートされていません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="118"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="702"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="720"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="736"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2156"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2685"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="117"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="701"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="719"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="735"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2155"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2684"/>
         <source>No Stretch</source>
         <translation>強調なし</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="119"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="686"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="724"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1066"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2690"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="118"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="685"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="723"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1065"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2689"/>
         <source>Stretch To MinMax</source>
         <translation>最大値・最小値まで引き伸ばす</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="120"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="690"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="728"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1070"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2695"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="119"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="689"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="727"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1069"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2694"/>
         <source>Stretch And Clip To MinMax</source>
         <translation>最大値・最小値まで引き伸ばしとクリップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="121"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="694"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="732"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1074"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2700"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="120"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="693"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="731"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1073"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2699"/>
         <source>Clip To MinMax</source>
         <translation>最大値・最小値でクリップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="146"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="873"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1378"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2446"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2541"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="145"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="872"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1377"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2445"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2540"/>
         <source>Discrete</source>
         <translation>離散的</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="149"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2329"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="148"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2328"/>
         <source>Equal interval</source>
         <translation>等間隔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2352"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2351"/>
         <source>Quantiles</source>
         <translation>等量(四分位)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="256"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="255"/>
         <source>Description</source>
         <translation>記述</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="153"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="152"/>
         <source>Value</source>
         <translation>値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="154"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="153"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="155"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="154"/>
         <source>Label</source>
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="257"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="256"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
         <translation>高解像度ラスタレイヤーではQGISでの動作が遅くなる可能性があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="258"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="257"/>
         <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
         <translation>より低解像度のコピー画像群（ピラミッド）を作成すると、QGISはズームレベルに応じて適切な解像度の画像を選択するのでパフォーマンスが大幅に改善します。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="259"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="258"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
         <translation>ピラミッド画像を作成するにはオリジナルデータが格納されているディレクトリへの書き込み権限を持っている必要があります。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="274"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="273"/>
         <source>Layer Properties - %1</source>
         <translation>レイヤプロパティ - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="331"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1735"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1794"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="330"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1734"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1793"/>
         <source>Red</source>
         <translation>赤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="332"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1736"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1794"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="331"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1735"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1793"/>
         <source>Green</source>
         <translation>緑</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="333"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1737"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1794"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="332"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1736"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1793"/>
         <source>Blue</source>
         <translation>青</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="334"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="373"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1738"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1763"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1794"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1807"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1811"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="333"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="372"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1737"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1762"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1793"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1806"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1810"/>
         <source>Percent Transparent</source>
         <translation>透過率</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="367"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1757"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1807"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="366"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1756"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1806"/>
         <source>Gray</source>
         <translation>グレー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="371"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1761"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1811"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="370"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1760"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1810"/>
         <source>Indexed Value</source>
         <translation>インデックス値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="407"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="406"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
         <translation>注:ユーザーが定義または現在の領域から計算して最小　最大値は見積もられます。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="587"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="698"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1484"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1486"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1489"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1491"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1696"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2683"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="586"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="697"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1483"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1485"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1488"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1490"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1695"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2682"/>
         <source>User Defined</source>
         <translation>ユーザ定義</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="808"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="807"/>
         <source>No-Data Value: Not Set</source>
         <translation>データ無しとする値:未設定</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1548"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1547"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>JPEG圧縮ラスタレイヤとカレントlibtiffライブラリでは内部ピラミッドオーバービューの作成はサポートされていません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1779"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2428"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1778"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2427"/>
         <source>Save file</source>
         <translation>ファイルに保存する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1779"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1958"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2428"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2510"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1778"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1957"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2427"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2509"/>
         <source>Textfile (*.txt)</source>
         <translation>テキストファイル(*.txt)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1791"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1790"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>QGISはピクセル透過値のエクスポートファイルを作成しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1892"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1891"/>
         <source>Band %1</source>
         <translation>バンド %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1945"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1944"/>
         <source>Choose a file name to save the map image as</source>
         <translation>地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1958"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2510"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1957"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2509"/>
         <source>Open file</source>
         <translation>ファイルを開く</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2031"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2578"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2030"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2577"/>
         <source>Import Error</source>
         <translation>インポートエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2239"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2249"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2238"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2248"/>
         <source>out of extent</source>
         <translation>範囲外</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2578"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2577"/>
         <source>The following lines contained errors
 
 </source>
         <translation>以下の行はエラーを含んでいます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2036"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2583"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2035"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2582"/>
         <source>Read access denied</source>
         <translation>読み込みが拒否されました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2036"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2583"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2035"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2582"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
@@ -27876,144 +28070,144 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2062"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2061"/>
         <source>Color Ramp</source>
         <translation>色ランプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2842"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2859"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2841"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2858"/>
         <source>Default Style</source>
         <translation>既定スタイル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2878"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2897"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2943"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2962"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2877"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2896"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2942"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2961"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>QGISレイヤースタイルファイル(*.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2922"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2988"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2921"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2987"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="115"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="583"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="979"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1057"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1342"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1686"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="114"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="582"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="978"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1056"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1341"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1685"/>
         <source>Colormap</source>
         <translation>カラーマップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="147"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="869"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1374"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2442"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2493"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2537"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="146"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="868"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1373"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2441"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2492"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2536"/>
         <source>Linear</source>
         <translation>線形</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="148"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="877"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2545"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="147"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="876"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2544"/>
         <source>Exact</source>
         <translation>厳密</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="260"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="259"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
         <translation>内部ピラミッドの構築はオリジナルのデータファイルに上書きされ、一度作成されると消去することができませんので、注意してください!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="261"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="260"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
         <translation>内部ピラミッドの構築は画像データを壊す可能性があります - 必ず最初にバックアップをとってください!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1537"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1536"/>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>ファイルは書き込みができません。いくつかのフォーマットではピラミッドオーバービューはサポートされません。疑わしい場合はGDALのドキュメントを参照してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2421"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2420"/>
         <source>Custom color map entry</source>
         <translation>カスタムカラーマップ入力</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2440"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2439"/>
         <source>QGIS Generated Color Map Export File</source>
         <translation>QGISはカラーマップエクスポートファイルを作成しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2498"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2497"/>
         <source>Load Color Map</source>
         <translation>カラーマップをロード</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2915"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2981"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2914"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2980"/>
         <source>Saved Style</source>
         <translation>スタイルを保存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="411"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="410"/>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation>ノート:最大値・最小値は実際のバンドから得られた値です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="543"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="542"/>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation>&lt;h3&gt;マルチバンド画像に関する注記&lt;/h3&gt;&lt;p&gt;これはマルチバンド画像です。グレイスケールでもカラー (RGB) でもレンダリングすることができます。カラー画像の場合、各色にバンドを割り当てることができます。例えば、７バンドのランドサット画像がある場合、次のようにレンダリングすることができます:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;可視の青 (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;可視の緑 (0.52 to 0.60 microns) - マッピングしない&lt;/li&gt;&lt;/li&gt;可視の赤 (0.63 to 0.69 microns) - 画像中では赤にマッピング&lt;/li&gt;&lt;li&gt;近赤外線 (0.76 to 0.90 microns) - 画像中では緑にマッピング&lt;/li&gt;&lt;li&gt;中間赤外線 (1.55 to 1.75 microns) - マッピングしない&lt;/li&gt;&lt;li&gt;熱赤外線 (10.4 to 12.5 microns) - マッピングしない&lt;/li&gt;&lt;li&gt;中間赤外線 (2.08 to 2.35 microns) - 画像中では青にマッピング&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="550"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="549"/>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation>&lt;h3&gt;パレット画像に関する注記&lt;/h3&gt; &lt;p&gt;この画像は固定カラーパレットをしています。色をリマップすることもできます。例えば、&lt;/p&gt;&lt;ul&gt;&lt;li&gt;赤 - 画像中の青&lt;/li&gt;&lt;li&gt;緑 - 画像中の青&lt;/li&gt;&lt;li&gt;青 - 画像中の緑&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="557"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="556"/>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation>&lt;h3&gt;グレースケール画像の注記&lt;/h3&gt; &lt;p&gt;グレースケールの色は、自動的に生成される色ランプを使って原色画像を再構成することが出来ます。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="709"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2678"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="708"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2677"/>
         <source>Default R:%1 G:%2 B:%3</source>
         <translation>デフォルト R%1 G%2 B%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="786"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="785"/>
         <source>Columns: %1</source>
         <translation>カラム %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="787"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="786"/>
         <source>Rows: %1</source>
         <translation>行 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="804"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="803"/>
         <source>No-Data Value: %1</source>
         <translation>データが無い値 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1532"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1531"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
         <translation>書き込みアクセスができません。ファイルアクセス権限を調整して再度試みてください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2031"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2030"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -28021,13 +28215,13 @@ p, li { white-space: pre-wrap; }
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2498"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2497"/>
         <source>The color map for band %1 failed to load</source>
         <translation>バンド%1のカラーマップロードに失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2922"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2988"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2921"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2987"/>
         <source>Unknown style format: %1</source>
         <translation>%1は不明なスタイル形式です</translation>
     </message>
@@ -29531,25 +29725,25 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsShapeFile</name>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="422"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="421"/>
         <source>The database gave an error while executing this SQL:</source>
         <translation>SQL実行中にデータベースでエラーが発生:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="426"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="425"/>
         <source>... (rest of SQL trimmed)</source>
         <comment>is appended to a truncated SQL statement</comment>
         <translation>... (以降のSQLは省略)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="83"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="82"/>
         <source>Scanning </source>
         <translation>スキャンしています </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="285"/>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="306"/>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="345"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="284"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="305"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="344"/>
         <source>The database gave an error while executing this SQL:
 %1
 The error was:
@@ -29562,7 +29756,7 @@ The error was:
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="430"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="429"/>
         <source>The error was:
 %1
 </source>
@@ -29801,68 +29995,68 @@ The error was:
         <translation>データベース</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="50"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="52"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="55"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="57"/>
         <source>&amp;Build Query</source>
         <translation>クエリ作成(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="62"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="126"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="64"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="128"/>
         <source>Wildcard</source>
         <translation>ワイルドカード</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="63"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="130"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="65"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="132"/>
         <source>RegExp</source>
         <translation>正規表現</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="65"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="138"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="67"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="140"/>
         <source>All</source>
         <translation>全ての</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="66"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="142"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="68"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="144"/>
         <source>Table</source>
         <translation>テーブル</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="67"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="146"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="69"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="148"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="68"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="150"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="70"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="152"/>
         <source>Geometry column</source>
         <translation>ジオメトリカラム</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="69"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="154"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="71"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="156"/>
         <source>Sql</source>
         <translation>Sql</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="204"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="272"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="286"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="206"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="274"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="288"/>
         <source>SpatiaLite DB Open Error</source>
         <translation>SpatiaLite DBオープンエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="205"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="273"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="287"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="207"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="275"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="289"/>
         <source>Failure while connecting to: %1
 
 %2</source>
@@ -29871,51 +30065,51 @@ The error was:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="271"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="273"/>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
         <translation>正しいSQLite DBのようですが正しいSpatiaLiteではありません...</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="280"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="656"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="860"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="282"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="658"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="862"/>
         <source>unknown error cause</source>
         <translation>不明なエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="308"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="310"/>
         <source>@</source>
         <translation>@</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="330"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="332"/>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
         <translation>オープンするSpatiaLite/SQLite DBを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="412"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="414"/>
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="459"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="461"/>
         <source>Select Table</source>
         <translation>テーブルを選択</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="459"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="461"/>
         <source>You must select a table in order to add a Layer.</source>
         <translation>レイヤを追加するにはテーブルを選択してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="662"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="866"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="664"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="868"/>
         <source>SpatiaLite getTableInfo Error</source>
         <translation>SpatiaLite　getTableInfoエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="663"/>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="867"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="665"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="869"/>
         <source>Failure exploring tables from: %1
 
 %2</source>
@@ -29924,7 +30118,7 @@ The error was:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="410"/>
+        <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="412"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
     </message>
@@ -30024,18 +30218,15 @@ The error was:
 <context>
     <name>QgsSpatialQueryDialog</name>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="47"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="64"/>
         <source>The spatial query requires at least two layers</source>
-        <translation>空間クエリは少なくとも2つのレイヤが必要です</translation>
+        <translation type="obsolete">空間クエリは少なくとも2つのレイヤが必要です</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="65"/>
         <source>Insufficient number of layers</source>
-        <translation>レイヤの数が足りません</translation>
+        <translation type="obsolete">レイヤの数が足りません</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="138"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="164"/>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation>
@@ -30043,7 +30234,7 @@ The error was:
         </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="139"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="165"/>
         <source>Selected geometries</source>
         <translation>選択されたジオメトリ</translation>
     </message>
@@ -30060,7 +30251,7 @@ The error was:
         <translation type="obsolete">クエリ:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="183"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="209"/>
         <source>&lt; %1 &gt;</source>
         <translation>&lt; %1&gt;</translation>
     </message>
@@ -30073,13 +30264,13 @@ The error was:
         <translation type="obsolete">-- 終了 [%L1] (プロセッシングタイム %L2 分) --&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="293"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="322"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="319"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="348"/>
         <source>%1 of %2</source>
         <translation>%1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="294"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="320"/>
         <source>all = %1</source>
         <translation>全て = %1</translation>
     </message>
@@ -30088,109 +30279,114 @@ The error was:
         <translation type="obsolete">合計</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="176"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="85"/>
+        <source>The spatial query requires at least two vector layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="202"/>
         <source>%1)Query</source>
         <translation>%1)クエリ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="178"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="204"/>
         <source>Begin at %L1</source>
         <translation>開始 %L1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="187"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="213"/>
         <source>Total of features =  %1</source>
         <translation>全地物数 = %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="190"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="216"/>
         <source>Total of invalid features:</source>
         <translation>不正な地物数:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="195"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="221"/>
         <source>Finish at %L1 (processing time %L2 minutes)</source>
         <translation>終了 %L1 (計算時間 %L2 分)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="258"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="284"/>
         <source>Using the field &quot;%1&quot; for subset</source>
         <translation>サブセットのために &quot;%1&quot;フィールドを利用中</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="261"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="287"/>
         <source>Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE.</source>
         <translation>すいません! OGR POSTGRESとSPATIALITEプロバイダのみ利用可能です.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="321"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="347"/>
         <source>%1 of %2(selected features)</source>
         <translation>%2のうちの%1(選択されている地物)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="486"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="512"/>
         <source>Create new selection</source>
         <translation>新しく選択を行う</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="494"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="520"/>
         <source>Add to current selection</source>
         <translation>カレント選択に追加する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="497"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="523"/>
         <source>Remove from current selection</source>
         <translation>カレント選択から除去する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="506"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="532"/>
         <source>Result query</source>
         <translation>検索結果</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="508"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="534"/>
         <source>Invalid source</source>
         <translation>不正なソース</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="510"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="536"/>
         <source>Invalid reference</source>
         <translation>不正な参照</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="624"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="650"/>
         <source>%1 of %2 selected by &quot;%3&quot;</source>
         <translation>&quot;%3&quot;によって%2中%1が選択されています</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="627"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="653"/>
         <source>user</source>
         <translation>ユーザー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="679"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="705"/>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
         <translation>地図&quot;%1&quot; &quot;オンザフライ&quot;変換.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="679"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="705"/>
         <source>enable</source>
         <translation>有効</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="679"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="705"/>
         <source>disable</source>
         <translation>無効</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="680"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="706"/>
         <source>Coordinate reference system(CRS) of
 &quot;%1&quot; is invalid(see CRS of provider).</source>
         <translation>&quot;%1&quot;の座標参照システム(CRS)
 が不正です(プロバイダのCRSを参照して下さい).</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="681"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="707"/>
         <source>
 
 CRS of map is %1.
@@ -30201,53 +30397,53 @@ CRS of map is %1.
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="684"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="710"/>
         <source>Zoom to feature</source>
         <translation>地物にズームする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="723"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="749"/>
         <source>Missing reference layer</source>
         <translation>参照レイヤがありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="723"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="749"/>
         <source>Select reference layer!</source>
         <translation>参照するレイヤを選択して下さい!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="728"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="754"/>
         <source>Missing target layer</source>
         <translation>対象レイヤがありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="728"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="754"/>
         <source>Select target layer!</source>
         <translation>対象レイヤを選択して下さい!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="799"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="825"/>
         <source>Create new layer from items</source>
         <translation>アイテムから新しいレイヤを作成する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="817"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="843"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="869"/>
         <source>The query from &quot;%1&quot; using &quot;%2&quot; in field not possible.</source>
         <translation>&quot;%1&quot;のクエリで利用しているフィールド内の&quot;%2&quot;は利用できません.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="825"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="851"/>
         <source>Create new layer from selected</source>
         <translation>選択しているもので新しいレイヤを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="932"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="958"/>
         <source>%1 of %2 identified</source>
         <translation>%2中の%1が特定されました</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="1075"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="1101"/>
         <source>DEBUG</source>
         <translation>デバッグ</translation>
     </message>
@@ -30334,9 +30530,8 @@ p, li { white-space: pre-wrap; }
         <translation>選択しているもので新しいレイヤを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="242"/>
         <source>FIDs identified</source>
-        <translation>指定されたFID</translation>
+        <translation type="obsolete">指定されたFID</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="273"/>
@@ -30379,6 +30574,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;チェックされている場合処理は参照レイヤの選択されているジオメトリのみ利用して実行されます&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="242"/>
+        <source>Result feature ID&apos;s</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="404"/>
@@ -30434,7 +30634,12 @@ p, li { white-space: pre-wrap; }
         <translation>空間検索(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="159"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="113"/>
+        <source>Query not executed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="160"/>
         <source>DEBUG</source>
         <translation>デバッグ</translation>
     </message>
@@ -31478,7 +31683,7 @@ Overwrite?</source>
 <context>
     <name>QgsSymbolV2PropertiesDialog</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbolv2propertiesdialog.cpp" line="174"/>
+        <location filename="../src/gui/symbology-ng/qgssymbolv2propertiesdialog.cpp" line="173"/>
         <source>Outline: %1</source>
         <translation>アウトライン:%1</translation>
     </message>
@@ -32364,47 +32569,47 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3391"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3390"/>
         <source>ERROR: no provider</source>
         <translation>エラー: プロバイダがありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3397"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3396"/>
         <source>ERROR: layer not editable</source>
         <translation>エラー: レイヤは編集不可です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3489"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3488"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>成功: 属性 %1 を追加しれました。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3496"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3495"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>エラー: 属性 %1 の追加に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2894"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2893"/>
         <source>No renderer object</source>
         <translation>レンダラーオブジェクトがありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2898"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2897"/>
         <source>Classification field not found</source>
         <translation>分類フィールドが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3064"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3063"/>
         <source>renderer failed to save</source>
         <translation>レンダラは保存に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3071"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3070"/>
         <source>no renderer</source>
         <translation>レンダラがありません</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3411"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3410"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
@@ -32412,7 +32617,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3420"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3419"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
@@ -32420,7 +32625,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3439"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3438"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
@@ -32428,7 +32633,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3448"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3447"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation>
@@ -32436,7 +32641,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3558"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3557"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation>
@@ -32444,7 +32649,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3566"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3565"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation>
@@ -32452,7 +32657,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3599"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3598"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation>
@@ -32460,7 +32665,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3607"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3606"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation>
@@ -32468,7 +32673,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3620"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3619"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation>
@@ -32476,7 +32681,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3628"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3627"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation>
@@ -32484,7 +32689,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3640"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3639"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation>
@@ -32492,7 +32697,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3653"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3652"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation>
@@ -32500,12 +32705,12 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4281"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4280"/>
         <source>Specify CRS for layer %1</source>
         <translation>レイヤ%1のCRSを指定して下さい</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2888"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2887"/>
         <source>Unknown renderer</source>
         <translation>不明なレンダラ</translation>
     </message>
@@ -33254,11 +33459,13 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSPlugin</name>
     <message>
-        <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="52"/>
-        <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="56"/>
-        <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="65"/>
         <source>&amp;Add WFS layer</source>
-        <translation>WFSレイヤの追加(&amp;A)</translation>
+        <translation type="obsolete">WFSレイヤの追加(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="53"/>
+        <source>Add W&amp;FS layer...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33282,7 +33489,7 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSSourceSelect</name>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="276"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="278"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
@@ -33291,42 +33498,52 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">サーバーからcapabilities documentを取得できません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="269"/>
         <source>No Layers</source>
         <translation>レイヤがありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="267"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="269"/>
         <source>capabilities document contained no layers.</source>
         <translation>capabilitiesドキュメントにレイヤ情報がありません.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="281"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="283"/>
         <source>Capabilities document is not valid</source>
         <translation>Capabilitiesドキュメントが正しくありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="286"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="288"/>
         <source>GetCapabilities Error</source>
         <translation>GetCapabilitiesエラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="301"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="303"/>
         <source>Create a new WFS connection</source>
         <translation>新しいWFS接続を作成する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="312"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="314"/>
         <source>Modify WFS connection</source>
         <translation>WFS接続を修正する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="326"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="328"/>
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="324"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="470"/>
+        <source>Load connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="471"/>
+        <source>XML files (*.xml *XML)</source>
+        <translation type="unfinished">XMLファイル(*.xml *XML)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="326"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
@@ -33334,27 +33551,27 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSSourceSelectBase</name>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="95"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="113"/>
         <source>Title</source>
         <translation>タイトル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="100"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="118"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="105"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="123"/>
         <source>Abstract</source>
         <translation>要約</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="151"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="169"/>
         <source>Change ...</source>
         <translation>変更 ...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="113"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="131"/>
         <source>Coordinate reference system</source>
         <translation>座標参照系</translation>
     </message>
@@ -33364,27 +33581,47 @@ Should the existing classes be deleted before classification?</source>
         <translation>サーバーコネクション</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="32"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="41"/>
         <source>&amp;New</source>
         <translation>新規 (&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="42"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="61"/>
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="52"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="51"/>
         <source>Edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="78"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="34"/>
         <source>C&amp;onnect</source>
         <translation>接続(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="161"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="84"/>
+        <source>Load connections from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="87"/>
+        <source>Load</source>
+        <translation type="unfinished">読み込み</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="94"/>
+        <source>Save connections to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="97"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="179"/>
         <source>Only request features overlapping the current view extent</source>
         <translation>要求された地物が現在表示されているビューの領域にオーバーラップする場合のみ</translation>
     </message>
@@ -33436,69 +33673,65 @@ Should the existing classes be deleted before classification?</source>
         <translation>選択されたレイヤを地図に追加する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="65"/>
         <source>&amp;Save</source>
-        <translation>保存(&amp;S)</translation>
+        <translation type="obsolete">保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="66"/>
         <source>Save WMS server connections to file</source>
-        <translation>WMSサーバ接続情報をファイルに保存する</translation>
+        <translation type="obsolete">WMSサーバ接続情報をファイルに保存する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="70"/>
         <source>&amp;Load</source>
-        <translation>ロード(&amp;L)</translation>
+        <translation type="obsolete">ロード(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="71"/>
         <source>Load WMS server connections from file</source>
-        <translation>WMSサーバ接続情報をファイルから読み込む</translation>
+        <translation type="obsolete">WMSサーバ接続情報をファイルから読み込む</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="235"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="225"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="237"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="227"/>
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="404"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="394"/>
         <source>encoding %1 not supported.</source>
         <translation>エンコーディング %1 はサポートされていません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="410"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="400"/>
         <source>CRS %1 not supported.</source>
         <translation>CRS %1 はサポートされていません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="503"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="493"/>
         <source>WMS Password for %1</source>
         <translation>%1のWMSパスワード</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="429"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="457"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="542"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="419"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="447"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="532"/>
         <source>WMS Provider</source>
         <translation>WMS プロバイダ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="255"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="245"/>
         <source>Load connections</source>
         <translation>接続情報をロードする</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="256"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="246"/>
         <source>XML files (*.xml *XML)</source>
         <translation>XMLファイル(*.xml *XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="430"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="420"/>
         <source>Advertised GetMap URL
 
   %2
@@ -33519,7 +33752,7 @@ This might be an server configuration error. Should the URL be used?</source>
 多分サーバの設定エラーでしょう. このURLを利用すべきでしょうか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="458"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
         <source>Advertised GetFeatureInfo URL
 
   %2
@@ -33540,13 +33773,13 @@ This might be an server configuration error. Should the URL be used?</source>
 多分サーバの設定エラーでしょう. このURLを利用すべきでしょうか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="543"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="533"/>
         <source>Could not open the WMS Provider</source>
         <translation>WMS プロバイダをオープンできません</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="834"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="934"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="826"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="926"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
@@ -33554,37 +33787,37 @@ This might be an server configuration error. Should the URL be used?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="922"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="914"/>
         <source>Select layer(s)</source>
         <translation>レイヤ選択</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="924"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="916"/>
         <source>Select layer(s) or a tileset</source>
         <translation>レイヤ（群）またはタイルセットを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="929"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="921"/>
         <source>Select either layer(s) or a tileset</source>
         <translation>レイヤ（群）またはタイルセットを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="941"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="933"/>
         <source>No common CRS for selected layers.</source>
         <translation>選択されたレイヤ群の共通CRSがありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="946"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="938"/>
         <source>No CRS selected</source>
         <translation>CRSが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="951"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="943"/>
         <source>No image encoding selected</source>
         <translation>イメージエンコーディングが選択されていません</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="956"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="948"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
@@ -33592,7 +33825,7 @@ This might be an server configuration error. Should the URL be used?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="962"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="954"/>
         <source>Tileset selected</source>
         <translation>タイルセットが選択されました</translation>
     </message>
@@ -33604,39 +33837,39 @@ This might be an server configuration error. Should the URL be used?</source>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1054"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1033"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation>レスポンスが理解できません　%1プロバイダのメッセージ
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1107"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1086"/>
         <source>WMS proxies</source>
         <translation>WMS プロキシ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1107"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1086"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>サーバリストに WMS サーバが追加されました。Web プロキシ経由でインターネットに接続している場合には、QGIS のオプションダイアログでプロキシ設定する必要がある点に注意してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1183"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1162"/>
         <source>parse error at row %1, column %2: %3</source>
         <translation>解析エラー 行%1 カラム %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1188"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1167"/>
         <source>network error: %1</source>
         <translation>ネットワークエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1211"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1190"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation>%1コネクションは存在しています。上書きしますか？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1212"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1191"/>
         <source>Confirm Overwrite</source>
         <translation>上書き確認</translation>
     </message>
@@ -33649,170 +33882,190 @@ This might be an server configuration error. Should the URL be used?</source>
         <translation>サーバからレイヤを追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="49"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="21"/>
+        <source>Save connections to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="75"/>
         <source>C&amp;onnect</source>
         <translation>接続(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="56"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="82"/>
         <source>&amp;New</source>
         <translation>新規 (&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="66"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="92"/>
         <source>Edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="76"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="102"/>
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="96"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="122"/>
         <source>Adds a few example WMS servers</source>
         <translation>WMS サーバのサンプルを追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="102"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="128"/>
         <source>Add default servers</source>
         <translation>既定のサーバを追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="122"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="148"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="127"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="153"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="132"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="371"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="158"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="408"/>
         <source>Title</source>
         <translation>タイトル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="137"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="163"/>
         <source>Abstract</source>
         <translation>要約</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="205"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="215"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="241"/>
         <source>Use base url instead of advertised GetFeatureInfo URL</source>
         <translation>通知されたGetFeatureInfo URLの代わりにベースURLを利用する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="208"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="234"/>
         <source>Ignore GetMap URL</source>
         <translation>GetMap URLを無視する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="218"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="244"/>
         <source>Ignore GetFeatureInfo URL</source>
         <translation>GetFeatureInfo URLを無視する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="256"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="263"/>
+        <source>Load connections from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="266"/>
+        <source>Load</source>
+        <translation type="unfinished">読み込み</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="274"/>
         <source>Layer Order</source>
         <translation>レイヤ順序</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="268"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="311"/>
         <source>Layer</source>
         <translation>レイヤ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="273"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="316"/>
         <source>Style</source>
         <translation>スタイル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="282"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="325"/>
         <source>Tilesets</source>
         <translation>タイルセット</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="312"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="352"/>
         <source>Styles</source>
         <translation>スタイル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="317"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="357"/>
         <source>Size</source>
         <translation>大きさ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="322"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="362"/>
         <source>Format</source>
         <translation>形式</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="327"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="367"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="336"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="376"/>
         <source>Server Search</source>
         <translation>サーバー検索</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="345"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="385"/>
         <source>Search</source>
         <translation>検索</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="381"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="418"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="376"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="413"/>
         <source>Description</source>
         <translation>記述</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="389"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="426"/>
         <source>Add selected row to WMS list</source>
         <translation>選択行をWMSリストに追加する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="157"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
         <source>Image encoding</source>
         <translation>画像エンコード</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="37"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="307"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="347"/>
         <source>Layers</source>
         <translation>レイヤ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="164"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="190"/>
         <source>Options</source>
         <translation>オプション</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="196"/>
         <source>Layer name</source>
         <translation>レイヤ名</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="209"/>
         <source>Coordinate Reference System</source>
         <translation>座標参照系</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="196"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="222"/>
         <source>Change ...</source>
         <translation>変更 ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="413"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="46"/>
         <source>Ready</source>
         <translation>準備</translation>
     </message>
@@ -35347,17 +35600,16 @@ SQL Anywhereエラーコード %2
         <translation>ベクタレイヤをSQL Anywhereデータベースに格納する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="90"/>
         <source>&amp;SQL Anywhere</source>
-        <translation>SQL Anywhere(&amp;S)</translation>
+        <translation type="obsolete">SQL Anywhere(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="163"/>
+        <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="160"/>
         <source>Invalid Layer</source>
         <translation>無効なレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="163"/>
+        <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="160"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1は無効なレイヤでロードできません。</translation>
     </message>
@@ -36939,962 +37191,977 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
+        <source>(Optional) column to read labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3D-Viewer (NVIZ)</source>
         <translation>3D-ビューワー（NVIZ)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>3d Visualization</source>
         <translation>3d可視化</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add a value to the current category values</source>
         <translation>現在のカテゴリ値群に値を追加する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
         <translation>レイヤに要素を追加する(全要素が選択レイヤのタイプである必要!)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
         <source>Add missing centroids to closed boundaries</source>
         <translation>閉領域の欠落重心点を追加する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Add one or more columns to attribute table</source>
         <translation>属性テーブルに1個または複数のカラムを追加する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Allocate network</source>
         <translation>ネットワークの配置</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign constant value to column</source>
         <translation>定数をカラムに設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
         <translation>クエリの結果が真である場合のみ定数をカラムに設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
         <translation>操作の結果を属性テーブルのカラムの新しい値として割り当てます</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
         <translation>検索の結果が真である場合のみ操作の結果を属性テーブルのカラムの新しい値として割り当てます</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field</source>
         <translation>属性フィールド</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field (interpolated values)</source>
         <translation>属性フィールド（補間された値)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
+        <source>Attribute field to (over)write</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Attribute field to join</source>
         <translation>属性フィールドを結合する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
         <translation>LANDSAT-TMラスタ用の自動調整カラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
         <translation>Tykhonov regularization付きの双三次または双一次スプライン補間</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Bilinear interpolation utility for raster maps</source>
         <translation>ラスタマップ用双一次補間ユーティリティ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
         <source>Blend color components for two rasters by given ratio</source>
         <translation>指定比率で２つのラスタの色を混ぜる</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
         <source>Blend red, green, raster layers to obtain one color raster</source>
         <translation>1個のカラーラスタから入手した色でラスタレイヤの赤と緑を混ぜる</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
         <translation>ポリゴン（位相構造が無い）を切断します（Shapefileのような位相構造が無い形式からインポートされたもの）境界は2個以上のポリゴンに共有される点で分割されます.それらのセグメントの角度は異なります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
         <source>Break lines at each intersection of vector</source>
         <translation>ラインをベクタの交差点で切断する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
         <translation>マルチスペクトルで高解像度のパンクロマチックチャネルを結合するBrovey変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
         <source>Buffer</source>
         <translation>バッファ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
         <source>Build polylines from lines</source>
         <translation>ラインからポリラインを作成する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
         <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
         <translation>ユーザ定義ベースマップで領域内で同じカテゴリのラスタの平均を計算します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
         <source>Calculate covariance/correlation matrix for user-defined rasters</source>
         <translation>ユーザ定義ラスタで共分散/相関マトリックスを計算します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
         <translation>分類結果の精度保障のためエラーマトリックスとkappaパラメータを計算します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
         <source>Calculate geometry statistics for vectors</source>
         <translation>ベクタのジオメトリ統計を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
         <source>Calculate linear regression from two rasters: y = a + b*x</source>
         <translation>2つのラスタの直線回帰 y = a + b*x を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
         <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
         <translation>ユーザ定義ベースマップで領域内で同じカテゴリのラスタの中央値を計算します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
         <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
         <translation>ユーザ定義ベースマップで領域内で同じカテゴリのラスタの最頻値を計算します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
         <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
         <translation>LANDSAT-TMラスタの最適インデックファクタを計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
         <source>Calculate raster surface area</source>
         <translation>ラスタ面の領域を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
         <source>Calculate shadow maps from exact sun position</source>
         <translation>正確な太陽の位置を利用して陰影図を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
         <source>Calculate shadow maps from sun position determinated by date/time</source>
         <translation>日付と時刻に基づいた太陽の位置を利用して陰影図を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
         <source>Calculate statistics for raster</source>
         <translation>ラスタの統計値を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
         <translation>データテーブルの数値属性の単変量統計を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
         <source>Calculate univariate statistics from raster based on vector objects</source>
         <translation>ラスタベースのベクタオブジェクトの単変量統計を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
         <translation>ラスタ中のnullでないセルの単変量統計を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
         <source>Calculate univariate statistics of vector map features</source>
         <translation>ベクタマップ地物の単変量統計を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
         <translation>データ群のボリュームを計算して重心点群でベクタをつくります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
         <source>Category or object oriented statistics</source>
         <translation>カテゴリ又はオブジェクト指向統計</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
         <source>Cats</source>
         <translatorcomment>これはどうかな？猫じゃないよね。</translatorcomment>
         <translation>カテゴリ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
         <source>Cats (select from the map or using their id)</source>
         <translation>カテゴリ(地図またはidから選択)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
         <source>Change category values and labels</source>
         <translation>カテゴリの値とラベルの変更</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
         <source>Change field</source>
         <translation>フィールドの変更</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
         <source>Change layer number</source>
         <translation>レイヤ番号の変更</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
         <source>Change resolution</source>
         <translation>解像度の変更</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
         <source>Change the type of boundary dangle to line</source>
         <translation>ラインにかかる境界の型を変える</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
         <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
         <translation>領域と島または2つの島の間の境界線からラインへのブリッジのタイプを変更します　　　</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
         <source>Change the type of geometry elements</source>
         <translation>ジオメトリエレメントの型を変える</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
         <source>Choose appropriate format</source>
         <translation>適切な形式を選択する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
         <source>Columns management</source>
         <translation>カラムの管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Compares bit patterns with raster</source>
         <translation>ラスタのビットパターンを比較する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
         <source>Compress and decompress raster</source>
         <translation>ラスタの圧縮と解凍</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
         <source>Compress raster</source>
         <translation>ラスタの圧縮</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
         <source>Computes a coordinate transformation based on the control points</source>
         <translation>コントロールポイントに基づいた座標変換を計算する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Concentric circles</source>
         <translation>同心円</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Config</source>
         <translation>構成</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
         <translation>最短経路でノードを接続する（巡回セールスマン）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
         <translation>最短ツリーで選択されたノードを接続する（スタイナーツリー)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Connect vector to database</source>
         <translation>ベクタをデータベースに接続する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert 2D vector to 3D by sampling raster</source>
         <translation>サンプリングラスタを利用して２Dベクタを３Dに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
         <translation>標高ラスタをサンプリングして２次元ベクタを３次元ベクタに変換します.デフォルトサンプリングは最近傍法です</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
         <translation>GRASSバイナリベクタをGRASS ASCIIベクタに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert a raster to vector</source>
         <translation>ラスタをベクタに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
         <source>Convert a raster to vector within GRASS</source>
         <translation>GRASSを利用してラスタをベクタに変換します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
         <source>Convert a vector to raster</source>
         <translation>ベクタをラスタに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
         <source>Convert a vector to raster within GRASS</source>
         <translation>GRASSを利用してベクタをラスタに変換します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
         <translation>方向と距離の計測結果を座標列に変換する、または逆変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
         <source>Convert boundaries to lines</source>
         <translation>境界をラインに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
         <source>Convert centroids to points</source>
         <translation>重心を点に変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
         <source>Convert coordinates</source>
         <translation>座標群の変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
         <translation>座標群をある投影法から別の投影法に変換する（cs2csのフロントエンド)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
         <source>Convert lines to boundaries</source>
         <translation>ラインを境界に変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
         <source>Convert points to centroids</source>
         <translation>点群を重心に変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
         <source>Convert raster to vector areas</source>
         <translation>ラスタをベクタエリアに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
         <source>Convert raster to vector lines</source>
         <translation>ラスタをベクタラインに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
         <source>Convert raster to vector points</source>
         <translation>ラスタをベクタ点群に変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
         <source>Convert vector to raster using attribute values</source>
         <translation>属性値を利用してベクタをラスタに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Convert vector to raster using constant</source>
         <translation>定数を利用してベクタをラスタに変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Convex hull</source>
         <translation>凸包</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
         <source>Copy a table</source>
         <translation>テーブルをコピーする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
         <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
         <translation>属性テーブルもコピーします（レイヤ毎に１テーブルのコピーのみサポートされています）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Count of neighbouring points</source>
         <translation>近隣のポイント数を数える</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
         <translation>２Dの標高とラスタの値に基づいて３Dボリュームマップを作成する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
         <source>Create a MASK for limiting raster operation</source>
         <translation>ラスタオペレーションを制限するためのマスクを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
         <source>Create a map containing concentric rings</source>
         <translation>同心円を含んだ地図を作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
         <source>Create a raster plane</source>
         <translation>ラスタ面を作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
         <source>Create and add new table to vector</source>
         <translation>新しいテーブルを作ってベクタに追加する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
         <source>Create and/or modify raster support files</source>
         <translation>ラスタサポートファイルを作成または修正する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create aspect raster from DEM (digital elevation model)</source>
         <translation>傾斜方位ラスタをDEM（デジタル標高モデル）から作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create cross product of category values from multiple rasters</source>
         <translation>複数のラスタからクロスで作成されたカテゴリ値を作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create fractal surface of given fractal dimension</source>
         <translation>与えられたフラクタル次元にしたがってフラクタル面を作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create grid in current region</source>
         <translation>現在の領域にグリッドを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create new GRASS location and transfer data into it</source>
         <translation>新しいGRASSロケーションを作成してそこにデータを転送します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
         <source>Create new GRASS location from metadata file</source>
         <translation>メタデータファイルから新しいGRASSロケーションを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create new GRASS location from raster data</source>
         <translation>ラスタデータから新しいGRASSロケーションを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
         <source>Create new GRASS location from vector data</source>
         <translation>ベクタデータから新しいGRASSロケーションを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
         <translation>既存ラスタの分類を再分類したユーザ定義の分類の値に基づいて新レイヤを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
         <source>Create new location from .prj (WKT) file</source>
         <translation>prj(WKT)ファイルから新しいロケーションを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
         <source>Create new raster by combining other rasters</source>
         <translation>別のラスタを混合した新しいラスタを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
         <source>Create new vector by combining other vectors</source>
         <translation>別のベクタを混合した新しいベクタを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
         <source>Create new vector with current region extent</source>
         <translation>現在の領域の範囲で新しいベクタを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
         <source>Create nodes on network</source>
         <translation>ネットワークのノードを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
         <source>Create parallel line to input lines</source>
         <translation>入力ラインの平行線を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create points</source>
         <translation>点を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
         <source>Create points along input lines</source>
         <translation>入力ラインにそってポイントを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create points/segments from input vector lines and positions</source>
         <translation>入力ベクタラインと位置から点群/セグメントを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
         <source>Create quantization file for floating-point raster</source>
         <translation>浮動小数点値で構成されたラスタから量子化データを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create random 2D/3D vector points</source>
         <translation>ランダムな2D/3Dポイントを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
         <source>Create random cell values with spatial dependence</source>
         <translation>空間依存性を利用してランダムなセルの値を作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
         <source>Create random points</source>
         <translation>ランダムな点群を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
         <source>Create random vector point contained in raster</source>
         <translation>ラスタに含まれるランダムなベクタ点群を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
         <translation>ラスタからのテクスチャ地物を使ってラスタを作ります(第1系統インデックス)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
         <source>Create raster of distance to features in input layer</source>
         <translation>入力レイヤの地物に対する距離のラスタを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
         <translation>ユーザ定義平均と標準偏差によるガウス分布によるラスタを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
         <source>Create raster of uniform random deviates with user-defined range</source>
         <translation>ユーザ定義範囲の一様ランダム偏差を使ったラスタを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
         <source>Create raster with contiguous areas grown by one cell</source>
         <translation>一個のセルから拡張した連続領域を使ってラスタを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
         <source>Create raster with textural features from raster (second serie of indices)</source>
         <translation>ラスタからのテクスチャ地物を使ってラスタを作ります(第２系統インデックス)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
         <translation>別ラスタの色相　明度　彩度（HIS)を混合して赤、緑、青（RGB)のラスタを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
         <source>Create shaded map</source>
         <translation>陰影図を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Create slope raster from DEM (digital elevation model)</source>
         <translation>DEM(デジタル標高モデル）から傾斜ラスタを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Create standard vectors</source>
         <translation>標準ベクタを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Create surface from rasterized contours</source>
         <translation>ラスタ化された等高線から面を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
         <source>Create vector contour from raster at specified levels</source>
         <translation>ラスタから指定レベルのベクタ等高線を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
         <source>Create vector contour from raster at specified steps</source>
         <translation>ラスタから指定ステップのベクタ等高線を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
         <source>Create watershed basin</source>
         <translation>流域を作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
         <source>Create watershed subbasins raster</source>
         <translation>流域ラスタを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
         <source>Cut network by cost isolines</source>
         <translation>ネットワークを等費用線で切断する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
         <source>DXF vector layer</source>
         <translation>DXFベクタレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
         <source>Database</source>
         <translation>データベース</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
         <source>Database connection</source>
         <translation>データベース接続</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
         <source>Database file</source>
         <translation>データベースファイル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
         <source>Database management</source>
         <translation>データベース管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
         <source>Database parameters</source>
         <translation>データベースパラメータ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
         <source>Delaunay triangulation (areas)</source>
         <translation>ドロネイ三角分割（領域）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
         <source>Delaunay triangulation (lines)</source>
         <translation>ドロネイ三角分割（線）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
         <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
         <translation>ドロネイ三角分割 ボロノイ図 と凸包</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
         <source>Delete category values</source>
         <translation>カテゴリ値を削除する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
         <source>Develop images and group</source>
         <translation>画像とグループを展開する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
         <source>Develop map</source>
         <translation>地図を展開する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
         <source>Directory of rasters to be linked</source>
         <translation>ラスタのディレクトリがリンクされる</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
         <source>Disconnect vector from database</source>
         <translation>ベクタをデータベースから切断する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
         <source>Display general DB connection</source>
         <translation>データベース接続情報を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
         <source>Display list of category values found in raster</source>
         <translation>ラスタ内のカテゴリ情報リストを表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
         <source>Display projection information from PROJ.4 projection description file</source>
         <translation>PROJ.4解説ファイルにある投影法情報を表示します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
         <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
         <translation>PROJ.4解説ファイルにある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
         <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
         <translation>ジオリファレンスされたファイル(ラスタ、ベクタまたは画像)にある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
         <translation>WKT（well known text)を含むジオリファレンスされたASCIIファイルにある投影法情報を表示します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
         <translation>WKT（well known text)を含むジオリファレンスされたASCIIファイルにある投影法情報を表示します,さらにその情報に基づいて新しいロケーションを作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
         <source>Display projection information from georeferenced file (raster, vector or image)</source>
         <translation>ジオリファレンスされたファイル(ラスタ、ベクタまたは画像)にある投影法情報を表示します,</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
         <source>Display projection information of the current location</source>
         <translation>現在のロケーションの投影法情報を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
         <source>Display raster category values and labels</source>
         <translation>ラスタカテゴリ値とラベルを表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
         <source>Display results of SQL selection from database</source>
         <translation>データベースからSQLで検索した結果を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
         <source>Display the HTML manual pages of GRASS</source>
         <translation>GRASSのHTML版マニュアルページを表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
         <source>Display vector attributes</source>
         <translation>ベクタ属性を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
         <source>Display vector map attributes with SQL</source>
         <translation>ベクタマップの属性をSQLを使って表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
         <translation>隣接した面で同じカテゴリ値か属性値をもつものの間の境界線をなくす（ディゾルブ）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
         <source>Download and import data from WMS server</source>
         <translation>WMSサーバからデータをダウンロードしてインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
         <source>Drop column from attribute table</source>
         <translation>属性テーブルからカラムを削除する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>E00 vector layer</source>
         <translation>E00ベクタレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Execute any SQL statement</source>
         <translation>任意のSQL文を実行する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
         <source>Export</source>
         <translation>エキスポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
         <translation>3 GRASS ラスタ (R,G,B)を現在の領域の解像度でPPM画像にエキスポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
         <source>Export from GRASS</source>
         <translation>GRASSからエキスポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
         <source>Export raster</source>
         <translation>ラスタをエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
         <source>Export raster as non-georeferenced PNG image format</source>
         <translation>ラスタを空間参照情報が無いPNG画像形式でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster from GRASS</source>
         <translation>GRASSにラスタをエキスポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster series to MPEG movie</source>
         <translation>連続したラスタをMPEG動画像としてエクスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
         <translation>現在の領域の現在の解像度のラスタを8/24ビットのTIFF画像でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export raster to ASCII text file</source>
         <translation>ラスタをASCIIテキストファイルでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
         <source>Export raster to ESRI ARCGRID</source>
         <translation>ラスタをESRI ARCGRIDでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
         <translation>ラスタからGRIDATB.FOR マップファイル(TOPMODEL)をエキスポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export raster to Geo TIFF</source>
         <translation>ラスタをGeo TIFFでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export raster to POVRAY height-field file</source>
         <translation>ラスタをPOVRAY高さフィールドファイルでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
         <translation>現在の領域の現在の解像度のラスタをPPM画像でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
         <source>Export raster to VTK-ASCII</source>
         <translation>ラスタをVTK－ASCII形式でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
         <translation>ラスタをバーチャルリアリティモデリングランゲージ（VRML)にエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
         <source>Export raster to binary MAT-File</source>
         <translation>ラスタをバイナリMAT-Fileにエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export raster to binary array</source>
         <translation>ラスタをバイナリ配列にエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export raster to text file as x,y,z values based on cell centers</source>
         <translation>ラスタをセルに中心の値のx,y,zが記述されたテキストファイルにエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export raster to various formats (GDAL library)</source>
         <translation>ラスタを様々な形式（GDAL library)にエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
         <source>Export vector</source>
         <translation>ベクタをエクスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
+        <source>Feature type (for polygons, choose Boundary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
         <translation>入力ラスタのコストと開始点の座標の間の移動の累積コストのラスタを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
         <translation>入力ラスタのコストと開始点ラスタの間の移動の累積コストのラスタを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
         <translation>入力ラスタのコストと開始点のベクタの間の移動の累積コストのラスタを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
         <translation>入力ラスタのコストと開始点の座標の間の標高と干渉の移動累積コストのラスタを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
         <translation>入力ラスタのコストと開始点のベクタの間の標高と干渉の移動累積コストのラスタを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Link GDAL supported raster as GRASS raster</source>
         <translation>GDALがサポートするラスタをGRASSラスタとしてリンクする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
         <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
         <translation>QGISにロードされているGDALでサポートされるラスタをGRASSラスタとしてリンクする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
         <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
         <translation>ディレクトリ内の全てのGDALでサポートされるラスタをGRASSラスタとしてリンクする</translation>
     </message>
@@ -37903,157 +38170,157 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">ベクタテーブルをエクスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Export vector from GRASS</source>
         <translation>GRASSからベクタをエクスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
         <source>Export vector table from GRASS to database format</source>
         <translation>GRASSからベクタテーブルをデータベース形式でエクスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
         <source>Export vector to DXF</source>
         <translation>ベクタをDXFでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
         <source>Export vector to GML</source>
         <translation>ベクタをGMLでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>Export vector to Mapinfo</source>
         <translation>ベクタをMapInfo形式でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Export vector to POV-Ray</source>
         <translation>ベクタをPOV-Ray形式でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Export vector to PostGIS</source>
         <translation>ベクタをPostGISにエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
         <translation>ベクタをPostGIS(PostgreSQL)データベーステーブルにエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
         <source>Export vector to SVG</source>
         <translation>ベクタをSVGにエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
         <source>Export vector to Shapefile</source>
         <translation>ベクタをShapefileに出力する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
         <source>Export vector to VTK-ASCII</source>
         <translation>ベクタをVTK-ASCIIでエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
         <source>Export vector to various formats (OGR library)</source>
         <translation>ベクタを様々な形式（OGR library)でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
         <source>Exports attribute tables into various format</source>
         <translation>属性テーブルを様々な形式でエキスポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>Extract features from vector</source>
         <translation>ベクタから地物を抽出する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>Extract selected features</source>
         <translation>選択した地物を抽出する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>Extracts terrain parameters from DEM</source>
         <translation>DEMから地形パラメータを抽出する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
         <source>Fast fourier transform for image processing</source>
         <translation>イメージ処理のためのファーストフーリエ変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
         <source>File management</source>
         <translation>ファイル管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
         <source>Fill lake from seed at given level</source>
         <translation>与えられたレベルのシードで湖を満たす</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
         <source>Fill lake from seed point at given level</source>
         <translation>指定点で与えられたレベルで湖を満たす</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
         <translation>v.surf.rst スプライン補間を使ってラスタのデータが無い領域を満たします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
         <translation>フィルタを行い俯角無しの標高図を作成します,さらに標高ラスタから方位図を導きだします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
         <source>Filter image</source>
         <translation>画像をフィルタする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
         <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
         <translation>ベクタ内エレメント&apos;from&apos;から一番近いベクタ内エレメント&apos;to&apos;を探します.この関係に関する多くの情報は&apos;from&apos;入力ベクタ属性デーブルにアップロードされるでしょう</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
         <source>Find shortest path on vector network</source>
         <translation>ベクタネットワークで最短経路を探索する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
         <source>GDAL raster layer</source>
         <translation>GDALラスタレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
         <source>GRASS MODULES</source>
         <translation>GRASSモジュール</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
         <source>GRASS shell</source>
         <translation>GRASS shell</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
         <source>Gaussian kernel density</source>
         <translation>ガウスカーネル密度</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Generalization</source>
         <translation>一般化</translation>
     </message>
@@ -38062,172 +38329,172 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">入力ラスタのコストに基づく位置間移動の累積コストを利用したラスタを生成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
         <source>Generate surface</source>
         <translation>面の作成</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
         <source>Generate vector contour lines</source>
         <translation>ベクタ等高線の作成</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
         <translation>gdalwarpを利用してTerra-ASTER画像とDEMの空間参照の調整とインポートを行います</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
         <source>Graphical raster map calculator</source>
         <translation>グラフィカルラスタマップ計算機</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
         <source>Help</source>
         <translation>ヘルプ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
         <translation>色相　明度　彩度（HIS)を赤、緑、青（RGB)ラスタカラーに変換する機能</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
         <source>Hydrologic modelling</source>
         <translation>水理モデル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Imagery</source>
         <translation>画像</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
         <source>Import</source>
         <translation>インポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import ASCII raster</source>
         <translation>ASCIIラスタのインポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import DXF vector</source>
         <translation>DXFベクタのインポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
         <translation>ESRI ARC/INFO ASCII GRIDをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
         <source>Import ESRI E00 vector</source>
         <translation>ESRI E00をインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import GDAL supported raster</source>
         <translation>GDALでサポートされているラスタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
         <source>Import GDAL supported raster and create a fitted location</source>
         <translation>GDALでサポートされるラスタをインポートして適切なロケーションを作成する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
         <translation>GRIDATB.FOR (TOPMODEL)のインポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
         <source>Import MapGen or MatLab vector</source>
         <translation>MapGenまたはMatLabベクタのインポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
         <source>Import OGR vector</source>
         <translation>OGRベクタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
         <translation>提供されたデータソースのOGRベクタをインポートしてGRASSベクタに混在させる</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import OGR/PostGIS vector and create a fitted location</source>
         <translation>OGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import SPOT VGT NDVI</source>
         <translation>SPOT VGT NDVIをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import SRTM HGT</source>
         <translation>SRTM HGTをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
         <translation>US-NGA GEOnet Names Server (GNS)のカントリーファイルをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
         <translation>提供されたデータソースのOGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
         <source>Import attribute tables in various formats</source>
         <translation>様々な形式の属性テーブルをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Import binary MAT-File(v4)</source>
         <translation>MAT-File(v4)バイナリをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Import binary raster</source>
         <translation>バイナリラスタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Import from database into GRASS</source>
         <translation>データベースからGRASSへインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Import geonames.org country files</source>
         <translation>geonames.orgのカントリーファイルをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
         <source>Import into GRASS</source>
         <translation>GRASSへインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Import loaded raster</source>
         <translation>ロードされたラスタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Import loaded raster and create a fitted location</source>
         <translation>ロードされたラスタをインポートしてその領域のロケーションを作成する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Import loaded vector</source>
         <translation>ロードされたベクタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Import loaded vector and create a fitted location</source>
         <translation>ロードされたベクタをインポートしてその領域のロケーションを作成する</translation>
     </message>
@@ -38236,62 +38503,62 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">ロードされたベクタの選択された地物をインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Import only some layers of a DXF vector</source>
         <translation>DXFベクタのいくつかのレイヤのみインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
         <source>Import raster</source>
         <translation>ラスタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
         <source>Import raster from ASCII polygon/line</source>
         <translation>ASCIIポリゴン/ラインからラスタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Import raster from coordinates using univariate statistics</source>
         <translation>単変量統計を利用して座標列からラスタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Import raster into GRASS</source>
         <translation>GRASSにラスタをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Import raster into GRASS from QGIS view</source>
         <translation>QGISビューからGRASSにラスタをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
         <source>Import raster into GRASS from external data sources in GRASS</source>
         <translation>GRASS外部データソースからGRASSにラスタをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
         <source>Import text file</source>
         <translation>テキストファイルのインポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
         <source>Import vector</source>
         <translation>ベクタのインポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
         <source>Import vector from gps using gpsbabel</source>
         <translation>gpsbabelを利用してgpsからベクタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
         <source>Import vector from gps using gpstrans</source>
         <translation>gpstransを利用してgpsからベクタをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
         <source>Import vector into GRASS</source>
         <translation>GRASSにベクタをインポートします</translation>
     </message>
@@ -38304,52 +38571,52 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">GRASS外部データソースからGRASSにベクタをインポートします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
         <source>Import vector points from database table containing coordinates</source>
         <translation>座標を持つデータベーステーブルからベクタポイントをインポートする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
         <source>Input nodes</source>
         <translation>ノードを入力する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
         <source>Input table</source>
         <translation>テーブルを入力する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
         <source>Interpolate surface</source>
         <translation>面を補間する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
         <source>Inverse distance squared weighting raster interpolation</source>
         <translation>逆距離平方荷重によるラスタ補間</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
         <translation>ベクタポイントに基づいた逆距離平方荷重によるラスタ補間</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
         <source>Inverse fast fourier transform for image processing</source>
         <translation>イメージ処理のための逆ファーストフーリエ変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>Join table to existing vector table</source>
         <translation>既存ベクタテーブルにテーブルを結合する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
         <source>Layers categories management</source>
         <translation>レイヤカテゴリの管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
         <source>Line-of-sight raster analysis</source>
         <translation>視線ラスタ解析</translation>
     </message>
@@ -38366,832 +38633,837 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">ディレクトリ内の全てのGDALでサポートされるラスタをバイナリラスタにリンクする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
         <source>Locate the closest points between objects in two raster maps</source>
         <translation>２つのラスタマップのオブジェクト間のもっとも近い点に位置する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
         <translation>入力ラスタのセルに依存する値をそれぞれのせるに割り当てる機能を動かします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
         <source>Manage features</source>
         <translation>地物の管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
         <source>Manage image colors</source>
         <translation>イメージカラーの管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
         <source>Manage map colors</source>
         <translation>マップカラーの管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
         <source>Manage raster cells value</source>
         <translation>ラスタセルの値の管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
         <source>Manage training dataset</source>
         <translation>トレイニングデータセットの管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
         <source>Map algebra</source>
         <translation>地図演算</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Map type conversion</source>
         <translation>地図の型変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
         <source>MapGen or MatLab vector layer</source>
         <translation>MapGenまたはMatLabベクタレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
         <source>Mask</source>
         <translation>マスク</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
+        <source>Maximal tolerance value (higher value=more simplification)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
         <source>Metadata support</source>
         <translation>メタデータサポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
         <source>Minimum size for each basin (number of cells)</source>
         <translation>それぞれの流域の最少サイズ（セルの数）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
         <source>Mosaic up to 4 images</source>
         <translation>最大4個の画像のモザイク</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
         <source>Name for new raster file (specify file extension)</source>
         <translation>新ラスタファイルの名前(ファイル拡張子を指定)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
         <source>Name for new vector file (specify file extension)</source>
         <translation>新ベクタファイルの名前(ファイル拡張子を指定)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
         <source>Name for output vector map (optional)</source>
         <translation>出力ベクタ地図の名前(オプショナル)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Name for the output raster map (optional)</source>
         <translation>出力ラスタ地図の名前(オプショナル)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
         <source>Name of the table to create</source>
         <translation>作成するテーブルの名前</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
         <source>Neighborhood analysis</source>
         <translation>近隣解析</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Network analysis</source>
         <translation>ネットワーク解析</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
         <source>Network maintenance</source>
         <translation>ネットワークメンテナンス</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Number of rows to be skipped</source>
         <translation>スキップする行数</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
         <source>OGR file</source>
         <translation>OGRファイル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
         <source>OGR vector layer</source>
         <translation>OGRベクタレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Others</source>
         <translation>その他</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
         <source>Output GML file</source>
         <translation>GMLファイルに出力</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
         <source>Output Shapefile</source>
         <translation>Shapefileに出力</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
         <source>Output layer name (used in GML file)</source>
         <translation>出力レイヤ名(GMLファイル内で利用)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
         <source>Output raster values along user-defined transect line(s)</source>
         <translation>ユーザ定義横断ラインに沿ったラスタ値の出力</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Overlay</source>
         <translation>オーバーレイ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
         <source>Overlay maps</source>
         <translation>地図をオーバーレイする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
         <source>Path to GRASS database of input location (optional)</source>
         <translation>GRASSデータベースへのPATHの入力位置(オプショナル)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
         <source>Path to the OGR data source</source>
         <translation>OGRデータソースへのパス</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
         <source>Percentage of first layer (0-99)</source>
         <translation>最初のレイヤ（0-99)のパーセンテージ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
         <translation>ベクタデータにアフィン変換（シフト、スケール、回転、またはGPC)を実行する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
         <source>Print projection information from a georeferenced file</source>
         <translation>空間参照情報があるファイルの投影法情報を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
         <translation>空間参照情報があるファイルの投影法情報を表示して、その上方から新しいロケーションを作る</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Print projection information of the current location</source>
         <translation>カレントロケーションの投影法情報を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
         <source>Projection conversion of vector</source>
         <translation>ベクタの投影法を変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
         <source>Projection management</source>
         <translation>投影法管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
         <source>Put geometry variables in database</source>
         <translation>データベースのジオメトリ変数を加える</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
         <source>Query rasters on their category values and labels</source>
         <translation>ラスタのカテゴリ値とラベルを検索する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
         <source>Random location perturbations of vector points</source>
         <translation>ベクタポイントを摂動させたランダムロケーション</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
         <source>Randomly partition points into test/train sets</source>
         <translation>ランダムに仕切られた点群をテスト/トレイニングセットに配置します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
         <source>Raster buffer</source>
         <translation>ラスタバッファ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
         <source>Raster file matrix filter</source>
         <translation>ラスタファイル行列フィルタ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
         <source>Raster neighbours analysis</source>
         <translation>ラスタを近傍分析します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
         <source>Raster support</source>
         <translation>ラスタサポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
         <source>Re-project raster from a location to the current location</source>
         <translation>あるロケーションのラスタをカレントロケーションに再プロジェクトする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Rebuild topology of all vectors in mapset</source>
         <translation>マップセットの全ベクタのトポロジを再構築します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
         <source>Recategorize contiguous cells to unique categories</source>
         <translation>連続したセルをユニークカテゴリに最分類する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
         <source>Reclass category values</source>
         <translation>カテゴリー値を再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
         <source>Reclass category values using a column attribute (integer positive)</source>
         <translation>カラムの属性値（正の整数）を利用してカテゴリ値を再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Reclass category values using a rules file</source>
         <translation>ルールファイルを利用してカテゴリ値を再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
         <source>Reclass raster using reclassification rules</source>
         <translation>再分類ルールを利用してラスタを再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
         <translation>ユーザが定義した領域サイズ（ヘクタール）より大きいパッチでラスタを再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
         <translation>ユーザが定義した領域サイズ（ヘクタール）より小さいパッチでラスタを再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
         <translation>ユーザが定義した領域サイズ（ヘクタール）より大きい又は小さいサイズでラスタを再分類します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
         <source>Recode categorical raster using reclassification rules</source>
         <translation>再分類ルールを利用して分類されたラスタを再コード化します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
         <source>Recode raster</source>
         <translation>ラスタを記録します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
         <source>Reconnect vector to a new database</source>
         <translation>新しいデータベースでベクタを再接続します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
         <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
         <translation>赤、緑、青（RGB)を色相　明度　彩度（HIS)ラスタカラーに変換する機能</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
         <source>Region</source>
         <translation>領域</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
         <source>Region settings</source>
         <translation>領域設定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
         <source>Register external data sources in GRASS</source>
         <translation>GRASSの外部データソースの登録</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
         <translation>ラスタのテンションを利用した正規化されたスプラインをベクタポイントに基づいて補間します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
         <translation>再補間とテンションとスムージングを使った正規化スプラインによるトポロジック解析を計算します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
         <source>Remove all lines or boundaries of zero length</source>
         <translation>境界の長さが0である全てのラインを削除します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
         <source>Remove bridges connecting area and island or 2 islands</source>
         <translation>領域と島、または２つの島の間のブリッジを削除します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
         <source>Remove dangles</source>
         <translation>ぶら下がりを削除します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
         <source>Remove duplicate area centroids</source>
         <translation>重複する面の重心を削除する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
         <source>Remove duplicate lines (pay attention to categories!)</source>
         <translation>重複ラインを削除します（カテゴリに注意して下さい!)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
         <source>Remove existing attribute table of vector</source>
         <translation>ベクタテーブルの既存属性を削除する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
         <source>Remove outliers from vector point data</source>
         <translation>ベクタポイントデータから異常値を削除します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
         <source>Remove small angles between lines at nodes</source>
         <translation>ラインとノードの間の微小角度を削除します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
         <translation>隣接したエリアを削除した最長境界線の微小エリアを削除します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
         <translation>ラインと境界線からの距離が閾値内の頂点を削除します　境界線はトポロジが損なわれない場合にのみ切り取りできます（重心の変更された付属物との新しい交差）境界線の最初と最後のセグメントは変更できません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
         <source>Rename column in attribute table</source>
         <translation>属性テーブルのカラム名を変える</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
         <source>Report and statistics</source>
         <translation>レポートと統計</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
         <source>Reports</source>
         <translation>レポート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Reports and statistics</source>
         <translation>レポートと統計</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
         <source>Reproject raster from another Location</source>
         <translation>別ロケーションからラスタをプロジェクトにいれます</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
         <source>Reproject vector from another Location</source>
         <translation>別ロケーションからベクタをプロジェクトにいれます</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
         <source>Resample raster using aggregation</source>
         <translation>アグリゲーションを使ってラスタの再サンプリングをします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
         <source>Resample raster using interpolation</source>
         <translation>補間を使ってラスタの再サンプリングをします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
         <source>Resample raster. Set new resolution first</source>
         <translation>ラスタの再サンプリングをします.最初に新しい解像度を指定して下さい</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
         <source>Rescale the range of category values in raster</source>
         <translation>ラスタの分類値を再スケールします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
         <source>Sample raster at site locations</source>
         <translation>サイトロケーションのサンプルラスタ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
         <source>Save the current region as a named region</source>
         <translation>現在の領域に名前をつけて保存します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
         <source>Select features by attributes</source>
         <translation>地物を属性で選択する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
         <source>Select features overlapped by features in another map</source>
         <translation>地物を他の地図の地物との重なりで条件で選択する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
         <source>Separator (| , 	 etc.)</source>
         <translation>区切り文字 (| , 	 etc.)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Set PostgreSQL DB connection</source>
         <translation>PostgreSQL　DB接続を設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
         <source>Set boundary definitions by edge (n-s-e-w)</source>
         <translation>隅の指定による境界指定（北-南-東-西)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
         <source>Set boundary definitions for raster</source>
         <translation>ラスタ用境界指定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
         <source>Set boundary definitions from raster</source>
         <translation>ラスタの値を利用した境界指定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
         <source>Set boundary definitions from vector</source>
         <translation>ベクタの値を利用した境界指定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
         <source>Set boundary definitions to current or default region</source>
         <translation>境界の定義を現在のデフォルト領域に設定します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
         <source>Set color rules based on stddev from a map&apos;s mean value</source>
         <translation>地図の平均値からの標準偏差に基づいた色の規則を設定します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
         <source>Set general DB connection</source>
         <translation>一般データベース接続の設定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
         <source>Set general DB connection with a schema (PostgreSQL only)</source>
         <translation>スキーマを利用した一般データベース接続設定（PostgreSQLのみ)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Set raster color table</source>
         <translation>ラスタカラーテーブルの設定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
         <source>Set raster color table from existing raster</source>
         <translation>既存ラスタの値をラスタカラーテーブルに設定します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
         <source>Set raster color table from setted tables</source>
         <translation>設定されたテーブルの値を使ってラスタカラーテーブルを設定します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
         <source>Set raster color table from user-defined rules</source>
         <translation>ユーザ定義のルールでラスタカラーテーブルを設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
         <source>Set region to align to raster</source>
         <translation>ラスタに合わせて領域を設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
         <source>Set the region to match multiple rasters</source>
         <translation>複数のラスタに合わせて領域を設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
         <source>Set the region to match multiple vectors</source>
         <translation>複数のベクタに合わせて領域を設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
         <source>Set user/password for driver/database</source>
         <translation>ドライバ/データベースのユーザ名/パスワードを設定する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
         <source>Sets the boundary definitions for a raster map</source>
         <translation>ラスタマップの境界定義を設定します</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
         <source>Show database connection for vector</source>
         <translation>ベクタのデータベース接続を表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
         <source>Shrink current region until it meets non-NULL data from raster</source>
         <translation>現在の領域をラスタのNULLでない値が出現する場所まで縮小する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Simple map algebra</source>
         <translation>単純な地図演算</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Simplify vector</source>
         <translation>ベクタの簡素化</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
         <source>Snap lines to vertex in threshold</source>
         <translation>閾値内の点にラインをスナップさせる</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
         <source>Solar and irradiation model</source>
         <translation>太陽と照射角度のモデル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
         <source>Spatial analysis</source>
         <translation>空間分析</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
         <source>Spatial models</source>
         <translation>空間モデル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
         <source>Split lines to shorter segments</source>
         <translation>ラインをより短いセグメントに分割する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Statistics</source>
         <translation>統計</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
         <source>Sum raster cell values</source>
         <translation>ラスタセル値の合計</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
         <source>Surface management</source>
         <translation>面の管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
         <source>Tables management</source>
         <translation>テーブル管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
         <translation>２つのラスタ間で分類が相互に一致する一覧を作ります</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
         <translation>ベクタストリームデータを取得してラスタに変換します.そして出力DEMから深さを引きます</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
         <translation>LANDSAT-TM 4ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
         <translation>LANDSAT-TM 5ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="420"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
         <translation>LANDSAT-TM 7ラスタ用Tasseled Cap (Kauth Thomas) 変換</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="421"/>
         <source>Tassled cap vegetation index</source>
         <translation>Tasseled cap植生指数</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="422"/>
         <source>Terrain analysis</source>
         <translation>地形解析</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="423"/>
         <source>Tests of normality on vector points</source>
         <translation>ベクタ点群の正規性をテストします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="420"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="424"/>
         <source>Text file</source>
         <translation>テキストファイル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="421"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="425"/>
         <source>Thin no-zero cells that denote line features</source>
         <translation>ライン地物を示す0でないセルを間引く</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="422"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="426"/>
         <source>Toolset for cleaning topology of vector map</source>
         <translation>ベクタマップトポロジクリーニングツールセット</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="423"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="427"/>
         <source>Topology management</source>
         <translation>トポロジ管理</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="424"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="428"/>
         <source>Trace a flow through an elevation model</source>
         <translation>高さモデルにしたがって流れをトレースします</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="425"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="429"/>
         <source>Transform cells with value in null cells</source>
         <translation>値が無いセル中の値が有るセルを変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="426"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="430"/>
         <source>Transform features</source>
         <translation>地物を変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="427"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="431"/>
         <source>Transform image</source>
         <translation>画像を変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="428"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="432"/>
         <source>Transform null cells in value cells</source>
         <translation>値があるセル中の値が無いセルを変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="429"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="433"/>
         <source>Transform value cells in null cells</source>
         <translation>値が無いセル中の値が有るセルを変換する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="430"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="434"/>
         <source>Type in map names separated by a comma</source>
         <translation>コンマ区切りで地図の名前をタイプする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="431"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="435"/>
         <source>Update raster statistics</source>
         <translation>ラスタの統計を更新する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="432"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="436"/>
         <source>Update vector map metadata</source>
         <translation>ベクタマップのメタデータを更新する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="433"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="437"/>
         <source>Upload raster values at positions of vector points to the table</source>
         <translation>ベクタポイントの位置にあるラスタの値をテーブルにアップロードする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="434"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="438"/>
         <source>Upload vector values at positions of vector points</source>
         <translation>ベクタポイントの位置にあるベクタ値をアップロードする</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="435"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="439"/>
         <source>Vector</source>
         <translation>ベクタ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="436"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="440"/>
         <source>Vector buffer</source>
         <translation>ベクタバッファ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="437"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="441"/>
         <source>Vector geometry analysis</source>
         <translation>ベクタ空間解析</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="438"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Vector intersection</source>
         <translation>ベクタ交差</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="439"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
         <source>Vector non-intersection</source>
         <translation>交差していないベクタ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="440"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="444"/>
         <source>Vector subtraction</source>
         <translation>ベクタ減算</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="441"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="445"/>
         <source>Vector union</source>
         <translation>ベクタ統合</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="446"/>
         <source>Vector update by other maps</source>
         <translation>他の地図によってアップデートされたベクタ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="447"/>
         <source>Visibility graph construction</source>
         <translation>可視性グラフ構築</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="444"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="448"/>
         <source>Voronoi diagram (area)</source>
         <translation>ボロノイ図（面）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="445"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="449"/>
         <source>Voronoi diagram (lines)</source>
         <translation>ボロノイ図（線）</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="446"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="450"/>
         <source>Watershed Analysis</source>
         <translation>流域解析</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="447"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="451"/>
         <source>Which column for the X coordinate? The first is 1</source>
         <translation>X座標のカラムはどれですか？最初は1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="448"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="452"/>
         <source>Which column for the Y coordinate?</source>
         <translation>Y座標のカラムはどれですか?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="449"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="453"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
         <translation>Z座標のカラムはどれですか？もし値が0の場合ｚ座標は利用されません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="450"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="454"/>
         <source>Work with vector points</source>
         <translation>ベクタポイントで作業する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="451"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="455"/>
         <source>Write only features link to a record</source>
         <translation>レコードにリンクした地物のみ書き込む</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="452"/>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="456"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
         <translation>イメージ解析のラスタ機能でゼロ交点エッジが検出されました</translation>
     </message>
