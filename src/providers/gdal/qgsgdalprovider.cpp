@@ -101,7 +101,8 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
 
 QgsGdalProvider::QgsGdalProvider( QString const & uri )
-    : QgsRasterDataProvider( uri ), mValid( true )
+    : QgsRasterDataProvider( uri )
+    , mValid( true )
 {
   QgsDebugMsg( "QgsGdalProvider: constructing with uri '" + uri + "'." );
 
@@ -137,8 +138,8 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   // Check if we need a warped VRT for this file.
   bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
-  if ( ( hasGeoTransform
-          && ( mGeoTransform[1] < 0.0
+  if (( hasGeoTransform
+        && ( mGeoTransform[1] < 0.0
              || mGeoTransform[2] != 0.0
              || mGeoTransform[4] != 0.0
              || mGeoTransform[5] > 0.0 ) )
@@ -149,7 +150,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     mGdalDataset =
       GDALAutoCreateWarpedVRT( mGdalBaseDataset, NULL, NULL,
                                GRA_NearestNeighbour, 0.2, NULL );
-    
+
     if ( mGdalDataset == NULL )
     {
       QgsLogger::warning( "Warped VRT Creation failed." );
@@ -158,7 +159,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     }
     else
     {
-      GDALGetGeoTransform(mGdalDataset, mGeoTransform);   
+      GDALGetGeoTransform( mGdalDataset, mGeoTransform );
     }
   }
   else
@@ -166,8 +167,8 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     mGdalDataset = mGdalBaseDataset;
     GDALReferenceDataset( mGdalDataset );
   }
-  
-  if (!hasGeoTransform)
+
+  if ( !hasGeoTransform )
   {
     // Initialise the affine transform matrix
     mGeoTransform[0] =  0;
@@ -200,22 +201,11 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   // QgsCoordinateTransform for this layer
   // NOTE: we must do this before metadata is called
 
-  QString myWktString;
-  myWktString = QString( GDALGetProjectionRef( mGdalDataset ) );
-  mCrs.createFromWkt( myWktString );
-  if ( !mCrs.isValid() )
+  if ( !crsFromWkt( GDALGetProjectionRef( mGdalDataset ) ) &&
+       !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
   {
-    //try to get the gcp srs from the raster layer if available
-    myWktString = QString( GDALGetGCPProjection( mGdalDataset ) );
-// What is the purpose of this piece of code?
-// Sideeffects from validate()?
-//    myCRS.createFromWkt(myWktString);
-//    if (!myCRS.isValid())
-//    {
-//      // use force and make CRS valid!
-//      myCRS.validate();
-//    }
-
+    QgsDebugMsg( "No valid CRS identified" );
+    mCrs.validate();
   }
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
@@ -352,6 +342,43 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   mValid = true;
   QgsDebugMsg( "end" );
+}
+
+bool QgsGdalProvider::crsFromWkt( const char *wkt )
+{
+  void *hCRS = OSRNewSpatialReference( NULL );
+
+  if ( OSRImportFromWkt( hCRS, (char **) &wkt ) == OGRERR_NONE )
+  {
+    if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
+    {
+      QString authid = QString( "%1:%2" )
+	.arg( OSRGetAuthorityName( hCRS, NULL ) )
+	.arg( OSRGetAuthorityCode( hCRS, NULL ) );
+      QgsDebugMsg( "authid recognized as " + authid );
+      mCrs.createFromOgcWmsCrs( authid );
+    }
+    else
+    {
+      // get the proj4 text
+      char *pszProj4;
+      OSRExportToProj4( hCRS, &pszProj4 );
+      QgsDebugMsg( pszProj4 );
+      OGRFree( pszProj4 );
+
+      char *pszWkt = NULL;
+      OSRExportToWkt( hCRS, &pszWkt );
+      QString myWktString = QString( pszWkt );
+      OGRFree( pszWkt );
+
+      // create CRS from Wkt
+      mCrs.createFromWkt( myWktString );
+    }
+  }
+
+  OSRRelease( hCRS );
+
+  return mCrs.isValid();
 }
 
 QgsGdalProvider::~QgsGdalProvider()
