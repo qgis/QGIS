@@ -1,30 +1,30 @@
 <h3>Road graph plugin settings</h3>
 <p>Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.</p>
 <p>
-<a href="#creating">Units plugin</a><br/>
+<a href="#creating">Plugin units</a><br/>
 <a href="#topologyTolerance">Topology tolerance</a><br/>
 <a href="#layerSettings">Transport layer settings</a><br/>
 </p>
 
 <a name="creating">
-<h4>Units plugin</h4>
+<h4>Plugin units</h4>
 </a>
-<p>You can adjust the output of the calculated distance and time of their way to the desired units. To do this, specify the value of field <label>Distance unit</label> and <label>Time unit</label>.</p>
+<p>You can adjust the units of the calculated distance and time of the path. Select the units in <label>Distance unit</label> and <label>Time unit</label>.</p>
 
 <a name="topologyTolerance">
 <h4>Topology tolerance</h4>
 </a>
-<p><label>Topology tolerance</label> - the distance in units of the project. If two points are located at a distance less than the topological tolerance, they are identified as a vertex. The value of the topological tolerance greater than zero slows down the plug, but you can use not ideal data sources.</p>
+<p><label>Topology tolerance</label> - the distance in units of the project. If the distance of two points falls short the topological tolerance, they are considered to be the vertex. A topological tolerance value greater than zero slows down the plugin, but you can use not ideal data sources.</p>
 
 <h5>Note</h5>
-<p>Road graph plugin view that the two roads are linked, if they have a common node. Nodes are uniquely identified by its coordinates. However, in the process of digitizing error may occur. The errors sometimes occur, and when converted from one coordinate reference system to another. This effect leads to the fact that the associated roads are interpreted as Road graph plugin is not connected. Decision in this case is to set the value of the topological tolerance is greater than zero.</p>
+<p>The Road graph plugin considers two roads as linked, if they have a common node. A Node is uniquely identified by it's coordinates. However, in the process of digitizing errors may occur. The errors sometimes occur when the network is transformed from one coordinate reference system to another. This might cause the Road graph plugin to consider connected roads as disconnected. In that case the topological tolerance should be set to a value greater than zero.</p>
 
 <a name="LayerSettings">
 <h4>Transport layer settings</h4>
 </a>
 <p><label>Layer</label> - the data layer of roads.</p>
-<p><label>Field direction</label> - the value of this field indicates how to interpret the Road graph plugin layers feature. <label>Value for forward direction</label> - the direction of movement corresponds to the order of points in a feature. <label>Value for reverse direction</label> - the direction of movement corresponds to the inverse order of points in the figure. <label>Value for two-way direction</label> - both possible.</p>
-<p>Speed field</p> - a field in which the recorded speed on the road.</p>
+<p><label>Field direction</label> - the value of this field indicates how to interpret the Road graph plugin layers feature. <label>Value for forward direction</label> - the direction of movement corresponds to the order of points in a feature. <label>Value for reverse direction</label> - the direction of movement corresponds to the reverse order of points in the feature. <label>Value for two-way direction</label> - both possible.</p>
+<p>Speed field</p> - field containing the recorded speed on the road.</p>
 
 <h5>Default settings</h5>
-<p>If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use the default values. You can specify the default tab <label>Default settings</label>.</p>
+<p>If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab <label>Default settings</label>.</p>
