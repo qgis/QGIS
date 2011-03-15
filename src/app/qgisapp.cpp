@@ -319,7 +319,7 @@ static QgsMessageOutput *messageOutputViewer_()
  */
 static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 {
-  QString authid;
+  static QString authid = QString::null;
   QSettings mySettings;
   QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour" ).toString();
   if ( myDefaultProjectionOption == "prompt" )
@@ -329,7 +329,8 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 
     QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not specified
-    authid = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
+    if ( authid.isNull() )
+      authid = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
     QgsCoordinateReferenceSystem defaultCrs;
     if ( defaultCrs.createFromOgcWmsCrs( authid ) )
     {
@@ -341,6 +342,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     if ( mySelector->exec() )
     {
       QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
+      authid = mySelector->selectedAuthId();
       srs->createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
@@ -358,8 +360,9 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
-    srs->createFromOgcWmsCrs( mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
-    QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to default CRS" ) );
+    authid = mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
+    srs->createFromOgcWmsCrs( authid );
+    QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to default CRS: %1" ).arg( authid ) );
   }
 }
 
