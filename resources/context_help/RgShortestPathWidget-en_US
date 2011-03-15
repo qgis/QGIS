@@ -1,0 +1,15 @@
+<h3>Finding shortest path</h3>
+<p>Road graph is a C++ plugin for Quantum GIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu <label>Plugins -> Road graph -> Settings</label></p>
+<p>
+<a href="#howto">How to</a><br/>
+</p>
+
+<a name="howto">
+<h4>How to</h4>
+</a>
+<p>You can select start and end points with special buttons Select points tool 
+near the fields.
+Pressing <label>Calculate</label> button will run shortest path calculation using optimization criterion, selected in <label>Criterion</label> combobox. Button <label>Export</label> allow you exporting calculated path into new vector layer, and button <label>Clear</label> will erase all fields, remove points and calculated path from map canvas.</p>
+
+<h5>Note</h5>
+<p>In order to bind the start and stop points of the route to the road network Road graph selects between the nearest point or an arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics are not taken into account the distance from the starting point to the road network and road network to the stoping point.</p>

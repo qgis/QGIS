@@ -25,6 +25,7 @@
 #include <qlineedit.h>
 #include <QToolButton>
 #include <QMessageBox>
+#include <qgscontexthelp.h>
 
 // Qgis includes
 #include <qgsmapcanvas.h>
@@ -122,6 +123,13 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   mClear =  new QPushButton( tr( "Clear" ), myWidget );
   h->addWidget( mClear );
   v->addLayout( h );
+
+  h = new QHBoxLayout( myWidget );
+  QPushButton *helpButton = new QPushButton( tr( "Help" ), this );
+  helpButton->setIcon( this->style()->standardIcon( QStyle::SP_DialogHelpButton ) );
+  h->addWidget( helpButton );
+  v->addLayout( h );
+
   v->addStretch();
 
   mFrontPointMapTool = new QgsMapToolEmitPoint( mPlugin->iface()->mapCanvas() );
@@ -138,6 +146,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   connect( mBackPointMapTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ),
            this, SLOT( setBackPoint( const QgsPoint& ) ) );
 
+  connect( helpButton, SIGNAL( clicked( bool ) ), this, SLOT( helpRequested() ) );
   connect( mCalculate, SIGNAL( clicked( bool ) ), this, SLOT( findingPath() ) );
   connect( mClear, SIGNAL( clicked( bool ) ), this, SLOT( clear() ) );
 
@@ -366,4 +375,9 @@ void RgShortestPathWidget::exportPath()
 
   mPlugin->iface()->mapCanvas()->update();
 
+}
+
+void RgShortestPathWidget::helpRequested()
+{
+  QgsContextHelp::run( metaObject()->className() );
 }
