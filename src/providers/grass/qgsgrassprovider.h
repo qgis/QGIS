@@ -21,6 +21,7 @@ class QgsField;
 
 #include <QDateTime>
 #include "qgsvectordataprovider.h"
+#include <vector>
 
 /* Update.
  * Vectors are updated (reloaded) if:

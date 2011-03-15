@@ -24,7 +24,10 @@
 #include <QList>
 #include <QStringList>
 
+
+
 #include "qgis.h"
+#include "qgsdiagramrendererv2.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgssnapper.h"
@@ -48,7 +51,6 @@ class QgsVectorOverlay;
 class QgsSingleSymbolRendererV2;
 class QgsRectangle;
 class QgsVectorLayerJoinBuffer;
-
 class QgsFeatureRendererV2;
 
 typedef QList<int> QgsAttributeList;
@@ -207,6 +209,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Sets the renderer. If a renderer is already present, it is deleted */
     void setRenderer( QgsRenderer * r );
+
+    /** Sets diagram rendering object (takes ownership) */
+    void setDiagramRenderer( QgsDiagramRendererV2* r );
+    const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
+
+    void setDiagramLayerSettings( const QgsDiagramLayerSettings& s ) { mDiagramLayerSettings = s; }
+    QgsDiagramLayerSettings diagramLayerSettings() const { return mDiagramLayerSettings; }
 
     /** Return renderer V2.
      * @note added in 1.4 */
@@ -804,6 +813,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Updates an index in an attribute map to a new value (usually necessary because of a join operation)*/
     void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
 
+    /**Registers label and diagram layer
+      @param attList attributes needed for labeling and diagrams will be added to the list
+      @param labeling out: true if there will be labeling (ng) for this layer*/
+    void prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling );
+
   private:                       // Private attributes
 
     /** Update threshold for drawing features as they are read. A value of zero indicates
@@ -931,6 +945,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer* mJoinBuffer;
+
+    //diagram rendering object. 0 if diagram drawing is disabled
+    QgsDiagramRendererV2* mDiagramRenderer;
+
+    //stores infos about diagram placement (placement type, priority, position distance)
+    QgsDiagramLayerSettings mDiagramLayerSettings;
 };
 
 #endif

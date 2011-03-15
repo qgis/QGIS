@@ -17,6 +17,7 @@
 
 #include "qgsinterpolator.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 
 QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mDataIsCached( false ), mLayerData( layerData )

@@ -31,11 +31,16 @@ class QgsMapToolLabel: public QgsMapTool
     QgsMapToolLabel( QgsMapCanvas* canvas );
     ~QgsMapToolLabel();
 
-    /**Returns true if layer move can be applied to a layer
+    /**Returns true if label move can be applied to a layer
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
-    bool layerIsMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    bool labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    /**Returns true if diagram move can be applied to a layer
+        @param xCol out: index of the attribute for data defined x coordinate
+        @param yCol out: index of the attribute for data defined y coordinate
+        @return true if labels of layer can be moved*/
+    bool diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
 
   protected:
     QgsRubberBand* mLabelRubberBand;

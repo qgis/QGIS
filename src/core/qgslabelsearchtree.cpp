@@ -27,7 +27,7 @@ void QgsLabelSearchTree::label( const QgsPoint& p, QList<QgsLabelPosition*>& pos
   posList = mSearchResults;
 }
 
-bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName )
+bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, bool diagram )
 {
   if ( !labelPos )
   {
@@ -44,7 +44,7 @@ bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, co
     cornerPoints.push_back( QgsPoint( labelPos->getX( i ), labelPos->getY( i ) ) );
   }
   QgsLabelPosition* newEntry = new QgsLabelPosition( featureId, labelPos->getAlpha(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
-      labelPos->getWidth(), labelPos->getHeight(), layerName, labelPos->getUpsideDown() );
+      labelPos->getWidth(), labelPos->getHeight(), layerName, labelPos->getUpsideDown(), diagram );
   mSpatialIndex.Insert( c_min, c_max, newEntry );
   return true;
 }

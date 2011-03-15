@@ -1,5 +1,6 @@
 SUBDIRS (copyright_label 
-  delimited_text 
+  delimited_text
+  diagram_overlay
   interpolation 
   north_arrow 
   scale_bar
@@ -7,7 +8,6 @@ SUBDIRS (copyright_label
   raster_terrain_analysis
   coordinate_capture
   dxf2shp_converter
-  diagram_overlay
   evis
   point_displacement_renderer
   spatialquery

@@ -39,11 +39,13 @@ class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 class QgsFeature;
 
+struct QgsDiagramLayerSettings;
+
 struct CORE_EXPORT QgsLabelPosition
 {
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ) {}
+  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false ):
+      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ) {}
+  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ) {}
   int featureId;
   double rotation;
   QVector< QgsPoint > cornerPoints;
@@ -52,6 +54,7 @@ struct CORE_EXPORT QgsLabelPosition
   double height;
   QString layerID;
   bool upsideDown;
+  bool isDiagram;
 };
 
 /** Labeling engine interface.
@@ -70,8 +73,12 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! adds a diagram layer to the labeling engine
+    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings& s ) {};
     //! called for every feature
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
+    //! called for every diagram feature
+    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) {};
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering

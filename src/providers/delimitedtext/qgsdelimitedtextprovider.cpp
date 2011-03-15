@@ -37,7 +37,6 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgis.h"
 
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";

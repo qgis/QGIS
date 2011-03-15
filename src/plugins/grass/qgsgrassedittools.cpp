@@ -22,6 +22,7 @@
 #include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
 #include <QMouseEvent>

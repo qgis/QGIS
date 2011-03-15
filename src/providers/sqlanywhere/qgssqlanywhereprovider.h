@@ -19,6 +19,7 @@
 #ifndef QGSSQLANYWHEREPROVIDER_H
 #define QGSSQLANYWHEREPROVIDER_H
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"

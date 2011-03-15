@@ -23,14 +23,17 @@
 
 class QFontMetricsF;
 class QPainter;
+class QgsGeometry;
 class QgsMapRenderer;
 class QgsRectangle;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
+struct QgsDiagramLayerSettings;
 
 #include <QString>
 #include <QFont>
 #include <QColor>
+#include <QHash>
 #include <QList>
 #include <QRectF>
 
@@ -45,9 +48,10 @@ class QgsMapToPixel;
 class QgsFeature;
 #include "qgspoint.h"
 
-#include "qgsvectorlayer.h" // definition of QgsLabelingEngineInterface
+#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
 
 class QgsPalGeometry;
+class QgsVectorLayer;
 
 class CORE_EXPORT QgsPalLayerSettings
 {
@@ -195,8 +199,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual bool willUseLayer( QgsVectorLayer* layer );
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx );
+    //! adds a diagram layer to the labeling engine
+    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings& s );
     //! hook called when drawing for every feature in a layer
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
@@ -220,6 +227,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
   protected:
     // hashtable of layer settings, being filled during labeling
     QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
+    // hashtable of active diagram layers
+    QHash<QgsVectorLayer*, QgsDiagramLayerSettings> mActiveDiagramLayers;
     QgsPalLayerSettings mInvalidLayerSettings;
 
     QgsMapRenderer* mMapRenderer;
