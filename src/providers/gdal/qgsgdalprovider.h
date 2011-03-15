@@ -249,6 +249,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
 
   private:
+    // initialize CRS from wkt
+    bool crsFromWkt( const char *wkt );
 
     /**
     * Flag indicating if the layer data source is a valid WMS layer
