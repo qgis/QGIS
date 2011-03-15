@@ -39,7 +39,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
           (self.zfieldCombo, SIGNAL("currentIndexChanged(int)"), self.zfieldCheck),
           (self.algorithmCombo, SIGNAL("currentIndexChanged(int)"), self.algorithmCheck),
-          (self.stackedWidget, SIGNAL("currentChanged(int)"), self.algorithmCheck),
+          (self.stackedWidget, None, self.algorithmCheck),
           ([self.invdistPowerSpin, self.invdistSmothingSpin, self.invdistRadius1Spin, self.invdistRadius2Spin, self.invdistAngleSpin, self.invdistNoDataSpin], SIGNAL("valueChanged(double)")),
           ([self.invdistMaxPointsSpin, self.invdistMinPointsSpin], SIGNAL("valueChanged(int)")),
           ([self.averageRadius1Spin, self.averageRadius2Spin, self.averageAngleSpin, self.averageNoDataSpin], SIGNAL("valueChanged(double)")),
@@ -56,14 +56,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
       self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillFieldsCombo)
-      self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChenged)
+      self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChanged)
 
 
   def onClosing(self):
       self.extentSelector.stop()
       BasePluginWidget.onClosing(self)
 
-  def onExtentCheckedChenged(self, enabled):
+  def onExtentCheckedChanged(self, enabled):
         self.extentSelector.start() if enabled else self.extentSelector.stop()
 
   def onLayersChanged(self):
