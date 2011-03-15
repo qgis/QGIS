@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialqueryplugin.cpp 15302 2011-03-01 08:00:54Z timlinux $ */
+/*  $Id$ */
 
 
 //
@@ -110,7 +110,7 @@ void QgsSpatialQueryPlugin::run()
     QString msg;
     if ( ! QgsSpatialQueryDialog::hasPossibleQuery( msg ) )
     {
-      QMessageBox::warning( mIface->mainWindow(), tr( "Not possible execute the query" ), msg, QMessageBox::Ok );
+      QMessageBox::warning( mIface->mainWindow(), tr( "Query not executed" ), msg, QMessageBox::Ok );
       return;
     }
     mDialog = new QgsSpatialQueryDialog( mIface->mainWindow(), mIface );
