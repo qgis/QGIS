@@ -35,6 +35,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
           (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"), 
           (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck), 
+          (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"), 
           (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox), 
           (self.modeCombo, SIGNAL("currentIndexChanged(int)")),
           ([self.hillshadeZFactorSpin, self.hillshadeScaleSpin, self.hillshadeAltitudeSpin, self.hillshadeAzimuthSpin], SIGNAL("valueChanged(double)")), 
@@ -54,6 +55,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def showModeParams(self, index):
       self.stackedWidget.setVisible( index < 4 )
+      self.algorithmCheck.setVisible( index < 3 )
+      if index >= 3:
+        self.algorithmCheck.setChecked( False )
 
   def onLayersChanged(self):
       self.fillInputLayerCombo()
@@ -120,6 +124,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             arguments << "-exact_color_entry"
           elif self.colorNearestRadio.isChecked():
             arguments << "-nearest_color_entry"
+      if self.algorithmCheck.isChecked():
+        arguments << "-alg" << "ZevenbergenThorne"
       if self.computeEdgesCheck.isChecked():
         arguments << "-compute_edges"
       if self.bandCheck.isChecked():
