@@ -72,7 +72,7 @@ struct CORE_EXPORT QgsDiagramSettings
     MapUnits
   };
 
-  QgsDiagramSettings(): minScaleDenominator( -1 ), maxScaleDenominator( -1 ), sizeType( MM )
+  QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
   {}
   QFont font;
   QList< QColor > categoryColors;
@@ -121,7 +121,10 @@ class CORE_EXPORT QgsDiagramRendererV2
   protected:
 
     /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
-      @param s out: diagram settings for the feature*/
+     * @param att attribute map
+     * @param c render context
+     * @param s out: diagram settings for the feature
+     */
     virtual bool diagramSettings( const QgsAttributeMap& att, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
     /**Returns size of the diagram (in painter units) or an invalid size in case of error*/

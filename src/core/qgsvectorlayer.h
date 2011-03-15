@@ -814,7 +814,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
 
     /**Registers label and diagram layer
-      @param attList attributes needed for labeling and diagrams will be added to the list
+      @param rendererContext render context
+      @param attributes attributes needed for labeling and diagrams will be added to the list
       @param labeling out: true if there will be labeling (ng) for this layer*/
     void prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling );
 

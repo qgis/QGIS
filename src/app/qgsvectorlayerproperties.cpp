@@ -1626,6 +1626,9 @@ void QgsVectorLayerProperties::initDiagramTab()
       case QGis::Polygon:
         mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( 0 ) );
         break;
+      case QGis::UnknownGeometry:
+      case QGis::NoGeometry:
+	break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
   }
