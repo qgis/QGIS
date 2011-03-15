@@ -11,7 +11,7 @@ struct QgsDiagramSettings;
 class QgsRenderContext;
 
 /**Base class for all diagram types*/
-class QgsDiagram
+class CORE_EXPORT QgsDiagram
 {
   public:
     /**Draws the diagram at the given position (in pixel coordinates)*/
@@ -24,7 +24,7 @@ class QgsDiagram
     QFont scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c );
 };
 
-class QgsTextDiagram: public QgsDiagram
+class CORE_EXPORT QgsTextDiagram: public QgsDiagram
 {
   public:
     enum Shape
@@ -57,7 +57,7 @@ class QgsTextDiagram: public QgsDiagram
     void lineEllipseIntersection( const QPointF& lineStart, const QPointF& lineEnd, const QPointF& ellipseMid, double r1, double r2, QList<QPointF>& result ) const;
 };
 
-class QgsPieDiagram: public QgsDiagram
+class CORE_EXPORT QgsPieDiagram: public QgsDiagram
 {
   public:
     QgsPieDiagram();

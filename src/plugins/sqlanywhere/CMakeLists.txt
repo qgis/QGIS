@@ -59,6 +59,7 @@ INCLUDE_DIRECTORIES(
      ../../app
      ..
      ../../providers/sqlanywhere/sqlanyconnection
+     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(sqlanywhereplugin
