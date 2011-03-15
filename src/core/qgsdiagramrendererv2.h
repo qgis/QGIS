@@ -16,7 +16,7 @@ class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
 
-struct QgsDiagramLayerSettings
+struct CORE_EXPORT QgsDiagramLayerSettings
 {
   //avoid inclusion of QgsPalLabeling
   enum Placement
@@ -64,7 +64,7 @@ struct QgsDiagramLayerSettings
 };
 
 //diagram settings for rendering
-struct QgsDiagramSettings
+struct CORE_EXPORT QgsDiagramSettings
 {
   enum SizeType
   {
