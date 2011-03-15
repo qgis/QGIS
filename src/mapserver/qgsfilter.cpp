@@ -22,6 +22,7 @@
 #include "qgsvectordataprovider.h"
 #include <QDomElement>
 #include <QStringList>
+#include "qgsvectorlayer.h"
 
 QgsFilter::QgsFilter(): mPropertyIndex( -1 )
 {

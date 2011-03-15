@@ -760,7 +760,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
 
   s.palLayer = l;
   if ( mMapRenderer->hasCrsTransformEnabled() )
-    s.ct = new QgsCoordinateTransform( layer->srs(), mMapRenderer->destinationSrs() );
+    s.ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
   else
     s.ct = NULL;
   s.xform = mMapRenderer->coordinateTransform();

@@ -735,7 +735,6 @@ void QgsVectorLayerProperties::apply()
       ds.maxScaleDenominator = -1;
     }
 
-    QgsDiagramRendererV2* r = 0;
     if ( mFixedSizeCheckBox->isChecked() )
     {
       QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();

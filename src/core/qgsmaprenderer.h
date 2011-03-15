@@ -74,7 +74,7 @@ class QgsLabelingEngineInterface
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings& s ) {};
+    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings& s ) { return 0; };
     //! called for every feature
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
     //! called for every diagram feature

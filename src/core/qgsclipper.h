@@ -291,7 +291,7 @@ inline void QgsClipper::trimFeatureToBoundary(
   unsigned int i1 = inPts.size() - 1; // start with last point
 
   // and compare to the first point initially.
-  for ( unsigned int i2 = 0; i2 < inPts.size() ; ++i2 )
+  for ( int i2 = 0; i2 < inPts.size() ; ++i2 )
   { // look at each edge of the polygon in turn
     if ( inside( inPts[i2], b ) ) // end point of edge is inside boundary
     {

@@ -92,7 +92,7 @@ struct QgsDiagramSettings
 };
 
 /**Returns diagram settings for a feature*/
-class QgsDiagramRendererV2
+class CORE_EXPORT QgsDiagramRendererV2
 {
   public:
 
@@ -142,7 +142,7 @@ class QgsDiagramRendererV2
 };
 
 /**Renders the diagrams for all features with the same settings*/
-class QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
+class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
 {
   public:
     QgsSingleCategoryDiagramRenderer();
@@ -168,7 +168,7 @@ class QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
     QgsDiagramSettings mSettings;
 };
 
-class QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRendererV2
+class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRendererV2
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
