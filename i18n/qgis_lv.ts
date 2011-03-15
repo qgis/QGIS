@@ -1676,6 +1676,18 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <source>Select where to save the TileIndex output</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select the cutline file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output size required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The output file doesn&apos;t exist. You must set up the output size to create it.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsExtentSelector</name>
@@ -2043,14 +2055,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Image width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Image height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use m&amp;ultithreaded warping implementation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2280,10 +2284,6 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Output file for rasterized vectors (raster, must exists)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Threshold</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2373,6 +2373,26 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>No data values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Platums</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Augstums</translation>
+    </message>
+    <message>
+        <source>&amp;Output file for rasterized vectors (raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New size (required if output file doens&apos;t exist)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cutline</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2707,7 +2727,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <name>MainWindow</name>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation type="obsolete">QGIS</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -3376,6 +3396,22 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <message>
         <source>Python Console</source>
         <translation type="unfinished">Python konsole</translation>
+    </message>
+    <message>
+        <source>Zoom to Native Pixel Resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set project CRS from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full histogram stretch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stretch histogram to full dataset</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4945,10 +4981,6 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
         <translation>Pārklājas</translation>
     </message>
     <message>
-        <source>Disjoint</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Touches</source>
         <translation>Pieskaras</translation>
     </message>
@@ -5132,27 +5164,11 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Geography Markup Language (GML)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generic Mapping Tools (GMT)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GPS eXchange Format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>INTERLIS 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>INTERLIS 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keyhole Markup Language (KML)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5165,10 +5181,6 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>S-57 Base file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spatial Data Transfer Standard (SDTS)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5224,14 +5236,6 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>GMT</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GPX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Grass Vector</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5261,10 +5265,6 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spatial Data Transfer Standard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5302,22 +5302,6 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot open GDAL dataset </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot get GDAL raster band : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open GDAL MEM dataset </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot ChunkAndWarpImage : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>[GDAL] All files (*)</source>
         <translation type="unfinished">[GDAL] Visi faili (*)</translation>
     </message>
@@ -5331,6 +5315,50 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Cannot get colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geography Markup Language [GML]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generic Mapping Tools [GMT]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS eXchange Format [GPX]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyhole Markup Language [KML]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial Data Transfer Standard [SDTS]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Is disjoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get GDAL raster band: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open GDAL MEM dataset %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot GDALCreateGenImgProjTransformer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot inittialize GDALWarpOperation : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot ChunkAndWarpImage: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6115,13 +6143,13 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation>Datu avota atrašanās vietas kļūda</translation>
+        <translation type="obsolete">Datu avota atrašanās vietas kļūda</translation>
     </message>
     <message>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation>Kļūda nolasot ikonu avotu no:  %1 Beidzu...</translation>
+        <translation type="obsolete">Kļūda nolasot ikonu avotu no:  %1 Beidzu...</translation>
     </message>
     <message>
         <source>Overview</source>
@@ -7195,10 +7223,6 @@ QWT Version: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>To perform a local histogram stretch, you need to have a grayscale (multiband single layer, or singleband grayscale) raster layer selected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
 
 Always ignore these errors?</source>
@@ -7212,6 +7236,22 @@ Always ignore these errors?</source>
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current CRS: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inactive project CRS: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10872,6 +10912,19 @@ p, li { white-space: pre-wrap; }
         <source>Search in columns</source>
         <translation type="unfinished">Meklēt kolonnās</translation>
     </message>
+    <message>
+        <source>Load</source>
+        <comment>Load connections from file</comment>
+        <translation type="unfinished">Ielādēt</translation>
+    </message>
+    <message>
+        <source>Save connections to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Saglabāt</translation>
+    </message>
 </context>
 <context>
     <name>QgsDbTableModel</name>
@@ -10939,7 +10992,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Delimited text</source>
-        <translation>&amp;Atdalīts teksts</translation>
+        <translation type="obsolete">&amp;Atdalīts teksts</translation>
     </message>
     <message>
         <source>DelimitedTextLayer</source>
@@ -16231,6 +16284,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
         <source>&amp;Set layer CRS</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Set &amp;project CRS from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendModel</name>
@@ -16371,6 +16428,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
     </message>
     <message>
         <source>Connection with name &apos;%1&apos; already exists. Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file is not an WFS connections exchange file.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17010,6 +17071,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
         <translation>Nav iespējams rediģēt vektoru slāni. Izmantojiet &quot;Pārslēgt rediģēšanu&quot;, lai aktivizētu šī slāņa rediģēšanu.</translation>
     </message>
+    <message>
+        <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolVertexEdit</name>
@@ -17190,6 +17255,30 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <source>Save As...</source>
         <translation>Saglabāt kā...</translation>
+    </message>
+    <message>
+        <source>meters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>feet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>miles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>inches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>kilometers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17549,6 +17638,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Unable to activate FOREIGN_KEY constraints</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>@</source>
+        <translation type="unfinished">@</translation>
     </message>
 </context>
 <context>
@@ -18861,15 +18954,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsOraclePlugin</name>
     <message>
         <source>Select Oracle GeoRaster</source>
-        <translation>Izvēlieties Oracle GeoRaster</translation>
+        <translation type="obsolete">Izvēlieties Oracle GeoRaster</translation>
     </message>
     <message>
         <source>Open a Oracle Spatial GeoRaster</source>
-        <translation>Atvērt Oracle Spatial GeoRaster</translation>
+        <translation type="obsolete">Atvērt Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>&amp;Oracle Spatial</source>
-        <translation>&amp;Oracle Spatial</translation>
+        <translation type="obsolete">&amp;Oracle Spatial</translation>
+    </message>
+    <message>
+        <source>Add Oracle GeoRaster Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a Oracle Spatial GeoRaster...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19197,15 +19298,15 @@ Papildus kļūdas informācija:
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation>&amp;Saglabāt</translation>
+        <translation type="obsolete">&amp;Saglabāt</translation>
     </message>
     <message>
         <source>Save connections</source>
-        <translation>Saglabā savienojumus</translation>
+        <translation type="obsolete">Saglabā savienojumus</translation>
     </message>
     <message>
         <source>&amp;Load</source>
-        <translation>&amp;Ielādēt</translation>
+        <translation type="obsolete">&amp;Ielādēt</translation>
     </message>
     <message>
         <source>Load connections</source>
@@ -23389,14 +23490,6 @@ Kļūda bija:
 </context>
 <context>
     <name>QgsSpatialQueryDialog</name>
-    <message>
-        <source>The spatial query requires at least two layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Insufficient number of layers</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message numerus="yes">
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
@@ -23555,6 +23648,10 @@ CRS of map is %1.
         <source>%1 of %2 identified</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The spatial query requires at least two vector layers</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSpatialQueryDialogBase</name>
@@ -23639,10 +23736,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>FIDs identified</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select one FID to identify geometry of feature</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23658,6 +23751,10 @@ p, li { white-space: pre-wrap; }
         <source>Log messages</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Result feature ID&apos;s</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSpatialQueryPlugin</name>
@@ -23668,6 +23765,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>DEBUG</source>
         <translation type="unfinished">ATKĻŪDOŠANA</translation>
+    </message>
+    <message>
+        <source>Query not executed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25886,7 +25987,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <name>QgsWFSPlugin</name>
     <message>
         <source>&amp;Add WFS layer</source>
-        <translation>&amp;Pievienot WFS slāni</translation>
+        <translation type="obsolete">&amp;Pievienot WFS slāni</translation>
+    </message>
+    <message>
+        <source>Add W&amp;FS layer...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25946,6 +26051,14 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>GetCapabilities Error</source>
         <translation>GetCapabilities Kļūda</translation>
     </message>
+    <message>
+        <source>Load connections</source>
+        <translation type="unfinished">Ielādē savienojumus</translation>
+    </message>
+    <message>
+        <source>XML files (*.xml *XML)</source>
+        <translation type="unfinished">XML faili (*.xml *.XML)</translation>
+    </message>
 </context>
 <context>
     <name>QgsWFSSourceSelectBase</name>
@@ -25997,6 +26110,22 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Add WFS Layer from a Server</source>
         <translation>Pievienot WFS slāni no servera</translation>
     </message>
+    <message>
+        <source>Load connections from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation type="unfinished">Ielādēt</translation>
+    </message>
+    <message>
+        <source>Save connections to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Saglabāt</translation>
+    </message>
 </context>
 <context>
     <name>QgsWKNDiagramFactoryWidgetBase</name>
@@ -26029,11 +26158,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation>&amp;Saglabāt</translation>
+        <translation type="obsolete">&amp;Saglabāt</translation>
     </message>
     <message>
         <source>&amp;Load</source>
-        <translation>&amp;Ielādēt</translation>
+        <translation type="obsolete">&amp;Ielādēt</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
@@ -26065,11 +26194,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Save WMS server connections to file</source>
-        <translation>Saglabāt WMS pieslēgumus failā</translation>
+        <translation type="obsolete">Saglabāt WMS pieslēgumus failā</translation>
     </message>
     <message>
         <source>Load WMS server connections from file</source>
-        <translation>Ielādēt WMS serveru pieslēgumus no faila</translation>
+        <translation type="obsolete">Ielādēt WMS serveru pieslēgumus no faila</translation>
     </message>
     <message>
         <source>Advertised GetMap URL
@@ -26328,6 +26457,22 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <source>Ready</source>
         <translation>Gatavs</translation>
+    </message>
+    <message>
+        <source>Save connections to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Saglabāt</translation>
+    </message>
+    <message>
+        <source>Load connections from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation type="unfinished">Ielādēt</translation>
     </message>
 </context>
 <context>
@@ -27555,10 +27700,6 @@ Description: %3</source>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;SQL Anywhere</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -30654,6 +30795,22 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Minimum size for each basin (number of cells)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Optional) column to read labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute field to (over)write</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature type (for polygons, choose Boundary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximal tolerance value (higher value=more simplification)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
