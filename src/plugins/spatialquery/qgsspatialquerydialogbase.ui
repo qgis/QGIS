@@ -239,7 +239,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QGroupBox" name="gbResultQuery">
          <property name="title">
-          <string>FIDs identified</string>
+          <string>Result feature ID's</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="sizeConstraint">
