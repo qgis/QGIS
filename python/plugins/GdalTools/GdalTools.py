@@ -198,9 +198,15 @@ class GdalTools:
     self.menu.addAction(self.rgb)
 
     self.tileindex = QAction( QIcon( ":icons/tileindex.png" ), QCoreApplication.translate( "GdalTools", "Tile index" ), self.iface.mainWindow() )
-    self.rgb.setStatusTip( QCoreApplication.translate( "GdalTools", "Build a shapefile as a raster tileindex" ) )
+    self.tileindex.setStatusTip( QCoreApplication.translate( "GdalTools", "Build a shapefile as a raster tileindex" ) )
     QObject.connect( self.tileindex, SIGNAL( "triggered()" ), self.doTileIndex )
     self.menu.addAction(self.tileindex)
+
+    if self.GdalVersion >= "1.7":
+      self.dem = QAction( QIcon( ":icons/dem.png" ), QCoreApplication.translate( "GdalTools", "DEM" ), self.iface.mainWindow() )
+      self.dem.setStatusTip( QCoreApplication.translate( "GdalTools", "Tool to analyze and visualize DEMs" ) )
+      QObject.connect( self.dem, SIGNAL( "triggered()" ), self.doDEM )
+      self.menu.addAction(self.dem)
 
     self.settings = QAction( QCoreApplication.translate( "GdalTools", "GdalTools settings" ), self.iface.mainWindow() )
     self.settings.setStatusTip( QCoreApplication.translate( "GdalTools", "Various settings for Gdal Tools" ) )
@@ -309,6 +315,11 @@ class GdalTools:
   def doTileIndex( self ):
     from tools.doTileIndex import GdalToolsDialog as TileIndex
     d = TileIndex( self.iface )
+    d.show_()
+
+  def doDEM( self ):
+    from tools.doDEM import GdalToolsDialog as DEM
+    d = DEM( self.iface )
     d.show_()
 
   def doSettings( self ):
