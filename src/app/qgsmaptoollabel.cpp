@@ -280,6 +280,14 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos )
     pos = mCurrentLabelPos.cornerPoints.at( 0 );
   }
 
+  //alignment always center/center and rotation 0 for diagrams
+  if ( mCurrentLabelPos.isDiagram )
+  {
+    pos.setX( pos.x() + mCurrentLabelPos.labelRect.width() / 2.0 );
+    pos.setY( pos.y() + mCurrentLabelPos.labelRect.height() / 2.0 );
+    return true;
+  }
+
   //adapt pos depending on data defined alignment
   QString haliString, valiString;
   currentAlignment( haliString, valiString );
@@ -356,7 +364,14 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId
     return false;
   }
 
-  if ( !layerIsMoveable( vlayer, xCol, yCol ) )
+  if ( mCurrentLabelPos.isDiagram )
+  {
+    if ( !diagramMoveable( vlayer, xCol, yCol ) )
+    {
+      return false;
+    }
+  }
+  else if ( !labelMoveable( vlayer, xCol, yCol ) )
   {
     return false;
   }
@@ -374,7 +389,23 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
-bool QgsMapToolLabel::layerIsMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel:: diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+{
+  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  if ( vlayer && vlayer->diagramRenderer() )
+  {
+    QgsDiagramLayerSettings dls = vlayer->diagramLayerSettings();
+    if ( dls.xPosColumn >= 0 && dls.yPosColumn >= 0 )
+    {
+      xCol = dls.xPosColumn;
+      yCol = dls.yPosColumn;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
   if ( !vlayer || !vlayer->isEditable() )

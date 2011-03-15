@@ -46,6 +46,8 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp.cpp
   qgscoordinatetransform.cpp
   qgsdatasourceuri.cpp
+  qgsdiagram.cpp
+  qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
   qgsfeature.cpp
   qgsfield.cpp

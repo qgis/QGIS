@@ -17,6 +17,7 @@
 #include <sqlite3.h>
 #include <QFile>
 
+class QgsVectorLayer;
 
 /**
  * Quantum GIS provider for OpenStreetMap data.

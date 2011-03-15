@@ -5663,14 +5663,17 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
-    if ( !vlayer || !vlayer->isEditable() || vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) )
+    if ( !vlayer || !vlayer->isEditable() ||
+         ( !vlayer->diagramRenderer() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
       continue;
 
     int colX, colY, colAng;
     enableMove =
       enableMove ||
       ( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel ) &&
-        qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->layerIsMoveable( vlayer, colX, colY ) );
+        ( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->labelMoveable( vlayer, colX, colY )
+          || qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->diagramMoveable( vlayer, colX, colY ) )
+      );
 
     enableRotate =
       enableRotate ||

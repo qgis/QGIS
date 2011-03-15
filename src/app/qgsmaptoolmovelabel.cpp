@@ -40,13 +40,13 @@ void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
   }
 
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID );
-  if ( !layer )
+  if ( !layer || !layer->isEditable() )
   {
     return;
   }
 
   int xCol, yCol;
-  if ( layerIsMoveable( layer, xCol, yCol ) )
+  if ( labelMoveable( layer, xCol, yCol ) || diagramMoveable( layer, xCol, yCol ) )
   {
     mStartPointMapCoords = toMapCoordinates( e->pos() );
     mClickOffsetX = mStartPointMapCoords.x() - mCurrentLabelPos.labelRect.xMinimum();

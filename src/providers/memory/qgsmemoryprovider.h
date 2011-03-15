@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectordataprovider.h"
+#include "qgscoordinatereferencesystem.h"
 
 
 typedef QMap<int, QgsFeature> QgsFeatureMap;

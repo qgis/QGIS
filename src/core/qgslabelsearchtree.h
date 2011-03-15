@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLabelSearchTree
 
     /**Inserts label position. Does not take ownership of labelPos
       @return true in case of success*/
-    bool insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName );
+    bool insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, bool diagram = false );
 
   private:
     RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;

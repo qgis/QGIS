@@ -25,8 +25,13 @@ class QTextCodec;
 //QGIS Includes
 #include "qgis.h"
 #include "qgsdataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgsrectangle.h"
+
+typedef QList<int> QgsAttributeList;
+typedef QSet<int> QgsFeatureIds;
+typedef QSet<int> QgsAttributeIds;
 
 /** \ingroup core
  * This is the base class for vector data providers.

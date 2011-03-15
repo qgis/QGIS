@@ -111,7 +111,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mLabelOn( false ),
     mVertexMarkerOnlyForSelection( false ),
     mFetching( false ),
-    mJoinBuffer( 0 )
+    mJoinBuffer( 0 ),
+    mDiagramRenderer( 0 )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -754,8 +755,17 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
       // labeling - register feature
-      if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
-        rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
+      if ( mRendererV2->symbolForFeature( fet ) != NULL )
+      {
+        if ( labeling )
+        {
+          rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
+        }
+        if ( mDiagramRenderer )
+        {
+          rendererContext.labelingEngine()->registerDiagramFeature( this, fet, rendererContext );
+        }
+      }
 
       if ( mEditable )
       {
@@ -821,8 +831,17 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     }
     features[sym].append( fet );
 
-    if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
-      rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
+    if ( mRendererV2->symbolForFeature( fet ) != NULL )
+    {
+      if ( labeling )
+      {
+        rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
+      }
+      if ( mDiagramRenderer )
+      {
+        rendererContext.labelingEngine()->registerDiagramFeature( this, fet, rendererContext );
+      }
+    }
 
     if ( mEditable )
     {
@@ -949,22 +968,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     }
 
     bool labeling = false;
-    if ( rendererContext.labelingEngine() )
-    {
-      QSet<int> attrIndex;
-      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
-      {
-        QSet<int>::const_iterator attIt = attrIndex.constBegin();
-        for ( ; attIt != attrIndex.constEnd(); ++attIt )
-        {
-          if ( !attributes.contains( *attIt ) )
-          {
-            attributes << *attIt;
-          }
-        }
-        labeling = true;
-      }
-    }
+    //register label and diagram layer to the labeling engine
+    prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
     select( attributes, rendererContext.extent() );
 
@@ -1011,22 +1016,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsAttributeList attributes = mRenderer->classificationAttributes();
 
     bool labeling = false;
-    if ( rendererContext.labelingEngine() )
-    {
-      QSet<int> attrIndex;
-      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
-      {
-        QSet<int>::const_iterator attIt = attrIndex.constBegin();
-        for ( ; attIt != attrIndex.constEnd(); ++attIt )
-        {
-          if ( !attributes.contains( *attIt ) )
-          {
-            attributes << *attIt;
-          }
-        }
-        labeling = true;
-      }
-    }
+    prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
     select( attributes, rendererContext.extent() );
 
@@ -1092,11 +1082,17 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
         drawFeature( rendererContext, fet, &marker );
 
-        if ( labeling && mRenderer->willRenderFeature( &fet ) )
+        if ( mRenderer->willRenderFeature( &fet ) )
         {
-          rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
+          if ( labeling )
+          {
+            rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
+          }
+          if ( mDiagramRenderer )
+          {
+            rendererContext.labelingEngine()->registerDiagramFeature( this, fet, rendererContext );
+          }
         }
-
         ++featureCount;
       }
     }
@@ -1301,6 +1297,12 @@ void QgsVectorLayer::setRenderer( QgsRenderer * r )
     delete mRenderer;
     mRenderer = r;
   }
+}
+
+void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
+{
+  delete mDiagramRenderer;
+  mDiagramRenderer = r;
 }
 
 QGis::GeometryType QgsVectorLayer::geometryType() const
@@ -2937,6 +2939,30 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QgsDebugMsg( "calling readXML" );
       mLabel->readXML( labelattributesnode );
     }
+
+    //diagram renderer and diagram layer settings
+    delete mDiagramRenderer; mDiagramRenderer = 0;
+    QDomElement singleCatDiagramElem = node.firstChildElement( "SingleCategoryDiagramRenderer" );
+    if ( !singleCatDiagramElem.isNull() )
+    {
+      mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
+      mDiagramRenderer->readXML( singleCatDiagramElem );
+    }
+    QDomElement linearDiagramElem = node.firstChildElement( "LinearlyInterpolatedDiagramRenderer" );
+    if ( !linearDiagramElem.isNull() )
+    {
+      mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
+      mDiagramRenderer->readXML( linearDiagramElem );
+    }
+
+    if ( mDiagramRenderer )
+    {
+      QDomElement diagramSettingsElem = node.firstChildElement( "DiagramLayerSettings" );
+      if ( !diagramSettingsElem.isNull() )
+      {
+        mDiagramLayerSettings.readXML( diagramSettingsElem );
+      }
+    }
   }
 
   // process the attribute actions
@@ -3109,6 +3135,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     }
 
     mLabel->writeXML( node, doc );
+
+    if ( mDiagramRenderer )
+    {
+      mDiagramRenderer->writeXML( mapLayerNode, doc );
+      mDiagramLayerSettings.writeXML( mapLayerNode, doc );
+    }
   }
 
   //edit types
@@ -5130,4 +5162,50 @@ void QgsVectorLayer::updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex
 
   map.insert( newIndex, it.value() );
   map.remove( oldIndex );
+}
+
+void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling )
+{
+  if ( rendererContext.labelingEngine() )
+  {
+    QSet<int> attrIndex;
+    if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
+    {
+      QSet<int>::const_iterator attIt = attrIndex.constBegin();
+      for ( ; attIt != attrIndex.constEnd(); ++attIt )
+      {
+        if ( !attributes.contains( *attIt ) )
+        {
+          attributes << *attIt;
+        }
+      }
+      labeling = true;
+    }
+
+    //register diagram layers
+    if ( mDiagramRenderer )
+    {
+      mDiagramLayerSettings.renderer = mDiagramRenderer;
+      rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
+      //add attributes needed by the diagram renderer
+      QList<int> att = mDiagramRenderer->diagramAttributes();
+      QList<int>::const_iterator attIt = att.constBegin();
+      for ( ; attIt != att.constEnd(); ++attIt )
+      {
+        if ( !attributes.contains( *attIt ) )
+        {
+          attributes << *attIt;
+        }
+      }
+      //and the ones needed for data defined diagram positions
+      if ( mDiagramLayerSettings.xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings.xPosColumn ) )
+      {
+        attributes << mDiagramLayerSettings.xPosColumn;
+      }
+      if ( mDiagramLayerSettings.yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings.yPosColumn ) )
+      {
+        attributes << mDiagramLayerSettings.yPosColumn;
+      }
+    }
+  }
 }

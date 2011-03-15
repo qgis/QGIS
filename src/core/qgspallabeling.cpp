@@ -38,6 +38,8 @@
 #include <QTime>
 #include <QPainter>
 
+#include "qgsdiagram.h"
+#include "qgsdiagramrendererv2.h"
 #include "qgslabelsearchtree.h"
 #include <qgslogger.h>
 #include <qgsvectorlayer.h>
@@ -53,7 +55,7 @@ using namespace pal;
 class QgsPalGeometry : public PalGeometry
 {
   public:
-    QgsPalGeometry( int id, QString text, GEOSGeometry* g ): mG( g ), mText( text ), mId( id ), mInfo( NULL )
+    QgsPalGeometry( int id, QString text, GEOSGeometry* g ): mG( g ), mText( text ), mId( id ), mInfo( NULL ), mIsDiagram( false )
     {
       mStrId = QByteArray::number( id );
     }
@@ -99,14 +101,24 @@ class QgsPalGeometry : public PalGeometry
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
     void addDataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant v ) { mDataDefinedValues.insert( p, v ); }
 
+    void setIsDiagram( bool d ) { mIsDiagram = d; }
+    bool isDiagram() const { return mIsDiagram; }
+
+    void addDiagramAttribute( int index, QVariant value ) { mDiagramAttributes.insert( index, value ); }
+    const QgsAttributeMap& diagramAttributes() { return mDiagramAttributes; }
+
   protected:
     GEOSGeometry* mG;
     QString mText;
     QByteArray mStrId;
     int mId;
     LabelInfo* mInfo;
+    bool mIsDiagram;
     /**Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
+
+    /**Stores attribute values for diagram rendering*/
+    QgsAttributeMap mDiagramAttributes;
 };
 
 // -------------
@@ -412,7 +424,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   labelX = qAbs( ptSize.x() - ptZero.x() );
   labelY = qAbs( ptSize.y() - ptZero.y() );
 }
-
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
 {
@@ -742,11 +753,113 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   return 1; // init successful
 }
 
+int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings& s )
+{
+  Layer* l = mPal->addLayer( layer->id().append( "d" ).toLocal8Bit().data(), -1, -1, pal::Arrangement( s.placement ), METER, s.priority, s.obstacle, true, true );
+  l->setArrangementFlags( s.placementFlags );
+
+  s.palLayer = l;
+  if ( mMapRenderer->hasCrsTransformEnabled() )
+    s.ct = new QgsCoordinateTransform( layer->srs(), mMapRenderer->destinationSrs() );
+  else
+    s.ct = NULL;
+  s.xform = mMapRenderer->coordinateTransform();
+  mActiveDiagramLayers.insert( layer, s );
+  return 1;
+}
 
 void QgsPalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
 {
   QgsPalLayerSettings& lyr = mActiveLayers[layer];
   lyr.registerFeature( f, context );
+}
+
+void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context )
+{
+  //get diagram layer settings, diagram renderer
+  QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator layerIt = mActiveDiagramLayers.find( layer );
+  if ( layerIt == mActiveDiagramLayers.constEnd() )
+  {
+    return;
+  }
+
+  //convert geom to geos
+  QgsGeometry* geom = feat.geometry();
+
+  if ( layerIt.value().ct ) // reproject the geometry if necessary
+  {
+    geom->transform( *( layerIt.value().ct ) );
+  }
+
+  GEOSGeometry* geos_geom = geom->asGeos();
+  if ( geos_geom == 0 )
+  {
+    return; // invalid geometry
+  }
+
+  //create PALGeometry with diagram = true
+  QgsPalGeometry* lbl = new QgsPalGeometry( feat.id(), "", GEOSGeom_clone( geos_geom ) );
+  lbl->setIsDiagram( true );
+
+  // record the created geometry - it will be deleted at the end.
+  layerIt.value().geometries.append( lbl );
+
+  double diagramWidth = 0;
+  double diagramHeight = 0;
+  QgsDiagramRendererV2* dr = layerIt.value().renderer;
+  if ( dr )
+  {
+    QSizeF diagSize = dr->sizeMapUnits( feat.attributeMap(), context );
+    if ( diagSize.isValid() )
+    {
+      diagramWidth = diagSize.width();
+      diagramHeight = diagSize.height();
+    }
+
+    //append the diagram attributes to lbl
+    QList<int> diagramAttrib = dr->diagramAttributes();
+    QList<int>::const_iterator diagAttIt = diagramAttrib.constBegin();
+    for ( ; diagAttIt != diagramAttrib.constEnd(); ++diagAttIt )
+    {
+      lbl->addDiagramAttribute( *diagAttIt, feat.attributeMap()[*diagAttIt] );
+    }
+  }
+
+  // register feature to the layer
+  int ddColX = layerIt.value().xPosColumn;
+  int ddColY = layerIt.value().yPosColumn;
+  double ddPosX = 0.0;
+  double ddPosY = 0.0;
+  bool ddPos = ( ddColX >= 0 && ddColY >= 0 );
+  if ( ddPos )
+  {
+    bool posXOk, posYOk;
+    //data defined diagram position is always centered
+    ddPosX = feat.attributeMap()[ddColX].toDouble( &posXOk ) - diagramWidth / 2.0;
+    ddPosY = feat.attributeMap()[ddColY].toDouble( &posYOk ) - diagramHeight / 2.0;
+    if ( !posXOk || !posYOk )
+    {
+      ddPos = false;
+    }
+  }
+
+  try
+  {
+    if ( !layerIt.value().palLayer->registerFeature( lbl->strId(), lbl, diagramWidth, diagramHeight, "", ddPosX, ddPosY, ddPos ) )
+    {
+      return;
+    }
+  }
+  catch ( std::exception* e )
+  {
+    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( feat.id() ) + QString::fromLatin1( e->what() ) );
+    return;
+  }
+
+  pal::Feature* palFeat = layerIt.value().palLayer->getFeature( lbl->strId() );
+  QgsPoint ptZero = layerIt.value().xform->toMapCoordinates( 0, 0 );
+  QgsPoint ptOne = layerIt.value().xform->toMapCoordinates( 1, 0 );
+  palFeat->setDistLabel( qAbs( ptOne.x() - ptZero.x() ) * layerIt.value().dist );
 }
 
 
@@ -778,6 +891,7 @@ void QgsPalLabeling::init( QgsMapRenderer* mr )
   mPal->setPolyP( mCandPolygon );
 
   mActiveLayers.clear();
+  mActiveDiagramLayers.clear();
 }
 
 void QgsPalLabeling::exit()
@@ -866,17 +980,41 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
   {
-    const QgsPalLayerSettings& lyr = layer(( *it )->getLayerName() );
-    QFont fontForLabel = lyr.textFont;
-    QColor fontColor = lyr.textColor;
-    double bufferSize = lyr.bufferSize;
-    QColor bufferColor = lyr.bufferColor;
-
     QgsPalGeometry* palGeometry = dynamic_cast< QgsPalGeometry* >(( *it )->getFeaturePart()->getUserGeometry() );
     if ( !palGeometry )
     {
       continue;
     }
+
+    if ( palGeometry->isDiagram() )
+    {
+      //render diagram
+      QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
+      for ( dit = mActiveDiagramLayers.begin(); dit != mActiveDiagramLayers.end(); ++dit )
+      {
+        if ( dit.key() && dit.key()->id().append( "d" ) == ( *it )->getLayerName() )
+        {
+          QgsPoint outPt = xform->transform(( *it )->getX(), ( *it )->getY() );
+          dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
+        }
+      }
+
+      //insert into label search tree to manipulate position interactively
+      if ( mLabelSearchTree )
+      {
+        //for diagrams, remove the additional 'd' at the end of the layer id
+        QString layerId = ( *it )->getLayerName();
+        layerId.chop( 1 );
+        mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerId, true );
+      }
+      continue;
+    }
+
+    const QgsPalLayerSettings& lyr = layer(( *it )->getLayerName() );
+    QFont fontForLabel = lyr.textFont;
+    QColor fontColor = lyr.textColor;
+    double bufferSize = lyr.bufferSize;
+    QColor bufferColor = lyr.bufferColor;
 
     //apply data defined settings for the label
     //font size
@@ -968,9 +1106,18 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       delete *git;
     lyr.geometries.clear();
   }
-  // labeling is done: clear the active layers hashtable
-// mActiveLayers.clear();
 
+  //delete all allocated geometries for diagrams
+  QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dIt = mActiveDiagramLayers.begin();
+  for ( ; dIt != mActiveDiagramLayers.end(); ++dIt )
+  {
+    QgsDiagramLayerSettings& dls = dIt.value();
+    for ( QList<QgsPalGeometry*>::iterator git = dls.geometries.begin(); git != dls.geometries.end(); ++git )
+    {
+      delete *git;
+    }
+    dls.geometries.clear();
+  }
 }
 
 QList<QgsLabelPosition> QgsPalLabeling::labelsAtPosition( const QgsPoint& p )

@@ -106,6 +106,14 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSelectEditForm_clicked();
     void on_tabWidget_currentChanged( int idx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mAddCategoryPushButton_clicked();
+    void on_mRemoveCategoryPushButton_clicked();
+    void on_mDiagramFontButton_clicked();
+    void on_mFixedSizeCheckBox_stateChanged( int state );
+    void on_mScaleDependentDiagramVisibilityCheckBox_stateChanged( int state );
+    void on_mFindMaximumValueButton_clicked();
+    void on_mBackgroundColorButton_clicked();
+    void on_mDiagramPenColorButton_clicked();
 
     void enableLabelOptions( bool theFlag );
     void addAttribute();
@@ -119,6 +127,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
+
+    /**Set color for diagram category*/
+    void handleDiagramItemDoubleClick( QTreeWidgetItem * item, int column );
 
   signals:
 
@@ -164,9 +175,13 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QMap<int, QgsVectorLayer::RangeData> mRanges;
     QMap<int, QPair<QString, QString> > mCheckedStates;
 
+    QFont mDiagramFont;
+
     void updateButtons();
     void loadRows();
     void setRow( int row, int idx, const QgsField &field );
+
+    void initDiagramTab();
 
     /**Requests all overlay plugis from the plugin registry. Useful for inserting their dialogs as new tabs*/
     QList<QgsVectorOverlayPlugin*> overlayPlugins() const;

@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 
 #include <QFileInfo>

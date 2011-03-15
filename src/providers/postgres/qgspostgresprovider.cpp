@@ -41,6 +41,7 @@
 #include "qgslogger.h"
 
 #include "qgscredentials.h"
+#include <cassert>
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";

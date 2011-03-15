@@ -18,6 +18,7 @@
 #include "qgslabelpropertydialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
+#include "qgsvectorlayer.h"
 #include <QColorDialog>
 #include <QFontDialog>
 
