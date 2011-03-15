@@ -96,6 +96,11 @@ class RgShortestPathWidget : public QDockWidget
      */
     void clear();
 
+    /**
+     * help requested
+     */
+    void helpRequested();
+
   private:
     /**
      * retrun path as a graph

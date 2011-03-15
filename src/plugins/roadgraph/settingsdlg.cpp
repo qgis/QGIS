@@ -29,6 +29,7 @@ RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WFlags 
     : QDialog( parent, fl )
     , mSettings( settings )
 {
+
   // create base widgets;
   setWindowTitle( tr( "Road graph plugin settings" ) );
   QVBoxLayout *v = new QVBoxLayout( this );
@@ -56,21 +57,13 @@ RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WFlags 
   h->addWidget( msbTopologyTolerance );
   v->addLayout( h );
 
-  /*
-  h = new QHBoxLayout();
-  l = new QLabel( tr("Select graph source:"), this);
-  h->addWidget(l);
-  mcbGraphDirector = new QComboBox( this );
-  h->addWidget(mcbGraphDirector);
-  v->addLayout(h);
-  */
-
   mSettingsWidget = mSettings->getGui( this );
   v->addWidget( mSettingsWidget );
 
-  QDialogButtonBox *bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  QDialogButtonBox *bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
   connect( bb, SIGNAL( accepted() ), this, SLOT( on_buttonBox_accepted() ) );
   connect( bb, SIGNAL( rejected() ), this, SLOT( on_buttonBox_rejected() ) );
+  connect( bb, SIGNAL( helpRequested() ), this, SLOT( on_buttonBox_helpRequested() ) );
   v->addWidget( bb );
 
   mcbPluginsTimeUnit->addItem( tr( "second" ), QVariant( "s" ) );
@@ -97,7 +90,7 @@ void RgSettingsDlg::on_buttonBox_rejected()
 
 void RgSettingsDlg::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( context_id );
+  QgsContextHelp::run( metaObject()->className() );
 }
 
 QString RgSettingsDlg::timeUnitName()
