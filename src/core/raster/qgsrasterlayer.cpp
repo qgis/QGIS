@@ -3622,11 +3622,9 @@ void QgsRasterLayer::drawSingleBandColorData( QPainter * theQPainter, QgsRasterV
   QRgb* imageScanLine = 0;
   void* rasterScanLine = 0;
 
-  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
-
   while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
-    if ( mTransparencyLevel == 0 )
+    if ( mTransparencyLevel == 255 )
     {
       int size = theRasterViewPort->drawableAreaXDim * 4;
       memcpy( imageScanLine, rasterScanLine, size );
@@ -3636,26 +3634,8 @@ void QgsRasterLayer::drawSingleBandColorData( QPainter * theQPainter, QgsRasterV
       uint *p = ( uint* ) rasterScanLine;
       for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
       {
-        uint v = *p++;
-        int myRedValue   = ( v & 0xff0000 ) >> 16;
-        int myGreenValue = ( v & 0xff00 ) >> 8;
-        int myBlueValue  = ( v & 0xff );
-
-        int myAlphaValue = mRasterTransparency.alphaValue( myRedValue, myGreenValue, myBlueValue, mTransparencyLevel );
-        if ( 0 == myAlphaValue )
-        {
-          imageScanLine[ i ] = myDefaultColor;
-          continue;
-        }
-
-        if ( mInvertColor )
-        {
-          myRedValue = 255 - myRedValue;
-          myGreenValue = 255 - myGreenValue;
-          myBlueValue = 255 - myBlueValue;
-        }
-
-        imageScanLine[ i ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
+        QRgb c( *p++ );
+        imageScanLine[ i ] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), mTransparencyLevel );
       }
     }
   }
