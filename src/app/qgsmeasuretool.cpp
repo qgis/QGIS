@@ -70,7 +70,7 @@ void QgsMeasureTool::activate()
 
   // If we suspect that they have data that is projected, yet the
   // map CRS is set to a geographic one, warn them.
-  if ( mCanvas->mapRenderer()->distanceArea()->geographic() &&
+  if ( mCanvas->mapRenderer()->destinationCrs().geographicFlag() &&
        ( mCanvas->extent().height() > 360 ||
          mCanvas->extent().width() > 720 ) )
   {
