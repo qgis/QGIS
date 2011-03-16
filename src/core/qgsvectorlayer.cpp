@@ -5191,7 +5191,7 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     if ( mDiagramRenderer && mDiagramLayerSettings )
     {
       mDiagramLayerSettings->renderer = mDiagramRenderer;
-      rendererContext.labelingEngine()->addDiagramLayer( this, *mDiagramLayerSettings );
+      rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
       //add attributes needed by the diagram renderer
       QList<int> att = mDiagramRenderer->diagramAttributes();
       QList<int>::const_iterator attIt = att.constBegin();
