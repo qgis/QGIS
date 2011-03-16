@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>689</width>
-    <height>569</height>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -282,7 +282,14 @@
     </widget>
    </item>
    <item row="6" column="0" colspan="3">
-    <widget class="QTextEdit" name="mExpressionTextEdit"/>
+    <widget class="QTextEdit" name="mExpressionTextEdit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="7" column="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
@@ -317,13 +324,27 @@
           </widget>
          </item>
          <item row="0" column="1" rowspan="3">
-          <widget class="QListWidget" name="mValueListWidget"/>
+          <widget class="QListWidget" name="mValueListWidget">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>48</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QListWidget" name="mFieldsListWidget"/>
+       <widget class="QListWidget" name="mFieldsListWidget">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>48</height>
+         </size>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
