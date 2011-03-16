@@ -2519,6 +2519,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   // enable OTF CRS transformation if necessary
   myRenderer->setProjectionsEnabled( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
 
+  updateCRSStatusBar();
+
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
@@ -5378,14 +5380,14 @@ void QgisApp::updateCRSStatusBar()
   {
     mOnTheFlyProjectionStatusLabel->setEnabled( true );
     mOnTheFlyProjectionStatusLabel->setToolTip(
-      tr( "Current CRS: %1" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
+      tr( "Current CRS: %1 (OTFR enabled)" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionEnabled.png" ) );
   }
   else
   {
     mOnTheFlyProjectionStatusLabel->setEnabled( false );
     mOnTheFlyProjectionStatusLabel->setToolTip(
-      tr( "Inactive project CRS: %1" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
+      tr( "Current CRS: %1 (OTFR disabled)" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( getThemeIcon( "mIconProjectionDisabled.png" ) );
   }
 }
