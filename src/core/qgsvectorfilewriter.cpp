@@ -130,12 +130,23 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     QString longName;
     QString trLongName;
     QString glob;
-    QString ext;
-    if ( QgsVectorFileWriter::driverMetadata( driverName, longName, trLongName, glob, ext ) )
+    QString exts;
+    if ( QgsVectorFileWriter::driverMetadata( driverName, longName, trLongName, glob, exts ) )
     {
-      if ( !vectorFileName.endsWith( "." + ext, Qt::CaseInsensitive ) )
+      QStringList allExts = exts.split( " ", QString::SkipEmptyParts );
+      bool found = false;
+      foreach( QString ext, allExts )
       {
-        vectorFileName += "." + ext;
+        if ( vectorFileName.endsWith( "." + ext, Qt::CaseInsensitive ) )
+        {
+          found = true;
+          break;
+        }
+      }
+
+      if ( !found )
+      {
+        vectorFileName += "." + exts[0];
       }
     }
 
@@ -760,8 +771,8 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
         QString longName;
         QString trLongName;
         QString glob;
-        QString ext;
-        if ( QgsVectorFileWriter::driverMetadata( drvName, longName, trLongName, glob, ext ) && !trLongName.isEmpty() )
+        QString exts;
+        if ( QgsVectorFileWriter::driverMetadata( drvName, longName, trLongName, glob, exts ) && !trLongName.isEmpty() )
         {
           resultMap.insert( trLongName, drvName );
         }
@@ -792,8 +803,8 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
   QString longName;
   QString trLongName;
   QString glob;
-  QString ext;
-  if ( !driverMetadata( driverName, longName, trLongName, glob, ext ) || trLongName.isEmpty() || glob.isEmpty() )
+  QString exts;
+  if ( !driverMetadata( driverName, longName, trLongName, glob, exts ) || trLongName.isEmpty() || glob.isEmpty() )
     return "";
 
   return trLongName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ")";
@@ -897,7 +908,7 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     longName = "Mapinfo File";
     trLongName = QObject::tr( "Mapinfo File" );
     glob = "*.mif *.tab";
-    ext = "mif" ;
+    ext = "mif tab";
   }
   else if ( driverName.startsWith( "DGN" ) )
   {
