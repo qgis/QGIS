@@ -1869,6 +1869,15 @@ void QgsRasterLayerProperties::refreshHistogram()
   int myBandCountInt = mRasterLayer->bandCount();
   QList<QColor> myColors;
   myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
+
+  while ( myColors.size() <= myBandCountInt )
+  {
+    myColors <<
+    QColor( 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
+            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
+            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ) );
+  }
+
   //
   //now draw actual graphs
   //
