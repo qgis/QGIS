@@ -78,6 +78,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgsdiagramrendererv2.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -95,24 +96,25 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
                                 QString baseName,
                                 QString providerKey,
                                 bool loadDefaultStyleFlag )
-    : QgsMapLayer( VectorLayer, baseName, vectorLayerPath ),
-    mUpdateThreshold( 0 ),     // XXX better default value?
-    mDataProvider( NULL ),
-    mProviderKey( providerKey ),
-    mEditable( false ),
-    mReadOnly( false ),
-    mModified( false ),
-    mMaxUpdatedIndex( -1 ),
-    mActiveCommand( NULL ),
-    mRenderer( 0 ),
-    mRendererV2( NULL ),
-    mUsingRendererV2( false ),
-    mLabel( 0 ),
-    mLabelOn( false ),
-    mVertexMarkerOnlyForSelection( false ),
-    mFetching( false ),
-    mJoinBuffer( 0 ),
-    mDiagramRenderer( 0 )
+    : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
+    , mUpdateThreshold( 0 )     // XXX better default value?
+    , mDataProvider( NULL )
+    , mProviderKey( providerKey )
+    , mEditable( false )
+    , mReadOnly( false )
+    , mModified( false )
+    , mMaxUpdatedIndex( -1 )
+    , mActiveCommand( NULL )
+    , mRenderer( 0 )
+    , mRendererV2( NULL )
+    , mUsingRendererV2( false )
+    , mLabel( 0 )
+    , mLabelOn( false )
+    , mVertexMarkerOnlyForSelection( false )
+    , mFetching( false )
+    , mJoinBuffer( 0 )
+    , mDiagramRenderer( 0 )
+    , mDiagramLayerSettings( 0 )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -187,6 +189,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mDataProvider;
   delete mJoinBuffer;
   delete mLabel;
+  delete mDiagramLayerSettings;
 
   // Destroy any cached geometries and clear the references to them
   deleteCachedGeometries();
@@ -2960,7 +2963,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QDomElement diagramSettingsElem = node.firstChildElement( "DiagramLayerSettings" );
       if ( !diagramSettingsElem.isNull() )
       {
-        mDiagramLayerSettings.readXML( diagramSettingsElem );
+        mDiagramLayerSettings = new QgsDiagramLayerSettings();
+        mDiagramLayerSettings->readXML( diagramSettingsElem );
       }
     }
   }
@@ -3139,7 +3143,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     if ( mDiagramRenderer )
     {
       mDiagramRenderer->writeXML( mapLayerNode, doc );
-      mDiagramLayerSettings.writeXML( mapLayerNode, doc );
+      if ( mDiagramLayerSettings )
+        mDiagramLayerSettings->writeXML( mapLayerNode, doc );
     }
   }
 
@@ -5183,10 +5188,10 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     }
 
     //register diagram layers
-    if ( mDiagramRenderer )
+    if ( mDiagramRenderer && mDiagramLayerSettings )
     {
-      mDiagramLayerSettings.renderer = mDiagramRenderer;
-      rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
+      mDiagramLayerSettings->renderer = mDiagramRenderer;
+      rendererContext.labelingEngine()->addDiagramLayer( this, *mDiagramLayerSettings );
       //add attributes needed by the diagram renderer
       QList<int> att = mDiagramRenderer->diagramAttributes();
       QList<int>::const_iterator attIt = att.constBegin();
@@ -5198,14 +5203,21 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
         }
       }
       //and the ones needed for data defined diagram positions
-      if ( mDiagramLayerSettings.xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings.xPosColumn ) )
+      if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
       {
-        attributes << mDiagramLayerSettings.xPosColumn;
+        attributes << mDiagramLayerSettings->xPosColumn;
       }
-      if ( mDiagramLayerSettings.yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings.yPosColumn ) )
+      if ( mDiagramLayerSettings->yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->yPosColumn ) )
       {
-        attributes << mDiagramLayerSettings.yPosColumn;
+        attributes << mDiagramLayerSettings->yPosColumn;
       }
     }
   }
+}
+
+void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
+{
+  if ( !mDiagramLayerSettings )
+    mDiagramLayerSettings = new QgsDiagramLayerSettings();
+  *mDiagramLayerSettings = s;
 }

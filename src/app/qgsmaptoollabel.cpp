@@ -20,6 +20,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsdiagramrendererv2.h"
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mLabelRubberBand( 0 ), mFeatureRubberBand( 0 ), mFixPointRubberBand( 0 )
@@ -394,11 +395,11 @@ bool QgsMapToolLabel:: diagramMoveable( const QgsMapLayer* ml, int& xCol, int& y
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
   if ( vlayer && vlayer->diagramRenderer() )
   {
-    QgsDiagramLayerSettings dls = vlayer->diagramLayerSettings();
-    if ( dls.xPosColumn >= 0 && dls.yPosColumn >= 0 )
+    const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
+    if ( dls && dls->xPosColumn >= 0 && dls->yPosColumn >= 0 )
     {
-      xCol = dls.xPosColumn;
-      yCol = dls.yPosColumn;
+      xCol = dls->xPosColumn;
+      yCol = dls->yPosColumn;
       return true;
     }
   }

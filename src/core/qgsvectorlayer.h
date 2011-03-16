@@ -24,15 +24,11 @@
 #include <QList>
 #include <QStringList>
 
-
-
 #include "qgis.h"
-#include "qgsdiagramrendererv2.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgssnapper.h"
 #include "qgsfield.h"
-
 
 class QPainter;
 class QImage;
@@ -52,6 +48,8 @@ class QgsSingleSymbolRendererV2;
 class QgsRectangle;
 class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
+class QgsDiagramRendererV2;
+class QgsDiagramLayerSettings;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
@@ -214,8 +212,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setDiagramRenderer( QgsDiagramRendererV2* r );
     const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
 
-    void setDiagramLayerSettings( const QgsDiagramLayerSettings& s ) { mDiagramLayerSettings = s; }
-    QgsDiagramLayerSettings diagramLayerSettings() const { return mDiagramLayerSettings; }
+    void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
+    const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
     /** Return renderer V2.
      * @note added in 1.4 */
@@ -951,7 +949,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramRendererV2* mDiagramRenderer;
 
     //stores infos about diagram placement (placement type, priority, position distance)
-    QgsDiagramLayerSettings mDiagramLayerSettings;
+    QgsDiagramLayerSettings *mDiagramLayerSettings;
 };
 
 #endif

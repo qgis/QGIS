@@ -38,7 +38,6 @@ INCLUDE_DIRECTORIES(
      ../../gui
      ..
      ${GDAL_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(oracleplugin
