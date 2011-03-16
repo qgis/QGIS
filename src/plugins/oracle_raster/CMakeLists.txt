@@ -34,10 +34,11 @@ ADD_LIBRARY (oracleplugin MODULE ${ORACLE_SRCS} ${ORACLE_MOC_SRCS} ${ORACLE_RCC_
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-       ${GDAL_INCLUDE_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
+     ${GDAL_INCLUDE_DIR}
+     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(oracleplugin
