@@ -163,17 +163,9 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
 
   // check if a paricular projection is waiting
   // to be pre-selected, and if so, to select it now.
-  if ( mCRSNameSelectionPending )
+  if ( mCRSNameSelectionPending || mCRSIDSelectionPending || mAuthIDSelectionPending )
   {
-    applyCRSNameSelection();
-  }
-  if ( mCRSIDSelectionPending )
-  {
-    applyCRSIDSelection();
-  }
-  if ( mAuthIDSelectionPending )
-  {
-    applyAuthIDSelection();
+    applySelection();
   }
 
   for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
@@ -253,7 +245,7 @@ void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
 
   if ( isVisible() )
   {
-    applyCRSNameSelection();
+    applySelection();
   }
   // else we will wait for the projection selector to
   // become visible (with the showEvent()) and set the
@@ -270,7 +262,7 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
 
   if ( isVisible() )
   {
-    applyCRSIDSelection();
+    applySelection();
   }
   // else we will wait for the projection selector to
   // become visible (with the showEvent()) and set the
@@ -290,29 +282,48 @@ void QgsProjectionSelector::setSelectedAuthId( QString id )
   mCRSNameSelectionPending = false;  // only one type can be pending at a time
 }
 
-void QgsProjectionSelector::applyCRSNameSelection()
+void QgsProjectionSelector::applySelection()
 {
-  if (
-    mCRSNameSelectionPending &&
-    mProjListDone &&
-    mUserProjListDone
-  )
+  if ( !mProjListDone || !mUserProjListDone )
+    return;
+
+  QList<QTreeWidgetItem*> nodes;
+  if ( mCRSNameSelectionPending )
   {
     //get the srid given the wkt so we can pick the correct list item
     QgsDebugMsg( "called with " + mCRSNameSelection );
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( mCRSNameSelection, Qt::MatchExactly | Qt::MatchRecursive, 0 );
-
-    if ( nodes.count() > 0 )
-    {
-      lstCoordinateSystems->setCurrentItem( nodes.first() );
-    }
-    else // unselect the selected item to avoid confusing the user
-    {
-      lstCoordinateSystems->clearSelection();
-      teProjection->setText( "" );
-    }
+    nodes = lstCoordinateSystems->findItems( mCRSNameSelection, Qt::MatchExactly | Qt::MatchRecursive, 0 );
 
     mCRSNameSelectionPending = false;
+  }
+
+  if ( mAuthIDSelectionPending )
+  {
+    //get the srid given the wkt so we can pick the correct list item
+    QgsDebugMsg( "called with " + mAuthIDSelection );
+    nodes = lstCoordinateSystems->findItems( mAuthIDSelection, Qt::MatchExactly | Qt::MatchRecursive, AUTHID_COLUMN );
+
+    mAuthIDSelectionPending = false;
+  }
+
+  if ( mCRSIDSelectionPending )
+  {
+    QString myCRSIDString = QString::number( mCRSIDSelection );
+
+    nodes = lstCoordinateSystems->findItems( myCRSIDString, Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
+
+    mCRSIDSelectionPending = false;
+  }
+
+  if ( nodes.count() > 0 )
+  {
+    lstCoordinateSystems->setCurrentItem( nodes.first() );
+    lstCoordinateSystems->scrollToItem( lstCoordinateSystems->currentItem(), QAbstractItemView::PositionAtCenter );
+  }
+  else // unselect the selected item to avoid confusing the user
+  {
+    lstCoordinateSystems->clearSelection();
+    teProjection->setText( "" );
   }
 }
 
@@ -331,51 +342,6 @@ void QgsProjectionSelector::insertRecent( long theCrsId )
                                  << nodes.first()->text( AUTHID_COLUMN )
                                  << nodes.first()->text( QGIS_CRS_ID_COLUMN ) ) );
 }
-
-void QgsProjectionSelector::applyAuthIDSelection()
-{
-  if ( mAuthIDSelectionPending && mProjListDone && mUserProjListDone )
-  {
-    //get the srid given the wkt so we can pick the correct list item
-    QgsDebugMsg( "called with " + mAuthIDSelection );
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( mAuthIDSelection, Qt::MatchExactly | Qt::MatchRecursive, AUTHID_COLUMN );
-
-    if ( nodes.count() > 0 )
-    {
-      lstCoordinateSystems->setCurrentItem( nodes.first() );
-    }
-    else // unselect the selected item to avoid confusing the user
-    {
-      lstCoordinateSystems->clearSelection();
-      teProjection->setText( "" );
-    }
-
-    mAuthIDSelectionPending = false;
-  }
-}
-
-void QgsProjectionSelector::applyCRSIDSelection()
-{
-  if ( mCRSIDSelectionPending && mProjListDone &&  mUserProjListDone )
-  {
-    QString myCRSIDString = QString::number( mCRSIDSelection );
-
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( myCRSIDString, Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
-
-    if ( nodes.count() > 0 )
-    {
-      lstCoordinateSystems->setCurrentItem( nodes.first() );
-    }
-    else // unselect the selected item to avoid confusing the user
-    {
-      lstCoordinateSystems->clearSelection();
-      teProjection->setText( "" );
-    }
-
-    mCRSIDSelectionPending = false;
-  }
-}
-
 
 //note this line just returns the projection name!
 QString QgsProjectionSelector::selectedName()
@@ -848,7 +814,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
     QString myDescription;
     emit sridSelected( QString::number( selectedCrsId() ) );
     QString myProjString = selectedProj4String();
-    lstCoordinateSystems->scrollToItem( theItem, QAbstractItemView::PositionAtCenter );
+    lstCoordinateSystems->scrollToItem( theItem );
     teProjection->setText( myProjString );
 
     lstRecent->clearSelection();
@@ -868,8 +834,8 @@ void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
     item->setHidden( cbxHideDeprecated->isChecked() );
     if ( item->isSelected() && item->isHidden() )
     {
-      teProjection->setText( "" );
       item->setSelected( false );
+      teProjection->setText( "" );
     }
   }
 
