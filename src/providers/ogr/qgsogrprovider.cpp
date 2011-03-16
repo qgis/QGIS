@@ -505,6 +505,8 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   OGRFeatureH fet;
   QgsRectangle selectionRect;
 
+  setRelevantFields( mFetchGeom, mAttributesToFetch );
+
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) != NULL )
   {
     // skip features without geometry
@@ -630,8 +632,6 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
     OGR_L_SetSpatialFilter( ogrLayer, filter );
     OGR_G_DestroyGeometry( filter );
   }
-
-  setRelevantFields( fetchGeometry, fetchAttributes );
 
   //start with first feature
   OGR_L_ResetReading( ogrLayer );
