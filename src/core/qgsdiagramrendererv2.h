@@ -6,7 +6,6 @@
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
-#include "pal/layer.h" //pal::Layer
 #include "qgsfeature.h"
 #include "qgspallabeling.h"
 
@@ -15,6 +14,7 @@ class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
+namespace pal { class Layer; }
 
 struct CORE_EXPORT QgsDiagramLayerSettings
 {

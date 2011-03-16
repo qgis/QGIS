@@ -1628,7 +1628,7 @@ void QgsVectorLayerProperties::initDiagramTab()
         break;
       case QGis::UnknownGeometry:
       case QGis::NoGeometry:
-	break;
+        break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
   }
@@ -1689,13 +1689,16 @@ void QgsVectorLayerProperties::initDiagramTab()
       }
     }
 
-    QgsDiagramLayerSettings dls = layer->diagramLayerSettings();
-    mDiagramDistanceSpinBox->setValue( dls.dist );
-    mPrioritySlider->setValue( dls.priority );
-    mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls.xPosColumn ) );
-    mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls.yPosColumn ) );
-    mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls.placement ) );
-    mLineOptionsComboBox->setCurrentIndex( mLineOptionsComboBox->findData( dls.placementFlags ) );
+    const QgsDiagramLayerSettings *dls = layer->diagramLayerSettings();
+    if ( dls )
+    {
+      mDiagramDistanceSpinBox->setValue( dls->dist );
+      mPrioritySlider->setValue( dls->priority );
+      mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls->xPosColumn ) );
+      mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls->yPosColumn ) );
+      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement ) );
+      mLineOptionsComboBox->setCurrentIndex( mLineOptionsComboBox->findData( dls->placementFlags ) );
+    }
 
     if ( dr->diagram() )
     {

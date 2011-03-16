@@ -753,18 +753,18 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   return 1; // init successful
 }
 
-int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings& s )
+int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s )
 {
-  Layer* l = mPal->addLayer( layer->id().append( "d" ).toLocal8Bit().data(), -1, -1, pal::Arrangement( s.placement ), METER, s.priority, s.obstacle, true, true );
-  l->setArrangementFlags( s.placementFlags );
+  Layer* l = mPal->addLayer( layer->id().append( "d" ).toLocal8Bit().data(), -1, -1, pal::Arrangement( s->placement ), METER, s->priority, s->obstacle, true, true );
+  l->setArrangementFlags( s->placementFlags );
 
-  s.palLayer = l;
+  s->palLayer = l;
   if ( mMapRenderer->hasCrsTransformEnabled() )
-    s.ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
+    s->ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
   else
-    s.ct = NULL;
-  s.xform = mMapRenderer->coordinateTransform();
-  mActiveDiagramLayers.insert( layer, s );
+    s->ct = NULL;
+  s->xform = mMapRenderer->coordinateTransform();
+  mActiveDiagramLayers.insert( layer, *s );
   return 1;
 }
 

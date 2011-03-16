@@ -472,6 +472,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgssymbologyv2conversion.h
   symbology-ng/qgssymbolv2.h
   symbology-ng/qgsvectorcolorrampv2.h
+  qgsdiagramrendererv2.h
 
   spatialindex/qgsspatialindex.h
 )
