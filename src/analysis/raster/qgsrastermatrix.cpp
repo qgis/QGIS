@@ -167,6 +167,11 @@ bool QgsRasterMatrix::atangens()
   return oneArgumentOperation( opATAN );
 }
 
+bool QgsRasterMatrix::changeSign()
+{
+  return oneArgumentOperation( opSIGN );
+}
+
 bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
 {
   if ( !mData )
@@ -211,6 +216,8 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
         case opATAN:
           mData[i] = static_cast<float>( atan( value ) );
           break;
+        case opSIGN:
+          mData[i] = -value;
       }
     }
   }
