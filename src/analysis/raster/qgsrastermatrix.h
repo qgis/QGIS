@@ -48,6 +48,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opASIN,
       opACOS,
       opATAN,
+      opSIGN
     };
 
     /**Takes ownership of data array*/
@@ -97,6 +98,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool acosinus();
     bool tangens();
     bool atangens();
+    bool changeSign();
 
   private:
     int mColumns;

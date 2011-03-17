@@ -70,6 +70,7 @@
 %left '+' '-'
 %left '*' '/'
 %left '^'
+%left UMINUS  // fictitious symbol (for unary minus)
 
 %%
 
@@ -92,6 +93,8 @@ raster_exp:
   | raster_exp '+' raster_exp   { $$ = new QgsRasterCalcNode(QgsRasterCalcNode::opPLUS, $1, $3); joinTmpNodes($$,$1,$3); }
   | raster_exp '-' raster_exp   { $$ = new QgsRasterCalcNode(QgsRasterCalcNode::opMINUS, $1, $3); joinTmpNodes($$,$1,$3); }
   | '(' raster_exp ')'          { $$ = $2; }
+  | '+' raster_exp %prec UMINUS { $$ = $2; }
+  | '-' raster_exp %prec UMINUS { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opSIGN, $2, 0 ); joinTmpNodes($$, $2, 0); }
   | NUMBER { $$ = new QgsRasterCalcNode($1); addToTmpNodes($$); }
   | RASTER_BAND_REF { $$ = new QgsRasterCalcNode(QString::fromUtf8(rastertext)); addToTmpNodes($$); }
 ;
