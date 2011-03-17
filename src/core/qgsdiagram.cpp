@@ -3,7 +3,6 @@
 #include "qgsrendercontext.h"
 
 #include <QPainter>
-#include <QBrush>
 
 void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
