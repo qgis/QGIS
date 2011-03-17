@@ -4584,7 +4584,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
         if ( mMapToPixel )
         {
           imageX = mViewPort->topLeftPoint.x();
-          imageY = mViewPort->topLeftPoint.y() + mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel();
+          imageY = mViewPort->topLeftPoint.y() + mCurrentPartRasterMin;
         }
 
         QgsDebugMsg( QString( "mCurrentPartRasterMin = %1" ).arg( mCurrentPartRasterMin ) );
@@ -4654,18 +4654,18 @@ bool QgsRasterImageBuffer::createNextPartImage()
   {
     return false;
   }
-  mNumCurrentImageRows = ySize;
-  QgsDebugMsg( "alloc " + QString::number( size * xSize * ySize ) );
-  mCurrentGDALData = VSIMalloc( size * xSize * ySize );
+  mNumCurrentImageRows = rasterYSize;
+  QgsDebugMsg( "alloc " + QString::number( size * xSize * rasterYSize ) );
+  mCurrentGDALData = VSIMalloc( size * xSize * rasterYSize );
 
   double yMax = mViewPort->mDrawnExtent.yMaximum() - mCurrentRow * mMapToPixel->mapUnitsPerPixel();
-  double yMin = yMax - ySize * mMapToPixel->mapUnitsPerPixel();
+  double yMin = yMax - rasterYSize * mMapToPixel->mapUnitsPerPixel();
 
   QgsDebugMsg( QString( "mCurrentRow = %1 yMaximum = %2 ySize = %3 mapUnitsPerPixel = %4" ).arg( mCurrentRow ).arg( mViewPort->mDrawnExtent.yMaximum() ).arg( ySize ).arg( mMapToPixel->mapUnitsPerPixel() ) );
   QgsRectangle myPartExtent( mViewPort->mDrawnExtent.xMinimum(), yMin,
                              mViewPort->mDrawnExtent.xMaximum(), yMax );
   QgsDebugMsg( "myPartExtent is " + myPartExtent.toString() );
-  mDataProvider->readBlock( mBandNo, myPartExtent, xSize, ySize, mViewPort->mSrcCRS, mViewPort->mDestCRS, mCurrentGDALData );
+  mDataProvider->readBlock( mBandNo, myPartExtent, xSize, rasterYSize , mViewPort->mSrcCRS, mViewPort->mDestCRS, mCurrentGDALData );
 
   //create the QImage
   if ( mWritingEnabled )
