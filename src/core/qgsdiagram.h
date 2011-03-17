@@ -3,6 +3,7 @@
 
 #include "qgsfeature.h"
 #include <QPen>
+#include <QBrush>
 
 class QPainter;
 class QPointF;
