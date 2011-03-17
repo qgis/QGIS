@@ -1807,6 +1807,44 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   return true;
 }
 
+bool QgsOgrProvider::crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt )
+{
+  void *hCRS = OSRNewSpatialReference( NULL );
+
+  if ( OSRImportFromWkt( hCRS, ( char ** ) &wkt ) == OGRERR_NONE )
+  {
+    if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
+    {
+      QString authid = QString( "%1:%2" )
+                       .arg( OSRGetAuthorityName( hCRS, NULL ) )
+                       .arg( OSRGetAuthorityCode( hCRS, NULL ) );
+      QgsDebugMsg( "authid recognized as " + authid );
+      srs.createFromOgcWmsCrs( authid );
+    }
+    else
+    {
+      // get the proj4 text
+      char *pszProj4;
+      OSRExportToProj4( hCRS, &pszProj4 );
+      QgsDebugMsg( pszProj4 );
+      OGRFree( pszProj4 );
+
+      char *pszWkt = NULL;
+      OSRExportToWkt( hCRS, &pszWkt );
+      QString myWktString = QString( pszWkt );
+      OGRFree( pszWkt );
+
+      // create CRS from Wkt
+      srs.createFromWkt( myWktString );
+    }
+  }
+
+  OSRRelease( hCRS );
+
+  return srs.isValid();
+}
+
+
 QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 {
   QgsDebugMsg( "entering." );
@@ -1827,29 +1865,14 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
         QString myWktString = prjStream.readLine();
         prjFile.close();
 
-        // create CRS from Wkt
-        srs.createFromWkt( myWktString );
-
-        if ( srs.isValid() )
+        if ( crsFromWkt( srs, myWktString.toUtf8().constData() ) )
           return srs;
       }
     }
   }
 
   OGRSpatialReferenceH mySpatialRefSys = OGR_L_GetSpatialRef( ogrLayer );
-  if ( mySpatialRefSys == NULL )
-  {
-    QgsDebugMsg( "no spatial reference found" );
-  }
-  else if ( OSRAutoIdentifyEPSG( mySpatialRefSys ) == OGRERR_NONE )
-  {
-    QString authid = QString( "%1:%2" )
-                     .arg( OSRGetAuthorityName( mySpatialRefSys, NULL ) )
-                     .arg( OSRGetAuthorityCode( mySpatialRefSys, NULL ) );
-    QgsDebugMsg( "authid recognized as " + authid );
-    srs.createFromOgcWmsCrs( authid );
-  }
-  else
+  if ( mySpatialRefSys )
   {
     // get the proj4 text
     char *pszProj4;
@@ -1859,11 +1882,12 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 
     char *pszWkt = NULL;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
-    QString myWktString = QString( pszWkt );
+    crsFromWkt( srs, pszWkt );
     OGRFree( pszWkt );
-
-    // create CRS from Wkt
-    srs.createFromWkt( myWktString );
+  }
+  else
+  {
+    QgsDebugMsg( "no spatial reference found" );
   }
 
   return srs;
