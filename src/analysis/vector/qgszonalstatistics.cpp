@@ -212,6 +212,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALClose( inputDataset );
+  mPolygonLayer->updateFieldMap();
   return 0;
 }
 
