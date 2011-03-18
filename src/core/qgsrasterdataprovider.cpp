@@ -47,7 +47,7 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExt
     mMaxSrcYRes = extent().height() / ySize();
   }
 
-  QgsRasterProjector myProjector( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes );
+  QgsRasterProjector myProjector( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes, mExtent );
 
   QgsDebugMsg( QString( "create projector time  (ms): %1" ).arg( time.elapsed() ) );
 
@@ -182,10 +182,10 @@ QString QgsRasterDataProvider::lastErrorFormat()
 
 QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
 {
-  int type = dataType(theBandNo);
-  int size = dataTypeSize(theBandNo) / 8;
+  int type = dataType( theBandNo );
+  int size = dataTypeSize( theBandNo ) / 8;
   QByteArray ba;
-  ba.resize(size);
+  ba.resize( size );
   char * data = ba.data();
   double noval = mNoDataValue[theBandNo-1];
   unsigned char uc;
@@ -195,35 +195,35 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   int i;
   float f;
   double d;
-  switch (type) 
+  switch ( type )
   {
     case QgsRasterDataProvider::Byte:
-      uc = (unsigned char)noval;
-      memcpy ( data, &uc, size);
+      uc = ( unsigned char )noval;
+      memcpy( data, &uc, size );
       break;
     case QgsRasterDataProvider::UInt16:
-      us = (unsigned short)noval;
-      memcpy ( data, &us, size);
+      us = ( unsigned short )noval;
+      memcpy( data, &us, size );
       break;
     case QgsRasterDataProvider::Int16:
-      s = (short)noval;
-      memcpy ( data, &s, size);
+      s = ( short )noval;
+      memcpy( data, &s, size );
       break;
     case QgsRasterDataProvider::UInt32:
-      ui = (unsigned int)noval;
-      memcpy ( data, &ui, size);
+      ui = ( unsigned int )noval;
+      memcpy( data, &ui, size );
       break;
     case QgsRasterDataProvider::Int32:
-      i = (int)noval;
-      memcpy ( data, &i, size);
+      i = ( int )noval;
+      memcpy( data, &i, size );
       break;
     case QgsRasterDataProvider::Float32:
-      f = (float)noval;
-      memcpy ( data, &f, size);
+      f = ( float )noval;
+      memcpy( data, &f, size );
       break;
     case QgsRasterDataProvider::Float64:
-      d = (double)noval;
-      memcpy ( data, &d, size);
+      d = ( double )noval;
+      memcpy( data, &d, size );
       break;
     default:
       QgsLogger::warning( "GDAL data type is not supported" );

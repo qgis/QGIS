@@ -51,7 +51,8 @@ class QgsRasterProjector
       QgsCoordinateReferenceSystem theDestCRS,
       QgsRectangle theDestExtent,
       int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes
+      double theMaxSrcXRes, double theMaxSrcYRes,
+      QgsRectangle theExtent
     );
 
     /** \brief The destructor */
@@ -135,6 +136,9 @@ class QgsRasterProjector
 
     /** Source extent */
     QgsRectangle mSrcExtent;
+
+    /** Source raster extent */
+    QgsRectangle mExtent;
 
     /** Number of destination rows */
     int mDestRows;
