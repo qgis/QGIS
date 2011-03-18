@@ -27,12 +27,14 @@ QgsRasterProjector::QgsRasterProjector(
   QgsCoordinateReferenceSystem theDestCRS,
   QgsRectangle theDestExtent,
   int theDestRows, int theDestCols,
-  double theMaxSrcXRes, double theMaxSrcYRes )
+  double theMaxSrcXRes, double theMaxSrcYRes,
+  QgsRectangle theExtent )
     : mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
     , mDestExtent( theDestExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+    , mExtent( theExtent )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
@@ -135,7 +137,37 @@ void QgsRasterProjector::calcSrcExtent()
     myPoint = mCPMatrix[mCPRows-1][i];
     mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
   }
-  // Expand a bit to avoid possible approx coords falling out because of representation error
+  // Expand a bit to avoid possible approx coords falling out because of representation error?
+
+  // If mMaxSrcXRes, mMaxSrcYRes are defined (fixed src resolution)
+  // align extent to src resolution to avoid jumping reprojected pixels
+  // because of shifting resampled grid
+  // Important especially if we are over mMaxSrcXRes, mMaxSrcYRes limits
+
+  QgsDebugMsg( "mSrcExtent = " + mSrcExtent.toString() );
+
+  if ( mMaxSrcXRes > 0 )
+  {
+    // with floor/ceil it should work correctly also for mSrcExtent.xMinimum() < mExtent.xMinimum()
+    double col = floor(( mSrcExtent.xMinimum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+    double x = mExtent.xMinimum() + col * mMaxSrcXRes;
+    mSrcExtent.setXMinimum( x );
+
+    col = ceil(( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+    x = mExtent.xMinimum() + col * mMaxSrcXRes;
+    mSrcExtent.setXMaximum( x );
+  }
+  if ( mMaxSrcYRes > 0 )
+  {
+    double row = floor(( mExtent.yMaximum() - mSrcExtent.yMaximum() ) / mMaxSrcYRes );
+    double y = mExtent.yMaximum() - row * mMaxSrcYRes;
+    mSrcExtent.setYMaximum( y );
+
+    row = ceil(( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
+    y = mExtent.yMaximum() - row * mMaxSrcYRes;
+    mSrcExtent.setYMinimum( y );
+  }
+
 
   QgsDebugMsg( "mSrcExtent = " + mSrcExtent.toString() );
 }
@@ -197,8 +229,10 @@ void QgsRasterProjector::calcSrcRowsCols()
   double myMinYSize = mMaxSrcYRes > myMinSize ? mMaxSrcYRes : myMinSize;
   QgsDebugMsg( QString( "myMinXSize = %1 myMinYSize = %2" ).arg( myMinXSize ).arg( myMinYSize ) );
   QgsDebugMsg( QString( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ) );
-  mSrcRows = ( int ) ceil( mSrcExtent.height() / myMinYSize );
-  mSrcCols = ( int ) ceil( mSrcExtent.width() / myMinXSize );
+
+  // we have to round to keep alignment set in calcSrcExtent
+  mSrcRows = ( int ) qRound( mSrcExtent.height() / myMinYSize );
+  mSrcCols = ( int ) qRound( mSrcExtent.width() / myMinXSize );
 
   QgsDebugMsg( QString( "mSrcRows = %1 mSrcCols = %2" ).arg( mSrcRows ).arg( mSrcCols ) );
 }
