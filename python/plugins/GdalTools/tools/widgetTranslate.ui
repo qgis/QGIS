@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Translate</string>
+   <string>Translate (Convert format)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>

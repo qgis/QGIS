@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>344</width>
-    <height>234</height>
+    <width>348</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Build Virtual Raster</string>
+   <string>Build Virtual Raster (Catalog)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

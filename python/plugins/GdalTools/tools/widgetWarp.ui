@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Warp</string>
+   <string>Warp (Reproject)</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

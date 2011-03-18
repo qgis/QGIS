@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Rasterize</string>
+   <string>Rasterize (Vector to raster)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

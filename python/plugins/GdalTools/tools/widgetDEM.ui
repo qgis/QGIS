@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>DEM</string>
+   <string>DEM (Terrain models)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
