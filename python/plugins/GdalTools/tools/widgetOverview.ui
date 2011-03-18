@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Add overview</string>
+   <string>Build overviews (Pyramids)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Polygonize</string>
+   <string>Polygonize (Raster to vector)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

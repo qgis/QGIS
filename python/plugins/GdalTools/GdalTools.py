@@ -97,7 +97,7 @@ class GdalTools:
     if rasterMenu == None:
         # no Raster menu, create and insert it before the Help menu
         self.menu = QMenu()
-        self.menu.setTitle( QCoreApplication.translate( "GdalTools", "&Raster" ) )
+        self.menu.setTitle( rasterText )
         lastAction = actions[ len( actions ) - 1 ]
         menu_bar.insertMenu( lastAction, self.menu )
     else:
@@ -105,7 +105,7 @@ class GdalTools:
         self.menu.addSeparator()
 
     if self.GdalVersion >= "1.6":
-      self.buildVRT = QAction( QIcon(":/icons/vrt.png"), QCoreApplication.translate( "GdalTools", "Build Virtual Raster (catalog)" ), self.iface.mainWindow() )
+      self.buildVRT = QAction( QIcon(":/icons/vrt.png"), QCoreApplication.translate( "GdalTools", "Build Virtual Raster (Catalog)" ), self.iface.mainWindow() )
       self.buildVRT.setStatusTip( QCoreApplication.translate( "GdalTools", "Builds a VRT from a list of datasets") )
       QObject.connect( self.buildVRT, SIGNAL( "triggered()" ), self.doBuildVRT )
       self.menu.addAction(self.buildVRT)
@@ -117,13 +117,13 @@ class GdalTools:
       self.menu.addAction(self.contour)
 
     if self.GdalVersion >= "1.3":
-      self.rasterize = QAction( QIcon(":/icons/rasterize.png"), QCoreApplication.translate( "GdalTools", "Rasterize" ), self.iface.mainWindow() )
+      self.rasterize = QAction( QIcon(":/icons/rasterize.png"), QCoreApplication.translate( "GdalTools", "Rasterize (Vector to raster)" ), self.iface.mainWindow() )
       self.rasterize.setStatusTip( QCoreApplication.translate( "GdalTools", "Burns vector geometries into a raster") )
       QObject.connect( self.rasterize, SIGNAL( "triggered()" ), self.doRasterize )
       self.menu.addAction(self.rasterize)
 
     if self.GdalVersion >= "1.6":
-      self.polygonize = QAction( QIcon(":/icons/polygonize.png"), QCoreApplication.translate( "GdalTools", "Polygonize" ), self.iface.mainWindow() )
+      self.polygonize = QAction( QIcon(":/icons/polygonize.png"), QCoreApplication.translate( "GdalTools", "Polygonize (Raster to vector)" ), self.iface.mainWindow() )
       self.polygonize.setStatusTip( QCoreApplication.translate( "GdalTools", "Produces a polygon feature layer from a raster") )
       QObject.connect( self.polygonize, SIGNAL( "triggered()" ), self.doPolygonize )
       self.menu.addAction(self.polygonize)
@@ -140,7 +140,7 @@ class GdalTools:
       self.menu.addAction(self.sieve)
 
     if self.GdalVersion >= "1.6":
-      self.proximity = QAction( QIcon(":/icons/proximity.png"),  QCoreApplication.translate( "GdalTools", "Proximity" ), self.iface.mainWindow() )
+      self.proximity = QAction( QIcon(":/icons/proximity.png"),  QCoreApplication.translate( "GdalTools", "Proximity (Raster distance)" ), self.iface.mainWindow() )
       self.proximity.setStatusTip( QCoreApplication.translate( "GdalTools", "Produces a raster proximity map") )
       QObject.connect( self.proximity, SIGNAL( "triggered()" ), self.doProximity )
       self.menu.addAction(self.proximity)
@@ -151,18 +151,18 @@ class GdalTools:
       QObject.connect( self.nearBlack, SIGNAL( "triggered()" ), self.doNearBlack )
       self.menu.addAction(self.nearBlack)
 
-    self.warp = QAction( QIcon(":/icons/warp.png"),  QCoreApplication.translate( "GdalTools", "Warp" ), self.iface.mainWindow() )
+    self.warp = QAction( QIcon(":/icons/warp.png"),  QCoreApplication.translate( "GdalTools", "Warp (Reproject)" ), self.iface.mainWindow() )
     self.warp.setStatusTip( QCoreApplication.translate( "GdalTools", "Warp an image into a new coordinate system") )
     QObject.connect( self.warp, SIGNAL( "triggered()" ), self.doWarp )
     self.menu.addAction(self.warp)
 
     if self.GdalVersion >= "1.5":
-      self.grid = QAction( QIcon(":/icons/grid.png"), QCoreApplication.translate( "GdalTools", "Grid" ), self.iface.mainWindow() )
+      self.grid = QAction( QIcon(":/icons/grid.png"), QCoreApplication.translate( "GdalTools", "Grid (Interpolation)" ), self.iface.mainWindow() )
       self.grid.setStatusTip( QCoreApplication.translate( "GdalTools", "Create raster from the scattered data") )
       QObject.connect( self.grid, SIGNAL( "triggered()" ), self.doGrid )
       self.menu.addAction(self.grid)
 
-    self.translate = QAction( QIcon(":/icons/translate.png"), QCoreApplication.translate( "GdalTools", "Translate" ), self.iface.mainWindow() )
+    self.translate = QAction( QIcon(":/icons/translate.png"), QCoreApplication.translate( "GdalTools", "Translate (Convert format)" ), self.iface.mainWindow() )
     self.translate.setStatusTip( QCoreApplication.translate( "GdalTools", "Converts raster data between different formats") )
     QObject.connect( self.translate, SIGNAL( "triggered()" ), self.doTranslate )
     self.menu.addAction(self.translate)
@@ -177,7 +177,7 @@ class GdalTools:
     QObject.connect( self.projection, SIGNAL( "triggered()" ), self.doProjection )
     self.menu.addAction( self.projection )
 
-    self.overview = QAction( QIcon( ":icons/raster-overview.png" ), QCoreApplication.translate( "GdalTools", "Build overviews" ), self.iface.mainWindow() )
+    self.overview = QAction( QIcon( ":icons/raster-overview.png" ), QCoreApplication.translate( "GdalTools", "Build overviews (Pyramids)" ), self.iface.mainWindow() )
     self.overview.setStatusTip( QCoreApplication.translate( "GdalTools", "Builds or rebuilds overview images" ) )
     QObject.connect( self.overview, SIGNAL( "triggered()" ), self.doOverview )
     self.menu.addAction( self.overview )
@@ -203,7 +203,7 @@ class GdalTools:
     self.menu.addAction(self.tileindex)
 
     if self.GdalVersion >= "1.7":
-      self.dem = QAction( QIcon( ":icons/dem.png" ), QCoreApplication.translate( "GdalTools", "DEM" ), self.iface.mainWindow() )
+      self.dem = QAction( QIcon( ":icons/dem.png" ), QCoreApplication.translate( "GdalTools", "DEM (Terrain models)" ), self.iface.mainWindow() )
       self.dem.setStatusTip( QCoreApplication.translate( "GdalTools", "Tool to analyze and visualize DEMs" ) )
       QObject.connect( self.dem, SIGNAL( "triggered()" ), self.doDEM )
       self.menu.addAction(self.dem)

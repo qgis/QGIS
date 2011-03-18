@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Proximity</string>
+   <string>Proximity (Raster distance)</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
