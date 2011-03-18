@@ -31,6 +31,7 @@ Build-Depends:
  python-sip-dev (>= 4.5.0),
  subversion,
  doxygen,
+ graphviz,
  txt2tags
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4

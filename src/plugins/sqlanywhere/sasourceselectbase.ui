@@ -178,7 +178,6 @@
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
   <tabstop>mTablesTreeView</tabstop>
-  <tabstop>btnBuildQuery</tabstop>
   <tabstop>mSearchGroupBox</tabstop>
   <tabstop>mSearchTableEdit</tabstop>
   <tabstop>mSearchColumnComboBox</tabstop>
