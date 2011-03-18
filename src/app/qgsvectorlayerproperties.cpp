@@ -1512,7 +1512,11 @@ void QgsVectorLayerProperties::on_mFindMaximumValueButton_clicked()
 
 void QgsVectorLayerProperties::on_mBackgroundColorButton_clicked()
 {
+#if QT_VERSION >= 0x040500
   QColor newColor = QColorDialog::getColor( mBackgroundColorButton->color(), 0, tr( "Background color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor newColor = QColorDialog::getColor( mBackgroundColorButton->color() );
+#endif
   if ( newColor.isValid() )
   {
     mBackgroundColorButton->setColor( newColor );
@@ -1521,7 +1525,11 @@ void QgsVectorLayerProperties::on_mBackgroundColorButton_clicked()
 
 void QgsVectorLayerProperties::on_mDiagramPenColorButton_clicked()
 {
+#if QT_VERSION >= 0x040500
   QColor newColor = QColorDialog::getColor( mDiagramPenColorButton->color(), 0, tr( "Pen color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor newColor = QColorDialog::getColor( mDiagramPenColorButton->color() );
+#endif
   if ( newColor.isValid() )
   {
     mDiagramPenColorButton->setColor( newColor );
