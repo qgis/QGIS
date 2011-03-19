@@ -1433,7 +1433,7 @@
              <property name="title">
               <string>Coordinate Reference System for new layers</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout">
+             <layout class="QGridLayout" name="gridLayout_23">
               <item row="0" column="0" colspan="3">
                <widget class="QLabel" name="label_8">
                 <property name="text">

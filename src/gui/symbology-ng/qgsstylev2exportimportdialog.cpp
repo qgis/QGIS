@@ -178,7 +178,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
 {
   QString symbolName;
   QgsSymbolV2* symbol;
-  QgsVectorColorRampV2* ramp;
+  QgsVectorColorRampV2 *ramp = 0;
   QModelIndex index;
   bool isSymbol = true;
   bool prompt = true;
