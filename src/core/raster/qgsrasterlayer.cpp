@@ -768,7 +768,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-  const QgsRectangle& theViewExtent = rendererContext.extent();
 
   QgsRectangle myProjectedViewExtent;
   QgsRectangle myProjectedLayerExtent;
