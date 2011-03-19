@@ -55,6 +55,11 @@
 static QString PROVIDER_KEY = "gdal";
 static QString PROVIDER_DESCRIPTION = "GDAL provider";
 
+struct QgsGdalProgress
+{
+  int type;
+  QgsGdalProvider *provider;
+};
 //
 // global callback function
 //
@@ -62,8 +67,10 @@ int CPL_STDCALL progressCallback( double dfComplete,
                                   const char * pszMessage,
                                   void * pProgressArg )
 {
-  // TODO: add signals to providers
   static double dfLastComplete = -1.0;
+
+  QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
+  QgsGdalProvider *mypProvider = prog->provider;
 
   if ( dfLastComplete > dfComplete )
   {
@@ -84,16 +91,18 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
     if ( nPercent == 100 )
     {
-      fprintf( stdout, "%d - done.\n", ( int ) floor( dfComplete*100 ) );
+      //fprintf( stdout, "%d - done.\n", ( int ) floor( dfComplete*100 ) );
       //mypLayer->showProgress( 100 );
     }
     else
     {
       int myProgress = ( int ) floor( dfComplete * 100 );
-      fprintf( stdout, "%d.", myProgress );
+      //fprintf( stdout, "%d.", myProgress );
       //mypLayer->showProgress( myProgress );
-      fflush( stdout );
+      //fflush( stdout );
     }
+
+    mypProvider->emitProgress( prog->type, dfComplete * 100, QString( pszMessage ) );
   }
   dfLastComplete = dfComplete;
 
@@ -547,9 +556,9 @@ void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *bl
   // TODO!!!: Check data alignment!!! May it happen that nearest value which
   // is not nearest is assigned to an output cell???
 
-  QgsDebugMsg( "Entered" );
+  //QgsDebugMsg( "Entered" );
 
-  QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
+  //QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //GDALReadBlock( myGdalBand, xBlock, yBlock, block );
@@ -1312,11 +1321,15 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
      *          void *      pProgressData
      *          )
      */
+
+    QgsGdalProgress myProg;
+    myProg.type = ProgressHistogram;
+    myProg.provider = this;
     double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
     GDALGetRasterHistogram( myGdalBand, theBandStats.minimumValue - 0.1*myerval,
                             theBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
                             theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
-                            this ); //this is the arg for our custome gdal progress callback
+                            &myProg ); //this is the arg for our custome gdal progress callback
 
     for ( int myBin = 0; myBin < theBinCount; myBin++ )
     {
@@ -1443,21 +1456,24 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
         //to create corrupted images. The images can be repaired
         //by running one of the other resampling strategies below.
         //see ticket #284
+        QgsGdalProgress myProg;
+        myProg.type = ProgressPyramids;
+        myProg.provider = this;
         if ( theResamplingMethod == tr( "Average Magphase" ) )
         {
           myError = GDALBuildOverviews( mGdalBaseDataset, "MODE", 1, myOverviewLevelsArray, 0, NULL,
-                                        progressCallback, this ); //this is the arg for the gdal progress callback
+                                        progressCallback, &myProg ); //this is the arg for the gdal progress callback
         }
         else if ( theResamplingMethod == tr( "Average" ) )
 
         {
           myError = GDALBuildOverviews( mGdalBaseDataset, "AVERAGE", 1, myOverviewLevelsArray, 0, NULL,
-                                        progressCallback, this ); //this is the arg for the gdal progress callback
+                                        progressCallback, &myProg ); //this is the arg for the gdal progress callback
         }
         else // fall back to nearest neighbor
         {
           myError = GDALBuildOverviews( mGdalBaseDataset, "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
-                                        progressCallback, this ); //this is the arg for the gdal progress callback
+                                        progressCallback, &myProg ); //this is the arg for the gdal progress callback
         }
 
         if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
@@ -1587,6 +1603,10 @@ QStringList QgsGdalProvider::subLayers() const
   return subLayers_( mGdalDataset );
 }
 
+void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )
+{
+  emit progress( theType, theProgress, theMessage );
+}
 
 /**
  * Class factory to return a pointer to a newly created
