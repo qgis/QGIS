@@ -698,8 +698,17 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   int tmpWidth = srcWidth;
   int tmpHeight = srcHeight;
 
-  if ( xRes > srcXRes ) tmpWidth = width;
-  if ( yRes > srcYRes ) tmpHeight = height;
+  if ( xRes > srcXRes )
+  {
+    tmpWidth = static_cast<int>( qRound( srcWidth * srcXRes / xRes ) ) ;
+  }
+  if ( yRes > srcYRes )
+  {
+    tmpHeight = static_cast<int>( qRound( -1.*srcHeight * srcYRes / yRes ) ) ;
+  }
+  double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
+  double tmpYMax = mExtent.yMaximum() + srcTop * srcYRes;
+  QgsDebugMsg( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ) );
 
   // Allocate temporary block
   char *tmpBlock = ( char * )malloc( dataSize * tmpWidth * tmpHeight );
@@ -724,12 +733,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( QString( "GDALRasterIO time (ms): %1" ).arg( time.elapsed() ) );
   time.start();
 
-  double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
-  double tmpYMax = mExtent.yMaximum() + srcTop * srcYRes;
   double tmpXRes = srcWidth * srcXRes / tmpWidth;
   double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
-
-  QgsDebugMsg( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ) );
 
   for ( int row = 0; row < height; row++ )
   {
@@ -744,8 +749,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       double x = myRasterExtent.xMinimum() + ( col + 0.5 ) * xRes;
       // floor() is quite slow! Use just cast to int.
       int tmpCol = static_cast<int>(( x - tmpXMin ) / tmpXRes ) ;
-      //QgsDebugMsg( QString( "row = %1 col = %2 tmpRow = %3 tmpCol = %4" ).arg(row).arg(col).arg(tmpRow).arg(tmpCol) );
-
       char *src = srcRowBlock + dataSize * tmpCol;
       char *dst = dstRowBlock + dataSize * ( left + col );
       memcpy( dst, src, dataSize );
