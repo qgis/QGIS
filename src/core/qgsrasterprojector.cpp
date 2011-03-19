@@ -32,9 +32,9 @@ QgsRasterProjector::QgsRasterProjector(
     : mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
     , mDestExtent( theDestExtent )
+    , mExtent( theExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
-    , mExtent( theExtent )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
