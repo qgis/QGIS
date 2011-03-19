@@ -107,6 +107,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
       /*! Max current value */                              ColorInterpretationMax = 16
     };
 
+    // Progress types
+    enum Progress
+    {
+      ProgressHistogram = 0,
+      ProgressPyramids  = 1
+    };
+
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( QString const & uri );
@@ -459,6 +466,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** \brief Set null value in char */
     QByteArray noValueBytes( int theBandNo );
+
+  signals:
+    /** Emit a signal to notify of the progress event.
+      * Emited theProgress is in percents (0.0-100.0) */
+    void progress( int theType, double theProgress, QString theMessage );
 
   protected:
     /**Dots per intch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore

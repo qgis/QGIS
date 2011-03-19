@@ -247,6 +247,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
     /** \brief Close data set and release related data */
     void closeDataset();
 
+    /** Emit a signal to notify of the progress event. */
+    void emitProgress( int theType, double theProgress, QString theMessage );
 
   private:
     // initialize CRS from wkt

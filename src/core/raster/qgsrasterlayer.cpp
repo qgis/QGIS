@@ -2483,6 +2483,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mRasterTransparency.initializeTransparentPixelList( mNoDataValue );
   }
 
+  // Connect provider signals
+  connect(
+    mDataProvider, SIGNAL( progress( int, double, QString ) ),
+    this,          SLOT( onProgress( int, double, QString ) )
+  );
+
   //mark the layer as valid
   mValid = true;
 
@@ -2943,6 +2949,12 @@ void QgsRasterLayer::updateProgress( int theProgress, int theMax )
 {
   //simply propogate it on!
   emit drawingProgress( theProgress, theMax );
+}
+
+void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMesssage )
+{
+  QgsDebugMsg( QString( "theProgress = %1" ).arg( theProgress ) );
+  emit progressUpdate(( int )theProgress );
 }
 
 //////////////////////////////////////////////////////////
