@@ -804,7 +804,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     return true;
   }
 
-  QgsDebugMsg( "theViewExtent is " + theViewExtent.toString() );
+  QgsDebugMsg( "theViewExtent is " + rendererContext.extent().toString() );
   QgsDebugMsg( "myProjectedViewExtent is " + myProjectedViewExtent.toString() );
   QgsDebugMsg( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString() );
   QgsDebugMsg( "myRasterExtent is " + myRasterExtent.toString() );
