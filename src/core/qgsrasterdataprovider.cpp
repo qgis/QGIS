@@ -47,7 +47,7 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExt
     mMaxSrcYRes = extent().height() / ySize();
   }
 
-  QgsRasterProjector myProjector( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes, mExtent );
+  QgsRasterProjector myProjector( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes, extent() );
 
   QgsDebugMsg( QString( "create projector time  (ms): %1" ).arg( time.elapsed() ) );
 
