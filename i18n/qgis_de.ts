@@ -1247,14 +1247,6 @@ Plugin will not be enabled.</source>
 Erweiterung wird nicht aktiviert.</translation>
     </message>
     <message>
-        <source>&amp;Raster</source>
-        <translation>&amp;Raster</translation>
-    </message>
-    <message>
-        <source>Build Virtual Raster (catalog)</source>
-        <translation>Virtuelles Raster(-katalog) erzeugen</translation>
-    </message>
-    <message>
         <source>Builds a VRT from a list of datasets</source>
         <translation>Erzeugt ein VRT aus einer Liste von Datensätzen</translation>
     </message>
@@ -1267,16 +1259,8 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Konturlinien aus einem DHM erzeugen</translation>
     </message>
     <message>
-        <source>Rasterize</source>
-        <translation>Rastern</translation>
-    </message>
-    <message>
         <source>Burns vector geometries into a raster</source>
         <translation>Brennt Vektorgeometrien in ein Raster</translation>
-    </message>
-    <message>
-        <source>Polygonize</source>
-        <translation>Polygonisieren</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
@@ -1299,10 +1283,6 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Entfernt kleine Rasterpolygone</translation>
     </message>
     <message>
-        <source>Proximity</source>
-        <translation>Nachbarschaft</translation>
-    </message>
-    <message>
         <source>Produces a raster proximity map</source>
         <translation>Erzeugt eine Rasternachbarschaftskarte</translation>
     </message>
@@ -1315,24 +1295,12 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Konvertiert ein fast schwarz-weiß Bild auf den genauen Wert</translation>
     </message>
     <message>
-        <source>Warp</source>
-        <translation>Entzerren</translation>
-    </message>
-    <message>
         <source>Warp an image into a new coordinate system</source>
         <translation>Ein Bild auf ein neues Koordinatensystem bringen</translation>
     </message>
     <message>
-        <source>Grid</source>
-        <translation>Gitter</translation>
-    </message>
-    <message>
         <source>Create raster from the scattered data</source>
         <translation>Ein Raster aus gestreuten Daten bilden</translation>
-    </message>
-    <message>
-        <source>Translate</source>
-        <translation>Konvertieren</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
@@ -1355,8 +1323,36 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Fügt einem Raster Projektionsinformation hinzu</translation>
     </message>
     <message>
-        <source>Build overviews</source>
-        <translation>Übersichten erzeugen</translation>
+        <source>Build Virtual Raster (Catalog)</source>
+        <translation>Virtuelles Raster erzeugen (Katalog)</translation>
+    </message>
+    <message>
+        <source>Rasterize (Vector to raster)</source>
+        <translation>Rastern (Vektor nach Raster)</translation>
+    </message>
+    <message>
+        <source>Polygonize (Raster to vector)</source>
+        <translation>Vektorisieren (Raster nach Vektor)</translation>
+    </message>
+    <message>
+        <source>Proximity (Raster distance)</source>
+        <translation>Nachbarschaft (Rasterabstand)</translation>
+    </message>
+    <message>
+        <source>Warp (Reproject)</source>
+        <translation>Transformieren (Reprojizieren)</translation>
+    </message>
+    <message>
+        <source>Grid (Interpolation)</source>
+        <translation>Gitter (Interpolation)</translation>
+    </message>
+    <message>
+        <source>Translate (Convert format)</source>
+        <translation>Übersetzen (Format konvertieren)</translation>
+    </message>
+    <message>
+        <source>Build overviews (Pyramids)</source>
+        <translation>Übersichten erzeugen (Pyramiden)</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
@@ -1391,8 +1387,8 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Shapedatei als Rasterkachelindex erzeugen</translation>
     </message>
     <message>
-        <source>DEM</source>
-        <translation>DHM</translation>
+        <source>DEM (Terrain models)</source>
+        <translation>DHM (Geländemodelle)</translation>
     </message>
     <message>
         <source>Tool to analyze and visualize DEMs</source>
@@ -1898,11 +1894,6 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
 <context>
     <name>GdalToolsWidget</name>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
-        <source>Build Virtual Raster</source>
-        <translation>Virtuelles Raster erzeugen</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="60"/>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="98"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="50"/>
@@ -1949,6 +1940,11 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="28"/>
         <source>&amp;Input files</source>
         <translation>&amp;Eingabedateien</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
+        <source>Build Virtual Raster (Catalog)</source>
+        <translation>Virtuelles Raster erzeugen (Katalog)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
@@ -2092,11 +2088,6 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <translation>Farbanzahl</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
-        <source>Grid</source>
-        <translation>Gitter</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
         <source>&amp;Z Field</source>
         <translation>&amp;Z-Feld</translation>
@@ -2180,6 +2171,11 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <translation>Max. Punkte</translation>
     </message>
     <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
+        <source>Grid (Interpolation)</source>
+        <translation>Gitter (Interpolation)</translation>
+    </message>
+    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="267"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="434"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="745"/>
@@ -2252,8 +2248,8 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="20"/>
-        <source>DEM</source>
-        <translation>DHM</translation>
+        <source>DEM (Terrain models)</source>
+        <translation>DHM (Geländemodelle)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="28"/>
@@ -2400,8 +2396,8 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
-        <source>Add overview</source>
-        <translation>Übersicht hinzufügen</translation>
+        <source>Build overviews (Pyramids)</source>
+        <translation>Übersichten erzeugen (Pyramiden)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="72"/>
@@ -2501,8 +2497,8 @@ direkt in Imagine, ArcGIS, GDAL direkt nutzbar.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
-        <source>Polygonize</source>
-        <translation>Polygonisieren</translation>
+        <source>Polygonize (Raster to vector)</source>
+        <translation>Vektorisieren (Raster nach Vektor)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
@@ -2552,8 +2548,8 @@ direkt in Imagine, ArcGIS, GDAL direkt nutzbar.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
-        <source>Proximity</source>
-        <translation>Nähe</translation>
+        <source>Proximity (Raster distance)</source>
+        <translation>Nachbarschaft (Rasterabstand)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
@@ -2598,8 +2594,8 @@ direkt in Imagine, ArcGIS, GDAL direkt nutzbar.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
-        <source>Rasterize</source>
-        <translation>Rastern</translation>
+        <source>Rasterize (Vector to raster)</source>
+        <translation>Rastern (Vektor nach Raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
@@ -2647,11 +2643,6 @@ direkt in Imagine, ArcGIS, GDAL direkt nutzbar.</translation>
         <translation>8</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
-        <source>Translate</source>
-        <translation>Konvertieren</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="154"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="170"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
@@ -2682,6 +2673,11 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
         <source>&amp;Input Layer</source>
         <translation>&amp;Eingabelayer</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
+        <source>Translate (Convert format)</source>
+        <translation>Übersetzen (Format konvertieren)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="120"/>
@@ -2752,11 +2748,6 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <translation>Ausgabeformat</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
-        <source>Warp</source>
-        <translation>Entzerren</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="167"/>
         <source>Near</source>
         <translation>Nah</translation>
@@ -2800,6 +2791,11 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS</source>
         <translation>&amp;Eingabe-KBS</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
+        <source>Warp (Reproject)</source>
+        <translation>Transformieren (Reprojizieren)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
@@ -5412,11 +5408,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="187"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="895"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="962"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="993"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1004"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="188"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="791"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="858"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="889"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="900"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="981"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="998"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1034"/>
@@ -6430,37 +6426,37 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Alle Dateien</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="188"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="189"/>
         <source>Cannot get GDAL raster band: %1</source>
         <translation>Konnte GDAL-Rasterkanal nicht bestimmen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="896"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="792"/>
         <source>Cannot open GDAL MEM dataset %1: %2</source>
         <translation>Konnte GDAL-MEM-Datensatz %1 nicht öffnen: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="963"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="859"/>
         <source>Cannot GDALCreateGenImgProjTransformer: </source>
         <translation>GDALCreateGenImgProjTransformer-Fehler: </translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="994"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="890"/>
         <source>Cannot inittialize GDALWarpOperation : </source>
         <translation>GDALWarpOperation-Initialisierungsfehler: </translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1005"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="901"/>
         <source>Cannot ChunkAndWarpImage: %1</source>
         <translation>ChungAndWarpImage-Fehler: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1771"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1667"/>
         <source>[GDAL] All files (*)</source>
         <translation>[GDAL] Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1929"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1825"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
         <translation>Diese Rasterdatei hat keine Kanäle und ist als Rasterlayer ungültig.</translation>
     </message>
@@ -13806,52 +13802,52 @@ Bitte wählen Sie eine gültige Datei.</translation>
 <context>
     <name>QgsGdalProvider</name>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="421"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="422"/>
         <source>Dataset Description</source>
         <translation>Datensatzbeschreibung</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="442"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="443"/>
         <source>Band %1</source>
         <translation>Kanal %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="473"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="474"/>
         <source>Dimensions:</source>
         <translation>Dimensionen:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="476"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="477"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 Kanäle: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="508"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="509"/>
         <source>Origin:</source>
         <translation>Ursprung:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="517"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="518"/>
         <source>Pixel Size:</source>
         <translation>Pixelgröße:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1182"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1078"/>
         <source>out of extent</source>
         <translation>außerhalb der Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1221"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1117"/>
         <source>null (no data)</source>
         <translation>Null (keine Daten)</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1550"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1446"/>
         <source>Average Magphase</source>
         <translation>Durchschnittliche Magphase</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1555"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1451"/>
         <source>Average</source>
         <translation>Durchschnittlich</translation>
     </message>
@@ -24339,37 +24335,37 @@ Fortfahren?</translation>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="624"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="590"/>
         <source>User Defined Coordinate Systems</source>
         <translation>Benutzerdefiniertes Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="699"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="665"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Geografisches Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="708"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="674"/>
         <source>Projected Coordinate Systems</source>
         <translation>Projiziertes Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1002"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="968"/>
         <source>Find projection</source>
         <translation>Projektion finden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1002"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="968"/>
         <source>No matching projection found.</source>
         <translation>Keine passende Projektion gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1141"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1107"/>
         <source>Resource Location Error</source>
         <translation>Ressource nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1142"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1108"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -27228,7 +27224,7 @@ Der Fehler war:
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="81"/>
         <source>Avoid Int.</source>
-        <translation>Überschn. vermeiden</translation>
+        <translation>Überschn. verm.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="84"/>
@@ -29951,21 +29947,21 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="695"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1583"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1708"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1591"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1716"/>
         <source>Text diagram</source>
         <translation>Textdiagramm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="699"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1582"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1712"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1590"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1720"/>
         <source>Pie chart</source>
         <translation>Kuchendiagramm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="716"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1543"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1551"/>
         <source>Map units</source>
         <translation>Karteneinheiten</translation>
     </message>
@@ -30046,69 +30042,69 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1515"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1516"/>
         <source>Background color</source>
         <translation>Hintergrundfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1524"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1529"/>
         <source>Pen color</source>
         <translation>Stiftfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1542"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1613"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1550"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1621"/>
         <source>MM</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1555"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1563"/>
         <source>AroundPoint</source>
         <translation>UmPunkt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1556"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1564"/>
         <source>OverPoint</source>
         <translation>ÜberPunkt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1561"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1569"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1562"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1570"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1567"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1575"/>
         <source>Free</source>
         <translation>Frei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1572"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1580"/>
         <source>On line</source>
         <translation>Auf Linie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1573"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1581"/>
         <source>Above line</source>
         <translation>Über Linie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1574"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1582"/>
         <source>Below Line</source>
         <translation>Unter Linie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1575"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1583"/>
         <source>Map orientation</source>
         <translation>Kartenorientierung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1597"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1602"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1605"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1610"/>
         <source>None</source>
         <translation>Keine</translation>
     </message>
