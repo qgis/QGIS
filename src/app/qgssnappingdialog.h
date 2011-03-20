@@ -45,8 +45,11 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     //! show dialog or dock
     void show();
 
-    //! connect to the layers destroyed() and then update()
-    void connectUpdate( QgsMapLayer* theMapLayer );
+    //! add layer to tree
+    void addLayer( QgsMapLayer* theMapLayer );
+
+    //! layer removed
+    void layerWillBeRemoved( QString );
 
     void on_cbxEnableTopologicalEditingCheckBox_stateChanged( int );
 
@@ -74,10 +77,6 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     QgsMapCanvas* mMapCanvas;
 
     QDockWidget *mDock;
-
-  private slots:
-    //! update the Dialog
-    void update();
 };
 
 #endif
