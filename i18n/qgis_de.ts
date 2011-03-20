@@ -7332,7 +7332,8 @@ Diese Fehler immer ignorieren?</translation>
         <location filename="../src/app/qgisapp.cpp" line="1917"/>
         <source>
 GDAL/OGR Version: %1.</source>
-        <translation>GDAL/OGR-Version: %1.</translation>
+	<translation>
+GDAL/OGR-Version: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1920"/>
@@ -7359,13 +7360,15 @@ SpatiaLite-Version: %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="1928"/>
         <source>
 No SpatiaLite support.</source>
-        <translation>Keine SpatiaLite-Unterstützung.</translation>
+	<translation>
+Keine SpatiaLite-Unterstützung.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1931"/>
         <source>
 QWT Version: %1.</source>
-        <translation>Qwt-Version: %1.</translation>
+	<translation>
+Qwt-Version: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2206"/>
