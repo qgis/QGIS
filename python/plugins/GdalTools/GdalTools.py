@@ -230,97 +230,102 @@ class GdalTools:
   def doBuildVRT( self ):
     from tools.doBuildVRT import GdalToolsDialog as BuildVRT
     d = BuildVRT( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doContour( self ):
     from tools.doContour import GdalToolsDialog as Contour
     d = Contour( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doRasterize( self ):
     from tools.doRasterize import GdalToolsDialog as Rasterize
     d = Rasterize( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doPolygonize( self ):
     from tools.doPolygonize import GdalToolsDialog as Polygonize
     d = Polygonize( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doMerge( self ):
     from tools.doMerge import GdalToolsDialog as Merge
     d = Merge( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doSieve( self ):
     from tools.doSieve import GdalToolsDialog as Sieve
     d = Sieve( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doProximity( self ):
     from tools.doProximity import GdalToolsDialog as Proximity
     d = Proximity( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doNearBlack( self ):
     from tools.doNearBlack import GdalToolsDialog as NearBlack
     d = NearBlack( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doWarp( self ):
     from tools.doWarp import GdalToolsDialog as Warp
     d = Warp( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doGrid( self ):
     from tools.doGrid import GdalToolsDialog as Grid
     d = Grid( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doTranslate( self ):
     from tools.doTranslate import GdalToolsDialog as Translate
     d = Translate( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doInfo( self ):
     from tools.doInfo import GdalToolsDialog as Info
     d = Info( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doProjection( self ):
     from tools.doProjection import GdalToolsDialog as Projection
     d = Projection( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doOverview( self ):
     from tools.doOverview import GdalToolsDialog as Overview
     d = Overview( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doClipper( self ):
     from tools.doClipper import GdalToolsDialog as Clipper
     d = Clipper( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doPaletted( self ):
     from tools.doRgbPct import GdalToolsDialog as RgbPct
     d = RgbPct( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doRGB( self ):
     from tools.doPctRgb import GdalToolsDialog as PctRgb
     d = PctRgb( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doTileIndex( self ):
     from tools.doTileIndex import GdalToolsDialog as TileIndex
     d = TileIndex( self.iface )
-    d.show_()
+    self.runToolDialog( d )
 
   def doDEM( self ):
     from tools.doDEM import GdalToolsDialog as DEM
     d = DEM( self.iface )
-    d.show_()
+    self.runToolDialog( d )
+
+  def runToolDialog( self, dlg ):
+    dlg.show_()
+    dlg.exec_()
+    del dlg
 
   def doSettings( self ):
     from tools.doSettings import GdalToolsSettingsDialog as Settings

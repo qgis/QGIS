@@ -22,6 +22,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       # set the default QSpinBoxes and QProgressBar value
       self.progressBar.setValue(0)
+      self.jpegQualitySpin.setValue(80)
 
       self.progressBar.hide()
       # we don't need load to canvas functionality
