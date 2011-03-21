@@ -74,27 +74,19 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   if ( rings == NULL )
   {
     // simple polygon without holes
-
-    // clip polygon rings! Qt (as of version 4.6) has a slow algorithm for
-    // clipping painter paths: we will clip the rings by ourselves, so
-    // the clipping in Qt will not be triggered.
-    QPolygonF ring = points;
-    QgsClipper::trimFeature( ring, false );
-    p->drawPolygon( ring );
+    p->drawPolygon( points );
   }
   else
   {
     // polygon with holes must be drawn using painter path
     QPainterPath path;
     QPolygonF outerRing = points;
-    QgsClipper::trimFeature( outerRing, false );
     path.addPolygon( outerRing );
 
     QList<QPolygonF>::const_iterator it = rings->constBegin();
     for ( ; it != rings->constEnd(); ++it )
     {
       QPolygonF ring = *it;
-      QgsClipper::trimFeature( ring, false );
       path.addPolygon( ring );
     }
 
