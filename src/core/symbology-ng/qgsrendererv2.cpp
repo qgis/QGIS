@@ -118,6 +118,10 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
   const QgsMapToPixel& mtp = context.mapToPixel();
   double z = 0; // dummy variable for coordiante transform
 
+  const QgsRectangle& e = context.extent();
+  double cw = e.width() / 10; double ch = e.height() / 10;
+  QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
+
   for ( unsigned int idx = 0; idx < numRings; idx++ )
   {
     unsigned int nPoints = *(( int* )wkb );
@@ -131,14 +135,6 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
       x = *(( double * ) wkb ); wkb += sizeof( double );
       y = *(( double * ) wkb ); wkb += sizeof( double );
 
-      // TODO: maybe to the transform at once (faster?)
-      if ( ct )
-      {
-        z = 0;
-        ct->transformInPlace( x, y, z );
-      }
-      mtp.transformInPlace( x, y );
-
       poly[jdx] = QPointF( x, y );
 
       if ( hasZValue )
@@ -147,6 +143,20 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
     if ( nPoints < 1 )
       continue;
+
+    //clip close to view extent
+    QgsClipper::trimPolygon( poly, clipRect );
+
+    //transform the QPolygonF to screen coordinates
+    for ( int i = 0; i < poly.size(); ++i )
+    {
+      if ( ct )
+      {
+        z = 0;
+        ct->transformInPlace( poly[i].rx(), poly[i].ry(), z );
+      }
+      mtp.transformInPlace( poly[i].rx(), poly[i].ry() );
+    }
 
     if ( idx == 0 )
       pts = poly;

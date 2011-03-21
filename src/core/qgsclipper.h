@@ -79,7 +79,7 @@ class CORE_EXPORT QgsClipper
                              std::vector<double>& y,
                              bool shapeOpen );
 
-    static void trimFeature( QPolygonF& pts, bool shapeOpen );
+    static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
 
     /**Reads a polyline from WKB and clips it to clipExtent
       @param wkb pointer to the start of the line wkb
@@ -101,15 +101,12 @@ class CORE_EXPORT QgsClipper
                                        Boundary b,
                                        bool shapeOpen );
 
-    static void trimFeatureToBoundary( const QPolygonF& inPts,
-                                       QPolygonF& outPts,
-                                       Boundary b,
-                                       bool shapeOpen );
+    static void trimPolygonToBoundary( const QPolygonF& inPts, QPolygonF& outPts, const QgsRectangle& rect, Boundary b, double boundaryValue );
 
     // Determines if a point is inside or outside the given boundary
     static bool inside( const double x, const double y, Boundary b );
 
-    static bool inside( const QPointF& pt, Boundary b );
+    static bool inside( const QPointF& pt, Boundary b, double val );
 
     // Calculates the intersection point between a line defined by a
     // (x1, y1), and (x2, y2) and the given boundary
@@ -117,9 +114,9 @@ class CORE_EXPORT QgsClipper
                                const double x2, const double y2,
                                Boundary b );
 
-    static QPointF intersect( const QPointF& pt1,
-                              const QPointF& pt2,
-                              Boundary b );
+    static QPointF intersectRect( const QPointF& pt1,
+                                  const QPointF& pt2,
+                                  Boundary b, const QgsRectangle& rect );
 
     //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double& x0, double& y0, double& x1, double& y1 );
@@ -179,34 +176,18 @@ inline void QgsClipper::trimFeature( std::vector<double>& x,
   trimFeatureToBoundary( tmpX, tmpY, x, y, YMin, shapeOpen );
 }
 
-inline void QgsClipper::trimFeature( QPolygonF& pts, bool shapeOpen )
+inline void QgsClipper::trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect )
 {
-  bool needs_clipping = false;
-  const QPointF* ptsData = pts.constData();
-  for ( int i = 0; i < pts.count(); i++, ptsData++ )
-  {
-    if ( ptsData->x() < MIN_X || ptsData->x() > MAX_X
-         || ptsData->y() < MIN_Y || ptsData->y() > MAX_Y )
-    {
-      needs_clipping = true;
-      break;
-    }
-  }
-  if ( !needs_clipping )
-    return;
-
   QPolygonF tmpPts;
   tmpPts.reserve( pts.size() );
-  trimFeatureToBoundary( pts, tmpPts, XMax, shapeOpen );
 
+  trimPolygonToBoundary( pts, tmpPts, clipRect, XMax, clipRect.xMaximum() );
   pts.clear();
-  trimFeatureToBoundary( tmpPts, pts, YMax, shapeOpen );
-
+  trimPolygonToBoundary( tmpPts, pts, clipRect, YMax, clipRect.yMaximum() );
   tmpPts.clear();
-  trimFeatureToBoundary( pts, tmpPts, XMin, shapeOpen );
-
+  trimPolygonToBoundary( pts, tmpPts, clipRect, XMin, clipRect.xMinimum() );
   pts.clear();
-  trimFeatureToBoundary( tmpPts, pts, YMin, shapeOpen );
+  trimPolygonToBoundary( tmpPts, pts, clipRect, YMin, clipRect.yMinimum() );
 }
 
 // An auxilary function that is part of the polygon trimming
@@ -280,22 +261,16 @@ inline void QgsClipper::trimFeatureToBoundary(
   }
 }
 
-inline void QgsClipper::trimFeatureToBoundary(
-  const QPolygonF& inPts, QPolygonF& outPts,
-  Boundary b, bool shapeOpen )
+inline void QgsClipper::trimPolygonToBoundary( const QPolygonF& inPts, QPolygonF& outPts, const QgsRectangle& rect, Boundary b, double boundaryValue )
 {
-  // The shapeOpen parameter selects whether this function treats the
-  // shape as open or closed. False is appropriate for polygons and
-  // true for polylines.
-
   unsigned int i1 = inPts.size() - 1; // start with last point
 
   // and compare to the first point initially.
   for ( int i2 = 0; i2 < inPts.size() ; ++i2 )
   { // look at each edge of the polygon in turn
-    if ( inside( inPts[i2], b ) ) // end point of edge is inside boundary
+    if ( inside( inPts[i2], b, boundaryValue ) ) // end point of edge is inside boundary
     {
-      if ( inside( inPts[i1], b ) )
+      if ( inside( inPts[i1], b, boundaryValue ) )
       {
         outPts.append( inPts[i2] );
       }
@@ -303,23 +278,16 @@ inline void QgsClipper::trimFeatureToBoundary(
       {
         // edge crosses into the boundary, so trim back to the boundary, and
         // store both ends of the new edge
-        if ( !( i2 == 0 && shapeOpen ) )
-        {
-          outPts.append( intersect( inPts[i1], inPts[i2], b ) );
-        }
-
+        outPts.append( intersectRect( inPts[i1], inPts[i2], b, rect ) );
         outPts.append( inPts[i2] );
       }
     }
     else // end point of edge is outside boundary
     {
       // start point is in boundary, so need to trim back
-      if ( inside( inPts[i1], b ) )
+      if ( inside( inPts[i1], b, boundaryValue ) )
       {
-        if ( !( i2 == 0 && shapeOpen ) )
-        {
-          outPts.append( intersect( inPts[i1], inPts[i2], b ) );
-        }
+        outPts.append( intersectRect( inPts[i1], inPts[i2], b, rect ) );
       }
     }
     i1 = i2;
@@ -353,18 +321,18 @@ inline bool QgsClipper::inside( const double x, const double y, Boundary b )
   return false;
 }
 
-inline bool QgsClipper::inside( const QPointF& pt, Boundary b )
+inline bool QgsClipper::inside( const QPointF& pt, Boundary b, double val )
 {
   switch ( b )
   {
     case XMax: // x < MAX_X is inside
-      return ( pt.x() < MAX_X );
+      return ( pt.x() < val );
     case XMin: // x > MIN_X is inside
-      return ( pt.x() > MIN_X );
+      return ( pt.x() > val );
     case YMax: // y < MAX_Y is inside
-      return ( pt.y() < MAX_Y );
+      return ( pt.y() < val );
     case YMin: // y > MIN_Y is inside
-      return ( pt.y() > MIN_Y );
+      return ( pt.y() > val );
   }
   return false;
 }
@@ -421,9 +389,9 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
   return p;
 }
 
-inline QPointF QgsClipper::intersect( const QPointF& pt1,
-                                      const QPointF& pt2,
-                                      Boundary b )
+inline QPointF QgsClipper::intersectRect( const QPointF& pt1,
+    const QPointF& pt2,
+    Boundary b, const QgsRectangle& rect )
 {
   // This function assumes that the two given points (x1, y1), and
   // (x2, y2) cross the given boundary. Making this assumption allows
@@ -436,20 +404,20 @@ inline QPointF QgsClipper::intersect( const QPointF& pt1,
   switch ( b )
   {
     case XMax: // x = MAX_X boundary
-      r_n = -( x1 - MAX_X ) * ( MAX_Y - MIN_Y );
-      r_d = ( x2 - x1 )   * ( MAX_Y - MIN_Y );
+      r_n = -( x1 - rect.xMaximum() ) * ( rect.yMaximum() - rect.yMinimum() );
+      r_d = ( x2 - x1 )   * ( rect.yMaximum() - rect.yMinimum() );
       break;
     case XMin: // x = MIN_X boundary
-      r_n = -( x1 - MIN_X ) * ( MAX_Y - MIN_Y );
-      r_d = ( x2 - x1 )   * ( MAX_Y - MIN_Y );
+      r_n = -( x1 - rect.xMinimum() ) * ( rect.yMaximum() - rect.yMinimum() );
+      r_d = ( x2 - x1 )   * ( rect.yMaximum() - rect.yMinimum() );
       break;
     case YMax: // y = MAX_Y boundary
-      r_n = ( y1 - MAX_Y ) * ( MAX_X - MIN_X );
-      r_d = -( y2 - y1 )   * ( MAX_X - MIN_X );
+      r_n = ( y1 - rect.yMaximum() ) * ( rect.xMaximum() - rect.xMinimum() );
+      r_d = -( y2 - y1 )   * ( rect.xMaximum() - rect.xMinimum() );
       break;
     case YMin: // y = MIN_Y boundary
-      r_n = ( y1 - MIN_Y ) * ( MAX_X - MIN_X );
-      r_d = -( y2 - y1 )   * ( MAX_X - MIN_X );
+      r_n = ( y1 - rect.yMinimum() ) * ( rect.xMaximum() - rect.xMinimum() );
+      r_d = -( y2 - y1 )   * ( rect.xMaximum() - rect.xMinimum() );
       break;
   }
 
