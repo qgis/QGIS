@@ -11,7 +11,9 @@ class GdalToolsBasePluginWidget:
 
   def __init__(self, iface, commandName, helpFileBaseName = None, parent = None):
       self.iface = iface
+      self.initialized = False
       self.base = BaseDialog(parent, iface, self, self.windowTitle(), commandName)
+
       self.connect(self.base, SIGNAL("processError(QProcess::ProcessError)"), self.onError)
       self.connect(self.base, SIGNAL("processFinished(int, QProcess::ExitStatus)"), self.onFinished)
 
@@ -28,15 +30,19 @@ class GdalToolsBasePluginWidget:
       pass
 
   def exec_(self):
-      self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
-      self.layersChanged()
-      self.someValueChanged()
+      if not self.initialized:
+        self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
+        self.onLayersChanged()
+        self.someValueChanged()
+      self.initialized = True
       return self.base.exec_()
 
   def show_(self):
-      self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
-      self.onLayersChanged()
-      self.someValueChanged()
+      if not self.initialized:
+        self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
+        self.onLayersChanged()
+        self.someValueChanged()
+      self.initialized = True
       return self.base.show()
 
   def setCommandViewerEnabled(self, enable):
