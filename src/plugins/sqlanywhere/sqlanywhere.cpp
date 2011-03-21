@@ -83,7 +83,7 @@ void SqlAnywhere::initGui()
   connect( mActionAddSqlAnywhereLayer, SIGNAL( triggered() ), this, SLOT( addSqlAnywhereLayer() ) );
 
   // Add the icon to the new layers toolbar
-  // mQGisIface->addToolBarIcon( mActionAddSqlAnywhereLayer );
+  mQGisIface->layerToolBar()->addAction( mActionAddSqlAnywhereLayer );
 
   // Also add to Layer menu
   mQGisIface->insertAddLayerAction( mActionAddSqlAnywhereLayer );
@@ -181,7 +181,7 @@ void SqlAnywhere::addSqlAnywhereLayer()
 // Unload the plugin and clean up the GUI
 void SqlAnywhere::unload()
 {
-  // mQGisIface->removeToolBarIcon( mActionAddSqlAnywhereLayer );
+  mQGisIface->layerToolBar()->removeAction( mActionAddSqlAnywhereLayer );
   mQGisIface->removeAddLayerAction( mActionAddSqlAnywhereLayer );
   delete mActionAddSqlAnywhereLayer;
 }
