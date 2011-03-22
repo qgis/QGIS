@@ -32,16 +32,21 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
       self.connect(self.tool, SIGNAL("deactivated()"), self.pause)
 
   def stop(self):
+      if not self.isStarted:
+        return
       self.isStarted = False
       self.btnEnable.setVisible(False)
       self.tool.reset()
       self.canvas.unsetMapTool(self.tool)
-      self.canvas.setMapTool(self.previousMapTool)
+      if self.previousMapTool != self.tool:
+        self.canvas.setMapTool(self.previousMapTool)
       #self.coordsChanged()
       self.emit( SIGNAL( "selectionStopped()" ) )
 
   def start(self):
-      self.previousMapTool = self.canvas.mapTool()
+      prevMapTool = self.canvas.mapTool()
+      if prevMapTool != self.tool:
+      	self.previousMapTool = prevMapTool
       self.canvas.setMapTool(self.tool)
       self.isStarted = True
       self.btnEnable.setVisible(False)
