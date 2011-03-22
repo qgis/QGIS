@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquerydialog.cpp 15448 2011-03-12 10:17:05Z jef $ */
+/*  $Id$ */
 
 #include <QMessageBox>
 #include <QDateTime>
@@ -81,11 +81,13 @@ bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
     totalVector++;
   }
   // check is possible query
-  if( totalVector < 2 ) {
+  if ( totalVector < 2 )
+  {
     msg = tr( "The spatial query requires at least two vector layers" );
     return false;
   }
-  else {
+  else
+  {
     return true;
   }
 

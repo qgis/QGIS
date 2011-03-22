@@ -163,33 +163,33 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   // Tip contributed by Alister Hood
-  myTip.setTitle(tr("Join intersected polylines when rendering"));
-  myTip.setContent(tr("When applying layered styles to a polyline layer, you can join"
-                      " intersecting lines together simply by enabling symbol levels."
-                      " The image below shows a before (left) and after (right) view of"
-                      " an intersection when symbol levels are enabled.") +
-                      QString("<p><center><img src=\":/images/tips/symbol_levels.png\"/></center></p>")
-        );
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Join intersected polylines when rendering" ) );
+  myTip.setContent( tr( "When applying layered styles to a polyline layer, you can join"
+                        " intersecting lines together simply by enabling symbol levels."
+                        " The image below shows a before (left) and after (right) view of"
+                        " an intersection when symbol levels are enabled." ) +
+                    QString( "<p><center><img src=\":/images/tips/symbol_levels.png\"/></center></p>" )
+                  );
+  addGuiTip( myTip );
   // by Tim
-  myTip.setTitle(tr("Auto-enable on the fly projection"));
-  myTip.setContent(tr("In the options dialog, under the CRS tab, you can set QGIS so that"
-                      " whenever you create a new project, 'on the fly projection' is enabled"
-                      " automatically and a pre-selected Coordinate Reference System of your"
-                      " choice is used."
-        ));
-  addGuiTip(myTip);
+  myTip.setTitle( tr( "Auto-enable on the fly projection" ) );
+  myTip.setContent( tr( "In the options dialog, under the CRS tab, you can set QGIS so that"
+                        " whenever you create a new project, 'on the fly projection' is enabled"
+                        " automatically and a pre-selected Coordinate Reference System of your"
+                        " choice is used."
+                      ) );
+  addGuiTip( myTip );
   // by Tim
-  myTip.setTitle(tr("Sponsor QGIS"));
-  myTip.setContent(tr("If QGIS is saving you money or you like our work and"
-        " have the financial ability to help, please consider sponsoring the"
-        " development of Quantum GIS. We use money from sponsors to pay for"
-        " travel and costs related to our bi-annual hackfests, and to generally"
-        " support the goals of our project.  Please see the <a"
-        " href=\"http://qgis.org/en/sponsorship.html\">QGIS Sponsorship Web"
-        " Page</a> for more details." 
-        ));
-  addGenericTip(myTip);
+  myTip.setTitle( tr( "Sponsor QGIS" ) );
+  myTip.setContent( tr( "If QGIS is saving you money or you like our work and"
+                        " have the financial ability to help, please consider sponsoring the"
+                        " development of Quantum GIS. We use money from sponsors to pay for"
+                        " travel and costs related to our bi-annual hackfests, and to generally"
+                        " support the goals of our project.  Please see the <a"
+                        " href=\"http://qgis.org/en/sponsorship.html\">QGIS Sponsorship Web"
+                        " Page</a> for more details."
+                      ) );
+  addGenericTip( myTip );
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
