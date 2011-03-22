@@ -68,9 +68,6 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   mAddButton->setEnabled( false );
   populateConnectionList();
 
-  cbxIgnoreGetMap->setEnabled( false );
-  cbxIgnoreGetFeatureInfo->setEnabled( false );
-
   QHBoxLayout *layout = new QHBoxLayout;
   mImageFormatGroup = new QButtonGroup;
 
@@ -411,57 +408,6 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     lstLayers->expandItem( lstLayers->topLevelItem( 0 ) );
   }
 
-  if ( wmsProvider->baseUrl() != wmsProvider->getMapUrl() )
-  {
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
-
-    if ( QMessageBox::information( this,
-                                   tr( "WMS Provider" ),
-                                   tr( "Advertised GetMap URL\n\n  %2\n\nis different from GetCapabilities URL\n\n  %1\n\n"
-                                       "This might be an server configuration error. Should the URL be used?" )
-                                   .arg( wmsProvider->baseUrl() )
-                                   .arg( wmsProvider->getMapUrl() ),
-                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
-    {
-      cbxIgnoreGetMap->setChecked( false );
-    }
-    else
-    {
-      cbxIgnoreGetMap->setChecked( true );
-    }
-    cbxIgnoreGetMap->setEnabled( true );
-
-    QApplication::restoreOverrideCursor();
-  }
-  else
-  {
-    cbxIgnoreGetMap->setEnabled( false );
-    cbxIgnoreGetMap->setChecked( false );
-  }
-
-  if ( wmsProvider->baseUrl() != wmsProvider->getFeatureInfoUrl() )
-  {
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
-
-    if ( QMessageBox::information( this,
-                                   tr( "WMS Provider" ),
-                                   tr( "Advertised GetFeatureInfo URL\n\n  %2\n\nis different from GetCapabilities URL\n\n  %1\n\n"
-                                       "This might be an server configuration error. Should the URL be used?" )
-                                   .arg( wmsProvider->baseUrl() )
-                                   .arg( wmsProvider->getFeatureInfoUrl() ),
-                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
-    {
-      cbxIgnoreGetFeatureInfo->setChecked( false );
-    }
-    else
-    {
-      cbxIgnoreGetFeatureInfo->setChecked( true );
-    }
-    cbxIgnoreGetFeatureInfo->setEnabled( true );
-
-    QApplication::restoreOverrideCursor();
-  }
-
   return true;
 }
 
@@ -475,12 +421,9 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   QString credentialsKey = "/Qgis/WMS/" + cmbConnections->currentText();
 
   QStringList connStringParts;
-  QString part;
-
-  connStringParts += settings.value( key + "/url" ).toString();
 
   mConnName = cmbConnections->currentText();
-  mConnectionInfo = connStringParts.join( " " );
+  mConnectionInfo = settings.value( key + "/url" ).toString();
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -495,6 +438,29 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
     mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
   }
 
+  bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
+  bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
+  if ( ignoreGetMap || ignoreGetFeatureInfo )
+  {
+    QString connArgs = "ignoreUrl=";
+    if ( ignoreGetMap )
+    {
+      connArgs += "GetMap";
+      if ( ignoreGetFeatureInfo )
+        connArgs += ";";
+    }
+    if ( ignoreGetFeatureInfo )
+      connArgs += "GetFeatureInfo";
+
+    if ( mConnectionInfo.startsWith( "username=" ) )
+    {
+      mConnectionInfo.prepend( connArgs + "," );
+    }
+    else
+    {
+      mConnectionInfo.prepend( connArgs + ",url=" );
+    }
+  }
 
   QgsDebugMsg( QString( "Connection info: '%1'." ).arg( mConnectionInfo ) );
 
@@ -563,31 +529,6 @@ void QgsWMSSourceSelect::addClicked()
                        .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
 
     if ( connInfo.startsWith( "username=" ) )
-    {
-      connInfo.prepend( connArgs + "," );
-    }
-    else
-    {
-      connInfo.prepend( connArgs + ",url=" );
-    }
-  }
-
-  if ( cbxIgnoreGetMap->isChecked() || cbxIgnoreGetFeatureInfo->isChecked() )
-  {
-    QString connArgs = "ignoreUrl=";
-
-    if ( cbxIgnoreGetMap->isChecked() )
-    {
-      connArgs += "GetMap";
-      if ( cbxIgnoreGetFeatureInfo->isChecked() )
-        connArgs += ";GetFeatureInfo";
-    }
-    else
-    {
-      connArgs += "GetFeatureInfo";
-    }
-
-    if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "tiled=" ) )
     {
       connInfo.prepend( connArgs + "," );
     }
@@ -823,7 +764,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     }
   }
 
-  gbCRS->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mCRSs.count() ) );
+  gbCRS->setTitle( tr( "Options (%n coordinate reference systems available)", "crs count", mCRSs.count() ) );
   btnChangeSpatialRefSys->setDisabled( mCRSs.isEmpty() );
 
   if ( !layers.isEmpty() && !mCRSs.isEmpty() )

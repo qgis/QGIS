@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>767</width>
+    <width>773</width>
     <height>539</height>
    </rect>
   </property>
@@ -223,30 +223,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
-           <layout class="QHBoxLayout">
-            <item>
-             <widget class="QCheckBox" name="cbxIgnoreGetMap">
-              <property name="toolTip">
-               <string>Use base url instead of advertised GetFeatureInfo URL</string>
-              </property>
-              <property name="text">
-               <string>Ignore GetMap URL</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfo">
-              <property name="toolTip">
-               <string>Use base url instead of advertised GetFeatureInfo URL</string>
-              </property>
-              <property name="text">
-               <string>Ignore GetFeatureInfo URL</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
          </layout>
         </widget>
        </item>
@@ -445,8 +421,6 @@
   <tabstop>lstLayers</tabstop>
   <tabstop>leLayerName</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
-  <tabstop>cbxIgnoreGetMap</tabstop>
-  <tabstop>cbxIgnoreGetFeatureInfo</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerOrderTreeWidget</tabstop>
