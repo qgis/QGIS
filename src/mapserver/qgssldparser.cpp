@@ -1552,6 +1552,15 @@ void QgsSLDParser::printCapabilities( QDomElement& parentElement, QDomDocument& 
   }
 }
 
+bool QgsSLDParser::featureInfoWithWktGeometry() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoWithWktGeometry();
+  }
+  return false;
+}
+
 #ifdef DIAGRAMSERVER
 int QgsSLDParser::overlaysFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {

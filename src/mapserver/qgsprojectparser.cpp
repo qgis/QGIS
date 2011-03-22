@@ -451,6 +451,32 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
   return crsSet;
 }
 
+bool QgsProjectParser::featureInfoWithWktGeometry() const
+{
+  if ( !mXMLDoc )
+  {
+    return false;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return false;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return false;
+  }
+  QDomElement wktElem = propertiesElem.firstChildElement( "WMSAddWktGeometry" );
+  if ( wktElem.isNull() )
+  {
+    return false;
+  }
+
+  return ( wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+}
+
 QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
 {
   QMap< QString, QMap< int, QString > > resultMap;
