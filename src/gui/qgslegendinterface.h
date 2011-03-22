@@ -23,6 +23,7 @@
 #include <QStringList>
 
 class QgsMapLayer;
+class QTreeWidgetItem;
 
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
@@ -80,7 +81,8 @@ class GUI_EXPORT QgsLegendInterface : public QObject
   public slots:
 
     //! Add a new group
-    virtual int addGroup( QString name, bool expand = true ) = 0;
+    //! forceAtEnd forces the new group to be created at the end of the legend
+    virtual int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 ) = 0;
 
     //! Remove group on index
     virtual void removeGroup( int groupIndex ) = 0;

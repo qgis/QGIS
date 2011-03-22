@@ -221,7 +221,7 @@ class QgsLegend : public QTreeWidget
      * @param expand expand the group
      * @return void
      */
-    int addGroup( QString name = QString(), bool expand = true );
+    int addGroup( QString name = QString(), bool expand = true, QTreeWidgetItem* parent = 0 );
 
     /*!
      * Removes all groups with the given name.
