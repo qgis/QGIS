@@ -21,6 +21,7 @@
 #include "qgslegendlayer.h"
 #include "qgsmaplayer.h"
 
+
 QgsAppLegendInterface::QgsAppLegendInterface( QgsLegend * legend )
     : mLegend( legend )
 {
@@ -31,9 +32,9 @@ QgsAppLegendInterface::~QgsAppLegendInterface()
 {
 }
 
-int QgsAppLegendInterface::addGroup( QString name, bool expand )
+int QgsAppLegendInterface::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
 {
-  return mLegend->addGroup( name, expand );
+  return mLegend->addGroup( name, expand, parent );
 }
 
 void QgsAppLegendInterface::removeGroup( int groupIndex )

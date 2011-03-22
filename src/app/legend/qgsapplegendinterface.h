@@ -65,7 +65,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
   public slots:
 
     //! Add a new group
-    int addGroup( QString name, bool expand = true );
+    int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 );
 
     //! Remove all groups with the given name
     void removeGroup( int groupIndex );
