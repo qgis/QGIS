@@ -314,6 +314,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 
 void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
+  if ( ! points.isEmpty() )
+    return;
+
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
   bool first = true;
@@ -383,7 +386,9 @@ static double _averageAngle( const QPointF& prevPt, const QPointF& pt, const QPo
 
 void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
-  QPointF lastPt = points[0];
+  if ( points.isEmpty() )
+    return;
+
   QgsRenderContext& rc = context.renderContext();
 
   double origAngle = mMarker->angle();
