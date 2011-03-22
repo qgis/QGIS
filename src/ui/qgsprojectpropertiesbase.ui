@@ -367,7 +367,7 @@
       <attribute name="title">
        <string>WMS Server</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0" colspan="2">
         <widget class="QGroupBox" name="grpWMSServiceCapabilities">
          <property name="title">

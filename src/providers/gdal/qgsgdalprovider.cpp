@@ -82,26 +82,6 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
   if ( floor( dfLastComplete*10 ) != floor( dfComplete*10 ) )
   {
-    int    nPercent = ( int ) floor( dfComplete * 100 );
-
-    if ( nPercent == 0 && pszMessage != NULL )
-    {
-      //fprintf( stdout, "%s:", pszMessage );
-    }
-
-    if ( nPercent == 100 )
-    {
-      //fprintf( stdout, "%d - done.\n", ( int ) floor( dfComplete*100 ) );
-      //mypLayer->showProgress( 100 );
-    }
-    else
-    {
-      int myProgress = ( int ) floor( dfComplete * 100 );
-      //fprintf( stdout, "%d.", myProgress );
-      //mypLayer->showProgress( myProgress );
-      //fflush( stdout );
-    }
-
     mypProvider->emitProgress( prog->type, dfComplete * 100, QString( pszMessage ) );
   }
   dfLastComplete = dfComplete;
