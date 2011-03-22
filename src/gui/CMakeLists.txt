@@ -35,6 +35,7 @@ qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
 qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
+qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgsmapcanvas.cpp
@@ -89,6 +90,7 @@ qgsdetaileditemwidget.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
+qgsfieldvalidator.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
 qgsmapcanvas.h
@@ -206,6 +208,8 @@ qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
 qgssearchquerybuilder.h
+qgsattributeeditor.h
+qgsfieldvalidator.h
 
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h

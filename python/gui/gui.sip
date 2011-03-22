@@ -33,5 +33,7 @@
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 %Include qgssearchquerybuilder.sip
+%Include qgsattributeeditor.sip
+%Include qgsfieldvalidator.sip
 
 %Include symbology-ng-gui.sip
