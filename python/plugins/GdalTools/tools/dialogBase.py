@@ -66,6 +66,14 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.arguments = QStringList()
 
   def reject(self):
+      if self.process.state() != QProcess.NotRunning:
+        ret = QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "The command is still running. \nDo you want terminate it anyway?" ), QMessageBox.Yes | QMessageBox.No)
+        if ret == QMessageBox.No:
+          return
+
+        self.disconnect(self.process, SIGNAL("error(QProcess::ProcessError)"), self.processError)
+        self.disconnect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
+
       self.emit( SIGNAL("closeClicked()") )
 
   def accept(self):
@@ -129,16 +137,6 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
   # called on closing the dialog, stop the process if it's running
   def onClosing(self):
-      if self.process.state() != QProcess.NotRunning:
-        ret = QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "The command is still running. \nDo you want terminate it anyway?" ), QMessageBox.Yes | QMessageBox.No)
-        if ret == QMessageBox.No:
-          return
-
-        self.disconnect(self.process, SIGNAL("error(QProcess::ProcessError)"), self.processError)
-        self.disconnect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
-        #self.process.kill()
-        #print "Debug: " + self.command + " terminated by user"
-
       self.stop()
       QDialog.reject(self)
 
