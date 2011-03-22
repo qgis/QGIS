@@ -18,28 +18,6 @@ The field calculator allows you to update fields with expressions.
 <tr><td>'string'</td><td>literal string value</td></tr>
 <tr><td><i>number</i></td><td>number</td></tr>
 <tr><td>NULL</td><td>null value</td></tr>
-<tr><td><tt>a</tt> OR <tt>b</tt></td><td><tt>a</tt> or <tt>b</tt> are true.</td></tr>
-<tr><td><tt>a</tt> AND <tt>b</tt></td><td><tt>a</tt> and <tt>b</tt> are true.</td></tr>
-<tr><td>NOT <tt>a</tt></td><td>inverted boolean value of <tt>a</tt></td></tr>
-<tr><td><tt>a</tt> IS NULL</td><td><tt>a</tt> has no value</td></tr>
-<tr><td><tt>a</tt> IS NOT NULL</td><td><tt>a</tt> has <tt>a</tt> value</td></tr>
-<tr><td><tt>a</tt> IN ( value[, value...] )</td><td><tt>a</tt> is one of the listed values</td></tr>
-<tr><td><tt>a</tt> NOT IN ( value[, value...] )</td><td><tt>a</tt> is not one of the listed values</td></tr>
-<tr><td><tt>a</tt> = <tt>b</tt></td><td><tt>a</tt> and <tt>b</tt> are equal</td><tr>
-<tr>
-  <td>
-    <tt>a</tt> != <tt>b</tt><br>
-    <tt>a</tt> &lt;&gt; <tt>b</tt>
-  </td>
-  <td><tt>a</tt> and <tt>b</tt> are not equal</td>
-</tr>
-<tr><td><tt>a</tt> &lt;= <tt>b</tt></td><td><tt>a</tt> is less or equal <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> &gt;= <tt>b</tt></td><td><tt>a</tt> is greater or equal <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> &gt; <tt>b</tt></td><td><tt>a</tt> is greater than <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> &lt; <tt>b</tt></td><td><tt>a</tt> is less than <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> ~ <tt>b</tt></td></td><td><tt>a</tt> matches regular expression <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> LIKE <tt>b</tt></td><td><tt>a</tt> is like <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> ILIKE <tt>b</tt></td><td><tt>a</tt> is like <tt>b</tt> (case insensitive)</td></tr>
 <tr><td>sqrt(<tt>a</tt>)</td><td>square root</td></tr>
 <tr><td>sin(<tt>a</tt>)</td><td>sinus of <tt>a</tt></td></tr>
 <tr><td>cos(<tt>a</tt>)</td><td>cosinus of <tt>b</tt></td></tr>
