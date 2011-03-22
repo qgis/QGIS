@@ -41,6 +41,18 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QString credentialsKey = "/Qgis/WMS/" + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
+
+    if ( mBaseKey == "/Qgis/connections-wms/" )
+    {
+      cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
+      cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
+    }
+    else
+    {
+      cbxIgnoreGetMapURI->setVisible( false );
+      cbxIgnoreGetFeatureInfoURI->setVisible( false );
+    }
+
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
   }
@@ -96,6 +108,12 @@ void QgsNewHttpConnection::accept()
   url.setEncodedQueryItems( params );
 
   settings.setValue( key + "/url", url.toString() );
+  if ( mBaseKey == "/Qgis/connections-wms/" )
+  {
+    settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
+    settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+  }
+
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
 

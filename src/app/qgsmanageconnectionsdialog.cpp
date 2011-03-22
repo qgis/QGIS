@@ -286,6 +286,8 @@ QDomDocument QgsManageConnectionsDialog::saveWMSConnections( const QStringList &
     QDomElement el = doc.createElement( "wms" );
     el.setAttribute( "name", connections[ i ] );
     el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
+    el.setAttribute( "ignoreGetMapURI", settings.value( path + connections[i] + "/ignoreGetMapURI", false ).toBool() ? "true" : "false" );
+    el.setAttribute( "ignoreGetFeatureInfoURI", settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
 
     path = "/Qgis/WMS/";
     el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
@@ -423,6 +425,8 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/Qgis/connections-wms" );
     settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
+    settings.setValue( QString( "/" + connectionName + "/ignoreGetMapURI" ), child.attribute( "ignoreGetMapURI" ) == "true" );
+    settings.setValue( QString( "/" + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )
