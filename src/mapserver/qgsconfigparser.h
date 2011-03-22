@@ -85,6 +85,9 @@ class QgsConfigParser
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
     virtual QSet<QString> supportedOutputCrsSet() const { return QSet<QString>(); }
 
+    /**True if the feature info response should contain the wkt geometry for vector features*/
+    virtual bool featureInfoWithWktGeometry() const { return false; }
+
     /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
        Default implementation returns an empty map*/
     virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const { return QMap< QString, QMap<int, QString> > (); }

@@ -212,6 +212,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   grpWMSList->setChecked( mWMSList->count() > 0 );
 
+  bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
+  mAddWktGeometryCheckBox->setChecked( addWktGeometry );
+
   restoreState();
 }
 
@@ -407,6 +410,8 @@ void QgsProjectProperties::apply()
   {
     QgsProject::instance()->removeEntry( "WMSCrsList", "/" );
   }
+
+  QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
 
   //todo XXX set canvas color
   emit refresh();

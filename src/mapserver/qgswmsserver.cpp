@@ -1063,8 +1063,9 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   QgsAttributeMap featureAttributes;
   int featureCounter = 0;
   const QgsFieldMap& fields = provider->fields();
+  bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
 
-  provider->select( provider->attributeIndexes(), searchRect, true, true );
+  provider->select( provider->attributeIndexes(), searchRect, addWktGeometry, true );
   while ( provider->nextFeature( feature ) )
   {
     if ( featureCounter > nFeatures )
@@ -1102,14 +1103,17 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
 
     //also append the wkt geometry as an attribute
-    QgsGeometry* geom = feature.geometry();
-    if ( geom )
+    if ( addWktGeometry )
     {
-      QDomElement geometryElement = infoDocument.createElement( "Attribute" );
-      geometryElement.setAttribute( "name", "geometry" );
-      geometryElement.setAttribute( "value", geom->exportToWkt() );
-      geometryElement.setAttribute( "type", "derived" );
-      featureElement.appendChild( geometryElement );
+      QgsGeometry* geom = feature.geometry();
+      if ( geom )
+      {
+        QDomElement geometryElement = infoDocument.createElement( "Attribute" );
+        geometryElement.setAttribute( "name", "geometry" );
+        geometryElement.setAttribute( "value", geom->exportToWkt() );
+        geometryElement.setAttribute( "type", "derived" );
+        featureElement.appendChild( geometryElement );
+      }
     }
   }
 

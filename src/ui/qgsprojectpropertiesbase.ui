@@ -367,7 +367,7 @@
       <attribute name="title">
        <string>WMS Server</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0" colspan="2">
         <widget class="QGroupBox" name="grpWMSServiceCapabilities">
          <property name="title">
@@ -458,7 +458,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="1" column="0">
         <widget class="QGroupBox" name="grpWMSExt">
          <property name="title">
           <string>Advertised Extent</string>
@@ -561,7 +561,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="1" column="1" rowspan="2">
         <widget class="QGroupBox" name="grpWMSList">
          <property name="title">
           <string>Coordinate Systems Restrictions</string>
@@ -598,6 +598,13 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+         <property name="text">
+          <string>Add WKT geometry to feature info response</string>
+         </property>
         </widget>
        </item>
       </layout>
