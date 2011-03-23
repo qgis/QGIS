@@ -2947,7 +2947,7 @@ lze nastavit JPEG kvalitu.</translation>
         <translation>JPEG kvalita (1-100)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="219"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="216"/>
         <source>Alternate overview format using Erdas Imagine format, 
 placing the overviews in an associated .aux file 
 suitable for direct use with Imagine,ArcGIS, GDAL.</source>
@@ -2956,7 +2956,7 @@ který umístí přehledy do přiřazeného .aux souboru,
 vhodný pro přímé použití v Imagine,ArcGIS, GDAL.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="224"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="221"/>
         <source>Use Imagine format (.aux file)</source>
         <translation>Použít Imagine formát (.aux soubor)</translation>
     </message>
@@ -6072,11 +6072,11 @@ Chcete zadat cestu (GISBASE) k instalaci programu GRASS?</translation>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="197"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="800"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="867"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="898"/>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="909"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="177"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="780"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="847"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="878"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="889"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="981"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="998"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1034"/>
@@ -7113,37 +7113,37 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Všechny soubory</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="198"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="178"/>
         <source>Cannot get GDAL raster band: %1</source>
         <translation>Nemohu získat GDAL rastrové pásmo: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="801"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="781"/>
         <source>Cannot open GDAL MEM dataset %1: %2</source>
         <translation>Nemohu otevřít GDAL MEM dataset %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="868"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="848"/>
         <source>Cannot GDALCreateGenImgProjTransformer: </source>
         <translation>Nemohu použít GDALCreateGenImgProjTransformer: </translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="899"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="879"/>
         <source>Cannot inittialize GDALWarpOperation : </source>
         <translation>Nemohu spustit GDALWarpOperation : </translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="910"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="890"/>
         <source>Cannot ChunkAndWarpImage: %1</source>
         <translation>Nemohu použít ChunkAndWarpImage: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1687"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1667"/>
         <source>[GDAL] All files (*)</source>
         <translation>[GDAL] Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1845"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1825"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
         <translation>Tento rastrový soubor nemá pásma a je neplatný jako rastrová vrstva.</translation>
     </message>
@@ -7244,96 +7244,96 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Verze</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2123"/>
-        <location filename="../src/app/qgisapp.cpp" line="2130"/>
-        <location filename="../src/app/qgisapp.cpp" line="6180"/>
+        <location filename="../src/app/qgisapp.cpp" line="2170"/>
+        <location filename="../src/app/qgisapp.cpp" line="2177"/>
+        <location filename="../src/app/qgisapp.cpp" line="6227"/>
         <source>Invalid Data Source</source>
         <translation>Nesprávný datový zdroj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3428"/>
-        <location filename="../src/app/qgisapp.cpp" line="4855"/>
+        <location filename="../src/app/qgisapp.cpp" line="3475"/>
         <location filename="../src/app/qgisapp.cpp" line="4902"/>
+        <location filename="../src/app/qgisapp.cpp" line="4949"/>
         <source>No Layer Selected</source>
         <translation>Není vybraná žádná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4733"/>
+        <location filename="../src/app/qgisapp.cpp" line="4780"/>
         <source>There is a new version of QGIS available</source>
         <translation>K dispozici je nová verze QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4739"/>
+        <location filename="../src/app/qgisapp.cpp" line="4786"/>
         <source>You are running a development version of QGIS</source>
         <translation>Používáte vývojářskou verzi QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4743"/>
+        <location filename="../src/app/qgisapp.cpp" line="4790"/>
         <source>You are running the current version of QGIS</source>
         <translation>Používáte aktuální verzi QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4748"/>
+        <location filename="../src/app/qgisapp.cpp" line="4795"/>
         <source>Would you like more information?</source>
         <translation>Přejete si bližší informáce?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4751"/>
-        <location filename="../src/app/qgisapp.cpp" line="4764"/>
-        <location filename="../src/app/qgisapp.cpp" line="4769"/>
-        <location filename="../src/app/qgisapp.cpp" line="4797"/>
+        <location filename="../src/app/qgisapp.cpp" line="4798"/>
+        <location filename="../src/app/qgisapp.cpp" line="4811"/>
+        <location filename="../src/app/qgisapp.cpp" line="4816"/>
+        <location filename="../src/app/qgisapp.cpp" line="4844"/>
         <source>QGIS Version Information</source>
         <translation>Informace o verzi QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4769"/>
+        <location filename="../src/app/qgisapp.cpp" line="4816"/>
         <source>Unable to get current version information from server</source>
         <translation>Nelze získat informace ze serveru o aktuální verzi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4783"/>
+        <location filename="../src/app/qgisapp.cpp" line="4830"/>
         <source>Connection refused - server may be down</source>
         <translation>Spojení zamítnuto - server je zřejmě vypnutý</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4786"/>
+        <location filename="../src/app/qgisapp.cpp" line="4833"/>
         <source>QGIS server was not found</source>
         <translation>Nebyl nalezen QGIS server</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2301"/>
-        <location filename="../src/app/qgisapp.cpp" line="2373"/>
+        <location filename="../src/app/qgisapp.cpp" line="2348"/>
+        <location filename="../src/app/qgisapp.cpp" line="2420"/>
         <source>Invalid Layer</source>
         <translation>Chybná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2301"/>
-        <location filename="../src/app/qgisapp.cpp" line="2373"/>
+        <location filename="../src/app/qgisapp.cpp" line="2348"/>
+        <location filename="../src/app/qgisapp.cpp" line="2420"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 je chybná vrstva a nemůže být načtená.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3466"/>
+        <location filename="../src/app/qgisapp.cpp" line="3513"/>
         <source>Problem deleting features</source>
         <translation>Problém při mazání objektů</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3467"/>
+        <location filename="../src/app/qgisapp.cpp" line="3514"/>
         <source>A problem occured during deletion of features</source>
         <translation>Při mazání objektů se vyskytnul problém</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3437"/>
+        <location filename="../src/app/qgisapp.cpp" line="3484"/>
         <source>No Vector Layer Selected</source>
         <translation>Není zvolená žádná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3438"/>
+        <location filename="../src/app/qgisapp.cpp" line="3485"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Mazání objektů lze použít pouze u vektorových vrstev</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3429"/>
+        <location filename="../src/app/qgisapp.cpp" line="3476"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Před vymazáním objektu je třeba vybrat vektorovou vrstvu v okně legendy</translation>
     </message>
@@ -7343,14 +7343,14 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Vykreslování</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2675"/>
-        <location filename="../src/app/qgisapp.cpp" line="2816"/>
-        <location filename="../src/app/qgisapp.cpp" line="2878"/>
+        <location filename="../src/app/qgisapp.cpp" line="2722"/>
+        <location filename="../src/app/qgisapp.cpp" line="2863"/>
+        <location filename="../src/app/qgisapp.cpp" line="2925"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS soubory (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2815"/>
+        <location filename="../src/app/qgisapp.cpp" line="2862"/>
         <source>Choose a QGIS project file</source>
         <translation>Vyberte soubor QGIS projektu</translation>
     </message>
@@ -7389,12 +7389,12 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Pokud je políčko zaškrtnuté, jsou mapové vrstvy vykreslovány v návaznosti na příkazy mapové navigace a jiné události. Pokud není zaškrtnuté, není vykreslená žádná vrstva. To umožnuje přidat množství vrstev a upravit jejich symboliku před samotným vykreslením.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2700"/>
+        <location filename="../src/app/qgisapp.cpp" line="2747"/>
         <source>QGIS Project Read Error</source>
         <translation>Chyba při načítání QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6092"/>
+        <location filename="../src/app/qgisapp.cpp" line="6139"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Otevřít rastrový datový zdroj podporovaný knihovnou GDAL</translation>
     </message>
@@ -7404,12 +7404,12 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Přepnout vykreslování mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2560"/>
+        <location filename="../src/app/qgisapp.cpp" line="2607"/>
         <source>Save As</source>
         <translation>Uložit jako</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2675"/>
+        <location filename="../src/app/qgisapp.cpp" line="2722"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Otevřít vybraný soubor QGIS projektu</translation>
     </message>
@@ -7610,7 +7610,7 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation type="obsolete">Zobrazit záložky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6476"/>
+        <location filename="../src/app/qgisapp.cpp" line="6523"/>
         <source>New Bookmark</source>
         <translation>Nová záložka</translation>
     </message>
@@ -7707,8 +7707,9 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation type="obsolete">Atributy</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="2042"/>
         <source>Plugins</source>
-        <translation type="obsolete">Zásuvné moduly</translation>
+        <translation type="unfinished">Zásuvné moduly</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1284"/>
@@ -7716,59 +7717,59 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Připraven</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6690"/>
+        <location filename="../src/app/qgisapp.cpp" line="6737"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2741"/>
+        <location filename="../src/app/qgisapp.cpp" line="2788"/>
         <source>Unable to open project</source>
         <translation>Nelze otevřít projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5044"/>
-        <location filename="../src/app/qgisapp.cpp" line="5086"/>
-        <location filename="../src/app/qgisapp.cpp" line="6261"/>
+        <location filename="../src/app/qgisapp.cpp" line="5091"/>
+        <location filename="../src/app/qgisapp.cpp" line="5133"/>
+        <location filename="../src/app/qgisapp.cpp" line="6308"/>
         <source>Layer is not valid</source>
         <translation>Vrstva není platná</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5087"/>
-        <location filename="../src/app/qgisapp.cpp" line="6262"/>
+        <location filename="../src/app/qgisapp.cpp" line="5134"/>
+        <location filename="../src/app/qgisapp.cpp" line="6309"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Vrstva není platnou vrstvou a nemůže být přidána do mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5132"/>
+        <location filename="../src/app/qgisapp.cpp" line="5179"/>
         <source>Save?</source>
         <translation>Uložit?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5133"/>
+        <location filename="../src/app/qgisapp.cpp" line="5180"/>
         <source>Do you want to save the current project?</source>
         <translation>Přejete si uložit aktuální projekt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6360"/>
+        <location filename="../src/app/qgisapp.cpp" line="6407"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodporovaný datový zdroj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6477"/>
+        <location filename="../src/app/qgisapp.cpp" line="6524"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Zadejte název pro novou záložku:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="917"/>
-        <location filename="../src/app/qgisapp.cpp" line="4223"/>
-        <location filename="../src/app/qgisapp.cpp" line="4305"/>
-        <location filename="../src/app/qgisapp.cpp" line="4319"/>
-        <location filename="../src/app/qgisapp.cpp" line="6494"/>
+        <location filename="../src/app/qgisapp.cpp" line="4270"/>
+        <location filename="../src/app/qgisapp.cpp" line="4352"/>
+        <location filename="../src/app/qgisapp.cpp" line="4366"/>
+        <location filename="../src/app/qgisapp.cpp" line="6541"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6494"/>
+        <location filename="../src/app/qgisapp.cpp" line="6541"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nelze vytvořit novou záložku. Vaše uživatelská databáze může chybět nebo být poškozena</translation>
     </message>
@@ -7924,24 +7925,24 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Spouštím Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3444"/>
+        <location filename="../src/app/qgisapp.cpp" line="3491"/>
         <source>Provider does not support deletion</source>
         <translation>Nástroj pro správu dat nepodporuje mazání</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3445"/>
+        <location filename="../src/app/qgisapp.cpp" line="3492"/>
         <source>Data provider does not support deleting features</source>
         <translation>Nástroj pro správu data nepodporuje mazání objektů</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3451"/>
-        <location filename="../src/app/qgisapp.cpp" line="3737"/>
-        <location filename="../src/app/qgisapp.cpp" line="3796"/>
+        <location filename="../src/app/qgisapp.cpp" line="3498"/>
+        <location filename="../src/app/qgisapp.cpp" line="3784"/>
+        <location filename="../src/app/qgisapp.cpp" line="3843"/>
         <source>Layer not editable</source>
         <translation>Vrstva není editovatelná</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3452"/>
+        <location filename="../src/app/qgisapp.cpp" line="3499"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Aktuální vrstva není editovatelná. Vyberte &apos;Započít editaci&apos; z lišty digitalizace.</translation>
     </message>
@@ -7968,22 +7969,22 @@ Tuto zprávu vidíte nejspíš proto, že nemáte nastavenou proměnnou DISPLAY.
         <translation>Aktuální měřítko mapy (ve formě x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5451"/>
+        <location filename="../src/app/qgisapp.cpp" line="5498"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Souřadnice mapy v místě kurzoru</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4392"/>
+        <location filename="../src/app/qgisapp.cpp" line="4439"/>
         <source>Invalid scale</source>
         <translation>Chybné měřítko</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4789"/>
+        <location filename="../src/app/qgisapp.cpp" line="4836"/>
         <source>Network error while communicating with server</source>
         <translation>Chyba sítě při komunikaci se serverem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4792"/>
+        <location filename="../src/app/qgisapp.cpp" line="4839"/>
         <source>Unknown network socket error</source>
         <translation>Neznámá chyba sítě</translation>
     </message>
@@ -8104,65 +8105,65 @@ This copy of QGIS writes debugging output.</source>
         <translation>Tato kopie QGISu zapisuje výstup pro odstranění chyb.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3823"/>
-        <location filename="../src/app/qgisapp.cpp" line="3865"/>
+        <location filename="../src/app/qgisapp.cpp" line="3870"/>
+        <location filename="../src/app/qgisapp.cpp" line="3912"/>
         <source>Merge failed</source>
         <translation>Sloučení selhalo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3823"/>
-        <location filename="../src/app/qgisapp.cpp" line="3865"/>
+        <location filename="../src/app/qgisapp.cpp" line="3870"/>
+        <location filename="../src/app/qgisapp.cpp" line="3912"/>
         <source>An error occured during the merge operation</source>
         <translation>Během slučování došlo k chybě</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4553"/>
+        <location filename="../src/app/qgisapp.cpp" line="4600"/>
         <source>GPS Information</source>
         <translation>GPS informace</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5383"/>
+        <location filename="../src/app/qgisapp.cpp" line="5430"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5390"/>
+        <location filename="../src/app/qgisapp.cpp" line="5437"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5491"/>
+        <location filename="../src/app/qgisapp.cpp" line="5538"/>
         <source>Extents:</source>
         <translation>Rozsahy:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6509"/>
+        <location filename="../src/app/qgisapp.cpp" line="6556"/>
         <source>Project file is older</source>
         <translation>Soubor projektu je starší</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6690"/>
+        <location filename="../src/app/qgisapp.cpp" line="6737"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Tato vrstva nemá dialog valstností.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6721"/>
+        <location filename="../src/app/qgisapp.cpp" line="6768"/>
         <source>Authentication required</source>
         <translation>Požadováno ověření</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6737"/>
+        <location filename="../src/app/qgisapp.cpp" line="6784"/>
         <source>Proxy authentication required</source>
         <translation>Požadováno ověření proxy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6526"/>
+        <location filename="../src/app/qgisapp.cpp" line="6573"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Nastavení:Volby:Obecné&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6527"/>
+        <location filename="../src/app/qgisapp.cpp" line="6574"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Varuj mě při ukládání otevřeného projektu ve starší verzi QGISu</translation>
     </message>
@@ -8406,7 +8407,7 @@ Prosím kontaktujte vývojáře.
         <translation type="obsolete">Přesunout anotaci</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3290"/>
+        <location filename="../src/app/qgisapp.cpp" line="3337"/>
         <source>Labeling</source>
         <translation>Tvorba popisků</translation>
     </message>
@@ -8666,7 +8667,7 @@ Prosím kontaktujte vývojáře.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1188"/>
-        <location filename="../src/app/qgisapp.cpp" line="5453"/>
+        <location filename="../src/app/qgisapp.cpp" line="5500"/>
         <source>Coordinate:</source>
         <translation>Souřadnice:</translation>
     </message>
@@ -8722,7 +8723,7 @@ Prosím kontaktujte vývojáře.
         <translation type="obsolete">Neaktivní SRS projektu: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6761"/>
+        <location filename="../src/app/qgisapp.cpp" line="6808"/>
         <source>
 
 Always ignore these errors?</source>
@@ -8731,7 +8732,7 @@ Always ignore these errors?</source>
 Vždy ignorovat tyto chyby?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6765"/>
+        <location filename="../src/app/qgisapp.cpp" line="6812"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -8765,218 +8766,176 @@ This copy of QGIS has been built with QWT %1.</source>
 Tato kopie QGISu byla vytvořena s podporou QWT %1.</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/app/qgisapp.cpp" line="1945"/>
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation>Co je nového ve verzi 1.6.0 &apos;Capiapó&apos;?</translation>
+        <translation type="obsolete">Co je nového ve verzi 1.6.0 &apos;Capiapó&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1947"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
-        <translation>Berte prosím v potaz, že toto je vydání naší série &quot;horkých novinek&quot;. Jako taková obsahuje nové vlastnosti a rozšiřuje programátorské rozhraní přes QGIS 1.0.x a QGIS 1.5.0. Doporučujeme použít tuto verzi místo předchozích vydání.</translation>
+        <translation type="obsolete">Berte prosím v potaz, že toto je vydání naší série &quot;horkých novinek&quot;. Jako taková obsahuje nové vlastnosti a rozšiřuje programátorské rozhraní přes QGIS 1.0.x a QGIS 1.5.0. Doporučujeme použít tuto verzi místo předchozích vydání.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1950"/>
         <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation>toto vydání zahrnuje přes 177 oprav chyb a mnoho nových funkcí a vylepšení. Opět není možné zdokumentovat zde vše, proto zde uvedeme pouze stručný seznam klíčových nových vlastností.</translation>
+        <translation type="obsolete">toto vydání zahrnuje přes 177 oprav chyb a mnoho nových funkcí a vylepšení. Opět není možné zdokumentovat zde vše, proto zde uvedeme pouze stručný seznam klíčových nových vlastností.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1953"/>
         <source>General Improvements</source>
-        <translation>Obecná vylepšení</translation>
+        <translation type="obsolete">Obecná vylepšení</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1955"/>
         <source>Added gpsd support to live gps tracking.</source>
-        <translation>Přidána podpora gpsd pro živé gps sledování.</translation>
+        <translation type="obsolete">Přidána podpora gpsd pro živé gps sledování.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1956"/>
         <source>A new plugin has been included that allows for offline editing.</source>
-        <translation>Nový zásuvný modul, který umožňuje offline editaci.</translation>
+        <translation type="obsolete">Nový zásuvný modul, který umožňuje offline editaci.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1957"/>
         <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
-        <translation>Kalkulátor polí vloží nyní NULL hodnotu prvku v případě chyby výpočtu místo zastavení a stornování celého výpočtu pro všechny prvky.</translation>
+        <translation type="obsolete">Kalkulátor polí vloží nyní NULL hodnotu prvku v případě chyby výpočtu místo zastavení a stornování celého výpočtu pro všechny prvky.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1958"/>
         <source>Update srs.db to include grid reference.</source>
-        <translation>Aktualizována srs.db aby zahrnovala reference gridu.</translation>
+        <translation type="obsolete">Aktualizována srs.db aby zahrnovala reference gridu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1959"/>
         <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
-        <translation>Přidána nativní (C++) implementace rastrového kalkulátoru který je schopen efektivně pracovat i s velkými rastry.</translation>
+        <translation type="obsolete">Přidána nativní (C++) implementace rastrového kalkulátoru který je schopen efektivně pracovat i s velkými rastry.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
-        <translation>Zlepšena interakce s widgetem rozsahů ve stavové liště, takže textový obsah widgetu může být zkopírován a vložen.</translation>
+        <translation type="obsolete">Zlepšena interakce s widgetem rozsahů ve stavové liště, takže textový obsah widgetu může být zkopírován a vložen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
-        <translation>Mnoho vylepšení a nové operace v Kalkulátoru polí zahrnující řetězení polí, počítadlo řádků atd.</translation>
+        <translation type="obsolete">Mnoho vylepšení a nové operace v Kalkulátoru polí zahrnující řetězení polí, počítadlo řádků atd.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1962"/>
         <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
-        <translation>Přidána možnost --configpath která přepíše výchozí cestu  (~/.qgis) pro uživatelské nastavení a donutí QSettings také použít tuto složku. To uživatelům dovolí např. přenášet instalaci QGISu na flash disku spolu se všemi nastaveními a zásuvnými moduly.</translation>
+        <translation type="obsolete">Přidána možnost --configpath která přepíše výchozí cestu  (~/.qgis) pro uživatelské nastavení a donutí QSettings také použít tuto složku. To uživatelům dovolí např. přenášet instalaci QGISu na flash disku spolu se všemi nastaveními a zásuvnými moduly.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1963"/>
         <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
-        <translation>Experimentální podpora WFS-T. Dodatečně portován wfs do správce sítí.</translation>
+        <translation type="obsolete">Experimentální podpora WFS-T. Dodatečně portován wfs do správce sítí.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1964"/>
         <source>Georeferencer has had many tidy ups and improvements.</source>
-        <translation>Georeferencer absolvoval úklid kódu a mnoho vylepšení.</translation>
+        <translation type="obsolete">Georeferencer absolvoval úklid kódu a mnoho vylepšení.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Support for long int in attribute dialog and editor.</source>
-        <translation>Podpora pro long int v atributovém dialogu a editoru.</translation>
+        <translation type="obsolete">Podpora pro long int v atributovém dialogu a editoru.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1966"/>
         <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
-        <translation>Projekt QGIS Mapserver byl zahrnut do hlavního SVN repozitáře a balíčky se začínají dávat k dispozici. QGIS Mapserver vám umožňuje poskytovat soubory vašeho QGIS projektu přes OGC WMS protokol.</translation>
+        <translation type="obsolete">Projekt QGIS Mapserver byl zahrnut do hlavního SVN repozitáře a balíčky se začínají dávat k dispozici. QGIS Mapserver vám umožňuje poskytovat soubory vašeho QGIS projektu přes OGC WMS protokol.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1966"/>
-        <location filename="../src/app/qgisapp.cpp" line="1987"/>
         <source>Read More.</source>
-        <translation>Čtěte více.</translation>
+        <translation type="obsolete">Čtěte více.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1967"/>
         <source>Select and measure toolbar flyouts and submenus.</source>
-        <translation>Nástrojový panel výběru a měření a jejich podmenu.</translation>
+        <translation type="obsolete">Nástrojový panel výběru a měření a jejich podmenu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1968"/>
         <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
-        <translation>Byla přidána podpora pro neprostorové tabulky (aktuálně OGR, oddělený text a PostgreSQL poskytovatelé). Tyto tabulky mohou být použity pro prohledávání polí nebo obecně prohlíženy a editovány v rámci tabulkového zobrazení.</translation>
+        <translation type="obsolete">Byla přidána podpora pro neprostorové tabulky (aktuálně OGR, oddělený text a PostgreSQL poskytovatelé). Tyto tabulky mohou být použity pro prohledávání polí nebo obecně prohlíženy a editovány v rámci tabulkového zobrazení.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1969"/>
         <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
-        <translation>Přidána podpora vyhledávacích řetězců pro id prvků ($id) a další rozličná vylepšení vyhledávání.</translation>
+        <translation type="obsolete">Přidána podpora vyhledávacích řetězců pro id prvků ($id) a další rozličná vylepšení vyhledávání.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1970"/>
         <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
-        <translation>Přidána možnost znovunačtení k mapovým vrstvám a rozhraní poskytovatele. Takto mohou kešující poskytovatelé (aktuálně WMS a WFS) synchronizovat se změnami v datovém zdroji.</translation>
+        <translation type="obsolete">Přidána možnost znovunačtení k mapovým vrstvám a rozhraní poskytovatele. Takto mohou kešující poskytovatelé (aktuálně WMS a WFS) synchronizovat se změnami v datovém zdroji.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1973"/>
         <source>Table of contents (TOC) improvements</source>
-        <translation>Vylepšení panelu Vrstvy</translation>
+        <translation type="obsolete">Vylepšení panelu Vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1975"/>
         <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
-        <translation>Přidána nová možnost do menu legendy rastru, která roztáhne aktuální vrstvu za použití min a max hodnot pixelů v aktuálním rozsahu.</translation>
+        <translation type="obsolete">Přidána nová možnost do menu legendy rastru, která roztáhne aktuální vrstvu za použití min a max hodnot pixelů v aktuálním rozsahu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1976"/>
         <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
-        <translation>Při zapisování vektorových souborů za použití kontext menu v okně Vrstvy, můžete nyní zadat možnosti pro zápise pomocí OGR.</translation>
+        <translation type="obsolete">Při zapisování vektorových souborů za použití kontext menu v okně Vrstvy, můžete nyní zadat možnosti pro zápise pomocí OGR.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1977"/>
         <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
-        <translation>V okně vrstvy je nyní možné vybrat a odstranit nebo posunout více vrstev najednou.</translation>
+        <translation type="obsolete">V okně vrstvy je nyní možné vybrat a odstranit nebo posunout více vrstev najednou.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1980"/>
         <source>Labelling (New generation only)</source>
-        <translation>Popisky (pouze u nové symbologie)</translation>
+        <translation type="obsolete">Popisky (pouze u nové symbologie)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1982"/>
         <source>Data defined label position.</source>
-        <translation>Daty definovaná pozice popisku.</translation>
+        <translation type="obsolete">Daty definovaná pozice popisku.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1983"/>
         <source>Line wrapping, data defined font and buffer settings.</source>
-        <translation>Zalamování linie, daty definovaný font a nastavení bufferu.</translation>
+        <translation type="obsolete">Zalamování linie, daty definovaný font a nastavení bufferu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1985"/>
         <source>Layer properties and symbology</source>
-        <translation>Vlastnosti vrstvy a symbologie</translation>
+        <translation type="obsolete">Vlastnosti vrstvy a symbologie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1987"/>
         <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
-        <translation>Přidány tři nové režimy klasifikace do vykreslovače odstupňovaného symbolu (verze 2) zahrnující Natural Breaks (Jenks), Směrodatné odchylky, a Pretty Breaks (založené na pretty ze statistického prostředí R). </translation>
+        <translation type="obsolete">Přidány tři nové režimy klasifikace do vykreslovače odstupňovaného symbolu (verze 2) zahrnující Natural Breaks (Jenks), Směrodatné odchylky, a Pretty Breaks (založené na pretty ze statistického prostředí R). </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1988"/>
         <source>Improved loading speed of the symbol properties dialog.</source>
-        <translation>Vylepšena rychlost načítání dialogu vlastností symbolu.</translation>
+        <translation type="obsolete">Vylepšena rychlost načítání dialogu vlastností symbolu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1989"/>
         <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
-        <translation>Daty definovaná rotace a velikost pro kategorizované a odstuňované vykreslovače (nová symbologie).</translation>
+        <translation type="obsolete">Daty definovaná rotace a velikost pro kategorizované a odstuňované vykreslovače (nová symbologie).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1990"/>
         <source>Use size scale also for line symbols to modify line width.</source>
-        <translation>Lze využít měřítko  pro liniové symboly k upravení šířky linií.</translation>
+        <translation type="obsolete">Lze využít měřítko  pro liniové symboly k upravení šířky linií.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1991"/>
         <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
-        <translation>Nahrazen histogram rastru variantou založenou na Qwt. Přidána možnost uložit histogram jako obrázek. Zobrazuje hodnoty aktuálního pixelu na ose x rastrového histgramu.</translation>
+        <translation type="obsolete">Nahrazen histogram rastru variantou založenou na Qwt. Přidána možnost uložit histogram jako obrázek. Zobrazuje hodnoty aktuálního pixelu na ose x rastrového histgramu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1992"/>
         <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
-        <translation>Přidána schopnost interaktivně vybírat pixely z mapového okna pro zaplnění tabulky průhlednosti v dialogu vlastností rastru.</translation>
+        <translation type="obsolete">Přidána schopnost interaktivně vybírat pixely z mapového okna pro zaplnění tabulky průhlednosti v dialogu vlastností rastru.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1993"/>
         <source>Allow creation of color ramps in vector color ramp combo box.</source>
-        <translation>Možné vytvořit barevné rozsahy v dialogu barevných rozsahů.</translation>
+        <translation type="obsolete">Možné vytvořit barevné rozsahy v dialogu barevných rozsahů.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1994"/>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation>Přidáno tlačítko &quot;správce stylů...&quot; k výběru symbolu, takže uživatelé najdou Správce snadněji.</translation>
+        <translation type="obsolete">Přidáno tlačítko &quot;správce stylů...&quot; k výběru symbolu, takže uživatelé najdou Správce snadněji.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1997"/>
         <source>Map Composer</source>
-        <translation>Tvůrce mapy</translation>
+        <translation type="obsolete">Tvůrce mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1999"/>
         <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
-        <translation>přidána schopnost zobrazit a pracovat v Tvůrci mapy se šířkou/výškou položky v dialogu pozice položky.</translation>
+        <translation type="obsolete">přidána schopnost zobrazit a pracovat v Tvůrci mapy se šířkou/výškou položky v dialogu pozice položky.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2000"/>
         <source>Composer items can now be deleted with the backspace key.</source>
-        <translation>Položky tvůrce mapy mohou být smazány klávesou backspace.</translation>
+        <translation type="obsolete">Položky tvůrce mapy mohou být smazány klávesou backspace.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2001"/>
         <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
-        <translation>Řazení atributové tabulky v Tvůrci map (několik sloupců, vzestupně / sestupně).</translation>
+        <translation type="obsolete">Řazení atributové tabulky v Tvůrci map (několik sloupců, vzestupně / sestupně).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2167"/>
+        <location filename="../src/app/qgisapp.cpp" line="2214"/>
         <source>Select raster layers to add...</source>
         <translation>Vyberte rastrové vrstvy pro přidání...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2172"/>
+        <location filename="../src/app/qgisapp.cpp" line="2219"/>
         <source>Raster</source>
         <translation>Rastr</translation>
     </message>
@@ -9022,85 +8981,445 @@ QWT Version: %1.</source>
         <translation>
 QWT verze: %1.</translation>
     </message>
+    <message utf8="true">
+        <location filename="../src/app/qgisapp.cpp" line="1945"/>
+        <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/app/qgisapp.cpp" line="1947"/>
+        <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2206"/>
+        <location filename="../src/app/qgisapp.cpp" line="1950"/>
+        <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
+        <translation type="unfinished">toto vydání zahrnuje přes 177 oprav chyb a mnoho nových funkcí a vylepšení. Opět není možné zdokumentovat zde vše, proto zde uvedeme pouze stručný seznam klíčových nových vlastností. {277 ?}</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1953"/>
+        <source>Symbology labels and diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1955"/>
+        <source>New symbology now used by default!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1956"/>
+        <source>Diagram system that uses the same smart placement system as labeling-ng</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1957"/>
+        <source>Export and import of styles (symbology-ng).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1958"/>
+        <source>Labels for rules in rule-based renderers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1959"/>
+        <source>Ability to set label distance in map units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1960"/>
+        <source>Rotation for svg fills.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1961"/>
+        <source>Font marker can have an X,Y offset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1962"/>
+        <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1963"/>
+        <source>Option to put marker on the central point of a line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1964"/>
+        <source>Option to put marker only on first/last vertex of a line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1965"/>
+        <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1966"/>
+        <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1967"/>
+        <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1969"/>
+        <source>New Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1971"/>
+        <source>Added GUI for gdaldem.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1972"/>
+        <source>Added &apos;Lines to polygons&apos; tool to vector menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1973"/>
+        <source>Added field calculator with functions like $x, $y and $perimeter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1974"/>
+        <source>Added voronoi polygon tool to Vector menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1976"/>
+        <source>User interface updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1978"/>
+        <source>Allow managing missing layers in a list.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1979"/>
+        <source>Zoom to group of layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1980"/>
+        <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1981"/>
+        <source>Better organisation of menus, separate database menu added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1982"/>
+        <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1984"/>
+        <source>General clean-ups and usability improvements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1986"/>
+        <source>CRS Handling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1988"/>
+        <source>Show active crs in status bar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1989"/>
+        <source>Assign layer CRS to project (in the legend context menu).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1990"/>
+        <source>Select default CRS for new projects.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1991"/>
+        <source>Allow setting CRS for multiple layers at once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1992"/>
+        <source>Default to last selection when prompting for CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1994"/>
+        <source>Rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1996"/>
+        <source>Added AND and OR operator for raster calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1997"/>
+        <source>On-the-fly reprojection of rasters added!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1998"/>
+        <source>Proper implementation of raster providers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1999"/>
+        <source>Added raster toolbar with histogram stretch functions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2001"/>
+        <source>Providers and Data Handling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2003"/>
+        <source>New SQLAnywhere vector provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2004"/>
+        <source>Table join support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2005"/>
+        <source>Feature form updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2007"/>
+        <source>Make NULL value string representation configurable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2008"/>
+        <source>Fix feature updates in feature form from attribute table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2009"/>
+        <source>Add support for NULL values in value maps (comboboxes).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2010"/>
+        <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2011"/>
+        <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2012"/>
+        <source>Support searching for NULL in attribute table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2013"/>
+        <source>Attribute editing improvements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2015"/>
+        <source>Improved interactive attribute editing in table (adding/deleting features, attribute update).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2016"/>
+        <source>Allow adding of geometryless features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2017"/>
+        <source>Fixed attribute undo/redo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2018"/>
+        <source>Improved attribute handling.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2020"/>
+        <source>Optionally re-use entered attribute values for next digitized feature.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2021"/>
+        <source>Allow merging/assigning attribute values to a set of features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2022"/>
+        <source>Allow OGR &apos;save as&apos; without attributes (for eg. DGN/DXF).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2024"/>
+        <source>Api and Developer Centric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2026"/>
+        <source>Refactored attribute dialog calls to QgsFeatureAttribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2027"/>
+        <source>Added QgsVectorLayer::featureAdded signal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2028"/>
+        <source>Layer menu function added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2029"/>
+        <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2032"/>
+        <source>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2036"/>
+        <source>QGIS Mapserver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2038"/>
+        <source>Ability to specify wms service capabilities in the properties section of the project file (instead of wms_metadata.xml file).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2040"/>
+        <source>Support for wms printing with GetPrint-Request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2044"/>
+        <source>Support for icons of plugins in the plugin manager dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2045"/>
+        <source>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2046"/>
+        <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2048"/>
+        <source>Printing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2050"/>
+        <source>Undo/Redo support for the print composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2253"/>
         <source>Select vector layers to add...</source>
         <translation>Vyberte vektorové vrstvy pro přidání...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2650"/>
+        <location filename="../src/app/qgisapp.cpp" line="2697"/>
         <source>Calculating...</source>
         <translation>Probíhá výpočet...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2650"/>
+        <location filename="../src/app/qgisapp.cpp" line="2697"/>
         <source>Abort...</source>
         <translation>Zrušit...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2878"/>
+        <location filename="../src/app/qgisapp.cpp" line="2925"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Vyberte název, pod kterým chcete uložit QGIS projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3032"/>
+        <location filename="../src/app/qgisapp.cpp" line="3079"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Vyberte jméno souboru, do kterého se má uložit mapa jako obrázek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3395"/>
+        <location filename="../src/app/qgisapp.cpp" line="3442"/>
         <source>Saving done</source>
         <translation>Uloženo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3395"/>
+        <location filename="../src/app/qgisapp.cpp" line="3442"/>
         <source>Export to vector file has been completed</source>
         <translation>Export do vektorového souboru dokončen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3400"/>
+        <location filename="../src/app/qgisapp.cpp" line="3447"/>
         <source>Save error</source>
         <translation>Chyba ukládání</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3401"/>
+        <location filename="../src/app/qgisapp.cpp" line="3448"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Export do vektorového souboru selhal.
 Chyba: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3759"/>
+        <location filename="../src/app/qgisapp.cpp" line="3806"/>
         <source>Merged feature attributes</source>
         <translation>Sloučeny atributy prvku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4282"/>
+        <location filename="../src/app/qgisapp.cpp" line="4329"/>
         <source>Start editing failed</source>
         <translation>Editace selhala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4282"/>
+        <location filename="../src/app/qgisapp.cpp" line="4329"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Poskytovatel nemůže být otevřen pro editaci</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4293"/>
+        <location filename="../src/app/qgisapp.cpp" line="4340"/>
         <source>Stop editing</source>
         <translation>Ukončit editaci</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4294"/>
+        <location filename="../src/app/qgisapp.cpp" line="4341"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Chcete uložit změny do vrstrvy %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4319"/>
+        <location filename="../src/app/qgisapp.cpp" line="4366"/>
         <source>Problems during roll back</source>
         <translation>Problémy během při návratu zpět</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4575"/>
+        <location filename="../src/app/qgisapp.cpp" line="4622"/>
         <source>Tile scale</source>
         <translation>Měřítko dlaždice</translation>
     </message>
@@ -9109,22 +9428,22 @@ Chyba: %1</translation>
         <translation type="obsolete">Python konzole</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5045"/>
+        <location filename="../src/app/qgisapp.cpp" line="5092"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Vrstva %1 není platná vrstva a nemůže být přidána do mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5443"/>
+        <location filename="../src/app/qgisapp.cpp" line="5490"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Mapové souřadnice aktuální hranice pohledu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5564"/>
+        <location filename="../src/app/qgisapp.cpp" line="5611"/>
         <source>Maptips require an active layer</source>
         <translation>Mapové tipy vyžadují aktivní vrstvu</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5648"/>
+        <location filename="../src/app/qgisapp.cpp" line="5695"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -9134,7 +9453,7 @@ Chyba: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6748"/>
+        <location filename="../src/app/qgisapp.cpp" line="6795"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>Došlo k chybám SSLběhem přistupování k URL %1:</translation>
     </message>
@@ -9420,44 +9739,44 @@ Ignorovat chyby?</translation>
         <translation type="obsolete">Podpora více GEOS operátorů</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2122"/>
+        <location filename="../src/app/qgisapp.cpp" line="2169"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 nemá žádné vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2129"/>
+        <location filename="../src/app/qgisapp.cpp" line="2176"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 není platný nebo rozpoznaný zdroj dat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2847"/>
-        <location filename="../src/app/qgisapp.cpp" line="2898"/>
+        <location filename="../src/app/qgisapp.cpp" line="2894"/>
+        <location filename="../src/app/qgisapp.cpp" line="2945"/>
         <source>Saved project to: %1</source>
         <translation>Projekt uložen do: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2859"/>
-        <location filename="../src/app/qgisapp.cpp" line="2905"/>
+        <location filename="../src/app/qgisapp.cpp" line="2906"/>
+        <location filename="../src/app/qgisapp.cpp" line="2952"/>
         <source>Unable to save project %1</source>
         <translation>Nemohu uložit projekt %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3037"/>
+        <location filename="../src/app/qgisapp.cpp" line="3084"/>
         <source>Saved map image to %1</source>
         <translation>Soubor obrázku uložen do %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3290"/>
+        <location filename="../src/app/qgisapp.cpp" line="3337"/>
         <source>Please select a vector layer first.</source>
         <translation>Vyberte prosím nejdřív vektorovou vrstvu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3458"/>
+        <location filename="../src/app/qgisapp.cpp" line="3505"/>
         <source>Delete features</source>
         <translation>Smazat prvky</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3458"/>
+        <location filename="../src/app/qgisapp.cpp" line="3505"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -9467,99 +9786,99 @@ Ignorovat chyby?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3463"/>
+        <location filename="../src/app/qgisapp.cpp" line="3510"/>
         <source>Features deleted</source>
         <translation>Prvky smazány</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3508"/>
+        <location filename="../src/app/qgisapp.cpp" line="3555"/>
         <source>Merging features...</source>
         <translation>Slučuji prvky...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3508"/>
+        <location filename="../src/app/qgisapp.cpp" line="3555"/>
         <source>Abort</source>
         <translation>Přerušit</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3561"/>
-        <location filename="../src/app/qgisapp.cpp" line="3594"/>
+        <location filename="../src/app/qgisapp.cpp" line="3608"/>
+        <location filename="../src/app/qgisapp.cpp" line="3641"/>
         <source>Composer %1</source>
         <translation>Tvůrce mapy %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3724"/>
-        <location filename="../src/app/qgisapp.cpp" line="3785"/>
+        <location filename="../src/app/qgisapp.cpp" line="3771"/>
+        <location filename="../src/app/qgisapp.cpp" line="3832"/>
         <source>No active layer</source>
         <translation>Žádná aktivní vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3724"/>
-        <location filename="../src/app/qgisapp.cpp" line="3785"/>
+        <location filename="../src/app/qgisapp.cpp" line="3771"/>
+        <location filename="../src/app/qgisapp.cpp" line="3832"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Nenalezena žádná aktivní vrstva. Prosím vyberte vrstvu v seznamu vrstev</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3731"/>
-        <location filename="../src/app/qgisapp.cpp" line="3791"/>
+        <location filename="../src/app/qgisapp.cpp" line="3778"/>
+        <location filename="../src/app/qgisapp.cpp" line="3838"/>
         <source>Active layer is not vector</source>
         <translation>Aktivní vrstva není vektorová</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3731"/>
-        <location filename="../src/app/qgisapp.cpp" line="3791"/>
+        <location filename="../src/app/qgisapp.cpp" line="3778"/>
+        <location filename="../src/app/qgisapp.cpp" line="3838"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Nástroj sloučení prvků funguje pouze na vektorové vrstvy. Vyberte prosím vektorovou vrstvu ze seznamu vrstev</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3737"/>
-        <location filename="../src/app/qgisapp.cpp" line="3796"/>
+        <location filename="../src/app/qgisapp.cpp" line="3784"/>
+        <location filename="../src/app/qgisapp.cpp" line="3843"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Slučování prvků je možné pouze pro vrstvy v editačním módu. K použití nástroje slučování, jdete na Vrstva-&gt;Přepnout editaci</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3745"/>
-        <location filename="../src/app/qgisapp.cpp" line="3811"/>
-        <location filename="../src/app/qgisapp.cpp" line="3850"/>
+        <location filename="../src/app/qgisapp.cpp" line="3792"/>
+        <location filename="../src/app/qgisapp.cpp" line="3858"/>
+        <location filename="../src/app/qgisapp.cpp" line="3897"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Nástroj slučování vyžaduje alespoň dva vybrané prvky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3745"/>
-        <location filename="../src/app/qgisapp.cpp" line="3811"/>
-        <location filename="../src/app/qgisapp.cpp" line="3850"/>
+        <location filename="../src/app/qgisapp.cpp" line="3792"/>
+        <location filename="../src/app/qgisapp.cpp" line="3858"/>
+        <location filename="../src/app/qgisapp.cpp" line="3897"/>
         <source>Not enough features selected</source>
         <translation>Nebyl vybrán dostatek prvků</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3833"/>
-        <location filename="../src/app/qgisapp.cpp" line="3874"/>
+        <location filename="../src/app/qgisapp.cpp" line="3880"/>
+        <location filename="../src/app/qgisapp.cpp" line="3921"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Operace sjednocení by vytvořila typ geometrie nekompatibilní s aktuální vrstvou a proto byla zrušena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3833"/>
+        <location filename="../src/app/qgisapp.cpp" line="3880"/>
         <source>Union operation canceled</source>
         <translation>Operace Sjednocení zrušena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3880"/>
+        <location filename="../src/app/qgisapp.cpp" line="3927"/>
         <source>Merged features</source>
         <translation>Sloučené prvky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4077"/>
+        <location filename="../src/app/qgisapp.cpp" line="4124"/>
         <source>Features cut</source>
         <translation>Prvky vyjmuty</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4125"/>
+        <location filename="../src/app/qgisapp.cpp" line="4172"/>
         <source>Features pasted</source>
         <translation>Prvky vloženy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4224"/>
-        <location filename="../src/app/qgisapp.cpp" line="4306"/>
+        <location filename="../src/app/qgisapp.cpp" line="4271"/>
+        <location filename="../src/app/qgisapp.cpp" line="4353"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -9570,59 +9889,59 @@ Chyby: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4757"/>
+        <location filename="../src/app/qgisapp.cpp" line="4804"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS - změny v SVN od posledního vydání</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4797"/>
+        <location filename="../src/app/qgisapp.cpp" line="4844"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Nemohu komunikovat se serverem verzí QGISu
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4856"/>
-        <location filename="../src/app/qgisapp.cpp" line="4865"/>
+        <location filename="../src/app/qgisapp.cpp" line="4903"/>
+        <location filename="../src/app/qgisapp.cpp" line="4912"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Pro provedení celkového roztažení histogramu musíte nejdříve vybrat rastrovou vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4888"/>
-        <location filename="../src/app/qgisapp.cpp" line="4931"/>
+        <location filename="../src/app/qgisapp.cpp" line="4935"/>
+        <location filename="../src/app/qgisapp.cpp" line="4978"/>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
         <translation>Pro provedení lokálního roztažení histogramu musíte nejdříve vybrat rastrovou vrstvu ve stupních šedi nebo multipásmovou (jedna multipásmová vrstva, jednopásmová ve stupních šedi nebo multipásmová barevná).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4903"/>
-        <location filename="../src/app/qgisapp.cpp" line="4912"/>
+        <location filename="../src/app/qgisapp.cpp" line="4950"/>
+        <location filename="../src/app/qgisapp.cpp" line="4959"/>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
         <translation>Pro provedení lokálního roztažení histogramu musíte nejdříve vybrat rastrovou vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4864"/>
         <location filename="../src/app/qgisapp.cpp" line="4911"/>
+        <location filename="../src/app/qgisapp.cpp" line="4958"/>
         <source>No Raster Layer Selected</source>
         <translation>Nevybrána žádná rastrová vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4887"/>
-        <location filename="../src/app/qgisapp.cpp" line="4930"/>
+        <location filename="../src/app/qgisapp.cpp" line="4934"/>
+        <location filename="../src/app/qgisapp.cpp" line="4977"/>
         <source>No Valid Raster Layer Selected</source>
         <translation>Nevybrána žádná platná rastrová vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6179"/>
+        <location filename="../src/app/qgisapp.cpp" line="6226"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 není platný nebo rozpoznaný zdroj rastrových dat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6355"/>
+        <location filename="../src/app/qgisapp.cpp" line="6402"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 není podporovaný zdroj rastrových dat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6510"/>
+        <location filename="../src/app/qgisapp.cpp" line="6557"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Tento soubor projektu byl uložen ve starší verzi QGISu. Při ukládání ho QGIS aktualizuje na nejnovější verzi, což může způsobit jeho nepoužitelnost ve starší verzi QGISu.&lt;p&gt;Přestože se vývojáři QGISu snaží zajistit zpětnou kompatibilitu, některé informace ze starého projektu mohou být ztraceny. V zájmu zlepšování kvality QGISu bychom ocenili, abyste případnou chybu hlásili na %3. Ujistěte se, že jste přiložili starý soubor projektu a uveďte vámi používanou verzi QGISu, abychom mohli chybu objevit a odstranit.&lt;p&gt;K odstranění tohoto varování při otvírání projektu starší verze, zrušte zaškrtnutí políčka &apos;%5&apos; v menu %4.&lt;p&gt;Verze souboru projektu: %1&lt;br&gt;Aktuální verze QGISu: %2</translation>
     </message>
@@ -10206,17 +10525,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeEditor</name>
     <message>
-        <location filename="../src/gui/qgsattributeeditor.cpp" line="56"/>
+        <location filename="../src/gui/qgsattributeeditor.cpp" line="57"/>
         <source>Select a file</source>
         <translation>Vybrat soubor</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsattributeeditor.cpp" line="78"/>
+        <location filename="../src/gui/qgsattributeeditor.cpp" line="79"/>
         <source>Select a date</source>
         <translation>Zvolte datum</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsattributeeditor.cpp" line="417"/>
+        <location filename="../src/gui/qgsattributeeditor.cpp" line="406"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -16034,52 +16353,52 @@ Vyberte prosím nějaký platný soubor.</translation>
 <context>
     <name>QgsGdalProvider</name>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="431"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="411"/>
         <source>Dataset Description</source>
         <translation>Popis datasetu</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="452"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="432"/>
         <source>Band %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="483"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="463"/>
         <source>Dimensions:</source>
         <translation>Rozměry:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="486"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="466"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 Kanálů: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="518"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="498"/>
         <source>Origin:</source>
         <translation>Počátek:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="527"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="507"/>
         <source>Pixel Size:</source>
         <translation>Velikost pixelu:</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1087"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1067"/>
         <source>out of extent</source>
         <translation>mimo rozsah</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1126"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1106"/>
         <source>null (no data)</source>
         <translation>null (žádná data)</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1462"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1442"/>
         <source>Average Magphase</source>
         <translation>Průměrná Magphase</translation>
     </message>
     <message>
-        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1467"/>
+        <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1447"/>
         <source>Average</source>
         <translation>Průměr</translation>
     </message>
@@ -21306,12 +21625,12 @@ To může být problém vašeho síťového nastavení nebo WMS serveru.</numeru
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="237"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="246"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="255"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="370"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="396"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="444"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="470"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="520"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="547"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="372"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="398"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="448"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="474"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="524"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="551"/>
         <source>Loading connections</source>
         <translation>Načítám připojení</translation>
     </message>
@@ -21333,26 +21652,26 @@ To může být problém vašeho síťového nastavení nebo WMS serveru.</numeru
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="238"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="371"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="373"/>
         <source>The file is not an WMS connections exchange file.</source>
         <translation>Tento soubor není výměnným souborem připojení WMS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="247"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="445"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="449"/>
         <source>The file is not an WFS connections exchange file.</source>
         <translation>Tento soubor není výměnným souborem připojení WFS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="256"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="521"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="525"/>
         <source>The file is not an PostGIS connections exchange file.</source>
         <translation>Tento soubor není výměnným souborem připojení PostGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="397"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="471"/>
-        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="548"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="399"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="475"/>
+        <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="552"/>
         <source>Connection with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation>Připojení nazvané &apos;%1&apos; už existuje. Přepsat?</translation>
     </message>
@@ -22573,12 +22892,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsNewHttpConnection</name>
     <message>
-        <location filename="../src/app/qgsnewhttpconnection.cpp" line="70"/>
+        <location filename="../src/app/qgsnewhttpconnection.cpp" line="82"/>
         <source>Save connection</source>
         <translation>Uložit připojení</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewhttpconnection.cpp" line="71"/>
+        <location filename="../src/app/qgsnewhttpconnection.cpp" line="83"/>
         <source>Should the existing connection %1 be overwritten?</source>
         <translation>Má být existující připojení %1 přepsáno?</translation>
     </message>
@@ -22586,29 +22905,39 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsNewHttpConnectionBase</name>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="32"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="85"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="64"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="39"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="52"/>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
         <translation>Pokud služba vyžaduje základní autentifikaci, zadejte uživatelské jméno a případně heslo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="107"/>
         <source>Name of the new connection</source>
         <translation>Název nového spojení</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="77"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="117"/>
         <source>HTTP address of the Web Map Server</source>
         <translation>Adresa HTTP Web Map Server</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="134"/>
+        <source>Ignore GetFeatureInfo URI reported in capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="141"/>
+        <source>Ignore GetMap URI reported in capabilities</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
@@ -22616,7 +22945,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <translation>Vytvořit nové WMS spojení</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="26"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="33"/>
         <source>Connection details</source>
         <translation>Podrobnosti spojení</translation>
     </message>
@@ -22625,12 +22954,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <translation type="obsolete">Pokud WMS požaduje základní autentizaci, zadejte uživatelské jméno a případně heslo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="97"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="75"/>
         <source>&amp;User name</source>
         <translation>&amp;Uživatelské jméno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="117"/>
+        <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="65"/>
         <source>Password</source>
         <translation>Heslo</translation>
     </message>
@@ -26630,33 +26959,33 @@ Chcete zkusit najít chybějící vrstvy?</translation>
         <translation>Rastr</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="390"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="528"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="393"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="533"/>
         <source>Coordinate System Restriction</source>
         <translation>Omezení souřadnicového systému</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="390"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="393"/>
         <source>No coordinate systems selected. Disabling restriction.</source>
         <translation>Nevybrány žádné souřadnicové systémy.Vypínám omezení.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="428"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="433"/>
         <source>Selection color</source>
         <translation>Barva výběru</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="528"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="533"/>
         <source>CRS %1 was already selected</source>
         <translation>SRS %1 už byl vybrán</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="546"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="551"/>
         <source>Coordinate System Restrictions</source>
         <translation>Omezení souřadnicového sstému</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="547"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="552"/>
         <source>The current selection of coordinate systems will be lost.
 Proceed?</source>
         <translation>Aktuální výběr souřadnicového systému bude ztracen.
@@ -26818,6 +27147,11 @@ Pokračovat?</translation>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="596"/>
         <source>Used</source>
         <translation>Použitý</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="606"/>
+        <source>Add WKT geometry to feature info response</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons...</source>
@@ -29923,29 +30257,29 @@ Chyba byla:
         <translation>Možnosti přichytávání a digitalizace</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="166"/>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="276"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="151"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="236"/>
         <source>to vertex</source>
         <translation>k lomovému bodu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="167"/>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="280"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="155"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="237"/>
         <source>to segment</source>
         <translation>k segmentu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="168"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="238"/>
         <source>to vertex and segment</source>
         <translation>k lomovému bodu a segmentu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="182"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="252"/>
         <source>map units</source>
         <translation>mapových jednotek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssnappingdialog.cpp" line="183"/>
+        <location filename="../src/app/qgssnappingdialog.cpp" line="253"/>
         <source>pixels</source>
         <translation>pixelů</translation>
     </message>
@@ -30260,7 +30594,7 @@ Chyba byla:
         <translation type="obsolete">Nedostatečný počet vrstev</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="164"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="166"/>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation>
@@ -30270,7 +30604,7 @@ Chyba byla:
         </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="165"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="167"/>
         <source>Selected geometries</source>
         <translation>Vybrané geometrie</translation>
     </message>
@@ -30287,7 +30621,7 @@ Chyba byla:
         <translation type="obsolete">Dotaz:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="209"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="211"/>
         <source>&lt; %1 &gt;</source>
         <translation>&lt; %1 &gt;</translation>
     </message>
@@ -30300,13 +30634,13 @@ Chyba byla:
         <translation type="obsolete">-- Dokončeno na [%L1] (čas zpracování %L2 minut) --&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="319"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="348"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="321"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="350"/>
         <source>%1 of %2</source>
         <translation>%1 z %2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="320"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="322"/>
         <source>all = %1</source>
         <translation>vše = %1</translation>
     </message>
@@ -30315,114 +30649,114 @@ Chyba byla:
         <translation type="obsolete">Souhrný</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="85"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="86"/>
         <source>The spatial query requires at least two vector layers</source>
         <translation>Prostorový dotaz vyžaduje alespoň dvě vektorové vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="202"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="204"/>
         <source>%1)Query</source>
         <translation>%1)Dotaz</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="204"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="206"/>
         <source>Begin at %L1</source>
         <translation>Začít na %L1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="213"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="215"/>
         <source>Total of features =  %1</source>
         <translation>Celkem prvků =  %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="216"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="218"/>
         <source>Total of invalid features:</source>
         <translation>Celkem neplatných prvků:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="221"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="223"/>
         <source>Finish at %L1 (processing time %L2 minutes)</source>
         <translation>Dokončeno na %L1 (čas zpracování %L2 minut)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="284"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="286"/>
         <source>Using the field &quot;%1&quot; for subset</source>
         <translation>Použivám pole &quot;%1&quot; pro subsadu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="287"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="289"/>
         <source>Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE.</source>
         <translation>Pardon! Povoleni jsou pouze tito poskytovatelé: OGR, POSTGRES and SPATIALITE.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="347"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="349"/>
         <source>%1 of %2(selected features)</source>
         <translation>%1 z %2(vybraných prvků)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="512"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="514"/>
         <source>Create new selection</source>
         <translation>Vytvořit nový výběr</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="520"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="522"/>
         <source>Add to current selection</source>
         <translation>Přidat k aktuálnímu výběru</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="523"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="525"/>
         <source>Remove from current selection</source>
         <translation>Odstranit z aktuálního výběru</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="532"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="534"/>
         <source>Result query</source>
         <translation>Výsledný dotaz</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="534"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="536"/>
         <source>Invalid source</source>
         <translation>Neplatný zdroj</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="536"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="538"/>
         <source>Invalid reference</source>
         <translation>Neplatná reference</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="650"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="652"/>
         <source>%1 of %2 selected by &quot;%3&quot;</source>
         <translation>%1 of %2 vybrán od &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="653"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="655"/>
         <source>user</source>
         <translation>uživatel</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="705"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="707"/>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
         <translation>Mapa &quot;%1&quot; &quot;on the fly&quot; transformace.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="705"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="707"/>
         <source>enable</source>
         <translation>zapnout</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="705"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="707"/>
         <source>disable</source>
         <translation>vypnout</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="706"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="708"/>
         <source>Coordinate reference system(CRS) of
 &quot;%1&quot; is invalid(see CRS of provider).</source>
         <translation>Souřadnicový referenční systém (SRS) vrstvy
 &quot;%1&quot; je neplatný(viz SRS poskytovatele).</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="707"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="709"/>
         <source>
 
 CRS of map is %1.
@@ -30433,53 +30767,53 @@ SRS mapy je %1.
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="710"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="712"/>
         <source>Zoom to feature</source>
         <translation>Přiblížit na prvek</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="749"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="751"/>
         <source>Missing reference layer</source>
         <translation>Chybí referenční vrstva</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="749"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="751"/>
         <source>Select reference layer!</source>
         <translation>Vyberte referenční vrstvu!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="754"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="756"/>
         <source>Missing target layer</source>
         <translation>Chybí cílová vrstva</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="754"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="756"/>
         <source>Select target layer!</source>
         <translation>Vyberte cílovou vrstvu!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="825"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="827"/>
         <source>Create new layer from items</source>
         <translation>Vytvořit novou vrstvu z položek</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="843"/>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="869"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="845"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="871"/>
         <source>The query from &quot;%1&quot; using &quot;%2&quot; in field not possible.</source>
         <translation>Dotaz &quot;%1&quot; s použitím &quot;%2&quot; v poli není možný.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="851"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="853"/>
         <source>Create new layer from selected</source>
         <translation>Vytvořit novou vrstvu z vybraného</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="958"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="960"/>
         <source>%1 of %2 identified</source>
         <translation>%1 z %2 identifikováno</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="1101"/>
+        <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="1103"/>
         <source>DEBUG</source>
         <translation>DEBUG</translation>
     </message>
@@ -33968,49 +34302,46 @@ Měly by být existující třídy před klasifikací smazány?</translation>
         <translation type="obsolete">Načíst připojení k WMS serveru ze souboru</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="225"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="222"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Opravdu chcete odstranit  připojení %1 a k němu přiřazená nastavení?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="227"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="224"/>
         <source>Confirm Delete</source>
         <translation>Potvrdit smazání</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="394"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="391"/>
         <source>encoding %1 not supported.</source>
         <translation>kódování %1 nepodporováno.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="400"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="397"/>
         <source>CRS %1 not supported.</source>
         <translation>SRS %1 nepodporován.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="493"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="436"/>
         <source>WMS Password for %1</source>
         <translation>WMS heslo pro %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="419"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="447"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="532"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="498"/>
         <source>WMS Provider</source>
         <translation>Poskytovatel WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="245"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="242"/>
         <source>Load connections</source>
         <translation>Načíst připojení</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="246"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="243"/>
         <source>XML files (*.xml *XML)</source>
         <translation>XML soubory (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="420"/>
         <source>Advertised GetMap URL
 
   %2
@@ -34020,7 +34351,7 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation>Ohlášené GetMap URL
+        <translation type="obsolete">Ohlášené GetMap URL
 
   %2
 
@@ -34031,7 +34362,6 @@ je dolišné od GetCapabilities URL
 To může být chyba nastavení serveru. Má se toto URL použít?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
         <source>Advertised GetFeatureInfo URL
 
   %2
@@ -34041,7 +34371,7 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation>Ohlášené GetFeatureInfo URL
+        <translation type="obsolete">Ohlášené GetFeatureInfo URL
 
   %2
 
@@ -34052,13 +34382,12 @@ je dolišné od GetCapabilities URL
 To může být chyba nastavení serveru. Má se toto URL použít?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="533"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="499"/>
         <source>Could not open the WMS Provider</source>
         <translation>Nelze kontaktovat poskytovalete WMS</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="826"/>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="926"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="867"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
@@ -34068,37 +34397,47 @@ To může být chyba nastavení serveru. Má se toto URL použít?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="914"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="855"/>
         <source>Select layer(s)</source>
         <translation>Vyberte vrstvu/y</translation>
     </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgswmssourceselect.cpp" line="767"/>
+        <source>Options (%n coordinate reference systems available)</source>
+        <comment>crs count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="916"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="857"/>
         <source>Select layer(s) or a tileset</source>
         <translation>Vyberte vrstvu/y nebo sadu dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="921"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="862"/>
         <source>Select either layer(s) or a tileset</source>
         <translation>Vyberte buď vrstvu/y nebo sadu dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="933"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="874"/>
         <source>No common CRS for selected layers.</source>
         <translation>Žádný běžný SRS pro vybrané vrstvy.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="938"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="879"/>
         <source>No CRS selected</source>
         <translation>SRS nebyl vybrán</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="943"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="884"/>
         <source>No image encoding selected</source>
         <translation>Kódování obrazu nevybráno</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="948"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="889"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
@@ -34108,7 +34447,7 @@ To může být chyba nastavení serveru. Má se toto URL použít?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="954"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="895"/>
         <source>Tileset selected</source>
         <translation>Sada dlaždic vybrána</translation>
     </message>
@@ -34120,39 +34459,39 @@ To může být chyba nastavení serveru. Má se toto URL použít?</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1033"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="974"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation>Nerozumím odezvě.  Poskytovatel  %1 řekl:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1086"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1027"/>
         <source>WMS proxies</source>
         <translation>WMS proxy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1086"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1027"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Několik WMS serverů bylo přidáno do seznamu serverů. Pokud se přistupujete na internet přes proxy, bude potřeba nastavit proxy v okně QGIS možnosti (menu Volby...).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1162"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1103"/>
         <source>parse error at row %1, column %2: %3</source>
         <translation>chyba kontroly na řádku %1, sloupci %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1167"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1108"/>
         <source>network error: %1</source>
         <translation>chyba sítě: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1190"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1131"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation>Připojení %1 již existuje. Chcete ho přepsat?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="1191"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1132"/>
         <source>Confirm Overwrite</source>
         <translation>Potvrdit přepsání</translation>
     </message>
@@ -34211,7 +34550,7 @@ To může být chyba nastavení serveru. Má se toto URL použít?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="158"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="408"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="384"/>
         <source>Title</source>
         <translation>Titulek</translation>
     </message>
@@ -34221,98 +34560,94 @@ To může být chyba nastavení serveru. Má se toto URL použít?</translation>
         <translation>Abstrakt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="241"/>
         <source>Use base url instead of advertised GetFeatureInfo URL</source>
-        <translation>Použít základní url místo inzerovaného GetFeatureInfo URL</translation>
+        <translation type="obsolete">Použít základní url místo inzerovaného GetFeatureInfo URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="234"/>
         <source>Ignore GetMap URL</source>
-        <translation>Ignorovat GetMap URL</translation>
+        <translation type="obsolete">Ignorovat GetMap URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="244"/>
         <source>Ignore GetFeatureInfo URL</source>
-        <translation>Ignorovat GetFeatureInfo URL</translation>
+        <translation type="obsolete">Ignorovat GetFeatureInfo URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="256"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="232"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="263"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="239"/>
         <source>Load connections from file</source>
         <translation>Načíst připojení ze souboru</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="266"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="242"/>
         <source>Load</source>
         <translation>Načíst</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="274"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="250"/>
         <source>Layer Order</source>
         <translation>Pořadí vrstev</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="311"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="287"/>
         <source>Layer</source>
         <translation>Vrstva</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="316"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="292"/>
         <source>Style</source>
         <translation>Styl</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="325"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="301"/>
         <source>Tilesets</source>
         <translation>Sady dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="352"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="328"/>
         <source>Styles</source>
         <translation>Styly</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="357"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="333"/>
         <source>Size</source>
         <translation>Velikost</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="362"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="338"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="367"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="343"/>
         <source>CRS</source>
         <translation>SRS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="376"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="352"/>
         <source>Server Search</source>
         <translation>Hledání serveru</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="385"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="361"/>
         <source>Search</source>
         <translation>Hledat</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="418"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="394"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="413"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="389"/>
         <source>Description</source>
         <translation>Popis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="426"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="402"/>
         <source>Add selected row to WMS list</source>
         <translation>Přidat vybraný řádek do seznamu WMS</translation>
     </message>
@@ -34323,7 +34658,7 @@ To může být chyba nastavení serveru. Má se toto URL použít?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="347"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="323"/>
         <source>Layers</source>
         <translation>Vrstvy</translation>
     </message>
