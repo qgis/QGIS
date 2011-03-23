@@ -5790,11 +5790,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
+    mActionZoomToLayer->setEnabled( false );
     return;
   }
 
   mActionLayerProperties->setEnabled( true );
   mActionAddToOverview->setEnabled( true );
+  mActionZoomToLayer->setEnabled( true );
 
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
