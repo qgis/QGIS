@@ -1719,6 +1719,9 @@ void QgsLegend::legendLayerZoom()
 
   QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( currentItem() );
 
+  if ( !li )
+    return;
+
   if ( li->type() == QgsLegendItem::LEGEND_LAYER )
   {
     QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
