@@ -1192,11 +1192,11 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation>&amp;Rastrs</translation>
+        <translation type="obsolete">&amp;Rastrs</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation>Veidot virtuālo ratstru (katalogu)</translation>
+        <translation type="obsolete">Veidot virtuālo ratstru (katalogu)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
@@ -1212,7 +1212,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation>Iededzināt</translation>
+        <translation type="obsolete">Iededzināt</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
@@ -1220,7 +1220,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation>Veidot poligonus</translation>
+        <translation type="obsolete">Veidot poligonus</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
@@ -1243,10 +1243,6 @@ Plugin will not be enabled.</source>
         <translation>Dzēš mazus rastra laukumus</translation>
     </message>
     <message>
-        <source>Proximity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Produces a raster proximity map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1259,23 +1255,15 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Warp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Warp an image into a new coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation>Tīkls</translation>
+        <translation type="obsolete">Tīkls</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1296,10 +1284,6 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Build overviews</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1356,6 +1340,46 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build Virtual Raster (Catalog)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterize (Vector to raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygonize (Raster to vector)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proximity (Raster distance)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp (Reproject)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid (Interpolation)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate (Convert format)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build overviews (Pyramids)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEM (Terrain models)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool to analyze and visualize DEMs</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1688,6 +1712,14 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <source>The output file doesn&apos;t exist. You must set up the output size to create it.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select the file for DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the color configuration file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsExtentSelector</name>
@@ -1781,10 +1813,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
 <context>
     <name>GdalToolsWidget</name>
     <message>
-        <source>Build Virtual Raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1850,7 +1878,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Grid</source>
-        <translation type="unfinished">Tīkls</translation>
+        <translation type="obsolete">Tīkls</translation>
     </message>
     <message>
         <source>Inverse distance to a power</source>
@@ -1921,10 +1949,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add overview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Resampling method</source>
         <translation>Transformācijas metode</translation>
     </message>
@@ -1962,7 +1986,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="unfinished">Veidot poligonus</translation>
+        <translation type="obsolete">Veidot poligonus</translation>
     </message>
     <message>
         <source>DN</source>
@@ -1987,10 +2011,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Proximity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>GEO</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2000,7 +2020,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="unfinished">Iededzināt</translation>
+        <translation type="obsolete">Iededzināt</translation>
     </message>
     <message>
         <source>Sieve</source>
@@ -2015,16 +2035,8 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation type="unfinished">8</translation>
     </message>
     <message>
-        <source>Translate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Output format</source>
         <translation>Izvades formats</translation>
-    </message>
-    <message>
-        <source>Warp</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Near</source>
@@ -2393,6 +2405,138 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Cutline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build Virtual Raster (Catalog)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEM (Terrain models)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Input file (DEM raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Band</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute &amp;edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hillshade</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspect</source>
+        <translation type="unfinished">Vērsums</translation>
+    </message>
+    <message>
+        <source>Color relief</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TRI (Terrain Ruggedness Index)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TPI (Topographic Position Index)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Roughness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Zevenbergen&amp;&amp;Thorne formula (instead of the Horn&apos;s one)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z factor (vertical exaggeration)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale (ratio of vert. units to horiz.)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Azimuth of the light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Altitude of the light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope expressed as percent (instead of as degrees)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return trigonometric angle (instead of azimuth)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return 0 for flat (instead of -9999)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color configuration file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matching mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exact color (otherwise &quot;0,0,0,0&quot; RGBA)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add alpha channel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid (Interpolation)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build overviews (Pyramids)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygonize (Raster to vector)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proximity (Raster distance)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterize (Vector to raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate (Convert format)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp (Reproject)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4941,10 +5085,6 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CRS undefined - defaulting to default CRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
         <translation>SQLite DB (*.sqlite,*db);;Visi faili(*)</translation>
     </message>
@@ -5359,6 +5499,10 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Cannot ChunkAndWarpImage: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS undefined - defaulting to default CRS: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6009,7 +6153,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="obsolete">Spraudņi</translation>
+        <translation type="unfinished">Spraudņi</translation>
     </message>
     <message>
         <source>Ready</source>
@@ -6989,167 +7133,11 @@ This copy of QGIS has been built with QWT %1.</source>
     </message>
     <message utf8="true">
         <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation>Kas jauns versijā 1.6.0 &apos;Capiapó&apos;?</translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kas jauns versijā 1.6.0 &apos;Capiapó&apos;?</translation>
     </message>
     <message>
         <source>General Improvements</source>
-        <translation>Vispārīgie uzlabojumi</translation>
-    </message>
-    <message>
-        <source>Added gpsd support to live gps tracking.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin has been included that allows for offline editing.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Update srs.db to include grid reference.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Georeferencer has had many tidy ups and improvements.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support for long int in attribute dialog and editor.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read More.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select and measure toolbar flyouts and submenus.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table of contents (TOC) improvements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Labelling (New generation only)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data defined label position.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line wrapping, data defined font and buffer settings.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer properties and symbology</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improved loading speed of the symbol properties dialog.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use size scale also for line symbols to modify line width.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allow creation of color ramps in vector color ramp combo box.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map Composer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Composer items can now be deleted with the backspace key.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vispārīgie uzlabojumi</translation>
     </message>
     <message>
         <source>Calculating...</source>
@@ -7245,12 +7233,300 @@ Always ignore these errors?</source>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Current CRS: %1</source>
+    <message utf8="true">
+        <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Inactive project CRS: %1</source>
+        <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbology labels and diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New symbology now used by default!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagram system that uses the same smart placement system as labeling-ng</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export and import of styles (symbology-ng).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labels for rules in rule-based renderers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to set label distance in map units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation for svg fills.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font marker can have an X,Y offset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Option to put marker on the central point of a line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Option to put marker only on first/last vertex of a line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added GUI for gdaldem.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added &apos;Lines to polygons&apos; tool to vector menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added field calculator with functions like $x, $y and $perimeter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added voronoi polygon tool to Vector menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User interface updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow managing missing layers in a list.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to group of layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Better organisation of menus, separate database menu added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General clean-ups and usability improvements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS Handling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show active crs in status bar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign layer CRS to project (in the legend context menu).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select default CRS for new projects.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow setting CRS for multiple layers at once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default to last selection when prompting for CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added AND and OR operator for raster calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On-the-fly reprojection of rasters added!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proper implementation of raster providers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added raster toolbar with histogram stretch functions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Providers and Data Handling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New SQLAnywhere vector provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table join support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature form updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Make NULL value string representation configurable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fix feature updates in feature form from attribute table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add support for NULL values in value maps (comboboxes).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support searching for NULL in attribute table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute editing improvements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved interactive attribute editing in table (adding/deleting features, attribute update).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow adding of geometryless features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed attribute undo/redo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved attribute handling.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Optionally re-use entered attribute values for next digitized feature.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow merging/assigning attribute values to a set of features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow OGR &apos;save as&apos; without attributes (for eg. DGN/DXF).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Api and Developer Centric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refactored attribute dialog calls to QgsFeatureAttribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added QgsVectorLayer::featureAdded signal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer menu function added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Mapserver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to specify wms service capabilities in the properties section of the project file (instead of wms_metadata.xml file).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support for wms printing with GetPrint-Request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support for icons of plugins in the plugin manager dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Printing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo/Redo support for the print composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current CRS: %1 (OTFR enabled)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current CRS: %1 (OTFR disabled)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17463,6 +17739,14 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
         <translation>Ja serviss pieprasa vienkāršu autentifikāciju, ievadiet lietotājvārdu un paroli</translation>
     </message>
+    <message>
+        <source>Ignore GetFeatureInfo URI reported in capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore GetMap URI reported in capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsNewOgrConnection</name>
@@ -20941,6 +21225,10 @@ Proceed?</source>
     </message>
     <message>
         <source>WMS Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add WKT geometry to feature info response</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25691,6 +25979,70 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Alias</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Text diagram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pie chart</source>
+        <translation type="unfinished">Apaļa diagramma</translation>
+    </message>
+    <message>
+        <source>Map units</source>
+        <translation type="unfinished">Kartes vienībās</translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished">Fona krāsa</translation>
+    </message>
+    <message>
+        <source>Pen color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AroundPoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OverPoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">Līnija</translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation type="unfinished">Horizontāls</translation>
+    </message>
+    <message>
+        <source>Free</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Below Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -25820,7 +26172,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="obsolete">Atribūti</translation>
+        <translation type="unfinished">Atribūti</translation>
     </message>
     <message>
         <source>New symbology</source>
@@ -25873,6 +26225,110 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Target field</source>
         <translation type="unfinished">Mērķa lauks</translation>
+    </message>
+    <message>
+        <source>Diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display diagrams</source>
+        <translation type="unfinished">Rādīt diagrammas</translation>
+    </message>
+    <message>
+        <source>Diagram type</source>
+        <translation type="unfinished">Diagrammas tips</translation>
+    </message>
+    <message>
+        <source>Priority:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Low</source>
+        <translation type="unfinished">Zema</translation>
+    </message>
+    <message>
+        <source>High</source>
+        <translation type="unfinished">Augsta</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale dependent visibility</source>
+        <translation type="unfinished">Mērogatkarīga redzamība</translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished">Fona krāsa</translation>
+    </message>
+    <message>
+        <source>Pen color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pen width</source>
+        <translation type="unfinished">Zīmuļa platums </translation>
+    </message>
+    <message>
+        <source>Font...</source>
+        <translation type="unfinished">Fonts...</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Izmērs</translation>
+    </message>
+    <message>
+        <source>Fixed size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute</source>
+        <translation type="unfinished">Atribūts</translation>
+    </message>
+    <message>
+        <source>Find maximum value</source>
+        <translation type="unfinished">Atrast maksimālo vērtību</translation>
+    </message>
+    <message>
+        <source>Size units</source>
+        <translation type="unfinished">Izmēra vienības</translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished">Novietojums</translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation type="unfinished">Novietojums</translation>
+    </message>
+    <message>
+        <source>Line Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date defined position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished">y</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Krāsa</translation>
     </message>
 </context>
 <context>
@@ -26201,30 +26657,6 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">Ielādēt WMS serveru pieslēgumus no faila</translation>
     </message>
     <message>
-        <source>Advertised GetMap URL
-
-  %2
-
-is different from GetCapabilities URL
-
-  %1
-
-This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Advertised GetFeatureInfo URL
-
-  %2
-
-is different from GetCapabilities URL
-
-  %1
-
-This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Could not open the WMS Provider</source>
         <translation>Nebija iespējams atvērt WMS datu sniedzēju</translation>
     </message>
@@ -26319,6 +26751,15 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>XML files (*.xml *XML)</source>
         <translation type="unfinished">XML faili (*.xml *.XML)</translation>
     </message>
+    <message numerus="yes">
+        <source>Options (%n coordinate reference systems available)</source>
+        <comment>crs count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>QgsWMSSourceSelectBase</name>
@@ -26368,15 +26809,15 @@ This might be an server configuration error. Should the URL be used?</source>
     </message>
     <message>
         <source>Use base url instead of advertised GetFeatureInfo URL</source>
-        <translation>Lieto bāzes URL GetFeatureInfo URL vietā</translation>
+        <translation type="obsolete">Lieto bāzes URL GetFeatureInfo URL vietā</translation>
     </message>
     <message>
         <source>Ignore GetMap URL</source>
-        <translation>Ignorēt GetMap URL</translation>
+        <translation type="obsolete">Ignorēt GetMap URL</translation>
     </message>
     <message>
         <source>Ignore GetFeatureInfo URL</source>
-        <translation>Ignorēt GetFeatureInfo URL</translation>
+        <translation type="obsolete">Ignorēt GetFeatureInfo URL</translation>
     </message>
     <message>
         <source>Layer Order</source>
@@ -27163,6 +27604,10 @@ Response was:
     <message>
         <source>Path not found</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Palīdzība</translation>
     </message>
 </context>
 <context>
