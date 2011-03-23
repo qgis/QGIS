@@ -550,7 +550,11 @@ long QgsProjectionSelector::selectedPostgresSrId()
 
 QString QgsProjectionSelector::selectedAuthId()
 {
-  return getSelectedExpression( "upper(auth_name||':'||auth_id)" );
+  int srid = getSelectedExpression( "srs_id" ).toLong();
+  if ( srid >= USER_CRS_START_ID )
+    return QString( "USER:%1" ).arg( srid );
+  else
+    return getSelectedExpression( "upper(auth_name||':'||auth_id)" );
 }
 
 
