@@ -40,8 +40,8 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     static QComboBox *comboBox( QWidget *editor, QWidget *parent );
 
   public slots:
-    void selectFileName( void );
-    void selectDate( void );
+    void selectFileName();
+    void selectDate();
 };
 
 

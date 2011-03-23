@@ -40,7 +40,7 @@
 #include <QDialogButtonBox>
 #include <QSettings>
 
-void QgsAttributeEditor::selectFileName( void )
+void QgsAttributeEditor::selectFileName()
 {
   QPushButton *pb = qobject_cast<QPushButton *>( sender() );
   if ( !pb )
@@ -61,7 +61,7 @@ void QgsAttributeEditor::selectFileName( void )
   le->setText( fileName );
 }
 
-void QgsAttributeEditor::selectDate( void )
+void QgsAttributeEditor::selectDate()
 {
   QPushButton *pb = qobject_cast<QPushButton *>( sender() );
   if ( !pb )
