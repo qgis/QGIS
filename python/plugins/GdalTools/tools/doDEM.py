@@ -27,6 +27,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.hillshadeAzimuthSpin.setValue(315.0)
       self.slopeScaleSpin.setValue(1)
 
+      # set the default color configuration file to terrain
+      import os.path
+      colorConfigFile = os.path.join(os.path.dirname(__file__), "terrain.txt")
+      self.colorConfigFileEdit.setText(colorConfigFile)
+
       self.outputFormat = Utils.fillRasterOutputFormat()
 
       self.setParamsStatus(
@@ -88,7 +93,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outputFileEdit.setText(outputFile)
 
   def fillColorConfigFileEdit(self):
-      configFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the color configuration file" ), "*")
+      configFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the color configuration file" ))
       if configFile.isEmpty():
         return
 
