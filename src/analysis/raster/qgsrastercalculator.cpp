@@ -110,6 +110,19 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     return 1;
   }
   GDALDatasetH outputDataset = openOutputFile( outputDriver );
+
+  //copy the projection info from the first input raster
+  if ( mRasterEntries.size() > 0 )
+  {
+    QgsRasterLayer* rl = mRasterEntries.at( 0 ).raster;
+    if ( rl )
+    {
+      //proj format would be better, but is not supported e.g. for writing to GeoTiff
+      GDALSetProjection( outputDataset, TO8( rl->crs().toWkt() ) );
+    }
+  }
+
+
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset, 1 );
 
   float outputNodataValue = -FLT_MAX;
