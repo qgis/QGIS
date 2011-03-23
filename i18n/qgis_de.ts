@@ -7078,11 +7078,6 @@ Dies QGIS-Kopie schreibt Debugausgaben.</translation>
         <translation>Was gibt es neues in der Version 1.7.0 &apos;Wrocław&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1947"/>
-        <source>This release is named after the town of WrocÅaw in Poland. The Department of Climatology and Atmosphere Protection, University of WrocÅaw kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
-        <translation>Dies Version ist nach der Stadt Wrocław (Breslau) in Polen benannt. Die Abteilung Klimatologie und Atmosphärenschutz der Universität Wroclaw war freundlicherweise Gastgeber für das Entwicklertreffen im November 2010. Bitte beachten Sie das diese Version eine Ausgabe unserer &apos;top-aktuellen&apos; Serie ist. Als solche enthält sie neue Funktionen und erweitert die Programmierschnittstellen gegenüber QGIS 1.0.x und 1.6.0. Wie mit jedem Programm, gibt es möglicherweise Fehler, die wir nicht bis zur Freigabe beheben konnten. Wir empfehlen Ihnen daher diese Version zu testen bevor Sie sie der Masse Ihrer Benutzer weitergeben.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2169"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 hat keine Layer</translation>
@@ -7173,6 +7168,11 @@ Keine SpatiaLite-Unterstützung.</translation>
 QWT Version: %1.</source>
         <translation>
 Qwt-Version: %1.</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/app/qgisapp.cpp" line="1947"/>
+        <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
+        <translation>Dies Version ist nach der Stadt Wrocław (Breslau) in Polen benannt. Die Abteilung Klimatologie und Atmosphärenschutz der Universität Wroclaw war freundlicherweise Gastgeber für das Entwicklertreffen im November 2010. Bitte beachten Sie das diese Version eine Ausgabe unserer &apos;top-aktuellen&apos; Serie ist. Als solche enthält sie neue Funktionen und erweitert die Programmierschnittstellen gegenüber QGIS 1.0.x und 1.6.0. Wie mit jedem Programm, gibt es möglicherweise Fehler, die wir nicht bis zur Freigabe beheben konnten. Wir empfehlen Ihnen daher diese Version zu testen bevor Sie sie der Masse Ihrer Benutzer weitergeben.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1950"/>
