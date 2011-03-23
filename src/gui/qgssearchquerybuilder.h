@@ -24,6 +24,7 @@
 
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 
 class QgsField;
 class QgsVectorLayer;
@@ -88,6 +89,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      * are inserted into the values list box.
      */
     void on_btnSampleValues_clicked();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void saveQuery();
     void loadQuery();
