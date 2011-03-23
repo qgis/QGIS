@@ -272,9 +272,12 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
         if source.hasText():
             pasteList = QStringList()
             pasteList = source.text().split("\n")
-            for line in pasteList:
-		self.insertPlainText(line)
-		self.runCommand(unicode(line))
+            # with multi-line text also run the commands
+            for line in pasteList[:-1]:
+              self.insertPlainText(line)
+              self.runCommand(unicode(line))
+            # last line: only paste the text, do not run it
+            self.insertPlainText(unicode(pasteList[-1]))
 
   def entered(self):
     self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
