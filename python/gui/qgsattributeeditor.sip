@@ -1,5 +1,6 @@
-/* \brief create attribute widget for editing */
-class QgsAttributeEditor : public QObject
+
+// \brief create attribute widget for editing
+class QgsAttributeEditor : QObject
 {
 %TypeHeaderCode
 #include <qgsattributeeditor.h>
@@ -11,6 +12,6 @@ class QgsAttributeEditor : public QObject
     static bool setValue( QWidget *widget, QgsVectorLayer *vl, int idx, const QVariant &value );
 
   public slots:
-    void selectFileName( void );
-    void selectDate( void );
+    void selectFileName();
+    void selectDate();
 };

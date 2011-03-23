@@ -1,4 +1,5 @@
-class QgsFieldValidator : public QValidator
+
+class QgsFieldValidator : QValidator
 {
 %TypeHeaderCode
 #include <qgsfieldvalidator.h>
