@@ -1944,7 +1944,7 @@ void QgisApp::about()
     whatsNew += "<h3>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h3>";
     whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.7.0 'Wrocław'?" ) + "</h2>";
     whatsNew +=  "<p>";
-    whatsNew +=  tr( "This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our 'cutting edge' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users." );
+    whatsNew +=  trUtf8( "This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our 'cutting edge' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users." );
     whatsNew +=  "</p>";
     whatsNew +=  "<p>";
     whatsNew +=  tr( "This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here." );
