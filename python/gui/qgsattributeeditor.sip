@@ -2,7 +2,7 @@
 class QgsAttributeEditor : public QObject
 {
 %TypeHeaderCode
-#incude <qgsattributeeditor.h>
+#include <qgsattributeeditor.h>
 %End
   public:
     QgsAttributeEditor( QObject *parent );
