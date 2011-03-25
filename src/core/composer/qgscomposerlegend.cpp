@@ -200,9 +200,9 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
   }
 
   //Let the user omit the layer title item by having an empty layer title string
-  currentYCoord += mLayerSpace;
   if ( !layerItem->text().isEmpty() )
   {
+    currentYCoord += mLayerSpace;
     currentYCoord += fontAscentMillimeters( mLayerFont );
 
     //draw layer Item
@@ -214,6 +214,12 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
 
     maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, layerItem->text() ) );
   }
+  else //layer title omited
+  {
+    //symbol space will be added before the item later
+    currentYCoord += (mLayerSpace - mSymbolSpace);
+  }
+
   //and child items
   drawLayerChildItems( p, layerItem, currentYCoord, maxXCoord, opacity );
 }
