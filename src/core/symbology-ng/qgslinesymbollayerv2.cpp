@@ -314,7 +314,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 
 void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
-  if ( ! points.isEmpty() )
+  if ( points.isEmpty() )
     return;
 
   QPointF lastPt = points[0];
