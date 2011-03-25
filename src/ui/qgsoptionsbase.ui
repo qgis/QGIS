@@ -572,9 +572,6 @@
               </item>
               <item>
                <widget class="QCheckBox" name="chkUseQPixmap">
-                <property name="toolTip">
-                 <string>Selecting this will unselect the 'make lines less' jagged toggle</string>
-                </property>
                 <property name="text">
                  <string>Fix problems with incorrectly filled polygons</string>
                 </property>
