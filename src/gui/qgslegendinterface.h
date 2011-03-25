@@ -81,7 +81,7 @@ class GUI_EXPORT QgsLegendInterface : public QObject
   public slots:
 
     //! Add a new group
-    //! forceAtEnd forces the new group to be created at the end of the legend
+    //! a parent group can be given to nest the new group in it
     virtual int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 ) = 0;
 
     //! Remove group on index
