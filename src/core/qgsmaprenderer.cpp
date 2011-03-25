@@ -263,7 +263,9 @@ void QgsMapRenderer::render( QPainter* painter )
   renderTime.start();
 #endif
 
-  mRenderContext.setDrawEditingInformation( !mOverview );
+  if ( mOverview )
+    mRenderContext.setDrawEditingInformation( !mOverview );
+
   mRenderContext.setPainter( painter );
   mRenderContext.setCoordinateTransform( 0 );
   //this flag is only for stopping during the current rendering progress,
