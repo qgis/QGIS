@@ -2207,29 +2207,43 @@ QString QgsPostgresProvider::Conn::postgisVersion()
   postgisVersionMajor = postgisVersionParts[0].toInt();
   postgisVersionMinor = postgisVersionParts[1].toInt();
 
-  // assume no capabilities
-  geosAvailable = false;
-  gistAvailable = false;
-  projAvailable = false;
-
-  // parse out the capabilities and store them
-  QStringList geos = postgisParts.filter( "GEOS" );
-  if ( geos.size() == 1 )
-  {
-    geosAvailable = ( geos[0].indexOf( "=1" ) > -1 );
-  }
-  QStringList gist = postgisParts.filter( "STATS" );
-  if ( gist.size() == 1 )
-  {
-    gistAvailable = ( geos[0].indexOf( "=1" ) > -1 );
-  }
-  QStringList proj = postgisParts.filter( "PROJ" );
-  if ( proj.size() == 1 )
-  {
-    projAvailable = ( proj[0].indexOf( "=1" ) > -1 );
-  }
-
   mUseWkbHex = postgisVersionMajor < 1;
+
+  // apparently postgis 1.5.2 doesn't report capabilities in postgis_version() anymore
+  if ( postgisVersionMajor > 1 || ( postgisVersionMajor == 1 && postgisVersionMinor >= 5 ) )
+  {
+    result = PQexec( "select postgis_geos_version(),postgis_proj_version()" );
+    geosAvailable = PQntuples( result ) == 1 && !PQgetisnull( result, 0, 0 );
+    projAvailable = PQntuples( result ) == 1 && !PQgetisnull( result, 0, 1 );
+    QgsDebugMsg( QString( "geos:%1 proj:%2" )
+                 .arg( geosAvailable ? PQgetvalue( result, 0, 0 ) : "none" )
+                 .arg( projAvailable ? PQgetvalue( result, 0, 1 ) : "none" ) );
+    gistAvailable = true;
+  }
+  else
+  {
+    // assume no capabilities
+    geosAvailable = false;
+    gistAvailable = false;
+    projAvailable = false;
+
+    // parse out the capabilities and store them
+    QStringList geos = postgisParts.filter( "GEOS" );
+    if ( geos.size() == 1 )
+    {
+      geosAvailable = ( geos[0].indexOf( "=1" ) > -1 );
+    }
+    QStringList gist = postgisParts.filter( "STATS" );
+    if ( gist.size() == 1 )
+    {
+      gistAvailable = ( geos[0].indexOf( "=1" ) > -1 );
+    }
+    QStringList proj = postgisParts.filter( "PROJ" );
+    if ( proj.size() == 1 )
+    {
+      projAvailable = ( proj[0].indexOf( "=1" ) > -1 );
+    }
+  }
 
   gotPostgisVersion = true;
 
