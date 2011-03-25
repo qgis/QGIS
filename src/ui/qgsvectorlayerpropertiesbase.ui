@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>670</width>
-    <height>625</height>
+    <width>777</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -372,8 +372,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>648</width>
-            <height>501</height>
+            <width>755</width>
+            <height>526</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -768,6 +768,24 @@
           <string>Appearance</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_13">
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QLabel" name="mPenWidthLabel">
+              <property name="text">
+               <string>Pen width</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
+              <property name="maximum">
+               <double>99999.990000000005239</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="0" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
@@ -833,6 +851,19 @@
             </item>
            </layout>
           </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mDiagramFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font...</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
@@ -863,45 +894,11 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
-            <item>
-             <widget class="QLabel" name="mPenWidthLabel">
-              <property name="text">
-               <string>Pen width</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
-              <property name="maximum">
-               <double>99999.990000000005239</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="mDiagramFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
          </layout>
          <zorder></zorder>
          <zorder></zorder>
          <zorder>mDiagramFontButton</zorder>
          <zorder></zorder>
-         <zorder>mPenWidthSpinBox</zorder>
-         <zorder>mPenWidthLabel</zorder>
-         <zorder>mPenWidthLabel</zorder>
         </widget>
        </item>
        <item row="2" column="0" colspan="6">
@@ -1053,7 +1050,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="mDataDefinedPositionLabel">
             <property name="text">
-             <string>Date defined position</string>
+             <string>Data defined position</string>
             </property>
            </widget>
           </item>

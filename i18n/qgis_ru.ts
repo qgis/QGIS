@@ -2268,9 +2268,13 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation>Теневой рельеф</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="142"/>
         <source>Slop</source>
-        <translation>Угол уклонов</translation>
+        <translation type="obsolete">Угол уклонов</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="142"/>
+        <source>Slope</source>
+        <translation type="unfinished">Угол уклонов</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="147"/>
@@ -23850,29 +23854,29 @@ p, li { white-space: pre-wrap; }
         <translation>Подходящий ключ не найден в виде</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3258"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3272"/>
         <source>Unknown geometry type</source>
         <translation>Неизвестный тип геометрии</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3259"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3273"/>
         <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
         <translation>Поле %1 в таблице %2 имеет тип геометрии %3, который не поддерживается в Quantum GIS.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3266"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3280"/>
         <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation>Не удалось определить тип и SRID для поля %1 в таблице %2. Сообщение базы данных:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3270"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3284"/>
         <source>Unable to get feature type and srid</source>
         <translation>Не удалось получить тип объекта и SRID</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2460"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2474"/>
         <source>Error while adding features</source>
         <translation>Ошибка при добавлении объектов</translation>
     </message>
@@ -23984,37 +23988,37 @@ QGIS требует, чтобы вид включал поле, которое �
 Выбранный вид имеет следующие поля, ни одно из которых не удовлетворяет этим условиям:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2503"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2517"/>
         <source>Error while deleting features</source>
         <translation>Ошибка при удалении объектов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2566"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2580"/>
         <source>Error while adding attributes</source>
         <translation>Ошибка при добавлении атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2614"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2628"/>
         <source>Error while deleting attributes</source>
         <translation>Ошибка при удалении атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2699"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2713"/>
         <source>Error while changing attributes</source>
         <translation>Ошибка при изменении атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2789"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2803"/>
         <source>Error while changing geometry values</source>
         <translation>Ошибка при изменении значений геометрии</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3389"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3403"/>
         <source>Query failed</source>
         <translation>Ошибка запроса</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3390"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3404"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -30454,437 +30458,361 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsVectorLayerPropertiesBase</name>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="14"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="14"/>
         <source>Layer Properties</source>
         <translation>Свойства слоя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="353"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="353"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="480"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="480"/>
         <source>Use scale dependent rendering</source>
         <translation>Видимость в пределах масштаба</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="389"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="389"/>
         <source>Display name</source>
         <translation>Имя в легенде</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="412"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="412"/>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
         <translation>Используйте этот список для выбора поля, помещаемого в верхний уровень дерева в диалоге результатов определения.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="399"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="399"/>
         <source>Display field for the Identify Results dialog box</source>
         <translation>Отображаемое поле для диалога результатов определения</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="402"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="402"/>
         <source>This sets the display field for the Identify Results dialog box</source>
         <translation>Отображаемое поле для диалога результатов определения</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="405"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="405"/>
         <source>Display field</source>
         <translation>Отображаемое поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="515"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="515"/>
         <source>Subset</source>
         <translation>Подмножество</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="553"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="553"/>
         <source>Query Builder</source>
         <translation>Конструктор запросов</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="440"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="440"/>
         <source>Create Spatial Index</source>
         <translation>Создать пространственный индекс</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="572"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="572"/>
         <source>Metadata</source>
         <translation>Метаданные</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="195"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="195"/>
         <source>Labels</source>
         <translation>Подписи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="207"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="207"/>
         <source>Display labels</source>
         <translation>Включить подписи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="593"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="593"/>
         <source>Actions</source>
         <translation>Действия</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="29"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="29"/>
         <source>Restore Default Style</source>
         <translation>Восстановить по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="36"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="36"/>
         <source>Save As Default</source>
         <translation>Сохранить по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="43"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="43"/>
         <source>Load Style ...</source>
         <translation>Загрузить стиль...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="50"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="50"/>
         <source>Save Style ...</source>
         <translation>Сохранить стиль...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="83"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="83"/>
         <source>Style</source>
         <translation>Стиль</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="238"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="238"/>
         <source>Fields</source>
         <translation>Поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="457"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="460"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="457"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="460"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Выбрать систему координат для геометрии в этом слое.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="463"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="463"/>
         <source>Specify CRS</source>
         <translation>Система координат</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="620"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="620"/>
         <source>Joins</source>
         <translation>Связи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="665"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="665"/>
         <source>Join layer</source>
         <translation>Связанный слой</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="670"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="670"/>
         <source>Join field</source>
         <translation>Поле для объединения</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="675"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="675"/>
         <source>Target field</source>
         <translation>Целевое поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="101"/>
         <source>Legend type</source>
         <translation>Тип легенды</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="136"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="136"/>
         <source>Transparency</source>
         <translation>Прозрачность</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="300"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="300"/>
         <source>Field calculator</source>
         <translation>Калькулятор полей</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="383"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="383"/>
         <source>Options</source>
         <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="492"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="793"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="492"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="811"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="811"/>
         <source>Maximum</source>
         <translation>Максимальный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="499"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="783"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="499"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="801"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="801"/>
         <source>Minimum</source>
         <translation>Минимальный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="688"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="688"/>
         <source>Diagrams</source>
         <translation>Диаграммы</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="694"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="694"/>
         <source>Display diagrams</source>
         <translation>Включить диаграммы</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="709"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="709"/>
         <source>Diagram type</source>
         <translation>Тип диаграммы</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="723"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="723"/>
         <source>Priority:</source>
         <translation>Приоритет:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="730"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="730"/>
         <source>Low</source>
         <translation>Низкий</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="759"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="759"/>
         <source>High</source>
         <translation>Высокий</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="768"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="768"/>
         <source>Appearance</source>
         <translation>Внешний вид</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="776"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="794"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="794"/>
         <source>Scale dependent visibility</source>
         <translation>Видимость в пределах масштаба</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="809"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="827"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="827"/>
         <source>Background color</source>
         <translation>Цвет фона</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="841"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="872"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="872"/>
         <source>Pen color</source>
         <translation>Цвет обводки</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="871"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="776"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="776"/>
         <source>Pen width</source>
         <translation>Толщина обводки</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="893"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="863"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="863"/>
         <source>Font...</source>
         <translation>Шрифт...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="910"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="975"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="907"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="972"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="907"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="972"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="916"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="913"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="913"/>
         <source>Fixed size</source>
         <translation>Фиксированный</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="943"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="940"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="940"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
         <translation>Линейно масштабировать диаграммы между нулевым размером и следующим значением атрибута:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="955"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1174"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="952"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1171"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="952"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1171"/>
         <source>Attribute</source>
         <translation>Атрибут</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="965"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="962"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="962"/>
         <source>Find maximum value</source>
         <translation>Найти максимальное значение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="993"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="990"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="990"/>
         <source>Size units</source>
         <translation>Единицы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1008"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1005"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1005"/>
         <source>Position</source>
         <translation>Позиционирование</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1016"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1013"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1013"/>
         <source>Placement</source>
         <translation>Размещение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1030"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1027"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1027"/>
         <source>Line Options</source>
         <translation>Параметры линии</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1044"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1041"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1041"/>
         <source>Distance</source>
         <translation>Отступ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1056"/>
         <source>Date defined position</source>
-        <translation>Данные положения</translation>
+        <translation type="obsolete">Данные положения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1071"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1068"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1068"/>
         <source>x</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1091"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1088"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1088"/>
         <source>y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1106"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1103"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1103"/>
         <source>Attributes</source>
         <translation>Атрибуты</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1179"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1176"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1176"/>
         <source>Color</source>
         <translation>Цвет</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="250"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="250"/>
         <source>New column</source>
         <translation>Добавить поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="260"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="260"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="267"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="267"/>
         <source>Delete column</source>
         <translation>Удалить поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="277"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="277"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="284"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="284"/>
         <source>Toggle editing mode</source>
         <translation>Режим редактирования</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="287"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="303"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="287"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="303"/>
         <source>Click to toggle table editing</source>
         <translation>Переключить режим редактирования таблицы</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="419"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="419"/>
         <source>Edit UI</source>
         <translation>Форма редактирования</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="431"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="431"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="183"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="183"/>
         <source>New symbology</source>
         <translation>Новая символика</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="470"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="470"/>
         <source>Init function</source>
         <translation>Функция инициализации</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase_NEW.ui" line="1053"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1053"/>
         <source>Data defined position</source>
         <translation type="unfinished">Данные положения</translation>
     </message>

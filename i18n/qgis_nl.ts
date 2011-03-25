@@ -2514,11 +2514,11 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Virtueel Raster Aanmaken (Catalogus)</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DEM (Hoogtemodellen)</translation>
     </message>
     <message>
         <source>&amp;Input file (DEM raster)</source>
@@ -2538,10 +2538,6 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Hillshade</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Slop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2618,30 +2614,34 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grid (Interpolatie)</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Overzichten aanmaken (Pyramiden)</translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vectoriseren (Raster naar vector)</translation>
     </message>
     <message>
         <source>Proximity (Raster distance)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Proximity (Raster afstand)</translation>
     </message>
     <message>
         <source>Rasterize (Vector to raster)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rasterizeren (Vector naar raster)</translation>
     </message>
     <message>
         <source>Translate (Convert format)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Translatie (Formaat converteren)</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
+        <translation type="unfinished">Warp (Herprojecteren)</translation>
+    </message>
+    <message>
+        <source>Slope</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26808,7 +26808,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Date defined position</source>
-        <translation>Datum-bepaalde positie</translation>
+        <translation type="obsolete">Datum-bepaalde positie</translation>
     </message>
     <message>
         <source>x</source>
@@ -26821,6 +26821,10 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Color</source>
         <translation>Kleur</translation>
+    </message>
+    <message>
+        <source>Data defined position</source>
+        <translation type="unfinished">Data-bepaalde positie</translation>
     </message>
 </context>
 <context>
