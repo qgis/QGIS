@@ -115,10 +115,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   newFieldList.push_back( countField );
   newFieldList.push_back( sumField );
   newFieldList.push_back( meanField );
-  if ( !vectorProvider->addAttributes( newFieldList ) )
-  {
-    return 7;
-  }
+  vectorProvider->addAttributes( newFieldList );
 
   //index of the new fields
   int countIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "count" );
@@ -140,7 +137,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   //iterate over each polygon
   vectorProvider->select( QgsAttributeList(), QgsRectangle(), true, false );
-  vectorProvider->rewind();
   QgsFeature f;
   double count = 0;
   double sum = 0;
