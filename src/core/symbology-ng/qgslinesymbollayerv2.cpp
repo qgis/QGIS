@@ -116,7 +116,8 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
-    p->drawPolyline( ::offsetLine( points, mOffset ) );
+    double scaledOffset = context.outputLineWidth( mOffset );
+    p->drawPolyline( ::offsetLine( points, scaledOffset ) );
   }
 }
 
