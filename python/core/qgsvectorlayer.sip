@@ -596,7 +596,7 @@ public:
       @param uniqueValues out: result list
       @limit maximum number of values to return (-1 if unlimited)
       @note: this method was added in version 1.7*/
-    void uniqueValues( int index, QList<QVariant>& uniqueValues /Out/, int limit );
+    void uniqueValues( int index, QList<QVariant>& uniqueValues /Out/, int limit = -1 );
 
     /**Returns minimum value for an attribute column or invalid variant in case of error
          @note added in 1.7*/
