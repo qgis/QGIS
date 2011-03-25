@@ -74,14 +74,27 @@ QString QgsSimpleMarkerSymbolLayerV2::layerType() const
 
 void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mBrush = QBrush( mColor );
-  mPen = QPen( mBorderColor );
+  QColor brushColor = mColor;
+  QColor penColor = mBorderColor;
+  if ( context.alpha() < 1 )
+  {
+    penColor.setAlphaF( context.alpha() );
+    brushColor.setAlphaF( context.alpha() );
+  }
+  mBrush = QBrush( brushColor );
+  mPen = QPen( penColor );
   mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
 
-  QColor selColor = context.selectionColor();
-  mSelBrush = QBrush( selColor );
-  mSelPen = QPen( selColor == mColor ? selColor : mBorderColor );
-  mSelPen.setWidthF( mPen.widthF() );
+  QColor selBrushColor = context.selectionColor();
+  QColor selPenColor = selBrushColor == mColor ? selBrushColor : mBorderColor;
+  if ( context.alpha() < 1 )
+  {
+    selBrushColor.setAlphaF( context.alpha() );
+    selPenColor.setAlphaF( context.alpha() );
+  }
+  mSelBrush = QBrush( selBrushColor );
+  mSelPen = QPen( selPenColor );
+  mSelPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
 
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
@@ -101,7 +114,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
       // For these set the selected border color to the selected color
 
       if ( mName != "circle" )
-        mSelPen.setColor( selColor );
+        mSelPen.setColor( selBrushColor );
     }
     else
     {
@@ -196,13 +209,6 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
     p.translate( QPointF( center, center ) );
     drawMarker( &p, context );
     p.end();
-  }
-
-  //opacity
-  if ( context.alpha() < 1.0 )
-  {
-    QgsSymbolLayerV2Utils::multiplyImageOpacity( &mCache, context.alpha() );
-    if ( ! selectionIsOpaque ) QgsSymbolLayerV2Utils::multiplyImageOpacity( &mSelCache, context.alpha() );
   }
 }
 
