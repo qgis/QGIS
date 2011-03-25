@@ -2436,10 +2436,6 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Slop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Aspect</source>
         <translation type="unfinished">Vērsums</translation>
     </message>
@@ -2538,6 +2534,10 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <source>Warp (Reproject)</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished">Kritums</translation>
     </message>
 </context>
 <context>
@@ -26315,10 +26315,6 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Date defined position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>x</source>
         <translation type="unfinished">x</translation>
     </message>
@@ -26329,6 +26325,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Color</source>
         <translation type="unfinished">Krāsa</translation>
+    </message>
+    <message>
+        <source>Data defined position</source>
+        <translation type="unfinished">Datu definēta vieta</translation>
     </message>
 </context>
 <context>
