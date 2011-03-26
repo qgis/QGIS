@@ -156,6 +156,9 @@
      <property name="flow">
       <enum>QListView::LeftToRight</enum>
      </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
      <property name="spacing">
       <number>4</number>
      </property>
