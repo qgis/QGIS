@@ -99,7 +99,7 @@ FOREACH (QFW ${QTLISTQG})
         ENDIF (IS_DIRECTORY "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/Resources")
         # debug variants
         SET (QFWD "${QFW}_debug")
-        IF (@CMAKE_BUILD_TYPE@ STREQUAL "Debug" AND EXISTS "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}")
+        IF ("@CMAKE_BUILD_TYPE@" STREQUAL "Debug" AND EXISTS "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}")
             EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}" "${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}")
             EXECUTE_PROCESS (COMMAND ln -sf Versions/Current/${QFWD} "${QFWDIR}/${QFW}.framework/${QFWD}")
             IF (IS_DIRECTORY "@QT_LIBRARY_DIR@/${QFW}.framework/${QFWD}.dSYM")
