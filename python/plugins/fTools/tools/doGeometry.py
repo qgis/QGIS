@@ -354,8 +354,9 @@ class geometryThread( QThread ):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     fields = vprovider.fields()
+    geomType = self.multiToSingleGeom(vprovider.geometryType())
     writer = QgsVectorFileWriter( self.myName, self.myEncoding,
-    fields, vprovider.geometryType()-3, vprovider.crs() )
+        fields, geomType, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     inGeom = QgsGeometry()
@@ -896,6 +897,22 @@ class geometryThread( QThread ):
           elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
                            QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
               return QGis.WKBMultiPolygon
+          else:
+              return QGis.WKBUnknown
+      except Exception, err:
+          print str(err)
+
+  def multiToSingleGeom(self, wkbType):
+      try:
+          if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
+                         QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
+              return QGis.WKBPoint
+          elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
+                           QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
+              return QGis.WKBLineString
+          elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
+                           QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
+              return QGis.WKBPolygon
           else:
               return QGis.WKBUnknown
       except Exception, err:
