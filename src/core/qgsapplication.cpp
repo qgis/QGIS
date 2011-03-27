@@ -74,7 +74,6 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
     mConfigPath = customConfigPath + "/"; // make sure trailing slash is included
   }
 
-  mDefaultSvgPaths << mPkgDataPath + QString( "/svg/" );
   mDefaultSvgPaths << qgisSettingsDirPath() + QString( "svg/" );
 }
 
@@ -174,7 +173,10 @@ void QgsApplication::setPluginPath( const QString thePluginPath )
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
 {
   mPkgDataPath = thePkgDataPath;
-  mDefaultSvgPaths << mPkgDataPath + QString( "/svg/" );
+  QString svgPath = mPkgDataPath + QString( "/svg/" );
+  // avoid duplicate entries
+  if ( !mDefaultSvgPaths.contains( svgPath ) )
+    mDefaultSvgPaths << svgPath;
 }
 
 void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
