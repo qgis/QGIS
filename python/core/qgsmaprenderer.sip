@@ -139,11 +139,23 @@ class QgsMapRenderer : QObject
     //! returns true if projections are enabled for this layer set
     bool hasCrsTransformEnabled();
     
-    //! sets destination spatial reference system
-    void setDestinationSrs(const QgsCoordinateReferenceSystem& srs);
-    
-    //! returns CRS ID of destination spatial reference system
-    const QgsCoordinateReferenceSystem& destinationSrs();
+    /** sets destination coordinate reference system
+     * @note deprecated by qgis 1.7
+     * @see setDestinationCrs
+     */
+    void setDestinationSrs( const QgsCoordinateReferenceSystem& srs ) /Deprecated/;
+
+    /** returns CRS of destination coordinate reference system
+     * @note deprecated by qgis 1.7
+     * @see destinationCrs
+     */
+    const QgsCoordinateReferenceSystem& destinationSrs() /Deprecated/;
+
+    //! sets destination coordinate reference system
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    //! returns CRS of destination coordinate reference system
+    const QgsCoordinateReferenceSystem& destinationCrs();
 
     void setOutputUnits( OutputUnits u );
 
