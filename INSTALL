@@ -1,8 +1,8 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
 
-Last update: 20110201
-Last change: 20110201
+Last update: 20110327
+Last change: 20110306
 
   1. Introduction
   2. Overview
@@ -758,9 +758,9 @@ Now close cmake-gui and continue on the command prompt by starting
 vcexpress.  Use File / Open / Project/Solutions and open the
 qgis-x.y.z.sln File in your project directory.
 
-You probably want to change the Solution Configuration from Debug
-to RelWithDebInfo (Release with Debug Info)  or Release before you
-build QGIS using the ALL_BUILD target.
+Change Solution Configuration from Debug to RelWithDebInfo (Release
+with Debug Info)  or Release before you build QGIS using the ALL_BUILD
+target (otherwise you need debug libraries that are not included).
 
 After the build completed you should install QGIS using the INSTALL target.
 
@@ -1641,8 +1641,6 @@ tarball to unpack it, then cd to the source folder and:
   5.3. Install CMake for OSX
   ==========================
 
-(Only needed for a cmake build.)
-
 Get the latest source release from here:
 
 
@@ -1762,7 +1760,8 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   mkdir build
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
-  -D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+  -D CMAKE_BUILD_TYPE=MinSizeRel \
+  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
   ..
@@ -1777,7 +1776,8 @@ path and version as required):
 
 
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
-  -D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+  -D CMAKE_BUILD_TYPE=MinSizeRel \
+  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
   -D GRASS_PREFIX=/user/local/grass-6.4.0 \
@@ -1796,7 +1796,8 @@ script and add arch flags to the configuration:
   sudo chmod +x /usr/local/bin/python32
   
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
-  -D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+  -D CMAKE_BUILD_TYPE=MinSizeRel \
+  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
   -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
