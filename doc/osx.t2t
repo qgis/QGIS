@@ -353,8 +353,6 @@ sudo make install
 
 == Install CMake for OSX ==
 
-(Only needed for a cmake build.)
-
 Get the latest source release from here:
 
 ``` 
@@ -467,7 +465,8 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
 mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_BUILD_TYPE=MinSizeRel \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 ..
@@ -482,7 +481,8 @@ path and version as required):
 
 ```
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_BUILD_TYPE=MinSizeRel \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D GRASS_PREFIX=/user/local/grass-6.4.0 \
@@ -501,7 +501,8 @@ EOF
 sudo chmod +x /usr/local/bin/python32
 
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D CMAKE_BUILD_TYPE=MinSizeRel -D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_BUILD_TYPE=MinSizeRel \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
