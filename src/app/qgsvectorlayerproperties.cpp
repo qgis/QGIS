@@ -398,20 +398,22 @@ void QgsVectorLayerProperties::editingToggled()
 
 void QgsVectorLayerProperties::updateButtons()
 {
+  int cap = layer->dataProvider()->capabilities();
+
+  mToggleEditingButton->setEnabled(( cap & QgsVectorDataProvider::EditingCapabilities ) && !layer->isReadOnly() );
+  mToggleEditingButton->setChecked( layer->isEditable() );
+
   if ( layer->isEditable() )
   {
-    int cap = layer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
     mCalculateFieldButton->setEnabled( cap & QgsVectorDataProvider::ChangeAttributeValues );
-    mToggleEditingButton->setChecked( true );
   }
   else
   {
-    mAddAttributeButton->setEnabled( false );
-    mDeleteAttributeButton->setEnabled( false );
-    mToggleEditingButton->setChecked( false );
-    mCalculateFieldButton->setEnabled( false );
+    mAddAttributeButton->setDisabled( true );
+    mDeleteAttributeButton->setDisabled( true );
+    mCalculateFieldButton->setDisabled( true );
   }
 }
 
@@ -863,7 +865,7 @@ QString QgsVectorLayerProperties::metadata()
 
   QGis::GeometryType type = layer->geometryType();
 
-  if ( type < 0 || type > QGis::Polygon )
+  if ( type < 0 || type > QGis::NoGeometry )
   {
     QgsDebugMsg( "Invalid vector type" );
   }
