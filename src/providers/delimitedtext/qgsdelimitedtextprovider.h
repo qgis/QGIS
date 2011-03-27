@@ -189,7 +189,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QRegExp mDelimiterRegexp;
     QString mDelimiterType;
 
-    bool mHasWktField;
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
     int mYFieldIndex;
