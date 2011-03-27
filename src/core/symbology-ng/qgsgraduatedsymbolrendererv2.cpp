@@ -137,7 +137,8 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
 
   // find the right category
   QgsSymbolV2* symbol = symbolForValue( ita->toDouble() );
-
+  if ( symbol == NULL )
+    return NULL;
 
   if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
     return symbol; // no data-defined rotation/scaling - just return the symbol
