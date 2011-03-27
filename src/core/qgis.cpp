@@ -43,6 +43,8 @@ const char* QGis::qgisVectorGeometryType[] =
   "Point",
   "Line",
   "Polygon"
+  "Unknown geometry",
+  "No geometry",
 };
 
 // description strings for feature types
