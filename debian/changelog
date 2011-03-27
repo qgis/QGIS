@@ -6,11 +6,12 @@ qgis (1.7.0) UNRELEASED; urgency=low
   * drop quickprint and ogrconverter plugin
   * add gdal provider
   * turn qgis-providers-common's architecture to all
+  * include api documentation
   * Missing ${python:Depends} added to python-qgis dependencies
     (closes: #611492)
   * move qgis_help to /usr/lib/qgis (closes: #615833)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 08 Mar 2011 23:24:24 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 24 Mar 2011 00:24:01 +0100
 
 qgis (1.6.0) UNRELEASED; urgency=low
 

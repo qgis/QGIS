@@ -28,6 +28,8 @@ Build-Depends:
  python-sip4-dev (>= 4.5.0),
  sip4 (>= 4.5),
  subversion,
+ doxygen,
+ graphviz,
  txt2tags
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.0
@@ -181,4 +183,12 @@ Description: Quantum GIS sql anywhere plugin and provider
  and display databases of geographic information.
  .
  This package contains the Quantum GIS sqlanywhere plugin and provider.
+
+Package: qgis-api-doc
+Architecture: all
+Description: Quantum GIS API documentation
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains the Quantum GIS API documentation.
 
