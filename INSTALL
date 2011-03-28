@@ -743,7 +743,7 @@ svn to the source directory qgis-trunk:
 or using git-svn (from the git shell):
 
 
-  git svn clone --username timlinux --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+  git svn clone --username $USER --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
 
 
 Create a 'build' directory somewhere. This will be where all the build output
