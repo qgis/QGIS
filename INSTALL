@@ -1,8 +1,8 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
 
-Last update: 20110327
-Last change: 20110306
+Last update: 20110328
+Last change: 20110307
 
   1. Introduction
   2. Overview
@@ -667,10 +667,11 @@ Download and install following packages:
 
 
   || Tool | Website |
-  | CMake | http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe |
+  | CMake | http://www.cmake.org/files/v2.8/cmake-2.8.4-win32-x86.exe |
   | Flex | http://gnuwin32.sourceforge.net/downlinks/flex.php |
   | Bison | http://gnuwin32.sourceforge.net/downlinks/bison.php |
   | SVN | http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download |
+  | or GIT | http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe | 
   | OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe |
 
 OSGeo4W does not only provide ready packages for the current QGIS release and
@@ -739,6 +740,12 @@ svn to the source directory qgis-trunk:
   svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
 
 
+or using git-svn (from the git shell):
+
+
+  git svn clone --username timlinux --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+
+
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
 
@@ -795,7 +802,9 @@ And run the nsis creation script:
 
 
 When the script completes, it should have created a QGIS installer executable
-in the ms-windows directory.
+in the ms-windows directory. If you want to include your own hand built QGIS 
+executables, you need to copy them in from your windows installation into 
+the ms-windows file tree created by the creatensis script.
 
 
     4.1.5. Osgeo4w packaging
