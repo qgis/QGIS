@@ -53,6 +53,7 @@
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
 %Include qgsproject.sip
+%Include qgsprojectversion.sip
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgsrasterbandstats.sip
