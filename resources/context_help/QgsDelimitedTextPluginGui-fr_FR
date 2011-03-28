@@ -14,22 +14,45 @@ Pour visionner un fichier de texte délimité en tant que couche, ce fichier doi
 <li>Une ligne d'en-têtes délimités contenant les noms des champs. Elle doit être la première ligne du fichier.</li>
 <li>Des champs X et Y, ils peuvent avoir n'importe quels noms.</li>
 <li>Les coordonnées <B>x</B> et <B>y</B> doivent être des nombres, le système de coordonnées n'a pas d'importance.</li>
+<li>Si présent, le champ WKT doit être dans le format standart.</li>
 </ol>
 <a name="exemple">
-<h4>Exemple de fichier valide</h4> 
+<h4>Exemple de fichier texte valide</h4> 
 </a>
+<tt>
 X;Y;ALTI<br/>
 -300120;7689960;13<br/>
 -654360;7562040;52<br/>
 1640;7512840;3<br/>
-[...]<br/>
+  [...]<br/>
+</tt>
+<a name="wkt_example">
+<h4>Exemple d'un fichier texte contenant une colonne WKT</h4>
+</a>
+<tt>
+id|wkt<br/>
+1|POINT(172.0702250 -43.6031036)<br/>
+2|POINT(172.0702250 -43.6031036)<br/>
+3|POINT(172.1543206 -43.5731302)<br/>
+4|POINT(171.9282585 -43.5493308)<br/>
+5|POINT(171.8827359 -43.5875983)<br/>
+</tt>
 <a name="notes">
 <h4>Notes</h4>
 </a>
 <ol>
-<li>L'exemple utilise le caractère <b>;</b> comme délimiteur. N'importe quel caractère peut être utilisé pour séparer les champs, veuillez suelement à ce qu'il ne soit pas déjà présent dans vos champs au risque de provoquer des spérations excessives (p. ex. le délimiteur <b>,</b> risque de séparer la valeur 768,56 en 768 et 56).</li>
+  <li>Exemple de fichier texte:</li>
+<ul>
+<li>L'exemple utilise le caractère <b>;</b> comme délimiteur. N'importe quel caractère peut être utilisé pour séparer les champs, veuillez seulement à ce qu'il ne soit pas déjà présent dans vos champs au risque de provoquer des séprations excessives (p. ex. le délimiteur <b>,</b> risque de séparer la valeur 768,56 en 768 et 56).</li>
 <li>La première ligne est la ligne d'en-tête, elle contient les champs X, Y et ALTI.</li>
-<li>Aucun guillement (") n'est utilisé pour délimité les champs de texte.</li>
+<li>Aucun guillemet (") n'est utilisé pour délimité les champs de texte.</li>
 <li>Les coordonnées x sont présentes dans la colonne X.</li>
-<li>Les coordonnées y sont présentes dans la colonne Y.</li>
+<li>Les coordonnées y sont présentes dans la colonne Y.
+</ul>
+<li>L'exemple avec WKT:</li>
+<ul>
+  <li>a 2 champs définis dans la ligne d'en-tête : id et wkt
+  <li>utilise <b>|</b> comme délimitation</li>
+  <li>spécifie les coordonnées de chaque point en utilisant la notation WKT
+</ul>
 </ol>

@@ -1,3 +1,34 @@
 <h3>Table d'Attributs</h3>
-La Table d'Attributs permet d'afficher les lignes et les colonnes contenant les attributs de la couche sélectionnée. Depuis la Table d'Attributs il est
-possible de visualiser, éditer et rechercher les attributs de la couche.
+La Table d'Attributs permet d'afficher les lignes et les colonnes contenant les attributs de la couche sélectionnée. Depuis la Table d'Attributs, il est possible de visualiser, éditer et rechercher les attributs de la couche.
+
+Le nombre total d'entités est affiché dans la bordure supérieure de la fenêtre.<p>
+<p>
+<a href="#Sélectionner">Sélectionner</a><br/>
+<a href="#Trier">Trier</a><br/>
+<a href="#Rechercher">Rechercher</a><br/>
+<a href="#champs">Calculatrice de champs</a><br/>
+
+<a name="Sélectionner">
+<h4>Sélectionner</h4>
+</a>
+Les enregistrements peuvent être sélectionnés en cliquant sur le numéro de ligne se situant à l'extrême gauche. La sélection d'une ligne ne déplace pas le curseur. Plusieurs lignes peuvent être sélectionnées en même temps en maintenant appuyée la touche <label>Ctrl</label>.<br>
+Une sélection continue peut être faite en appuyant sur la touche <label>Shift</label> et en cliquant sur plusieurs lignes. Toutes les lignes entre le premier clic et le dernier seront sélectionnés.
+
+<a name="Trier">
+<h4>Trier</h4>
+</a>
+Chaque colonne peut être triée en cliquant sur son en-tête. Une petite flèche indique si le tri est fait dans un ordre descendant ou ascendant.<br>
+Utilisez le bouton <label>Déplacer la sélection au sommet</label> pour trier les lignes sélectionnées et les afficher au début du tableau. Pour afficher uniquement les enregistrements sélectionnés, utilisez la case <label>Afficher sélection</label>.
+
+<a name="Rechercher">
+<h4>Rechercher</h4>
+</a>
+Pour une recherche simple d'attributs sur une seule colonne, le champ <label>Chercher pour</label> peut être utilisé. Sélectionner la colonne (le champ) sur le lequel vous voulez opérer votre recherche dans la liste déroulante et cliquez sur le bouton <label>Chercher</label>.<br>
+Pour des recherches plus complexes, utilisez le bouton <label>Recherche avancée</label>. Ce bouton ouvre le Constructeur de Requête qui vous permettra de sélectionner des entités répondant à une requête SQL utilisant la condition WHERE.
+
+<a name="champs">
+<h4>Calculatrice de champs</h4>
+</a>
+Le bouton <label>Calculatrice de champs</label> vous permet d'opérer des calculs en vous basant sur des attributs existants ou des fonctions définies, p. ex. pour calculer la longueur ou la superficie d'une entité.<br>
+Les résultats peuvent être écrits dans une nouvelle colonne attributaire ou bien mettre à jour des valeurs d'une colonne existante.<br>
+Il vous faudra basculer la couche en mode édition pour pouvoir accéder à cette calculatrice.
