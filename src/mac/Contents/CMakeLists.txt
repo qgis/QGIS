@@ -31,4 +31,4 @@ INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
          DESTINATION ${CMAKE_INSTALL_PREFIX}/..)
 
 # Update bundle modification date so Finder scans latest plist
-INSTALL (CODE "EXECUTE_PROCESS(COMMAND touch ${CMAKE_INSTALL_PREFIX}/../../.)")
+INSTALL (CODE "EXECUTE_PROCESS(COMMAND touch \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../../.\")")
