@@ -8847,82 +8847,82 @@ QWT Version: %1.</source>
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="1947"/>
         <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dlaczego ta wersja została nazwana Wrocław? Ponieważ w listopadzie 2010, Zakład Klimatologii i Ochrony Atmosfery Uniwersytetu Wrocławskiego był gospodarzem czwartego spotkania programistów i współpracowników (aka hackfest). W prezentowanej wersji QGIS dodano nowe funkcje i dokonano zmian w API w stosunku do wersji QGIS 1.0.x oraz QGIS 1.6.0. Dołożyliśmy wszelkich starań, aby usunąć jak najwięcej błędów, ale programy bez błędów podobno nie istnieją. Dlatego zalecamy przetestowanie tej wersji przed stosowaniem jej na szerszą skalę.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1950"/>
         <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation>To wydanie likwiduje ponad 277 błędów oraz dodaje wiele nowych funkcji i udoskonaleń. Niemożliwe jest udokumentowanie tutaj wszystkich wprowadzonych zmian. Wypunktowane zostaną jedynie najważniejsze usprawnienia.</translation>
+        <translation type="unfinished">To wydanie likwiduje ponad 277 błędów oraz dodaje wiele nowych funkcji i udoskonaleń. Niemożliwe jest udokumentowanie tutaj wszystkich wprowadzonych zmian, dlatego przedstawione zostaną jedynie najważniejsze usprawnienia.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1953"/>
         <source>Symbology labels and diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Style, etykiety i diagramy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1955"/>
         <source>New symbology now used by default!</source>
-        <translation>Nowe style włączone są jako domyślne!</translation>
+        <translation type="unfinished">Style nowej generacji są włączone jako domyślne!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1956"/>
         <source>Diagram system that uses the same smart placement system as labeling-ng</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">System wykresów wykorzystuje te same, zaawansowane mechanizmy lokalizacji, co nowy system etykietowania.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1957"/>
         <source>Export and import of styles (symbology-ng).</source>
-        <translation>Eksport i import stylów (stylizacja nowej generacji).</translation>
+        <translation>Wprowadzono eksport i import stylów (stylizacja nowej generacji).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1958"/>
         <source>Labels for rules in rule-based renderers.</source>
-        <translation>Etykiety dla reguł w stylizacji opartej na regułach.</translation>
+        <translation>Dodano etykiety dla reguł w stylizacji opartej na regułach.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1959"/>
         <source>Ability to set label distance in map units.</source>
-        <translation>Możliwość zdefiniowania odległości etykiet w jednostkach mapy.</translation>
+        <translation>Możliwe jest definiowanie odległości etykiet w jednostkach mapy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Rotation for svg fills.</source>
-        <translation>Rotacja wypełnień SVG.</translation>
+        <translation>Dodano możliwość obrotu wypełnień SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Font marker can have an X,Y offset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik tekstowy może być przesunięty o zadany wektor X, Y.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1962"/>
         <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
-        <translation type="unfinished"></translation>
+        <translation>Umożliwiono wykorzystanie stylów warstw liniowych jako obrysu poligonów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1963"/>
         <source>Option to put marker on the central point of a line.</source>
-        <translation>Możliwość umieszczenia znacznika pośrodku linii.</translation>
+        <translation>Można już umieszczać znaczniki pośrodku linii.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1964"/>
         <source>Option to put marker only on first/last vertex of a line.</source>
-        <translation>Możliwość umieszczenia znacznika wyłącznie na pierwszym/ostatnim wierzchołku linii.</translation>
+        <translation>Można umieszczać znaczniki wyłącznie na pierwszym/ostatnim wierzchołku linii.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodano style dla centroidów w poligonach.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1966"/>
         <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
-        <translation>Możliwość umieszczenia znacznika na każdym wierzchołku.</translation>
+        <translation>Można umieszczać znaczniki na każdym wierzchołku.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1967"/>
         <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
-        <translation>Interaktywne narzędzia do przesunięcie/obrotu/zmiany etykiet opartych na danych.</translation>
+        <translation>Dodano interaktywne narzędzia do przesunięcie/obrotu/zmiany etykiet opartych na danych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1969"/>
@@ -8932,7 +8932,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1971"/>
         <source>Added GUI for gdaldem.</source>
-        <translation>Dodano graficzny interfejs użytkownika dla gdaldem.</translation>
+        <translation>Graficzny interfejs użytkownika dla gdaldem.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1972"/>
@@ -8942,17 +8942,17 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1973"/>
         <source>Added field calculator with functions like $x, $y and $perimeter.</source>
-        <translation>Dodano kalkulator pól z funkcjami takimi jak $x, $y oraz $perimeter.</translation>
+        <translation>Nowe funkcje kalkulatora pól: $x, $y oraz $perimeter.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1974"/>
         <source>Added voronoi polygon tool to Vector menu.</source>
-        <translation>Dodano poligony Woronoja do menu wektorowego.</translation>
+        <translation>Poligony Woronoja w menu wektorowym.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1976"/>
         <source>User interface updates</source>
-        <translation>Poprawiono interfejs użytkownika</translation>
+        <translation>Zmiany w interfejsie użytkownika</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1978"/>
@@ -8962,22 +8962,22 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1979"/>
         <source>Zoom to group of layers.</source>
-        <translation>Powiększ do grupy warstw.</translation>
+        <translation>Dodano powiększenie do grupy warstw.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1980"/>
         <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
-        <translation>Wyświetlanie &apos;Porady dnia&apos; przy uruchamianiu programu. Można to oczywiście wyłączyć w ustawieniach programu.</translation>
+        <translation>Dodano wyświetlanie &apos;Porady dnia&apos; przy uruchamianiu programu. Można to oczywiście wyłączyć w ustawieniach programu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1981"/>
         <source>Better organisation of menus, separate database menu added.</source>
-        <translation>Lepsza organizacja menu. Dodano oddzielne menu dla baz danych.</translation>
+        <translation>Poprawiono organizację menu. Dodano oddzielne menu dla baz danych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1982"/>
         <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
-        <translation>Dodano możliwość wyświetlania liczby obiektów w legendzie. Dostępne przez menu kontekstowe (prawy klawisz myszy).</translation>
+        <translation type="unfinished">Dodano możliwość wyświetlania w legendzie liczby obiektów. Dostępne przez menu kontekstowe (prawy klawisz myszy).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1984"/>
@@ -9022,7 +9022,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1996"/>
         <source>Added AND and OR operator for raster calculator</source>
-        <translation>Dodano operatory AND oraz OR dla kalkulatora rastrów</translation>
+        <translation>Dodano operatory AND oraz OR dla kalkulatora rastrów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1997"/>
@@ -9042,12 +9042,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2001"/>
         <source>Providers and Data Handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Żródła danych i zarządzanie danymi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2003"/>
         <source>New SQLAnywhere vector provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodano obsługę wektorów SQLAnywhere.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2004"/>
@@ -10152,12 +10152,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="128"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
-        <translation></translation>
+        <translation>&lt;p&gt;Lista osób prywatnych oraz instytucji, które wsparły finansowo projekt QGIS dostępna jest pod adresem &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="233"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Dostępne wtyczki źródeł danych QGIS</translation>
+        <translation>Dostępne źródła danych QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="236"/>
@@ -40058,7 +40058,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="449"/>
         <source>Voronoi diagram (lines)</source>
-        <translation>Diagram Voronoi (linie)</translation>
+        <translation>Diagram Woronoja (linie)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="450"/>
