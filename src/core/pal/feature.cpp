@@ -596,7 +596,7 @@ namespace pal
       {
         //std::cout << alpha*180/M_PI << std::endl;
         if ( flags & FLAG_MAP_ORIENTATION )
-          reversed = ( alpha > M_PI / 2 || alpha < -M_PI / 2 );
+          reversed = ( alpha > M_PI / 2 || alpha <= -M_PI / 2 );
 
         if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
           positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, reversed ) ); // Line
