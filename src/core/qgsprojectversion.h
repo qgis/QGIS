@@ -27,7 +27,7 @@
  * of QGIS is greater than the one used to create a project file.
  */
 
-class QgsProjectVersion
+class CORE_EXPORT QgsProjectVersion
 {
 
   public:
