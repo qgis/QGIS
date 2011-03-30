@@ -427,7 +427,7 @@ Section "Quantum GIS" SecQGIS
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
 
 !if ${INSTALLER_TYPE} == "OSGeo4W"
-	IfFileExists "$INSTALL_DIR\etc\reboot" SetRebootFlag true
+	;IfFileExists "$INSTALL_DIR\etc\reboot" SetRebootFlag true
 
         Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
         CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis.bat"' \
