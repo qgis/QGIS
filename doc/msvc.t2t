@@ -114,6 +114,9 @@ the top level QGIS directory.
 In the //Where to build the binaries:// box, browse to the 'build' directory you
 created.
 
+Adjust the path to bison and flex so that the shortened ``C:/Progra~1`` is used 
+rather than ``C:/Program Files``.
+
 Hit ``Configure`` to start the configuration and select ``Visual Studio 9 2008``
 and keep ``native compilers`` and click ``Finish``.
 
