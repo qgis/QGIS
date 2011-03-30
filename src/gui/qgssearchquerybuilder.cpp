@@ -29,7 +29,6 @@
 #include "qgssearchquerybuilder.h"
 #include "qgssearchstring.h"
 #include "qgssearchtreenode.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
@@ -215,13 +214,11 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  QgsVectorDataProvider* provider = mLayer->dataProvider();
-  const QgsFieldMap& fields = provider->fields();
-  QgsAttributeList allAttributes = provider->attributeIndexes();
+  const QgsFieldMap& fields = mLayer->pendingFields();
+  QgsAttributeList allAttributes = mLayer->pendingAllAttributesList();
+  mLayer->select( allAttributes, QgsRectangle(), fetchGeom );
 
-  provider->select( allAttributes, QgsRectangle(), fetchGeom );
-
-  while ( provider->nextFeature( feat ) )
+  while ( mLayer->nextFeature( feat ) )
   {
     if ( searchTree->checkAgainst( fields, feat ) )
     {
