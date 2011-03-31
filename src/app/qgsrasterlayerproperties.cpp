@@ -247,6 +247,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     tabPageHistogram->setEnabled( false );
   }
 
+  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
+  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
   leSpatialRefSys->setText( mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 

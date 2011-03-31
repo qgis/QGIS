@@ -77,6 +77,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   mValidNoDataValue = true;
 
   mCrs = QgsGrass::crs( mGisdbase, mLocation );
+  QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
 
   // the block size can change of course when the raster is overridden
   // ibut it is only called once when statistics are calculated
