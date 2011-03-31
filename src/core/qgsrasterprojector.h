@@ -128,8 +128,7 @@ class QgsRasterProjector
     QgsCoordinateReferenceSystem mDestCRS;
 
     /** Coordinate transform */
-    /* QgsCoordinateTransform inherits from QObject and that is not copyable */
-    QgsCoordinateTransform *mCoordinateTransform;
+    QgsCoordinateTransform mCoordinateTransform;
 
     /** Destination extent */
     QgsRectangle mDestExtent;
