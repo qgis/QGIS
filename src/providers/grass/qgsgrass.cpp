@@ -1140,6 +1140,7 @@ QgsCoordinateReferenceSystem GRASS_EXPORT QgsGrass::crs( QString gisdbase, QStri
     QString wkt = QgsGrass::getInfo( "proj", gisdbase, location );
     QgsDebugMsg( "wkt: " + wkt );
     crs.createFromWkt( wkt );
+    QgsDebugMsg( "crs.toWkt: " + crs.toWkt() );
   }
   catch ( QgsGrass::Exception &e )
   {
