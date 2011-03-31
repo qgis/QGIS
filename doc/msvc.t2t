@@ -162,9 +162,25 @@ creatensis.pl
 ```
 
 When the script completes, it should have created a QGIS installer executable
-in the ms-windows directory. If you want to include your own hand built QGIS 
-executables, you need to copy them in from your windows installation into 
-the ms-windows file tree created by the creatensis script.
+in the ms-windows directory (using the QGIS binaries from OSGEO4W). 
+
+=== Packaging your own build of QGIS ===
+
+Assuming you have completed the above packaging step, if you want to include
+your own hand built QGIS executables, you need to copy them in from your
+windows installation into the ms-windows file tree created by the creatensis
+script.
+
+```
+cd ms-windows/
+rm -rf osgeo4w/unpacked/apps/qgis/*
+cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
+./quickpackage.sh
+```
+
+After this you should now have a nsis installer containing your own build 
+of QGIS and all dependencies needed to run it on a windows machine.
+
 
 === Osgeo4w packaging ===
 
