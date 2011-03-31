@@ -35,12 +35,10 @@ QgsRasterProjector::QgsRasterProjector(
     , mExtent( theExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+    , mCoordinateTransform( theDestCRS, theSrcCRS )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
-
-  // reverse transformation
-  mCoordinateTransform = new QgsCoordinateTransform( theDestCRS, theSrcCRS );
 
   mDestXRes = mDestExtent.width() / ( mDestCols );
   mDestYRes = mDestExtent.height() / ( mDestRows );
@@ -115,7 +113,7 @@ QgsRasterProjector::QgsRasterProjector(
 
 QgsRasterProjector::~QgsRasterProjector()
 {
-  delete mCoordinateTransform;
+  //delete mCoordinateTransform;
 }
 
 void QgsRasterProjector::calcSrcExtent()
@@ -381,7 +379,7 @@ void QgsRasterProjector::calcCP( int theRow, int theCol )
   destPointOnCPMatrix( theRow, theCol, &myDestX, &myDestY );
   QgsPoint myDestPoint( myDestX, myDestY );
 
-  mCPMatrix[theRow][theCol] = mCoordinateTransform->transform( myDestPoint );
+  mCPMatrix[theRow][theCol] = mCoordinateTransform.transform( myDestPoint );
 }
 
 bool QgsRasterProjector::calcRow( int theRow )
@@ -421,7 +419,7 @@ bool QgsRasterProjector::checkCols()
       QgsPoint mySrcPoint3 = mCPMatrix[r+1][c];
 
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
-      QgsPoint myDestApprox = mCoordinateTransform->transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+      QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
       double mySqrDist = myDestApprox.sqrDist( myDestPoint );
       if ( mySqrDist > mSqrTolerance ) { return false; }
     }
@@ -444,7 +442,7 @@ bool QgsRasterProjector::checkRows()
       QgsPoint mySrcPoint3 = mCPMatrix[r][c+1];
 
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
-      QgsPoint myDestApprox = mCoordinateTransform->transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+      QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
       double mySqrDist = myDestApprox.sqrDist( myDestPoint );
       if ( mySqrDist > mSqrTolerance ) { return false; }
     }
