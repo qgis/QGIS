@@ -2741,7 +2741,9 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
 
         QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl ) );
-        mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( requestUrl ) );
+        QNetworkRequest request( requestUrl );
+        setAuthorization( request );
+        mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
         connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
         while ( mIdentifyReply )
