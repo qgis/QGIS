@@ -1796,7 +1796,24 @@ void QgsLegend::legendLayerZoomNative()
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
 
     layer->setCacheImage( NULL );
-    mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / mMapCanvas->mapUnitsPerPixel() ) );
+    if ( mMapCanvas->hasCrsTransformEnabled() )
+    {
+      // get legth of central canvas pixel width in source raster crs
+      QgsRectangle e = mMapCanvas->extent();
+      QgsMapRenderer* r = mMapCanvas->mapRenderer();
+      QgsPoint p1( e.center().x(), e.center().y() );
+      QgsPoint p2( e.center().x() + e.width() / r->width(), e.center().y() + e.height() / r->height() );
+      QgsCoordinateTransform ct( r->destinationCrs(), layer->crs() );
+      p1 = ct.transform( p1 );
+      p2 = ct.transform( p2 );
+      double width = sqrt( p1.sqrDist( p2 ) ); // width of reprojected pixel
+      // This is not perfect of course, we use the resolution in just one direction
+      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / width ) );
+    }
+    else
+    {
+      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / mMapCanvas->mapUnitsPerPixel() ) );
+    }
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
   }
