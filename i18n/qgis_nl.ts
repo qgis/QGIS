@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="nl">
+<TS version="2.0" language="en_US">
 <context>
     <name>CharacterWidget</name>
     <message>
@@ -1639,7 +1639,6 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translatorcomment>Translate - srcwin</translatorcomment>
         <translation></translation>
     </message>
     <message>
@@ -2007,7 +2006,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selecteerd een deelvenster van de afbeelding </translation>
     </message>
     <message>
         <source>Srcwin</source>
@@ -2375,15 +2374,15 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>nearest</source>
-        <translation type="unfinished"></translation>
+        <translation>dichtstbijzijnde</translation>
     </message>
     <message>
         <source>average</source>
-        <translation type="unfinished"></translation>
+        <translation>gemiddeld</translation>
     </message>
     <message>
         <source>gauss</source>
-        <translation type="unfinished"></translation>
+        <translation>gauss</translation>
     </message>
     <message>
         <source>average_mp</source>
@@ -2407,7 +2406,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Clean</source>
-        <translation type="unfinished"></translation>
+        <translation>Opschonen</translation>
     </message>
     <message>
         <source>In order to generate external overview (for GeoTIFF especially).</source>
@@ -2415,7 +2414,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Open in read-only mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Openen in alleen-lezen modus</translation>
     </message>
     <message>
         <source>Create external overviews in TIFF format, compressed using JPEG.</source>
@@ -2432,7 +2431,7 @@ the JPEG quality can be set.</source>
     </message>
     <message>
         <source>JPEG Quality (1-100)</source>
-        <translation type="unfinished"></translation>
+        <translation>JPEG-kwaliteit (1-100)</translation>
     </message>
     <message>
         <source>Alternate overview format using Erdas Imagine format, 
@@ -2514,11 +2513,11 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation type="unfinished">Virtueel Raster Aanmaken (Catalogus)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation type="unfinished">DEM (Hoogtemodellen)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Input file (DEM raster)</source>
@@ -2538,6 +2537,10 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Hillshade</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2574,27 +2577,27 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Azimuth of the light</source>
-        <translation type="unfinished"></translation>
+        <translation>Azimuth van het licht</translation>
     </message>
     <message>
         <source>Altitude of the light</source>
-        <translation type="unfinished"></translation>
+        <translation>Hellingshoek van het licht</translation>
     </message>
     <message>
         <source>Slope expressed as percent (instead of as degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Helling weergeven in procenten (in plaats van graden)</translation>
     </message>
     <message>
         <source>Return trigonometric angle (instead of azimuth)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef trigoneometrische hoek (in plaats van azimuth)</translation>
     </message>
     <message>
         <source>Return 0 for flat (instead of -9999)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef 0 voor vlak (in plaats van -9999)</translation>
     </message>
     <message>
         <source>Color configuration file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleur-configuratiebestand</translation>
     </message>
     <message>
         <source>Matching mode</source>
@@ -2602,47 +2605,43 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Exact color (otherwise &quot;0,0,0,0&quot; RGBA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exacte kleur (anders &quot;0,0,0,0&quot; RGBA)</translation>
     </message>
     <message>
         <source>Nearest color</source>
-        <translation type="unfinished"></translation>
+        <translation>Dichtstbijzijnde kleur</translation>
     </message>
     <message>
         <source>Add alpha channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg alpha-band toe</translation>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
-        <translation type="unfinished">Grid (Interpolatie)</translation>
+        <translation>Grid (Interpolatie)</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation type="unfinished">Overzichten aanmaken (Pyramiden)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
-        <translation type="unfinished">Vectoriseren (Raster naar vector)</translation>
+        <translation>Polygonize (Raster naar vector)</translation>
     </message>
     <message>
         <source>Proximity (Raster distance)</source>
-        <translation type="unfinished">Proximity (Raster afstand)</translation>
+        <translation>Proximity (Raster afstand)</translation>
     </message>
     <message>
         <source>Rasterize (Vector to raster)</source>
-        <translation type="unfinished">Rasterizeren (Vector naar raster)</translation>
+        <translation>Rasteren (Vector naar raster)</translation>
     </message>
     <message>
         <source>Translate (Convert format)</source>
-        <translation type="unfinished">Translatie (Formaat converteren)</translation>
+        <translation>Translate (Converteer bestandsformaat)</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
-        <translation type="unfinished">Warp (Herprojecteren)</translation>
-    </message>
-    <message>
-        <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Warp (herprojecteren)</translation>
     </message>
 </context>
 <context>
@@ -4524,7 +4523,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Could not retrieve value of list value</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Unknown operator: %1</source>
@@ -4588,7 +4587,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Om een projectie passend te maken zijn minimaal 4 corresponderende punten nodig.</translation>
     </message>
     <message>
         <source> foot</source>
@@ -5047,7 +5046,7 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan CRS-database %1 niet openen&lt;br&gt;Fout(%2): %3</translation>
     </message>
     <message>
         <source>Generated CRS</source>
@@ -5110,12 +5109,10 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>Estimating normal derivatives...</source>
         <translation>Schatten normaal afgeleiden...</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n geometry error(s) found.</source>
         <comment>number of geometry errors</comment>
-        <translation>
-            <numerusform>%n geometrie-fout gevonden.</numerusform>
-            <numerusform>%n geometrie-fouten gevonden.</numerusform>
+        <translation>%n geometrie-fouten gevonden.
         </translation>
     </message>
     <message>
@@ -5142,12 +5139,10 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>line %1 with less than two points</source>
         <translation>lijn %1 heeft minder dan twee punten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation>
-            <numerusform>lijn %1 bevat %n dubbele hoekpunt bij %2</numerusform>
-            <numerusform>lijn %1 bevat %n dubbele hoekpunten bij %2</numerusform>
+        <translation>lijn %1 bevat %n dubbele hoekpunten bij %2
         </translation>
     </message>
     <message>
@@ -5192,19 +5187,19 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>created field %1 not found (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>aangemaakte veld %1 niet gevonden (OGR fout: %2)</translation>
     </message>
     <message>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig type variable voor veld %1[%2]: verkreeg %3 met type %4</translation>
     </message>
     <message>
         <source>Feature geometry not imported (OGR error: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objectgeometrie niet geimporteerd (OGR fout: %1)</translation>
     </message>
     <message>
         <source>Feature creation error (OGR error: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-aanmaak fout (OGR fout: %1)</translation>
     </message>
     <message>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
@@ -5212,16 +5207,17 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Feature write errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-opslaan fouten:</translation>
     </message>
     <message>
         <source>Stopping after %1 errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestopt na %1 fouten</translation>
     </message>
     <message>
         <source>
 Only %1 of %2 features written.</source>
-        <translation type="unfinished"></translation>
+        <translation>Slechts %1 van de %2 objecten opgeslagen.
+</translation>
     </message>
     <message>
         <source>Groups not yet supported</source>
@@ -5245,11 +5241,11 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>QGIS rocks!</source>
-        <translation>QGIS Rocks!</translation>
+        <translation>QGIS rocks!</translation>
     </message>
     <message>
         <source>&lt;html&gt;QGIS rocks!&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;QGIS rocks!&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Displacement plugin</source>
@@ -5321,115 +5317,115 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Simple line</source>
-        <translation type="unfinished"></translation>
+        <translation>Doorgetrokken lijn</translation>
     </message>
     <message>
         <source>Marker line</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbolen-lijn</translation>
     </message>
     <message>
         <source>Line decoration</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijndecoratie</translation>
     </message>
     <message>
         <source>Simple marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard symbool</translation>
     </message>
     <message>
         <source>SVG marker</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-symbool</translation>
     </message>
     <message>
         <source>Font marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Lettertype-symbool</translation>
     </message>
     <message>
         <source>Simple fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard vulling</translation>
     </message>
     <message>
         <source>SVG fill</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-vulling</translation>
     </message>
     <message>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen active vectorlaag</translation>
     </message>
     <message>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Om kaartobjecten te selecteren moet u een vectorlaag kiezen door op de laag te klikken in het legendavenster</translation>
+        <translation>Om kaartobjecten te selecteren moet u een vectorlaag selecteren door op de laag te klikken in het legendavenster</translation>
     </message>
     <message>
         <source>CRS Exception</source>
-        <translation type="unfinished">CRS-fout</translation>
+        <translation>CRS-fout</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished">De selectie valt buiten het coördinatensysteem van de laag.</translation>
+        <translation>De selectie valt buiten het coördinatensysteem van de laag.</translation>
     </message>
     <message>
         <source>Raster Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster Histogram</translation>
     </message>
     <message>
         <source>Pixel Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixelwaarde</translation>
     </message>
     <message>
         <source>Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Frequentie</translation>
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished">Kies een bestandsnaam voor het opslaan van de kaart als</translation>
+        <translation>Kies een bestandsnaam voor het opslaan van de kaart als</translation>
     </message>
     <message>
         <source>OfflineEditing</source>
-        <translation type="unfinished"></translation>
+        <translation>OfflineEditing</translation>
     </message>
     <message>
         <source>Allow offline editing and synchronizing with database</source>
-        <translation type="unfinished"></translation>
+        <translation>Offline wijzigen en synchroniseren met database toestaan</translation>
     </message>
     <message>
         <source>Centroid fill</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Road graph plugin</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>It solves the shortest path problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lost het &quot;kortste route probleem&quot; op.</translation>
     </message>
     <message>
         <source>SQL Anywhere plugin</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation type="unfinished">Vectorlagen opslaan in een SQL Anywhere database</translation>
+        <translation>Vectorlagen opslaan in een SQL Anywhere database</translation>
     </message>
     <message>
         <source>Arc/Info ASCII Coverage</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Atlas BNA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Comma Separated Value</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished">ESRI-shape gegevens</translation>
+        <translation>ESRI-shape gegevens</translation>
     </message>
     <message>
         <source>FMEObjects Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>GeoJSON</source>
@@ -5457,173 +5453,174 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Microstation DGN</source>
-        <translation type="unfinished">Microstation DGN</translation>
+        <translation>Microstation DGN</translation>
     </message>
     <message>
         <source>S-57 Base file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Geoconcept</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Arc/Info Binary Coverage</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>DODS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ESRI Personal GeoDatabase</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ESRI ArcSDE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ESRI Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Grass Vector</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Informix DataBlade</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>INGRES</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Oracle Spatial</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ODBC</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>OGDI Vectors</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>UK. NTF2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>U.S. Census TIGER/Line</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>VRT - Virtual Datasource</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>X-Plane/Flightgear</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>All files</source>
-        <translation type="unfinished">Alle bestanden</translation>
+        <translation>Alle bestanden</translation>
     </message>
     <message>
         <source>Library name is %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Naam van de library is %1
+</translation>
     </message>
     <message>
         <source>Attempting to resolve the classFactory function
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordinaatsysteem-fout (exception) tijdens het transformeren van een punt. De polygoon-oppervlakte en -omtrek kunnen niet worden berekend.</translation>
     </message>
     <message>
         <source>Geography Markup Language [GML]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Generic Mapping Tools [GMT]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>GPS eXchange Format [GPX]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Keyhole Markup Language [KML]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Spatial Data Transfer Standard [SDTS]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Is disjoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Raakt niet (Is disjoint)</translation>
     </message>
     <message>
         <source>Cannot get GDAL raster band: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen toegang tot GDAL raster-band: %1</translation>
     </message>
     <message>
         <source>Cannot open GDAL MEM dataset %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan GDAL MEM dataset niet openen %1: %2</translation>
     </message>
     <message>
         <source>Cannot GDALCreateGenImgProjTransformer: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet GDALCreateGenImgProjTransformer: </translation>
     </message>
     <message>
         <source>Cannot inittialize GDALWarpOperation : </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan GDALWarpOperation niet initialiseren: </translation>
     </message>
     <message>
         <source>Cannot ChunkAndWarpImage: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet ChunkAndWarpImage: %1</translation>
     </message>
     <message>
         <source>[GDAL] All files (*)</source>
-        <translation type="unfinished">[GDAL] Alle bestanden (*)</translation>
+        <translation>[GDAL] Alle bestanden (*)</translation>
     </message>
     <message>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation>Dit rasterbestand bevat geen banden is is ongeldig als rasterlaag.</translation>
+        <translation>Dit rasterbestand bevat geen banden en is ongeldig als rasterlaag.</translation>
     </message>
     <message>
         <source>Cannot get map info</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan geen kaartinfo verkrijgen</translation>
     </message>
     <message>
         <source>Cannot get colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan kleuren niet verkrijgen</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS niet gedefinieerd = val terug op standaard CRS: %1</translation>
     </message>
 </context>
 <context>
@@ -7183,12 +7180,10 @@ Fouten:  %2
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Laag %1 is geen geldige laag en kan niet worden toegevoegd</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation>
-            <numerusform>%n feature geselecteerd in laag %1.</numerusform>
-            <numerusform>%n features geselecteerd in laag %1.</numerusform>
+        <translation>%n features geselecteerd in laag %1.
         </translation>
     </message>
     <message>
@@ -7227,12 +7222,10 @@ Fouten negeren?</translation>
         <source>Delete features</source>
         <translation>Kaartobjecten verwijderen</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation>
-            <numerusform>kaartobjecten verwijderen?</numerusform>
-            <numerusform>%n kaartobjecten verwijderen?</numerusform>
+        <translation>%n kaartobjecten verwijderen?
         </translation>
     </message>
     <message>
@@ -7355,363 +7348,361 @@ This copy of QGIS writes debugging output.</source>
     </message>
     <message>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Om een histogram te maken moet een rasterlaag geselecteerd zijn.</translation>
     </message>
     <message>
         <source>No Raster Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Rasterlaag Geselecteerd</translation>
     </message>
     <message>
         <source>No Valid Raster Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Geldige Rasterlaag Geselecteerd</translation>
     </message>
     <message>
         <source>
 
 Always ignore these errors?</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze fouten altijd negeren?</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>%n SSL-fouten vonden plaats
         </translation>
     </message>
     <message>
         <source>
 GDAL/OGR Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL/OGR Versie: %1.</translation>
     </message>
     <message>
         <source>
 PostgreSQL Client Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL Client Versie: %1.</translation>
     </message>
     <message>
         <source>
 No PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen PostgreSQL ondersteuning.</translation>
     </message>
     <message>
         <source>
 SpatiaLite Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatialLite Versie: %1.</translation>
     </message>
     <message>
         <source>
 No SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen SpatialLite ondersteuning.</translation>
     </message>
     <message>
         <source>
 QWT Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>QWT Versie: %1.</translation>
     </message>
     <message>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor een  &apos;full histogram stretch&apos; moet een rasterlaag geselecteerd zijn.</translation>
     </message>
     <message>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor een &apos;local histogram stretch&apos; moet een grijswaarden of multiband-raster (multiband met 1 laag, singleband met grijswaarden of multiband kleur) zijn geselecteerd.</translation>
     </message>
     <message utf8="true">
         <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wat is nieuw in Versie 1.7.0 &apos;Wrocław&apos;?</translation>
     </message>
     <message utf8="true">
         <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze versie is genoemd naar de stad Wrocław in Polen. De afdeling Klimatologie en Atmosfeerbescherming van de Universiteit van Wrocław verzorgde onze laatste ontwikkelaars-bijeenkomst in november 2010. Merk op dat dit een versie is uit onze &apos;cutting edge&apos; serie. Deze bevat nieuwe onderdelen en uitbreidingen op de interface van QGIS 1.0.x en 1.6.0. Zoals bij elke software het geval is, kunnen er &apos;bugs&apos; of problemen zijn die niet optijd opgelost konden worden voor het uitbrengen van deze versie. Daarom adviseren we deze versie te testen voordat deze en-masse wordt uitgerold naar uw gebruikers.</translation>
     </message>
     <message>
         <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze versie bevat meer dan 277 &apos;bug fixes&apos; en veel nieuwe onderdelen en verbeteringen. Het is onmogelijk om alles wat veranderd is hier te beschrijven, daarom wordt slechts een lijst met de belangrijkste nieuwe onderdelen gegeven.</translation>
     </message>
     <message>
         <source>Symbology labels and diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbologie, labels en diagrammen</translation>
     </message>
     <message>
         <source>New symbology now used by default!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe symbologie wordt nu standaard gebruikt!</translation>
     </message>
     <message>
         <source>Diagram system that uses the same smart placement system as labeling-ng</source>
-        <translation type="unfinished"></translation>
+        <translation>Het Diagram-systeem gebruikt hetzelfde intelligente plaatsingssysteem als het labelen</translation>
     </message>
     <message>
         <source>Export and import of styles (symbology-ng).</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteren en importeren van stijlen (symbology-ng).</translation>
     </message>
     <message>
         <source>Labels for rules in rule-based renderers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Labels voor de regels bij de regelgebaseerder renderers.</translation>
     </message>
     <message>
         <source>Ability to set label distance in map units.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mogelijkheid om label-afstand in te stellen in kaarteenheden.</translation>
     </message>
     <message>
         <source>Rotation for svg fills.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoek voor SVG-vuling.</translation>
     </message>
     <message>
         <source>Font marker can have an X,Y offset.</source>
-        <translation type="unfinished"></translation>
+        <translation>X,Y-verschuiving voor font-symbolen.</translation>
     </message>
     <message>
         <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik de lijnsymbologie als omtrek van een polygoonsymbool.</translation>
     </message>
     <message>
         <source>Option to put marker on the central point of a line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaats een puntsymbool op het midden van een lijn.</translation>
     </message>
     <message>
         <source>Option to put marker only on first/last vertex of a line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaats puntsumbolen op alleen de uiteinden van een lijn.</translation>
     </message>
     <message>
         <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaats een puntsymbool op het midden van een polygoon met de &quot;centroid fill&quot;-laag.</translation>
     </message>
     <message>
         <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaats puntsymbolen op elk knikpunt van een lijn.</translation>
     </message>
     <message>
         <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tools voor het verplaatsen, roteren en aanpassen van labels op basis van data.</translation>
     </message>
     <message>
         <source>New Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe Tools</translation>
     </message>
     <message>
         <source>Added GUI for gdaldem.</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI voor gdaldem toegevoegd.</translation>
     </message>
     <message>
         <source>Added &apos;Lines to polygons&apos; tool to vector menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Lijnen naar polygonen&apos;-tool aan het vectormenu toegevoegd.</translation>
     </message>
     <message>
         <source>Added field calculator with functions like $x, $y and $perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Veldcalculator met functies als $x, $y en $perimeter (omtrek) toegevoegd.</translation>
     </message>
     <message>
         <source>Added voronoi polygon tool to Vector menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voronoi-polygoon tool toegevoegd aan het vectormenu.</translation>
     </message>
     <message>
         <source>User interface updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruikers-interface aanpassingen</translation>
     </message>
     <message>
         <source>Allow managing missing layers in a list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toestaan om naar missende lagen te zoeken in een lijst.</translation>
     </message>
     <message>
         <source>Zoom to group of layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom in op een groep kaartlagen.</translation>
     </message>
     <message>
         <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Tip van de dag&apos; tijdens het opstarten. Kan worden aan- of uitgezet in het opties-venster.</translation>
     </message>
     <message>
         <source>Better organisation of menus, separate database menu added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Beter georganiseerde menu&apos;s, apart database-menu toegevoegd.</translation>
     </message>
     <message>
         <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mogelijkheid om het aantal objecten per legenda-klasse te tonen. Toegankelijk met een rechtermuis-klik op de kaartlaag.</translation>
     </message>
     <message>
         <source>General clean-ups and usability improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene opschoning en verbeteringen.</translation>
     </message>
     <message>
         <source>CRS Handling</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS Gebruik</translation>
     </message>
     <message>
         <source>Show active crs in status bar.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon het active crs in de statusbalk.</translation>
     </message>
     <message>
         <source>Assign layer CRS to project (in the legend context menu).</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas het CRS van een kaartlaag toe op het hele project. </translation>
     </message>
     <message>
         <source>Select default CRS for new projects.</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer een standaard CRS voor nieuwe projecten.</translation>
     </message>
     <message>
         <source>Allow setting CRS for multiple layers at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stel een CRS voor meerdere kaartlagen tegelijk in.</translation>
     </message>
     <message>
         <source>Default to last selection when prompting for CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard naar laatste keuze wanneer er om een CRS wordt gevraagd.</translation>
     </message>
     <message>
         <source>Rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasters</translation>
     </message>
     <message>
         <source>Added AND and OR operator for raster calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>AND- en OR-operatoren aan rastercalculator toegevoegd</translation>
     </message>
     <message>
         <source>On-the-fly reprojection of rasters added!</source>
-        <translation type="unfinished"></translation>
+        <translation>Gelijktijdige (on-the-fly) transformatie voor rasters toegevoegd!</translation>
     </message>
     <message>
         <source>Proper implementation of raster providers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keurige implementatie van raster-providers.</translation>
     </message>
     <message>
         <source>Added raster toolbar with histogram stretch functions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster-werkbalk met histogram-functies toegevoegd.</translation>
     </message>
     <message>
         <source>Providers and Data Handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Data-ondersteuning</translation>
     </message>
     <message>
         <source>New SQLAnywhere vector provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe SQLAnywhere vector-provider.</translation>
     </message>
     <message>
         <source>Table join support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteuning voor het koppelen van tabellen.</translation>
     </message>
     <message>
         <source>Feature form updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-formulier updaten</translation>
     </message>
     <message>
         <source>Make NULL value string representation configurable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Instelbare tekst-representatie van NULL-waarde.</translation>
     </message>
     <message>
         <source>Fix feature updates in feature form from attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbeter de object-updates in het object-formulier van de attribuuttabel.</translation>
     </message>
     <message>
         <source>Add support for NULL values in value maps (comboboxes).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteuning voor NULL-waardes in waardenlijsten (keuzemenu&apos;s).</translation>
     </message>
     <message>
         <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik laagnamen in plaats van id&apos;s in keuzelijst bij het laden van waardelijsten van kaartlagen.</translation>
     </message>
     <message>
         <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteuning voor expressies in object-formulier-velden: wijzigingen van regels in het formulier die beginnen met &quot;expr_&quot; worden uitgerekend. De waarde wordt geïnterpreteerd als veldcalculator-invoer en vervangen door de berekende waarde.</translation>
     </message>
     <message>
         <source>Support searching for NULL in attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoeken naar NULL-waarde in attributentabel.</translation>
     </message>
     <message>
         <source>Attribute editing improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbeterde aanpassing van attributen</translation>
     </message>
     <message>
         <source>Improved interactive attribute editing in table (adding/deleting features, attribute update).</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbeterde interactieve aanpassing van attributentabel (opbjecten toevoegen/verwijderen, attributen updaten).</translation>
     </message>
     <message>
         <source>Allow adding of geometryless features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen van objecten zonder geometrie toestaan.</translation>
     </message>
     <message>
         <source>Fixed attribute undo/redo.</source>
-        <translation type="unfinished"></translation>
+        <translation>Herstelde Ongedaan maken/Opniew voor attributen.</translation>
     </message>
     <message>
         <source>Improved attribute handling.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbeterde attribuutfunctionaliteit.</translation>
     </message>
     <message>
         <source>Optionally re-use entered attribute values for next digitized feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opnieuw gebruiken van laatstgebruikte attribuutwaarden bij het digitaliseren van nieuwe kaartobjecten.</translation>
     </message>
     <message>
         <source>Allow merging/assigning attribute values to a set of features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toestaan van samenvoegen/toekennen van attribuutwaarden aan meerdere objecten tegelijk.</translation>
     </message>
     <message>
         <source>Allow OGR &apos;save as&apos; without attributes (for eg. DGN/DXF).</source>
-        <translation type="unfinished"></translation>
+        <translation>Toestaan van OGR &apos;Opslaan als...&apos; zonder attributen (bijvoorbeeld DGN/DXF).</translation>
     </message>
     <message>
         <source>Api and Developer Centric</source>
-        <translation type="unfinished"></translation>
+        <translation>Api en Ontwikkeling</translation>
     </message>
     <message>
         <source>Refactored attribute dialog calls to QgsFeatureAttribute.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vernieuwde attribuut-dialoog aanroep voor QgsFeatureAttribute.</translation>
     </message>
     <message>
         <source>Added QgsVectorLayer::featureAdded signal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Signal QgsVectorLayer::featureAdded toegevoegd.</translation>
     </message>
     <message>
         <source>Layer menu function added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartlaag menu functie toegevoegd.</translation>
     </message>
     <message>
         <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Optie om c++ plugins te laden uit op te geven mappen. QGIS herstart vereist.</translation>
     </message>
     <message>
         <source>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel vernieuwde geometrie-controle tool voor fTools. Aanmerkelijk sneller, meer relevante foutmeldingen en ondersteun het inzoomen op fouten. Zie de nieuwe QgsGeometry.validateGeometry functie</translation>
     </message>
     <message>
         <source>QGIS Mapserver</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ability to specify wms service capabilities in the properties section of the project file (instead of wms_metadata.xml file).</source>
-        <translation type="unfinished"></translation>
+        <translation>Mogelijkheid om de wms-service mogelijkheden te specificeren in de properties-sectie van het projectbestand (in plaats van het wms_metadata.xml bestand).</translation>
     </message>
     <message>
         <source>Support for wms printing with GetPrint-Request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteuning voor het printen van wms  met de GetPrint-Request.</translation>
     </message>
     <message>
         <source>Support for icons of plugins in the plugin manager dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteuning voor icons van plugins in het Plugin Manager dialoogscherm.</translation>
     </message>
     <message>
         <source>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quickprint plugin verwijderd - gebruik de Easyprint plugin uit de plugin repo.</translation>
     </message>
     <message>
         <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR Convertor plugin verwijderd - gebruik &apos;opslaan als...&apos; uit het context-menu.</translation>
     </message>
     <message>
         <source>Printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Afdrukken</translation>
     </message>
     <message>
         <source>Undo/Redo support for the print composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteuning voor Ongedaan maken/Opnieuw in de Layouter</translation>
     </message>
     <message>
         <source>Current CRS: %1 (OTFR enabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidig CRS: %1 (OTFR aan)</translation>
     </message>
     <message>
         <source>Current CRS: %1 (OTFR disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidig CRS: %1 (OTFR uit)</translation>
     </message>
 </context>
 <context>
@@ -8276,28 +8267,22 @@ p, li { white-space: pre-wrap; }
         <source>Error during search</source>
         <translation>Fout tijdens zoekactie</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation>
-            <numerusform>Attribuut tabel - %1 (%n Object)</numerusform>
-            <numerusform>Attribuut tabel - %1 (%n Objecten)</numerusform>
+        <translation>Attribuut tabel - %1 (%n Objecten)
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation>
-            <numerusform>Attribuut tabel - %1 :: %n / %2 object geselecteerd</numerusform>
-            <numerusform>Attribuut tabel - %1 :: %n / %2 objecten geselecteerd</numerusform>
+        <translation>Attribuut tabel - %1 :: %n / %2 objecten geselecteerd
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation>
-            <numerusform>Attribuut tabel - %1 (%n object gevonden)</numerusform>
-            <numerusform>Attribuut tabel - %1 (%n gevonden objecten)</numerusform>
+        <translation>Attribuut tabel - %1 (%n gevonden objecten)
         </translation>
     </message>
     <message>
@@ -10403,7 +10388,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Rotation </source>
         <comment>Rotation</comment>
-        <extracomment>Rotation</extracomment>
         <translation>Rotatie</translation>
     </message>
 </context>
@@ -12044,7 +12028,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>area</source>
-        <translatorcomment>of toch oppervlakte?</translatorcomment>
         <translation>vlak</translation>
     </message>
     <message>
@@ -13015,7 +12998,6 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeorefPlugin</name>
     <message>
         <source>&amp;About</source>
-        <translatorcomment>&amp;Info</translatorcomment>
         <translation></translation>
     </message>
     <message>
@@ -13670,12 +13652,10 @@ p, li { white-space: pre-wrap; }
         <source>Question</source>
         <translation>Vraag</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation>
-            <numerusform>Weet u zeker dat u %n geselecteerde laag wilt verwijderen?</numerusform>
-            <numerusform>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?</numerusform>
+        <translation>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?
         </translation>
     </message>
     <message>
@@ -15558,12 +15538,10 @@ in regel %2 kolom %3</translation>
         <source>Unhandled layer will be lost.</source>
         <translation>Niet verwerkte bestanden gaan verloren.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation>
-            <numerusform>Er is nog %n niet verwerkte laag, die gaat verloren als u nu afsluit.</numerusform>
-            <numerusform>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.</numerusform>
+        <translation>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.
         </translation>
     </message>
 </context>
@@ -15728,15 +15706,12 @@ in regel %2 kolom %3</translation>
         <source>Closing down connection</source>
         <translation>Verbinding wordt afgesloten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation>
-            <numerusform>Netwerkverbinding verbroken na %n seconde van inaktiviteit.
-Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numerusform>
-            <numerusform>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
-Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numerusform>
+        <translation>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
+Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.
         </translation>
     </message>
 </context>
@@ -19060,7 +19035,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation>Snapping instellingen openen in een &apos;dock window&apos; (QGIS moet worden herstart)</translation>
+        <translation>Snapping instellingen openen in een &apos;dock window&apos; (QGIS herstart vereist)</translation>
     </message>
     <message>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
@@ -19100,7 +19075,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reuse last entered attribute values</source>
-        <translation>Laatst ingevoetde attribuutwaarden gebruiken</translation>
+        <translation>Laatst ingevoerde attribuutwaarden gebruiken</translation>
     </message>
     <message>
         <source>Network</source>
@@ -21649,12 +21624,10 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>
-            <numerusform>Het &apos;where&apos;-filter levert %n rij op.</numerusform>
-            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.</numerusform>
+        <translation>Het &apos;where&apos;-filter levert %n rijen op.
         </translation>
     </message>
     <message>
@@ -23162,12 +23135,10 @@ p, li { white-space: pre-wrap; }
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation>
-            <numerusform>Filter levert %n object</numerusform>
-            <numerusform>Filter levert %n objecten</numerusform>
+        <translation>Filter levert %n objecten
         </translation>
     </message>
     <message>
@@ -23712,12 +23683,10 @@ p, li { white-space: pre-wrap; }
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
         <translation>Er is geen attribuut &apos;%1&apos; in de huidige vectorlaag. Selecteer een aanwezig attribuut</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation>
-            <numerusform> %n passend object gevonden.</numerusform>
-            <numerusform>%n passende objecten gevonden.</numerusform>
+        <translation>%n passende objecten gevonden.
         </translation>
     </message>
     <message>
@@ -24138,12 +24107,10 @@ De foutmelding was:
         <source>Insufficient number of layers</source>
         <translation type="obsolete">Onvoldoende kaartlagen</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation>
-            <numerusform>%n geselecteerde geometrie</numerusform>
-            <numerusform>%n geselecteerde geometrieën</numerusform>
+        <translation>%n geselecteerde geometrieën
         </translation>
     </message>
     <message>
@@ -24208,115 +24175,117 @@ De foutmelding was:
     </message>
     <message>
         <source>The spatial query requires at least two vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>De ruimtelijke query vereist minimaal twee vectorlagen</translation>
     </message>
     <message>
         <source>%1)Query</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Begin at %L1</source>
-        <translation type="unfinished"></translation>
+        <translation>Begin bij %L1</translation>
     </message>
     <message>
         <source>Total of features =  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Totaal aantal kaartobjecten =  %1 </translation>
     </message>
     <message>
         <source>Total of invalid features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Totaal aantal ongeldige kaartobjecten:</translation>
     </message>
     <message>
         <source>Finish at %L1 (processing time %L2 minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Beëindigd op %L1 (procestijd %L2 minuten)</translation>
     </message>
     <message>
         <source>Using the field &quot;%1&quot; for subset</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik het veld &quot;%1&quot; voor subset</translation>
     </message>
     <message>
         <source>Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorry! Alleen deze providers zijn beschikbaar: OGR, POSTGRES en SPATIALITE.</translation>
     </message>
     <message>
         <source>%1 of %2(selected features)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 van de %2(geselecteerde objecten)</translation>
     </message>
     <message>
         <source>Create new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak nieuwe selectie</translation>
     </message>
     <message>
         <source>Add to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg toe aan huidige selectie</translation>
     </message>
     <message>
         <source>Remove from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder uit huidige selectie</translation>
     </message>
     <message>
         <source>Result query</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaat query</translation>
     </message>
     <message>
         <source>Invalid source</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige bron</translation>
     </message>
     <message>
         <source>Invalid reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongerldige referentie</translation>
     </message>
     <message>
         <source>%1 of %2 selected by &quot;%3&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 van de %2 geselecteerd door &quot;%3&quot;</translation>
     </message>
     <message>
         <source>user</source>
-        <translation type="unfinished"></translation>
+        <translation>gebruiker</translation>
     </message>
     <message>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaart &quot;%1&quot; &quot;on the fly&quot; transformatie.</translation>
     </message>
     <message>
         <source>enable</source>
-        <translation type="unfinished"></translation>
+        <translation>inschakelen</translation>
     </message>
     <message>
         <source>disable</source>
-        <translation type="unfinished">uitschakelen</translation>
+        <translation>uitschakelen</translation>
     </message>
     <message>
         <source>Coordinate reference system(CRS) of
 &quot;%1&quot; is invalid(see CRS of provider).</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordinaat Referentie-systeen (CRS) van
+&quot;%1&quot; is ongeldig (zie CRS provider).</translation>
     </message>
     <message>
         <source>
 
 CRS of map is %1.
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS van de kaart is %1.
+%2.</translation>
     </message>
     <message>
         <source>Zoom to feature</source>
-        <translation type="unfinished">Naar object inzoomen</translation>
+        <translation>Naar object inzoomen</translation>
     </message>
     <message>
         <source>Create new layer from items</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak nieuwe kaartlaag van items</translation>
     </message>
     <message>
         <source>The query from &quot;%1&quot; using &quot;%2&quot; in field not possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>De query van &quot;%1&quot; met &quot;%2&quot; als veld is niet mogelijk.</translation>
     </message>
     <message>
         <source>Create new layer from selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak nieuwe laag van selectie</translation>
     </message>
     <message>
         <source>%1 of %2 identified</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 van de %2 geïdentificeerd</translation>
     </message>
 </context>
 <context>
@@ -24999,85 +24968,88 @@ Quantum GIS vereist dat een relatie een integer kolom heeft van minder dan 32 bi
     </message>
     <message>
         <source>Error describing bind parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in het samenstellen van de verbindingsparameters</translation>
     </message>
     <message>
         <source>Error binding parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout in de verbindingparameters</translation>
     </message>
     <message>
         <source>Error inserting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het toevoegen van objecten</translation>
     </message>
     <message>
         <source>Error deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het verwijderen van objecten</translation>
     </message>
     <message>
         <source>Error adding attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het toevoegen van attributen</translation>
     </message>
     <message>
         <source>Error deleting attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het verwijderen van attributen</translation>
     </message>
     <message>
         <source>Attribute not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuut niet gevonden</translation>
     </message>
     <message>
         <source>Error updating attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het bijwerken van attributen</translation>
     </message>
     <message>
         <source>Error updating features</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het bijwerken van objecten</translation>
     </message>
     <message>
         <source>Error verifying geometry column %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het controleren van geometrieveld %1</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
-        <translation type="unfinished">Onbekend geometrie-type</translation>
+        <translation>Onbekend geometrie-type</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom %1 heeft een geometrie-type %2 dat momenteel niet door Quantum GIS wordt ondersteund.</translation>
     </message>
     <message>
         <source>Mixed Spatial Reference Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschillende ruimtelijke referentiesystemen</translation>
     </message>
     <message>
         <source>Column %1 is not restricted to a single SRID, which Quantum GIS requires.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom %1 is niet beperkt tot een enkel SRID, wat nodig is voor Quantum GIS.</translation>
     </message>
     <message>
         <source>Error checking database ReadOnly property</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het controleren van de AlleenLezen-eigenschap van de database</translation>
     </message>
     <message>
         <source>Error loading SRS definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het laden van de SRS-definitie</translation>
     </message>
     <message>
         <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Omdat Quantum GIS alleen data in het platte vlak ondersteund, zal de SQL Anywhere-data provder de data omzetten naar een bruikbare cartesische projectie (SRID=%1).</translation>
     </message>
     <message>
         <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Omdta Quantum GIS alleen vlakke data ondersteund en er geen vlakke data projectie is gevonden, zal de SQL Anywhere provider proberen de data te transformeren naar WGS 8
+4 (SRID=%1).</translation>
     </message>
     <message>
         <source>Limited Support of Round Earth SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Beperkte ondersteuning voor &quot;Round Earth SRS&quot;</translation>
     </message>
     <message>
         <source>Column %1 (%2) contains geometries belonging to a round earth spatial reference system (SRID=%3). %4
 
 Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom %1 (%2) bevat geometrieën in een Round Earth SRS (SRID=%3). %4
+
+Het bijwerken van geometrie wordt uitgeschakeld, en queries kunnen langzamer worden uitgevoerd omdat de ruimtelijke index niet kan worden gebruikt. Overweeg een ruimtelijke index te maken op een nieuwe (nog te berekenen) kolom met deze geometrieën in een vlakke projectie om de snelheid te verbeteren. Kijk voor hulp in de beschrijvingen van ST_SRID(INT) en ST_Transform(INT) methodes in de SQL Anywhere documentatie.</translation>
     </message>
 </context>
 <context>
@@ -25530,7 +25502,7 @@ Overschrijven?</translation>
     </message>
     <message>
         <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available to the Quantum GIS project, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation>Quantum GIS is open source software. Dit betekent dat de broncode van de software vrij kan worden bekeken of worden aangepast. De GPL(-licentie) stelt wel dat aanpassingen die u doet, ook beschikbaar moeten worden gesteld aan het Quantum GIS project en u geen nieuwe versie van Quantum GIS kunt vrijgeven onder een &apos;gesloten licentie&apos;. Bezoek &lt;a href=&quot;http://qgis.org&quot;&gt; de QGIS website (http://qgis.org)&lt;/a&gt; voor meer informatie.</translation>
+        <translation>Quantum GIS is open source software. Dit betekent dat de broncode van de software vrij kan worden bekeken of worden aangepast. De GPL(-licentie) stelt wel dat aanpassingen die u doet, ook beschikbaar moeten worden gesteld aan het Quantum GIS project en u geen nieuwe versie van Quantum GIS kunt vrijgeven onder een &apos;gesloten&apos; licentie. Bezoek &lt;a href=&quot;http://qgis.org&quot;&gt; de QGIS website (http://qgis.org)&lt;/a&gt; voor meer informatie.</translation>
     </message>
     <message>
         <source>QGIS Publications</source>
@@ -25578,7 +25550,7 @@ Overschrijven?</translation>
     </message>
     <message>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
-        <translation>U kunt de huidige datum aan een kaart-layout toevoegen. Maak een regulier tekst-label aan en zet daarin de tekst $CURRENT_DATE(yyyy-MM-dd). Zie de &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentatie&lt;/a&gt; voor de mogelijke datumformaten.</translation>
+        <translation>U kunt de huidige datum aan een kaart-layout toevoegen. Maak een regulier tekst-label aan en zet daarin de tekst $CURRENT_DATE(dd-MM-yyyy). Zie de &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentatie&lt;/a&gt; voor de mogelijke datumformaten.</translation>
     </message>
     <message>
         <source>Moving Elements and Maps in the Print Composer</source>
@@ -25586,71 +25558,71 @@ Overschrijven?</translation>
     </message>
     <message>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>In de Layouter-knoppenbalk vind je twee knoppen voor het verplaatsen van elementen. De linker (een selectie-pijl met een handje) selecteert en verschuift elementen in de layout. Na het selecteren van een element met deze tool kun je het ook verschuiven met de pijltjes-toetsen. Voor het nauwkeurig plaatsen gebruik je het &lt;strong&gt;Positie en Grootte...&lt;/strong&gt;-dialoogvenster, dat te vinden is in tabblad &lt;strong&gt;Onderdeel &amp;rarr; Item-opties &amp;rarr; Positie en Grootte...&lt;/strong&gt;. Voor handiger plaatsen kun je ook het verankeringspunt opgeven in dit dialoogvenster. Met de andere verplaatsknop (een wereldbol met handje) kan de kaart binnen een kaart-element worden verschoven.</translation>
     </message>
     <message>
         <source>Lock an element in the layout view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vergrendel een element in de layout</translation>
     </message>
     <message>
         <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Door links te klikken op een element in de layout kun je het selecteren, door rechts te klikken kun je het vergrendelen. Er verschijnt een slotje in de linkerbovenhoek van het element. Dit weerhoudt een element ervan om per ongeluk verplaatst te worden met de muis. In vergrendelde staat kun je een element niet met de muis verplaatsten, maar wel met de pijltjestoetsen of met behulp van &lt;strong&gt;Positie en Grootte&lt;/strong&gt;.</translation>
     </message>
     <message>
         <source>Rotating a map and linking a north arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>De kaart roteren en een noordpijl koppelen</translation>
     </message>
     <message>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item tab &amp;rarr; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool, the button with the little camera icon. QGIS comes with a selection of north arrows. After the placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Je kunt een kaart roteren door de rotatie-waarde aan te passen in de &lt;strong&gt;tabblad Onderdeel &amp;rarr; Kaart&lt;/strong&gt; sectie. Een noordpijl in je layout plaatsen gaat met de &lt;strong&gt;Afbeelding toevoegen&lt;/strong&gt; functie, de knop met de fotocamera. Met QGIS worden een aantal noorpijlen meegeleverd. Na het plaatsen van een noordpijl in de layout kun je deze koppelen aan een specifiek kaartelement door de optie &lt;strong&gt;Met kaart synchroniseren&lt;/strong&gt; aan te vinken en het betreffende kaartelement te selecteren. Wanneer je de rotatie van het kaartelement wijzigt, zal de richting van noordpijl automatisch worden aangepast.</translation>
     </message>
     <message>
         <source>Numeric scale value in map layout linked to map frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Numerieke schaalweergave op layout</translation>
     </message>
     <message>
         <source>If you want to place a text label as a placeholder for the current scale, linked to a map frame, you need to place a scalebar and set the style to &apos;Numeric&apos;. You also need to select the map frame, if there is more than one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Als je een de schaal als tekst op je kaart wilt weergeven die afhankelijk is van de schaal van het kaartvenster, dien je een schaalbalk te plaatsen en de stijl op &apos;Numeriek&apos; te zetten. Indien er meerdere kaartelementen worden gebruikt dient de gewenste te worden geselecteerd.</translation>
     </message>
     <message>
         <source>Using the mouse scroll wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik van het muiswiel</translation>
     </message>
     <message>
         <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Met het muiswiel kun je in- en uitzoomen op de kaart en de kaart verschuiven. Draai het wiel voor in- en uitzoomen, en houd het ingedrukt om te schuiven. Je kunt muiswiel-opties instellen in het Opties-dialoogvenster (tabblad Kaartgereedschap).</translation>
     </message>
     <message>
         <source>Stopping rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderen afbreken</translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
+        <translation>Soms duurt het renderen (kaart op het scherm tekenen) van een grote dataset veel te lang. Druk op &apos;esc&apos; (de escape toets) om het renderen te stoppen, of druk op de &quot;Stoppen met (her)tekenen&quot;-knop in de statusbalk rechts van de schaalaanduiding. Wanneer je meerdere aanpassingen in de weergeve gaat doen (bijvoorbeeld nieuwe symbologieën toepassen) dan kun je het renderen tijdelijk uitzetten door de optie (Her)tekenen in de statusbalk uit te vinken. Vergeet deze niet weer aan te vinken wanneer je klaar bent, zodat de kaart weer automatisch wordt getekend!</translation>
     </message>
     <message>
         <source>Join intersected polylines when rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Versmelt samenvallende lijnen bij het renderen</translation>
     </message>
     <message>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bij gebruik van symboollagen op een lijnen-kaartlaag, kun je samenvallende lijnen laten versmelten door Symboollagen te activeren. Onderstaande afbeeldingen tonen het verschil tussen niet (links) en wel (rechts) geactiveerde Symboollagen.</translation>
     </message>
     <message>
         <source>Auto-enable on the fly projection</source>
-        <translation type="unfinished"></translation>
+        <translation>On the fly pojecteren automatisch aanzetten</translation>
     </message>
     <message>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>In het Opties-dialoogvenster, in tabblad CRS, kun je QGIS zo instellen dat een nieuw project &apos;on the fly projectie&apos; standaard is geactiveerd en dat een vooraf bepaald CRS wordt gebruikt.</translation>
     </message>
     <message>
         <source>Sponsor QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Als QGIS je geld bespaart of je houdt van ons werk en je hebt de financiële mogelijkheden om te helpen, overweeg dan om de ontwikkeling van Quantum GIS te steunen. We gebruiken sponsorgeld voor reizen en andere kosten voor onze halfjaarlijkse &apos;hackfests&apos; en voor het realiseren van algemene doelen binnen ons project. Kijk op &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; (engels) voor details.</translation>
     </message>
 </context>
 <context>
@@ -26072,100 +26044,76 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>no renderer</source>
         <translation>geen &apos;renderer&apos;</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n attribuut verwijderd.</numerusform>
-            <numerusform>GESLAAGD: %n attributen verwijderd.</numerusform>
+        <translation>GESLAAGD: %n attributen verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation>
-            <numerusform>FOUT: %n attribuut niet verwijderd.</numerusform>
-            <numerusform>FOUT: %n attributen niet verwijderd.</numerusform>
+        <translation>FOUT: %n attributen niet verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n attribuut toegevoegd.</numerusform>
-            <numerusform>GESLAAGD: %n attributen toegevoegd.</numerusform>
+        <translation>GESLAAGD: %n attributen toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation>
-            <numerusform>FOUT: %n nieuwe attribuut niet toegevoegd</numerusform>
-            <numerusform>FOUT: %n nieuwe attributen niet toegevoegd</numerusform>
+        <translation>FOUT: %n nieuwe attributen niet toegevoegd
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n attribuutwaarde aangepast.</numerusform>
-            <numerusform>GESLAAGD: %n attribuutwaarden aangepast.</numerusform>
+        <translation>GESLAAGD: %n attribuutwaarden aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation>
-            <numerusform>FOUT: %n attribuutwaarde is niet aangepast.</numerusform>
-            <numerusform>FOUT: %n attribuutwaarden zijn niet aangepast.</numerusform>
+        <translation>FOUT: %n attribuutwaarden zijn niet aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n object toegevoegd.</numerusform>
-            <numerusform>GESLAAGD: %n objecten toegevoegd.</numerusform>
+        <translation>GESLAAGD: %n objecten toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation>
-            <numerusform>FOUT: %n object niet toegevoegd.</numerusform>
-            <numerusform>FOUT: %n objecten niet toegevoegd.</numerusform>
+        <translation>FOUT: %n objecten niet toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n geometrie is aangepast.</numerusform>
-            <numerusform>GESLAAGD: %n geometrieën zijn aangepast.</numerusform>
+        <translation>GESLAAGD: %n geometrieën zijn aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation>
-            <numerusform>FOUT: %n geometrIe is niet aangepast.</numerusform>
-            <numerusform>FOUT: %n geometrieën niet aangepast.</numerusform>
+        <translation>FOUT: %n geometrieën niet aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n object verwijderd.</numerusform>
-            <numerusform>GESLAAGD: %n objecten verwijderd.</numerusform>
+        <translation>GESLAAGD: %n objecten verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation>
-            <numerusform>FOUT: %n object niet verwijderd.</numerusform>
-            <numerusform>FOUT: %n objecten niet verwijderd.</numerusform>
+        <translation>FOUT: %n objecten niet verwijderd.
         </translation>
     </message>
     <message>
@@ -26808,7 +26756,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Date defined position</source>
-        <translation type="obsolete">Datum-bepaalde positie</translation>
+        <translation>Datum-bepaalde positie</translation>
     </message>
     <message>
         <source>x</source>
@@ -26821,10 +26769,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Color</source>
         <translation>Kleur</translation>
-    </message>
-    <message>
-        <source>Data defined position</source>
-        <translation type="unfinished">Data-bepaalde positie</translation>
     </message>
 </context>
 <context>
@@ -27192,12 +27136,10 @@ verschilt van de GetCapabilities URL
 
 Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation>
-            <numerusform>Ruimtelijke Referentie Systeem (%n beschikbaar)</numerusform>
-            <numerusform>Ruimtelijke Referentie Systemen (%n beschikbaar)</numerusform>
+        <translation>Ruimtelijke Referentie Systemen (%n beschikbaar)
         </translation>
     </message>
     <message>
@@ -27224,12 +27166,10 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>No image encoding selected</source>
         <translation>Geen image-encoding geselecteerd</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation>
-            <numerusform>%n Laag geselecteerd</numerusform>
-            <numerusform>%n Lagen geselecteerd</numerusform>
+        <translation>%n Lagen geselecteerd
         </translation>
     </message>
     <message>
@@ -27285,12 +27225,10 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>XML files (*.xml *XML)</source>
         <translation>XML bestanden (*.xml *.XML)</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation>
-            <numerusform>Opties (%n ruimtelijk referentie systeem beschikbaar)</numerusform>
-            <numerusform>Opties (%n ruimtelijke referentie systemen beschikbaar)</numerusform>
+        <translation>Opties (%n ruimtelijke referentie systemen beschikbaar)
         </translation>
     </message>
 </context>
@@ -27715,12 +27653,10 @@ Antwoord was:
         <source>Dom Exception</source>
         <translation>DOM-fout</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation>
-            <numerusform>%n tile-aanvraag op de achtergrond</numerusform>
-            <numerusform>%n tile-aanvragen op de achtergrond</numerusform>
+        <translation>%n tile-aanvragen op de achtergrond
         </translation>
     </message>
     <message>
@@ -27731,28 +27667,22 @@ Antwoord was:
         <source>Getting tiles via WMS.</source>
         <translation>Tiles via WMS ophalen.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation>
-            <numerusform>, %n cache hit</numerusform>
-            <numerusform>, %n cache hits</numerusform>
+        <translation>, %n cache hits
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation>
-            <numerusform>, %n cache miss.</numerusform>
-            <numerusform>, %n cache misses.</numerusform>
+        <translation>, %n cache misses.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation>
-            <numerusform>, %n fout.</numerusform>
-            <numerusform>, %n fouten.</numerusform>
+        <translation>, %n fouten.
         </translation>
     </message>
     <message>
@@ -27812,12 +27742,10 @@ Tried URL: %1</source>
         <source>(Unknown error code)</source>
         <translation>(Onbekende foutcode)</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation>
-            <numerusform>(en %n meer)</numerusform>
-            <numerusform>(en %n meer)</numerusform>
+        <translation>(en %n meer)
         </translation>
     </message>
     <message>
@@ -28333,63 +28261,63 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Name of the database (leave blank for default database on server)</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam van de database (leeg laten voor standaard database op server)</translation>
     </message>
     <message>
         <source>Additional connection parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanvulling op verbindingseigenschappen</translation>
     </message>
     <message>
         <source>Database username</source>
-        <translation type="unfinished"></translation>
+        <translation>Database-gebruiker</translation>
     </message>
     <message>
         <source>Database password</source>
-        <translation type="unfinished"></translation>
+        <translation>Database-wachtwoord</translation>
     </message>
     <message>
         <source>Save Username</source>
-        <translation type="unfinished">Gebruikersnaam Opslaan</translation>
+        <translation>Gebruikersnaam Opslaan</translation>
     </message>
     <message>
         <source>Save the connection username in the registry</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla de gebruikersnaam van de verbinding op in de &apos;registry&apos;</translation>
     </message>
     <message>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished">&amp;Test Verbinding</translation>
+        <translation>&amp;Test Verbinding</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished">Wachtwoord Opslaan</translation>
+        <translation>Wachtwoord Opslaan</translation>
     </message>
     <message>
         <source>Save the connection password in the registry (WARNING: NOT SECURE)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla het wachtwoord op in het &apos;registry&apos; (WAARSCHUWING: ONVEILIG)</translation>
     </message>
     <message>
         <source>Simple Encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenvoudige Versleuteling</translation>
     </message>
     <message>
         <source>Encrypt packets using simple encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik een eenvoudige versleuteling van de data-pakketten</translation>
     </message>
     <message>
         <source>Estimate table metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel metadata schattingen</translation>
     </message>
     <message>
         <source>Use estimates for certain layer properties such as cardinality, extent, etc. (improves performance)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik schattingen voor bepaalde laageigenschappen zoals cardinaliteit, extent etc (verbeterd de snelheid)</translation>
     </message>
     <message>
         <source>Search other users&apos; tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Doorzoek tabellen van andere gebruikers</translation>
     </message>
     <message>
         <source>Search for geometry columns in tables owned by other users</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek naar geometrie-kolommen in tabellen van andere gebruikers</translation>
     </message>
 </context>
 <context>
@@ -28422,12 +28350,10 @@ Omschrijving: %2</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>
-            <numerusform>Het &apos;where&apos;-filter levert %n rij op.</numerusform>
-            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.</numerusform>
+        <translation>Het &apos;where&apos;-filter levert %n rijen op.
         </translation>
     </message>
     <message>
@@ -29230,7 +29156,6 @@ Voor ondersteuning stuur email naar scala@itc.cnr.it
     <name>eVis</name>
     <message>
         <source>eVis Database Connection</source>
-        <translatorcomment>eVis Database-verbinding</translatorcomment>
         <translation></translation>
     </message>
     <message>
@@ -30681,7 +30606,6 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export</source>
-        <translatorcomment>export, exporteer, exporteren, exportbestand???</translatorcomment>
         <translation>Exporteer</translation>
     </message>
     <message>
