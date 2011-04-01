@@ -401,11 +401,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     @return 0 in case of success*/
     int removePolygonIntersections( QgsGeometry* geom );
 
-    /**Adds topological points for every vertex of the
-     geometry
+    /** Adds topological points for every vertex of the geometry.
     @param geom the geometry where each vertex is added to segments of other features
-    Note: geom is not going to be modified by the function
-    @return 0 in case of success*/
+    @note geom is not going to be modified by the function
+    @return 0 in case of success
+    @see addTopologicalPoints
+    */
     int addTopologicalPoints( QgsGeometry* geom );
 
     /**Adds a vertex to segments which intersect point p but don't
