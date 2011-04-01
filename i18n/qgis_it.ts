@@ -5741,7 +5741,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="480"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
-        <translation>Individuata una eccezione durante il tentativo di trasformare le coordinate di un punto. Impossibile calcolare area o perimetro del poligono.</translation>
+        <translation>Riscontrato un errore nella trasformazione delle coordinate del punto. Non riesco a calcolare l&apos;area o il perimetro del poligono.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="782"/>
@@ -6286,7 +6286,8 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <location filename="../src/app/qgspluginregistry.cpp" line="340"/>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation>Si è verificato un errore caricando un plugin. Le seguenti informazioni di diagnostica possono aiutare gli sviluppatori QGIS a risolvere il problema:￼%1.</translation>
+        <translation>Si è verificato un errore caricando un plugin. Le seguenti informazioni di diagnostica possono aiutare gli sviluppatori QGIS a risolvere il problema:
+￼%1.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="212"/>
@@ -7009,7 +7010,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="31"/>
         <source>Centroid fill</source>
         <translatorcomment>devo capire il contesto della frase :(</translatorcomment>
-        <translation>Riempimento centroide</translation>
+        <translation>Riempimento con centroide</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="39"/>
@@ -7861,7 +7862,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     </message>
     <message>
         <source>&amp;Open Recent Projects</source>
-        <translation type="obsolete">Apri pr&amp;ogetti recenti</translation>
+        <translation type="obsolete">Apri pr&amp;oggetti recenti</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -24373,7 +24374,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="256"/>
         <source>Double click action in legend</source>
-        <translation>Azione di doppio clic in legenda</translation>
+        <translation>Azione eseguita in legenda sul comando doppio-click</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="277"/>
@@ -24438,12 +24439,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="431"/>
         <source>Plugin paths</source>
-        <translation>Percorsi plugin</translation>
+        <translation>Percorsi verso i plugin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="437"/>
         <source>Path(s) to search for additional C++ plugins libraries</source>
-        <translation>Percorso(i) dove trovare librerie di plugin C++</translation>
+        <translation>Percorsi per cercare ulteriori librerie plugin C++</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="489"/>
@@ -24508,13 +24509,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1372"/>
         <source>Default Coordinate Reference System for new projects</source>
-        <translation>Sistema di Riferimento delle Coordinate per nuovi progetti</translation>
+        <translation>Sistema di riferimento di partenza per i nuovi progetti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1388"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
         <translatorcomment>volevo mantenere la stessa shortcut</translatorcomment>
-        <translation>Abilita come predefinita la riproiezione &apos;on the &amp;fly&apos; (al volo)</translation>
+        <translation>Effettua sempre la riproiezione al volo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1395"/>
@@ -24530,12 +24531,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1434"/>
         <source>Coordinate Reference System for new layers</source>
-        <translation>Sistema di Riferimento di Coordinate per nuovi layer</translation>
+        <translation>Sistema di riferimento di partenza per i nuovi layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1440"/>
         <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
-        <translation>Quando viene creato un nuovo layer, o quando un layer è stato caricato senza un Sistema di Riferimento di Coordinate (CRS)</translation>
+        <translation>Quando viene creato un nuovo layer, o quando viene caricato un layer che non ha un sistema di riferimento (CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1604"/>
@@ -26973,7 +26974,7 @@ Cercare i layer mancanti?</translation>
         <location filename="../src/app/qgsprojectproperties.cpp" line="393"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="533"/>
         <source>Coordinate System Restriction</source>
-        <translation>Sistema di restrizione delle coordinate</translation>
+        <translation>Restrizioni al sistema di coordinate</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="393"/>
@@ -27316,7 +27317,7 @@ Procedere?</translation>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
-        <translation>Errore in lettura file database da: ￼ %1￼A casusa di ciò il selettore di proiezione non lavorerà...</translation>
+        <translation>Errore in lettura file database da: ￼ %1￼A causa di ciò il selettore di proiezione non lavorerà...</translation>
     </message>
 </context>
 <context>
@@ -31627,7 +31628,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>Noi lavoriamo molto duramente per sviluppare questo bel software per te. Hai visto le infinite possibilità che ha? Hai un sensazione inebriante quando lo usi? Quantum GIS è un lavoro fatto per passione da un team dedicato di sviluppatori. Vogliamo che tu lo copi e condivida e lo faccia conoscere a quante più persone possibile. Se QGIS ti fa risparmiare denaro, ti piace il nostro lavoro oppure hai la possibilità di contribuire finanziariamente, perchè non sponsorizzi lo sviluppo di Quantum GIS? Usiamo le donazioni degli sponsor per pagare i viaggi e i costi relativi al nostro biennale incontro fra sviluppatori, e in generale, per perseguire gli obiettivi del nostro progetto. Si prega di consultare la pagina Web&lt;/ span&gt; &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt; &lt;span style = &quot;font-family: &apos;Ubuntu&apos;; text-decoration: underline; color: # 0000FF &quot;&gt; QGIS Sponsorizzazioni &lt;/ span&gt; &lt;/ a style=&quot;&gt; &lt;span font-family:&apos;Ubuntu&apos;;&quot;&gt; per maggiori dettagli. Nella lista qui sotto potete vedere le persone e le aziende che ci stanno aiutando finanziariamente - un grande grande &apos;grazie&apos; a tutti voi!&lt;/span&gt; &lt;/p&gt;
+        <translation>Lavoriamo molto duramente per sviluppare questo bel software per te. Hai visto le infinite possibilità che ha? Hai un sensazione inebriante quando lo usi? Quantum GIS è un lavoro fatto per passione da un team dedicato di sviluppatori. Vogliamo che tu lo copi e condivida e lo faccia conoscere a quante più persone possibile. Se QGIS ti fa risparmiare denaro, ti piace il nostro lavoro oppure hai la possibilità di contribuire finanziariamente, perchè non sponsorizzi lo sviluppo di Quantum GIS? Usiamo le donazioni degli sponsor per pagare i viaggi e i costi relativi al nostro biennale incontro fra sviluppatori, e in generale, per perseguire gli obiettivi del nostro progetto. Si prega di consultare la pagina Web&lt;/ span&gt; &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt; &lt;span style = &quot;font-family: &apos;Ubuntu&apos;; text-decoration: underline; color: # 0000FF &quot;&gt; QGIS Sponsorizzazioni &lt;/ span&gt; &lt;/ a style=&quot;&gt; &lt;span font-family:&apos;Ubuntu&apos;;&quot;&gt; per maggiori dettagli. Nella lista qui sotto potete vedere le persone e le aziende che ci stanno aiutando finanziariamente - un grande grande &apos;grazie&apos; a tutti voi!&lt;/span&gt; &lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
