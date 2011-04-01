@@ -19,6 +19,7 @@
 
 #include "qgsmaptopixel.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -33,6 +34,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
+#include "qgsmaptoolemitpoint.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -205,8 +207,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mPixelSelectorTool = 0;
   if ( mMapCanvas )
   {
-    mPixelSelectorTool = new QgsPixelSelectorTool( theCanvas );
-    connect( mPixelSelectorTool, SIGNAL( pixelSelected( int, int ) ), this, SLOT( pixelSelected( int, int ) ) );
+    mPixelSelectorTool = new QgsMapToolEmitPoint( theCanvas );
+    connect( mPixelSelectorTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ), this, SLOT( pixelSelected( const QgsPoint& ) ) );
   }
   else
   {
@@ -2230,7 +2232,7 @@ void QgsRasterLayerProperties::on_rbtnThreeBandStdDev_toggled( bool theState )
   sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
 }
 
-void QgsRasterLayerProperties::pixelSelected( int x, int y )
+void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 {
   //PixelSelectorTool has registered a mouse click on the canvas, so bring the dialog back to the front
   raise();
@@ -2242,7 +2244,7 @@ void QgsRasterLayerProperties::pixelSelected( int x, int y )
   {
     QMap< QString, QString > myPixelMap;
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
-    mRasterLayer->identify( mMapCanvas->getCoordinateTransform( )->toMapCoordinates( x, y ), myPixelMap );
+    mRasterLayer->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ), myPixelMap );
     if ( tableTransparency->columnCount() == 2 )
     {
       QString myValue = myPixelMap[ mRasterLayer->grayBandName()];
@@ -3000,20 +3002,6 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
     }
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
   }
-}
-
-QgsPixelSelectorTool::QgsPixelSelectorTool( QgsMapCanvas* theCanvas ) : QgsMapTool( theCanvas )
-{
-  mMapCanvas = theCanvas;
-}
-
-QgsPixelSelectorTool::~QgsPixelSelectorTool()
-{
-}
-
-void QgsPixelSelectorTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
-{
-  emit pixelSelected( theMouseEvent->x( ), theMouseEvent->y( ) );
 }
 
 void QgsRasterLayerProperties::on_btnResetNull_clicked( )

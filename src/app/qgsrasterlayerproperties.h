@@ -29,7 +29,7 @@
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
-class QgsPixelSelectorTool;
+class QgsMapToolEmitPoint;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -89,7 +89,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief slot executed when the reset null value to file default icon is selected */
     void on_btnResetNull_clicked( );
 
-    void pixelSelected( int x, int y );
+    void pixelSelected( const QgsPoint& );
     /** \brief this slot clears min max values from gui */
     void sboxSingleBandStdDev_valueChanged( double );
     /** \brief this slot clears min max values from gui */
@@ -213,29 +213,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     qreal mGradientWidth;
 
     QgsMapCanvas* mMapCanvas;
-    QgsPixelSelectorTool* mPixelSelectorTool;
+    QgsMapToolEmitPoint* mPixelSelectorTool;
 };
-
-/**
-  *Simple map tool for selecting pixels, specific to QgsRasterLayerProperties
-  */
-class QgsPixelSelectorTool: public QgsMapTool
-{
-    Q_OBJECT
-
-  public:
-    QgsPixelSelectorTool( QgsMapCanvas* );
-    ~QgsPixelSelectorTool( );
-
-    /** \brief Method to handle mouse release, i.e., select, event */
-    void canvasReleaseEvent( QMouseEvent* theMouseEvent );
-
-  signals:
-    /** \brief Alter the listener ( raster properties dialog ) that a mouse click was registered */
-    void pixelSelected( int x, int y );
-
-  private:
-    QgsMapCanvas * mMapCanvas;
-};
-
 #endif
