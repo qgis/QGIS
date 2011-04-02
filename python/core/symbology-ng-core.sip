@@ -745,6 +745,12 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 %End
 
 public:
+  /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
+    This is a convenience method for easier creation of marker symbols.
+    \note added in v1.7
+  */
+  static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+
   QgsMarkerSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
   void setAngle(double angle);
@@ -767,6 +773,12 @@ class QgsLineSymbolV2 : QgsSymbolV2
 %End
 
 public:
+  /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
+    This is a convenience method for easier creation of line symbols.
+    \note added in v1.7
+  */
+  static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+
   QgsLineSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
   void setWidth(double width);
@@ -786,6 +798,12 @@ class QgsFillSymbolV2 : QgsSymbolV2
 %End
 
 public:
+  /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
+    This is a convenience method for easier creation of fill symbols.
+    \note added in v1.7
+  */
+  static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+
   QgsFillSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
   void setAngle( double angle );
