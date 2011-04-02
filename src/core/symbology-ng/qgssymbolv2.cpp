@@ -306,6 +306,41 @@ QgsSymbolV2RenderContext& QgsSymbolV2RenderContext::operator=( const QgsSymbolV2
 
 ///////////////////
 
+QgsMarkerSymbolV2* QgsMarkerSymbolV2::createSimple( const QgsStringMap& properties )
+{
+  QgsSymbolLayerV2* sl = QgsSimpleMarkerSymbolLayerV2::create( properties );
+  if ( sl == NULL )
+    return NULL;
+
+  QgsSymbolLayerV2List layers;
+  layers.append( sl );
+  return new QgsMarkerSymbolV2( layers );
+}
+
+QgsLineSymbolV2* QgsLineSymbolV2::createSimple( const QgsStringMap& properties )
+{
+  QgsSymbolLayerV2* sl = QgsSimpleLineSymbolLayerV2::create( properties );
+  if ( sl == NULL )
+    return NULL;
+
+  QgsSymbolLayerV2List layers;
+  layers.append( sl );
+  return new QgsLineSymbolV2( layers );
+}
+
+QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
+{
+  QgsSymbolLayerV2* sl = QgsSimpleFillSymbolLayerV2::create( properties );
+  if ( sl == NULL )
+    return NULL;
+
+  QgsSymbolLayerV2List layers;
+  layers.append( sl );
+  return new QgsFillSymbolV2( layers );
+}
+
+///////////////////
+
 
 QgsMarkerSymbolV2::QgsMarkerSymbolV2( QgsSymbolLayerV2List layers )
     : QgsSymbolV2( Marker, layers )

@@ -4,6 +4,7 @@
 
 #include "qgis.h"
 #include <QList>
+#include <QMap>
 
 class QColor;
 class QImage;
@@ -16,6 +17,7 @@ class QPolygonF;
 class QgsSymbolLayerV2;
 class QgsRenderContext;
 
+typedef QMap<QString, QString> QgsStringMap;
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
 class CORE_EXPORT QgsSymbolV2
@@ -168,6 +170,12 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 {
   public:
+    /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
+      This is a convenience method for easier creation of marker symbols.
+      \note added in v1.7
+    */
+    static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties );
+
     QgsMarkerSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
@@ -186,6 +194,12 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 {
   public:
+    /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
+      This is a convenience method for easier creation of line symbols.
+      \note added in v1.7
+    */
+    static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
+
     QgsLineSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
 
     void setWidth( double width );
@@ -201,6 +215,12 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
 {
   public:
+    /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
+      This is a convenience method for easier creation of fill symbols.
+      \note added in v1.7
+    */
+    static QgsFillSymbolV2* createSimple( const QgsStringMap& properties );
+
     QgsFillSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1, bool selected = false );
