@@ -238,6 +238,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
+    /** \note added in 1.7
+    */
     virtual QToolBar *rasterToolBar() = 0;
 
     //! File menu actions
