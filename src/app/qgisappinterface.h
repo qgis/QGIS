@@ -182,6 +182,7 @@ class QgisAppInterface : public QgisInterface
     virtual QToolBar *attributesToolBar();
     virtual QToolBar *pluginToolBar();
     virtual QToolBar *helpToolBar();
+    virtual QToolBar *rasterToolBar();
 
     //! File menu actions
     virtual QAction *actionNewProject();

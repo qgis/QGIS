@@ -1,5 +1,5 @@
 
-/** 
+/**
  * \class QgisInterface
  * \brief Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
@@ -24,7 +24,7 @@ class QgisInterface : QObject
 
     /** Virtual destructor */
     virtual ~QgisInterface();
-    
+
     /** Get pointer to legend interface
       \note added in 1.4
      */
@@ -49,9 +49,9 @@ class QgisInterface : QObject
     virtual QgsRasterLayer* addRasterLayer(const QString& url, const QString& layerName, const QString& providerKey, const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs) = 0;
 
     //! Add a project
-    virtual bool addProject(QString theProject)=0; 
+    virtual bool addProject(QString theProject)=0;
     //! Start a blank project
-    virtual void newProject(bool thePromptToSaveFlag=false)=0; 
+    virtual void newProject(bool thePromptToSaveFlag=false)=0;
 
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer()=0;
@@ -72,7 +72,7 @@ class QgisInterface : QObject
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.
      * @param url URL to open
-     * @param useQgisDocDirectory If true, the URL will be formed by concatenating 
+     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (<prefix>/share/doc)
      * @deprecated
      */
@@ -111,7 +111,7 @@ class QgisInterface : QObject
     virtual void addPluginToDatabaseMenu(QString name, QAction* action)=0;
 
     /** Remove action from the Database menu
-      * @note added in 1.7 
+      * @note added in 1.7
       */
     virtual void removePluginDatabaseMenu(QString name, QAction* action)=0;
 
@@ -134,7 +134,7 @@ class QgisInterface : QObject
      */
     virtual void showLayerProperties( QgsMapLayer * layer )=0;
 
-    /** open attribute table 
+    /** open attribute table
       \note added in 1.7
      */
     virtual void showAttributeTable( QgsVectorLayer * layer )=0;
@@ -180,6 +180,7 @@ class QgisInterface : QObject
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
+    virtual QToolBar *rasterToolBar() = 0;
 
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
@@ -303,9 +304,9 @@ class QgisInterface : QObject
        @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
 
-    /**This signal is emitted when QGIS' initialization is complete 
-       @note added in version 1.6*/ 
-    void initializationCompleted(); 
+    /**This signal is emitted when QGIS' initialization is complete
+       @note added in version 1.6*/
+    void initializationCompleted();
 
     /** emitted when a project file is successfully read
         @note
