@@ -292,6 +292,7 @@ QToolBar *QgisAppInterface::advancedDigitizeToolBar() { return qgis->advancedDig
 QToolBar *QgisAppInterface::attributesToolBar() { return qgis->attributesToolBar(); }
 QToolBar *QgisAppInterface::pluginToolBar() { return qgis->pluginToolBar(); }
 QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
+QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }
 
 //! File menu actions
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }
