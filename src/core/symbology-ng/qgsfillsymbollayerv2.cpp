@@ -262,7 +262,7 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolyg
   }
   else
   {
-    QTransform t;
+    QTransform t = mBrush.transform();
     t.rotate( mAngle );
     QBrush rotatedBrush = mBrush;
     rotatedBrush.setTransform( t );
