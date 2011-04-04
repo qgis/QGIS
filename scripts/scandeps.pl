@@ -51,7 +51,7 @@ for my $c (<debian/control.*>) {
 
 	push @dep, $dep;
 
-	print O "| $dist | ``apt-get install " . join( " ", @dep ) . "`` |\n";
+	print O "| $dist | ``apt-get install" . join( " ", @dep ) . "`` |\n";
 }
 
 while(<I>) {
