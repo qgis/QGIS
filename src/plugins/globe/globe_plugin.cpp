@@ -298,6 +298,7 @@ void GlobePlugin::setupMap()
   //LoadingPolicy loadingPolicy( LoadingPolicy::MODE_SEQUENTIAL );
   TerrainOptions terrainOptions;
   //terrainOptions.loadingPolicy() = loadingPolicy;
+  terrainOptions.compositingTechnique() = TerrainOptions::COMPOSITING_MULTITEXTURE_FFP;
   nodeOptions.setTerrainOptions( terrainOptions );
 
   // The MapNode will render the Map object in the scene graph.
