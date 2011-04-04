@@ -31,11 +31,11 @@ QgsRasterProjector::QgsRasterProjector(
   QgsRectangle theExtent )
     : mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
+    , mCoordinateTransform( theDestCRS, theSrcCRS )
     , mDestExtent( theDestExtent )
     , mExtent( theExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
-    , mCoordinateTransform( theDestCRS, theSrcCRS )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
