@@ -275,7 +275,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
             # with multi-line text also run the commands
             for line in pasteList[:-1]:
               self.insertPlainText(line)
-              self.runCommand(unicode(line))
+              self.runCommand(unicode(self.currentCommand()))
             # last line: only paste the text, do not run it
             self.insertPlainText(unicode(pasteList[-1]))
 
