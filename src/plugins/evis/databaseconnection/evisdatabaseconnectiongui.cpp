@@ -39,6 +39,7 @@
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
+#include <QUrl>
 
 /**
 * Constructor
@@ -108,12 +109,12 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( QString layerName, QString x
     //fileName is only available if the file is open
     //the last file in the list is always the newest
     mTempOutputFileList->last( )->open( );
-    QString uri = QString( "%1?delimiter=%2&xField=%3&yField=%4" )
-                  .arg( mTempOutputFileList->last( )->fileName( ) )
-                  .arg( "\t" )
-                  .arg( xCoordinate )
-                  .arg( yCoordinate );
-    emit drawVectorLayer( uri, layerName, "delimitedtext" );
+    QUrl url = QUrl::fromLocalFile( mTempOutputFileList->last()->fileName() );
+    url.addQueryItem( "delimiter", "\t" );
+    url.addQueryItem( "delimiterType", "regexp" );
+    url.addQueryItem( "xField", xCoordinate );
+    url.addQueryItem( "yField", yCoordinate );
+    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), layerName, "delimitedtext" );
     mTempOutputFileList->last( )->close( );
   }
 }
