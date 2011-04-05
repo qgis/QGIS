@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="111"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;p&gt;Karakter: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
     </message>
 </context>
 <context>
@@ -15,53 +15,55 @@
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="97"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="161"/>
         <source>Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koördinaat Verkryging</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="99"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="145"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klik op die kaart om koördinate te verkry en na knipbord te stuur</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="102"/>
         <source>&amp;Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koördinaat Verkryging</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="117"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>KVS = Koördinaat verwysingstelsel</translatorcomment>
+        <translation type="unfinished">Klik om KVS vir vertoon van koördinate te kies</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
         <source>Coordinate in your selected CRS</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>KVS = Koördinaat Verwysingsysteem</translatorcomment>
+        <translation type="unfinished">Koördinate in jou gekose KVS</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="129"/>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koördinate in kaartblad koördinaat verwysingsisteem</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="132"/>
         <source>Copy to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopieër na knipbord</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klik om muis volg te aktiveer.  Klik blad om te stop</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="142"/>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Begin verkryging</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="143"/>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klik om koördinaat overkryging te aktiveer</translation>
     </message>
 </context>
 <context>
@@ -69,29 +71,29 @@
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Onttrek Nodusse</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voer lyn of poligoon vektor laag in</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Toleransie</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unieke ID veld</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voer punt &quot;shape file&quot; uit</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="126"/>
@@ -111,12 +113,12 @@
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="61"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blaai</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geoprosessering</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="28"/>
@@ -124,7 +126,7 @@
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="25"/>
         <source>Input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voeg vektorlaag in</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="49"/>
@@ -132,7 +134,7 @@
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="40"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gebruik slegs gekose kenmerke</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
@@ -1813,7 +1815,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="115"/>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="146"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blaai</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="41"/>
@@ -2857,7 +2859,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voeg vektorlaag in</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
@@ -2865,7 +2867,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voer punt &quot;shape file&quot; uit</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
@@ -2905,7 +2907,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geoprosessering</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
@@ -2960,7 +2962,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geoprosessering</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
@@ -5413,7 +5415,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="53"/>
         <source>Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koördinaat Verkryging</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="54"/>
@@ -17341,7 +17343,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="56"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blaai</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="71"/>
@@ -21296,7 +21298,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="186"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blaai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="244"/>
@@ -27094,7 +27096,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="71"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Toleransie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="76"/>
@@ -30502,7 +30504,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="67"/>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="74"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blaai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="84"/>
