@@ -295,6 +295,7 @@
 		<section label="Develop map">
 			<section label="Topology management">
 				<grass name="v.build.all"/>
+				<grass name="v.build.one"/>
 			</section>
 			<section label="Toolset for cleaning topology of vector map">
 				<grass name="v.clean.break"/>
