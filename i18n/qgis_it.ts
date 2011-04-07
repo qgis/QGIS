@@ -13565,7 +13565,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="401"/>
         <source>Remove item group</source>
-        <translation type="unfinished">Rimuovi oggetto dal gruppo</translation>
+        <translation>Rimuovi gruppo di oggetti</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="419"/>
@@ -18675,7 +18675,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3334"/>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation>%1:&amp;nbsp;valore perso</translation>
+        <translation>%1:&amp;nbsp;valore mancante</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3341"/>
@@ -18779,7 +18779,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2068"/>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation>%1:&amp;nbsp;valore perso</translation>
+        <translation>%1:&amp;nbsp;valore mancante</translation>
     </message>
 </context>
 <context>
@@ -30800,8 +30800,8 @@ L´errore era:
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="708"/>
         <source>Coordinate reference system(CRS) of
 &quot;%1&quot; is invalid(see CRS of provider).</source>
-        <translation type="unfinished">Le coordinate di riferimento spaziale (CRS) di 
-&quot;%1&quot; non sono valide (vedi il CRS del provider).</translation>
+        <translation type="unfinished">Il sistema di riferimento (CRS) di 
+&quot;%1&quot; non è valido (vedi il CRS del provider).</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="709"/>
@@ -30952,7 +30952,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="242"/>
         <source>Result feature ID&apos;s</source>
         <translatorcomment>(spero sia giusto)</translatorcomment>
-        <translation type="unfinished">Risultato dell&apos;ID dell&apos;oggetto</translation>
+        <translation>Risultato dell&apos;ID dell&apos;oggetto</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="273"/>
