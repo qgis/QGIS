@@ -165,6 +165,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! URI for selected connection
     QString mConnectionInfo;
 
+    //! layer name derived from latest layer selection (updated as long it's not edited manually)
+    QString mLastLayerName;
+
     //! The widget that controls the image format radio buttons
     QButtonGroup *mImageFormatGroup;
 
