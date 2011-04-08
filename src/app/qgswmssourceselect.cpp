@@ -613,46 +613,27 @@ void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
 
 void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
 {
-  QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
-  QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
-  if ( layerName.isEmpty() )
+  if ( item->childCount() == 0 )
   {
-    // layer group =>
-    //   process child layers and style selection first
-    // then
-    //   if all child layers of a group are selected, deselect them and select the group and collapse it
-    //   if some child layers are selected, deselect the group and all parents
-    //   otherwise keep the selection state of the group
-    int n = 0;
-    for ( int i = 0; i < item->childCount(); i++ )
+    return;
+  }
+
+  int styles = 0;
+  for ( int i = 0; i < item->childCount(); i++ )
+  {
+    QTreeWidgetItem *child = item->child( i );
+    QString style = child->data( 0, Qt::UserRole + 1 ).toString();
+    if ( !style.isEmpty() )
+      styles++;
+  }
+
+  if ( styles > 0 )
+  {
+    if ( styles < item->childCount() )
     {
-      QTreeWidgetItem *child = item->child( i );
-      applySelectionConstraints( child );
-      if ( child->isSelected() )
-        n++;
+      return;
     }
 
-    if ( n > 0 )
-    {
-      item->setSelected( n == item->childCount() );
-      if ( item->isSelected() )
-      {
-        for ( int i = 0; i < n; i++ )
-          item->child( i )->setSelected( false );
-        item->setExpanded( false );
-      }
-      else
-      {
-        for ( QTreeWidgetItem *parent = item->parent(); parent;  parent = parent->parent() )
-          parent->setSelected( false );
-      }
-    }
-  }
-  else if ( styleName.isEmpty() )
-  {
-    // named layer =>
-    //      if styles are selected, deselect the layer and all styles but the first newly selected or the first if there no new,
-    // else if no styles are selected, keep the layer selection
     QTreeWidgetItem *style = 0;
     QTreeWidgetItem *firstNewStyle = 0;
     for ( int i = 0; i < item->childCount(); i++ )
@@ -684,6 +665,42 @@ void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
         firstNewStyle->setSelected( true );
       else if ( style )
         style->setSelected( true );
+    }
+  }
+  else
+  {
+    // no styles => layer or layer group =>
+    //   process child layers and style selection first
+    // then
+    //   if some child layers are selected, deselect the group and all parents
+    //   otherwise keep the selection state of the group
+    int n = 0;
+    for ( int i = 0; i < item->childCount(); i++ )
+    {
+      QTreeWidgetItem *child = item->child( i );
+      applySelectionConstraints( child );
+      if ( child->isSelected() )
+        n++;
+    }
+
+    if ( n > 0 )
+    {
+      if ( item->isSelected() )
+      {
+        for ( int i = 0; i < n; i++ )
+        {
+          QTreeWidgetItem *child = item->child( i );
+          child->setSelected( false );
+        }
+        item->setExpanded( false );
+      }
+      else
+      {
+        for ( QTreeWidgetItem *parent = item->parent(); parent;  parent = parent->parent() )
+        {
+          parent->setSelected( false );
+        }
+      }
     }
   }
 }
@@ -894,6 +911,22 @@ void QgsWMSSourceSelect::updateButtons()
     {
       labelStatus->setText( tr( "Tileset selected" ) );
       mAddButton->setEnabled( true );
+    }
+  }
+
+  if ( leLayerName->text().isEmpty() || leLayerName->text() == mLastLayerName )
+  {
+    if ( mAddButton->isEnabled() )
+    {
+      QStringList layers, styles;
+      collectSelectedLayers( layers, styles );
+      mLastLayerName = layers.join( "/" );
+      leLayerName->setText( mLastLayerName );
+    }
+    else
+    {
+      mLastLayerName = "";
+      leLayerName->setText( mLastLayerName );
     }
   }
 }
