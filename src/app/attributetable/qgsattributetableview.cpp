@@ -93,7 +93,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
 
   mActionPopup = new QMenu();
 
-  if ( vlayer->actions()->size() == 0 )
+  if ( vlayer->actions()->size() != 0 )
   {
 
     QAction *a = mActionPopup->addAction( tr( "Run action" ) );
