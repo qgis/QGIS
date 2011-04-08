@@ -49,8 +49,14 @@ void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
   if ( labelMoveable( layer, xCol, yCol ) || diagramMoveable( layer, xCol, yCol ) )
   {
     mStartPointMapCoords = toMapCoordinates( e->pos() );
-    mClickOffsetX = mStartPointMapCoords.x() - mCurrentLabelPos.labelRect.xMinimum();
-    mClickOffsetY = mStartPointMapCoords.y() - mCurrentLabelPos.labelRect.yMinimum();
+    QgsPoint referencePoint;
+    if ( !rotationPoint( referencePoint ) )
+    {
+      referencePoint.setX( mCurrentLabelPos.labelRect.xMinimum() );
+      referencePoint.setY( mCurrentLabelPos.labelRect.yMinimum() );
+    }
+    mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
+    mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
     createRubberBands();
   }
 }
