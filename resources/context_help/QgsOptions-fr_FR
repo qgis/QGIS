@@ -1,0 +1,99 @@
+<h3>Options</h3>
+Cette boîte de dialogue vous permet de sélectionner quelques options de base de QGIS.
+Il y a 8 onglets:
+<p>
+
+<a href="#general">General</a><br/>
+<a href="#ren">Rendu & SVG</a><br/>
+<a href="#map">Outils cartographiques</a><br/>
+<a href="#over">Revêtement</a><br/>
+<a href="#digit">Numérisation</a><br/>
+<a href="#crs">SCR</a><br/>
+<a href="#loc">Paramètres du lieu (locale)</a><br/>
+<a href="#net">Réseau et Proxy</a><br/>
+
+<a name="general">
+<h4>General</h4>
+</a>
+Sur cet onglet, vous pouvez définir les options générales d'ouverture et d'enregistrement de votre projet, l'apparence de la carte par défaut, le thème de votre icône de favori et bien d'autres options.
+
+<a name="ren">
+<h4>Rendu & SVG</h4>
+</a>
+Dans cet onglet, vous pouvez définir les options générales de rendu pour les couches de cartes.<br>
+Par défaut, QGIS rend toutes les couches visibles chaque fois que le canevas de la carte doit être rafraîchi. 
+Les événements qui déclenchent une actualisation de la fenêtre de visualisation cartographique incluent:
+
+<ul>
+<li>L'ajout d'une couche
+<li>Panoramique ou zoom
+<li>Changement de taille de la fenêtre cartographique de QGIS
+<li>Changement de la visibilité d'une couche ou de plusieurs couches
+</ul>
+QGIS vous permet de contrôler le processus de rendu de plusieurs manières:<p>
+Vous pouvez définir une option de manière à toujours charger de nouvelles couches, et ce, sans les dessiner.<br>
+Cela signifie que la couche sera ajoutée à la légende de carte (tables des matières de QGIS), mais sa case de visibilité dans la légende sera désactivée par défaut.
+Pour spécifier cette option, décochez la case<label>Par défaut, les couches supplémentaires sont affichées</label><p>
+Vous pouvez définir une option pour mettre à jour l'affichage de carte dès qu'un nombre d'entités est dessiné.
+<br>
+Par défaut, QGIS n'affiche aucune entité pour une couche jusqu'à ce que la couche entière n'a été affichée.
+Pour actualiser l'affichage en fonction du nombre d'entités affichées, définissez une valeur appropriée comme <label>Nombre d'entités à dessiner avant d'actualiser l'affichage</label> 
+Fixer une valeur de 0 empêche l'actualisation de l'affichage avant que toutes les entités aient été rendues (ce qui est la valeur par défaut).
+Fixer une valeur trop faible entraîne de mauvaises performances tel que la fenêtre de visualisation cartographique est continuellement mise à jour 
+lors de la lecture des entités. La valeur suggérée pour commencer est 500.
+
+<a name="map">
+<h4>Outils cartographiques</h4>
+</a>
+<h5>Identifier</h5>
+Le paramètre de <label>Mode</label> détermine quelles couches seront affichées par l'outil <label>Identifier</label>. 
+En passant à <label>de haut en bas</label> au lieu de <label>Couche courante</label> les attributs de toutes les couches identifiables
+seront montrés dans l'outil <label>Identifier</label>.
+<h5>Outil de mesure</h5>
+Ici, vous pouvez définir un ellipsoïde de calculs de distance, les unités de mesure et de la couleur préférée de la ligne d'étirement.
+<h5>Panoramique et Zoom</h5>
+Vous permet de définir les actions de la molette souris et un facteur de zoom.
+
+
+<a name="over">
+<h4>Revêtement</h4>
+</a>
+Définit un algorithme de placement pour les étiquettes.Choisir entre <label>Point central (plus rapide)</label>, <label>chaine (rapide)</label>, <label>popmusic tabu chain (lent)</label>,
+ <label>popmusic tabu (lent)</label> et <label>popmusic chain (très lent)</label>.
+
+<a name="digit">
+<h4>Numérisation</h4>
+</a>
+<h5>Étirement</h5>
+Dans l'onglet <label>Numérisation</label> vous pouvez définir des paramètres de largeur et de couleur de ligne de numérisation.
+<h5>Accrochage</h5>
+Ici vous pouvez définir la tolérance d'accrochage à l'échelle d'un projet <p>
+Vous pouvez sélectionner <label>Sur un sommet</label>, <label>Sur un segment</label> ou <label>Sur un sommet et un segment</label> comme mode d'accrochage par défaut. 
+Vous pouvez également définir une valeur de tolérance d'accrochage par défaut et un rayon de recherche pour l'édition des sommets. 
+La tolérance peut être réglée dans les unités de la carte ou en pixels.
+ 
+L'avantage de choisir des pixels réside dans le fait que la tolérance d'accrochage ne change pas besoin d'être changée après des changements de zoom.<p>
+Une tolérance d'accrochage peut être définie directement sur une couche en allant dans le menu<label>Propriétés</label> > <label>Propriétés du projet..</label>. 
+Dans l'onglet <label>General</label>, dans la section <label>Numérisation</label>, vous pouvez cliquer sur  you can click on <label>Options d'accrochage...</label> 
+pour permettre et ajuster le mode accrochage et la tolérance d'accrochage sur une couche de base.
+<h5>Marqueurs de sommets</h5>
+Vous pouvez définir un style de sommet tel qu'un <label>Cercle semi-transparent</label>, <label>une croix</label> ou <label>Aucun style de marqueur</label> ainsi
+que la taille du marqueur; vous pouvez également choisir de ne montrer les marqueurs de sommets rien que pour les entités sélectionnées.
+<h5>Entrez les valeurs d'attributs</h5>
+Par défaut, après avoir numérisé une nouvelle entité, QGIS vous demande d'entrer des valeurs d'attributs pour cette entité.
+Cochez <label>Supprimer les fenêtres d'avertissements lors de la création de chaque entité</label> vous permet de renseigner les attributs ultérieurement.
+<a name="crs">
+<h4>SCR</h4>
+</a> 
+QGIS ne fixe plus le Système de Coordonnées de Référence (SCR) d'une carte selon le SCR de la première couche ajoutée. Quand vous débutez une nouvelle session QGIS avec des couches qui n'ont pas de SCR, vous avez besoin de vérifier et de définir le SCR pour ces couches.
+Ceci peut être fait de manière globale dans cet onglet. <p>
+La valeur de SCR par défaut <i>proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</i> est prédéfinie dans QGIS, mais peut bien sûr être changée, et la nouvelle définition sera enregistrée pour les sessions ultérieures de QGIS.
+
+<a name="lov">
+<h4>Paramètres du lieu (locale)</h4>
+</a>
+Vous informe sur les paramètres régionaux actifs du système. Pour modifier le système, cochez <label>Forcer la nationalité du système</label> puis redémarrez QGIS.
+<a name="net">
+<h4>Réseau et Proxy</h4>
+</a>
+Cochez <label>Utiliser un proxy pour l'accès internet</label> pour définir un hôte, un port, un utilisateur et un mot de passe.
