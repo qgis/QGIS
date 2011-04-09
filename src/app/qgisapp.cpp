@@ -1002,8 +1002,9 @@ void QgisApp::createMenus()
 
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
-    mFileMenu->addAction( mActionProjectProperties );
-    mFileMenu->addSeparator();
+    QAction* before = mActionNewPrintComposer;
+    mFileMenu->insertAction( before, mActionProjectProperties );
+    mFileMenu->insertSeparator( before );
   }
 
   // Edit Menu
