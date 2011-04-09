@@ -109,7 +109,10 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, Q
   // setup icons
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  btnLock->setIcon( QIcon( QgsApplication::iconPath( "symbologyLock.png" ) ) );
+  QIcon iconLock;
+  iconLock.addFile( QgsApplication::iconPath( "locked.png" ), QSize(), QIcon::Normal, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( "unlocked.png" ), QSize(), QIcon::Normal, QIcon::Off );
+  btnLock->setIcon( iconLock );
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
 
