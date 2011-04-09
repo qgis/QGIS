@@ -576,6 +576,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
 
+  // update windows
+  qApp->processEvents();
+
 } // QgisApp ctor
 
 
