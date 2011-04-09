@@ -884,8 +884,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** field map to commit */
     QgsFieldMap mUpdatedFields;
 
-    /**Map that stores the aliases for attributes. Key is the attribute index and value the alias for that attribute*/
-    QMap<int, QString> mAttributeAliasMap;
+    /**Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
+    QMap< QString, QString > mAttributeAliasMap;
 
     /** max field index */
     int mMaxUpdatedIndex;
