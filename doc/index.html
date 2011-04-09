@@ -22,7 +22,124 @@
 -->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 1.7.0 'Wroclaw'?</h2>
+<h2>Whats new in Version 1.7.0 'Wrocław'?</h2>
+<p>This release is named after the town of Wrocław in Poland. The Department of
+Climatology and Atmosphere Protection, University of Wrocław kindly hosted our
+last developer meeting in November 2010. Please note that this is a release in
+our 'cutting edge' release series. As such it contains new features and extends
+the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any
+software, there may be bugs and issues that we were not able to fix in time for
+the release. We therefore recommend that you test this version before rolling
+it out en-masse to your users.
+</p>
+<p>
+This release includes over 277 bug fixes and many new features and
+enhancements. Once again it is impossible to document everything here that has
+changed so we will just provide a bullet list of key new features here.
+</p>
+
+<h3>Symbology labels and diagrams</h3>
+<ul>
+  <li>New symbology now used by default!</li>
+  <li>Diagram system that uses the same smart placement system as labeling-ng</li>
+  <li>Export and import of styles (symbology-ng).</li>
+  <li>Labels for rules in rule-based renderers.</li>
+  <li>Ability to set label distance in map units.</li>
+  <li>Rotation for svg fills.</li>
+  <li>Font marker can have an X,Y offset.</li>
+  <li>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</li>
+  <li>Option to put marker on the central point of a line.</li>
+  <li>Option to put marker only on first/last vertex of a line.</li>
+  <li>Added \"centroid fill\" symbol layer which draws a marker on polygon's centroid.</li>
+  <li>Allow the marker line symbol layer to draw markers on each vertex.</li>
+  <li>Move/rotate/change label edit tools to interactively change data defined label properties.</li>
+</ul>
+<h3>New Tools</h3>
+<ul>
+  <li>Added GUI for gdaldem.</li>
+  <li>Added 'Lines to polygons' tool to vector menu.</li>
+  <li>Added field calculator with functions like $x, $y and $perimeter.</li>
+  <li>Added voronoi polygon tool to Vector menu.</li>
+</ul>
+<h3>User interface updates</h3>
+<ul>
+  <li>Allow managing missing layers in a list.</li>
+  <li>Zoom to group of layers.</li>
+  <li>'Tip of the day' on startup. You can en/disable tips in the options panel.</li>
+  <li>Better organisation of menus, separate database menu added.</li>
+  <li>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</li>
+  <li>General clean-ups and usability improvements.</li>
+</ul>
+<h3>CRS Handling</h3>
+<ul>
+  <li>Show active crs in status bar.</li>
+  <li>Assign layer CRS to project (in the legend context menu).</li>
+  <li>Select default CRS for new projects.</li>
+  <li>Allow setting CRS for multiple layers at once.</li>
+  <li>Default to last selection when prompting for CRS.</li>
+</ul>
+<h3>Rasters</h3>
+<ul>
+  <li>Added AND and OR operator for raster calculator</li>
+  <li>On-the-fly reprojection of rasters added!</li>
+  <li>Proper implementation of raster providers.</li>
+  <li>Added raster toolbar with histogram stretch functions.</li>
+</ul>
+<h3>Providers and Data Handling</h3>
+<ul>
+  <li>New SQLAnywhere vector provider.</li>
+  <li>Table join support.</li>
+  <li>Feature form updates:
+    <ul>
+      <li>Make NULL value string representation configurable.</li>
+      <li>Fix feature updates in feature form from attribute table.</li>
+      <li>Add support for NULL values in value maps (comboboxes).</li>
+      <li>Use layer names instead of ids in drop down list when loading value maps from layers.</li>
+      <li>Support feature form expression fields: line edits on the form which
+      name prefix "expr_" are evaluated. Their value is interpreted as field
+      calculator string and replaced with the calculated value.</li>
+    </ul>
+  </li>
+  <li>Support searching for NULL in attribute table.</li>
+  <li>Attribute editing improvements:
+    <ul>
+      <li>Improved interactive attribute editing in table (adding/deleting features, attribute update).</li>
+      <li>Allow adding of geometryless features.</li>
+      <li>Fixed attribute undo/redo.</li>
+    </ul>
+  </li>
+  <li>Improved attribute handling:</li>
+    <ul>
+      <li>Optionally re-use entered attribute values for next digitized feature.</li>
+      <li>Allow merging/assigning attribute values to a set of features.</li></ul></li>
+      <li>Allow OGR 'save as' without attributes (for eg. DGN/DXF).</li>
+    </ul>
+  </li>
+</ul>
+<h3>Api and Developer Centric</h3>
+<ul>
+  <li>Refactored attribute dialog calls to QgsFeatureAttribute.</li>
+  <li>Added QgsVectorLayer::featureAdded signal.</li>
+  <li>Layer menu function added.</li>
+  <li>Added option to load c++ plugins from user specified directories. Requires application restart to activate.</li>
+  <li>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</li>
+</ul>
+<h3>QGIS Mapserver</h3>
+<ul>
+  <li>Ability to specify wms service capabilities in the properties 
+  section of the project file (instead of wms_metadata.xml file).</li>
+  <li>Support for wms printing with GetPrint-Request.</li>
+</ul>
+<h3>Plugins</h3>
+<ul>
+  <li>Support for icons of plugins in the plugin manager dialog.</li>
+  <li>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</li>
+  <li>Removed ogr convertor plugin - use 'save as' context menu rather.</li>
+</ul>
+<h3>Printing</h3>
+<ul>
+  <li>Undo/Redo support for the print composer</li>
+</ul>
 
 
 <h2>Whats new in Version 1.6.0 'Capiapó'?</h2>
