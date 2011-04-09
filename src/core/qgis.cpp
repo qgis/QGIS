@@ -42,7 +42,7 @@ const char* QGis::qgisVectorGeometryType[] =
 {
   "Point",
   "Line",
-  "Polygon"
+  "Polygon",
   "Unknown geometry",
   "No geometry",
 };
