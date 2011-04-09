@@ -1,0 +1,3 @@
+<h3>Ajouter une table SpatiaLite</h3>
+Pour définir une nouvelle connexion, cliquez sur le bouton <label>Nouveau</label> et utilisez le navigateur de fichier pour sélectionner votre base de de données SpatiaLite qui se présente sous la forme d'un fichier avec une extension <i<.sqlite</i><p>
+Les connexions que vous créez seront mémorisées pour de prochains usages et disponibles via le menu déroulant.

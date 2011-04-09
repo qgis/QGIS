@@ -1,0 +1,14 @@
+<h3>Trouver le chemin le plus court</h3>
+<p>Graphes Routiers est une extension pour QGIS écrite en C++ qui calcule le chemin le chemin le plus court entre 2 points sur n'importe quelle polyligne et trace ce chemin au-dessus du réseau routier. Avant d'utiliser cette extension, il convient de la configurer. Ceci peut être fait dans le menu <label>Extensions &rarr; Graphes Routiers &rarr; Paramètres</label></p>
+<p>
+<a href="#howto">Comment faire ?</a><br/>
+</p>
+
+<a name="howto">
+<h4>Comment faire ?</h4>
+</a>
+<p> Vous pouvez sélectionner les points de début et de fin de trajet avec les boutons de sélection à la suite des champs. Le fait de presser sur le bouton <label>Calculer</label> va lancer le calcul du chemin le plus court en utilisant le critère d'optimisation sélectionné dans la liste déroulante nommée <label>Critère</label>. 
+Le bouton <label>Exporter</label> vous permet d'exporter le chemin le plus court dans une nouvelle couche vectorielle, et le bouton <label>Effacer</label> effacera tous les champs et supprimera les points et le chemin le plus court calculé à partir du canevas de la carte.</p>
+
+<h5>Remarque</h5>
+<p>Afin de lier les points de départ et d'arrivée de la route au réseau routier, l'extension Road Graph sélectionne le point le plus proche ou un arc du graphe. En fait, il peut se lier à n'importe quelle partie du réseau routier. Néanmoins, un itinéraire et ses caractéristiques ne prennent pas en compte la distance du point de départ pour le réseau routier et du réseau routier au point d'arrêt.</p>
