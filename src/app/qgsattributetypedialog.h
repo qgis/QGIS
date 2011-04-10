@@ -45,7 +45,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * @param index of page to be selected
      * @param editTypeInt type of edit type which was selected before save
      */
-    void setIndex( int index, int editTypeInt = -1 );
+    void setIndex( int index, QgsVectorLayer::EditType editType );
 
     /**
      * Setting page which is to be selected
@@ -127,12 +127,6 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
   private:
 
     QString defaultWindowTitle();
-
-    /**
-     * Function to set page index
-     * @param index index of page to be changed
-     */
-    void setPageForIndex( int index );
 
     /**
      * Function to set page according to edit type

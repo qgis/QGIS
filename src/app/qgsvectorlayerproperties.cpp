@@ -215,7 +215,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
 
   QPushButton *pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
   tblAttributes->setCellWidget( row, attrEditTypeCol, pb );
-  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( attributeTypeDialog() ) );
   mButtonMap.insert( idx, pb );
 
   //set the alias for the attribute
@@ -231,7 +231,7 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
   settings.setValue( "/Windows/VectorLayerProperties/row", tabWidget->currentIndex() );
 }
 
-void QgsVectorLayerProperties::attributeTypeDialog( )
+void QgsVectorLayerProperties::attributeTypeDialog()
 {
   QPushButton *pb = qobject_cast<QPushButton *>( sender() );
   if ( !pb )
@@ -243,37 +243,13 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
 
   QgsAttributeTypeDialog attributeTypeDialog( layer );
 
-  if ( mValueMaps.contains( index ) )
-  {
-    attributeTypeDialog.setValueMap( mValueMaps[index] );
-  }
-  else
-  {
-    attributeTypeDialog.setValueMap( QMap<QString, QVariant>() );
-  }
+  attributeTypeDialog.setValueMap( mValueMaps.value( index, layer->valueMap( index ) ) );
+  attributeTypeDialog.setRange( mRanges.value( index, layer->range( index ) ) );
 
-  if ( mRanges.contains( index ) )
-  {
-    attributeTypeDialog.setRange( mRanges[index] );
-  }
-  else
-  {
-    attributeTypeDialog.setRange( QgsVectorLayer::RangeData( 0, 5, 1 ) );
-  }
+  QPair<QString, QString> checkStates = mCheckedStates.value( index, layer->checkedState( index ) );
+  attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
 
-  if ( mEditTypeMap.contains( index ) )
-  {
-    attributeTypeDialog.setIndex( index, mEditTypeMap[index] );
-  }
-  else
-  {
-    attributeTypeDialog.setIndex( index );
-  }
-
-  if ( mCheckedStates.contains( index ) )
-  {
-    attributeTypeDialog.setCheckedState( mCheckedStates[index].first, mCheckedStates[index].second );
-  }
+  attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, layer->editType( index ) ) );
 
   if ( !attributeTypeDialog.exec() )
     return;
@@ -295,7 +271,17 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
       break;
     case QgsVectorLayer::CheckBox:
       mCheckedStates.insert( index, attributeTypeDialog.checkedState() );
-    default:
+      break;
+    case QgsVectorLayer::LineEdit:
+    case QgsVectorLayer::TextEdit:
+    case QgsVectorLayer::UniqueValues:
+    case QgsVectorLayer::UniqueValuesEditable:
+    case QgsVectorLayer::Classification:
+    case QgsVectorLayer::FileName:
+    case QgsVectorLayer::Enumeration:
+    case QgsVectorLayer::Immutable:
+    case QgsVectorLayer::Hidden:
+    case QgsVectorLayer::Calendar:
       break;
   }
 
@@ -622,30 +608,44 @@ void QgsVectorLayerProperties::apply()
     QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
     layer->setEditType( idx, editType );
 
-    if ( editType == QgsVectorLayer::ValueMap )
+    switch ( editType )
     {
-      if ( mValueMaps.contains( idx ) )
-      {
-        QMap<QString, QVariant> &map = layer->valueMap( idx );
-        map.clear();
-        map = mValueMaps[idx];
-      }
-    }
-    else if ( editType == QgsVectorLayer::EditRange ||
-              editType == QgsVectorLayer::SliderRange ||
-              editType == QgsVectorLayer::DialRange )
-    {
-      if ( mRanges.contains( idx ) )
-      {
-        layer->range( idx ) = mRanges[idx];
-      }
-    }
-    else if ( editType == QgsVectorLayer::CheckBox )
-    {
-      if ( mCheckedStates.contains( idx ) )
-      {
-        layer->setCheckedState( idx, mCheckedStates[idx].first, mCheckedStates[idx].second );
-      }
+      case QgsVectorLayer::ValueMap:
+        if ( mValueMaps.contains( idx ) )
+        {
+          QMap<QString, QVariant> &map = layer->valueMap( idx );
+          map.clear();
+          map = mValueMaps[idx];
+        }
+        break;
+
+      case QgsVectorLayer::EditRange:
+      case QgsVectorLayer::SliderRange:
+      case QgsVectorLayer::DialRange:
+        if ( mRanges.contains( idx ) )
+        {
+          layer->range( idx ) = mRanges[idx];
+        }
+        break;
+
+      case QgsVectorLayer::CheckBox:
+        if ( mCheckedStates.contains( idx ) )
+        {
+          layer->setCheckedState( idx, mCheckedStates[idx].first, mCheckedStates[idx].second );
+        }
+        break;
+
+      case QgsVectorLayer::LineEdit:
+      case QgsVectorLayer::UniqueValues:
+      case QgsVectorLayer::UniqueValuesEditable:
+      case QgsVectorLayer::Classification:
+      case QgsVectorLayer::FileName:
+      case QgsVectorLayer::Enumeration:
+      case QgsVectorLayer::Immutable:
+      case QgsVectorLayer::Hidden:
+      case QgsVectorLayer::TextEdit:
+      case QgsVectorLayer::Calendar:
+        break;
     }
   }
 

@@ -17,10 +17,9 @@
 /* $Id$ */
 
 #include "qgsattributetypedialog.h"
-
 #include "qgsattributetypeloaddialog.h"
-
 #include "qgsvectordataprovider.h"
+
 #include "qgslogger.h"
 
 #include <QTableWidgetItem>
@@ -33,18 +32,17 @@
 #include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
-    : QDialog(),
-    mLayer( vl )
+    : QDialog()
+    , mLayer( vl )
 {
   setupUi( this );
   tableWidget->insertRow( 0 );
   connect( selectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setStackPage( int ) ) );
-  connect( removeSelectedButton, SIGNAL( pressed( ) ), this, SLOT( removeSelectedButtonPushed( ) ) );
-  connect( loadFromLayerButton, SIGNAL( pressed( ) ), this, SLOT( loadFromLayerButtonPushed( ) ) );
-  connect( loadFromCSVButton, SIGNAL( pressed( ) ), this, SLOT( loadFromCSVButtonPushed( ) ) );
-  connect( tableWidget,  SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
+  connect( removeSelectedButton, SIGNAL( clicked() ), this, SLOT( removeSelectedButtonPushed() ) );
+  connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
+  connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
+  connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
 }
-
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 {
@@ -211,6 +209,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
 {
   switch ( editType )
   {
+    case QgsVectorLayer::LineEdit:
+      setPage( 0 );
+      break;
+
     case QgsVectorLayer::Classification:
       setPage( 1 );
       break;
@@ -252,19 +254,12 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
 
     case QgsVectorLayer::TextEdit:
       setPage( 10 );
+      break;
 
     case QgsVectorLayer::Calendar:
       setPage( 11 );
-
-    case QgsVectorLayer::LineEdit:
-      setPage( 0 );
       break;
   }
-}
-
-void QgsAttributeTypeDialog::setPageForIndex( int index )
-{
-  setPageForEditType( mLayer->editType( index ) );
 }
 
 void QgsAttributeTypeDialog::setValueMap( QMap<QString, QVariant> valueMap )
@@ -277,19 +272,10 @@ void QgsAttributeTypeDialog::setRange( QgsVectorLayer::RangeData range )
   mRangeData = range;
 }
 
-void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
+void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editType )
 {
   mIndex = index;
   //need to set index for combobox
-  QgsVectorLayer::EditType editType;
-  if ( editTypeInt > -1 )
-  {
-    editType = QgsVectorLayer::EditType( editTypeInt );
-  }
-  else
-  {
-    editType = mLayer->editType( index );
-  }
 
   setWindowTitle( defaultWindowTitle() + " \"" + mLayer->pendingFields()[index].name() + "\"" );
   QgsAttributeList attributeList = QgsAttributeList();
@@ -346,33 +332,20 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   }
   valuesLabel->setText( text );
 
-  //setPageForIndex( index );
   setPageForEditType( editType );
 
   switch ( editType )
   {
     case QgsVectorLayer::ValueMap:
     {
-
       tableWidget->clearContents();
       for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
       {
         tableWidget->removeRow( i );
       }
 
-      // if some value map already present use it
-      QMap<QString, QVariant> map;
-      if ( !mValueMap.empty() )
-      {
-        map = mValueMap;
-      }
-      else
-      {
-        map = mLayer->valueMap( index );
-      }
-
       int row = 0;
-      for ( QMap<QString, QVariant>::iterator mit = map.begin(); mit != map.end(); mit++, row++ )
+      for ( QMap<QString, QVariant>::iterator mit = mValueMap.begin(); mit != mValueMap.end(); mit++, row++ )
       {
         tableWidget->insertRow( row );
         if ( mit.value().isNull() )
@@ -395,15 +368,15 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
     {
       if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int )
       {
-        minimumSpinBox->setValue( mLayer->range( index ).mMin.toInt() );
-        maximumSpinBox->setValue( mLayer->range( index ).mMax.toInt() );
-        stepSpinBox->setValue( mLayer->range( index ).mStep.toInt() );
+        minimumSpinBox->setValue( mRangeData.mMin.toInt() );
+        maximumSpinBox->setValue( mRangeData.mMax.toInt() );
+        stepSpinBox->setValue( mRangeData.mStep.toInt() );
       }
       else if ( mLayer->pendingFields()[mIndex].type() == QVariant::Double )
       {
-        minimumDoubleSpinBox->setValue( mLayer->range( index ).mMin.toDouble() );
-        maximumDoubleSpinBox->setValue( mLayer->range( index ).mMax.toDouble() );
-        stepDoubleSpinBox->setValue( mLayer->range( index ).mStep.toDouble() );
+        minimumDoubleSpinBox->setValue( mRangeData.mMin.toDouble() );
+        maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
+        stepDoubleSpinBox->setValue( mRangeData.mStep.toDouble() );
       }
       if ( editType == QgsVectorLayer::EditRange )
       {
@@ -424,7 +397,16 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
       editableUniqueValues->setChecked( editType == QgsVectorLayer::UniqueValuesEditable );
       break;
 
-    default:
+    case QgsVectorLayer::LineEdit:
+    case QgsVectorLayer::UniqueValues:
+    case QgsVectorLayer::Classification:
+    case QgsVectorLayer::CheckBox:
+    case QgsVectorLayer::FileName:
+    case QgsVectorLayer::Enumeration:
+    case QgsVectorLayer::Immutable:
+    case QgsVectorLayer::Hidden:
+    case QgsVectorLayer::TextEdit:
+    case QgsVectorLayer::Calendar:
       break;
   }
 }
