@@ -71,10 +71,11 @@ void QgsAttributeTypeLoadDialog::previewButtonPushed()
 void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->clear();
-  QMap<QString, QgsMapLayer*>::iterator layer_it = QgsMapLayerRegistry::instance()->mapLayers().begin();
-  for ( ; layer_it != QgsMapLayerRegistry::instance()->mapLayers().end(); layer_it++ )
+  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
-    layerComboBox->addItem( layer_it.value()->name(), layer_it.key() );
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
+    if ( vl )
+      layerComboBox->addItem( vl->name(), vl->id() );
   }
 }
 

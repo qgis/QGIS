@@ -2984,6 +2984,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QDomElement editTypeElement = editTypeNode.toElement();
 
       QString name = editTypeElement.attribute( "name" );
+      if ( fieldNameIndex( name ) < -1 )
+        continue;
 
       EditType editType = ( EditType ) editTypeElement.attribute( "type" ).toInt();
       mEditTypes.insert( name, editType );
@@ -3170,37 +3172,53 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
       editTypeElement.setAttribute( "name", it.key() );
       editTypeElement.setAttribute( "type", it.value() );
 
-      if ( it.value() == ValueMap )
+      switch (( EditType ) it.value() )
       {
-        if ( mValueMaps.contains( it.key() ) )
-        {
-          const QMap<QString, QVariant> &map = mValueMaps[ it.key()];
-
-          for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); vmit++ )
+        case ValueMap:
+          if ( mValueMaps.contains( it.key() ) )
           {
-            QDomElement value = doc.createElement( "valuepair" );
-            value.setAttribute( "key", vmit.key() );
-            value.setAttribute( "value", vmit.value().toString() );
-            editTypeElement.appendChild( value );
+            const QMap<QString, QVariant> &map = mValueMaps[ it.key()];
+
+            for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); vmit++ )
+            {
+              QDomElement value = doc.createElement( "valuepair" );
+              value.setAttribute( "key", vmit.key() );
+              value.setAttribute( "value", vmit.value().toString() );
+              editTypeElement.appendChild( value );
+            }
           }
-        }
-      }
-      else if ( it.value() == EditRange || it.value() == SliderRange )
-      {
-        if ( mRanges.contains( it.key() ) )
-        {
-          editTypeElement.setAttribute( "min", mRanges[ it.key()].mMin.toString() );
-          editTypeElement.setAttribute( "max", mRanges[ it.key()].mMax.toString() );
-          editTypeElement.setAttribute( "step", mRanges[ it.key()].mStep.toString() );
-        }
-      }
-      else if ( it.value() == CheckBox )
-      {
-        if ( mCheckedStates.contains( it.key() ) )
-        {
-          editTypeElement.setAttribute( "checked", mCheckedStates[ it.key()].first );
-          editTypeElement.setAttribute( "unchecked", mCheckedStates[ it.key()].second );
-        }
+          break;
+
+        case EditRange:
+        case SliderRange:
+        case DialRange:
+          if ( mRanges.contains( it.key() ) )
+          {
+            editTypeElement.setAttribute( "min", mRanges[ it.key()].mMin.toString() );
+            editTypeElement.setAttribute( "max", mRanges[ it.key()].mMax.toString() );
+            editTypeElement.setAttribute( "step", mRanges[ it.key()].mStep.toString() );
+          }
+          break;
+
+        case CheckBox:
+          if ( mCheckedStates.contains( it.key() ) )
+          {
+            editTypeElement.setAttribute( "checked", mCheckedStates[ it.key()].first );
+            editTypeElement.setAttribute( "unchecked", mCheckedStates[ it.key()].second );
+          }
+          break;
+
+        case LineEdit:
+        case UniqueValues:
+        case UniqueValuesEditable:
+        case Classification:
+        case FileName:
+        case Hidden:
+        case TextEdit:
+        case Calendar:
+        case Enumeration:
+        case Immutable:
+          break;
       }
 
       editTypesElement.appendChild( editTypeElement );
@@ -3232,8 +3250,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     for ( ; a_it != mAttributeAliasMap.constEnd(); ++a_it )
     {
       int idx = fieldNameIndex( a_it.key() );
-      if( idx < 0 )
-	continue;
+      if ( idx < 0 )
+        continue;
 
       QDomElement aliasEntryElem = doc.createElement( "alias" );
       aliasEntryElem.setAttribute( "field", a_it.key() );
