@@ -548,8 +548,16 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
           ydiff = yd;
         }
 
+        //project xPos and yPos from layer to map CRS
+        double z = 0;
+        if ( ct )
+        {
+          ct->transformInPlace( xPos, yPos, z );
+        }
+
         yPos += ydiff;
         xPos += xdiff;
+
       }
     }
   }
@@ -786,7 +794,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
   //convert geom to geos
   QgsGeometry* geom = feat.geometry();
 
-  if ( layerIt.value().ct ) // reproject the geometry if necessary
+  if ( layerIt.value().ct && !willUseLayer( layer ) ) // reproject the geometry if feature not already transformed for labeling
   {
     geom->transform( *( layerIt.value().ct ) );
   }
@@ -840,6 +848,15 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
     if ( !posXOk || !posYOk )
     {
       ddPos = false;
+    }
+    else
+    {
+      const QgsCoordinateTransform* ct = layerIt.value().ct;
+      if ( ct )
+      {
+        double z = 0;
+        ct->transformInPlace( ddPosX, ddPosY, z );
+      }
     }
   }
 

@@ -48,7 +48,6 @@ class CORE_EXPORT QgsLabelSearchTree
 
   private:
     RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
-    QList<QgsLabelPosition*> mSearchResults;
 };
 
 #endif // QGSLABELTREE_H
