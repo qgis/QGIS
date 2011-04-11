@@ -90,6 +90,15 @@ void QgsMapToolLabel::createRubberBands( )
     QgsPoint fixPoint;
     if ( rotationPoint( fixPoint ) )
     {
+      if ( mCanvas )
+      {
+        QgsMapRenderer* r = mCanvas->mapRenderer();
+        if ( r && r->hasCrsTransformEnabled() )
+        {
+          fixPoint = r->mapToLayerCoordinates( vlayer, fixPoint );
+        }
+      }
+
       QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
       mFixPointRubberBand = new QgsRubberBand( mCanvas, false );
       mFixPointRubberBand->setColor( Qt::blue );
