@@ -85,7 +85,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( driverName == "ESRI Shapefile" )
   {
-    if ( !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+    if ( !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) &&
+         !vectorFileName.endsWith( ".dbf", Qt::CaseInsensitive ) )
     {
       vectorFileName += ".shp";
     }
@@ -379,8 +380,11 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QgsDebugMsg( "Done creating fields" );
 
   mWkbType = geometryType;
-  // create geometry which will be used for import
-  mGeom = createEmptyGeometry( mWkbType );
+  if ( mWkbType != QGis::WKBNoGeometry )
+  {
+    // create geometry which will be used for import
+    mGeom = createEmptyGeometry( mWkbType );
+  }
 }
 
 OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WkbType wkbType )
@@ -458,60 +462,63 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     }
   }
 
-  // build geometry from WKB
-  QgsGeometry *geom = feature.geometry();
-  if ( geom && geom->wkbType() != mWkbType )
+  if ( mWkbType != QGis::WKBNoGeometry )
   {
-    // there's a problem when layer type is set as wkbtype Polygon
-    // although there are also features of type MultiPolygon
-    // (at least in OGR provider)
-    // If the feature's wkbtype is different from the layer's wkbtype,
-    // try to export it too.
-    //
-    // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
-    // i.e. Polygons can't be imported to OGRMultiPolygon
-
-    OGRGeometryH mGeom2 = createEmptyGeometry( geom->wkbType() );
-
-    if ( !mGeom2 )
+    // build geometry from WKB
+    QgsGeometry *geom = feature.geometry();
+    if ( geom && geom->wkbType() != mWkbType )
     {
-      QgsDebugMsg( QString( "Failed to create empty geometry for type %1 (OGR error: %2)" ).arg( geom->wkbType() ).arg( CPLGetLastErrorMsg() ) );
-      mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      mError = ErrFeatureWriteFailed;
-      OGR_F_Destroy( poFeature );
-      return false;
-    }
+      // there's a problem when layer type is set as wkbtype Polygon
+      // although there are also features of type MultiPolygon
+      // (at least in OGR provider)
+      // If the feature's wkbtype is different from the layer's wkbtype,
+      // try to export it too.
+      //
+      // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
+      // i.e. Polygons can't be imported to OGRMultiPolygon
 
-    OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
-    if ( err != OGRERR_NONE )
+      OGRGeometryH mGeom2 = createEmptyGeometry( geom->wkbType() );
+
+      if ( !mGeom2 )
+      {
+        QgsDebugMsg( QString( "Failed to create empty geometry for type %1 (OGR error: %2)" ).arg( geom->wkbType() ).arg( CPLGetLastErrorMsg() ) );
+        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+        mError = ErrFeatureWriteFailed;
+        OGR_F_Destroy( poFeature );
+        return false;
+      }
+
+      OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
+      if ( err != OGRERR_NONE )
+      {
+        QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
+        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+        mError = ErrFeatureWriteFailed;
+        OGR_F_Destroy( poFeature );
+        return false;
+      }
+
+      // pass ownership to geometry
+      OGR_F_SetGeometryDirectly( poFeature, mGeom2 );
+    }
+    else if ( geom )
     {
-      QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
-      mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      mError = ErrFeatureWriteFailed;
-      OGR_F_Destroy( poFeature );
-      return false;
-    }
+      OGRErr err = OGR_G_ImportFromWkb( mGeom, geom->asWkb(), geom->wkbSize() );
+      if ( err != OGRERR_NONE )
+      {
+        QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
+        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+        mError = ErrFeatureWriteFailed;
+        OGR_F_Destroy( poFeature );
+        return false;
+      }
 
-    // pass ownership to geometry
-    OGR_F_SetGeometryDirectly( poFeature, mGeom2 );
-  }
-  else if ( geom )
-  {
-    OGRErr err = OGR_G_ImportFromWkb( mGeom, geom->asWkb(), geom->wkbSize() );
-    if ( err != OGRERR_NONE )
-    {
-      QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
-      mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      mError = ErrFeatureWriteFailed;
-      OGR_F_Destroy( poFeature );
-      return false;
+      // set geometry (ownership is not passed to OGR)
+      OGR_F_SetGeometry( poFeature, mGeom );
     }
-
-    // set geometry (ownership is not passed to OGR)
-    OGR_F_SetGeometry( poFeature, mGeom );
   }
 
   // put the created feature to layer
@@ -607,7 +614,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
   QgsFeature fet;
 
-  layer->select( allAttr, QgsRectangle(), true );
+  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
