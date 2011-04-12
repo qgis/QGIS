@@ -33,6 +33,8 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 
+#include "QFileInfo"
+
 
 QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsConfigParser(), mXMLDoc( xmlDoc ), mProjectPath( filePath )
 {
@@ -621,12 +623,18 @@ QString QgsProjectParser::projectTitle() const
   }
 
   QDomElement titleElem = qgisElem.firstChildElement( "title" );
-  if ( titleElem.isNull() )
+  if ( !titleElem.isNull() )
   {
-    return QString();
+    QString title = titleElem.text();
+    if ( !title.isEmpty() )
+    {
+      return title;
+    }
   }
 
-  return titleElem.text();
+  //no title element or not project title set. Use project filename without extension
+  QFileInfo projectFileInfo( mProjectPath );
+  return projectFileInfo.baseName();
 }
 
 QList<QDomElement> QgsProjectParser::projectLayerElements() const
