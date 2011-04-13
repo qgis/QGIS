@@ -69,6 +69,12 @@ class QgsRasterProjector
     /** \brief get destination point for _current_ matrix position */
     QgsPoint srcPoint( int theRow, int theCol );
 
+    /** \brief Get precise source row and column indexes for current source extent and resolution */
+    inline void preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+
+    /** \brief Get approximate source row and column indexes for current source extent and resolution */
+    inline void approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+
     /** \brief Get source row and column indexes for current source extent and resolution */
     void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
 
@@ -194,6 +200,9 @@ class QgsRasterProjector
     /** Maximum source resolution */
     double mMaxSrcXRes;
     double mMaxSrcYRes;
+    
+    /** Use approximation */
+    bool mApproximate;
 };
 
 #endif

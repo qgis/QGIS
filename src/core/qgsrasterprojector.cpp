@@ -80,6 +80,7 @@ QgsRasterProjector::QgsRasterProjector(
     if ( myColsOK && myRowsOK )
     {
       QgsDebugMsg( "CP matrix within tolerance" );
+      mApproximate = true;
       break;
     }
     // What is the maximum reasonable size of transformatio matrix?
@@ -87,6 +88,7 @@ QgsRasterProjector::QgsRasterProjector(
     if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
     {
       QgsDebugMsg( "Too large CP matrix" );
+      mApproximate = false;
       break;
     }
 
@@ -292,6 +294,29 @@ void QgsRasterProjector::nextHelper()
 }
 
 void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+{
+  if ( mApproximate ) approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol);
+  else preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol);
+}
+
+void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+{
+  // Get coordinate of center of destination cell
+  double x = mDestExtent.xMinimum() + ( theDestCol + 0.5 ) * mDestXRes;
+  double y = mDestExtent.yMaximum() - ( theDestRow + 0.5 ) * mDestYRes;
+  double z = 0;
+  
+  mCoordinateTransform.transformInPlace( x, y, z );
+  
+  // Get source row col
+  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcXRes );
+  *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcYRes );
+
+  assert( *theSrcRow < mSrcRows );
+  assert( *theSrcCol < mSrcCols );
+}
+
+void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
   int myMatrixRow = matrixRow( theDestRow );
   int myMatrixCol = matrixCol( theDestCol );
