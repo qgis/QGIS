@@ -16,76 +16,53 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.canvas = self.iface.mapCanvas()
 
       self.setupUi(self)
-      BasePluginWidget.__init__(self, self.iface, "gdal_merge.py", None, self.iface.mainWindow())
+      BasePluginWidget.__init__(self, self.iface, "gdal_translate", None, self.iface.mainWindow())
 
       self.extentSelector.setCanvas(self.canvas)
       self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.inputFiles = QStringList()
-      self.warningDialog = QErrorMessage(self)
-
       self.setParamsStatus(
         [
+          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
           (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck),
-          (self.pctCheck, SIGNAL("stateChanged(int)")), 
           ( self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")] )
         ]
       )
 
+      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
       self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
       self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.checkRun)
       self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
   def show_(self):
-      self.connect(self.canvas, SIGNAL("layersChanged()"), self.fillInputFiles)
       self.extentSelector.start()
       BasePluginWidget.show_(self)
 
-      self.fillInputFiles()
-      self.checkRun()
-
   def onClosing(self):
-      self.disconnect(self.canvas, SIGNAL("layersChanged()"), self.fillInputFiles)
       self.extentSelector.stop()
       BasePluginWidget.onClosing(self)
 
-  def fillInputFiles(self):
-      self.inputFiles = QStringList()
-
-      # Reversed list to have the topmost layer as the last one in the list 
-      # because "In areas of overlap, the last image will be copied over 
-      # earlier ones" (see http://www.gdal.org/gdal_merge.html).
-      for i in range(self.canvas.layerCount()-1, -1, -1): 
-        layer = self.canvas.layer(i) 
-        # only raster layers, but not WMS ones
-        if layer.type() != layer.RasterLayer:
-          continue
-        if layer.usesProvider() and layer.providerKey() != 'gdal':
-          continue
-
-        # do not use the output file as input
-        if layer.source() == self.outputFileEdit.text():
-          continue
-        self.inputFiles << layer.source()
-
-      if self.inputFiles.isEmpty():
-        self.extentSelector.stop()
-
-        if self.isVisible() and self.warningDialog.isHidden():
-          msg = QString( self.tr("No active raster layers. You must add almost one raster layer to continue.") )
-          self.warningDialog.showMessage(msg)
-
-        # refresh command when there are no active layers
-        self.someValueChanged()
-      else:
-        self.warningDialog.hide()
-        self.extentSelector.start()
-
-      self.checkRun()
-
   def checkRun(self):
-      self.base.enableRun( not self.inputFiles.isEmpty() and self.extentSelector.getExtent() != None )
+      self.base.enableRun( self.extentSelector.getExtent() != None )
+
+  def onLayersChanged(self):
+      self.fillInputLayerCombo()
+
+  def fillInputLayerCombo(self):
+      self.inputLayerCombo.clear()
+      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
+      self.inputLayerCombo.addItems( names )
+
+  def fillInputFileEdit( self ):
+      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the input file for Translate" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
+      if inputFile.isEmpty():
+        return
+      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+
+      self.inputLayerCombo.setCurrentIndex(-1)
+      self.inputLayerCombo.setEditText( inputFile )
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -95,47 +72,35 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
-
-      # do not use the output file as input
-      if self.inputFiles.contains(outputFile):
-        self.inputFiles.removeAt( self.inputFiles.indexOf(outputFile) )
       self.outputFileEdit.setText(outputFile)
 
   def getArguments(self):
       arguments = QStringList()
       if self.noDataCheck.isChecked():
-        arguments << "-n"
+        arguments << "-a_nodata"
         arguments << str(self.noDataSpin.value())
-      if self.pctCheck.isChecked():
-        arguments << "-pct"
       if self.extentSelector.isCoordsValid():
         rect = self.extentSelector.getExtent()
         if rect != None:
-          arguments << "-ul_lr"
+          arguments << "-projwin"
           arguments << str(rect.xMinimum())
           arguments << str(rect.yMaximum())
           arguments << str(rect.xMaximum())
           arguments << str(rect.yMinimum())
-      if not self.outputFileEdit.text().isEmpty():
+      if not self.getOutputFileName().isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
-      if not self.outputFileEdit.text().isEmpty():
-        arguments << "-o"
-        arguments << self.outputFileEdit.text()
-
-      if self.pctCheck.isChecked() and len(self.inputFiles) > 1:
-        # The topmost layer in the TOC is the last one in the list (see above),
-        # but I want to grab the pseudocolor table from the first image (the 
-        # topmost layer in the TOC).
-        # Workaround: duplicate the last layer inserting it also as the first 
-        # one to grab the pseudocolor table from it.
-        arguments << self.inputFiles[ len(self.inputFiles)-1 ]
-
-      arguments << self.inputFiles
+      arguments << self.getInputFileName()
+      arguments << self.getOutputFileName()
       return arguments
 
   def getOutputFileName(self):
       return self.outputFileEdit.text()
+
+  def getInputFileName(self):
+      if self.inputLayerCombo.currentIndex() >= 0:
+        return self.layers[self.inputLayerCombo.currentIndex()].source()
+      return self.inputLayerCombo.currentText()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
