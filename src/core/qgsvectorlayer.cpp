@@ -757,6 +757,12 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       // render feature
       mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
+      if ( mEditable )
+      {
+        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+        mCachedGeometries[fet.id()] = *fet.geometry();
+      }
+
       // labeling - register feature
       if ( mRendererV2->symbolForFeature( fet ) != NULL )
       {
@@ -768,12 +774,6 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
         {
           rendererContext.labelingEngine()->registerDiagramFeature( this, fet, rendererContext );
         }
-      }
-
-      if ( mEditable )
-      {
-        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCachedGeometries[fet.id()] = *fet.geometry();
       }
     }
     catch ( const QgsCsException &cse )
@@ -834,6 +834,12 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     }
     features[sym].append( fet );
 
+    if ( mEditable )
+    {
+      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+      mCachedGeometries[fet.id()] = *fet.geometry();
+    }
+
     if ( mRendererV2->symbolForFeature( fet ) != NULL )
     {
       if ( labeling )
@@ -846,11 +852,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       }
     }
 
-    if ( mEditable )
-    {
-      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCachedGeometries[fet.id()] = *fet.geometry();
-    }
 #ifndef Q_WS_MAC
     ++featureCount;
 #endif //Q_WS_MAC
