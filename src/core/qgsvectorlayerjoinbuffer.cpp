@@ -47,7 +47,12 @@ void QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
     if ( mVectorJoins.at( i ).joinLayerId == joinLayerId )
     {
       mVectorJoins.removeAt( i );
-      return;
+      //remove corresponding fetch join info
+      QgsVectorLayer* joinLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinLayerId ) );
+      if ( joinLayer )
+      {
+        mFetchJoinInfos.remove( joinLayer );
+      }
     }
   }
 }
