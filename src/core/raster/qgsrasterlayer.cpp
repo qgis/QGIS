@@ -897,6 +897,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
   // Provider mode: See if a provider key is specified, and if so use the provider instead
 
+  mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
+
   draw( theQPainter, myRasterViewPort, &theQgsMapToPixel );
 
   delete myRasterViewPort;
