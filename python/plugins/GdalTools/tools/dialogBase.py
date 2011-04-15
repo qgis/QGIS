@@ -37,6 +37,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.connect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
 
       self.setupUi(self)
+      self.arguments = QStringList()
 
       self.connect(self.buttonBox, SIGNAL("rejected()"), self.reject)
       self.connect(self.buttonBox, SIGNAL("accepted()"), self.accept)
@@ -51,19 +52,19 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.plugin.setFocus()
 
       self.setWindowTitle(pluginName)
+      self.setPluginCommand(pluginCommand)
 
+  def setPluginCommand(self, cmd):
       # on Windows replace the .py with .bat extension
-      if platform.system() == "Windows" and pluginCommand[-3:] == ".py":
-        self.command = pluginCommand[:-3] + ".bat"
+      if platform.system() == "Windows" and cmd[-3:] == ".py":
+        self.command = cmd[:-3] + ".bat"
       else:
-        self.command = pluginCommand
+        self.command = cmd
 
-      if pluginCommand[-3:] == ".py":
-        self.helpFileName = pluginCommand[:-3] + ".html"
+      if cmd[-3:] == ".py":
+        self.helpFileName = cmd[:-3] + ".html"
       else:
-        self.helpFileName = pluginCommand + ".html"
-
-      self.arguments = QStringList()
+        self.helpFileName = cmd + ".html"
 
   def reject(self):
       if self.process.state() != QProcess.NotRunning:
