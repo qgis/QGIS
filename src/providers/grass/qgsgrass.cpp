@@ -1039,21 +1039,20 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   return true;
 }
 
-QByteArray GRASS_EXPORT QgsGrass::runModule( QString gisdbase, QString location,
-    QString module, QStringList arguments )
+QProcess * GRASS_EXPORT QgsGrass::startModule( QString gisdbase, QString location,
+    QString module, QStringList arguments, QTemporaryFile &gisrcFile )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+  QProcess *process = new QProcess();
 
 #ifdef WIN32
   module += ".exe";
 #endif
 
   // We have to set GISRC file, uff
-  QTemporaryFile gisrcFile;
   if ( !gisrcFile.open() )
   {
-    // TODO Exception
-    return QByteArray();
+    throw QgsGrass::Exception( QObject::tr( "Cannot open GISRC file" ) );
   }
 
   QTextStream out( &gisrcFile );
@@ -1062,35 +1061,45 @@ QByteArray GRASS_EXPORT QgsGrass::runModule( QString gisdbase, QString location,
   out << "MAPSET: PERMANENT\n";
   out.flush();
   QgsDebugMsg( gisrcFile.fileName() );
+  gisrcFile.close();
 
   QStringList environment = QProcess::systemEnvironment();
   environment.append( "GISRC=" + gisrcFile.fileName() );
 
-  QProcess process;
-  process.setEnvironment( environment );
+  process->setEnvironment( environment );
 
   QgsDebugMsg( module + " " + arguments.join( " " ) );
-  process.start( module, arguments );
-  if ( !process.waitForFinished()
-       || ( process.exitCode() != 0 && process.exitCode() != 255 ) )
+  process->start( module, arguments );
+  if ( !process->waitForStarted() )
   {
-    QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
-    /*
-        QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                              QObject::tr( "Cannot start module" )
-                              + QObject::tr( "<br>command: %1 %2<br>%3<br>%4" )
-                              .arg( module ).arg( arguments.join( " " ) )
-                              .arg( process.readAllStandardOutput().constData() )
-                              .arg( process.readAllStandardError().constData() ) );
-    */
     throw QgsGrass::Exception( QObject::tr( "Cannot start module" ) + "\n"
+                               + QObject::tr( "command: %1 %2" )
+                               .arg( module ).arg( arguments.join( " " ) ) );
+  }
+  return process;
+}
+
+QByteArray GRASS_EXPORT QgsGrass::runModule( QString gisdbase, QString location,
+    QString module, QStringList arguments )
+{
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+
+  QTemporaryFile gisrcFile;
+  QProcess *process = QgsGrass::startModule( gisdbase, location, module, arguments, gisrcFile );
+
+  if ( !process->waitForFinished()
+       || ( process->exitCode() != 0 && process->exitCode() != 255 ) )
+  {
+    QgsDebugMsg( "process->exitCode() = " + QString::number( process->exitCode() ) );
+
+    throw QgsGrass::Exception( QObject::tr( "Cannot run module" ) + "\n"
                                + QObject::tr( "command: %1 %2<br>%3<br>%4" )
                                .arg( module ).arg( arguments.join( " " ) )
-                               .arg( process.readAllStandardOutput().constData() )
-                               .arg( process.readAllStandardError().constData() ) );
+                               .arg( process->readAllStandardOutput().constData() )
+                               .arg( process->readAllStandardError().constData() ) );
   }
-  QByteArray data = process.readAllStandardOutput();
-
+  QByteArray data = process->readAllStandardOutput();
+  delete process;
   return data;
 }
 

@@ -138,68 +138,81 @@ int main( int argc, char **argv )
   {
     double x, y;
     int row, col;
-    x = atof( coor_opt->answers[0] );
-    y = atof( coor_opt->answers[1] );
+    //x = atof( coor_opt->answers[0] );
+    //y = atof( coor_opt->answers[1] );
     if ( rast_opt->answer )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
       DCELL *dcell;
       CELL *cell;
+      char buff[101];
       G_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
       fd = G_open_cell_old( rast_opt->answer, "" );
-      col = ( int ) G_easting_to_col( x, &window );
-      row = ( int ) G_northing_to_row( y, &window );
-      if ( col == window.cols ) col--;
-      if ( row == window.rows ) row--;
+      // wait for coors from stdin
+      while ( G_getl2( buff, 100, stdin ) != 0 )
+      {
+        if ( sscanf( buff, "%lf%lf", &x, &y ) != 2 )
+        {
+          fprintf( stdout, "value:error\n" );
+        }
+        else
+        {
+          col = ( int ) G_easting_to_col( x, &window );
+          row = ( int ) G_northing_to_row( y, &window );
+          if ( col == window.cols ) col--;
+          if ( row == window.rows ) row--;
 
-      if ( col < 0 || col > window.cols || row < 0 || row > window.rows )
-      {
-        fprintf( stdout, "value:null\n" );
-      }
-      else
-      {
-        void *ptr;
-        double val;
+          if ( col < 0 || col > window.cols || row < 0 || row > window.rows )
+          {
+            fprintf( stdout, "value:out\n" );
+          }
+          else
+          {
+            void *ptr;
+            double val;
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR > 2 ) || GRASS_VERSION_MAJOR > 6 )
-        rast_type = G_get_raster_map_type( fd );
+            rast_type = G_get_raster_map_type( fd );
 #else
-        rast_type = G_raster_map_type( rast_opt->answer, "" );
+            rast_type = G_raster_map_type( rast_opt->answer, "" );
 #endif
-        cell = G_allocate_c_raster_buf();
-        dcell = G_allocate_d_raster_buf();
+            cell = G_allocate_c_raster_buf();
+            dcell = G_allocate_d_raster_buf();
 
-        if ( rast_type == CELL_TYPE )
-        {
-          if ( G_get_c_raster_row( fd, cell, row ) < 0 )
-          {
-            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                          rast_opt->answer, row );
+            if ( rast_type == CELL_TYPE )
+            {
+              if ( G_get_c_raster_row( fd, cell, row ) < 0 )
+              {
+                G_fatal_error(( "Unable to read raster map <%s> row %d" ),
+                              rast_opt->answer, row );
+              }
+              val = cell[col];
+              ptr = &( cell[col] );
+            }
+            else
+            {
+              if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
+              {
+                G_fatal_error(( "Unable to read raster map <%s> row %d" ),
+                              rast_opt->answer, row );
+              }
+              val = dcell[col];
+              ptr = &( dcell[col] );
+            }
+            if ( G_is_null_value( ptr, rast_type ) )
+            {
+              fprintf( stdout, "value:null\n" );
+            }
+            else
+            {
+              fprintf( stdout, "value:%f\n", val );
+            }
           }
-          val = cell[col];
-          ptr = &( cell[col] );
         }
-        else
-        {
-          if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
-          {
-            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                          rast_opt->answer, row );
-          }
-          val = dcell[col];
-          ptr = &( dcell[col] );
-        }
-        if ( G_is_null_value( ptr, rast_type ) )
-        {
-          fprintf( stdout, "value:null\n" );
-        }
-        else
-        {
-          fprintf( stdout, "value:%f\n", val );
-        }
+        fflush( stdout );
       }
       G_close_cell( fd );
     }
