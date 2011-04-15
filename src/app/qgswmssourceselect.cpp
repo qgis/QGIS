@@ -528,7 +528,7 @@ void QgsWMSSourceSelect::addClicked()
                        .arg( item->data( Qt::UserRole + 5 ).toInt() )
                        .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
 
-    if ( connInfo.startsWith( "username=" ) )
+    if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "ignoreUrl=" ) )
     {
       connInfo.prepend( connArgs + "," );
     }
