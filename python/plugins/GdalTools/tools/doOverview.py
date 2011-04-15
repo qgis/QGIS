@@ -144,6 +144,20 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def isBatchEnabled(self):
       return self.batchCheck.isChecked()
 
+  def onFinished(self, exitCode, status):
+      if not self.isBatchEnabled():
+        from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+        BasePluginWidget.onFinished(self, exitCode, status)
+        return
+
+      msg = QString( self.base.process.readAllStandardError() )
+      if not msg.isEmpty():
+        self.errors.append( ">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace( "\n", "<br>" ) )
+
+      self.base.process.close()
+      self.batchIndex += 1
+      self.runItem( self.batchIndex, self.batchTotal )
+
   def setProgressRange(self, maximum):
       self.progressBar.setRange(0, maximum)
 
