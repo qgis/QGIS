@@ -20,7 +20,7 @@
 #include "qgsmapserverlogger.h"
 
 //maximum number of layers in the cache (and upper limit for layers in one published project)
-#define MAX_N_LAYERS 100
+#define DEFAULT_MAX_N_LAYERS 50
 
 QgsMSLayerCache* QgsMSLayerCache::mInstance = 0;
 
@@ -52,7 +52,7 @@ QgsMSLayerCache::~QgsMSLayerCache()
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QList<QString>& tempFiles )
 {
   QgsMSDebugMsg( "inserting layer" );
-  if ( mEntries.size() > MAX_N_LAYERS ) //force cache layer examination after 10 inserted layers
+  if ( mEntries.size() > std::max( DEFAULT_MAX_N_LAYERS, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
   {
     updateEntries();
   }
@@ -102,7 +102,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
 void QgsMSLayerCache::updateEntries()
 {
   QgsMSDebugMsg( "updateEntries" );
-  int entriesToDelete = mEntries.size() - MAX_N_LAYERS;
+  int entriesToDelete = mEntries.size() - std::max( DEFAULT_MAX_N_LAYERS, mProjectMaxLayers );
   if ( entriesToDelete < 1 )
   {
     return;

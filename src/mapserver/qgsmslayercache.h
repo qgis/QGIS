@@ -51,6 +51,10 @@ class QgsMSLayerCache
      @return a pointer to the layer or 0 if no such layer*/
     QgsMapLayer* searchLayer( const QString& url, const QString& layerName );
 
+    int projectsMaxLayers() const { return mProjectMaxLayers; }
+
+    void setProjectMaxLayers( int n ) { mProjectMaxLayers = n; }
+
   protected:
     /**Protected singleton constructor*/
     QgsMSLayerCache();
@@ -70,6 +74,9 @@ class QgsMSLayerCache
       url is used several time in a request. It ensures that different layer instances are created for different
       layer names*/
     QHash<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
+
+    /**Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger*/
+    int mProjectMaxLayers;
 };
 
 #endif

@@ -44,6 +44,9 @@ class QgsConfigParser
        If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool allowCaching = true ) const = 0;
 
+    /**Returns number of layers in configuration*/
+    virtual int numberOfLayers() const = 0;
+
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const = 0;
 
