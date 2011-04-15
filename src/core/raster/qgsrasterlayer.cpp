@@ -2460,6 +2460,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mTransparencyBandName = TRSTRING_NOT_SET;
     mGrayBandName = TRSTRING_NOT_SET;  //sensible default
     mDrawingStyle = MultiBandColor;  //sensible default
+
+    // read standard deviations
+    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
+    {
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toInt() );
+    }
   }
   else                        //GrayOrUndefined
   {
@@ -2469,6 +2475,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mTransparencyBandName = TRSTRING_NOT_SET;  //sensible default
     mDrawingStyle = SingleBandGray;  //sensible default
     mGrayBandName = bandName( 1 );
+
+    // read standard deviations
+    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
+    {
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0  ).toInt() );
+    }
   }
   // Debug
   //mDrawingStyle = SingleBandPseudoColor;
