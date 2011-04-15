@@ -74,6 +74,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   QgsDebugMsg( QString( "mapset: %1" ).arg( mMapset ) );
   QgsDebugMsg( QString( "mapName: %1" ).arg( mMapName ) );
 
+  mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
   mValidNoDataValue = true;
 
   mCrs = QgsGrass::crs( mGisdbase, mLocation );
@@ -337,7 +338,20 @@ bool QgsGrassRasterProvider::identify( const QgsPoint& thePoint, QMap<QString, Q
 {
   QgsDebugMsg( "Entered" );
   //theResults["Error"] = tr( "Out of extent" );
-  theResults = QgsGrass::query( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, thePoint.x(), thePoint.y() );
+  //theResults = QgsGrass::query( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, thePoint.x(), thePoint.y() );
+  QString value = mRasterValue.value( thePoint.x(), thePoint.y() );
+  theResults.clear();
+  // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
+  if ( value == "out" )
+  {
+    value = tr( "Out of extent" );
+  }
+  if ( value == "null" )
+  {
+    value = tr( "null (no data)" );
+  }
+  theResults["value"] = value;
+  QgsDebugMsg( "value = " + value );
   return true;
 }
 
@@ -502,6 +516,49 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+
+QgsGrassRasterValue::QgsGrassRasterValue() : mProcess( 0 )
+{
+}
+
+void QgsGrassRasterValue::start( QString gisdbase, QString location,
+                                 QString mapset, QString map )
+{
+  mGisdbase = gisdbase;
+  mLocation = location;
+  mMapset = mapset;
+  mMapName = map;
+  // TODO: catch exceptions
+  QString module = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.g.info";
+  QStringList arguments;
+
+  arguments.append( "info=query" );
+  arguments.append( "rast=" +  mMapName + "@" + mMapset );
+  mProcess = QgsGrass::startModule( mGisdbase, mLocation, module, arguments, mGisrcFile );
+}
+QgsGrassRasterValue::~QgsGrassRasterValue()
+{
+  if ( mProcess ) delete mProcess;
+}
+
+QString QgsGrassRasterValue::value( double x, double y )
+{
+  QString value = "error";
+  if ( !mProcess ) return value; // throw some exception?
+  QString coor = QString( "%1 %2\n" ).arg( x ).arg( y );
+  QgsDebugMsg( "coor : " + coor );
+  mProcess->write( coor.toAscii() ); // how to flush, necessary?
+  mProcess->waitForReadyRead();
+  QString str = mProcess->readLine().trimmed();
+  QgsDebugMsg( "read from stdout : " + str );
+
+  QStringList list = str.trimmed().split( ":" );
+  if ( list.size() == 2 )
+  {
+    value = list[1];
+  }
+  return value;
 }
 
 

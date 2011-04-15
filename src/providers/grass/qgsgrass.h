@@ -25,9 +25,11 @@ extern "C"
 
 #include <stdexcept>
 #include "qgsexception.h"
+#include <QProcess>
 #include <QString>
 #include <QMap>
 #include <QHash>
+#include <QTemporaryFile>
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
 
@@ -180,6 +182,9 @@ class QgsGrass
 
     // ! Get current gisrc path
     static GRASS_EXPORT QString gisrcFilePath();
+
+    // ! Start a GRASS module in any gisdbase/location
+    static GRASS_EXPORT QProcess *startModule( QString gisdbase, QString location, QString module, QStringList arguments, QTemporaryFile &gisrcFile );
 
     // ! Run a GRASS module in any gisdbase/location
     static GRASS_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments );

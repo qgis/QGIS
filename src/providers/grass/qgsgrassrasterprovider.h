@@ -40,6 +40,28 @@ extern "C"
 class QgsCoordinateTransform;
 
 /**
+  \brief Read raster value for given coordinates
+
+  Executes qgis.g.info and keeps it open comunicating through pipe. Restarts the command if raster was updated.
+*/
+
+class QgsGrassRasterValue
+{
+  public:
+    QgsGrassRasterValue( );
+    ~QgsGrassRasterValue();
+    void start( QString gisdbase, QString location, QString mapset, QString map );
+    // returns raster value as string or "null" or "error"
+    QString value( double x, double y );
+  private:
+    QString mGisdbase;      // map gisdabase
+    QString mLocation;      // map location name (not path!)
+    QString mMapset;        // map mapset
+    QString mMapName;       // map name
+    QTemporaryFile mGisrcFile;
+    QProcess *mProcess;
+};
+/**
 
   \brief Data provider for OGC WMS layers.
 
@@ -245,6 +267,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem mCrs;
 
+    QgsGrassRasterValue mRasterValue;
 };
 
 #endif
