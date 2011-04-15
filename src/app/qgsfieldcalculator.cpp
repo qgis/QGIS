@@ -18,6 +18,7 @@
 #include "qgssearchstring.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+
 #include <QMessageBox>
 
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
@@ -192,7 +193,24 @@ void QgsFieldCalculator::accept()
       }
       else if ( value.isNumeric() )
       {
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value.number(), false );
+        const QgsField &f = mVectorLayer->pendingFields()[ mAttributeId ];
+        QVariant v;
+
+        if ( f.type() == QVariant::Double && f.precision() > 0 )
+        {
+          v = QString::number( value.number(), 'g', f.precision() );
+        }
+        else if ( f.type() == QVariant::Double && f.precision() > 0 && f.precision() == 0 )
+        {
+          v = QString::number( qRound( value.number() ) );
+        }
+        else
+        {
+          v = value.number();
+        }
+
+        v.convert( f.type() );
+        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, v, false );
       }
       else if ( value.isNull() )
       {
