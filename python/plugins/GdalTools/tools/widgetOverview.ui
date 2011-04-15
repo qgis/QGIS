@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>376</width>
-    <height>323</height>
+    <height>311</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,36 +35,9 @@
         <string>&amp;Input file</string>
        </property>
        <property name="buddy">
-        <cstring>selectInputFileButton</cstring>
+        <cstring>inSelector</cstring>
        </property>
       </widget>
-     </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QComboBox" name="inputLayerCombo">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="editable">
-          <bool>true</bool>
-         </property>
-         <property name="insertPolicy">
-          <enum>QComboBox::NoInsert</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectInputFileButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="1" column="0">
       <widget class="QCheckBox" name="algorithmCheck">
@@ -116,6 +89,9 @@
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="levelsEdit"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
      </item>
     </layout>
    </item>
@@ -227,6 +203,14 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

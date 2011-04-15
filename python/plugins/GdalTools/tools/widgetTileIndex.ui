@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>188</height>
+    <height>181</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,21 +21,10 @@
        <property name="text">
         <string>Input directory</string>
        </property>
+       <property name="buddy">
+        <cstring>inSelector</cstring>
+       </property>
       </widget>
-     </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLineEdit" name="inputDirEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectInputDirButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="1" column="1">
       <widget class="QCheckBox" name="recurseCheck">
@@ -49,21 +38,10 @@
        <property name="text">
         <string>Output shapefile</string>
        </property>
+       <property name="buddy">
+        <cstring>outSelector</cstring>
+       </property>
       </widget>
-     </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLineEdit" name="outputFileEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectOutputFileButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="3" column="0">
       <widget class="QCheckBox" name="indexFieldCheck">
@@ -81,6 +59,12 @@
         <string>location</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
      </item>
     </layout>
    </item>
@@ -100,6 +84,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

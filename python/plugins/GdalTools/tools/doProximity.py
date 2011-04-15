@@ -20,12 +20,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_proximity.py")
 
+      self.outSelector.setType( self.outSelector.FILE )
       self.outputFormat = Utils.fillRasterOutputFormat()
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.valuesEdit, SIGNAL("textChanged(const QString &)"), self.valuesCheck),
           (self.distUnitsCombo, SIGNAL("currentIndexChanged(int)"), self.distUnitsCheck),
           (self.maxDistSpin, SIGNAL("valueChanged(int)"), self.maxDistCheck),
@@ -34,16 +35,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         ]
       )
 
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo( self ):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry().getRasterLayers() )
 
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -52,8 +48,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText(inputFile)
+      self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -63,15 +58,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
 
   def getArguments(self):
       arguments = QStringList()
-      if self.inputLayerCombo.currentIndex() >= 0:
-        arguments << self.layers[ self.inputLayerCombo.currentIndex() ].source()
-      else:
-        arguments << self.inputLayerCombo.currentText()
-      arguments << self.outputFileEdit.text()
+      arguments << self.getInputFileName()
+      outputFn = self.getOutputFileName()
+      arguments << outputFn
       if self.valuesCheck.isChecked():
         values = self.valuesEdit.text().trimmed()
         if not values.isEmpty():
@@ -89,13 +82,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.fixedBufValCheck.isChecked():
         arguments << "-fixed-buf-val"
         arguments << str(self.fixedBufValSpin.value())
-      if not self.outputFileEdit.text().isEmpty():
+      if not outputFn.isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
       return arguments
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
+
+  def getInputFileName(self):
+      return self.inSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
+

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>777</width>
-    <height>366</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,36 +28,9 @@
         <string>&amp;Input file</string>
        </property>
        <property name="buddy">
-        <cstring>selectInputFileButton</cstring>
+        <cstring>inSelector</cstring>
        </property>
       </widget>
-     </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QComboBox" name="inputLayerCombo">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="editable">
-          <bool>true</bool>
-         </property>
-         <property name="insertPolicy">
-          <enum>QComboBox::NoInsert</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectInputFileButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="1" column="0">
       <widget class="QCheckBox" name="zfieldCheck">
@@ -75,30 +48,9 @@
         <string>&amp;Output file</string>
        </property>
        <property name="buddy">
-        <cstring>selectOutputFileButton</cstring>
+        <cstring>outSelector</cstring>
        </property>
       </widget>
-     </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLineEdit" name="outputFileEdit">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectOutputFileButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="3" column="0">
       <widget class="QCheckBox" name="algorithmCheck">
@@ -130,6 +82,12 @@
         </property>
        </item>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
      </item>
     </layout>
    </item>
@@ -862,6 +820,12 @@
    <class>GdalToolsExtentSelector</class>
    <extends>QWidget</extends>
    <header>extentSelector</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

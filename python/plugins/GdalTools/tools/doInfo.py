@@ -26,13 +26,13 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
+          (self.inSelector, SIGNAL("filenameChanged()") ),
           ( self.suppressGCPCheck, SIGNAL( "stateChanged( int )" ) ),
           ( self.suppressMDCheck, SIGNAL( "stateChanged( int )" ) )
         ]
       )
 
-      self.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFileEdit )
+      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
 
       # helper actions for copying info output
       self.copyLine = QAction( self.tr( "Copy" ), self )
@@ -70,12 +70,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
         QWidget.keyPressEvent( self, e )
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo( self ):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def finished( self ):
       self.rasterInfoList.clear()
@@ -94,8 +89,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputFile )
+      self.inSelector.setFilename( inputFile )
 
   def getArguments( self ):
       arguments = QStringList()
@@ -103,17 +97,19 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
         arguments << "-nogcp"
       if self.suppressMDCheck.isChecked():
         arguments << "-nomd"
-      if self.inputLayerCombo.currentIndex() >= 0:
-        arguments << self.layers[ self.inputLayerCombo.currentIndex() ].source()
-      else:
-        arguments << self.inputLayerCombo.currentText()
+      arguments << self.getInputFileName()
       return arguments
 
 #  def getOutputFileName( self ):
-#      return self.inputFileEdit.text()
+#      return self.inSelector.filename()
+
+  def getInputFileName( self ):
+      return self.inSelector.filename()
+
 
   def contextMenuEvent( self, event ):
       menu = QMenu( self )
       menu.addAction( self.copyLine )
       menu.addAction( self.copyAll )
       menu.exec_( event.globalPos() )
+

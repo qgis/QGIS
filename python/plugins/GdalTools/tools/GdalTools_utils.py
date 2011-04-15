@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # Utility functions
+# -------------------------------------------------
+# getLastUsedDir()
+# setLastUsedDir( QString *file_or_dir path )
+# -------------------------------------------------
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -143,9 +147,7 @@ class LayerRegistry(QObject):
       return True
 
     def getRasterLayers(self):
-      layers = filter( self.isRaster, LayerRegistry.layers )
-      names = map( lambda x: x.name(), layers )
-      return ( layers, names )
+      return filter( self.isRaster, LayerRegistry.layers )
 
     @classmethod
     def isVector(self, layer):
@@ -154,10 +156,7 @@ class LayerRegistry(QObject):
       return True
 
     def getVectorLayers(self):
-      layers = filter( self.isVector, LayerRegistry.layers )
-      names = map( lambda x: x.name(), layers )
-      return ( layers, names )
-
+      return filter( self.isVector, LayerRegistry.layers )
 
 def getRasterFiles(path, recursive=False):
   rasters = QStringList()
