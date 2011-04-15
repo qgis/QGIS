@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # Utility functions
-# -------------------------------------------------
-# getLastUsedDir()
-# setLastUsedDir( QString *file_or_dir path )
-# -------------------------------------------------
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -137,27 +133,31 @@ class LayerRegistry(QObject):
        LayerRegistry.layers = []
        self.emit( SIGNAL( "layersChanged" ) )
 
-    def getRasterLayers(self):
-      layers = []
-      names = []
+    @classmethod
+    def isRaster(self, layer):
+      # only gdal raster layers
+      if layer.type() != layer.RasterLayer:
+        return False
+      if layer.usesProvider() and layer.providerKey() != 'gdal':
+        return False
+      return True
 
-      for layer in LayerRegistry.layers:
-        # only gdal raster layers
-        if layer.type() == layer.RasterLayer:
-          if layer.usesProvider() and layer.providerKey() != 'gdal':
-            continue
-          layers.append(layer)
-          names.append(layer.name())
-      return (layers, names)
+    def getRasterLayers(self):
+      layers = filter( self.isRaster, LayerRegistry.layers )
+      names = map( lambda x: x.name(), layers )
+      return ( layers, names )
+
+    @classmethod
+    def isVector(self, layer):
+      if layer.type() != layer.VectorLayer:
+        return False
+      return True
 
     def getVectorLayers(self):
-      layers = []
-      names = []
-      for layer in LayerRegistry.layers:
-        if layer.type() == layer.VectorLayer:
-          layers.append(layer)
-          names.append(layer.name())
-      return (layers, names)
+      layers = filter( self.isVector, LayerRegistry.layers )
+      names = map( lambda x: x.name(), layers )
+      return ( layers, names )
+
 
 def getRasterFiles(path, recursive=False):
   rasters = QStringList()
@@ -270,6 +270,30 @@ def getRasterSRS( parent, fileName ):
     info = srs.split( "," )
     srs = info[ 0 ] + ":" + info[ 1 ]
     return srs
+
+def getRasterExtent(parent, fileName):
+    processSRS = QProcess( parent )
+    processSRS.start( "gdalinfo", QStringList() << fileName, QIODevice.ReadOnly )
+    arr = QByteArray()
+    if processSRS.waitForFinished():
+      arr = processSRS.readAllStandardOutput()
+      processSRS.close()
+      
+    if arr.isEmpty():
+      return
+      
+    info = QString( arr ).split( "\n" )
+    ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
+    lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
+    ulCoord = ulCoord[ulCoord.indexOf( "(" ) + 1 : ulCoord.indexOf( ")" ) - 1].split( "," )
+    lrCoord = lrCoord[lrCoord.indexOf( "(" ) + 1 : lrCoord.indexOf( ")" ) - 1].split( "," )
+    xUL = ulCoord[0].toDouble()[0]
+    yUL = ulCoord[1].toDouble()[0]
+    xLR = lrCoord[0].toDouble()[0]
+    yLR = lrCoord[1].toDouble()[0]
+
+    return QgsRectangle( xUL, yLR, xLR, yUL )
+
 
 # This class is used to replace the QFileDialog class.
 # Its static methods are used in place of the respective QFileDialog ones to:

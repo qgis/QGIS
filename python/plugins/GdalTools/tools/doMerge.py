@@ -110,29 +110,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
 
-  def getRectangle( self, file ):
-    processSRS = QProcess( self )
-    processSRS.start( "gdalinfo", QStringList() << file, QIODevice.ReadOnly )
-    arr = QByteArray()
-    if processSRS.waitForFinished():
-      arr = processSRS.readAllStandardOutput()
-      processSRS.close()
-      
-    if arr.isEmpty():
-      return None
-      
-    info = QString( arr ).split( "\n" )
-    ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
-    lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
-    ulCoord = ulCoord[ulCoord.indexOf( "(" ) + 1 : ulCoord.indexOf( ")" ) - 1].split( "," )
-    lrCoord = lrCoord[lrCoord.indexOf( "(" ) + 1 : lrCoord.indexOf( ")" ) - 1].split( "," )
-    xUL = ulCoord[0].toDouble()[0]
-    yUL = ulCoord[1].toDouble()[0]
-    xLR = lrCoord[0].toDouble()[0]
-    yLR = lrCoord[1].toDouble()[0]
-
-    return QgsRectangle( xUL, yLR, xLR, yUL )
-
   def getExtent( self ):
     files = self.inputFilesEdit.text().split( "," )
 
@@ -140,11 +117,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
     res = rect2 = None
     for fileName in files:
       if res == None:
-        res = self.getRectangle( fileName )
+        res = Utils.getRasterExtent( self, fileName )
         continue
-      rect2 = self.getRectangle( fileName )
+      rect2 = Utils.getRasterExtent( self, fileName )
       if rect2 == None:
         continue
       res = res.intersect( rect2 )
 
     return res
+
