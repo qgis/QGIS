@@ -47,6 +47,12 @@ QgsProjectParser::~QgsProjectParser()
   delete mXMLDoc;
 }
 
+int QgsProjectParser::numberOfLayers() const
+{
+  QList<QDomElement> layerElems = projectLayerElements();
+  return layerElems.size();
+}
+
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   QList<QDomElement> layerElems = projectLayerElements();

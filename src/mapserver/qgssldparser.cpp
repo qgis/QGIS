@@ -142,6 +142,23 @@ QgsSLDParser::~QgsSLDParser()
   delete mXMLDoc;
 }
 
+int QgsSLDParser::numberOfLayers() const
+{
+  if ( !mXMLDoc )
+  {
+    return 0;
+  }
+
+  QDomElement sldElem = mXMLDoc->documentElement().toElement();
+  if ( sldElem.isNull() )
+  {
+    return 0;
+  }
+  QDomNodeList userLayerList = sldElem.elementsByTagName( "UserLayer" );
+  QDomNodeList namedLayerList = sldElem.elementsByTagName( "NamedLayer" );
+  return ( userLayerList.size() + namedLayerList.size() );
+}
+
 void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   //iterate over all <UserLayer> nodes

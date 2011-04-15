@@ -38,6 +38,8 @@ class QgsProjectParser: public QgsConfigParser
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    int numberOfLayers() const;
+
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching = true ) const;
 

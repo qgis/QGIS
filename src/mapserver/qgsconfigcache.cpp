@@ -17,6 +17,7 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmapserverlogger.h"
+#include "qgsmslayercache.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
 
@@ -35,17 +36,25 @@ QgsConfigCache::~QgsConfigCache()
 
 QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
 {
+  QgsConfigParser* p = 0;
   QMap<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
   if ( configIt == mCachedConfigurations.constEnd() )
   {
     QgsMSDebugMsg( "Create new configuration" );
-    return insertConfiguration( filePath );
+    p = insertConfiguration( filePath );
   }
   else
   {
     QgsMSDebugMsg( "Return configuration from cache" );
-    return configIt.value();
+    p = configIt.value();
   }
+
+  if ( p )
+  {
+    //there could be more layers in a project than allowed by the cache per default
+    QgsMSLayerCache::instance()->setProjectMaxLayers( p->numberOfLayers() );
+  }
+  return p;
 }
 
 QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
